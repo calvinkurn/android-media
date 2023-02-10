@@ -84,6 +84,7 @@ class PdpSimulationAnalytics @Inject constructor(
 
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendPayLaterImpressionEvent(event: PayLaterAnalyticsBase) {
         val label = computeLabel(
             event.productId, event.linkingStatus, event.userStatus,

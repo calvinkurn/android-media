@@ -37,7 +37,7 @@ object PayLaterBundleGenerator {
 
         val partnerList =
             if (data.isNotEmpty()) PayLaterHelper.getProductNameList(simulationList) else ""
-        val promoName = data.getOrNull(defaultSelectedSimulation)?.promoName ?: ""
+        val promoName = data.getOrNull(defaultSelectedSimulation)?.promoName.orEmpty()
 
         return PayLaterAnalyticsBase().apply {
             tenureOption = defaultSelectedSimulation

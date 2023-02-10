@@ -184,7 +184,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             payLaterActivationViewModel.selectedProductId,
             payLaterActivationViewModel.price * quantity,
             payLaterActivationViewModel.selectedGatewayCode,
-            payLaterActivationViewModel.shopId ?: "",
+            payLaterActivationViewModel.shopId.orEmpty(),
         )
     }
 
@@ -607,7 +607,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 productId = payLaterActivationViewModel.selectedProductId,
                 pageSource = VariantPageSource.BNPL_PAGESOURCE,
                 isTokoNow = false,
-                shopId = payLaterActivationViewModel.shopId ?: "",
+                shopId = payLaterActivationViewModel.shopId.orEmpty(),
                 saveAfterClose = false
             ) { data, code ->
                 startActivityForResult(data, code)
@@ -732,7 +732,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             payLaterActivationViewModel.selectedProductId,
             payLaterActivationViewModel.price * quantity,
             payLaterActivationViewModel.selectedGatewayCode,
-            payLaterActivationViewModel.shopId ?: "",
+            payLaterActivationViewModel.shopId.orEmpty(),
         )
     }
 
@@ -759,6 +759,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         return isDisabledPartner
     }
 
+    @SuppressLint("PII Data Exposure")
     override fun selectedTenure(
         tenureSelectedModel: TenureSelectedModel,
         newPositionToSelect: Int,
@@ -773,6 +774,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendTenureSelectedAnalytics(newPositionToSelect: Int, promoName: String) {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             sendAnalyticEvent(
@@ -781,7 +783,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.userState ?: "",
                     payLaterActivationViewModel.price.toString(),
                     checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
-                    checkoutData.gateway_name ?: "",
+                    checkoutData.gateway_name.orEmpty(),
                     promoName
                 )
             )

@@ -21,7 +21,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
                 sendPdpWidgetImpression(
                     analyticsEvent.partnerId, analyticsEvent.linkingStatus,
                     analyticsEvent.productId, analyticsEvent.userStatus, analyticsEvent.chipType,
-                    analyticsEvent.promoName ?: "",
+                    analyticsEvent.promoName.orEmpty(),
                 )
 
             is FintechWidgetAnalyticsEvent.ActivationBottomSheetClick -> sendActivationClick(
@@ -90,6 +90,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         analyticTracker.sendGeneralEvent(map)
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendPdpWidgetImpression(
         partnerId: String,
         linkingStatus: String,
@@ -102,7 +103,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
             viewEvent,
             eventCategory,
             pdpBnplImpression,
-            "$productId - Yes - ${linkingStatus} - ${userSession.get().userId} - $userStatus - $chipType - $partnerId - $promoName"
+            "$productId - Yes - $linkingStatus - ${userSession.get().userId} - $userStatus - $chipType - $partnerId - $promoName"
 
         )
         sendGeneralEvent(map)

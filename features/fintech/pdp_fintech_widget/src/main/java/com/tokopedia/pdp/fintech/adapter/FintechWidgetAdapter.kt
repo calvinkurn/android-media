@@ -82,7 +82,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         holder: MyViewHolder
     ) {
         when {
-            it.equals("green", true) -> {
+            it.equals(COLOR_GREEN_STRING, true) -> {
                 holder.subheaderPartner.setTextColor(
                     ContextCompat.getColor(
                         context,
@@ -91,7 +91,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 )
                 holder.subheaderPartner.weightType = Typography.BOLD
             }
-            it.equals("blue", true) -> {
+            it.equals(COLOR_BLUE_STRING, true) -> {
                 holder.subheaderPartner.setTextColor(
                     ContextCompat.getColor(
                         context,
@@ -187,6 +187,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     companion object {
         // Do not inflate if gatway id is 0
         const val GATEWAY_ID_SEE_MORE = "0"
+        const val COLOR_BLUE_STRING = "blue"
+        const val COLOR_GREEN_STRING = "green"
     }
 
 }

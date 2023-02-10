@@ -4,13 +4,14 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimulationShimmerViewHolder
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimulationTenureViewHolder
 
 class PayLaterSimulationTenureAdapter(
-    private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>,Int, String) -> Unit
+    private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>, Int, String) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -33,7 +34,7 @@ class PayLaterSimulationTenureAdapter(
                     if (isTenureSelectionChanged(pos)) {
                         showPayLaterOption(
                             tenureItemList[pos].simulationList!!,
-                            tenureItemList[pos].tenure?:0,
+                            tenureItemList[pos].tenure.orZero(),
                             tenureItemList[pos].promoName,
                         )
                         changeAndUpdateSelection(pos)

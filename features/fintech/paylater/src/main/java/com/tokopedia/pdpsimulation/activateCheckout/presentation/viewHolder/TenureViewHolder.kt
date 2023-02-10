@@ -62,14 +62,14 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             tenureSelectListener.selectedTenure(
                 tenureSelectedModel,
                 currentPosition,
-                tenureDetail.promoName ?: "",
+                tenureDetail.promoName.orEmpty(),
             )
         }
         radioSelector.setOnClickListener {
             tenureSelectListener.selectedTenure(
                 tenureSelectedModel,
                 currentPosition,
-                tenureDetail.promoName ?: "",
+                tenureDetail.promoName.orEmpty(),
             )
         }
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
@@ -11,17 +10,20 @@ import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.model.Pictures
 import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
-import com.tokopedia.pdpsimulation.paylater.domain.model.*
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import com.tokopedia.pdpsimulation.paylater.domain.model.Label
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.SupervisorUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKSettings.relaxed
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.invoke
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert

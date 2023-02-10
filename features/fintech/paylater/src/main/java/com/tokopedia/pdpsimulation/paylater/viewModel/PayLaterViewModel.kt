@@ -64,7 +64,7 @@ class PayLaterViewModel @Inject constructor(
             ::onAvailableDetailFail,
             price,
             productId,
-            shopId ?: "",
+            shopId.orEmpty(),
         )
     }
 

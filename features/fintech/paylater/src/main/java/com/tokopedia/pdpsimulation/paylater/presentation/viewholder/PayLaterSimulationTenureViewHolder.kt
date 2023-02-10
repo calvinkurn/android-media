@@ -6,11 +6,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.paylater_simulation_tenure_item.view.*
 

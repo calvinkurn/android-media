@@ -78,7 +78,7 @@ class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<Simulati
                     simulationList = getPayLaterList,
                     isSelected = defaultTenure == data.tenure,
                     label = SimulationUiModel.LabelUiModel.create(data.label),
-                    promoName = data.promoName ?: ""
+                    promoName = data.promoName.orEmpty()
                 )
                 uiList.add(simulationUiModel)
             }

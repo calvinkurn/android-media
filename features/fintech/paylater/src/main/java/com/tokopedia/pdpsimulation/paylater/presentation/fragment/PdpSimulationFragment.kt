@@ -326,16 +326,16 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendDataToViewModel(data: GetProductV3) {
-        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0) {
+        if ((data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO) != DOUBLE_ZERO) {
             payLaterViewModel.getPayLaterAvailableDetail(
-                data.campaingnDetail?.discountedPrice
-                    ?: 0.0, payLaterArgsDescriptor.productId,
+                data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO,
+                payLaterArgsDescriptor.productId,
                 data.shopDetail?.shopId,
             )
         } else {
             payLaterViewModel.getPayLaterAvailableDetail(
-                data.price
-                    ?: 0.0, payLaterArgsDescriptor.productId,
+                data.price ?: DOUBLE_ZERO,
+                payLaterArgsDescriptor.productId,
                 data.shopDetail?.shopId,
             )
         }
@@ -358,12 +358,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun getProductPrice(data: GetProductV3) =
-        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0)
+        if ((data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO) != DOUBLE_ZERO)
             PayLaterHelper.convertPriceValueToIdrFormat(
-                data.campaingnDetail?.discountedPrice ?: 0.0, false
+                data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO, false
             )
         else
-            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: 0.0, false)
+            PayLaterHelper.convertPriceValueToIdrFormat(data.price ?: DOUBLE_ZERO, false)
 
     /**
      * THis method set data for the product variant
@@ -396,6 +396,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     companion object {
 
         const val TYPE_APP_LINK_OCC = 5
+        const val DOUBLE_ZERO = 0.0
 
         @JvmStatic
         fun newInstance(bundle: Bundle): PdpSimulationFragment {
