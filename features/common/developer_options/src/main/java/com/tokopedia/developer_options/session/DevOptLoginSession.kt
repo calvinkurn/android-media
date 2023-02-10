@@ -28,7 +28,7 @@ class DevOptLoginSession(private val context: Context) {
         return isPasswordValid() && !isSessionExpired()
     }
 
-    fun setPassword(password: String) {
+    fun setLoginSession(password: String) {
         sharedPrefEditor.putString(KEY_PASSWORD, EncoderDecoder.Encrypt(password, DEV_OPT_IV)).apply()
         sharedPrefEditor.putLong(KEY_LAST_UPDATED, System.currentTimeMillis()).apply()
         sharedPrefEditor.putBoolean(KEY_IS_LOGGED_IN, true).apply()

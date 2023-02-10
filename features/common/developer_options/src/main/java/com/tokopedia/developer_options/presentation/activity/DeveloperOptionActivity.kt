@@ -249,14 +249,14 @@ class DeveloperOptionActivity : BaseActivity() {
             val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
             val editor = sharedPref.edit().clear()
             editor.apply()
-            Toast.makeText(this@DeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity, getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
         override fun onClickSkipOnBoardingBtn() {
             userSession?.setFirstTimeUserOnboarding(false)
-            Toast.makeText(this@DeveloperOptionActivity,getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity, getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -270,8 +270,8 @@ class DeveloperOptionActivity : BaseActivity() {
         return object : DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
             override fun onSubmitDevOptsPassword(password: String) {
                 val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
-                if (password == serverPassword){
-                    loginSession.setPassword(password)
+                if (password == serverPassword) {
+                    loginSession.setLoginSession(password)
                     adapter.setValueIsAuthorized(true)
                     adapter.initializeList()
                     adapter.setDefaultItem()
