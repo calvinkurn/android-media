@@ -269,7 +269,7 @@ class DeveloperOptionActivity : BaseActivity() {
     private fun checkAuthorize(): DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
         return object : DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
             override fun onSubmitDevOptsPassword(password: String) {
-                var serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+                val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
                 if (password == serverPassword){
                     loginSession.setPassword(password)
                     adapter.setValueIsAuthorized(true)
