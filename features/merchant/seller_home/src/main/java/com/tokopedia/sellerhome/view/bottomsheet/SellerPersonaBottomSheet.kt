@@ -22,6 +22,7 @@ class SellerPersonaBottomSheet : BottomSheetUnify() {
             return SellerPersonaBottomSheet()
         }
 
+        private const val TAG = "SellerPersonaBottomSheet"
         private const val IMG_SELLER_PERSONA_ENTRY_POINT =
             "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_entry_point-min.png"
     }
@@ -46,7 +47,7 @@ class SellerPersonaBottomSheet : BottomSheetUnify() {
 
     fun show(fm: FragmentManager) {
         if (fm.isStateSaved || isAdded) return
-        show(fm, this::class.java.canonicalName)
+        show(fm, TAG)
     }
 
     private fun setupView() {

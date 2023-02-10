@@ -15,5 +15,7 @@ data class GetSellerDashboardLayout(
     @SerializedName("widget")
     val widget: List<WidgetModel>? = emptyList(),
     @SerializedName("shopState")
-    val shopState: Long = 0
+    val shopState: Long = 0,
+    @SerializedName("personaStatus")
+    val personaStatus: Int? = 0
 )

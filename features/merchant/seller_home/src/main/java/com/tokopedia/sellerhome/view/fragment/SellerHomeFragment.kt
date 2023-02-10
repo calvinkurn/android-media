@@ -86,6 +86,7 @@ import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
+import com.tokopedia.sellerhome.view.bottomsheet.SellerPersonaBottomSheet
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhome.view.dialog.NewSellerDialog
 import com.tokopedia.sellerhome.view.helper.NewSellerJourneyHelper
@@ -217,6 +218,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val FEEDBACK_OPTION_4 = 3
         private const val ANNOUNCEMENT_DISMISSAL_KEY = "widget.announcement.%s"
         private const val POST_LIST_DISMISSAL_KEY = "widget.post.%s"
+        private const val STATUS_SHOW_PERSONA_POPUP = 2
     }
 
     @Inject
@@ -1439,6 +1441,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnSuccessGetLayout(result.data.widgetList)
                     startWidgetSse()
                     setupShopState(result.data.shopState)
+                    handlePersonaStatus(result.data.personaStatus)
                 }
                 is Fail -> {
                     stopCustomMetric(
@@ -1450,6 +1453,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(true)
+    }
+
+    private fun handlePersonaStatus(personaStatus: Int) {
+        activity?.let {
+            if (personaStatus == STATUS_SHOW_PERSONA_POPUP && !it.isFinishing) {
+                with(SellerPersonaBottomSheet.newInstance()) {
+                    setOnDismissListener {
+                        /*val param = SubmitWidgetDismissUiModel(
+                            action = SubmitWidgetDismissUiModel.Action.DISMISS,
+                            dismissKey = NewSellerDialog.DISMISSAL_KEY,
+                            dismissSign = dataSign,
+                            dismissObjectIDs = listOf(NewSellerJourneyHelper.WIDGET_DISMISSAL_ID),
+                            shopId = userSession.shopId,
+                            isFeedbackPositive = true,
+                            feedbackWidgetIDParent = NewSellerJourneyHelper.WIDGET_DISMISSAL_ID
+                        )
+                        sellerHomeViewModel.submitWidgetDismissal(param)*/
+                    }
+                    show(childFragmentManager)
+                }
+            }
+        }
     }
 
     private fun stopLayoutCustomMetric(widgets: List<BaseWidgetUiModel<*>>) {
