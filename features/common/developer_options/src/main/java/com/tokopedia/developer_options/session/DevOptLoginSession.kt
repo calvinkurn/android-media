@@ -20,6 +20,7 @@ class DevOptLoginSession(private val context: Context) {
     }
 
     private val sharedPref by lazy { createSharedPreference() }
+    private val sharedPrefEditor by lazy { sharedPref.edit() }
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
 
     fun isLoggedIn(): Boolean {
@@ -27,12 +28,12 @@ class DevOptLoginSession(private val context: Context) {
     }
 
     fun setPassword(password: String) {
-        sharedPref.edit().putString(KEY_PASSWORD, EncoderDecoder.Encrypt(password, DEV_OPT_IV)).apply()
-        sharedPref.edit().putLong(KEY_LAST_UPDATED, System.currentTimeMillis()).apply()
+        sharedPrefEditor.putString(KEY_PASSWORD, EncoderDecoder.Encrypt(password, DEV_OPT_IV)).apply()
+        sharedPrefEditor.putLong(KEY_LAST_UPDATED, System.currentTimeMillis()).apply()
     }
 
     fun clear() {
-        sharedPref.edit().clear().apply()
+        sharedPrefEditor.clear().apply()
         DevOptConfig.setChuckNotifEnabled(context, false)
     }
 
