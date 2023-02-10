@@ -3,6 +3,7 @@ package com.tokopedia.people.views.viewholder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.people.databinding.UpItemUserPostChannelBinding
@@ -113,13 +114,6 @@ class PlayVideoViewHolder private constructor() {
     class Loading(
         binding: UpItemUserPostLoadingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            val layoutParams = itemView.layoutParams
-            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-                layoutParams.isFullSpan = true
-            }
-        }
 
         companion object {
             fun create(

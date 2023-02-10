@@ -33,6 +33,7 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.adapter.PlayVideoAdapter
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.LOADING
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_CONTENT
@@ -43,8 +44,11 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST_CODE_PLAY_ROOM
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.viewholder.PlayVideoViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -75,11 +79,49 @@ class UserProfileVideoFragment @Inject constructor(
         )
     }
 
-    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        UserPostBaseAdapter(this, this) { cursor ->
-            submitAction(UserProfileAction.LoadPlayVideo(cursor))
-        }
+    private val mAdapter: PlayVideoAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        PlayVideoAdapter(
+            channelWidgetListener = object : PlayVideoViewHolder.Channel.Listener {
+
+                override fun onPlayReminderClick(channel: PlayWidgetChannelUiModel) {
+                    /** TODO: handle this later */
+                }
+
+                override fun onPlayWidgetLargeClick(
+                    appLink: String,
+                    channelID: String,
+                    isLive: Boolean,
+                    imageUrl: String,
+                    pos: Int
+                ) {
+                    /** TODO: handle this later */
+                }
+
+                override fun onImpressPlayWidgetData(
+                    channel: PlayWidgetChannelUiModel,
+                    isLive: Boolean,
+                    channelId: String,
+                    pos: Int
+                ) {
+                    /** TODO: handle this later */
+                }
+            },
+            transcodeWidgetListener = object : PlayVideoViewHolder.Transcode.Listener {
+                override fun onDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
+                    submitAction(UserProfileAction.DeletePlayChannel(channel))
+                }
+            },
+            onLoading = {
+                submitAction(UserProfileAction.LoadPlayVideo())
+            }
+        )
     }
+
+//    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
+//        UserPostBaseAdapter(this, this) { cursor ->
+//            submitAction(UserProfileAction.LoadPlayVideo(cursor))
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,7 +138,8 @@ class UserProfileVideoFragment @Inject constructor(
         initObserver()
         setupPlayVideo()
 
-        fetchPlayVideo(viewModel.profileUserID)
+        submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
+//        fetchPlayVideo(viewModel.profileUserID)
     }
 
     override fun onPause() {
@@ -110,9 +153,9 @@ class UserProfileVideoFragment @Inject constructor(
     }
 
     private fun fetchPlayVideo(userId: String) {
-        mAdapter.resetAdapter()
-        mAdapter.cursor = ""
-        mAdapter.startDataLoading(userId)
+//        mAdapter.resetAdapter()
+//        mAdapter.cursor = ""
+//        mAdapter.startDataLoading(userId)
     }
 
     private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
@@ -155,7 +198,8 @@ class UserProfileVideoFragment @Inject constructor(
 
                             globalErrorVideo.refreshBtn?.setOnClickListener {
                                 userVideoContainer.displayedChild = PAGE_LOADING
-                                fetchPlayVideo(viewModel.profileUserID)
+                                submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
+//                                fetchPlayVideo(viewModel.profileUserID)
                             }
                         }
                     }
@@ -177,15 +221,42 @@ class UserProfileVideoFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                val prev = it.prevValue?.videoPostsContent
-                val value = it.value.videoPostsContent
-                if ((prev == null && value == UserPostModel()) || (prev == value)) return@collectLatest
-                mAdapter.onSuccess(value)
+                renderPlayVideo(it.prevValue?.videoPostsContent, it.value.videoPostsContent)
             }
         }
     }
 
     /** Render UI */
+    private fun renderPlayVideo(
+        prev: UserPlayVideoUiModel?,
+        curr: UserPlayVideoUiModel,
+    ) {
+        if(prev == curr) return
+
+        when(curr.status) {
+            UserPlayVideoUiModel.Status.LoadingShimmer -> {
+                binding.userVideoContainer.displayedChild = PAGE_LOADING
+            }
+            UserPlayVideoUiModel.Status.Success -> {
+                val mappedList = curr.items.map {
+                    if(it.channelType == PlayWidgetChannelType.Transcoding || it.channelType == PlayWidgetChannelType.FailedTranscoding) {
+                        PlayVideoAdapter.Model.Transcode(it)
+                    }
+                    else {
+                        PlayVideoAdapter.Model.Channel(it)
+                    }
+                }
+
+                val finalList = if(curr.nextCursor.isEmpty()) mappedList else mappedList + listOf(PlayVideoAdapter.Model.Loading)
+
+                mAdapter.setItemsAndAnimateChanges(finalList)
+
+                binding.userVideoContainer.displayedChild = PAGE_CONTENT
+            }
+            else -> {}
+        }
+    }
+
     private fun setupPlayVideo() {
         gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
 
@@ -196,6 +267,15 @@ class UserProfileVideoFragment @Inject constructor(
             binding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
         }
         binding.rvPost.adapter = mAdapter
+
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when(mAdapter.getItem(position)) {
+                    is PlayVideoAdapter.Model.Loading -> 2
+                    else -> 1
+                }
+            }
+        }
     }
 
     private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
@@ -263,7 +343,8 @@ class UserProfileVideoFragment @Inject constructor(
         totalView: String,
         isReminderSet: Boolean,
     ) {
-        mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+        /** TODO: check this */
+//        mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
     }
 
     override fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int) {
@@ -307,7 +388,8 @@ class UserProfileVideoFragment @Inject constructor(
                 val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW).orEmpty()
                 val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
 
-                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+                /** TODO: check this */
+//                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
             }
         }
     }

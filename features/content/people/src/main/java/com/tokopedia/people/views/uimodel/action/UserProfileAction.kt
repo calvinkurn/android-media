@@ -15,7 +15,7 @@ sealed interface UserProfileAction {
 
     data class LoadFeedPosts(val cursor: String = "", val isRefresh: Boolean = false) : UserProfileAction
 
-    data class LoadPlayVideo(val cursor: String = "") : UserProfileAction
+    data class LoadPlayVideo(val isRefresh: Boolean = false) : UserProfileAction
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
 

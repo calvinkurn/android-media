@@ -5,13 +5,11 @@ import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
-import com.tokopedia.people.views.uimodel.content.MediaUiModel
-import com.tokopedia.people.views.uimodel.content.PaginationUiModel
-import com.tokopedia.people.views.uimodel.content.PostUiModel
-import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.VideoPostReimderModel
+import com.tokopedia.people.utils.UserProfileVideoMapper
+import com.tokopedia.people.views.uimodel.content.*
 import com.tokopedia.people.views.uimodel.profile.*
 import javax.inject.Inject
 
@@ -128,6 +126,19 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                 }
             )
         }
+    }
+
+    override fun mapPlayVideo(response: UserPostModel): UserPlayVideoUiModel {
+        val videoList = response.playGetContentSlot.data.firstOrNull()?.items?.map {
+            UserProfileVideoMapper.map(it, "")
+        } ?: emptyList()
+        val nextCursor = response.playGetContentSlot.playGetContentSlot.nextCursor
+
+        return UserPlayVideoUiModel(
+            items = videoList,
+            nextCursor = nextCursor,
+            status = UserPlayVideoUiModel.Status.Success,
+        )
     }
 
     companion object {

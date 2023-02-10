@@ -20,6 +20,7 @@ import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -117,7 +118,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlayVideo(username: String, cursor: String): UserPostModel {
+    override suspend fun getPlayVideo(username: String, cursor: String): UserPlayVideoUiModel {
         return withContext(dispatcher.io) {
             return@withContext playVodUseCase.executeOnBackground(
                 group = VAL_FEEDS_PROFILE,

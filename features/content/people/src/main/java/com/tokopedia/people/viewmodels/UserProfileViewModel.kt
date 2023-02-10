@@ -17,6 +17,7 @@ import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
@@ -27,6 +28,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -97,7 +99,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
-    private val _videoPostContent = MutableStateFlow(UserPostModel())
+    private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
 
@@ -141,7 +143,7 @@ class UserProfileViewModel @AssistedInject constructor(
             )
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, action.isRefresh)
-            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
+            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.isRefresh)
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
@@ -202,26 +204,39 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
-    private fun handleLoadPlayVideo(cursor: String) {
+    private fun handleLoadPlayVideo(isRefresh: Boolean) {
         viewModelScope.launchCatchError(
             block = {
-                val data = repo.getPlayVideo(profileUserID, cursor)
-                val finalPosts = if (cursor.isEmpty()) {
-                    data.playGetContentSlot.data
-                } else {
-                    _videoPostContent.value.playGetContentSlot.data + data.playGetContentSlot.data
-                }
+                val currVideoPostModel = _videoPostContent.value
+
+                if(!isRefresh && currVideoPostModel.nextCursor.isEmpty()) return@launchCatchError
+                if(currVideoPostModel.isLoading) return@launchCatchError
+
+                val loaderStatus = if(isRefresh)
+                    UserPlayVideoUiModel.Status.LoadingShimmer
+                else UserPlayVideoUiModel.Status.Loading
 
                 _videoPostContent.update {
                     it.copy(
-                        playGetContentSlot = PlayGetContentSlot(
-                            data = finalPosts,
-                            playGetContentSlot = data.playGetContentSlot.playGetContentSlot
-                        )
+                        status = loaderStatus
+                    )
+                }
+
+                val cursor = if(isRefresh) "" else currVideoPostModel.nextCursor
+                val result = repo.getPlayVideo(profileUserID, cursor)
+
+                _videoPostContent.update {
+                    it.copy(
+                        items = it.items + result.items,
+                        nextCursor = result.nextCursor,
+                        status = UserPlayVideoUiModel.Status.Success,
                     )
                 }
             },
             onError = {
+                _videoPostContent.update { videoPostContent ->
+                    videoPostContent.copy(status = UserPlayVideoUiModel.Status.Error)
+                }
                 _uiEvent.emit(UserProfileUiEvent.ErrorVideoPosts(it))
             }
         )
@@ -416,15 +431,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
             _videoPostContent.update {
                 it.copy(
-                    playGetContentSlot = it.playGetContentSlot.copy(
-                        data = it.playGetContentSlot.data.map { playPostContent ->
-                            playPostContent.copy(
-                                items = playPostContent.items.filter { item ->
-                                    item.id != channelId
-                                }
-                            )
-                        }
-                    )
+                    items = it.items.filter { item -> item.channelId != channelId }
                 )
             }
         }) {

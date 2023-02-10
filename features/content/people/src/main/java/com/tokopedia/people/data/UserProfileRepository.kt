@@ -7,6 +7,7 @@ import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -42,7 +43,7 @@ interface UserProfileRepository {
     suspend fun getPlayVideo(
         username: String,
         cursor: String,
-    ): UserPostModel
+    ): UserPlayVideoUiModel
 
     suspend fun getShopRecom(cursor: String): ShopRecomUiModel
 
