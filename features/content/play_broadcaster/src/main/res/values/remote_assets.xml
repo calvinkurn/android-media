@@ -4,4 +4,5 @@
     <string name="ic_play_cover_circle_dash">https://images.tokopedia.net/img/android/content/play_broadcaster/dpi/play_cover_circle_dash.png</string>
     <string name="img_play_tag_not_found">https://images.tokopedia.net/img/android/content/play_broadcaster/play_tag_not_found.png</string>
     <string name="img_shorts_account_not_eligible">https://images.tokopedia.net/img/android/content/play_shorts/img_shorts_account_not_eligible.png</string>
+    <string name="play_shorts_affiliate_tnc">https://images.tokopedia.net/img/android/content/play_broadcaster/play_shorts_x_affiliate_tnc.png</string>
 </resources>

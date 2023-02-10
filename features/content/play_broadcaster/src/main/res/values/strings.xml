@@ -299,4 +299,7 @@
 
     <string name="play_shorts_summary_title">Upload Video</string>
     <string name="play_shorts_summary_upload_action">Upload Video</string>
+
+    <string name="play_shorts_affiliate_tnc_title">Daftar Tokopedia Affiliate, yuk!</string>
+    <string name="play_shorts_affiliate_tnc_description">Supaya kamu bisa promosikan produk sambil ngonten di Tokopedia Play! Dapatkan komisi jika ada penonton yang beli produknya.</string>
 </resources>
