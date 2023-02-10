@@ -1291,6 +1291,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 homeAccountAnalytic.trackClickSettingLinkAcc()
                 goToApplink(item.applink)
             }
+            AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
+                homeAccountAnalytic.eventClickAccountSettingPrivacyAccount()
+                goToApplink(item.applink)
+            }
             AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
                 val intent = RouteManager.getIntent(context, item.applink)
                 startActivityForResult(intent, REQUEST_CODE_EXPLICIT_PROFILE)
