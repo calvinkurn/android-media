@@ -80,6 +80,7 @@ import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
@@ -218,7 +219,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val FEEDBACK_OPTION_4 = 3
         private const val ANNOUNCEMENT_DISMISSAL_KEY = "widget.announcement.%s"
         private const val POST_LIST_DISMISSAL_KEY = "widget.post.%s"
-        private const val STATUS_SHOW_PERSONA_POPUP = 2
+        private const val STATUS_PERSONA_SHOW_POPUP = 2
+        private const val STATUS_PERSONA_NOT_ROLLED_OUT = 3
     }
 
     @Inject
@@ -241,6 +243,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Inject
     lateinit var newSellerJourneyHelper: NewSellerJourneyHelper
+
+    @Inject
+    lateinit var sharedPref: SellerHomeSharedPref
 
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
@@ -1457,21 +1462,25 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun handlePersonaStatus(personaStatus: Int) {
         activity?.let {
-            if (personaStatus == STATUS_SHOW_PERSONA_POPUP && !it.isFinishing) {
-                with(SellerPersonaBottomSheet.newInstance()) {
-                    setOnDismissListener {
-                        /*val param = SubmitWidgetDismissUiModel(
-                            action = SubmitWidgetDismissUiModel.Action.DISMISS,
-                            dismissKey = NewSellerDialog.DISMISSAL_KEY,
-                            dismissSign = dataSign,
-                            dismissObjectIDs = listOf(NewSellerJourneyHelper.WIDGET_DISMISSAL_ID),
-                            shopId = userSession.shopId,
-                            isFeedbackPositive = true,
-                            feedbackWidgetIDParent = NewSellerJourneyHelper.WIDGET_DISMISSAL_ID
-                        )
-                        sellerHomeViewModel.submitWidgetDismissal(param)*/
+            if (personaStatus != STATUS_PERSONA_NOT_ROLLED_OUT) {
+                sharedPref.makePersonaEntryPointVisible(userSession.userId)
+            } else if (personaStatus == STATUS_PERSONA_SHOW_POPUP) {
+                if (!it.isFinishing) {
+                    with(SellerPersonaBottomSheet.newInstance()) {
+                        setOnDismissListener {
+                            /*val param = SubmitWidgetDismissUiModel(
+                                action = SubmitWidgetDismissUiModel.Action.DISMISS,
+                                dismissKey = NewSellerDialog.DISMISSAL_KEY,
+                                dismissSign = dataSign,
+                                dismissObjectIDs = listOf(NewSellerJourneyHelper.WIDGET_DISMISSAL_ID),
+                                shopId = userSession.shopId,
+                                isFeedbackPositive = true,
+                                feedbackWidgetIDParent = NewSellerJourneyHelper.WIDGET_DISMISSAL_ID
+                            )
+                            sellerHomeViewModel.submitWidgetDismissal(param)*/
+                        }
+                        show(childFragmentManager)
                     }
-                    show(childFragmentManager)
                 }
             }
         }

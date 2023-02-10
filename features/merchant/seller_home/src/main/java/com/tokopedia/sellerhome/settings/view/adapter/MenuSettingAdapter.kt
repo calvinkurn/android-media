@@ -21,8 +21,11 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
 class MenuSettingAdapter(
@@ -44,73 +47,89 @@ class MenuSettingAdapter(
 
     var menuSetingAccess = MenuSettingAccess()
 
-    private val otherSettingList = listOf(
-        SettingTitleMenuUiModel(
-            context?.getString(R.string.setting_menu_account_setting).orEmpty(),
-            IconUnify.USER
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_seller_persona).orEmpty(),
-            clickApplink = ApplinkConstInternalSellerapp.SELLER_PERSONA,
-            settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
-            tag = getPersonaTag()
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_self_profile).orEmpty(),
-            clickApplink = ApplinkConst.SETTING_PROFILE,
-            settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_bank_account).orEmpty(),
-            clickApplink = ApplinkConstInternalSellerapp.SELLER_PERSONA,
-            settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_password).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
-            trackingAlias = PASSWORD_ALIAS
-        ) { listener.onAddOrChangePassword() },
-        DividerUiModel(DividerType.THICK),
-        SettingTitleMenuUiModel(
-            context?.getString(R.string.setting_menu_app_setting).orEmpty(),
-            IconUnify.PHONE_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_chat_and_notification).orEmpty(),
-            clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_notification_troubleshooter).orEmpty(),
-            clickApplink = ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER,
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_share_app).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ) { listener.onShareApplication() },
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_review_app).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ) { listener.onReviewApplication() },
-        MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ) { listener.onGiveFeedback() },
-        DividerUiModel(DividerType.THIN_INDENTED),
-        MenuItemUiModel(
-            title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING,
-            tag = getSocialTag()
-        ) {
-            listener.onOpenSocialMediaLinks()
-        }.apply {
-            clickSendTracker = {
-                SocialMediaLinksTracker.sendClickEvent()
+    private val otherSettingList by lazy {
+        val menuList = mutableListOf<SettingUiModel>()
+        menuList.add(
+            SettingTitleMenuUiModel(
+                context?.getString(R.string.setting_menu_account_setting).orEmpty(),
+                IconUnify.USER
+            )
+        )
+        context?.let {
+            val sellerHomeSharedPref = SellerHomeSharedPref(it.applicationContext)
+            val userSession: UserSessionInterface = UserSession(it)
+            if (sellerHomeSharedPref.shouldShowPersonaEntryPoint(userSession.userId)) {
+                menuList.add(
+                    MenuItemUiModel(
+                        it.getString(R.string.setting_seller_persona),
+                        clickApplink = ApplinkConstInternalSellerapp.SELLER_PERSONA,
+                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
+                        tag = getPersonaTag()
+                    )
+                )
             }
-        },
-        DividerUiModel(DividerType.THIN_INDENTED)
-    )
+        }
+        menuList.addAll(
+            listOf(
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_self_profile).orEmpty(),
+                    clickApplink = ApplinkConst.SETTING_PROFILE,
+                    settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_bank_account).orEmpty(),
+                    clickApplink = ApplinkConstInternalSellerapp.SELLER_PERSONA,
+                    settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_password).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
+                    trackingAlias = PASSWORD_ALIAS
+                ) { listener.onAddOrChangePassword() },
+                DividerUiModel(DividerType.THICK),
+                SettingTitleMenuUiModel(
+                    context?.getString(R.string.setting_menu_app_setting).orEmpty(),
+                    IconUnify.PHONE_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_chat_and_notification).orEmpty(),
+                    clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_notification_troubleshooter).orEmpty(),
+                    clickApplink = ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_share_app).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ) { listener.onShareApplication() },
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_review_app).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ) { listener.onReviewApplication() },
+                MenuItemUiModel(
+                    title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ) { listener.onGiveFeedback() },
+                DividerUiModel(DividerType.THIN_INDENTED),
+                MenuItemUiModel(
+                    title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING,
+                    tag = getSocialTag()
+                ) {
+                    listener.onOpenSocialMediaLinks()
+                }.apply {
+                    clickSendTracker = {
+                        SocialMediaLinksTracker.sendClickEvent()
+                    }
+                },
+                DividerUiModel(DividerType.THIN_INDENTED)
+            )
+        )
+        return@lazy menuList
+    }
 
     fun populateInitialMenus(isShopOwner: Boolean, isMultiLocation: Boolean = false) {
         val menuList = mutableListOf<SettingUiModel>()
