@@ -519,9 +519,9 @@ class UserProfileFragment @Inject constructor(
 
         if (pagerAdapter.getTabs().isEmpty()) return
         if (pagerAdapter.getFeedsTabs().isNotEmpty())
-            viewModel.submitAction(UserProfileAction.LoadFeedPosts())
+            viewModel.submitAction(UserProfileAction.LoadFeedPosts(isRefresh = true))
         if (pagerAdapter.getVideoTabs().isNotEmpty())
-            viewModel.submitAction(UserProfileAction.LoadPlayVideo())
+            viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
     }
 
     private fun addLiveClickListener(appLink: String) {
