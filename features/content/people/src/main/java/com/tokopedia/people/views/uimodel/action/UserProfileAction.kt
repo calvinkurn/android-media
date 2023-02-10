@@ -33,4 +33,10 @@ sealed interface UserProfileAction {
     object UnblockUser : UserProfileAction
 
     data class DeletePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
+
+    data class UpdatePlayChannelInfo(
+        val channelId: String,
+        val totalView: String,
+        val isReminderSet: Boolean,
+    ) : UserProfileAction
 }

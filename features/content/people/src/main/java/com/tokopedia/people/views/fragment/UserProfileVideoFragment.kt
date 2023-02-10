@@ -94,7 +94,16 @@ class UserProfileVideoFragment @Inject constructor(
                     imageUrl: String,
                     pos: Int
                 ) {
-                    /** TODO: handle this later */
+                    userProfileTracker.clickVideo(
+                        viewModel.profileUserID,
+                        viewModel.isSelfProfile,
+                        isLive,
+                        channelID,
+                        imageUrl,
+                        pos,
+                    )
+                    val intent = RouteManager.getIntent(context, appLink)
+                    startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
                 }
 
                 override fun onImpressPlayWidgetData(
@@ -388,8 +397,7 @@ class UserProfileVideoFragment @Inject constructor(
                 val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW).orEmpty()
                 val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
 
-                /** TODO: check this */
-//                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+                submitAction(UserProfileAction.UpdatePlayChannelInfo(channelId, totalView, isReminderSet))
             }
         }
     }

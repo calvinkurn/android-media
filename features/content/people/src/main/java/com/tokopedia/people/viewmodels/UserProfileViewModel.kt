@@ -23,6 +23,8 @@ import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -155,6 +157,7 @@ class UserProfileViewModel @AssistedInject constructor(
             UserProfileAction.BlockUser -> handleBlockUser()
             UserProfileAction.UnblockUser -> handleUnblockUser()
             is UserProfileAction.DeletePlayChannel -> handleDeletePlayChannel(action.channel)
+            is UserProfileAction.UpdatePlayChannelInfo -> handleUpdatePlayChannelInfo(action.channelId, action.totalView, action.isReminderSet)
         }
     }
 
@@ -439,6 +442,32 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleUpdatePlayChannelInfo(channelId: String, totalView: String, isReminderSet: Boolean) {
+        launchCatchError(block = {
+            val channels = _videoPostContent.value.items
+            val currChannel = channels.firstOrNull { it.channelId == channelId } ?: return@launchCatchError
+
+            val currTotalView = currChannel.totalView.totalViewFmt
+            val currIsReminderSet = currChannel.reminderType.reminded
+
+            if (totalView.isNotEmpty() && totalView != currTotalView) {
+                updatePartialChannelInfo(channelId) { channel ->
+                    channel.copy(
+                        totalView = channel.totalView.copy(
+                            totalViewFmt = totalView,
+                        )
+                    )
+                }
+            } else if (isReminderSet != currIsReminderSet) {
+                updatePartialChannelInfo(channelId) { channel ->
+                    channel.copy(
+                        reminderType = if(isReminderSet) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+                    )
+                }
+            }
+        }) { }
+    }
+
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val profileInfo = repo.getProfile(username)
@@ -535,6 +564,17 @@ class UserProfileViewModel @AssistedInject constructor(
                 _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
             }
         )
+    }
+
+    private fun updatePartialChannelInfo(channelId: String, fn: (PlayWidgetChannelUiModel) -> PlayWidgetChannelUiModel) {
+        _videoPostContent.update {
+            it.copy(
+                items = it.items.map { channel ->
+                    if(channel.channelId == channelId) fn(channel)
+                    else channel
+                }
+            )
+        }
     }
 
     companion object {
