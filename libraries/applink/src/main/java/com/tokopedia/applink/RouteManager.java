@@ -55,6 +55,7 @@ public class RouteManager {
 
     public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
+    public static final String SELLER_APP_APPLINK = "applink_in_sellerapp";
 
     public static final String INTERNAL_VIEW = "com.tokopedia.internal.VIEW";
     public static final String DEFAULT_VIEW = "android.intent.action.VIEW";
@@ -159,11 +160,16 @@ public class RouteManager {
      * If sellerapp not installed yet then open sellerapp on google playstore
      */
     private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
-        if (null != intent) {
-            intent.setData(uri);
+        Intent sellerIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
+        if (sellerIntent == null) return getIntentSellerappToPlayStore(context);
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setPackage(SELLER_APP_PACKAGE_NAME);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.putExtra(SELLER_APP_APPLINK, uri);
             return intent;
-        } else {
+        } catch (Throwable throwable) {
             return getIntentSellerappToPlayStore(context);
         }
     }

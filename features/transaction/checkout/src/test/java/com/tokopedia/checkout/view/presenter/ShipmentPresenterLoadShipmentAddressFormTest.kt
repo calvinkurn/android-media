@@ -27,6 +27,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -124,6 +125,9 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK(relaxed = true)
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -135,13 +139,29 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase
         )
         presenter.attachView(view)
     }
@@ -1256,7 +1276,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         verify {
             analyticsPurchaseProtection.eventImpressionOfProduct(
                 any(),
-                listOf("${purchaseProtectionPlanData.protectionTitle} - ${purchaseProtectionPlanData.protectionPricePerProduct} - $productCatId")
+                listOf(
+                    "${purchaseProtectionPlanData.protectionTitle} " +
+                        "- ${purchaseProtectionPlanData.protectionPricePerProduct} " +
+                        "- $productCatId"
+                )
             )
         }
     }
@@ -1745,6 +1769,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         verify {
             getShipmentAddressFormV3UseCase.cancelJobs()
             eligibleForAddressUseCase.cancelJobs()
+            epharmacyUseCase.cancelJobs()
         }
     }
 }

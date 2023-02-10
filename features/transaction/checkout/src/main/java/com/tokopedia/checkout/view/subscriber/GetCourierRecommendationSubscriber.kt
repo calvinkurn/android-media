@@ -45,6 +45,10 @@ class GetCourierRecommendationSubscriber(
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
         if (isInitialLoad || isForceReloadRates) {
+            if (isInitialLoad && shipmentCartItemModel.shouldResetCourier) {
+                shipmentCartItemModel.shouldResetCourier = false
+                error("racing condition against epharmacy validation")
+            }
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
                     val logisticPromo =

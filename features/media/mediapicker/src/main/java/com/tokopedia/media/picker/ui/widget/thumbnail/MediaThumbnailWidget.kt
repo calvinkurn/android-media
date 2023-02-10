@@ -7,13 +7,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
 import com.tokopedia.media.picker.utils.loadPickerImage
-import com.tokopedia.picker.common.utils.wrapper.PickerFile
+import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.media.R as mediaResources
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
@@ -24,12 +22,15 @@ class MediaThumbnailWidget @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : SquareFrameLayout(context, attributeSet, defStyleAttr) {
 
-    private val binding: WidgetMediaThumbnailBinding =
-        WidgetMediaThumbnailBinding.inflate(
+    private var binding: WidgetMediaThumbnailBinding
+
+    init {
+        binding = WidgetMediaThumbnailBinding.inflate(
             LayoutInflater.from(context)
-        ).also {
-            addView(it.root)
-        }
+        )
+
+        addView(binding.root)
+    }
 
     fun regularThumbnail(element: MediaUiModel?, onLoaded: () -> Unit = {}) {
         binding.txtDuration.setType(BODY_3)
@@ -48,13 +49,9 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         binding.container.show()
         binding.imgPreview.loadPickerImage(file.path, onLoaded)
 
-        onVideoShow(file)
-    }
-
-    private fun onVideoShow(file: PickerFile) {
-        binding.bgVideoShadow.showWithCondition(file.isVideo())
         binding.txtDuration.shouldShowWithAction(file.isVideo()) {
-            binding.txtDuration.text = file.readableVideoDuration(context)
+            binding.txtDuration.text = element.videoLength.humanize()
+            binding.bgVideoShadow.show()
         }
     }
 
