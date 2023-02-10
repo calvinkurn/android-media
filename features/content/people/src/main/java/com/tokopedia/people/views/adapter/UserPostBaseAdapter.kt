@@ -45,8 +45,14 @@ open class UserPostBaseAdapter(
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
             transcodeView.setData(UserProfileVideoMapper.map(item, ""))
-            /** TODO: handle listener */
-//            playWidgetLargeView.setListener()
+            transcodeView.setListener(object : PlayWidgetCardLargeTranscodeView.Listener {
+                override fun onFailedTranscodingChannelDeleteButtonClicked(
+                    view: View,
+                    item: PlayWidgetChannelUiModel
+                ) {
+                    /** TODO: handle this */
+                }
+            })
         }
     }
 

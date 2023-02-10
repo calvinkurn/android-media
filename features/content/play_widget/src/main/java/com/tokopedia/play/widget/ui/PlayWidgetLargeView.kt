@@ -127,7 +127,8 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            /** TODO: handle this */
+            mAnalyticListener?.onClickDeleteChannel(this@PlayWidgetLargeView, item, position)
+            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetLargeView, item.channelId)
         }
     }
 

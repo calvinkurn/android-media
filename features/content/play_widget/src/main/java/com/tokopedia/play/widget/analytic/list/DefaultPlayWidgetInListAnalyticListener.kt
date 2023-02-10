@@ -117,6 +117,14 @@ class DefaultPlayWidgetInListAnalyticListener(
         analytic.onClickDeleteChannel(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
+    override fun onClickDeleteChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onClickDeleteChannel(view, item, channelPositionInList, verticalWidgetPosition)
+    }
+
     override fun onImpressChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,

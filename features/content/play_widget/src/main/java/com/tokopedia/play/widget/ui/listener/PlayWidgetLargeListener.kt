@@ -14,4 +14,9 @@ interface PlayWidgetLargeListener : PlayWidgetRouterListener {
         reminderType: PlayWidgetReminderType,
         position: Int
     ) {}
+
+    fun onDeleteFailedTranscodingChannel(
+        view: PlayWidgetLargeView,
+        channelId: String
+    ) {}
 }

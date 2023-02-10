@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.analytic.list.large
 
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -61,6 +62,16 @@ interface PlayWidgetInListLargeAnalyticListener {
     fun onClickBannerCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+    ) {}
+
+    /**
+     * Others
+     */
+    fun onClickDeleteChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
     ) {}
