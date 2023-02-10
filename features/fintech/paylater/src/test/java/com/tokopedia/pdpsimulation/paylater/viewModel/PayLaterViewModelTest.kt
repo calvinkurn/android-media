@@ -140,6 +140,7 @@ class PayLaterViewModelTest {
     @Test
     fun successPayLaterOptions()
     {
+        val finalPrice = 10.0
         val labelText = "PROMO"
         val labelTextColor = "white"
         val labelBgColor = "red"
@@ -175,7 +176,7 @@ class PayLaterViewModelTest {
             payLaterSimulationData.getPayLaterSimulationDetails(
                 any(),
                 any(),
-                10.0,
+                finalPrice,
                 "0",
                 ""
             )
@@ -183,10 +184,11 @@ class PayLaterViewModelTest {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
+        viewModel.getPayLaterAvailableDetail(finalPrice, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
         assertSimulationData(payLaterGetSimulation, list)
+        assert(viewModel.finalProductPrice == finalPrice)
     }
 
     private fun assertSimulationData(
@@ -322,6 +324,7 @@ class PayLaterViewModelTest {
             (viewModel.addToCartLiveData.value as Success).data,
             addToCartMultiDataModel
         )
+        assert(viewModel.cardDetailSelected == detail)
     }
 
     @Test
