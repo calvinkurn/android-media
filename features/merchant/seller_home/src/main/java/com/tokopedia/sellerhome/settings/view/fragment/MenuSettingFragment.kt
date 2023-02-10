@@ -250,7 +250,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         menuSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    menuSettingAdapter?.showSuccessAccessMenus(result.data)
+                    //menuSettingAdapter?.showSuccessAccessMenus(result.data)
                 }
                 is Fail -> {
                     menuSettingAdapter?.removeLoading()
@@ -262,7 +262,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
         when (isEligibleMultiloc) {
             is Success -> {
-                menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
+                //menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
 
             }
         }
