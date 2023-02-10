@@ -1643,10 +1643,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun getUploadPrescriptionListener(): UploadPrescriptionListener {
         return object : UploadPrescriptionListener {
-            override fun uploadPrescriptionAction(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-                uploadPrescriptionUiModel.checkoutId?.let {
-                    ePharmacyAnalytics.sendPrescriptionWidgetClick(it)
-                }
+            override fun uploadPrescriptionAction(
+                uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+                buttonText: String,
+                buttonNotes: String
+            ) {
+                ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.checkoutId)
                 val uploadPrescriptionIntent = RouteManager.getIntent(
                     context,
                     UploadPrescriptionViewHolder.EPharmacyAppLink

@@ -103,6 +103,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -122,6 +123,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
@@ -173,6 +175,7 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -185,6 +188,7 @@ import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -212,6 +216,9 @@ class CartFragment :
 
     @Inject
     lateinit var cartPageAnalytics: CheckoutAnalyticsCart
+
+    @Inject
+    lateinit var epharmacyAnalytics: Lazy<EPharmacyAnalytics>
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -1490,6 +1497,31 @@ class CartFragment :
             RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, addOnId))
         }
         cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun onClickEpharmacyInfoCart(
+        enablerLabel: String,
+        shopId: String,
+        productUiModelList: MutableList<CartItemHolderData>
+    ) {
+        activity?.let {
+            RouteManager.route(
+                it,
+                "tokopedia://epharmacy/edu/${enablerLabel.lowercase(Locale.ROOT).encodeToUtf8()}/obat_keras_tnc"
+            )
+            epharmacyAnalytics.get()
+                .clickInfoChatDokter(
+                    enablerLabel,
+                    shopId,
+                    productUiModelList.mapNotNull { item ->
+                        if (item.needPrescription) {
+                            item.cartId
+                        } else {
+                            null
+                        }
+                    }
+                )
+        }
     }
 
     override fun addOnImpression(productId: String) {
