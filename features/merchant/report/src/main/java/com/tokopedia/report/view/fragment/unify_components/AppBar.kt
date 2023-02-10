@@ -1,14 +1,15 @@
 package com.tokopedia.report.view.fragment.unify_components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,27 +29,32 @@ fun AppBar(
     navigationClick: () -> Unit = {}
 ) {
     TopAppBar(
-        title = {
-            NestTypography(
-                text = title,
-                textStyle = NestTheme.typography.heading4.copy(
-                    fontWeight = FontWeight.Bold
-                )
-            )
-        },
         modifier = modifier,
-        backgroundColor = MaterialTheme.colors.background,
-        navigationIcon = {
+        backgroundColor = NestTheme.colors.NN._0
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(
                 modifier = Modifier
                     .width(48.dp)
                     .height(48.dp),
                 onClick = navigationClick
             ) {
-                Icon(Icons.Outlined.ArrowBack, contentDescription = "navigationIcon")
+                Icon(
+                    Icons.Outlined.ArrowBack,
+                    contentDescription = "navigationIcon",
+                    tint = NestTheme.colors.NN._900
+                )
             }
+
+            NestTypography(
+                text = title,
+                textStyle = NestTheme.typography.heading4.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._900
+                )
+            )
         }
-    )
+    }
 }
 
 @Preview
