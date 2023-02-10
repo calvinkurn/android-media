@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.domain.usecase
 
 import com.tokopedia.feedplus.data.FeedTabsEntity
-import com.tokopedia.feedplus.domain.FeedTabsQuery
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -60,5 +59,4 @@ class FeedTabsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) 
                 }
             """
     }
-
 }
