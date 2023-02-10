@@ -1,6 +1,7 @@
 package com.tokopedia.report.view.fragment
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -8,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.components.ProductReportComposeContent
@@ -35,9 +37,13 @@ fun ProductReportScreen(
         modifier = Modifier.fillMaxSize(),
         backgroundColor = MaterialTheme.colors.background,
         topBar = {
-            AppBar(title = stringResource(id = R.string.product_report)) {
-                viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
-            }
+            AppBar(
+                modifier = Modifier.height(48.dp),
+                title = stringResource(id = R.string.product_report),
+                navigationClick = {
+                    viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
+                }
+            )
         }
     ) {
         ProductReportComposeContent(
