@@ -3,8 +3,7 @@ package com.tokopedia.pdpsimulation.paylater.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
-import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.*
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
@@ -165,10 +164,24 @@ class OccViewModelTest {
 
     @Test
     fun successPayLaterActivation() {
+        val tenureDetail = TenureDetail(
+            false,
+            0,
+            false,
+            "",
+            "",
+            "",
+            "",
+            ActivationInstallmentDetails(
+                "",
+                listOf(DetailContent("", "", 0))
+            ),
+            ""
+        )
         val checkoutData = CheckoutData("1",
             null,null,null,
             null,null,null,false,null,
-            null, listOf(),"",null,null,false)
+            null, listOf(tenureDetail),"",null,null,false)
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")
         coEvery {
             paylaterActivationUseCase.getPayLaterActivationDetail(
