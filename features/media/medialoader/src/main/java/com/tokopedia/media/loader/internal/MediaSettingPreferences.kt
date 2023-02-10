@@ -1,7 +1,8 @@
-package com.tokopedia.media.common.data
+package com.tokopedia.media.loader.internal
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.media.loader.data.MEDIA_QUALITY_PREF
 
 class MediaSettingPreferences constructor(
     context: Context?

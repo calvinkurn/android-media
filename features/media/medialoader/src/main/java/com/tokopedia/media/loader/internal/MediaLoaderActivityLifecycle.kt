@@ -1,4 +1,4 @@
-package com.tokopedia.media.common.common
+package com.tokopedia.media.loader.internal
 
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
@@ -13,14 +13,13 @@ import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.R
-import com.tokopedia.media.common.data.HIGH_QUALITY
-import com.tokopedia.media.common.data.MediaSettingPreferences
+import com.tokopedia.media.loader.data.HIGH_QUALITY
 import com.tokopedia.unifycomponents.Toaster
 import java.util.concurrent.TimeUnit
-import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
+import com.tokopedia.media.loader.internal.NetworkManager.state as networkManagerState
 
 class MediaLoaderActivityLifecycle(
-        private val context: Context
+    private val context: Context
 ) : ActivityLifecycleCallbacks {
 
     private val preferences by lazy { MediaSettingPreferences(context) }
@@ -87,14 +86,14 @@ class MediaLoaderActivityLifecycle(
 
                     // show toaster
                     Toaster.build(
-                            view = it,
-                            text = getString(R.string.media_toaster_title),
-                            actionText = getString(R.string.media_toaster_cta),
-                            duration = Toaster.LENGTH_LONG,
-                            type = Toaster.TYPE_NORMAL,
-                            clickListener = {
-                                startActivity(getIntent(this, MEDIA_QUALITY_SETTING))
-                            }
+                        view = it,
+                        text = getString(R.string.media_toaster_title),
+                        actionText = getString(R.string.media_toaster_cta),
+                        duration = Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_NORMAL,
+                        clickListener = {
+                            startActivity(getIntent(this, MEDIA_QUALITY_SETTING))
+                        }
                     ).show()
                 }
             }
@@ -111,9 +110,9 @@ class MediaLoaderActivityLifecycle(
         private val INTERVAL_SESSION = TimeUnit.MINUTES.toMillis(1)
 
         private val WHITELIST = arrayOf(
-                "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
-                "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
-                "com.tokopedia.search.result.presentation.view.activity.SearchActivity"
+            "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
+            "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+            "com.tokopedia.search.result.presentation.view.activity.SearchActivity"
         )
     }
 

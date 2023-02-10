@@ -1,4 +1,4 @@
-package com.tokopedia.media.common.state
+package com.tokopedia.media.loader.utils
 
 sealed class NetworkState
 object Fast: NetworkState()

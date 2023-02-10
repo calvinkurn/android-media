@@ -1,43 +1,37 @@
-package com.tokopedia.media.loader.common
+package com.tokopedia.media.loader.data
 
 import android.graphics.Bitmap
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
-import com.tokopedia.media.common.data.CDN_IMAGE_URL
-import com.tokopedia.media.loader.R
-import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
-import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.listener.MediaListener
-import com.tokopedia.media.loader.utils.AspectRatio
-import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
-        internal var data: Any? = null,
-        internal var renderDelay: Long = 0L,
-        internal var thumbnailUrl: String = "",
-        internal var blurHash: Boolean = false,
-        internal var isAnimate: Boolean = false,
-        internal var isCircular: Boolean = false,
-        internal var roundedRadius: Float = 0f,
-        internal var signatureKey: Key? = null,
-        internal var error: Int = ERROR_RES_UNIFY,
-        internal var placeHolder: Int = 0,
-        internal var isCache: Boolean = true,
-        internal var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
-        internal var overrideSize: Resize? = null,
-        internal var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
-        internal var loaderListener: MediaListener? = null,
-        internal var transform: Transformation<Bitmap>? = null,
-        internal var transforms: List<Transformation<Bitmap>>? = null,
-        internal var centerCrop: Boolean = false,
-        internal var centerInside: Boolean = false,
-        internal var fitCenter: Boolean = false,
-        internal var isAdaptiveSizeImageRequest: Boolean = false,
-        internal var accessToken: String = "",
-        internal var userId: String = ""
+    internal var data: Any? = null,
+    internal var renderDelay: Long = 0L,
+    internal var thumbnailUrl: String = "",
+    internal var blurHash: Boolean = false,
+    internal var isAnimate: Boolean = false,
+    internal var isCircular: Boolean = false,
+    internal var roundedRadius: Float = 0f,
+    internal var signatureKey: Key? = null,
+    internal var error: Int = ERROR_RES_UNIFY,
+    internal var placeHolder: Int = 0,
+    internal var isCache: Boolean = true,
+    internal var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
+    internal var overrideSize: Resize? = null,
+    internal var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
+    internal var loaderListener: MediaListener? = null,
+    internal var transform: Transformation<Bitmap>? = null,
+    internal var transforms: List<Transformation<Bitmap>>? = null,
+    internal var centerCrop: Boolean = false,
+    internal var centerInside: Boolean = false,
+    internal var fitCenter: Boolean = false,
+    internal var isAdaptiveSizeImageRequest: Boolean = false,
+    internal var accessToken: String = "",
+    internal var userId: String = ""
 ) {
 
     /*
@@ -139,8 +133,8 @@ open class Properties(
 
     // use custom listener for the image loader callback
     fun listener(
-            onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
-            onError: (MediaException?) -> Unit = { _ -> }
+        onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
+        onError: (MediaException?) -> Unit = { _ -> }
     ) = apply {
         this.loaderListener = object : MediaListener {
             override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
@@ -194,32 +188,32 @@ open class Properties(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
-                imageViewSize == other.imageViewSize &&
-                isIcon == other.isIcon &&
-                urlHasQualityParam == other.urlHasQualityParam &&
-                renderDelay == other.renderDelay &&
-                loadTime == other.loadTime &&
-                thumbnailUrl == other.thumbnailUrl &&
-                blurHash == other.blurHash &&
-                isAnimate == other.isAnimate &&
-                isCircular == other.isCircular &&
-                roundedRadius == other.roundedRadius &&
-                signatureKey == other.signatureKey &&
-                error == other.error &&
-                placeHolder == other.placeHolder &&
-                isCache == other.isCache &&
-                cacheStrategy == other.cacheStrategy &&
-                overrideSize == other.overrideSize &&
-                decodeFormat == other.decodeFormat &&
-                loaderListener == other.loaderListener &&
-                transform == other.transform &&
-                transforms == other.transforms &&
-                centerCrop == other.centerCrop &&
-                centerInside == other.centerInside &&
-                fitCenter == other.fitCenter &&
-                accessToken == other.accessToken &&
-                userId == other.userId &&
-                isAdaptiveSizeImageRequest == other.isAdaptiveSizeImageRequest
+            imageViewSize == other.imageViewSize &&
+            isIcon == other.isIcon &&
+            urlHasQualityParam == other.urlHasQualityParam &&
+            renderDelay == other.renderDelay &&
+            loadTime == other.loadTime &&
+            thumbnailUrl == other.thumbnailUrl &&
+            blurHash == other.blurHash &&
+            isAnimate == other.isAnimate &&
+            isCircular == other.isCircular &&
+            roundedRadius == other.roundedRadius &&
+            signatureKey == other.signatureKey &&
+            error == other.error &&
+            placeHolder == other.placeHolder &&
+            isCache == other.isCache &&
+            cacheStrategy == other.cacheStrategy &&
+            overrideSize == other.overrideSize &&
+            decodeFormat == other.decodeFormat &&
+            loaderListener == other.loaderListener &&
+            transform == other.transform &&
+            transforms == other.transforms &&
+            centerCrop == other.centerCrop &&
+            centerInside == other.centerInside &&
+            fitCenter == other.fitCenter &&
+            accessToken == other.accessToken &&
+            userId == other.userId &&
+            isAdaptiveSizeImageRequest == other.isAdaptiveSizeImageRequest
     }
 
     override fun hashCode(): Int {

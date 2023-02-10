@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.common.factory
+package com.tokopedia.media.loader.factory
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,13 +7,12 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.media.common.data.PARAM_BLURHASH
-import com.tokopedia.media.common.data.toUri
-import com.tokopedia.media.loader.common.MediaLoaderFactory
-import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.data.PARAM_BLURHASH
 import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.utils.AspectRatio
+import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.media.loader.listener.MediaListenerBuilder.callback as callbackListener
 import com.tokopedia.media.loader.transform.BlurHashDecoder.decode as blurHashDecode
 
@@ -24,18 +23,18 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
     * it will be use as default if the image didn't have the hash
     * in the URL. the blurhashes will randomly rendering */
     private val blurHashes = listOf(
-            "A4ADcRuO_2y?",
-            "A9K{0B#R3WyY",
-            "AHHUnD~V^ia~",
-            "A2N+X[~qv]IU",
-            "ABP?2U~X5J^~"
+        "A4ADcRuO_2y?",
+        "A9K{0B#R3WyY",
+        "AHHUnD~V^ia~",
+        "A2N+X[~qv]IU",
+        "ABP?2U~X5J^~"
     )
 
     @SuppressLint("CheckResult")
     fun build(
-            context: Context,
-            properties: Properties,
-            request: GlideRequest<Bitmap>
+        context: Context,
+        properties: Properties,
+        request: GlideRequest<Bitmap>
     ) = setup(properties, request).apply {
         // startTimeRequest will use for performance tracking
         val startTimeRequest = System.currentTimeMillis()
@@ -51,20 +50,22 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 thumbnail(thumbnailFrom(context, thumbnailUrl))
             }
 
-            listener(callbackListener(
+            listener(
+                callbackListener(
                     context,
                     properties,
                     startTimeRequest,
                     loaderListener
-            ))
+                )
+            )
         }
     }
 
     @SuppressLint("CheckResult")
     private fun blurHashPlaceHolder(
-            context: Context,
-            properties: Properties,
-            request: GlideRequest<Bitmap>
+        context: Context,
+        properties: Properties,
+        request: GlideRequest<Bitmap>
     ): GlideRequest<Bitmap> {
         val placeHolder = properties.placeHolder
         val blurHash = properties.blurHash
@@ -75,8 +76,8 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
         * the hash of blur is abc123
         * */
         val hash = properties.urlHasQualityParam.toUri()
-                ?.getQueryParameter(PARAM_BLURHASH)
-                ?: blurHashes.random()
+            ?.getQueryParameter(PARAM_BLURHASH)
+            ?: blurHashes.random()
 
         return request.apply {
             when {
@@ -88,11 +89,15 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 * */
                 placeHolder.isZero() -> {
                     if (blurHash && hash.isNotEmpty()) {
-                        placeholder(BitmapDrawable(context.resources, generateBlurHash(
-                                hash = hash,
-                                width = properties.imageViewSize.first,
-                                height = properties.imageViewSize.second
-                        )))
+                        placeholder(
+                            BitmapDrawable(
+                                context.resources, generateBlurHash(
+                                    hash = hash,
+                                    width = properties.imageViewSize.first,
+                                    height = properties.imageViewSize.second
+                                )
+                            )
+                        )
                     } else {
                         placeholder(
                             ContextCompat.getDrawable(
@@ -118,14 +123,14 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
 
     private fun generateBlurHash(hash: String?, width: Int?, height: Int?): Bitmap? {
         val ratio = AspectRatio.calculate(
-                (width?: 2) * 10, // default value is 2*10 = 20 px
-                (height?: 2) * 10 // default value is 2*10 = 20 px
+            (width ?: 2) * 10, // default value is 2*10 = 20 px
+            (height ?: 2) * 10 // default value is 2*10 = 20 px
         )
 
         return blurHashDecode(
-                blurHash = hash,
-                width = ratio.first,
-                height = ratio.second
+            blurHash = hash,
+            width = ratio.first,
+            height = ratio.second
         )
     }
 

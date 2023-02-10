@@ -8,8 +8,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.common.data.MediaSettingPreferences
-import com.tokopedia.media.common.util.NetworkManager
+import com.tokopedia.media.loader.internal.MediaSettingPreferences
+import com.tokopedia.media.loader.internal.NetworkManager
 import com.tokopedia.media.loader.utils.RemoteCdnService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

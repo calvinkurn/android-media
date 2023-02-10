@@ -3,7 +3,7 @@ package com.tokopedia.media.loader
 import android.app.Activity
 import android.content.Context
 import android.widget.ImageView
-import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
 

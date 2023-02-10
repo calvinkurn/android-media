@@ -6,7 +6,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.tracker.IsIcon
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest

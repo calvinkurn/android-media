@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.common
+package com.tokopedia.media.loader.factory
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,8 +11,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
@@ -62,8 +62,8 @@ abstract class MediaLoaderFactory<T> {
 
     @SuppressLint("CheckResult")
     fun setup(
-            properties: Properties,
-            request: GlideRequest<T>
+        properties: Properties,
+        request: GlideRequest<T>
     ) = request.apply {
         with(properties) {
             /*
@@ -104,17 +104,17 @@ abstract class MediaLoaderFactory<T> {
             }
 
             if (overrideSize != null && overrideSize?.width.isMoreThanZero()) {
-                override(overrideSize?.width?: 0, overrideSize?.height?: 0)
+                override(overrideSize?.width ?: 0, overrideSize?.height ?: 0)
             }
         }
     }
 
     protected fun thumbnailFrom(context: Context, resource: Any?): RequestBuilder<Bitmap> {
         return GlideApp.with(context)
-                .asBitmap()
-                .load(resource)
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .asBitmap()
+            .load(resource)
+            .fitCenter()
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
     }
 
 }

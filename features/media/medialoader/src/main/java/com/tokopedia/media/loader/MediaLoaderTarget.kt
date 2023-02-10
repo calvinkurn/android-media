@@ -7,10 +7,9 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.MediaLoaderApi.headers
-import com.tokopedia.media.loader.common.Properties
-import com.tokopedia.media.loader.common.factory.BitmapFactory
+import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.factory.BitmapFactory
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -52,7 +51,7 @@ object MediaLoaderTarget {
 
             return when (properties.data) {
                 is String -> {
-                    val source = Loader.urlBuilder(properties.data.toString())
+                    val source = Loader.get(properties.data.toString())
 
                     properties.setUrlHasQuality(source)
 
