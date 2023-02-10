@@ -9,7 +9,7 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.*
 import com.tokopedia.epharmacy.component.viewholder.*
 
-class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListener?) : BaseAdapterTypeFactory() , EPharmacyAdapterFactory {
+class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListener?) : BaseAdapterTypeFactory(), EPharmacyAdapterFactory {
 
     override fun type(data: EPharmacyStaticInfoDataModel): Int {
         return EPharmacyStaticInfoViewHolder.LAYOUT
@@ -40,20 +40,20 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return when (type){
+        return when (type) {
             EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view)
             EPharmacyPrescriptionViewHolder.LAYOUT -> EPharmacyPrescriptionViewHolder(view, ePharmacyListener)
             EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view)
-            EPharmacyAttachmentViewHolder.LAYOUT -> EPharmacyAttachmentViewHolder(view,ePharmacyListener)
+            EPharmacyAttachmentViewHolder.LAYOUT -> EPharmacyAttachmentViewHolder(view, ePharmacyListener)
             EPharmacyAccordionProductItemViewHolder.LAYOUT -> EPharmacyAccordionProductItemViewHolder(view)
             EPharmacyTickerViewHolder.LAYOUT -> EPharmacyTickerViewHolder(view)
             EPharmacyShimmerViewHolder.LAYOUT -> EPharmacyShimmerViewHolder(view)
-            else -> super.createViewHolder(view,type)
+            else -> super.createViewHolder(view, type)
         }
     }
 }
 
-class EPharmacyDetailDiffUtil: DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
+class EPharmacyDetailDiffUtil : DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
 
     override fun areItemsTheSame(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Boolean {
         return oldItem.name() == newItem.name()
@@ -68,7 +68,7 @@ class EPharmacyDetailDiffUtil: DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
     }
 }
 
-class EPharmacyAttachmentDetailDiffUtil: DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
+class EPharmacyAttachmentDetailDiffUtil : DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
 
     override fun areItemsTheSame(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Boolean {
         return oldItem.name() == newItem.name()

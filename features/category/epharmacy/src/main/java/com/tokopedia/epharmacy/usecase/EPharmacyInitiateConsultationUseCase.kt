@@ -11,7 +11,7 @@ class EPharmacyInitiateConsultationUseCase @Inject constructor(graphqlRepository
     GraphqlUseCase<EPharmacyInitiateConsultationResponse>(graphqlRepository) {
 
     fun initiateConsultation(
-        onSuccess: (String,EPharmacyInitiateConsultationResponse) -> Unit,
+        onSuccess: (String, EPharmacyInitiateConsultationResponse) -> Unit,
         onError: (Throwable) -> Unit,
         params: InitiateConsultationParam
     ) {

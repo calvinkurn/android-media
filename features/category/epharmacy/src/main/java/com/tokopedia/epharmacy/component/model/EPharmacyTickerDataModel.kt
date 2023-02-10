@@ -4,15 +4,18 @@ import android.os.Bundle
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 
-data class EPharmacyTickerDataModel(val name : String = "", val type : String = "",
-                                    val tickerText : String?, val tickerLogo : String?,
-                                    val tickerBackground : String?
-)
-    : BaseEPharmacyDataModel {
+data class EPharmacyTickerDataModel(
+    val name: String = "",
+    val type: String = "",
+    val tickerText: String?,
+    val tickerLogo: String?,
+    val tickerBackground: String?
+) :
+    BaseEPharmacyDataModel {
 
     override fun name(): String = name
 
-    override fun type(): String  = type
+    override fun type(): String = type
 
     override fun type(typeFactory: EPharmacyAdapterFactory): Int {
         return typeFactory.type(this)

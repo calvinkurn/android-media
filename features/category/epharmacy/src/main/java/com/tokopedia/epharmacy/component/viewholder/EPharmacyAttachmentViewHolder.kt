@@ -19,9 +19,7 @@ import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUti
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
-import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
-import com.tokopedia.epharmacy.utils.EPharmacyUtils
-import com.tokopedia.epharmacy.utils.PRODUCT_COMPONENT
+import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
@@ -130,12 +128,12 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 setOnClickListener {}
             }
             ticker.show()
-            productImageCard.alpha = 0.5f
+            productImageCard.alpha = EPHARMACY_HALF_ALPHA
         } else {
             topView.hide()
             bottomView.hide()
             ticker.hide()
-            productImageCard.alpha = 1f
+            productImageCard.alpha = EPHARMACY_FULL_ALPHA
         }
     }
 
@@ -170,7 +168,6 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 productAccordionView.setOnClickListener {
                     ePharmacyListener?.onInteractAccordion(bindingAdapterPosition, dataModel?.productsIsExpanded ?: false, dataModel?.name)
                 }
-
             }
 
             dataModel?.shopInfo?.let { products ->
@@ -191,12 +188,11 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         }
     }
 
-    private fun getProductVisitablesWithoutFirst(shopInfo : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?)
-    : List<BaseEPharmacyDataModel> {
+    private fun getProductVisitablesWithoutFirst(shopInfo: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?): List<BaseEPharmacyDataModel> {
         val productSubList = arrayListOf<EPharmacyAccordionProductDataModel>()
         shopInfo?.products?.forEachIndexed { index, product ->
             if (index != 0) {
-                productSubList.add(EPharmacyAccordionProductDataModel("${PRODUCT_COMPONENT}_${product?.productId}",PRODUCT_COMPONENT,product))
+                productSubList.add(EPharmacyAccordionProductDataModel("${PRODUCT_COMPONENT}_${product?.productId}", PRODUCT_COMPONENT, product))
             }
         }
         return productSubList
@@ -222,9 +218,9 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderDivider() {
-        if(dataModel?.shopInfo?.products?.size == 1 && dataModel?.showUploadWidget == false){
+        if (dataModel?.shopInfo?.products?.size == 1 && dataModel?.showUploadWidget == false) {
             divisionSingleProduct.show()
-        }else {
+        } else {
             divisionSingleProduct.hide()
         }
         if (dataModel?.showDivider == true) divider.show() else divider.hide()
