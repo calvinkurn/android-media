@@ -19,8 +19,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
@@ -35,6 +34,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
@@ -52,11 +52,13 @@ import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundl
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.product_bundle.tracking.SingleProductBundleTracking
 import com.tokopedia.product_service_widget.R
+import com.tokopedia.product_service_widget.databinding.FragmentSingleProductBundleBinding
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SingleProductBundleFragment(
@@ -73,7 +75,8 @@ class SingleProductBundleFragment(
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var tvBundlePreorder: Typography? = null
+    private var binding by autoClearedNullable<FragmentSingleProductBundleBinding>()
+
     private var bundleListLayout: ConstraintLayout? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
@@ -89,14 +92,15 @@ class SingleProductBundleFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
+        binding = FragmentSingleProductBundleBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.setBackgroundToWhite()
 
-        setupTotalPO(view)
+        setupTotalPO()
         setupRecyclerViewItems(view)
         setupTotalAmount(view)
         setupGlobalError(view)
@@ -190,6 +194,8 @@ class SingleProductBundleFragment(
             // update PO and Total amount price if there is selected bundle
             val selectedItem = it.getSelectedSingleProductBundleItem()
             if (selectedItem != null) {
+                viewModel.getShopInfo()?.run { renderShopInfo(binding, this) }
+                renderTotalSoldInfo(binding, viewModel.getBundleTotalSold())
                 updateTotalAmount(selectedItem)
                 updateTotalPO(selectedItem)
             }
@@ -339,8 +345,7 @@ class SingleProductBundleFragment(
         })
     }
 
-    private fun setupTotalPO(view: View) {
-        tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
+    private fun setupTotalPO() {
         updateTotalPO(null, true) // set null to hide
     }
 
@@ -395,10 +400,40 @@ class SingleProductBundleFragment(
         }
     }
 
+    private fun renderShopInfo(
+        binding: FragmentSingleProductBundleBinding?,
+        shopInformation: ShopInformation
+    ) {
+        binding?.shopInfoHeaderLayout?.tpgShopName?.text = shopInformation.shopName
+        binding?.shopInfoHeaderLayout?.iuShopBadge?.setImageUrl(shopInformation.shopBadge)
+    }
+    private fun renderTotalSoldInfo(binding: FragmentSingleProductBundleBinding?, totalSold: Int) {
+        if (totalSold.isMoreThanZero()) {
+            context?.run {
+                binding?.shopInfoHeaderLayout?.shopInfoDetailLayout?.show()
+                Typography.isFontTypeOpenSauceOne = true
+                val totalSoldTxt = this.getString(
+                    R.string.product_bundle_total_sold,
+                    totalSold.thousandFormatted()
+                )
+                binding?.shopInfoHeaderLayout?.tpgTotalSold?.text = totalSoldTxt
+            }
+        }
+    }
+
     // only visible when totalPOWording not null or empty
     private fun updateTotalPO(totalPOWording: String?, isFirstSetup: Boolean = false) {
-        tvBundlePreorder?.isVisible = !totalPOWording.isNullOrEmpty()
-        tvBundlePreorder?.text = getString(R.string.preorder_prefix, totalPOWording)
+        binding?.shopInfoHeaderLayout?.run {
+            if (!totalPOWording.isNullOrEmpty()) {
+                this.labelPreorder.text = getString(R.string.preorder_prefix, totalPOWording)
+                this.shopInfoDetailLayout.show()
+                this.iuPoDivider.show()
+                this.labelPreorder.show()
+            } else {
+                this.iuPoDivider.hide()
+                this.labelPreorder.hide()
+            }
+        }
         updateTotalAmountAtcButtonText(totalPOWording, isFirstSetup)
     }
 
@@ -503,6 +538,10 @@ class SingleProductBundleFragment(
     private fun initBundleData() {
         viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
             emptyVariantProductIds)
+        bundleInfo.firstOrNull()?.run {
+            viewModel.setShopInfo(this.shopInformation)
+        }
+        viewModel.setBundleTotalSold(bundleInfo)
     }
 
     private fun refreshPage() {

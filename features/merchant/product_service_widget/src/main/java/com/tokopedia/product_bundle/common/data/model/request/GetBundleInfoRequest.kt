@@ -33,6 +33,8 @@ data class RequestData(
     val preorder: Boolean = false,
     @SerializedName("BundleStats")
     val bundleStats: Boolean = false,
+    @SerializedName("ShopInformation")
+    val shopInformation: Boolean = false,
     @SerializedName("IncludeNonBundleVariant")
     val includeNonBundleVariant: Boolean = true
 )

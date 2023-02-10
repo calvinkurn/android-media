@@ -15,7 +15,7 @@
     <string name="gifting_caption_shop_name_tokocabang">Dilayani Tokopedia</string>
 
     <!-- product bundle screen name -->
-    <string name="product_bundle_page_title">Pilih Paket Bundling</string>
+    <string name="product_bundle_page_title">Detail Paket Bundling</string>
     <string name="product_bundle_bottomsheet_title">Keranjang Tokopedia NOW!</string>
 
     <!-- product bundle detail -->
@@ -42,7 +42,7 @@
     <string name="action_package_chosen">Paket Terpilih</string>
 
     <!-- single bundle item mapping -->
-    <string name="preorder_prefix">PO %1s</string>
+    <string name="preorder_prefix">PreOrder %1s</string>
     <string name="preorder_time_unit_day">hari</string>
     <string name="preorder_time_unit_week">minggu</string>
     <string name="preorder_time_unit_month">bulan</string>
@@ -84,6 +84,7 @@
     <string name="shop_page_product_bundle_count">1 Barang</string>
     <string name="product_bundle_action_button_text">Lihat Paket</string>
     <string name="product_bundle_bundle_sold">Terjual %s</string>
+    <string name="product_bundle_total_sold">Terjual %s paket</string>
     <string name="bundlewidget_other_product_text">produk lainnya</string>
     <string name="bundlewidget_other_product_count_format">+%d</string>
 
