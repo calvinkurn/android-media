@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -1049,13 +1050,13 @@ class ChatbotViewModel @Inject constructor(
             Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
 
         when (webSocketResponse.code) {
-            WebsocketEvent.Event.EVENT_TOPCHAT_TYPING -> _socketReceiveMessageEvent.postValue(
+            WebsocketEvent.Event.EVENT_TOPCHAT_TYPING -> updateLiveDataOnMainThread(
                 ChatbotSocketReceiveEvent.StartTypingEvent
             )
-            WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> _socketReceiveMessageEvent.postValue(
+            WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> updateLiveDataOnMainThread(
                 ChatbotSocketReceiveEvent.EndTypingEvent
             )
-            WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE -> _socketReceiveMessageEvent.postValue(
+            WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE -> updateLiveDataOnMainThread(
                 ChatbotSocketReceiveEvent.ReadEvent
             )
             WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE -> {
@@ -1066,16 +1067,16 @@ class ChatbotViewModel @Inject constructor(
                 ) {
                     return
                 }
-                _socketReceiveMessageEvent.postValue(
-                    ChatbotSocketReceiveEvent.ReplyMessageEvent(mapToVisitable(pojo))
-                )
 
-                if (attachmentType == "9") {
-                    Log.d("FATAL", "mappingSocketEvent: ${mapToVisitable(pojo)}")
-                }
-                Log.d("FATAL", "mappingSocketEvent: value has been given here for $attachmentType")
+                updateLiveDataOnMainThread(ChatbotSocketReceiveEvent.ReplyMessageEvent(mapToVisitable(pojo)))
                 sendReadEventWebSocket(messageId)
             }
+        }
+    }
+
+    private fun updateLiveDataOnMainThread(value: ChatbotSocketReceiveEvent) {
+        viewModelScope.launch(dispatcher.main) {
+            _socketReceiveMessageEvent.value = value
         }
     }
 
