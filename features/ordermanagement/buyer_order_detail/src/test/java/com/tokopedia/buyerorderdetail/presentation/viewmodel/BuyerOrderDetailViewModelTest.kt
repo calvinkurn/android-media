@@ -2,8 +2,8 @@ package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
-import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -440,9 +440,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
         every { EpharmacyInfoUiStateMapper.map(any(), any()) } throws Throwable("Error")
 
-        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+        getBuyerOrderDetailData()
 
-        //if error happen in ephar mapper, return empty data so the section not showing
+        // if error happen in ephar mapper, return empty data so the section not showing
         assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
         assertTrue(
             (it.last() as BuyerOrderDetailUiState.HasData.Showing)
