@@ -54,6 +54,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRIN
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -4437,27 +4438,9 @@ open class DynamicProductDetailFragment :
         )
         val firstAppLink =
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-        val secondAppLink = when (viewModel.p2Login.value?.topAdsGetShopInfo?.category) {
-            TopAdsShopCategoryTypeDef.MANUAL_USER -> {
-                ApplinkConst.SellerApp.TOPADS_CREATE_ADS
-            }
-            TopAdsShopCategoryTypeDef.NO_ADS, TopAdsShopCategoryTypeDef.NO_PRODUCT -> {
-                ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING
-            }
-            else -> {
-                ""
-            }
-        }
-
+        val secondAppLink = ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION
         if (GlobalConfig.isSellerApp()) {
-            if (secondAppLink.isEmpty()) {
-                showTopAdsBottomSheet()
-            } else {
-                val intent = RouteManager.getIntent(context, secondAppLink).apply {
-                    putExtra(PARAM_DIRECTED_FROM_MANAGE_OR_PDP, true)
-                }
-                startActivity(intent)
-            }
+            RouteManager.route(context,secondAppLink,productId)
         } else {
             if (secondAppLink.isEmpty()) {
                 goToPdpSellerApp()
