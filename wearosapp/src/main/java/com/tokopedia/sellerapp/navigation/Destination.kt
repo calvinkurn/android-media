@@ -13,6 +13,7 @@ import com.tokopedia.sellerapp.util.ScreenConstant.ACCEPT_ORDER_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH_PARAM
 import com.tokopedia.sellerapp.util.ScreenConstant.LIST_ORDER_ID_ARGS
+import com.tokopedia.sellerapp.util.ScreenConstant.NOTIFICATION_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_SUMMARY_SCREEN
@@ -85,6 +86,33 @@ fun NavGraphBuilder.orderSummaryScreenComposable(
     }
 }
 
+fun NavGraphBuilder.notificationListComposable(
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
+) {
+    composable(
+        route = ScreenConstant.NOTIFICATION_LIST_SCREEN
+    ) {
+        NotificationListScreen(
+            screenNavigation = screenNavigation,
+            sharedViewModel = sharedViewModel
+        )
+    }
+}
+
+fun NavGraphBuilder.notificationDetailComposable(
+    sharedViewModel: SharedViewModel
+) {
+    composable(
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(NOTIFICATION_DETAIL_SCREEN, DATAKEY_ARGS)
+    ) { backStackEntry ->
+        NotificationDetailScreen(
+            sharedViewModel = sharedViewModel,
+            notificationId = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
+        )
+    }
+}
+
 fun NavGraphBuilder.appNotInstalledScreenComposable(
     remoteActivityHelper: RemoteActivityHelper
 ) {
@@ -95,10 +123,22 @@ fun NavGraphBuilder.appNotInstalledScreenComposable(
     }
 }
 
-fun NavGraphBuilder.connectionFailedScreenComposable() {
+fun NavGraphBuilder.connectionFailedScreenComposable(
+    sharedViewModel: SharedViewModel,
+) {
     composable(
         route = ScreenConstant.CONNECTION_FAILED_SCREEN
-    ) { /* nothing to do */ }
+    ) {
+        val message = sharedViewModel.currentState.value.data?.let {
+            it.getState().getMessageBasedOnState()
+        } ?: ""
+
+        ConnectionFailureScreen(
+            mutableStateOf(message),
+            mutableStateOf("Retry"),
+            mutableStateOf({})
+        )
+    }
 }
 
 fun NavGraphBuilder.acceptOrderScreenComposable(

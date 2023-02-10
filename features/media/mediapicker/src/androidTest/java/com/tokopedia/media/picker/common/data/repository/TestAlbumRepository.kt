@@ -3,7 +3,6 @@ package com.tokopedia.media.picker.common.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
-import com.tokopedia.media.picker.data.repository.AlbumRepository
 
 class TestAlbumRepository constructor(
     loaderDataSource: LoaderDataSource,

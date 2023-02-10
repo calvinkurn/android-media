@@ -12,6 +12,7 @@ import dagger.Component
     ViewModelModule::class,
     GqlRawQueryModule::class,
     ProductDetailUserModule::class,
+    ProductDetailFragmentModule::class,
     ProductDetailDevModule::class],
         dependencies = [BaseAppComponent::class])
 interface ProductDetailComponent {

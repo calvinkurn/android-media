@@ -11,13 +11,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant
-import org.hamcrest.MatcherAssert.assertThat
-import com.tokopedia.manageaddress.R
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+import org.hamcrest.MatcherAssert.assertThat
 
 fun shareAddress(func: ShareAddressRobot.() -> Unit) = ShareAddressRobot().apply(func)
 

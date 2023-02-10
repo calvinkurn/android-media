@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="24dp"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="24dp"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="24dp"
+        app:loader_corner_radius="12dp"
+        app:loader_type="rect" />
+
+</LinearLayout>

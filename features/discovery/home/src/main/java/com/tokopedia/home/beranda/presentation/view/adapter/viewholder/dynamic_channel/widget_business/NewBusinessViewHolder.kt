@@ -24,22 +24,25 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.unifycomponents.ContainerUnify
 import java.util.*
 
 @SuppressLint("SyntheticAccessor")
-class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListener,
-                            cardInteraction: Boolean = false
-) : AbstractViewHolder<NewBusinessUnitWidgetDataModel>(view){
+class NewBusinessViewHolder(
+    view: View,
+    private val listener: HomeCategoryListener,
+    cardInteraction: Boolean = false
+) : AbstractViewHolder<NewBusinessUnitWidgetDataModel>(view) {
     private val errorBuWidget = view.findViewById<LocalLoad>(R.id.error_bu_widget)
     private val tabLayout = view.findViewById<TabsUnify>(R.id.tab_layout)
-    private val containerUnify= view.findViewById<ContainerUnify>(R.id.container_unify)
+    private val containerUnify = view.findViewById<ContainerUnify>(R.id.container_unify)
     private val viewPager = view.findViewById<ViewPager2>(R.id.view_pager)
     private val loadingView = view.findViewById<LinearLayout>(R.id.loading_view)
     private val loadingGridView = view.findViewById<LinearLayout>(R.id.grid_loading_layout)
@@ -49,29 +52,32 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     private var model: NewBusinessUnitWidgetDataModel? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val performanceTraceName = "mp_home_business_unit_widget_load_time"
-    private val adapterBusinessWidget = BusinessUnitAdapter(object: NewBusinessUnitViewHolder.BusinessUnitListener{
-        override fun getBusinessUnit(position: Int) {
-            if(model?.tabList != null && (model?.tabList?.size ?: -1) > position){
-                model?.tabList?.get(position)?.let {
-                    listener.getBusinessUnit(it.id, position, it.name)
+    private val adapterBusinessWidget = BusinessUnitAdapter(
+        object : NewBusinessUnitViewHolder.BusinessUnitListener {
+            override fun getBusinessUnit(position: Int) {
+                if (model?.tabList != null && (model?.tabList?.size ?: -1) > position) {
+                    model?.tabList?.get(position)?.let {
+                        listener.getBusinessUnit(it.id, position, it.name)
+                    }
                 }
             }
-        }
 
-        override fun sendEnhanceEcommerce(tracker: HashMap<String, Any>) {
-            listener.sendEETracking(tracker)
-        }
+            override fun sendEnhanceEcommerce(tracker: HashMap<String, Any>) {
+                listener.sendEETracking(tracker)
+            }
 
-        override fun putEnhanceEcommerce(tracker: HashMap<String, Any>) {
-            listener.putEEToTrackingQueue(tracker)
-        }
-    }, cardInteraction)
+            override fun putEnhanceEcommerce(tracker: HashMap<String, Any>) {
+                listener.putEEToTrackingQueue(tracker)
+            }
+        },
+        cardInteraction
+    )
+    private var isPaddingStyle = false
 
-    private val tabChangeListener = object : BaseOnTabSelectedListener<TabLayout.Tab>{
+    private val tabChangeListener = object : BaseOnTabSelectedListener<TabLayout.Tab> {
         override fun onTabReselected(p0: TabLayout.Tab?) {}
 
         override fun onTabUnselected(p0: TabLayout.Tab?) {}
-
 
         override fun onTabSelected(tab: TabLayout.Tab) {
             listener.sendEETracking(BusinessUnitTracking.getPageSelected(tab.text.toString()) as HashMap<String, Any>)
@@ -91,6 +97,8 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
+        isPaddingStyle = element?.channelModel?.channelConfig?.borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
+
         setChannelDivider(element)
         setHeaderComponent(element)
         adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
@@ -102,15 +110,18 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
         model = element
 
-        if(element?.tabList == null) listener.getTabBusinessWidget(adapterPosition)
-        else hideLoading()
-        if(element?.tabList != null && tabLayout.tabLayout.tabCount < 1){
+        if (element?.tabList == null) {
+            listener.getTabBusinessWidget(adapterPosition)
+        } else {
+            hideLoading()
+        }
+        if (element?.tabList != null && tabLayout.tabLayout.tabCount < 1) {
             initTabLayout(element.tabList)
             initContainerColor(element.backColor)
             performanceMonitoring?.stopTrace()
             performanceMonitoring = null
         }
-        if(element?.contentsList != null){
+        if (element?.contentsList != null) {
             initViewPager(element.contentsList)
         }
     }
@@ -121,12 +132,12 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             model = element
             if (payloads.isNotEmpty() && payloads.getOrNull(0) is Bundle) {
                 val bundle = (payloads.first() as Bundle)
-                if(bundle.containsKey(ERROR_BUNDLE_TAB_LAYOUT)){
+                if (bundle.containsKey(ERROR_BUNDLE_TAB_LAYOUT)) {
                     errorBuWidget.show()
                     tabLayout.hide()
                     viewPager.hide()
                     hideLoading()
-                } else if(bundle.containsKey(UPDATE_BUNDLE_TAB_LAYOUT)){
+                } else if (bundle.containsKey(UPDATE_BUNDLE_TAB_LAYOUT)) {
                     hideLoading()
                     errorBuWidget.hide()
                     tabLayout.show()
@@ -135,23 +146,23 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                         clearTabLayout()
                         initTabLayout(element.tabList)
                     }
-                    if(element?.contentsList != null){
+                    if (element?.contentsList != null) {
                         initViewPager(element.contentsList)
                     }
-                    if(element?.backColor?.isNotEmpty() == true){
+                    if (element?.backColor?.isNotEmpty() == true) {
                         initContainerColor(element.backColor)
                     }
                     performanceMonitoring?.stopTrace()
                     performanceMonitoring = null
-                } else if(bundle.containsKey(UPDATE_BUNDLE_CONTENT_LAYOUT)){
-                    if(element?.contentsList != null){
+                } else if (bundle.containsKey(UPDATE_BUNDLE_CONTENT_LAYOUT)) {
+                    if (element?.contentsList != null) {
                         initViewPager(element.contentsList)
                     }
-                } else if(bundle.containsKey(ERROR_BUNDLE_CONTENT_LAYOUT)){
+                } else if (bundle.containsKey(ERROR_BUNDLE_CONTENT_LAYOUT)) {
                     initViewPager(listOf())
                 }
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             errorBuWidget.show()
             tabLayout.hide()
             viewPager.hide()
@@ -163,26 +174,33 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element?.channelModel,
             dividerTop = dividerTop,
-            dividerBottom = dividerBottom
+            dividerBottom = dividerBottom,
+            useBottomPadding = element?.channelModel?.channelConfig?.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 
     private fun setHeaderComponent(element: NewBusinessUnitWidgetDataModel?) {
         element?.channelModel?.let {
-            header.setChannel(it, object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                    listener.onDynamicChannelClicked(link)
-                }
+            header.setChannel(
+                it,
+                object : HeaderListener {
+                    override fun onSeeAllClick(link: String) {
+                        listener.onDynamicChannelClicked(link)
+                    }
 
-                override fun onChannelExpired(channelModel: ChannelModel) {
-
+                    override fun onChannelExpired(channelModel: ChannelModel) {
+                    }
                 }
-            })
+            )
         }
     }
 
-    private fun initContainerColor(color: String){
-        containerUnify.setContainerColor(
+    private fun initContainerColor(color: String) {
+        if (isPaddingStyle) {
+            val transparentColor = android.R.color.transparent
+            containerUnify.setCustomContainerColor(Pair(transparentColor, transparentColor))
+        } else {
+            containerUnify.setContainerColor(
                 when (color) {
                     RED -> ContainerUnify.RED
                     BLUE -> ContainerUnify.BLUE
@@ -190,16 +208,17 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                     GREEN -> ContainerUnify.GREEN
                     else -> ContainerUnify.RED
                 }
-        )
+            )
+        }
     }
 
-    private fun clearTabLayout(){
+    private fun clearTabLayout() {
         tabLayout.tabLayout.removeAllTabs()
     }
 
-    private fun initTabLayout(tabList: List<HomeWidget.TabItem>){
+    private fun initTabLayout(tabList: List<HomeWidget.TabItem>) {
         tabLayout.show()
-        if(tabLayout.tabLayout.tabCount == 0) {
+        if (tabLayout.tabLayout.tabCount == 0) {
             tabList.forEach {
                 tabLayout.addNewTab(it.name).text = it.name
             }
@@ -208,16 +227,16 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         tabLayout.tabLayout.background = ContextCompat.getDrawable(tabLayout.context, R.drawable.bg_tabs_design_team)
     }
 
-    private fun initViewPager(list: List<BusinessUnitDataModel>){
+    private fun initViewPager(list: List<BusinessUnitDataModel>) {
         adapterBusinessWidget.setItemList(list)
     }
-    
-    private fun showLoading(){
+
+    private fun showLoading() {
         loadingGridView.show()
         loadingView.show()
     }
-    
-    private fun hideLoading(){
+
+    private fun hideLoading() {
         loadingGridView.hide()
         loadingView.hide()
     }
