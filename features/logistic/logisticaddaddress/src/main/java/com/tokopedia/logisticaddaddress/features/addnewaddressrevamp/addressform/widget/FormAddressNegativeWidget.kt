@@ -72,42 +72,6 @@ class FormAddressNegativeWidget : ConstraintLayout {
         binding?.etAlamat?.textFieldInput?.requestFocus()
     }
 
-    fun initView(
-        formattedAddress: String?,
-        hasFocusEtDistrict: () -> Unit,
-        onClickEtDistrictListener: () -> Unit
-    ) {
-        binding?.apply {
-            etKotaKecamatan.textFieldInput.setText(formattedAddress.orEmpty())
-            etKotaKecamatan.textFieldInput.apply {
-                inputType = InputType.TYPE_NULL
-                setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        hasFocusEtDistrict.invoke()
-                    }
-                }
-                setOnClickListener {
-                    onClickEtDistrictListener.invoke()
-                }
-            }
-            etLabel.textFieldInput.setText(AddressFormFragment.LABEL_HOME)
-            etLabel.textFieldInput.addTextChangedListener(
-                setWrapperWatcher(
-                    etLabel.textFieldWrapper,
-                    null,
-                    context?.getString(R.string.tv_error_field)
-                )
-            )
-            etAlamat.textFieldInput.addTextChangedListener(
-                setWrapperWatcher(
-                    etAlamat.textFieldWrapper,
-                    null,
-                    context?.getString(R.string.tv_error_field)
-                )
-            )
-        }
-    }
-
     fun bindView(
         formattedAddress: String?,
         data: SaveAddressDataModel,
@@ -128,7 +92,7 @@ class FormAddressNegativeWidget : ConstraintLayout {
                 }
             }
             etLabel.run {
-                textFieldInput.setText(data.addressName)
+                textFieldInput.setText(data.addressName.ifEmpty { AddressFormFragment.LABEL_HOME })
                 textFieldInput.addTextChangedListener(
                     setWrapperWatcher(
                         textFieldWrapper,

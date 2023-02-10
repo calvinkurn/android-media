@@ -5,17 +5,24 @@ import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
-import com.tokopedia.logisticCommon.data.response.*
+import com.tokopedia.logisticCommon.data.response.AddAddressResponse
+import com.tokopedia.logisticCommon.data.response.DataAddAddress
+import com.tokopedia.logisticCommon.data.response.DefaultAddressData
+import com.tokopedia.logisticCommon.data.response.GetDefaultAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddAddress
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import io.mockk.Runs
-import io.mockk.just
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -35,8 +42,6 @@ class AddressFormViewModelTest {
     private val saveAddressDataModel = SaveAddressDataModel()
     private val addressId = "12345"
 
-    private val districtDetailObserver: Observer<Result<KeroDistrictRecommendation>> =
-        mockk(relaxed = true)
     private val saveAddressObserver: Observer<Result<DataAddAddress>> = mockk(relaxed = true)
     private val defaultAddressObserver: Observer<Result<DefaultAddressData>> = mockk(relaxed = true)
     private val editAddressObserver: Observer<Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>> =
@@ -54,26 +59,11 @@ class AddressFormViewModelTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         addressFormViewModel = AddressFormViewModel(repo)
-        addressFormViewModel.districtDetail.observeForever(districtDetailObserver)
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
         addressFormViewModel.editAddress.observeForever(editAddressObserver)
         addressFormViewModel.addressDetail.observeForever(detailAddressObserver)
         addressFormViewModel.pinpointValidation.observeForever(pinpointValidationObserver)
-    }
-
-    @Test
-    fun `Get District Detail Success`() {
-        coEvery { repo.getZipCode(any()) } returns GetDistrictDetailsResponse()
-        addressFormViewModel.getDistrictDetail()
-        verify { districtDetailObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get District Detail Fail`() {
-        coEvery { repo.getZipCode(any()) } throws defaultThrowable
-        addressFormViewModel.getDistrictDetail()
-        verify { districtDetailObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
@@ -147,7 +137,7 @@ class AddressFormViewModelTest {
 
         // When
         addressFormViewModel.addressId = addressId
-        addressFormViewModel.getAddressDetail()
+        addressFormViewModel.getAddressDetail(null)
 
         // Then
         verify { detailAddressObserver.onChanged(match { it is Success }) }
@@ -160,7 +150,7 @@ class AddressFormViewModelTest {
 
         // When
         addressFormViewModel.addressId = addressId
-        addressFormViewModel.getAddressDetail()
+        addressFormViewModel.getAddressDetail(null)
 
         // Then
         verify(exactly = 0) { detailAddressObserver.onChanged(match { it is Success }) }
@@ -173,10 +163,26 @@ class AddressFormViewModelTest {
 
         // When
         addressFormViewModel.addressId = addressId
-        addressFormViewModel.getAddressDetail()
+        addressFormViewModel.getAddressDetail(null)
 
         // Then
         verify { detailAddressObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `WHEN user already editing address THEN dont hit detail address from BE again`() {
+        // Given
+        coEvery { repo.getAddressDetail(any(), any()) } throws defaultThrowable
+        val saveDataModel = SaveAddressDataModel(receiverName = "name", phone = "081222222222", address1 = "detail alamat draft")
+        addressFormViewModel.addressId = addressId
+        val source = "source"
+
+        // When
+        addressFormViewModel.getAddressDetail(saveDataModel)
+
+        // Then
+        assert(addressFormViewModel.saveDataModel == saveDataModel)
+        assert((addressFormViewModel.addressDetail.value as Success).data == saveDataModel)
     }
 
     @Test
@@ -286,6 +292,8 @@ class AddressFormViewModelTest {
             isPositiveFlow = false,
             addressId = "",
             source = source,
+            name = "",
+            phone = "",
             onViewEditAddressPageNew = {}
         )
 
@@ -311,6 +319,8 @@ class AddressFormViewModelTest {
             isPositiveFlow = false,
             addressId = addressId,
             source = source,
+            name = "",
+            phone = "",
             onViewEditAddressPageNew = {}
         )
 
@@ -457,7 +467,7 @@ class AddressFormViewModelTest {
             },
             onEmptyPhoneNumber = {},
             onBelowMinCharacter = {},
-            onInvalidPhoneNumber = {},
+            onInvalidPhoneNumber = {}
         )
 
         // Then
@@ -480,7 +490,7 @@ class AddressFormViewModelTest {
                 isEmpty = true
             },
             onBelowMinCharacter = {},
-            onInvalidPhoneNumber = {},
+            onInvalidPhoneNumber = {}
         )
 
         // Then
@@ -504,7 +514,7 @@ class AddressFormViewModelTest {
             onBelowMinCharacter = {
                 isBelowMinCharacter = true
             },
-            onInvalidPhoneNumber = {},
+            onInvalidPhoneNumber = {}
         )
 
         // Then
@@ -528,7 +538,7 @@ class AddressFormViewModelTest {
             onBelowMinCharacter = {},
             onInvalidPhoneNumber = {
                 isInvalid = true
-            },
+            }
         )
 
         // Then
@@ -549,7 +559,7 @@ class AddressFormViewModelTest {
             },
             onEmptyPhoneNumber = {},
             onBelowMinCharacter = {},
-            onInvalidPhoneNumber = {},
+            onInvalidPhoneNumber = {}
         )
 
         // Then
@@ -568,7 +578,7 @@ class AddressFormViewModelTest {
                 isError = true
             },
             onEmptyReceiverName = {},
-            onBelowMinCharacter = {},
+            onBelowMinCharacter = {}
         )
 
         // Then
@@ -590,7 +600,7 @@ class AddressFormViewModelTest {
             onEmptyReceiverName = {
                 isEmpty = true
             },
-            onBelowMinCharacter = {},
+            onBelowMinCharacter = {}
         )
 
         // Then
@@ -633,7 +643,7 @@ class AddressFormViewModelTest {
                 isError = true
             },
             onEmptyReceiverName = {},
-            onBelowMinCharacter = {},
+            onBelowMinCharacter = {}
         )
 
         // Then
@@ -760,7 +770,7 @@ class AddressFormViewModelTest {
                 isError = true
             },
             onEmptyLabel = {},
-            onBelowMinCharacter = {},
+            onBelowMinCharacter = {}
         )
 
         // Then
@@ -782,7 +792,7 @@ class AddressFormViewModelTest {
             onEmptyLabel = {
                 isEmpty = true
             },
-            onBelowMinCharacter = {},
+            onBelowMinCharacter = {}
         )
 
         // Then
@@ -825,7 +835,7 @@ class AddressFormViewModelTest {
                 isError = true
             },
             onEmptyLabel = {},
-            onBelowMinCharacter = {},
+            onBelowMinCharacter = {}
         )
 
         // Then
@@ -933,5 +943,86 @@ class AddressFormViewModelTest {
                 pinpointDistrictId = pinpointDistrictId
             )
         )
+    }
+
+    @Test
+    fun `WHEN saveaddressdatamodel is null THEN set default name and phone number`() {
+        // Inject
+        val saveDataModel = null
+        val source = "source"
+        val defaultName = "default name"
+        val defaultPhone = "08111111111"
+
+        // When
+        addressFormViewModel.setDataFromArguments(
+            isEdit = false,
+            saveDataModel = saveDataModel,
+            isPositiveFlow = false,
+            addressId = "",
+            source = source,
+            name = defaultName,
+            phone = defaultPhone,
+            onViewEditAddressPageNew = {}
+        )
+
+        assert(addressFormViewModel.addressDetail.value is Success)
+        assert((addressFormViewModel.addressDetail.value as Success).data.receiverName == defaultName)
+        assert(addressFormViewModel.saveDataModel?.receiverName == defaultName)
+        assert((addressFormViewModel.addressDetail.value as Success).data.phone == defaultPhone)
+        assert(addressFormViewModel.saveDataModel?.phone == defaultPhone)
+    }
+
+    @Test
+    fun `WHEN saveaddressdatamodel name and phone is empty THEN set default name and phone number`() {
+        // Inject
+        val saveDataModel = SaveAddressDataModel()
+        val source = "source"
+        val defaultName = "default name"
+        val defaultPhone = "08111111111"
+
+        // When
+        addressFormViewModel.setDataFromArguments(
+            isEdit = false,
+            saveDataModel = saveDataModel,
+            isPositiveFlow = false,
+            addressId = "",
+            source = source,
+            name = defaultName,
+            phone = defaultPhone,
+            onViewEditAddressPageNew = {}
+        )
+
+        assert(addressFormViewModel.addressDetail.value is Success)
+        assert((addressFormViewModel.addressDetail.value as Success).data.receiverName == defaultName)
+        assert(addressFormViewModel.saveDataModel?.receiverName == defaultName)
+        assert((addressFormViewModel.addressDetail.value as Success).data.phone == defaultPhone)
+        assert(addressFormViewModel.saveDataModel?.phone == defaultPhone)
+    }
+
+    @Test
+    fun `WHEN saveaddressdatamodel name and phone is not empty THEN dont set default name and phone number`() {
+        // Inject
+        val saveDataModel = SaveAddressDataModel(receiverName = "name", phone = "081222222222")
+        val source = "source"
+        val defaultName = "default name"
+        val defaultPhone = "08111111111"
+
+        // When
+        addressFormViewModel.setDataFromArguments(
+            isEdit = false,
+            saveDataModel = saveDataModel,
+            isPositiveFlow = false,
+            addressId = "",
+            source = source,
+            name = defaultName,
+            phone = defaultPhone,
+            onViewEditAddressPageNew = {}
+        )
+
+        assert(addressFormViewModel.addressDetail.value is Success)
+        assert((addressFormViewModel.addressDetail.value as Success).data.receiverName == saveDataModel.receiverName)
+        assert(addressFormViewModel.saveDataModel?.receiverName == saveDataModel.receiverName)
+        assert((addressFormViewModel.addressDetail.value as Success).data.phone == saveDataModel.phone)
+        assert(addressFormViewModel.saveDataModel?.phone == saveDataModel.phone)
     }
 }

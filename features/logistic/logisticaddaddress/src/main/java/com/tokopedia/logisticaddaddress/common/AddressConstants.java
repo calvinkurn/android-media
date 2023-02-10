@@ -40,6 +40,7 @@ public class AddressConstants {
     public static final String EXTRA_FROM_ADDRESS_FORM = "EXTRA_FROM_ADDRESS_FORM";
     public static final String EXTRA_FROM_PINPOINT = "EXTRA_FROM_PINPOINT";
     public static final String EXTRA_RESET_TO_SEARCH_PAGE = "EXTRA_RESET_TO_SEARCH_PAGE";
+    public static final String KEY_SAVE_INSTANCE_SAVE_ADDRESS_DATA_MODEL = "KEY_SAVE_INSTANCE_SAVE_ADDRESS_DATA_MODEL";
 
     private static final Double MONAS_LAT = -6.175794;
     private static final Double MONAS_LONG = 106.826457;

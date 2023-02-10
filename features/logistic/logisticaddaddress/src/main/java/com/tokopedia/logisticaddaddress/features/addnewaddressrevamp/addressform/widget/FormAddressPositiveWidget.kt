@@ -56,26 +56,6 @@ class FormAddressPositiveWidget : LinearLayout {
         binding = FormAddressNewAlamatBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    fun initView() {
-        binding?.apply {
-            etLabel.textFieldInput.setText(AddressFormFragment.LABEL_HOME)
-            etLabel.textFieldInput.addTextChangedListener(
-                setWrapperWatcher(
-                    etLabel.textFieldWrapper,
-                    null,
-                    context?.getString(R.string.tv_error_field)
-                )
-            )
-            etAlamatNew.textFieldInput.addTextChangedListener(
-                setWrapperWatcher(
-                    etAlamatNew.textFieldWrapper,
-                    null,
-                    context?.getString(R.string.tv_error_field)
-                )
-            )
-        }
-    }
-
     fun renderView(
         data: SaveAddressDataModel
     ) {
@@ -83,7 +63,7 @@ class FormAddressPositiveWidget : LinearLayout {
             etAlamatNew.run {
                 textFieldInput.setText(data.address1)
                 if (data.address1.length > AddressFormFragment.MAX_CHAR_ALAMAT) {
-                    textFieldWrapper.let { wrapper ->
+                    this.textFieldWrapper.let { wrapper ->
                         wrapper.error =
                             context.getString(R.string.error_alamat_exceed_max_char)
                         wrapper.isErrorEnabled = true
@@ -113,7 +93,7 @@ class FormAddressPositiveWidget : LinearLayout {
                 }
             }
             etLabel.run {
-                textFieldInput.setText(data.addressName)
+                textFieldInput.setText(data.addressName.ifEmpty { AddressFormFragment.LABEL_HOME })
                 textFieldInput.addTextChangedListener(
                     setWrapperWatcher(
                         textFieldWrapper,

@@ -22,8 +22,8 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -43,12 +43,15 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
 
     override fun onBackPressed() {
         if (!isEdit) {
-            super.onBackPressed()
-            if (isPositiveFlow == true) AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
-            else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+            if (isPositiveFlow == true) {
+                AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
+            } else {
+                AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+            }
+            finish()
         } else {
             EditAddressRevampAnalytics.onClickBackArrowEditAddress(userSession.userId)
-            if(supportFragmentManager.fragments.firstOrNull() is AddressFormFragment){
+            if (supportFragmentManager.fragments.firstOrNull() is AddressFormFragment) {
                 supportFragmentManager.fragments.firstOrNull()?.let {
                     if (it is AddressFormFragment) {
                         if (it.isBackDialogClicked) {
@@ -56,7 +59,7 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
                         } else {
                             it.showDialogBackButton()
                         }
-                    }else {
+                    } else {
                         super.onBackPressed()
                     }
                 }
@@ -65,5 +68,4 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
             }
         }
     }
-
 }
