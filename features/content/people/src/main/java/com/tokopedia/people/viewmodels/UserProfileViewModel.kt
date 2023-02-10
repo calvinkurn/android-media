@@ -25,6 +25,7 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -149,11 +150,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
             is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
-            is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(
-                action.channelId,
-                action.position,
-                action.isActive
-            )
+            is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channel)
             UserProfileAction.BlockUser -> handleBlockUser()
             UserProfileAction.UnblockUser -> handleUnblockUser()
             is UserProfileAction.DeletePlayChannel -> handleDeletePlayChannel(action.channel)
@@ -305,22 +302,28 @@ class UserProfileViewModel @AssistedInject constructor(
                 val data = _savedReminderData.value
 
                 if (data is SavedReminderData.Saved) {
-                    val result = repo.updateReminder(data.channelId, data.isActive)
+                    val reminderTypeAfterAction = data.channel.reminderType.switch()
+                    val result = repo.updateReminder(data.channel.channelId, reminderTypeAfterAction.reminded)
 
-                    _uiEvent.emit(
-                        when (result) {
-                            is MutationUiModel.Success -> {
-                                handleRemoveReminderActivityResult()
-                                UserProfileUiEvent.SuccessUpdateReminder(
-                                    result.message,
-                                    data.position
+                    when (result) {
+                        is MutationUiModel.Success -> {
+                            handleRemoveReminderActivityResult()
+                            updatePartialChannelInfo(data.channel.channelId) { channel ->
+                                channel.copy(
+                                    reminderType = reminderTypeAfterAction
                                 )
                             }
-                            is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(
-                                Exception(result.message)
+
+                            _uiEvent.emit(
+                                UserProfileUiEvent.SuccessUpdateReminder(result.message)
                             )
                         }
-                    )
+                        is MutationUiModel.Error -> {
+                            _uiEvent.emit(
+                                UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
+                            )
+                        }
+                    }
                 }
             },
             onError = {
@@ -329,17 +332,9 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
-    private fun handleSaveReminderActivityResult(
-        channelId: String,
-        position: Int,
-        isActive: Boolean
-    ) {
+    private fun handleSaveReminderActivityResult(channel: PlayWidgetChannelUiModel) {
         _savedReminderData.update {
-            SavedReminderData.Saved(
-                channelId = channelId,
-                position = position,
-                isActive = isActive
-            )
+            SavedReminderData.Saved(channel)
         }
     }
 

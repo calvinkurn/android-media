@@ -1129,7 +1129,6 @@ class UserProfileFragment @Inject constructor(
 
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
-            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
             REQUEST_CODE_LOGIN -> refreshLandingPageData(isRefreshPost = true)
         }
     }

@@ -84,7 +84,16 @@ class UserProfileVideoFragment @Inject constructor(
             channelWidgetListener = object : PlayVideoViewHolder.Channel.Listener {
 
                 override fun onPlayReminderClick(channel: PlayWidgetChannelUiModel) {
-                    /** TODO: handle this later */
+                    submitAction(UserProfileAction.SaveReminderActivityResult(channel))
+
+                    if (userSession.isLoggedIn.not()) {
+                        startActivityForResult(
+                            RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN_TO_SET_REMINDER,
+                        )
+                    } else {
+                        submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = false))
+                    }
                 }
 
                 override fun onPlayWidgetLargeClick(
@@ -188,7 +197,6 @@ class UserProfileVideoFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is UserProfileUiEvent.SuccessUpdateReminder -> {
-                        mAdapter.notifyItemChanged(event.position)
                         view?.showToast(event.message)
                     }
                     is UserProfileUiEvent.ErrorUpdateReminder -> {
@@ -335,16 +343,16 @@ class UserProfileVideoFragment @Inject constructor(
     }
 
     override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
-        submitAction(UserProfileAction.SaveReminderActivityResult(channelId, pos, isActive))
-
-        if (userSession.isLoggedIn.not()) {
-            startActivityForResult(
-                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
-            )
-        } else {
-            submitAction(UserProfileAction.ClickUpdateReminder(false))
-        }
+//        submitAction(UserProfileAction.SaveReminderActivityResult(channelId, pos, isActive))
+//
+//        if (userSession.isLoggedIn.not()) {
+//            startActivityForResult(
+//                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+//                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
+//            )
+//        } else {
+//            submitAction(UserProfileAction.ClickUpdateReminder(false))
+//        }
     }
 
     override fun updatePlayWidgetLatestData(
@@ -398,6 +406,9 @@ class UserProfileVideoFragment @Inject constructor(
                 val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
 
                 submitAction(UserProfileAction.UpdatePlayChannelInfo(channelId, totalView, isReminderSet))
+            }
+            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> {
+                viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
             }
         }
     }

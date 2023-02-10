@@ -5,7 +5,7 @@ package com.tokopedia.people.views.uimodel.event
  */
 sealed interface UserProfileUiEvent {
     data class SuccessLoadTabs(val isEmptyContent: Boolean) : UserProfileUiEvent
-    data class SuccessUpdateReminder(val message: String, val position: Int) : UserProfileUiEvent
+    data class SuccessUpdateReminder(val message: String) : UserProfileUiEvent
 
     data class ErrorLoadProfile(val throwable: Throwable) : UserProfileUiEvent
     data class ErrorFollowUnfollow(val throwable: Throwable) : UserProfileUiEvent
