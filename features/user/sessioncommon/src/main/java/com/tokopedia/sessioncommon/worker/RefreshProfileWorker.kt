@@ -87,14 +87,11 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
 
         private const val WORKER_NAME = "REFRESH_PROFILE_WORKER"
 
-        private const val INITIAL_DELAY = 3L
-
         @JvmStatic
         fun scheduleWorker(appContext: Context) {
             try {
                 val worker = OneTimeWorkRequest
                     .Builder(RefreshProfileWorker::class.java)
-                    .setInitialDelay(INITIAL_DELAY, TimeUnit.SECONDS)
                     .build()
 
                 WorkManager.getInstance(appContext).enqueueUniqueWork(
