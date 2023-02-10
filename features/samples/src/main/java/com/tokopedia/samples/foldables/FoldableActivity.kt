@@ -5,7 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.window.FoldingFeature
+import androidx.window.layout.FoldingFeature
 import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.samples.R
@@ -21,7 +21,7 @@ class FoldableActivity : AppCompatActivity(), FoldableSupportManager.FoldableInf
     }
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
-        if (foldableInfo.isFoldableDevice() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_VERTICAL) {
+        if (foldableInfo.isFoldableDevice() && foldableInfo.foldingFeature?.orientation == FoldingFeature.Orientation.VERTICAL) {
             val set = ConstraintSet().apply { clone(constraintLayout) }
             val newSet = foldableInfo.alignSeparatorViewToFoldingFeatureBounds(
                 set,

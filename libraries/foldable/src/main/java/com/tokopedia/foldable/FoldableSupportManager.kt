@@ -1,26 +1,30 @@
 package com.tokopedia.foldable
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.window.WindowInfoRepo
-import androidx.window.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
+
 
 class FoldableSupportManager(
     private val foldableInfoCallback: FoldableInfoCallback,
     activity: AppCompatActivity,
 ) : LifecycleObserver {
-    private val windowInfoRepo: WindowInfoRepo
+    private val windowInfoRepo: WindowInfoTracker
+    private val activityRef: WeakReference<Activity>
 
     init {
         activity.lifecycle.addObserver(this)
-        windowInfoRepo = activity.windowInfoRepository()
+        activityRef = WeakReference(activity)
+        windowInfoRepo = WindowInfoTracker.getOrCreate(activity)
     }
 
     private var layoutUpdatesJob: Job? = null
@@ -33,10 +37,16 @@ class FoldableSupportManager(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     open fun onStart() {
         layoutUpdatesJob = CoroutineScope(Dispatchers.Main).launch {
-            windowInfoRepo.windowLayoutInfo()
-                .collect { newLayoutInfo ->
-                    foldableInfoCallback.onChangeLayout(FoldableInfo(newLayoutInfo))
+            try {
+                activityRef.get()?.let {
+                    windowInfoRepo.windowLayoutInfo(activity = it)
+                        .collect { newLayoutInfo ->
+                            foldableInfoCallback.onChangeLayout(FoldableInfo(newLayoutInfo))
+                        }
                 }
+            }catch (e:Throwable){
+
+            }
         }
     }
 
@@ -55,7 +65,7 @@ class FoldableSupportManager(
 
     }
 
-//    https://stackoverflow.com/questions/47656728/is-it-mandatory-to-remove-yourself-as-an-observer-from-android-lifecycle
+    //    https://stackoverflow.com/questions/47656728/is-it-mandatory-to-remove-yourself-as-an-observer-from-android-lifecycle
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     open fun onDestroy() {
 
