@@ -179,8 +179,11 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         val openTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(OPEN_TIME) ?: "")
         val closeTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(CLOSE_TIME) ?: "")
         return getString(
-            if(isOutsideWorkingHours) com.tokopedia.epharmacy.R.string.epharmacy_reminder_description_outside
-            else  com.tokopedia.epharmacy.R.string.epharmacy_reminder_description,
+            if (isOutsideWorkingHours) {
+                com.tokopedia.epharmacy.R.string.epharmacy_reminder_description_outside
+            } else {
+                com.tokopedia.epharmacy.R.string.epharmacy_reminder_description
+            },
             EPharmacyUtils.getTimeFromDate(openTimeLocal),
             EPharmacyUtils.getTimeFromDate(closeTimeLocal)
         )
@@ -195,7 +198,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                     reminderType = reminderType,
                     EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
                         consultationSourceId = consultationSourceId,
-                        if(isOutsideWorkingHours)OUTSIDE_WORKING_HOURS_SOURCE else WORKING_HOURS_SOURCE
+                        if (isOutsideWorkingHours)OUTSIDE_WORKING_HOURS_SOURCE else WORKING_HOURS_SOURCE
                     )
                 )
             )

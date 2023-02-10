@@ -19,7 +19,11 @@ import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUti
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
-import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.epharmacy.utils.EPHARMACY_FULL_ALPHA
+import com.tokopedia.epharmacy.utils.EPHARMACY_HALF_ALPHA
+import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.PRODUCT_COMPONENT
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide

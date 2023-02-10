@@ -4,12 +4,11 @@ import android.os.Bundle
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 
-data class EPharmacyShimmerDataModel(val name : String = "", val type : String = "")
-    : BaseEPharmacyDataModel {
+data class EPharmacyShimmerDataModel(val name: String = "", val type: String = "") : BaseEPharmacyDataModel {
 
     override fun name(): String = name
 
-    override fun type(): String  = type
+    override fun type(): String = type
 
     override fun type(typeFactory: EPharmacyAdapterFactory): Int {
         return typeFactory.type(this)
