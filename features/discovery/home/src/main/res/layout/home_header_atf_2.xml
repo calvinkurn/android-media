@@ -5,26 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/container_super_graphic_header"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:ignore="MissingDefaultResource">-->
-
-<!--        <com.tokopedia.unifycomponents.ImageUnify-->
-<!--            android:id="@+id/iv_banner"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:src="@drawable/atf_big"-->
-<!--            android:adjustViewBounds="true"-->
-<!--            app:unify_image_corner_radius="0"-->
-<!--            android:scaleType="matrix"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent" />-->
-
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-
     <FrameLayout
         android:id="@+id/view_empty"
         android:layout_width="match_parent"
@@ -34,15 +14,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/view_pull_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:color_type="green"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_empty" />
 
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
         android:id="@+id/view_choose_address"
@@ -55,9 +26,18 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_pull_refresh"
+        app:layout_constraintTop_toBottomOf="@+id/view_empty"
         tools:layout_height="10dp"
         tools:visibility="visible" />
+
+    <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/view_pull_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:color_type="green"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_choose_address" />
 
     <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
         android:id="@+id/view_balance_widget"
@@ -69,7 +49,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_choose_address"
+        app:layout_constraintTop_toBottomOf="@+id/view_pull_refresh"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

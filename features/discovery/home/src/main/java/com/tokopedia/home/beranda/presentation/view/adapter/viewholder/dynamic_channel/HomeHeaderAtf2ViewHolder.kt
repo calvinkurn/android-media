@@ -33,7 +33,6 @@ class HomeHeaderAtf2ViewHolder(
 
     override fun bind(element: HomeHeaderAtf2DataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-//        measureHeightBanner()
         renderEmptySpace()
         renderHeader()
         element.headerDataModel?.let {
@@ -56,7 +55,6 @@ class HomeHeaderAtf2ViewHolder(
         binding?.viewPullRefresh?.let {
             listener.pullRefreshIconCaptured(it)
         }
-//        bottomCropBanner()
     }
 
     private fun renderEmptySpace() {
@@ -79,51 +77,5 @@ class HomeHeaderAtf2ViewHolder(
 
     override fun bind(element: HomeHeaderAtf2DataModel, payloads: MutableList<Any>) {
         bind(element)
-    }
-
-//    private fun bottomCropBanner() {
-//        val imageBanner = binding?.ivBanner
-//        imageBanner?.run {
-//            val matrix: Matrix? = this.imageMatrix
-//
-//            val scale: Float
-//            val viewWidth: Int = width - paddingLeft - paddingRight
-//            val viewHeight: Int = height - paddingTop - paddingBottom
-//            val drawableWidth: Int = drawable.intrinsicWidth
-//            val drawableHeight: Int = drawable.intrinsicHeight
-//
-//            //Get the scale
-//
-//            //Get the scale
-//            scale = if (drawableWidth * viewHeight > drawableHeight * viewWidth) {
-//                viewHeight.toFloat() / drawableHeight.toFloat()
-//            } else {
-//                viewWidth.toFloat() / drawableWidth.toFloat()
-//            }
-//
-//            //Define the rect to take image portion from
-//
-//            //Define the rect to take image portion from
-//            val drawableRect = RectF(
-//                0f,
-//                drawableHeight - viewHeight / scale,
-//                drawableWidth.toFloat(),
-//                drawableHeight.toFloat()
-//            )
-//            val viewRect = RectF(0f, 0f, viewWidth.toFloat(), viewHeight.toFloat())
-//            matrix?.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.START)
-//
-//            imageMatrix = matrix
-//        }
-//    }
-
-    private fun measureHeightBanner() {
-//        val width = itemView.context.resources.displayMetrics.widthPixels
-//        val density = itemView.context.resources.displayMetrics.density
-//        val widthPx = width / density
-//        val height = (widthPx * 240) / 411.42586
-//        val layoutParams = binding?.viewEmptyBanner?.layoutParams
-//        layoutParams?.height = height.toInt().toPx().toInt()
-//        binding?.viewEmptyBanner?.layoutParams = layoutParams
     }
 }
