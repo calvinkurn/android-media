@@ -224,7 +224,6 @@ class LottieBottomNav : LinearLayout {
             it.orientation = HORIZONTAL
         }
 
-
         // for each menu:
         // create item container, draw image icon and title, add click listener if set
         menu.forEachIndexed { index, bottomMenu ->
@@ -248,8 +247,8 @@ class LottieBottomNav : LinearLayout {
                 DEFAULT_ICON_PADDING
             )
             icon.setFailureListener {
-                //we need to set our own failure listener to avoid crash
-                //especially for xiaomi android 8
+                // we need to set our own failure listener to avoid crash
+                // especially for xiaomi android 8
             }
             bottomMenu.animName?.let {
                 icon.setAnimation(bottomMenu.animName)
@@ -287,7 +286,6 @@ class LottieBottomNav : LinearLayout {
 
             icon.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(p0: Animator) {
-
                 }
 
                 override fun onAnimationEnd(p0: Animator) {
@@ -321,7 +319,6 @@ class LottieBottomNav : LinearLayout {
                 }
 
                 override fun onAnimationCancel(p0: Animator) {
-
                 }
 
                 override fun onAnimationStart(p0: Animator) {
@@ -460,21 +457,23 @@ class LottieBottomNav : LinearLayout {
         val homeIconIndex = this.menu.indexOfFirst { it.id == R.id.menu_home }
 
         if (homeIconIndex >= Int.ZERO) {
-            val oldHomeMenu = this.menu[homeIconIndex]
-            if (oldHomeMenu.imageName == newHomeMenu.imageName) return
+            this.menu.getOrNull(homeIconIndex)?.let {
+                if (it.imageName == newHomeMenu.imageName) return
 
-            this.menu[homeIconIndex] = newHomeMenu
-            itemCount = this.menu.size
-            this.selectedItem = null
+                this.menu[homeIconIndex] = newHomeMenu
 
-            removeAllViews()
+                itemCount = this.menu.size
+                this.selectedItem = null
 
-            resizeContainer()
-            setupMenuItems()
+                removeAllViews()
 
-            setSelected(homeIconIndex)
+                resizeContainer()
+                setupMenuItems()
 
-            invalidate()
+                setSelected(homeIconIndex)
+
+                invalidate()
+            }
         }
     }
 
