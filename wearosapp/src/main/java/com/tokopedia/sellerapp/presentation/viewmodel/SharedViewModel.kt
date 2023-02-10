@@ -8,9 +8,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
+import com.tokopedia.sellerapp.domain.interactor.OrderUseCase
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import com.tokopedia.sellerapp.domain.model.NotificationModel
-import com.tokopedia.sellerapp.domain.interactor.OrderUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
@@ -35,8 +35,8 @@ class SharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val orderUseCase: OrderUseCase,
     private val getSummaryUseCase: GetSummaryUseCase,
-    private val getNotificationUseCase: GetNotificationUseCase,
     private val capabilityClient: CapabilityClient,
+    private val getNotificationUseCase: GetNotificationUseCase,
     private val clientMessageDatasource: ClientMessageDatasource
 ) : BaseViewModel(dispatchers.io) {
 

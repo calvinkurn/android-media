@@ -6,7 +6,6 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply from: '../jacoco_task.gradle'
 
 buildscript {
     repositories {
@@ -172,5 +171,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
 }
+
+apply from: '../jacoco_task.gradle'
+apply from: '../sonar_config.gradle'
