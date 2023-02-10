@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.util.DateUtil;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
@@ -114,6 +115,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
+    private final String IM_CLICK_ID = "imclickid";
 
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
     private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
@@ -1127,7 +1129,15 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("utmMedium", (String) param.get(AppEventTracking.GTM.UTM_MEDIUM));
         bundle.putString("utmCampaign", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmContent", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
-        bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
+
+        /**
+         * if the utm_term equals {@value IM_CLICK_ID}
+         */
+        if (param.get(AppEventTracking.GTM.UTM_CAMPAIGN).equals(IM_CLICK_ID)) {
+            bundle.putString("utmTerm", DateUtil.getCurrentTime());
+        } else {
+            bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
+        }
 
         pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
     }
