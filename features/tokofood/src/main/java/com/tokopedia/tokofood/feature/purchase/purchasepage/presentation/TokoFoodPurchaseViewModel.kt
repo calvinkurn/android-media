@@ -586,8 +586,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun updateProductVariant(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         launch(coroutineContext) {
             val checkoutData = getExistingCheckoutData()
-            val availableProducts = checkoutData?.getTokofoodBusinessData()
-                ?.let { TokoFoodPurchaseUiModelMapper.getAvailableSectionProducts(it) }
+            val availableProducts = checkoutData?.getTokofoodBusinessData()?.getAvailableSectionProducts()
             availableProducts?.let { products ->
                 val customOrderDetails =
                     CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails(products)

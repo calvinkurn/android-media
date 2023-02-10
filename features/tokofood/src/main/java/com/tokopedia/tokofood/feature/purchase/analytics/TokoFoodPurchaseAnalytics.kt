@@ -24,8 +24,7 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
         val totalShippingPrice = businessData.customResponse.shipping.price
         val totalPromotionPrice = shoppingSummary.discountBreakdown.sumOf { it.amount }
         val totalAllPrice = shoppingSummary.total.cost
-        val foodIdArray = TokoFoodPurchaseUiModelMapper.getAvailableSectionProducts(businessData)
-            .map { it.productId }.distinct()
+        val foodIdArray = businessData.getAvailableSectionProducts().map { it.productId }.distinct()
         val eventLabel =
             "${totalProductPrice}_${totalShippingPrice}_${totalPromotionPrice}_${totalAllPrice}_${foodIdArray}"
 
@@ -54,8 +53,7 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
         val totalShippingPrice = businessData.customResponse.shipping.price
         val totalPromotionPrice = shoppingSummary.discountBreakdown.sumOf { it.amount }
         val totalAllPrice = shoppingSummary.total.cost
-        val foodIdArray = TokoFoodPurchaseUiModelMapper.getAvailableSectionProducts(businessData)
-            .map { it.productId }.distinct()
+        val foodIdArray = businessData.getAvailableSectionProducts().map { it.productId }.distinct()
         val eventLabel =
             "${totalProductPrice}_${totalShippingPrice}_${totalPromotionPrice}_${totalAllPrice}_${foodIdArray}"
 
@@ -92,7 +90,7 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
         val itemBundles = arrayListOf<Bundle>()
         val businessData = data.getTokofoodBusinessData()
         itemBundles.addAll(
-            TokoFoodPurchaseUiModelMapper.getAvailableSectionProducts(businessData).map {
+            businessData.getAvailableSectionProducts().map {
                 Bundle().apply {
                     putString(
                         TokoFoodAnalytics.KEY_DIMENSION_49,

@@ -106,49 +106,6 @@ data class CheckoutTokoFoodData(
             totalProductQuantity = summaryDetail.totalItems
         )
     }
-
-    fun getRemoveUnavailableCartParam(): RemoveCartTokofoodParam {
-        // TODO: Add businessId
-        val cartIdList = unavailableSections.firstOrNull()?.products?.map {
-            it.cartId
-        }.orEmpty()
-        return RemoveCartTokofoodParam(
-            businessData = listOf(
-                RemoveCartTokofoodBusinessData(
-                    businessId = "",
-                    cartGroups = listOf(
-                        RemoveCartTokofoodCartGroup(
-                            cartIds = cartIdList
-                        )
-                    )
-                )
-            )
-        )
-    }
-
-    fun getRemoveAllCartParam(): RemoveCartTokofoodParam {
-        // TODO: Add businessId
-        return RemoveCartTokofoodParam(
-            businessData = listOf(
-                RemoveCartTokofoodBusinessData(
-                    businessId = "",
-                    cartGroups = listOf(
-                        RemoveCartTokofoodCartGroup(
-                            cartIds = getProductListFromCart().map { it.cartId }
-                        )
-                    )
-                )
-            )
-        )
-    }
-
-    fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
-        return availableSection.products.plus(unavailableSections.firstOrNull()?.products.orEmpty())
-    }
-
-    fun getShouldShowMiniCart(): Boolean {
-        return shop.shopId.isNotBlank() && getProductListFromCart().isNotEmpty()
-    }
 }
 
 data class CheckoutTokoFoodShop(

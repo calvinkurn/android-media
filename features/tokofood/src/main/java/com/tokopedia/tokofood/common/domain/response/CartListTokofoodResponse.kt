@@ -5,7 +5,12 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodBusinessData
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodCartGroup
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
+import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 
 data class CartListTokofoodResponse(
     @SerializedName("cart_general_cart_list")
@@ -35,6 +40,78 @@ data class CartGeneralCartListData(
 
     fun isEmptyProducts(): Boolean {
         return data.getTokofoodBusinessData().cartGroups.all { it.carts.isEmpty() }
+    }
+
+    fun getMiniCartUiModel(): MiniCartUiModel {
+        val totalPrice =
+            if (data.shoppingSummary.getTokofoodBusinessBreakdown().addOns.isEmpty()) {
+                // From mini cart gql
+                data.shoppingSummary.getTokofoodBusinessBreakdown().totalBillFmt
+            } else {
+                // From cart list gql
+                data.getTokofoodBusinessData().customResponse.shoppingSummary.costBreakdown.totalCartPrice.amount.getCurrencyFormatted()
+            }
+        return MiniCartUiModel(
+            shopName = data.getTokofoodBusinessData().customResponse.shop.name,
+            totalPriceFmt = totalPrice,
+            totalProductQuantity = data.getTokofoodBusinessData().customResponse.shoppingSummary.totalItems
+        )
+    }
+
+    fun getRemoveUnavailableCartParam(): RemoveCartTokofoodParam {
+        // TODO: Add businessId
+        val unavailableCartGroup =
+            data.getTokofoodBusinessData().additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.UNAVAILABLE_SECTION }
+        val isMultipleCartGroup = unavailableCartGroup?.additionalGroupChildIds?.isNotEmpty() == true
+        val cartIds =
+            if (isMultipleCartGroup) {
+                val multipleUnavailableCartIds = mutableListOf<String>()
+                unavailableCartGroup?.additionalGroupChildIds?.forEach { groupChildId ->
+                    data.getTokofoodBusinessData().additionalGrouping.details.find { it.additionalGroupId == groupChildId }?.let {
+                        multipleUnavailableCartIds.addAll(it.cartIds)
+                    }
+                }
+                multipleUnavailableCartIds
+            } else {
+                unavailableCartGroup?.cartIds.orEmpty()
+            }
+
+        return RemoveCartTokofoodParam(
+            businessData = listOf(
+                RemoveCartTokofoodBusinessData(
+                    businessId = "",
+                    cartGroups = listOf(
+                        RemoveCartTokofoodCartGroup(
+                            cartIds = cartIds
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    fun getRemoveAllCartParam(): RemoveCartTokofoodParam {
+        // TODO: Add businessId
+        return RemoveCartTokofoodParam(
+            businessData = listOf(
+                RemoveCartTokofoodBusinessData(
+                    businessId = "",
+                    cartGroups = listOf(
+                        RemoveCartTokofoodCartGroup(
+                            cartIds = getProductListFromCart().map { it.cartId }
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    fun getProductListFromCart(): List<CartListCartGroupCart> {
+        return data.getTokofoodBusinessData().cartGroups.firstOrNull()?.carts.orEmpty()
+    }
+
+    fun getShouldShowMiniCart(): Boolean {
+        return data.getTokofoodBusinessData().customResponse.shop.shopId.isNotBlank() && getProductListFromCart().isNotEmpty()
     }
 
     private fun isErrorTickerEmpty(): Boolean =
@@ -149,6 +226,13 @@ data class CartListBusinessData(
     }
 
     fun isPromoPopupType(): Boolean = customResponse.popupMessageType == POPUP_TYPE_PROMO
+
+    fun getAvailableSectionProducts(): List<CartListCartGroupCart> {
+        val availableCartIds =
+            additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.AVAILABLE_SECTION }?.cartIds.orEmpty()
+        return cartGroups.firstOrNull()?.carts?.filter { availableCartIds.contains(it.cartId) }
+            .orEmpty()
+    }
 
 }
 

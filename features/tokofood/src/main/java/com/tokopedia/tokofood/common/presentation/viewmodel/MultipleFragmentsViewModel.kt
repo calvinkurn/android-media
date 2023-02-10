@@ -9,10 +9,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.usecase.AddToCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
+import com.tokopedia.tokofood.common.domain.usecase.MiniCartListTokofoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokofoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.UpdateCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.UpdateQuantityTokofoodUseCase
@@ -40,6 +43,7 @@ import javax.inject.Inject
 class MultipleFragmentsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val loadCartTokoFoodUseCase: Lazy<LoadCartTokoFoodUseCase>,
+    private val miniCartTokoFoodUseCase: Lazy<MiniCartListTokofoodUseCase>,
     private val addToCartTokoFoodUseCase: Lazy<AddToCartTokoFoodUseCase>,
     private val updateCartTokoFoodUseCase: Lazy<UpdateCartTokoFoodUseCase>,
     private val updateQuantityTokofoodUseCase: Lazy<UpdateQuantityTokofoodUseCase>,
@@ -47,7 +51,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
 
-    private val cartDataState = MutableStateFlow<CheckoutTokoFoodData?>(null)
+    private val cartDataState = MutableStateFlow<CartGeneralCartListData?>(null)
     val cartDataFlow = cartDataState.asStateFlow()
 
     private val cartDataValidationState = MutableStateFlow(UiEvent())
@@ -65,7 +69,8 @@ class MultipleFragmentsViewModel @Inject constructor(
     val shopId: String
         get() {
             val cardDataValue = cartDataState.value
-            val shopData = cardDataValue?.shop
+            val tokofoodBusinessData = cardDataValue?.data?.getTokofoodBusinessData()
+            val shopData = tokofoodBusinessData?.customResponse?.shop
             val shopId = shopData?.shopId
             return shopId.orEmpty()
         }
@@ -111,10 +116,10 @@ class MultipleFragmentsViewModel @Inject constructor(
         }
     }
 
-    fun loadCartList(response: CheckoutTokoFood?) {
+    fun loadCartList(response: CartGeneralCartListData?) {
         launch(coroutineContext) {
-            cartDataState.emit(response?.data)
-            setMiniCartValue(response?.data)
+            cartDataState.emit(response)
+            setMiniCartValue(response)
         }
     }
 
@@ -375,10 +380,10 @@ class MultipleFragmentsViewModel @Inject constructor(
         launchCatchError(block = {
             miniCartUiModelState.emit(Result.Loading())
             withContext(dispatchers.io) {
-                loadCartTokoFoodUseCase.get().execute(source)
+                miniCartTokoFoodUseCase.get().execute(source)
             }.let {
-                cartDataState.emit(it?.data)
-                setMiniCartValue(it?.data)
+                cartDataState.emit(it)
+                setMiniCartValue(it)
             }
         }, onError = {
             miniCartUiModelState.emit(Result.Failure(it))
@@ -391,7 +396,7 @@ class MultipleFragmentsViewModel @Inject constructor(
         })
     }
 
-    private suspend fun setMiniCartValue(data: CheckoutTokoFoodData?) {
+    private suspend fun setMiniCartValue(data: CartGeneralCartListData?) {
         if (data == null) {
             miniCartUiModelState.emit(Result.Success(MiniCartUiModel()))
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_FAILED_LOAD_CART))

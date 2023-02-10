@@ -47,6 +47,7 @@ import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -669,8 +670,8 @@ class TokoFoodPurchaseFragment :
         }
     }
 
-    private fun loadCartData(response: CheckoutTokoFood) {
-        if (response.isEnabled() && !response.data.summaryDetail.hideSummary) {
+    private fun loadCartData(response: CartGeneralCartListData) {
+        if (response.isEnabled() && !response.data.shoppingSummary.getTokofoodBusinessBreakdown().customResponse.hideSummary) {
             activityViewModel?.loadCartList(response)
         } else {
             activityViewModel?.loadCartList(SOURCE)

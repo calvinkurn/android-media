@@ -85,7 +85,7 @@ object TokoFoodPurchaseUiModelMapper {
                 )
             }
 
-            val availableProducts = getAvailableSectionProducts(businessData)
+            val availableProducts = businessData.getAvailableSectionProducts()
             if (availableProducts.isNotEmpty()) {
                 add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                 add(mapProductListHeaderUiModel(isEnabled))
@@ -152,7 +152,7 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldShippingShown =
             customResponse.shipping.name.isNotEmpty() || customResponse.shipping.eta.isNotEmpty()
 
-        val availableProducts = getAvailableSectionProducts(businessData)
+        val availableProducts = businessData.getAvailableSectionProducts()
         val shouldTickerShopLevelShown =
             customResponse.errorUnblocking.isNotEmpty() && availableProducts.isNotEmpty()
 
@@ -444,13 +444,6 @@ object TokoFoodPurchaseUiModelMapper {
             isAtc = true,
             customOrderDetails = customOrderDetails
         )
-    }
-
-    fun getAvailableSectionProducts(businessData: CartListBusinessData): List<CartListCartGroupCart> {
-        val availableCartIds =
-            businessData.additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.AVAILABLE_SECTION }?.cartIds.orEmpty()
-        return businessData.cartGroups.firstOrNull()?.carts?.filter { availableCartIds.contains(it.cartId) }
-            .orEmpty()
     }
 
     private fun mapGeneralTickerUiModel(message: String,

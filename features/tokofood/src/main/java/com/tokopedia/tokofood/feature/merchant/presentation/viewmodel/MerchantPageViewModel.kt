@@ -15,8 +15,8 @@ import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
@@ -71,7 +71,7 @@ class MerchantPageViewModel @Inject constructor(
 
     var productListItems: MutableList<ProductListItem> = mutableListOf()
 
-    var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
+    var selectedProducts: List<CartListCartGroupCart> = listOf()
 
     var isAddressManuallyUpdated = false
 
@@ -288,11 +288,11 @@ class MerchantPageViewModel @Inject constructor(
         }
     }
 
-    fun applyProductSelection(productListItems: List<ProductListItem>, selectedProducts: List<CheckoutTokoFoodProduct>): List<ProductListItem> {
+    fun applyProductSelection(productListItems: List<ProductListItem>, selectedProducts: List<CartListCartGroupCart>): List<ProductListItem> {
         val mutableProductListItems = productListItems.toMutableList()
         val selectedProductMap = selectedProducts.groupBy { it.productId }
         selectedProductMap.forEach { entry ->
-            if (entry.value.first().variants.isNotEmpty()) {
+            if (entry.value.first().customResponse.variants.isNotEmpty()) {
                 val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
@@ -313,7 +313,7 @@ class MerchantPageViewModel @Inject constructor(
                         isAtc = true
                         cartId = selectedProduct.cartId
                         orderQty = selectedProduct.quantity
-                        orderNote = selectedProduct.notes
+                        orderNote = selectedProduct.customResponse.notes
                     }
                 }
             }

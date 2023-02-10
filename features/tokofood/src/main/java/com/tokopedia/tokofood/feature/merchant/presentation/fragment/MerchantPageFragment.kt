@@ -52,9 +52,9 @@ import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
@@ -719,7 +719,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private suspend fun collectCartDataFlow() {
         activityViewModel?.cartDataFlow?.collect { cartData ->
-            viewModel.selectedProducts = cartData?.availableSection?.products.orEmpty()
+            viewModel.selectedProducts = cartData?.data?.getTokofoodBusinessData()?.getAvailableSectionProducts().orEmpty()
         }
     }
 
@@ -860,12 +860,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                 }
                 UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                    (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
+                    (it.data as? CartGeneralCartListData)?.let { cartData ->
                         if (it.source == SOURCE){
-                            val products = checkOutTokoFoodData.getProductListFromCart()
-                            val purchaseAmount = checkOutTokoFoodData.summaryDetail.totalPrice
-                            val merchantId = checkOutTokoFoodData.shop.shopId
-                            val merchantName = checkOutTokoFoodData.shop.name
+                            val products = cartData.getProductListFromCart()
+                            val purchaseAmount = cartData.data.shoppingSummary.getTokofoodBusinessBreakdown().totalBillFmt
+                            val shop = cartData.data.getTokofoodBusinessData().customResponse.shop
+                            val merchantId = shop.shopId
+                            val merchantName = shop.name
                             merchantPageAnalytics.clickCheckoutOnMiniCart(
                                 products,
                                 purchaseAmount,

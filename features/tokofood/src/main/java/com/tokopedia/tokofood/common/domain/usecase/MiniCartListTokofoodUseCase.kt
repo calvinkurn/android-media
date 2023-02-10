@@ -9,6 +9,7 @@ import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CartListTokofoodParam
 import com.tokopedia.tokofood.common.domain.param.CartListTokofoodParamBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartListData
 import com.tokopedia.tokofood.common.domain.response.CartListTokofoodResponse
 import javax.inject.Inject
@@ -245,10 +246,10 @@ class MiniCartListTokofoodUseCase @Inject constructor(
 
     init {
         setTypeClass(CartListTokofoodResponse::class.java)
-        setGraphqlQuery(CartGeneralCartLis())
+        setGraphqlQuery(MiniCartGeneralCartList())
     }
 
-    suspend fun execute(source: String): CartListData {
+    suspend fun execute(source: String): CartGeneralCartListData {
         val additionalAttributes = CartAdditionalAttributesTokoFood(
             chosenAddressRequestHelper.getChosenAddress()
         )
@@ -256,7 +257,7 @@ class MiniCartListTokofoodUseCase @Inject constructor(
         setRequestParams(param)
         val response = executeOnBackground()
         if (response.cartGeneralCartList.data.isSuccess()) {
-            return response.cartGeneralCartList.data.data
+            return response.cartGeneralCartList.data
         } else {
             throw MessageErrorException(response.cartGeneralCartList.data.message)
         }

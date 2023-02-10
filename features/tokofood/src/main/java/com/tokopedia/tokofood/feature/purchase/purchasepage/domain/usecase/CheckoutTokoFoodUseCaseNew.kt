@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalA
 import com.tokopedia.tokofood.common.domain.param.CartListTokofoodParam
 import com.tokopedia.tokofood.common.domain.param.CartListTokofoodParamBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListTokofoodResponse
 import javax.inject.Inject
 
 private const val QUERY = """
@@ -239,10 +240,10 @@ private const val QUERY = """
 class CheckoutTokoFoodUseCaseNew @Inject constructor(
     repository: GraphqlRepository,
     private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
-): GraphqlUseCase<CartGeneralCartListData>(repository) {
+): GraphqlUseCase<CartListTokofoodResponse>(repository) {
 
     init {
-        setTypeClass(CartGeneralCartListData::class.java)
+        setTypeClass(CartListTokofoodResponse::class.java)
         setGraphqlQuery(CartGeneralCartLis())
     }
 
@@ -253,10 +254,10 @@ class CheckoutTokoFoodUseCaseNew @Inject constructor(
         val param = generateParams(additionalAttributes, source)
         setRequestParams(param)
         val response = executeOnBackground()
-        if (response.isSuccess()) {
-            return response
+        if (response.cartGeneralCartList.data.isSuccess()) {
+            return response.cartGeneralCartList.data
         } else {
-            throw MessageErrorException(response.message)
+            throw MessageErrorException(response.cartGeneralCartList.data.message)
         }
     }
 
