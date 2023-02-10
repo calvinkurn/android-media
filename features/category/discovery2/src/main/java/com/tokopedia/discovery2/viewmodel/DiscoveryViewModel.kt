@@ -217,7 +217,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             val productInfo =
                 AffiliateSdkProductInfo(
                     discoATCRequestParams.requestingComponent.data?.firstOrNull()?.categoryDeptId
-                        ?: "", false, discoATCRequestParams.quantity
+                        ?: "",
+                    false,
+                    discoATCRequestParams.quantity
                 )
             val pageDetail = AffiliatePageDetail(
                 source = AffiliateSdkPageSource.DirectATC(
@@ -228,15 +230,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 pageName = pageIdentifier,
                 pageId = "0"
             )
-            launchCatchError(block = {
-                affiliateCookieHelper.initCookie(
-                    affiliateUUID = affiliateUID,
-                    affiliateChannel = affiliateChannel,
-                    affiliatePageDetail = pageDetail
-                )
-            }, onError = {
+            launchCatchError(
+                block = {
+                    affiliateCookieHelper.initCookie(
+                        affiliateUUID = affiliateUID,
+                        affiliateChannel = affiliateChannel,
+                        affiliatePageDetail = pageDetail
+                    )
+                },
+                onError = {
 
-            }
+                }
             )
         }
     }
@@ -614,15 +618,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             pageName = pageIdentifier,
             pageId = "0"
         )
-        launchCatchError(block = {
-            affiliateCookieHelper.initCookie(
-                affiliateUUID = affiliateUID,
-                affiliateChannel = affiliateChannel,
-                affiliatePageDetail = pageDetail
-            )
-        }, onError = {
+        launchCatchError(
+            block = {
+                affiliateCookieHelper.initCookie(
+                    affiliateUUID = affiliateUID,
+                    affiliateChannel = affiliateChannel,
+                    affiliatePageDetail = pageDetail
+                )
+            },
+            onError = {
 
-        }
+            }
         )
     }
 

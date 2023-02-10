@@ -54,7 +54,7 @@ data class PageDetail(
         val verticalId: String = "",
 
         @SerializedName("PageName")
-        val pageName:String = "",
+        val pageName: String = "",
 
 )
 
