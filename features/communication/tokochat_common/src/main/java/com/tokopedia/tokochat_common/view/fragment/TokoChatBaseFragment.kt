@@ -155,13 +155,13 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     protected fun showGlobalErrorLayout(onActionClick: () -> Unit) {
         val errorType = getErrorType()
-        baseBinding?.tokochatGlobalError?.tokochatGlobalError?.setType(errorType)
-        baseBinding?.tokochatGlobalError?.tokochatGlobalError?.setActionClickListener {
-            baseBinding?.tokochatGlobalError?.tokochatLayoutGlobalError?.hide()
+        baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.setType(errorType)
+        baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.setActionClickListener {
+            baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.hide()
             addInitialShimmering()
             onActionClick()
         }
-        baseBinding?.tokochatGlobalError?.tokochatLayoutGlobalError?.show()
+        baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.show()
     }
 
     protected fun getErrorType(): Int {

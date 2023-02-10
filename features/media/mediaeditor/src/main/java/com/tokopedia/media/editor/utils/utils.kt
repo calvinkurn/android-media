@@ -1,8 +1,11 @@
 package com.tokopedia.media.editor.utils
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.analytics.*
 import com.tokopedia.media.editor.data.repository.WatermarkType
@@ -32,6 +35,11 @@ fun getUCropTempResultPath(): Uri {
     if (!dir.exists()) dir.mkdir()
 
     return Uri.fromFile(File("${folderPath}/uCrop_temp_result.png"))
+}
+
+fun isGranted(context: Context, permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(context, permission) ==
+        PackageManager.PERMISSION_GRANTED
 }
 
 //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f

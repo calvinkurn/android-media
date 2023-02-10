@@ -139,6 +139,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
     }
 
     override fun dismiss() {
+        if (!isVisible) return
         super.dismiss()
 
         playViewModel.submitAction(DismissFollowPopUp)
@@ -154,6 +155,11 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         super.onDestroyView()
 
         _binding = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
     }
 
     companion object {

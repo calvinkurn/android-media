@@ -130,6 +130,11 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        analytic.getTrackingQueue().sendAll()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         hideLoadingView(allowStateLoss = true)
@@ -195,6 +200,14 @@ class PlayBottomSheetFragment @Inject constructor(
         view: ProductSheetViewComponent
     ) {
         playViewModel.showCouponSheet(variantSheetMaxHeight)
+        newAnalytic.clickInfoVoucher()
+    }
+
+    override fun onInfoVoucherImpressed(
+        view: ProductSheetViewComponent,
+        voucher: PlayVoucherUiModel.Merchant
+    ) {
+        newAnalytic.impressInfoVoucher(voucher)
     }
 
     override fun onReminderImpressed(
@@ -486,7 +499,8 @@ class PlayBottomSheetFragment @Inject constructor(
                 } else if (couponSheetState != null && !couponSheetState.isPreviousStateSame) {
                     when (couponSheetState) {
                         is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
+                        is BottomInsetsState.Shown ->
+                            if (!it.isProductSheetsShown) pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
                     }
                 }
 
