@@ -6,14 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/close_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/iconunify_close"
-        android:tint="@color/Unify_NN1000"
+        app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
