@@ -19,7 +19,7 @@ class TokomemberChipGroup @JvmOverloads constructor(
     private var defaultPosition = 0
     var currentPosition = defaultPosition
     private val chipsList = ArrayList<ChipsUnify>()
-    private var linearChip : LinearLayout? = null
+    private var linearChip: LinearLayout? = null
     private var chipGroupCallback: ChipGroupCallback? = null
 
     init {
@@ -27,16 +27,16 @@ class TokomemberChipGroup @JvmOverloads constructor(
         linearChip = this.findViewById(R.id.linearChip)
     }
 
-    fun setCallback(chipGroupCallback: ChipGroupCallback){
+    fun setCallback(chipGroupCallback: ChipGroupCallback) {
         this.chipGroupCallback = chipGroupCallback
     }
 
-    fun setDefaultSelection(defaultPosition: Int = 0){
+    fun setDefaultSelection(defaultPosition: Int = 0) {
         this.defaultPosition = defaultPosition
         this.currentPosition = defaultPosition
     }
 
-    fun addChip(text: String){
+    fun addChip(text: String) {
         val chip = context?.let { ChipsUnify(it) }
         val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         param.setMargins(0, 0, dpToPx(8).roundToInt(), 0)
@@ -47,7 +47,7 @@ class TokomemberChipGroup @JvmOverloads constructor(
             val index = chipsList.indexOf(chip)
             currentPosition = index
             chipsList.forEach {
-                if(chipsList.get(index) != it){
+                if (chipsList.get(index) != it) {
                     it.chipType = ChipsUnify.TYPE_NORMAL
                 }
             }
@@ -57,18 +57,26 @@ class TokomemberChipGroup @JvmOverloads constructor(
         if (chip != null) {
             chipsList.add(chip)
             val index = chipsList.indexOf(chip)
-            if(index == defaultPosition){
+            if (index == defaultPosition) {
                 chip.chipType = ChipsUnify.TYPE_SELECTED
-            }
-            else{
+            } else {
                 chip.chipType = ChipsUnify.TYPE_NORMAL
             }
         }
     }
 
-    fun addChips(list: ArrayList<String>){
+    fun addChips(list: ArrayList<String>) {
         list.forEach {
             addChip(it)
         }
+    }
+
+    fun setChecked(index: Int) {
+        chipsList.forEach {
+            if (chipsList.get(index) != it) {
+                it.chipType = ChipsUnify.TYPE_NORMAL
+            }
+        }
+        chipsList.get(index).chipType = ChipsUnify.TYPE_SELECTED
     }
 }

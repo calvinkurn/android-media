@@ -53,7 +53,7 @@ const val MAX_PERCENTAGE_CHECK = 100
 class TmSingleCouponView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var selectedChipPositionKupon: Int = 0
@@ -62,33 +62,32 @@ class TmSingleCouponView @JvmOverloads constructor(
     private var isShowCashPercentage = false
     private var shopName = ""
     private var shopAvatar = ""
-    private var chipPercentageClickListener:ChipPercentageClickListener?= null
-    private var maxTransactionListener:MaxTransactionListener?= null
+    private var chipPercentageClickListener: ChipPercentageClickListener? = null
+    private var maxTransactionListener: MaxTransactionListener? = null
 
     init {
         View.inflate(context, R.layout.tm_dash_single_coupon, this)
         initView()
     }
 
-     fun setShopData(shopName:String, shopAvatar:String) {
-         this.shopAvatar = shopAvatar
-         this.shopName = shopName
-         ivPreviewCoupon.setInitialData(shopName,shopAvatar)
-     }
+    fun setShopData(shopName: String, shopAvatar: String) {
+        this.shopAvatar = shopAvatar
+        this.shopName = shopName
+        ivPreviewCoupon.setInitialData(shopName, shopAvatar)
+    }
 
     private fun initView() {
-
         chipGroupKuponType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionKupon = position
-                when(selectedChipPositionKupon){
+                when (selectedChipPositionKupon) {
                     CouponType.CASHBACK -> {
                         textFieldMaxCashback.setLabel(MAX_CASHBACK_LABEL)
                         tvCashbackType.show()
                         chipGroupCashbackType.show()
                         ivPreviewCoupon.showHideCashBackValueView(true)
                         ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
-                        if (selectedChipPositionCashback == 0){
+                        if (selectedChipPositionCashback == 0) {
                             textFieldPercentCashback.hide()
                         } else {
                             textFieldPercentCashback.show()
@@ -106,22 +105,23 @@ class TmSingleCouponView @JvmOverloads constructor(
             }
         })
         chipGroupKuponType.setDefaultSelection(selectedChipPositionKupon)
-        chipGroupKuponType.addChips(arrayListOf(CHIP_LABEL_CASHBACK, CHIP_LABEL_FREE_SHIPPING ))
+        chipGroupKuponType.addChips(arrayListOf(CHIP_LABEL_CASHBACK, CHIP_LABEL_FREE_SHIPPING))
         ivPreviewCoupon.showHideCashBackValueView(true)
         ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
         textFieldMaxCashback.editText.setText(MAX_CASHBACK)
 
         textFieldQuota.editText.setText(QUOTA_DEFAULT)
         textFieldPercentCashback.editText.setText(PERCENTAGE_DEFAULT)
+        tmSingleCouponData.cashBackPercentage = PERCENTAGE_DEFAULT.toInt()
         chipGroupCashbackType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionCashback = position
-                isShowCashPercentage = if (position == CashbackType.PERCENTAGE){
+                isShowCashPercentage = if (position == CashbackType.PERCENTAGE) {
                     textFieldPercentCashback.show()
                     chipPercentageClickListener?.onClickPercentageChip()
                     chipCashBackCouponValidation()
                     true
-                } else{
+                } else {
                     textFieldPercentCashback.hide()
                     ivPreviewCoupon.setCouponBenefit("")
                     false
@@ -135,9 +135,8 @@ class TmSingleCouponView @JvmOverloads constructor(
         quotaValidation()
     }
 
-    fun getSingleCouponData():TmSingleCouponData{
-
-        when(selectedChipPositionKupon){
+    fun getSingleCouponData(): TmSingleCouponData {
+        when (selectedChipPositionKupon) {
             CouponType.CASHBACK -> {
                 tmSingleCouponData.typeCoupon = COUPON_CASHBACK
             }
@@ -146,7 +145,7 @@ class TmSingleCouponView @JvmOverloads constructor(
             }
         }
 
-        when(selectedChipPositionCashback){
+        when (selectedChipPositionCashback) {
             CashbackType.IDR -> {
                 tmSingleCouponData.typeCashback = CASHBACK_IDR
             }
@@ -168,10 +167,10 @@ class TmSingleCouponView @JvmOverloads constructor(
         return tmSingleCouponData
     }
 
-    private fun maxCashBackFieldValidation(){
+    private fun maxCashBackFieldValidation() {
         ivPreviewCoupon.setCouponValue(MAX_CASHBACK_COUPON)
         textFieldMaxCashback.let {
-            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     when {
@@ -179,7 +178,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                             textFieldMaxCashback.isInputError = true
                             textFieldMaxCashback.setMessage(MIN_DISCOUNT_LABEL)
                         }
-                        number>= MAX_CASHBACK_CHECK -> {
+                        number >= MAX_CASHBACK_CHECK -> {
                             textFieldMaxCashback.isInputError = true
                             textFieldMaxCashback.setMessage(MAX_DISCOUNT_LABEL)
                         }
@@ -187,7 +186,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                             if (number > CurrencyFormatHelper.convertRupiahToInt(textFieldMinTransk.editText.text.toString())) {
                                 textFieldMaxCashback.isInputError = true
                                 textFieldMaxCashback.setMessage(MAX_DISCOUNT_OVERFLOW)
-                            }else {
+                            } else {
                                 textFieldMaxCashback.isInputError = false
                                 textFieldMaxCashback.setMessage("")
                                 textFieldMinTransk.isInputError = false
@@ -202,10 +201,10 @@ class TmSingleCouponView @JvmOverloads constructor(
         }
     }
 
-    private fun minTransactionFieldValidation(){
+    private fun minTransactionFieldValidation() {
         textFieldMinTransk.editText.setText(MIN_TRANSACTION)
         textFieldMinTransk.let {
-            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     when {
@@ -213,7 +212,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                             textFieldMinTransk.isInputError = true
                             textFieldMinTransk.setMessage(MIN_TRANSACTION_LABEL)
                         }
-                        number>= MAX_CASHBACK_CHECK -> {
+                        number >= MAX_CASHBACK_CHECK -> {
                             textFieldMinTransk.isInputError = true
                             textFieldMinTransk.setMessage(MAX_TRANSACTION_LABEL)
                         }
@@ -223,7 +222,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                                 textFieldMaxCashback.setMessage(MIN_TRANSACTION_OVERFLOW)
                             } else {
                                 textFieldMinTransk.isInputError = false
-                                textFieldMaxCashback.isInputError  = false
+                                textFieldMaxCashback.isInputError = false
                                 textFieldMinTransk.setMessage("")
                                 textFieldMaxCashback.setMessage("")
                             }
@@ -234,7 +233,7 @@ class TmSingleCouponView @JvmOverloads constructor(
         }
     }
 
-    private fun chipCashBackCouponValidation(){
+    private fun chipCashBackCouponValidation() {
         textFieldPercentCashback.let {
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
                 override fun onNumberChanged(number: Double) {
@@ -259,9 +258,9 @@ class TmSingleCouponView @JvmOverloads constructor(
         }
     }
 
-    private fun quotaValidation(){
+    private fun quotaValidation() {
         textFieldQuota.let {
-            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     when {
@@ -269,7 +268,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                             textFieldQuota.isInputError = true
                             textFieldQuota.setMessage(MIN_QUOTA_LABEL)
                         }
-                        number> MAX_QUOTA_CHECK -> {
+                        number > MAX_QUOTA_CHECK -> {
                             textFieldQuota.isInputError = true
                             textFieldQuota.setMessage(MAX_QUOTA_LABEL)
                         }
@@ -288,47 +287,56 @@ class TmSingleCouponView @JvmOverloads constructor(
         return ivPreviewCoupon
     }
 
-    fun setErrorMaxBenefit(error:String){
+    fun setErrorMaxBenefit(error: String) {
         if (error.isNotEmpty()) {
             textFieldMaxCashback.isInputError = true
             textFieldMaxCashback.setMessage(error)
         }
     }
 
-    fun setErrorMinTransaction(error:String){
-        if(error.isNotEmpty()) {
+    fun setErrorMinTransaction(error: String) {
+        if (error.isNotEmpty()) {
             textFieldMinTransk.isInputError = true
             textFieldMinTransk.setMessage(error)
         }
     }
 
-    fun setErrorCashbackPercentage(error:String){
+    fun setErrorCashbackPercentage(error: String) {
         if (error.isNotEmpty()) {
             textFieldPercentCashback.isInputError = true
             textFieldPercentCashback.setMessage(error)
         }
     }
 
-    fun setErrorQuota(error:String){
+    fun setErrorQuota(error: String) {
         if (error.isNotEmpty()) {
             textFieldQuota.isInputError = true
             textFieldQuota.setMessage(error)
         }
     }
 
-    fun setChipPercentageClickListener(chipPercentageClickListener:ChipPercentageClickListener){
+    fun setChipPercentageClickListener(chipPercentageClickListener: ChipPercentageClickListener) {
         this.chipPercentageClickListener = chipPercentageClickListener
     }
 
-    fun setMaxTransactionListener(maxTransactionListener:MaxTransactionListener){
+    fun setMaxTransactionListener(maxTransactionListener: MaxTransactionListener) {
         this.maxTransactionListener = maxTransactionListener
     }
 
-    interface ChipPercentageClickListener{
+    fun setCashbackType(selectedChipPositionCashback: Int) {
+        chipGroupCashbackType.setDefaultSelection(selectedChipPositionCashback)
+        if (selectedChipPositionCashback == 1) {
+            isShowCashPercentage = true
+        } else {
+            isShowCashPercentage = false
+        }
+    }
+
+    interface ChipPercentageClickListener {
         fun onClickPercentageChip()
     }
 
-    interface MaxTransactionListener{
+    interface MaxTransactionListener {
         fun onQuotaCashbackChange()
     }
 }
