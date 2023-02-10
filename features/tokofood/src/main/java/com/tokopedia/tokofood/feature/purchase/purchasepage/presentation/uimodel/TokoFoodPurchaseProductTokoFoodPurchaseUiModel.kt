@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimode
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
@@ -24,7 +25,7 @@ data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
         var cartId: String = "",
         var isQuantityChanged: Boolean = false,
         val variantsParam: List<UpdateProductVariantParam> = listOf(),
-        val variants: List<CheckoutTokoFoodProductVariant> = listOf()
+        val variants: List<CartListCartGroupCartVariant> = listOf()
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
         fun getBasePrice(): Double {

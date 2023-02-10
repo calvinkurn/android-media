@@ -1,11 +1,11 @@
 package com.tokopedia.tokofood.common.presentation.mapper
 
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartSelectionRule
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantSelectionRules
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
@@ -16,7 +16,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 
 object CustomOrderDetailsMapper {
 
-    fun mapTokoFoodProductsToCustomOrderDetails(tokoFoodProducts: List<CheckoutTokoFoodProduct>): MutableList<CustomOrderDetail> {
+    fun mapTokoFoodProductsToCustomOrderDetails(tokoFoodProducts: List<CartListCartGroupCart>): MutableList<CustomOrderDetail> {
         return tokoFoodProducts.map { product ->
             CustomOrderDetail(
                 cartId = product.cartId,
@@ -24,14 +24,14 @@ object CustomOrderDetailsMapper {
                 subTotalFmt = product.price.getCurrencyFormatted(),
                 qty = product.quantity,
                 customListItems = mapTokoFoodVariantsToCustomListItems(
-                    variants = product.variants,
-                    orderNote = product.notes
+                    variants = product.customResponse.variants,
+                    orderNote = product.customResponse.notes
                 )
             )
         }.toMutableList()
     }
 
-    private fun mapTokoFoodVariantsToCustomListItems(variants: List<CheckoutTokoFoodProductVariant>, orderNote: String): List<CustomListItem> {
+    private fun mapTokoFoodVariantsToCustomListItems(variants: List<CartListCartGroupCartVariant>, orderNote: String): List<CustomListItem> {
         val customListItems = mutableListOf<CustomListItem>()
         val addOns = variants.map { variant ->
             val options = variant.options.map { option ->
@@ -48,7 +48,7 @@ object CustomOrderDetailsMapper {
                     price = option.price,
                     priceFmt = formattedPrice,
                     status = option.status,
-                    selectionControlType = mapSelectionRulesToSelectionControlType(variant.rules.selectionRules)
+                    selectionControlType = mapSelectionRulesToSelectionControlType(variant.rules.selectionRule)
                 )
             }
             CustomListItem(
@@ -56,10 +56,10 @@ object CustomOrderDetailsMapper {
                 addOnUiModel = AddOnUiModel(
                     id = variant.variantId,
                     name = variant.name,
-                    isRequired = variant.rules.selectionRules.isRequired,
+                    isRequired = variant.rules.selectionRule.isRequired,
                     isSelected = variant.options.count { it.isSelected } != Int.ZERO,
-                    maxQty = variant.rules.selectionRules.maxQuantity,
-                    minQty = variant.rules.selectionRules.minQuantity,
+                    maxQty = variant.rules.selectionRule.maxQty,
+                    minQty = variant.rules.selectionRule.minQty,
                     options = options,
                     selectedAddOns = options.filter { it.isSelected }.map { it.name }
                 )
@@ -71,10 +71,10 @@ object CustomOrderDetailsMapper {
         return customListItems.toList()
     }
 
-    private fun mapSelectionRulesToSelectionControlType(selectionRules: CheckoutTokoFoodProductVariantSelectionRules): SelectionControlType {
+    private fun mapSelectionRulesToSelectionControlType(selectionRules: CartListCartGroupCartSelectionRule): SelectionControlType {
         return when {
             selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
-            selectionRules.minQuantity == Int.ZERO && selectionRules.maxQuantity == Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
+            selectionRules.minQty == Int.ZERO && selectionRules.maxQty == Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
             else -> SelectionControlType.SINGLE_SELECTION
         }
     }

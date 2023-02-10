@@ -12,4 +12,7 @@ object TokoFoodCartUtil {
 
     const val IS_MAIN_ADDRESS_STATUS = 2
 
+    const val AVAILABLE_SECTION = "available_section"
+    const val UNAVAILABLE_SECTION = "unavilable_section"
+
 }

@@ -282,22 +282,7 @@ data class CheckoutTokoFoodProductVariantOption(
     val priceFmt: String = "",
     @SerializedName("status")
     val status: Int = 0
-) {
-    companion object {
-        // Unspecified.
-        const val STATUS_UNSPECIFIED = 0
-        // Item is available.
-        const val ACTIVE = 1
-        // Item is disabled.
-        const val INACTIVE = 2
-        // Item is out of stock.
-        const val OUT_OF_STOCK = 3
-        // Deleted item.
-        const val DELETED = 4
-    }
-
-    fun isOutOfStock(): Boolean = status == OUT_OF_STOCK
-}
+)
 
 data class CheckoutTokoFoodShipping(
     @SerializedName("name")

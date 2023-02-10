@@ -5,15 +5,12 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class CartListTokofoodResponse(
     @SerializedName("cart_general_cart_list")
     val cartGeneralCartList: CartGeneralCartList 
-) {
-
-    fun isSuccess(): Boolean = cartGeneralCartList.data.success == Int.ONE
-
-}
+)
 
 data class CartGeneralCartList(
     @SerializedName("data")
@@ -27,19 +24,45 @@ data class CartGeneralCartListData(
     val message: String = String.EMPTY,
     @SerializedName("data")
     val data: CartListData = CartListData()
-)
+) {
+
+    fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS_INT
+
+    /**
+     * Get whether the components in the checkout page can be interactable
+     */
+    fun isEnabled(): Boolean = isSuccess() && isErrorTickerEmpty()
+
+    fun isEmptyProducts(): Boolean {
+        return data.getTokofoodBusinessData().cartGroups.all { it.carts.isEmpty() }
+    }
+
+    private fun isErrorTickerEmpty(): Boolean =
+        data.getTokofoodBusinessData().ticker.errorTickers.top.message.isEmpty()
+
+}
 
 data class CartListData(
     @SerializedName("shopping_summary")
     val shoppingSummary: CartListShoppingSummary = CartListShoppingSummary(),
     @SerializedName("business_data")
     val businessData: List<CartListBusinessData> = listOf()
-)
+) {
+    // TODO: Check for businessId
+    fun getTokofoodBusinessData(): CartListBusinessData {
+        return businessData.firstOrNull { it.businessId == String.EMPTY } ?: CartListBusinessData()
+    }
+}
 
 data class CartListShoppingSummary(
     @SerializedName("business_breakdown")
     val businessBreakdowns: List<CartListBusinessBreakdown> = listOf(),
-)
+) {
+    // TODO: Check for businessId
+    fun getTokofoodBusinessBreakdown(): CartListBusinessBreakdown {
+        return businessBreakdowns.firstOrNull { it.businessId == String.EMPTY } ?: CartListBusinessBreakdown()
+    }
+}
 
 data class CartListBusinessBreakdown(
     @SerializedName("business_id")
@@ -53,7 +76,7 @@ data class CartListBusinessBreakdown(
     @SerializedName("product")
     val product: CartListBusinessBreakdownProduct = CartListBusinessBreakdownProduct(),
     @SerializedName("add_ons")
-    val addOns: CartListBusinessBreakdownAddOns = CartListBusinessBreakdownAddOns()
+    val addOns: List<CartListBusinessBreakdownAddOns> = listOf()
 )
 
 data class CartListBusinessBreakdownCustomResponse(
@@ -94,7 +117,7 @@ data class CartListAddOnsCustomResponseInfo(
     @SerializedName("image_url")
     val imageUrl: String = String.EMPTY,
     @SerializedName("bottomsheet")
-    val bottomsheet: CartListAddOnsCustomResponseBottomsheet = CartListAddOnsCustomResponseBottomsheet()
+    val bottomSheet: CartListAddOnsCustomResponseBottomsheet = CartListAddOnsCustomResponseBottomsheet()
 )
 
 data class CartListAddOnsCustomResponseBottomsheet(
@@ -119,7 +142,15 @@ data class CartListBusinessData(
     val customResponse: CartListBusinessDataCustomResponse = CartListBusinessDataCustomResponse(),
     @SerializedName("cart_groups")
     val cartGroups: List<CartListBusinessDataCartGroup> = listOf()
-)
+) {
+
+    companion object {
+        private const val POPUP_TYPE_PROMO = "promo"
+    }
+
+    fun isPromoPopupType(): Boolean = customResponse.popupMessageType == POPUP_TYPE_PROMO
+
+}
 
 data class CartListBusinessDataTicker(
     @SerializedName("top")
@@ -155,7 +186,11 @@ data class CartListBusinessDataAdditionalGroupingDetail(
     @SerializedName("additional_group_id")
     val additionalGroupId: String = String.EMPTY,
     @SerializedName("cart_ids")
-    val cartIds: List<String> = listOf()
+    val cartIds: List<String> = listOf(),
+    @SerializedName("message")
+    val message: String = String.EMPTY,
+    @SerializedName("additional_group_child_ids")
+    val additionalGroupChildIds: List<String> = listOf()
 )
 
 data class CartListBusinessDataCustomResponse(
@@ -196,7 +231,9 @@ data class CartListBusinessDataUserAddress(
     val receiverName: String = String.EMPTY,
     @SerializedName("status")
     val status: Int = Int.ZERO
-)
+) {
+    fun isMainAddress(): Boolean = status == TokoFoodCartUtil.IS_MAIN_ADDRESS_STATUS
+}
 
 data class CartListBusinessDataPromo(
     @SerializedName("is_promo_applied")
@@ -430,6 +467,24 @@ data class CartListCartGroupCartOption(
     @SerializedName("price")
     val price: Double = 0.0,
     @SerializedName("price_fmt")
-    val priceFmt: String = String.EMPTY
-)
+    val priceFmt: String = String.EMPTY,
+    @SerializedName("status")
+    val status: Int = STATUS_UNSPECIFIED
+) {
+    companion object {
+        // Unspecified.
+        const val STATUS_UNSPECIFIED = 0
+        // Item is available.
+        const val ACTIVE = 1
+        // Item is disabled.
+        const val INACTIVE = 2
+        // Item is out of stock.
+        const val OUT_OF_STOCK = 3
+        // Deleted item.
+        const val DELETED = 4
+    }
+
+    fun isOutOfStock(): Boolean = status == OUT_OF_STOCK
+}
+
 

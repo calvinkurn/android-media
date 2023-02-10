@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase
+package com.tokopedia.tokofood.common.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -9,11 +9,13 @@ import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CartListTokofoodParam
 import com.tokopedia.tokofood.common.domain.param.CartListTokofoodParamBusinessData
-import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListData
+import com.tokopedia.tokofood.common.domain.response.CartListTokofoodResponse
 import javax.inject.Inject
 
+// TODO: Remove unused field requested
 private const val QUERY = """
-        query CartGeneralCartList(${'$'}params: cartGeneralParam!) {
+        query MiniCartGeneralCartList(${'$'}params: cartGeneralParam!) {
           cart_general_cart_list(params: ${'$'}params) {
             message
             success
@@ -235,28 +237,28 @@ private const val QUERY = """
         }
     """
 
-@GqlQuery("CartGeneralCartList", QUERY)
-class CheckoutTokoFoodUseCaseNew @Inject constructor(
+@GqlQuery("MiniCartGeneralCartList", QUERY)
+class MiniCartListTokofoodUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
-): GraphqlUseCase<CartGeneralCartListData>(repository) {
+): GraphqlUseCase<CartListTokofoodResponse>(repository) {
 
     init {
-        setTypeClass(CartGeneralCartListData::class.java)
+        setTypeClass(CartListTokofoodResponse::class.java)
         setGraphqlQuery(CartGeneralCartLis())
     }
 
-    suspend fun execute(source: String): CartGeneralCartListData {
+    suspend fun execute(source: String): CartListData {
         val additionalAttributes = CartAdditionalAttributesTokoFood(
             chosenAddressRequestHelper.getChosenAddress()
         )
         val param = generateParams(additionalAttributes, source)
         setRequestParams(param)
         val response = executeOnBackground()
-        if (response.isSuccess()) {
-            return response
+        if (response.cartGeneralCartList.data.isSuccess()) {
+            return response.cartGeneralCartList.data.data
         } else {
-            throw MessageErrorException(response.message)
+            throw MessageErrorException(response.cartGeneralCartList.data.message)
         }
     }
 

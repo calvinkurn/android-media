@@ -3,7 +3,8 @@ package com.tokopedia.tokofood.feature.purchase.analytics
 import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartListData
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -15,13 +16,16 @@ import com.tokopedia.track.constant.TrackerConstant
  */
 object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
 
-    fun sendLoadCheckoutTracking(data: CheckoutTokoFoodData,
+    fun sendLoadCheckoutTracking(data: CartListData,
                                  userId: String) {
-        val totalProductPrice = data.shoppingSummary.costBreakdown.totalCartPrice.originalAmount
-        val totalShippingPrice = data.shipping.price
-        val totalPromotionPrice = data.shoppingSummary.discountBreakdown.sumOf { it.amount }
-        val totalAllPrice = data.shoppingSummary.total.cost
-        val foodIdArray = data.availableSection.products.map { it.productId }.distinct()
+        val businessData = data.getTokofoodBusinessData()
+        val shoppingSummary = businessData.customResponse.shoppingSummary
+        val totalProductPrice = shoppingSummary.costBreakdown.totalCartPrice.originalAmount
+        val totalShippingPrice = businessData.customResponse.shipping.price
+        val totalPromotionPrice = shoppingSummary.discountBreakdown.sumOf { it.amount }
+        val totalAllPrice = shoppingSummary.total.cost
+        val foodIdArray = TokoFoodPurchaseUiModelMapper.getAvailableSectionProducts(businessData)
+            .map { it.productId }.distinct()
         val eventLabel =
             "${totalProductPrice}_${totalShippingPrice}_${totalPromotionPrice}_${totalAllPrice}_${foodIdArray}"
 
@@ -42,13 +46,16 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_CHECKOUT_PROGRESS, dataLayer)
     }
 
-    fun sendSuccessChoosePayment(data: CheckoutTokoFoodData,
+    fun sendSuccessChoosePayment(data: CartListData,
                                  userId: String) {
-        val totalProductPrice = data.shoppingSummary.costBreakdown.totalCartPrice.originalAmount
-        val totalShippingPrice = data.shipping.price
-        val totalPromotionPrice = data.shoppingSummary.discountBreakdown.sumOf { it.amount }
-        val totalAllPrice = data.shoppingSummary.total.cost
-        val foodIdArray = data.availableSection.products.map { it.productId }.distinct()
+        val businessData = data.getTokofoodBusinessData()
+        val shoppingSummary = businessData.customResponse.shoppingSummary
+        val totalProductPrice = shoppingSummary.costBreakdown.totalCartPrice.originalAmount
+        val totalShippingPrice = businessData.customResponse.shipping.price
+        val totalPromotionPrice = shoppingSummary.discountBreakdown.sumOf { it.amount }
+        val totalAllPrice = shoppingSummary.total.cost
+        val foodIdArray = TokoFoodPurchaseUiModelMapper.getAvailableSectionProducts(businessData)
+            .map { it.productId }.distinct()
         val eventLabel =
             "${totalProductPrice}_${totalShippingPrice}_${totalPromotionPrice}_${totalAllPrice}_${foodIdArray}"
 
@@ -81,22 +88,23 @@ object TokoFoodPurchaseAnalytics: BaseTrackerConst() {
             .send()
     }
 
-    private fun getItemBundles(data: CheckoutTokoFoodData): ArrayList<Bundle> {
+    private fun getItemBundles(data: CartListData): ArrayList<Bundle> {
         val itemBundles = arrayListOf<Bundle>()
+        val businessData = data.getTokofoodBusinessData()
         itemBundles.addAll(
-            data.availableSection.products.map {
+            TokoFoodPurchaseUiModelMapper.getAvailableSectionProducts(businessData).map {
                 Bundle().apply {
                     putString(
                         TokoFoodAnalytics.KEY_DIMENSION_49,
-                        data.shoppingSummary.discountBreakdown.firstOrNull()?.discountId.orEmpty()
+                        businessData.customResponse.shoppingSummary.discountBreakdown.firstOrNull()?.discountId.orEmpty()
                     )
-                    putString(TokoFoodAnalytics.KEY_DIMENSION_79, data.shop.shopId)
+                    putString(TokoFoodAnalytics.KEY_DIMENSION_79, businessData.customResponse.shop.shopId)
                     putString(Items.ITEM_ID, it.productId)
-                    putString(Items.ITEM_CATEGORY, it.categoryId)
+                    putString(Items.ITEM_CATEGORY, it.customResponse.categoryId)
                     putDouble(Items.PRICE, it.price)
                     putInt(TokoFoodAnalytics.KEY_QUANTITY, it.quantity)
-                    putString(TrackerConstant.SHOP_ID, data.shop.shopId)
-                    putString(TokoFoodAnalytics.KEY_SHOP_NAME, data.shop.name)
+                    putString(TrackerConstant.SHOP_ID, businessData.customResponse.shop.shopId)
+                    putString(TokoFoodAnalytics.KEY_SHOP_NAME, businessData.customResponse.shop.name)
                 }
             }
         )
