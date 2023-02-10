@@ -17,8 +17,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/card"
         app:unify_image_type="circle"
-        android:elevation="20dp"/>
-
+        android:elevation="2dp"/>
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card"
