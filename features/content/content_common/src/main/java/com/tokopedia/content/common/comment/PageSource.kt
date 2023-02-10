@@ -29,4 +29,14 @@ sealed class PageSource {
         override val reportType: String
             get() = "post"
     }
+
+    object Unknown : PageSource() {
+        override val id: String
+            get() = ""
+        override val type: String
+            get() = ""
+        override val reportType: String
+            get() = ""
+
+    }
 }

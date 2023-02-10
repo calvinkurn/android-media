@@ -3,13 +3,13 @@ package com.tokopedia.content.common.comment.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.comment.CommentUiModelMapper
 import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.model.PostComment
+import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.usecase.DeleteCommentUseCase
 import com.tokopedia.content.common.comment.usecase.GetCommentsUseCase
 import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
 import com.tokopedia.content.common.comment.usecase.SubmitReportCommentUseCase
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ import javax.inject.Inject
  * @author by astidhiyaa on 08/02/23
  */
 class ContentCommentRepositoryImpl @Inject constructor(
-    private val userSession: UserSession,
+    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
     private val mapper: CommentUiModelMapper,
     private val deleteCommentUseCase: DeleteCommentUseCase,
@@ -32,12 +32,11 @@ class ContentCommentRepositoryImpl @Inject constructor(
         return@withContext response
     }
 
-    //temp -> map to ui model
     override suspend fun replyComment(
         source: PageSource,
         commentType: PostCommentUseCase.CommentType,
         comment: String
-    ): PostComment = withContext(dispatchers.io) {
+    ): CommentUiModel = withContext(dispatchers.io) {
         val commenterType =
             if (userSession.isShopOwner) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
         val response = postCommentUseCase.apply {
@@ -50,7 +49,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
                 )
             )
         }.executeOnBackground()
-        return@withContext response
+        return@withContext mapper.mapComment(response.parent.data)
     }
 
     override suspend fun reportComment(

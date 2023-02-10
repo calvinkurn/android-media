@@ -1,7 +1,7 @@
 package com.tokopedia.content.common.comment.repository
 
 import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.model.PostComment
+import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
 
@@ -15,7 +15,7 @@ interface ContentCommentRepository {
         source: PageSource,
         commentType: PostCommentUseCase.CommentType,
         comment: String
-    ): PostComment //temp -> map to ui model
+    ): CommentUiModel
 
     suspend fun reportComment(
         source: PageSource,

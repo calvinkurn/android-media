@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.content.common.comment.ContentCommentFactory
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -13,14 +13,15 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.ContentCommentViewModel
+import com.tokopedia.content.common.comment.PageSource
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 09/02/23
  */
 class ContentCommentBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
-    ) : BottomSheetUnify() {
+    factory: ContentCommentFactory.Creator,
+) : BottomSheetUnify() {
 
     private var _binding: FragmentContentCommentBottomSheetBinding? = null
     private val binding: FragmentContentCommentBottomSheetBinding
@@ -30,7 +31,11 @@ class ContentCommentBottomSheet @Inject constructor(
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private val viewModel by activityViewModels<ContentCommentViewModel> { viewModelFactory }
+    private var mSource: EntrySource? = null
+
+    private val viewModel : ContentCommentViewModel by activityViewModels{
+        factory.create(this, mSource?.getPageSource() ?: PageSource.Unknown)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,7 @@ class ContentCommentBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        viewModel.init()
     }
 
     private fun setupBottomSheet() {
@@ -62,6 +68,10 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+    fun setEntrySource(source: EntrySource?) {
+        mSource = source
+    }
+
     fun show(fragmentManager: FragmentManager) {
         if (isAdded) return
         showNow(fragmentManager, TAG)
@@ -80,7 +90,12 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        setEntrySource(null)
         _binding = null
+    }
+
+    interface EntrySource {
+        fun getPageSource(): PageSource
     }
 
     companion object {
