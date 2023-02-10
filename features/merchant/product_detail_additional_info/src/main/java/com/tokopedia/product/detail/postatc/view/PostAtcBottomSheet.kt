@@ -83,12 +83,12 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     private val adapter = PostAtcAdapter(this)
 
-    private lateinit var binding: PostAtcBottomSheetBinding
-    private lateinit var productId: String
-    private lateinit var cartId: String
-    private lateinit var layoutId: String
-    private lateinit var pageSource: String
-    private lateinit var commonTracker: CommonTracker
+    private var binding: PostAtcBottomSheetBinding? = null
+    private var productId: String? = null
+    private var cartId: String? = null
+    private var layoutId: String? = null
+    private var pageSource: String? = null
+    private var commonTracker: CommonTracker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
@@ -133,19 +133,25 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     private fun initData() {
-
         /**
          * Init Loading
          */
         adapter.addItem(LoadingUiModel())
         adapter.notifyItemInserted(adapter.lastIndex)
 
-        viewModel.fetchLayout(productId, cartId, layoutId, pageSource)
+
+
+        viewModel.fetchLayout(
+            productId.orEmpty(),
+            cartId.orEmpty(),
+            layoutId.orEmpty(),
+            pageSource.orEmpty()
+        )
     }
 
     private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
         result.doSuccessOrFail(success = {
-            binding.postAtcRv.post {
+            binding?.postAtcRv?.post {
                 adapter.clearAllItems()
                 adapter.addItems(it.data)
                 adapter.notifyItemRangeChanged(0, it.data.size)
@@ -153,14 +159,16 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         }, fail = {
             showError(it)
         })
-        PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, commonTracker.get())
+        commonTracker?.let {
+            PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
+        }
     }
 
     private val recommendationsObserver = Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
         val uiModelId = result.first
         result.second.doSuccessOrFail(success = {
             val data = it.data
-            binding.postAtcRv.post {
+            binding?.postAtcRv?.post {
                 adapter.updateRecommendation(uiModelId, data)
             }
         }, fail = {
@@ -235,16 +243,18 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         cartId: String,
         componentTrackData: ComponentTrackData
     ) {
-        PostAtcTracking.sendClickLihatKeranjang(
-            commonTracker.get(),
-            componentTrackData
-        )
+        commonTracker?.let {
+            PostAtcTracking.sendClickLihatKeranjang(
+                it.get(),
+                componentTrackData
+            )
+        }
 
         goToCart(cartId)
     }
 
     override fun removeComponent(position: Int) {
-        binding.postAtcRv.post {
+        binding?.postAtcRv?.post {
             adapter.removeComponent(position)
         }
     }

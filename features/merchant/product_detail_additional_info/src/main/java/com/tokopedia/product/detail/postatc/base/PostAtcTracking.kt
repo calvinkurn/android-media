@@ -44,7 +44,6 @@ object PostAtcTracking {
         common: CommonTracker,
         component: ComponentTrackData
     ) {
-
         val eventAction = "click - lihat keranjang on post atc bottomsheet"
 
         val mapEvent = hashMapOf<String, Any>(

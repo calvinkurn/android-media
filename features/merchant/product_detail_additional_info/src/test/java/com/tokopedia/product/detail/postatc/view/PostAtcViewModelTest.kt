@@ -18,7 +18,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
 class PostAtcViewModelTest {
 
     @get:Rule
@@ -36,7 +35,6 @@ class PostAtcViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
     }
-
 
     private fun createViewModel(): PostAtcViewModel {
         return PostAtcViewModel(
@@ -152,7 +150,6 @@ class PostAtcViewModelTest {
             getRecommendationUseCase.getData(requestParam)
         } returns response
 
-
         viewModel.fetchRecommendation(productId, pageName, uniqueId)
 
         val result = viewModel.recommendations.value
@@ -180,7 +177,6 @@ class PostAtcViewModelTest {
         coEvery {
             getRecommendationUseCase.getData(requestParam)
         } throws Throwable(errorMessage)
-
 
         viewModel.fetchRecommendation(productId, pageName, uniqueId)
 
