@@ -4,8 +4,8 @@ internal const val QUERY_RATESV3 = "ratesV3"
 internal const val QUERY_RATESV3_API = "ratesV3Api"
 
 internal fun ratesQuery(queryName: String) = """
-query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
-  ${queryName}(input: ${"$"}param) {
+query $queryName(${"$"}param : OngkirRatesV3Input!) {
+  $queryName(input: ${"$"}param) {
     ratesv3 {
       id
       rates_id
@@ -125,6 +125,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
               text_detail
               url_detail
               icon_url
+              url_text
             }
             mvc {
               is_mvc
