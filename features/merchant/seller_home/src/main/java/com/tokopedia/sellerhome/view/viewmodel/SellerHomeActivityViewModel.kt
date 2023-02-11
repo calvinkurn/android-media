@@ -1,21 +1,17 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
 import android.content.Intent
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.device.info.DeviceInfo.await
-import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetShopStateInfoUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopStateUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
@@ -23,11 +19,8 @@ import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.guava.await
 import javax.inject.Inject
@@ -43,7 +36,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     private val sellerAdminUseCase: SellerAdminUseCase,
     private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
     private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
-    private val getShopStateInfoUseCase: GetShopStateInfoUseCase,
+    private val getShopStateUseCase: GetShopStateUseCase,
     private val capabilityClient: CapabilityClient,
     private val nodeClient: NodeClient,
     private val remoteActivityHelper: RemoteActivityHelper,
@@ -88,21 +81,21 @@ class SellerHomeActivityViewModel @Inject constructor(
         val isRoleOrderAdminDeferred = async { getIsRoleOrderAdmin() }
         notificationUiModelDeferred.await().let {
             it.copy(
-                    chat =
-                        if (isRoleChatAdminDeferred.await()) {
-                            it.chat
-                        } else {
-                            0
-                        },
-                    sellerOrderStatus =
-                        if (isRoleOrderAdminDeferred.await()) {
-                            it.sellerOrderStatus
-                        } else {
-                            it.sellerOrderStatus.copy(
-                                    newOrder = 0,
-                                    readyToShip = 0
-                            )
-                        }
+                chat =
+                if (isRoleChatAdminDeferred.await()) {
+                    it.chat
+                } else {
+                    0
+                },
+                sellerOrderStatus =
+                if (isRoleOrderAdminDeferred.await()) {
+                    it.sellerOrderStatus
+                } else {
+                    it.sellerOrderStatus.copy(
+                        newOrder = 0,
+                        readyToShip = 0
+                    )
+                }
             )
         }
     }
@@ -126,7 +119,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     fun getShopStateInfo() = executeCall(_shopStateInfo) {
-        getShopStateInfoUseCase.executeInBackground(
+        getShopStateUseCase.executeInBackground(
             shopId = userSession.shopId,
             dataKey = SELLER_INFO_STATE_KEY,
             pageSource = SELLER_HOME_PAGE_NAME
@@ -154,7 +147,6 @@ class SellerHomeActivityViewModel @Inject constructor(
                     } catch (cancellationException: CancellationException) {
                         // Request was cancelled normally
                     } catch (throwable: Throwable) {
-
                     }
                 }
             }
@@ -208,7 +200,7 @@ class SellerHomeActivityViewModel @Inject constructor(
 
     private suspend fun startRemoteActivity(
         remoteActivityHelper: RemoteActivityHelper,
-        intent: Intent,
+        intent: Intent
     ) {
         try {
             remoteActivityHelper.startRemoteActivity(intent).await()
