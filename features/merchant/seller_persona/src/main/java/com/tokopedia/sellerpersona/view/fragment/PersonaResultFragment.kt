@@ -11,12 +11,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.common.Utils
 import com.tokopedia.sellerpersona.data.remote.model.TogglePersonaModel
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
@@ -54,6 +57,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     private var isPersonaActive = false
     private var personaData: PersonaDataUiModel? = null
     private var shouldShowDefaultApplyButton = false
+    private val impressHolder by lazy { ImpressHolder() }
 
     override fun bind(
         layoutInflater: LayoutInflater, container: ViewGroup?
@@ -196,6 +200,10 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                 }
                 btnSpApplyPersona.isLoading = true
                 viewModel.toggleUserPersona(status)
+                SellerPersonaTracking.sendClickSellerPersonaResultSavePersonaEvent(
+                    persona.value,
+                    switchSpActivatePersona.isChecked
+                )
             }
         }
     }
@@ -225,6 +233,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                     }
                 }
                 setTextPersonaActiveStatus(isChecked)
+                SellerPersonaTracking.sendClickSellerPersonaResultToggleActiveEvent()
             }
         }
     }
@@ -283,12 +292,18 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             btnSpRetryQuestionnaire.setOnClickListener {
                 it.findNavController()
                     .navigate(R.id.actionResultFragmentToQuestionnaireFragment)
+                SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
             }
             tvSpSelectManualType.setOnClickListener {
                 val persona = personaData?.persona
                 val action = PersonaResultFragmentDirections
                     .actionResultFragmentToSelectTypeFragment(persona)
                 it.findNavController().navigate(action)
+                SellerPersonaTracking.sendClickSellerPersonaResultSelectPersonaEvent()
+            }
+
+            root.addOnImpressionListener(impressHolder) {
+                SellerPersonaTracking.sendImpressionSellerPersonaResultEvent()
             }
         }
     }

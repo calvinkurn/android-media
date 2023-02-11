@@ -23,7 +23,7 @@ object TrackingConst {
     const val CLICK_SELLER_PERSONA_START_QUIZ = "click seller persona - mulai kuis"
     const val CLICK_SELLER_PERSONA_LATER = "click seller persona - nanti saja"
     const val IMPRESSION_SELLER_PERSONA = "impression seller persona"
-    const val SETTINGS_CLICK_SELLER_PERSONA = "settings - click seller persona"
+
     const val TRACKER_ID = "trackerId"
     const val BUSINESS_UNIT = "Physical Goods"
     const val TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"

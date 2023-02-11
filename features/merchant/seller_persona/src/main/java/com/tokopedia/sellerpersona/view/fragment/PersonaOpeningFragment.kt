@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPreference
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaOpeningBinding
@@ -20,6 +23,8 @@ class PersonaOpeningFragment : BaseFragment<FragmentPersonaOpeningBinding>() {
 
     @Inject
     lateinit var sharedPref: PersonaSharedPreference
+
+    private val impressHolder by lazy { ImpressHolder() }
 
     override fun inject() {
         daggerComponent?.inject(this)
@@ -47,7 +52,12 @@ class PersonaOpeningFragment : BaseFragment<FragmentPersonaOpeningBinding>() {
             showIllustrationImage()
             setupQuestionnaireNavigation()
             btnOpeningTryLater.setOnClickListener {
+                SellerPersonaTracking.sendClickSellerPersonaLaterEvent()
                 activity?.finish()
+            }
+
+            root.addOnImpressionListener(impressHolder) {
+                SellerPersonaTracking.sendImpressionSellerPersonaEvent()
             }
         }
     }
@@ -58,6 +68,7 @@ class PersonaOpeningFragment : BaseFragment<FragmentPersonaOpeningBinding>() {
 
     private fun setupQuestionnaireNavigation() {
         binding?.btnOpeningStartQuiz?.setOnClickListener { v ->
+            SellerPersonaTracking.sendClickSellerPersonaStartQuizEvent()
             v.findNavController().navigate(R.id.actionOpeningFragmentToQuestionnaireFragment)
         }
     }

@@ -5,22 +5,10 @@ import com.tokopedia.track.builder.Tracker
 
 /**
  * Created by @ilhamsuaib on 08/02/23.
+ * data tracker : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3630
  */
 
 object SellerPersonaTracking {
-
-    fun sendSettingsClickSellerPersonaEvent() {
-        Tracker.Builder()
-            .setEvent(TrackingConst.Event.CLICK_PG)
-            .setEventAction(TrackingConst.SETTINGS_CLICK_SELLER_PERSONA)
-            .setEventCategory(TrackingConst.Category.OTHER_TAB)
-            .setEventLabel(String.EMPTY)
-            .setCustomProperty(TrackingConst.TRACKER_ID, "40032")
-            .setBusinessUnit(TrackingConst.BUSINESS_UNIT)
-            .setCurrentSite(TrackingConst.TOKOPEDIA_MARKET_PLACE)
-            .build()
-            .send()
-    }
 
     fun sendImpressionSellerPersonaEvent() {
         Tracker.Builder()
@@ -113,7 +101,13 @@ object SellerPersonaTracking {
             .send()
     }
 
-    fun sendClickSellerPersonaResultSavePersonaEvent(eventLabel: String) {
+    fun sendClickSellerPersonaResultSavePersonaEvent(persona: String, isActive: Boolean) {
+        val activeLabel = if (isActive) {
+            "Active"
+        } else {
+            "Not Active"
+        }
+        val eventLabel = "$persona - $activeLabel"
         Tracker.Builder()
             .setEvent(TrackingConst.Event.CLICK_PG)
             .setEventAction(TrackingConst.CLICK_SELLER_PERSONA_SAVE_PERSONA)

@@ -22,6 +22,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
+import com.tokopedia.sellerhome.settings.analytics.SettingSellerPersonaTracking
 import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import com.tokopedia.user.session.UserSession
@@ -56,15 +57,17 @@ class MenuSettingAdapter(
             )
         )
         context?.let {
-            val sellerHomeSharedPref = SellerHomeSharedPref(it.applicationContext)
+            val sellerHomeSharedPref = SellerHomeSharedPref(it)
             val userSession: UserSessionInterface = UserSession(it)
             if (sellerHomeSharedPref.shouldShowPersonaEntryPoint(userSession.userId)) {
                 menuList.add(
                     MenuItemUiModel(
                         it.getString(R.string.setting_seller_persona),
-                        clickApplink = ApplinkConstInternalSellerapp.SELLER_PERSONA,
-                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
-                        tag = getPersonaTag()
+                        tag = getPersonaTag(),
+                        clickAction = {
+                            SettingSellerPersonaTracking.sendSettingsClickSellerPersonaEvent()
+                            RouteManager.route(it, ApplinkConstInternalSellerapp.SELLER_PERSONA)
+                        }
                     )
                 )
             }
