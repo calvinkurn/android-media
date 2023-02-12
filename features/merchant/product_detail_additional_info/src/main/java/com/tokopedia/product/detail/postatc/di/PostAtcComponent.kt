@@ -10,7 +10,8 @@ import dagger.Component
         PostAtcViewModelModule::class,
         PostAtcModule::class
     ],
-    dependencies = [BaseAppComponent::class])
+    dependencies = [BaseAppComponent::class]
+)
 interface PostAtcComponent {
     fun inject(fragment: PostAtcBottomSheet)
 }
