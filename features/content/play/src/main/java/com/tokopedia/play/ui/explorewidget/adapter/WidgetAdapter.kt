@@ -15,9 +15,7 @@ class WidgetAdapter(coordinator: PlayExploreWidgetCoordinator) :
         delegatesManager.addDelegate(WidgetAdapterDelegate.Shimmering())
     }
 
-    override fun areItemsTheSame(oldItem: WidgetUiModel, newItem: WidgetUiModel): Boolean {
-        return oldItem == newItem
-    }
+    override fun areItemsTheSame(oldItem: WidgetUiModel, newItem: WidgetUiModel): Boolean  = true
 
     override fun areContentsTheSame(oldItem: WidgetUiModel, newItem: WidgetUiModel): Boolean =
         oldItem == newItem
