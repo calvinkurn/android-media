@@ -512,7 +512,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        binding.rvWidgets.layoutManager = if (state !is ExploreWidgetState.Success) shimmerLayoutManager else widgetLayoutManager
+        binding.rvWidgets.layoutManager = if (state is ExploreWidgetState.Loading) shimmerLayoutManager else widgetLayoutManager
         scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)
     }
 
