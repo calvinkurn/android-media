@@ -191,7 +191,7 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = channelId,
-                    name = "/play/explorewidget",
+                    name = "voucher bottomsheet",
                     creative = voucher.title,
                     position = "1"
                 )
