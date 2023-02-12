@@ -10,4 +10,5 @@ data class ErrorUiModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 ) : PostAtcUiModel {
     override val id = hashCode()
+    override fun equalsWith(newItem: PostAtcUiModel) = id == newItem.id
 }

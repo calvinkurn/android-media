@@ -14,4 +14,12 @@ data class ProductInfoUiModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 ) : PostAtcUiModel {
     override val id = hashCode()
+    override fun equalsWith(newItem: PostAtcUiModel): Boolean {
+        return newItem is ProductInfoUiModel &&
+            title == newItem.title &&
+            subtitle == newItem.subtitle &&
+            imageLink == newItem.imageLink &&
+            buttonText == newItem.buttonText &&
+            cartId == newItem.cartId
+    }
 }

@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.postatc.base.PostAtcTracking
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.component.loading.LoadingUiModel
+import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -136,10 +137,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         /**
          * Init Loading
          */
-        adapter.addItem(LoadingUiModel())
-        adapter.notifyItemInserted(adapter.lastIndex)
-
-
+        adapter.addComponent(LoadingUiModel())
 
         viewModel.fetchLayout(
             productId.orEmpty(),
@@ -152,9 +150,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
         result.doSuccessOrFail(success = {
             binding?.postAtcRv?.post {
-                adapter.clearAllItems()
-                adapter.addItems(it.data)
-                adapter.notifyItemRangeChanged(0, it.data.size)
+                adapter.replaceComponents(it.data)
             }
         }, fail = {
             showError(it)
@@ -169,12 +165,13 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         result.second.doSuccessOrFail(success = {
             val data = it.data
             binding?.postAtcRv?.post {
-                adapter.updateRecommendation(uiModelId, data)
+                adapter.updateComponent<RecommendationUiModel>(uiModelId) {
+                    widget = data
+                }
             }
         }, fail = {
             adapter.removeComponent(uiModelId)
         })
-
     }
 
     private fun showError(it: Throwable) {

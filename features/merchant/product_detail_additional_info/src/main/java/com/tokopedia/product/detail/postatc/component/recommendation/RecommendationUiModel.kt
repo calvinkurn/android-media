@@ -11,4 +11,8 @@ data class RecommendationUiModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 ) : PostAtcUiModel {
     override val id = hashCode()
+    override fun equalsWith(newItem: PostAtcUiModel): Boolean {
+        return newItem is RecommendationUiModel &&
+            widget == newItem.widget
+    }
 }

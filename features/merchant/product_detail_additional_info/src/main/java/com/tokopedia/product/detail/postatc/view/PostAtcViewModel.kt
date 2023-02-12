@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.model.PostAtcInfo
 import com.tokopedia.product.detail.postatc.model.PostAtcLayout
@@ -67,12 +68,11 @@ class PostAtcViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val requestParams = GetRecommendationRequestParam(
-                pageNumber = 1,
                 pageName = pageName,
                 productIds = listOf(productId)
             )
             val result = getRecommendationUseCase.getData(requestParams)
-            if (result.isEmpty()) throw Throwable("empty result")
+            if (result.isEmpty()) throw MessageErrorException("empty result")
             else _recommendations.postValue(uniqueId to result.first().asSuccess())
         }, onError = {
             _recommendations.postValue(uniqueId to it.asFail())

@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.postatc.view
 
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -35,6 +37,8 @@ class PostAtcActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        adjustOrientation()
+
         val pathSegments = intent.data?.pathSegments ?: emptyList()
         val productId = pathSegments.getOrNull(PATH_INDEX_PRODUCT_ID) ?: return
 
@@ -50,6 +54,12 @@ class PostAtcActivity : BaseSimpleActivity() {
                 layoutId,
                 pageSource
             )
+        }
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 }

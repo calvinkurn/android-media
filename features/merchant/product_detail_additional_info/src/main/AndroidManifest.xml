@@ -23,7 +23,8 @@
         <activity
             android:name="com.tokopedia.product.detail.postatc.view.PostAtcActivity"
             android:exported="false"
-            android:label="ini POST ATC"
+            android:label="Post ATC"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

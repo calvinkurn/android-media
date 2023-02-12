@@ -1,12 +1,11 @@
 package com.tokopedia.product.detail.postatc.base
 
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.adapterdelegate.BaseAdapter
 import com.tokopedia.product.detail.postatc.component.error.ErrorDelegate
 import com.tokopedia.product.detail.postatc.component.loading.LoadingDelegate
 import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoDelegate
 import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationDelegate
-import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationUiModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 class PostAtcAdapter(
     listener: PostAtcListener
@@ -19,24 +18,44 @@ class PostAtcAdapter(
             .addDelegate(LoadingDelegate())
     }
 
-    fun updateRecommendation(uniqueId: Int, widget: RecommendationWidget) {
+    fun addComponent(item: PostAtcUiModel) {
+        addItem(item)
+        notifyItemChanged(lastIndex)
+    }
+
+    fun removeComponent(uiModelId: Int) {
         val items = getItems()
-        val findIndex = items.indexOfFirst { it.id == uniqueId }
+        val findIndex = items.indexOfFirst { it.id == uiModelId }
         if (findIndex > -1) {
-            items.get(findIndex).apply {
-                (this as RecommendationUiModel).widget = widget
+            removeItemAt(findIndex)
+            notifyItemRemoved(findIndex)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : PostAtcUiModel> updateComponent(
+        uiModelId: Int,
+        updater: T.() -> Unit
+    ) {
+        val items = getItems()
+        val findIndex = items.indexOfFirst { it.id == uiModelId }
+        if (findIndex > -1) {
+            val item = items[findIndex] as? T
+            if (item != null) {
+                updater.invoke(item)
                 notifyItemChanged(findIndex)
             }
         }
     }
 
-    fun removeComponent(uniqueId: Int) {
-        val items = getItems()
-        val findIndex = items.indexOfFirst { it.id == uniqueId }
-        if (findIndex > -1) {
-            removeItemAt(findIndex)
-            notifyItemRemoved(findIndex)
-        }
+    /**
+     * Replace current adapter items with new items
+     */
+    fun replaceComponents(items: List<PostAtcUiModel>) {
+        val diffCallback = PostAtcDiffCallback(getItems(), items)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        diffResult.dispatchUpdatesTo(this)
+        setItems(items)
     }
 }
 
