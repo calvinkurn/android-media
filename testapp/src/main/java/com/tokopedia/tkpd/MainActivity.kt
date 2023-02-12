@@ -127,6 +127,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://post-atc/2150653005"
+        return ""
     }
 }
