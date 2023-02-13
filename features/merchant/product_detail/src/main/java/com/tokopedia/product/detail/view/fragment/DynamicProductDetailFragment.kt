@@ -114,7 +114,6 @@ import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.PostAtcHelper
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -135,7 +134,6 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
@@ -158,7 +156,6 @@ import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBu
 import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -191,7 +188,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
@@ -245,7 +241,6 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -683,14 +678,6 @@ open class DynamicProductDetailFragment :
                             data = it.event.reData,
                             userId = viewModel.userId,
                             shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
-                        )
-                    }
-                    is OneTimeMethodEvent.HitVariantTracker -> {
-                        DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
-                            viewModel.getDynamicProductInfoP1,
-                            pdpUiUpdater?.productOptionalVariantDataModel,
-                            viewModel.variantData,
-                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productOptionalVariantDataModel)
                         )
                     }
                     else -> {
@@ -4328,7 +4315,7 @@ open class DynamicProductDetailFragment :
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         val secondAppLink = ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context,secondAppLink,productId)
+            RouteManager.route(context, secondAppLink, productId)
         } else {
             if (secondAppLink.isEmpty()) {
                 goToPdpSellerApp()

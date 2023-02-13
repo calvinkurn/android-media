@@ -655,7 +655,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 productId = "1234",
                 cartId = "111",
                 quantity = 4
-            ), status = "OK"
+            ),
+            status = "OK"
         )
 
         coEvery {
@@ -2455,11 +2456,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         }
 
-            Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
-            Assert.assertEquals(isSuccess.captured, true)
-            Assert.assertEquals(errorCode.captured, 200)
-            Assert.assertEquals(isTopAds.captured, true)
-        }
+        Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
+        Assert.assertEquals(isSuccess.captured, true)
+        Assert.assertEquals(errorCode.captured, 200)
+        Assert.assertEquals(isTopAds.captured, true)
+    }
 
     /**
      * tokonow recom section
@@ -2473,7 +2474,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 success = 1,
                 cartId = "12345",
                 message = arrayListOf("halo")
-            ), status = "OK"
+            ),
+            status = "OK"
         )
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -3226,7 +3228,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.Empty)
 
         Assert.assertTrue(testResults.first().event is OneTimeMethodEvent.Empty)
-        Assert.assertEquals(testResults.first().hitVariantTracker, false)
         Assert.assertEquals(testResults.first().impressRestriction, false)
 
         job.cancel()
@@ -3240,32 +3241,27 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.oneTimeMethodState.toList(testResults)
         }
 
-        //second assignment, because the first one is default value which OneTimeMethodEvent.Empty
-        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.HitVariantTracker)
-        Assert.assertTrue(testResults[1].event is OneTimeMethodEvent.HitVariantTracker)
-        Assert.assertEquals(testResults[1].hitVariantTracker, true)
-        Assert.assertEquals(testResults[1].impressRestriction, false)
+        // second assignment, because the first one is default value which OneTimeMethodEvent.Empty
+        Assert.assertEquals(testResults[0].impressRestriction, false)
 
-        //re-assign and make sure we dont want to update the data, since we need to run every event exactly once
-        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.HitVariantTracker)
         /**
          * list size still 2 because we don't assign the same hit variant tracker because of this code
          * if (_oneTimeMethod.value.impressRestriction) return
          * This is like verify in stateflow, we dont want to call update again if we assign the same value
          */
-        Assert.assertTrue(testResults.size == 2)
+        Assert.assertTrue(testResults.size == 1)
 
         val reData = RestrictionData(productId = "123")
-        //third assignment
+        // third assignment
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults[2].event is OneTimeMethodEvent.ImpressRestriction)
-        Assert.assertTrue((testResults[2].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
-        Assert.assertEquals(testResults[2].impressRestriction, true)
-        Assert.assertEquals(testResults[2].impressRestriction, true)
+        Assert.assertTrue(testResults[1].event is OneTimeMethodEvent.ImpressRestriction)
+        Assert.assertTrue((testResults[1].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
+        Assert.assertEquals(testResults[1].impressRestriction, true)
+        Assert.assertEquals(testResults[1].impressRestriction, true)
 
-        //re-assign and make sure we dont want to update the data, since we need to run every event exactly once
+        // re-assign and make sure we dont want to update the data, since we need to run every event exactly once
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults.size == 3)
+        Assert.assertTrue(testResults.size == 2)
 
         job.cancel()
     }
