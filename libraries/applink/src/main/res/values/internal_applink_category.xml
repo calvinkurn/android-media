@@ -6,7 +6,7 @@
     <string name="host_category_explore" translatable="false">category-explore</string>
     <string name="host_affiliate_toko" translatable="false">affiliate</string>
     <string name="host_epharmacy" translatable="false">epharmacy</string>
-    <string name="catalog_library_host" translatable="false">cataloglibrary</string>
+    <string name="catalog_library_host" translatable="false">catalog-library</string>
     <string name="applink_epharmacy_edu" translatable="false">/edu/.*\</string>
     <string name="path_final_price" translatable="false">/host_final_price</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>

@@ -91,11 +91,11 @@ project.ext {
     artifactId = 'catalog_library'
     groupId = 'com.tokopedia.category'
     versionName = "0.0.1"
-    artifactName = "catalog_library"
+    artifactName = "catalog_library-release"
 }
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply plugin: 'kotlin-android-extensions'
-
+apply from: '../../../sonar_config.gradle'
 
