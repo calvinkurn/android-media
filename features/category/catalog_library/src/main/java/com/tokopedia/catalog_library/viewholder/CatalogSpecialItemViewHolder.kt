@@ -6,7 +6,6 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogSpecialDataModel
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -23,8 +22,8 @@ class CatalogSpecialItemViewHolder(
         itemView.findViewById(R.id.special_title)
     }
 
-    private val specialLayout: CardUnify2 by lazy(LazyThreadSafetyMode.NONE) {
-        itemView.findViewById(R.id.img_card)
+    private val specialLayout: View by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.view_background)
     }
 
     companion object {
@@ -36,6 +35,7 @@ class CatalogSpecialItemViewHolder(
         specialDataListItem?.iconUrl?.let { iconUrl ->
             specialImage.loadImage(iconUrl)
         }
+        specialLayout.background = view.context.getDrawable(R.drawable.squircle)
         specialTitle.text = specialDataListItem?.name ?: ""
         specialTitle.setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(specialDataListItem?.categoryIdentifier)
