@@ -5,7 +5,6 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -343,7 +342,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ALL_PRODUCTS,
             eventLabel = String.EMPTY
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_41154)
             .sendGeneralEvent()
     }
@@ -355,7 +354,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_LESS_PRODUCTS,
             eventLabel = String.EMPTY
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_41155)
             .sendGeneralEvent()
     }
@@ -367,7 +366,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_ESTIMATE_ICON_POF_BOM_DETAIL,
             eventLabel = String.EMPTY
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_41156)
             .sendGeneralEvent()
     }

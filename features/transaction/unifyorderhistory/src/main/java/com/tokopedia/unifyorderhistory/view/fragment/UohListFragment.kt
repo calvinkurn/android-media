@@ -2497,7 +2497,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
     }
 
-    private fun goToPartialOrderFulfillment(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+    private fun goToPartialOrderFulfillment(order: UohListOrder.UohOrders.Order, index: Int) {
         val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
             ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT,
