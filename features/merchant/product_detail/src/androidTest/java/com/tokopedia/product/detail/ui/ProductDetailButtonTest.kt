@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.ui
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -17,12 +18,16 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.view.ItemVariantChipViewHolder
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
 import com.tokopedia.product.detail.ui.interceptor.*
 import com.tokopedia.product.detail.util.*
-import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -355,7 +360,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun click_button_atc_variant_login_noMinicart_tokonow() = runBlockingTest {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.login()
         check_button_atc_variant_noMinicart_tokonow_login()
         customInterceptor.resetInterceptor()
         customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
@@ -472,14 +477,49 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     }
 
     private fun clickVariantTest() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rv_single_variant))), ViewActions.scrollTo()))
-        val viewInteraction = onView(AllOf.allOf(withId(R.id.rv_single_variant))).check(
-            matches(
-                isDisplayed()
+        clickChipVariantTest()
+        intentForResultVbs()
+    }
+
+    private fun clickChipVariantTest() {
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rv_single_variant))),
+                ViewActions.scrollTo()
             )
         )
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductSingleVariantViewHolder>(0, CommonActions.clickChildViewWithId(R.id.atc_variant_chip)))
+        val viewInteraction = onView(
+            AllOf.allOf(withId(R.id.rv_single_variant))
+        ).check(
+            matches(isDisplayed())
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<ItemVariantChipViewHolder>(
+                0,
+                CommonActions.clickChildViewWithId(R.id.atc_variant_chip)
+            )
+        )
     }
+
+    private fun intentForResultVbs() {
+        val cacheManager = SaveInstanceCacheManager(InstrumentationRegistry.getInstrumentation().targetContext, true)
+        val variant = mockProductVariantResult()
+        cacheManager.put(AtcVariantHelper.PDP_PARCEL_KEY_RESULT, variant)
+
+        val resultIntent = Intent().apply {
+            putExtra(AtcVariantHelper.ATC_VARIANT_CACHE_ID, cacheManager.id)
+        }
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent))
+    }
+
+    private fun mockProductVariantResult() = ProductVariantResult(
+        parentProductId = "1060686573",
+        mapOfSelectedVariantOption = mutableMapOf(
+            "19261110" to "61436278"
+        ),
+        selectedProductId = "1060957408"
+    )
 
     private fun support_button_not_visible() {
         onView(withId(R.id.seller_button_container)).assertNotVisible()

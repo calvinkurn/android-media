@@ -30,8 +30,6 @@ class ProductDetailActivityMock : ProductDetailActivity() {
         // Don't inflate fragment immediately
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportFragmentManager.executePendingTransactions()
@@ -42,11 +40,13 @@ class ProductDetailActivityMock : ProductDetailActivity() {
     }
 
     fun setupTestFragment(productDetailTestComponent: ProductDetailTestComponent?) {
-        productDetailTestComponent?.let {
-            this.productDetailTestComponent = it
-            supportFragmentManager.beginTransaction()
+        runOnUiThread {
+            productDetailTestComponent?.let {
+                this.productDetailTestComponent = it
+                supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, newFragment, tagFragment)
                     .commit()
+            }
         }
     }
 
@@ -57,5 +57,4 @@ class ProductDetailActivityMock : ProductDetailActivity() {
     fun getPdpFragment(): DynamicProductDetailFragment {
         return supportFragmentManager.findFragmentByTag(tagFragment) as DynamicProductDetailFragment
     }
-
 }
