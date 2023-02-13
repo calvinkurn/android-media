@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentIntroBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -87,6 +88,10 @@ class MvcIntroFragment :
         scrollerListener = object : MvcIntroRecyclerViewScrollListener(mvcLayoutManager) {
             override fun changeBackground(position: Int) {
                 changeBackgroundWithPosition(position)
+            }
+
+            override fun hideViewMoreButton() {
+                binding?.btnViewMore?.hide()
             }
         }.also {
             recyclerView.addOnScrollListener(it)

@@ -30,6 +30,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.SharedPreferencesUtil
+import com.tokopedia.mvc.databinding.SmvcDialogLoadingBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryPreviewBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummarySubmissionBinding
@@ -47,6 +48,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPagePageNameMapper
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
@@ -93,16 +95,14 @@ class SummaryFragment :
     }
 
     private var binding by autoClearedNullable<SmvcFragmentSummaryBinding>()
+    private var bindingLoadingDialog by autoClearedNullable<SmvcDialogLoadingBinding>()
+    private var loadingDialog: LoaderDialog? = null
+
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val selectedProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
     private val voucherId by lazy { arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID) }
     private val enableDuplicateVoucher by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER).orFalse() }
-    private val loadingDialog by lazy {
-        context?.let {
-            LoaderDialog(it)
-        }
-    }
     private val redirectionHelper by lazy { SummaryPageRedirectionHelper(this, sharedPreferencesUtil) }
 
     @Inject
@@ -111,6 +111,7 @@ class SummaryFragment :
     @Inject
     lateinit var tracker: SummaryPageTracker
 
+    @Inject
     lateinit var pageNameMapper: SummaryPagePageNameMapper
 
     @Inject
@@ -131,6 +132,7 @@ class SummaryFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = SmvcFragmentSummaryBinding.inflate(inflater, container, false)
+        bindingLoadingDialog = SmvcDialogLoadingBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -140,7 +142,15 @@ class SummaryFragment :
         binding?.setupView()
         setupObservables()
         setupPageMode()
+        setupLoadingDialog()
         redirectionHelper.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setupLoadingDialog() {
+        loadingDialog = LoaderDialog(context ?: return).apply {
+            loaderText.text = getString(R.string.smvc_summary_page_loading_dialog)
+            customView = bindingLoadingDialog?.root
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -155,7 +165,17 @@ class SummaryFragment :
             } else {
                 tracker.sendClickArrowBackEvent(it.voucherId.toString())
             }
+            if (viewModel.checkIsAdding(it)) {
+                VoucherSettingActivity.buildCreateModeIntent(
+                    requireContext(),
+                    it.copy(
+                        isFinishFilledStepThree = false
+                    ),
+                    viewModel.products.value.orEmpty()
+                )
+            }
         }
+        activity?.finish()
         return super.onFragmentBackPressed()
     }
 
@@ -245,6 +265,7 @@ class SummaryFragment :
                     val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
                     sharedPreferencesUtil.setUploadResult(this, message)
                     RouteManager.route(this, SELLER_MVC_LIST)
+                    activity?.finish()
                 }
             }
         }
@@ -260,7 +281,7 @@ class SummaryFragment :
             if (it) {
                 loadingDialog?.show()
             } else {
-                loadingDialog?.dismiss()
+                loadingDialog?.dialog?.hide()
             }
         }
     }
@@ -291,7 +312,6 @@ class SummaryFragment :
     private fun HeaderUnify.setupHeader() {
         title = context.getString(R.string.smvc_summary_page_title)
         setNavigationOnClickListener {
-            activity?.finish()
             onFragmentBackPressed()
         }
     }
@@ -450,15 +470,20 @@ class SummaryFragment :
     }
 
     private fun SmvcFragmentSummaryPreviewBinding.updateLayoutPreview(configuration: VoucherConfiguration) {
+        val parentProductIds = selectedProducts.map { it.parentProductId }.ifEmpty {
+            configuration.productIds
+        }
         cardPreview.setOnClickListener {
             DisplayVoucherBottomSheet
-                .newInstance(configuration)
+                .newInstance(configuration.copy(
+                    productIds = parentProductIds
+                ))
                 .show(childFragmentManager, "")
         }
         viewModel.previewImage(
             isCreateMode = false,
             voucherConfiguration = configuration,
-            parentProductIds = configuration.productIds,
+            parentProductIds = parentProductIds,
             imageRatio = ImageRatio.SQUARE
         )
     }
@@ -490,6 +515,7 @@ class SummaryFragment :
         bottomSheet.setOnDismissListener {
             RouteManager.route(context, SELLER_MVC_LIST)
             tracker.sendClickCloseEvent(configuration.voucherId.toString())
+            activity?.finish()
         }
         bottomSheet.show(childFragmentManager)
     }
@@ -503,23 +529,26 @@ class SummaryFragment :
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        val isAdding = viewModel.checkIsAdding(configuration)
-        redirectionHelper.redirectToVoucherTypePage(this, configuration, isAdding)
+        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
         val sectionName = binding?.layoutType?.tpgProductListTitle?.text.toString()
+        val selectedProducts = viewModel.products.value.orEmpty()
+        redirectionHelper.redirectToVoucherTypePage(this, configuration, selectedProducts, isAdding)
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         val sectionName = binding?.layoutInfo?.tpgVoucherInfoTitle?.text.toString()
         val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
-        redirectionHelper.redirectToCouponInfoPage(this, configuration, isAdding)
+        val selectedProducts = viewModel.products.value.orEmpty()
+        redirectionHelper.redirectToCouponInfoPage(this, configuration, selectedProducts, isAdding)
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         val sectionName = binding?.layoutSetting?.tpgVoucherSettingTitle?.text.toString()
         val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
-        redirectionHelper.redirectToCouponConfigurationPage(this, configuration, isAdding)
+        val selectedProducts = viewModel.products.value.orEmpty()
+        redirectionHelper.redirectToCouponConfigurationPage(this, configuration, selectedProducts, isAdding)
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.VoucherType
@@ -17,11 +18,13 @@ class VoucherTypeActivity : BaseSimpleActivity() {
         @JvmStatic
         fun buildCreateModeIntent(
             context: Context,
-            voucherConfiguration: VoucherConfiguration
+            voucherConfiguration: VoucherConfiguration,
+            selectedProducts: List<SelectedProduct> = emptyList()
         ) {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
             }
             val starter = Intent(context, VoucherTypeActivity::class.java)
                 .putExtras(bundle)
@@ -30,11 +33,13 @@ class VoucherTypeActivity : BaseSimpleActivity() {
 
         fun buildEditModeIntent(
             context: Context,
-            voucherConfiguration: VoucherConfiguration
+            voucherConfiguration: VoucherConfiguration,
+            selectedProducts: List<SelectedProduct> = emptyList()
         ): Intent {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.EDIT)
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
             }
 
             val intent = Intent(context, VoucherTypeActivity::class.java)
@@ -48,6 +53,7 @@ class VoucherTypeActivity : BaseSimpleActivity() {
 
     private val pageMode by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val voucherConfiguration by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+    private val selectedProducts by lazy { intent?.extras?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
 
     private val isVoucherProduct by lazy {
         val appLinkData = RouteManager.getIntent(this, intent?.data.toString()).data
@@ -61,7 +67,8 @@ class VoucherTypeActivity : BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.smvc_activity_creation_voucher_type
     override fun getNewFragment() = VoucherTypeFragment.newInstance(
         pageMode ?: PageMode.CREATE,
-        voucherConfiguration ?: VoucherConfiguration(isVoucherProduct = isVoucherProduct ?: false)
+        voucherConfiguration ?: VoucherConfiguration(isVoucherProduct = isVoucherProduct ?: false),
+        selectedProducts
     )
 
     override fun getParentViewResourceID() = R.id.container

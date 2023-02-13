@@ -21,6 +21,8 @@ data class MerchantVoucherListDataModel(
 data class MerchantVoucherModel(
     @SerializedName("confirmed_global_quota")
     val confirmedQuota: Int = 0,
+    @SerializedName("parent_voucher_id")
+    val parentVoucherId: String = "",
     @SerializedName("booked_global_quota")
     val bookedQuota: Int = 0,
     @SerializedName("create_time")

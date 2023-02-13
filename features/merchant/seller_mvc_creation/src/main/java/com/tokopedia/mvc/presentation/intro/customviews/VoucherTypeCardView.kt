@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.intro.customviews
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.databinding.SmvcIntroCard2Binding
 import com.tokopedia.unifycomponents.BaseCustomView
 
@@ -26,7 +27,7 @@ class VoucherTypeCardView @JvmOverloads constructor(
         binding?.title?.text = mainTitle
         binding?.subtitle?.text = subtitle
         if (imageUrl.isNotEmpty()) {
-            binding?.imageView?.loadRemoteImageDrawable(imageUrl, imageUrl)
+            binding?.imageView?.loadImage(imageUrl)
         }
     }
 }
