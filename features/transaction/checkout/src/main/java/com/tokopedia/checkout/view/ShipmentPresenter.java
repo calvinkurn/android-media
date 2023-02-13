@@ -56,10 +56,12 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData;
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
+import com.tokopedia.checkout.view.subscriber.GetScheduleDeliveryCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -85,6 +87,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase;
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
@@ -194,6 +197,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase;
     private final GetRatesUseCase ratesUseCase;
     private final GetRatesApiUseCase ratesApiUseCase;
+    private final GetRatesWithScheduleUseCase ratesWithScheduleUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private final OldClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
@@ -246,6 +250,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticDonePublisher = null;
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
+    private Map<String, ShipmentScheduleDeliveryMapData> scheduleDeliveryMapData = null;
+
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
                              CheckoutGqlUseCase checkoutGqlUseCase,
@@ -269,7 +275,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
-                             EligibleForAddressUseCase eligibleForAddressUseCase) {
+                             EligibleForAddressUseCase eligibleForAddressUseCase,
+                             GetRatesWithScheduleUseCase ratesWithScheduleUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -278,6 +285,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.saveShipmentStateGqlUseCase = saveShipmentStateGqlUseCase;
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
+        this.ratesWithScheduleUseCase = ratesWithScheduleUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.stateConverter = stateConverter;
         this.shippingCourierConverter = shippingCourierConverter;
@@ -1011,7 +1019,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                                        @Override
                                        public void onCompleted() {
-
+                                            checkUnCompletedPublisher();
                                        }
 
                                        @Override
@@ -1027,6 +1035,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                } else {
                                                    getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                                                }
+                                               checkUnCompletedPublisher();
                                            }
                                        }
 
@@ -1312,12 +1321,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode) {
+    public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode, boolean showLoading) {
         if (getView() != null) {
             setCouponStateChanged(true);
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
-            getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
+            if (showLoading) {
+                getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
+            }
 
             compositeSubscription.add(
                     validateUsePromoRevampUseCase.createObservable(requestParams)
@@ -1331,6 +1342,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     }
                                     if (logisticPromoDonePublisher != null) {
                                         logisticPromoDonePublisher.onCompleted();
+                                    }
+                                    ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(cartString);
+                                    if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInValidateUsePromo()) {
+                                        shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                                     }
                                 }
 
@@ -1350,12 +1365,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             getView().showToastError(e.getMessage());
                                             getView().resetCourier(cartPosition);
                                         }
-                                    }
-                                    if (logisticDonePublisher != null) {
-                                        logisticDonePublisher.onCompleted();
-                                    }
-                                    if (logisticPromoDonePublisher != null) {
-                                        logisticPromoDonePublisher.onCompleted();
+                                        if (logisticDonePublisher != null) {
+                                            logisticDonePublisher.onCompleted();
+                                        }
+                                        if (logisticPromoDonePublisher != null) {
+                                            logisticPromoDonePublisher.onCompleted();
+                                        }
+                                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(cartString);
+                                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInValidateUsePromo()) {
+                                            shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
+                                        }
                                     }
                                 }
 
@@ -1808,8 +1827,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
 
             ShipmentStateShippingInfoData shipmentStateShippingInfoData = new ShipmentStateShippingInfoData();
-            shipmentStateShippingInfoData.setShippingId(courierData.getShipperId());
-            shipmentStateShippingInfoData.setSpId(courierData.getShipperProductId());
+            shipmentStateShippingInfoData.setShippingId(courierData.getSelectedShipper().getShipperId());
+            shipmentStateShippingInfoData.setSpId(courierData.getSelectedShipper().getShipperProductId());
             shipmentStateShippingInfoData.setRatesFeature(ratesFeature);
 
             ShipmentStateShopProductData shipmentStateShopProductData = new ShipmentStateShopProductData();
@@ -1825,6 +1844,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shipmentStateShopProductData.setDropshipData(shipmentStateDropshipData);
             shipmentStateShopProductData.setShippingInfoData(shipmentStateShippingInfoData);
             shipmentStateShopProductData.setProductDataList(shipmentStateProductDataList);
+            shipmentStateShopProductData.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
+
             shipmentStateShopProductDataList.add(shipmentStateShopProductData);
         }
     }
@@ -1970,12 +1991,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearPromoUiModel>() {
                     @Override
                     public void onCompleted() {
-
+                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(shipmentCartItemModel.getCartString());
+                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInClearCache()) {
+                            shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        // Do nothing
+                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(shipmentCartItemModel.getCartString());
+                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInClearCache()) {
+                            shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
+                        }
                     }
 
                     @Override
@@ -2296,17 +2323,31 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         ratesPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
                                     logisticDonePublisher = PublishSubject.create();
-                                    ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
-                                            .map(shippingRecommendationData ->
-                                                    stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
-                                                            shipmentGetCourierHolderData.getSpId(), 0)
-                                            ).subscribe(
-                                                    new GetCourierRecommendationSubscriber(
-                                                            getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
-                                                            shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
-                                                            shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isTradeInDropOff(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
-                                                            logisticDonePublisher
-                                                    ));
+                                    if (shipmentCartItemModel.getRatesValidationFlow()) {
+                                        ratesWithScheduleUseCase.execute(shipmentGetCourierHolderData.getRatesParam(), String.valueOf(shipmentGetCourierHolderData.getShipmentCartItemModel().getFulfillmentId()))
+                                                .map(shippingRecommendationData ->
+                                                        stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
+                                                                shipmentGetCourierHolderData.getSpId(), 0)
+                                                ).subscribe(
+                                                        new GetScheduleDeliveryCourierRecommendationSubscriber(
+                                                                getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
+                                                                shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                                shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
+                                                                logisticDonePublisher
+                                                        ));
+                                    } else {
+                                        ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
+                                                .map(shippingRecommendationData ->
+                                                        stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
+                                                                shipmentGetCourierHolderData.getSpId(), 0)
+                                                ).subscribe(
+                                                        new GetCourierRecommendationSubscriber(
+                                                                getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
+                                                                shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                                shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isTradeInDropOff(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
+                                                                logisticDonePublisher
+                                                        ));
+                                    }
                                     return logisticDonePublisher;
                                 })
                                 .subscribe()
@@ -3215,5 +3256,39 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public PublishSubject<Boolean> getLogisticDonePublisher() {
         return logisticDonePublisher;
+    }
+    
+    public void setLogisticDonePublisher(PublishSubject<Boolean> logisticDonePublisher) {
+        this.logisticDonePublisher = logisticDonePublisher;
+    }
+
+    public void setLogisticPromoDonePublisher(PublishSubject<Boolean> logisticPromoDonePublisher) {
+        this.logisticPromoDonePublisher = logisticPromoDonePublisher;
+    }
+
+    private ShipmentScheduleDeliveryMapData getScheduleDeliveryMapData(String cartString) {
+        if (scheduleDeliveryMapData != null) {
+            return scheduleDeliveryMapData.get(cartString);
+        }
+        return null;
+    }
+
+    @Override
+    public void setScheduleDeliveryMapData(String cartString, ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData) {
+        if (this.scheduleDeliveryMapData == null) {
+            this.scheduleDeliveryMapData = new HashMap<>();
+        }
+        this.scheduleDeliveryMapData.put(cartString, shipmentScheduleDeliveryMapData);
+    }
+
+    private void checkUnCompletedPublisher() {
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                ShipmentScheduleDeliveryMapData mapData = getScheduleDeliveryMapData(shipmentCartItemModel.getCartString());
+                if (mapData != null && !mapData.getDonePublisher().hasCompleted()) {
+                    mapData.getDonePublisher().onCompleted();
+                }
+            }
+        }
     }
 }

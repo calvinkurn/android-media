@@ -219,6 +219,7 @@ import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
+import com.tokopedia.product.detail.tracking.ShipmentTracking
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
@@ -303,7 +304,6 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -681,8 +681,8 @@ open class DynamicProductDetailFragment :
     private fun observeOneTimeMethod() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.oneTimeMethodState.collect {
-                when(it.event) {
-                    is OneTimeMethodEvent.ImpressRestriction ->  {
+                when (it.event) {
+                    is OneTimeMethodEvent.ImpressRestriction -> {
                         ProductTrackingCommon.Restriction.impressLocationRestriction(
                             trackingQueue = trackingQueue,
                             data = it.event.reData,
@@ -699,7 +699,7 @@ open class DynamicProductDetailFragment :
                         )
                     }
                     else -> {
-                        //noop
+                        // noop
                     }
                 }
             }
@@ -3668,17 +3668,28 @@ open class DynamicProductDetailFragment :
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     ) {
         viewModel.getDynamicProductInfoP1?.let {
-            DynamicProductDetailTracking.Click.eventClickShipment(
-                viewModel.getDynamicProductInfoP1,
-                viewModel.userId,
-                componentTrackDataModel,
-                title,
-                chipsLabel,
-                isCod
-            )
+            if (isScheduled) {
+                val common = CommonTracker(it, viewModel.userId)
+                ShipmentTracking.sendClickLihatJadwalLainnyaOnScheduleDelivery(
+                    chipsLabel,
+                    common,
+                    componentTrackDataModel
+                )
+            } else {
+                DynamicProductDetailTracking.Click.eventClickShipment(
+                    viewModel.getDynamicProductInfoP1,
+                    viewModel.userId,
+                    componentTrackDataModel,
+                    title,
+                    chipsLabel,
+                    isCod
+                )
+            }
+
             val boData = viewModel.getBebasOngkirDataByProductId()
 
             val productId = it.basic.productID
@@ -3704,7 +3715,9 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: ""
+                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: "",
+                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: "",
+                    categoryId = it.basic.category.id
                 )
             )
             shouldRefreshShippingBottomSheet = false
@@ -3713,7 +3726,11 @@ open class DynamicProductDetailFragment :
                 fragmentManager = getProductFragmentManager(),
                 tag = ProductDetailShippingBottomSheet::class.java.simpleName
             ) {
-                ProductDetailShippingBottomSheet()
+                ProductDetailShippingBottomSheet.instance(
+                    buyerDistrictId = viewModel.getUserLocationCache().district_id,
+                    sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
+                    layoutId = layoutId
+                )
             }
         }
     }
@@ -5385,32 +5402,20 @@ open class DynamicProductDetailFragment :
                     productId: String
                 ) {
                     context?.let { context ->
-                        if (result.success &&
-                            WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)
-                        ) {
-                            val applinkCollection =
-                                "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
-                            val intentBottomSheetWishlistCollection =
-                                RouteManager.getIntent(context, applinkCollection)
-                            val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()
-                                ?.toIntOrNull() == 0
-                            intentBottomSheetWishlistCollection.putExtra(
-                                WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
-                                !isOos
-                            )
-                            startActivityForResult(
-                                intentBottomSheetWishlistCollection,
-                                REQUEST_CODE_ADD_WISHLIST_COLLECTION
-                            )
-                        } else {
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
-                                    result,
-                                    context,
-                                    v
-                                )
-                            }
-                        }
+                        val applinkCollection =
+                            "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
+                        val intentBottomSheetWishlistCollection =
+                            RouteManager.getIntent(context, applinkCollection)
+                        val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()
+                            ?.toIntOrNull() == 0
+                        intentBottomSheetWishlistCollection.putExtra(
+                            WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
+                            !isOos
+                        )
+                        startActivityForResult(
+                            intentBottomSheetWishlistCollection,
+                            REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                        )
                     }
                     if (result.success) {
                         updateFabIcon(productId, true)
@@ -5890,5 +5895,20 @@ open class DynamicProductDetailFragment :
 
     override fun onViewToViewReload(pageName: String) {
         loadViewToView(pageName)
+    }
+
+    override fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val common = CommonTracker(productInfo, viewModel.userId)
+
+        ShipmentTracking.sendImpressionScheduledDeliveryComponent(
+            trackingQueue,
+            labels,
+            common,
+            componentTrackDataModel
+        )
     }
 }
