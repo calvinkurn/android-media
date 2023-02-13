@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,15 +9,61 @@
     <com.tokopedia.content.common.ui.custom.ContentHeaderView
         android:id="@+id/comment_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_comment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/content_common_space_16"
-        android:layout_marginEnd="@dimen/content_common_space_8"
-        android:layout_marginStart="@dimen/content_common_space_8"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-</LinearLayout>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/view_comment_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment_header"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/view_comment_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/content_common_space_16"
+        android:background="@color/Unify_Background"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_user_photo"
+            android:layout_width="@dimen/content_common_space_40"
+            android:layout_height="@dimen/content_common_space_40"
+            app:unify_image_type="circle" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/new_comment"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/content_common_space_8"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_gravity="center_vertical"
+            android:inputType="textMultiLine" />
+
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_comment_send"
+            android:layout_marginStart="@dimen/content_common_space_8"
+            android:layout_width="@dimen/content_common_space_40"
+            android:layout_height="@dimen/content_common_space_40"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_color_light_disabled="@color/Unify_NN0"
+            app:icon_color_night_enable="@color/Unify_NN0"
+            app:icon_color_night_disabled="@color/Unify_NN0"
+            android:padding="@dimen/content_common_space_8"
+            android:background="@color/Unify_NN300"
+            app:icon_name="SEND_TEXT" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
