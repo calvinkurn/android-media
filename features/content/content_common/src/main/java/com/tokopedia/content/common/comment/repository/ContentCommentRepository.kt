@@ -26,6 +26,7 @@ interface ContentCommentRepository {
 
     suspend fun getComments(
         source: PageSource,
+        commentId: String = "0",
         cursor: String,
     ): CommentWidgetUiModel
 }

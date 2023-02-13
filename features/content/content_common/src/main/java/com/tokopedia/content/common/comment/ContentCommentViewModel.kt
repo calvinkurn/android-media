@@ -26,7 +26,7 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     fun init() {
         viewModelScope.launchCatchError(block = {
-            repo.getComments(PageSource.Play(source.id), "")
+            repo.getComments(PageSource.Play(source.id), cursor = "")
         }) {}
     }
 }

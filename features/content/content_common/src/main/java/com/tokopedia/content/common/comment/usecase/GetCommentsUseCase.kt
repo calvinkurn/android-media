@@ -27,16 +27,19 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
         private const val PARAM_ID = "contentID"
         private const val PARAM_CURSOR = "cursor"
         private const val PARAM_LIMIT = "limit"
+        private const val PARAM_COMMENT_ID = "commentParentID"
         private const val PARAM_LIMIT_VALUE = 20
 
         fun setParam(
             source: PageSource,
             cursor: String,
+            parentId: String
         ) = mapOf(
             PARAM_ID to source.id,
             PARAM_CONTENT_TYPE to source.type,
             PARAM_CURSOR to cursor,
             PARAM_LIMIT to PARAM_LIMIT_VALUE,
+            PARAM_COMMENT_ID to parentId
         )
 
         const val QUERY_NAME = "GetCommentsUseCaseQuery"

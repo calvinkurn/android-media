@@ -85,10 +85,10 @@ class ContentCommentRepositoryImpl @Inject constructor(
         return@withContext response
     }
 
-    override suspend fun getComments(source: PageSource, cursor: String): CommentWidgetUiModel =
+    override suspend fun getComments(source: PageSource, commentId: String, cursor: String): CommentWidgetUiModel =
         withContext(dispatchers.io) {
             val response = getCommentsUseCase.apply {
-                setRequestParams(GetCommentsUseCase.setParam(source, cursor))
+                setRequestParams(GetCommentsUseCase.setParam(source, cursor, commentId))
             }.executeOnBackground()
             return@withContext mapper.mapComments(response)
         }
