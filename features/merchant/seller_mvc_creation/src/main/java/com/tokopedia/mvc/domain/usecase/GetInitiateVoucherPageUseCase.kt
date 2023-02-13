@@ -51,6 +51,7 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
                       shop_id
                       token
                       user_id
+                      discount_active
                     }
                   }
               }

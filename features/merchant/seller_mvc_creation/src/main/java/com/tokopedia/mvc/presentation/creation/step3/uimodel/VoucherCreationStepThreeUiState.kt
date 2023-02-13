@@ -21,6 +21,7 @@ data class VoucherCreationStepThreeUiState(
     val isQuotaError: Boolean = false,
     val quotaErrorMsg: String = "",
     val fieldValidated: VoucherCreationStepThreeFieldValidation = VoucherCreationStepThreeFieldValidation.NONE,
+    val shouldEnableDiscountPromoType: Boolean = false
 ) {
     fun isInputValid(): Boolean {
         return if (voucherConfiguration.promoType == PromoType.FREE_SHIPPING) {

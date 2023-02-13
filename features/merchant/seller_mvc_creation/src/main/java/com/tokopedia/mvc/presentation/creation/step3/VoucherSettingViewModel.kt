@@ -8,20 +8,39 @@ import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.enums.*
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepThreeFieldValidation
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
 import com.tokopedia.mvc.util.constant.CommonConstant
-import com.tokopedia.mvc.util.extension.*
+import com.tokopedia.mvc.util.extension.isCashback
+import com.tokopedia.mvc.util.extension.isDiscount
+import com.tokopedia.mvc.util.extension.isFreeShipping
+import com.tokopedia.mvc.util.extension.isPrivate
+import com.tokopedia.mvc.util.extension.isProductVoucher
+import com.tokopedia.mvc.util.extension.isPublic
+import com.tokopedia.mvc.util.extension.isShopVoucher
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class VoucherSettingViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
+    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
     private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
@@ -65,15 +84,33 @@ class VoucherSettingViewModel @Inject constructor(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                pageMode = pageMode,
-                voucherConfiguration = voucherConfiguration.copy(
-                    isFinishFilledStepTwo = true
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val action = if (pageMode == PageMode.CREATE) VoucherAction.CREATE else VoucherAction.UPDATE
+                val metadataParam = GetInitiateVoucherPageUseCase.Param(
+                    action = action,
+                    promoType = voucherConfiguration.promoType,
+                    isVoucherProduct = voucherConfiguration.isVoucherProduct
                 )
-            )
-        }
+                val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute(metadataParam)
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        pageMode = pageMode,
+                        voucherConfiguration = voucherConfiguration.copy(
+                            isFinishFilledStepTwo = true
+                        ),
+                        shouldEnableDiscountPromoType = voucherCreationMetadata.discountActive
+                    )
+                }
+            },
+            onError = { error ->
+
+            }
+        )
+
         handleVoucherInputValidation()
     }
 
