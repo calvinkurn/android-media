@@ -100,8 +100,7 @@ class PlayBroShortsAffiliateTncBottomSheet : BottomSheetUnify() {
         }
         binding.btnContinue.setOnClickListener {
             /** TODO
-             * submit the tnc
-             * BE team is not ready yet
+             * submit the tnc later
              */
             if (binding.btnContinue.isEnabled) dismiss()
         }
