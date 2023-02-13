@@ -50,7 +50,6 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
-import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -86,8 +85,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
-                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
-                        ArrayList(selectedProducts))
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                        ArrayList(selectedProducts)
+                    )
                 }
             }
         }
@@ -117,7 +118,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             ?: VoucherConfiguration()
     }
     private val selectedProducts by lazy {
-        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
+    }
     private var startCalendar: GregorianCalendar? = null
     private var endCalendar: GregorianCalendar? = null
     private var minCalendar: GregorianCalendar? = null
@@ -958,7 +960,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 navigateToVoucherTypePage(currentVoucherConfiguration)
             }
         } else {
-            navigateToVoucherSummaryPage(currentVoucherConfiguration)
+            navigateToVoucherSummaryPage(voucherConfiguration)
         }
     }
 
