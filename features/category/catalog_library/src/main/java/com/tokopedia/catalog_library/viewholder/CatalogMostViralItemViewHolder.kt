@@ -47,12 +47,17 @@ class CatalogMostViralItemViewHolder(
             mostViralImage.loadImage(iconUrl)
         }
         mostViralLayout.background =
-            VectorDrawableCompat.create(view.context.resources, R.drawable.background, null)
+            VectorDrawableCompat.create(
+                view.context.resources,
+                R.drawable.background,
+                view.context.theme
+            )
         mostViralTitle.text = element?.catalogMostViralData?.name
         mostViralIcon.apply {
             setImage(
                 newLightEnable = MethodChecker.getColor(
-                    itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                 )
             )
         }
@@ -62,7 +67,7 @@ class CatalogMostViralItemViewHolder(
 
         mostViralSubtitle.text = String.format(
             view.context.getString(R.string.most_viral_subtitle_common),
-            element?.categoryName ?: "",
+            element?.categoryName ?: ""
         )
     }
 }
