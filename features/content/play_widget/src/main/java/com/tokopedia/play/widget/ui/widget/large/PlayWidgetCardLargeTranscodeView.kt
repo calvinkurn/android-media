@@ -44,7 +44,6 @@ class PlayWidgetCardLargeTranscodeView : FrameLayout {
 
     private val thumbnail: ImageView
     private val totalViewBadge: View
-    private val promoBadge: View
     private val tvTitle: TextView
     private val tvAuthor: TextView
     private val tvTotalView: TextView
@@ -67,7 +66,6 @@ class PlayWidgetCardLargeTranscodeView : FrameLayout {
         val view = View.inflate(context, R.layout.view_play_widget_card_large_transcode, this)
         thumbnail = view.findViewById(R.id.play_widget_thumbnail)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
-        promoBadge = view.findViewById(R.id.play_widget_badge_promo)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
         tvTotalView = view.findViewById(com.tokopedia.play_common.R.id.viewer)
@@ -115,7 +113,6 @@ class PlayWidgetCardLargeTranscodeView : FrameLayout {
 
     private fun setTranscodingModel(model: PlayWidgetChannelUiModel) {
         totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
 
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
@@ -131,7 +128,6 @@ class PlayWidgetCardLargeTranscodeView : FrameLayout {
 
     private fun setFailedTranscodingModel(model: PlayWidgetChannelUiModel) {
         totalViewBadge.visibility = View.GONE
-        promoBadge.visibility = View.GONE
 
         llWidgetContainer.visibility = View.GONE
         llLoadingContainer.visibility = View.GONE
