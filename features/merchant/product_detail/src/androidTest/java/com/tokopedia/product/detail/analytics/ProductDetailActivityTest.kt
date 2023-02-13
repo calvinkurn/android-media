@@ -40,7 +40,6 @@ import com.tokopedia.test.application.espresso_component.CommonActions.clickChil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
