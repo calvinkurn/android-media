@@ -91,7 +91,7 @@ class CatalogHomepageViewModel @Inject constructor(
             CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
                 CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
-                "Cek katalognya produk incaranmu",
+                CatalogLibraryConstant.CATALOG_HOME_HEADING_RELEVANT,
                 getRelevantVisitableList(data.catalogGetRelevant.catalogsList),
                 RecyclerView.HORIZONTAL
             )

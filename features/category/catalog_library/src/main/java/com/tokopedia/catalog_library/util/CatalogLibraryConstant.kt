@@ -33,5 +33,6 @@ object CatalogLibraryConstant {
 
     const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori"
     const val CATALOG_HOME_PRODUCT_TITLE = "Katalog lainnya buat inspirasimu"
-    const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori special buatmu"
+    const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori spesial buatmu"
+    const val CATALOG_HOME_HEADING_RELEVANT = "Cek katalognya produk incaranmu"
 }
