@@ -88,7 +88,7 @@ class CatalogLandingPageViewModel @Inject constructor(
             CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
-                "Top 5 category terlaris di toped",
+                "Top 5 ${categoryName.value?.lowercase()} terlaris di toped",
                 getTopFiveVisitableList(data.catalogGetList.catalogsProduct)
             )
         listOfComponents.add(catalogTopFiveDataModel)
