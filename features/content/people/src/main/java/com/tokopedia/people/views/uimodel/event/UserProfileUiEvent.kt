@@ -28,5 +28,7 @@ sealed interface UserProfileUiEvent {
 
     data class CopyLinkPlayVideo(val copyText: String) : UserProfileUiEvent
 
+    data class OpenPerformancePlayChannel(val appLink: String) : UserProfileUiEvent
+
     data class ShowDeletePlayVideoConfirmationDialog(val channel: PlayWidgetChannelUiModel) : UserProfileUiEvent
 }

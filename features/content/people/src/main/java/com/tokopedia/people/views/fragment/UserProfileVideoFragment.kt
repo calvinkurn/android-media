@@ -249,7 +249,7 @@ class UserProfileVideoFragment @Inject constructor(
                             }
 
                             override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
-
+                                submitAction(UserProfileAction.ClickSeePerformancePlayChannel(channel))
                             }
 
                             override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
@@ -263,8 +263,10 @@ class UserProfileVideoFragment @Inject constructor(
                         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                             .setPrimaryClip(ClipData.newPlainText("play-widget", event.copyText))
 
-
                         view?.showToast(getString(R.string.up_play_video_link_copied))
+                    }
+                    is UserProfileUiEvent.OpenPerformancePlayChannel -> {
+                        RouteManager.route(requireContext(), event.appLink)
                     }
                     is UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog -> {
                         playChannelDeleteConfirmationDialog.confirmDelete(requireContext(), event.channel.channelId)

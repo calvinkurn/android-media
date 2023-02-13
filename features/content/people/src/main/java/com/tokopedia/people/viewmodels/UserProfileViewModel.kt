@@ -157,6 +157,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.UpdatePlayChannelInfo -> handleUpdatePlayChannelInfo(action.channelId, action.totalView, action.isReminderSet)
             is UserProfileAction.ClickPlayVideoMenuAction -> handleClickPlayVideoMenuAction(action.channel)
             is UserProfileAction.ClickCopyLinkPlayChannel -> handleClickCopyLinkPlayChannel(action.channel)
+            is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
         }
     }
@@ -476,6 +477,12 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleClickCopyLinkPlayChannel(channel: PlayWidgetChannelUiModel) {
         launchCatchError(block = {
             _uiEvent.emit(UserProfileUiEvent.CopyLinkPlayVideo(channel.share.fullShareContent))
+        }) {}
+    }
+
+    private fun handleClickSeePerformancePlayChannel(channel: PlayWidgetChannelUiModel) {
+        launchCatchError(block = {
+            _uiEvent.emit(UserProfileUiEvent.OpenPerformancePlayChannel(channel.performanceSummaryLink))
         }) {}
     }
 
