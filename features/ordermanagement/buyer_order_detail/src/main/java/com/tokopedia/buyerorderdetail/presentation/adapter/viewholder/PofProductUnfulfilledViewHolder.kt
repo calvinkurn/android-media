@@ -21,7 +21,7 @@ class PofProductUnfulfilledViewHolder(
 
     override fun bind(element: PofProductUnfulfilledUiModel) {
         with(binding) {
-            setBackgroundContainer(element.hasQtyGreenColor())
+            setBackgroundContainer()
             setProductImageUrl(element.productPictureUrl)
             setProductName(element.productName)
             setProductQtyPrice(element.getProductPriceQty())
@@ -32,9 +32,6 @@ class PofProductUnfulfilledViewHolder(
     override fun bindPayload(payloads: Pair<*, *>?) {
         payloads?.let { (oldItem, newItem) ->
             if (oldItem is PofProductUnfulfilledUiModel && newItem is PofProductUnfulfilledUiModel) {
-                if (oldItem.hasQtyGreenColor() != newItem.hasQtyGreenColor()) {
-                    binding.setBackgroundContainer(newItem.hasQtyGreenColor())
-                }
                 if (oldItem.productPictureUrl != newItem.productPictureUrl) {
                     binding.setProductImageUrl(newItem.productPictureUrl)
                 }
@@ -78,9 +75,7 @@ class PofProductUnfulfilledViewHolder(
         tvUnfulfilledProductRequestStock.text = MethodChecker.fromHtml(productRequestStock)
     }
 
-    private fun ItemUnfulfilledPartialOrderBinding.setBackgroundContainer(hasGreenColor: Boolean) {
-        containerUnFulfilledPof.setContainerColor(
-            if (hasGreenColor) ContainerUnify.GREEN else ContainerUnify.RED
-        )
+    private fun ItemUnfulfilledPartialOrderBinding.setBackgroundContainer() {
+        containerUnFulfilledPof.setContainerColor(ContainerUnify.RED)
     }
 }

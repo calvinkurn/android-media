@@ -23,10 +23,8 @@ data class InfoRespondPartialOrderFulfillment(
     val orderId: Long = 0,
     @SerializedName("summary")
     val summary: Summary = Summary(),
-    @SerializedName("total_fulfilled")
-    val totalFulfilled: Long = 0,
-    @SerializedName("total_unfulfill")
-    val totalUnfulfill: Long = 0
+    @SerializedName("header_fulfilled")
+    val headerFulfilled: String = ""
 )
 
 data class DetailsFulfilled(

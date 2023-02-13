@@ -22,7 +22,7 @@ class PofFulfilledToggleViewHolder(
     override fun bind(element: PofFulfilledToggleUiModel) {
         with(binding) {
             setChevronToggle(element)
-            setAvailableStockLabel(element.totalFulfilled)
+            setAvailableStockLabel(element.headerFulfilled)
         }
     }
 
@@ -32,27 +32,24 @@ class PofFulfilledToggleViewHolder(
                 if (oldItem.isExpanded != newItem.isExpanded) {
                     binding.setChevronToggle(newItem)
                 }
-                if (oldItem.totalFulfilled != newItem.totalFulfilled) {
-                    binding.setAvailableStockLabel(newItem.totalFulfilled)
+                if (oldItem.headerFulfilled != newItem.headerFulfilled) {
+                    binding.setAvailableStockLabel(newItem.headerFulfilled)
                 }
             }
         }
     }
 
-    private fun ItemPofStillAvailableToggleBinding.setAvailableStockLabel(totalFulFilled: Long) {
-        tvProductLabel.text = getString(
-            R.string.buyer_order_detail_pof_item_still_available_label,
-            totalFulFilled.toString()
-        )
+    private fun ItemPofStillAvailableToggleBinding.setAvailableStockLabel(headerFulfilled: String) {
+        tvProductLabel.text = headerFulfilled
     }
 
     private fun ItemPofStillAvailableToggleBinding.setChevronToggle(item: PofFulfilledToggleUiModel) {
         icDropdown.rotation = if (item.isExpanded) NO_ROTATION else REVERSE_ROTATION
         icDropdown.setOnClickListener {
-            listener.onPofFulfilledToggleClicked(!item.isExpanded, item.pofProductFulfilledList)
+            listener.onPofFulfilledToggleClicked(!item.isExpanded, item)
         }
         binding.root.setOnClickListener {
-            listener.onPofFulfilledToggleClicked(!item.isExpanded, item.pofProductFulfilledList)
+            listener.onPofFulfilledToggleClicked(!item.isExpanded, item)
         }
     }
 

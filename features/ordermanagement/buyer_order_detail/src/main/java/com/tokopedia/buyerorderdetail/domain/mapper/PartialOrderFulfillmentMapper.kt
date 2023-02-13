@@ -57,14 +57,16 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
                     )
                 }
 
-            add(
-                PofFulfilledToggleUiModel(
-                    orderId = infoRespondPartialOrderFulfillment.orderId.toString(),
-                    totalFulfilled = infoRespondPartialOrderFulfillment.totalFulfilled,
-                    isExpanded = false,
-                    pofProductFulfilledList = productFulfilledList
+            if (infoRespondPartialOrderFulfillment.headerFulfilled.isNotBlank()) {
+                add(
+                    PofFulfilledToggleUiModel(
+                        orderId = infoRespondPartialOrderFulfillment.orderId.toString(),
+                        headerFulfilled = infoRespondPartialOrderFulfillment.headerFulfilled,
+                        isExpanded = false,
+                        pofProductFulfilledList = productFulfilledList
+                    )
                 )
-            )
+            }
 
             add(PofThickDividerUiModel())
 

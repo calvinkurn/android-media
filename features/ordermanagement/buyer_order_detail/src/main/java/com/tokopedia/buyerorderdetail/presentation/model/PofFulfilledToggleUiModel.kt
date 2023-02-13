@@ -4,7 +4,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOr
 
 data class PofFulfilledToggleUiModel(
     val orderId: String,
-    val totalFulfilled: Long,
+    val headerFulfilled: String,
     val isExpanded: Boolean,
     val pofProductFulfilledList: List<PofProductFulfilledUiModel>
 ) : BasePofVisitableUiModel {

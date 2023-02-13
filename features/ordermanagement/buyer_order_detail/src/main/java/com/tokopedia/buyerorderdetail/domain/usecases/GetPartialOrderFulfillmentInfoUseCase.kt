@@ -14,8 +14,7 @@ const val PARTIAL_ORDER_FULFILLMENT_INFO_QUERY = """
            order_id: ${'$'}order_id
       }){
         order_id
-        total_unfulfill
-        total_fulfilled
+        header_fulfilled
         header_info
         footer_info
         details_fulfilled{
