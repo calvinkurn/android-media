@@ -5,10 +5,13 @@ import android.app.Instrumentation
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
@@ -29,8 +32,10 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import kotlin.reflect.KClass
 
 /**
@@ -38,6 +43,7 @@ import kotlin.reflect.KClass
  */
 private const val TAG = "MainNavAnalyticsTest"
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @CassavaTest
 class MainNavAnalyticsTest {
     @get:Rule
@@ -58,6 +64,7 @@ class MainNavAnalyticsTest {
 
     @Before
     fun resetAll() {
+        login()
         Intents.intending(IntentMatchers.isInternal()).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
@@ -75,6 +82,33 @@ class MainNavAnalyticsTest {
     @After
     fun tearDown() {
         IdlingRegistry.getInstance().unregister(mainNavRecyclerViewIdlingResource)
+    }
+
+    @Test
+    fun testClickAllSectionTitle() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+
+            val recyclerView =
+                activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+            val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+            for (i in 0 until itemCount) {
+                Espresso.onView(ViewMatchers.withId(R.id.recycler_view)).perform(
+                    RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+                        i
+                    )
+                )
+                checkViewHolderOnRecyclerView(recyclerView, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VIEW_ALL
+            )
+        }
     }
 
     @Test
@@ -200,33 +234,13 @@ class MainNavAnalyticsTest {
     private fun checkViewHolderOnRecyclerView(recyclerView: RecyclerView, position: Int) {
         when (recyclerView.findViewHolderForAdapterPosition(position)) {
             is HomeNavTitleViewHolder -> {
-                clickMenu(recyclerView.id, position)
+                clickSectionTitle(recyclerView.id, position)
             }
         }
     }
 
-    @Test
-    fun testComponentMenu() {
-        login()
-        waitForData()
-
-        val recyclerView =
-            activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        val itemCount = recyclerView.adapter?.itemCount ?: 0
-
-        for (i in 0 until itemCount) {
-            checkViewHolderOnRecyclerView(recyclerView, i)
-        }
-
-        waitForData()
-        hasPassedAnalytics(
-            cassavaTestRule,
-            ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MENU_CATEGORY
-        )
-        endActivityTest()
-    }
-
     private fun login() {
+        InstrumentationAuthHelper.clearUserSession()
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }

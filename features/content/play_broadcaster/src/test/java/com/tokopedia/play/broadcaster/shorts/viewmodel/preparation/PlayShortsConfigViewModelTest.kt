@@ -34,6 +34,7 @@ class PlayShortsConfigViewModelTest {
     private val mockConfigAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = true)
     private val mockConfigAllowedNoDraft = uiModelBuilder.buildShortsConfig(shortsId = "", shortsAllowed = true)
     private val mockConfigNotAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = false)
+    private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
 
     private val mockException = Exception("Network Error")
 
@@ -210,6 +211,24 @@ class PlayShortsConfigViewModelTest {
     }
 
     @Test
+    fun playShorts_preparation_config_ugc_isBanned() {
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfigBanned
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val (state, events) = it.recordStateAndEvent {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }
+
+            events.last().assertType<PlayShortsUiEvent.AccountBanned>()
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
+        }
+    }
+
+    @Test
     fun playShorts_preparation_config_shop_noDraftShorts_success() {
         val mockShortsId = "123"
 
@@ -246,6 +265,24 @@ class PlayShortsConfigViewModelTest {
             }
 
             events.last().assertType<PlayShortsUiEvent.ErrorPreparingPage>()
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_config_shop_isBanned() {
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfigBanned
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val (state, events) = it.recordStateAndEvent {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }
+
+            events.last().assertType<PlayShortsUiEvent.AccountBanned>()
             state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
         }
     }

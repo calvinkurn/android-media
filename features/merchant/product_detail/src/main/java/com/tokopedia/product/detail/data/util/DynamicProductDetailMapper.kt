@@ -143,7 +143,7 @@ object DynamicProductDetailMapper {
                     }
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
+                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
@@ -156,7 +156,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-                        listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
+                        listOfComponent.add(
+                            ProductSingleVariantDataModel(
+                                type = component.type,
+                                name = component.componentName,
+                                thumbnailType = component.componentData.firstOrNull()
+                                    ?.componentType.orEmpty()
+                            )
+                        )
                     } else {
                         listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                     }

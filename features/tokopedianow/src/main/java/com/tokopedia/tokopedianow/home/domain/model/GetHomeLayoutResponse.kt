@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetHomeLayoutResponse(
     @Expose
-    @SerializedName("dynamicHomeChannel")
+    @SerializedName("getHomeChannelV2")
     val response: DynamicHomeChannelResponse
 )
 
@@ -24,19 +24,19 @@ data class HomeLayoutResponse(
     @SerializedName("pageName")
     val pageName: String = "",
     @Expose
-    @SerializedName("group_id")
+    @SerializedName("groupID")
     val groupId: String = "",
     @Expose
-    @SerializedName("galaxy_attribution")
+    @SerializedName("galaxyAttribution")
     val galaxyAttribution: String = "",
     @Expose
     @SerializedName("persona")
     val persona: String = "",
     @Expose
-    @SerializedName("brand_id")
+    @SerializedName("brandID")
     val brandId: String = "",
     @Expose
-    @SerializedName("category_persona")
+    @SerializedName("categoryPersona")
     val categoryPersona: String = "",
     @Expose
     @SerializedName("layout")
@@ -47,9 +47,6 @@ data class HomeLayoutResponse(
     @Expose
     @SerializedName("grids")
     val grids: List<Grid> = listOf(),
-    @Expose
-    @SerializedName("hero")
-    val hero: List<Hero> = listOf(),
     @Expose
     @SerializedName("type")
     val type: String = "",
@@ -63,7 +60,7 @@ data class HomeLayoutResponse(
     @SerializedName("categoryID")
     val categoryID: String = "",
     @Expose
-    @SerializedName("perso_type")
+    @SerializedName("persoType")
     val persoType: String = "",
     @Expose
     @SerializedName("campaignCode")
@@ -81,7 +78,7 @@ data class HomeLayoutResponse(
     @SerializedName("homeAttribution")
     val homeAttribution: String = "",
     @Expose
-    @SerializedName("has_close_button")
+    @SerializedName("hasCloseButton")
     val hasCloseButton: Boolean = false,
     @Expose
     @SerializedName("isAutoRefreshAfterExpired")
@@ -95,31 +92,6 @@ data class HomeLayoutResponse(
     @Expose
     @SerializedName("timestamp")
     var timestamp: String = ""
-)
-
-class Hero(
-    @Expose
-    @SerializedName("id")
-    val id: String = "",
-    @Expose
-    @SerializedName("imageUrl")
-    val imageUrl: String = "",
-    @Expose
-    @SerializedName("name")
-    val name: String = "",
-    @Expose
-    @SerializedName("applink")
-    val applink: String = "",
-    @Expose
-    @SerializedName("url")
-    val url: String = "",
-    @Expose
-    @SerializedName("price")
-    @SuppressLint("Invalid Data Type")
-    val price: String = "0",
-    @Expose
-    @SerializedName("attribution")
-    val attribution: String = ""
 )
 
 data class Grid(
@@ -215,7 +187,7 @@ data class Grid(
     @SerializedName("count_review")
     val countReview: Int = 0,
     @Expose
-    @SerializedName("back_color")
+    @SerializedName("backColor")
     val backColor: String = "",
     @Expose
     @SerializedName("benefit")
@@ -284,7 +256,7 @@ data class Banner(
     @SerializedName("description")
     val description: String = "",
     @Expose
-    @SerializedName("back_color")
+    @SerializedName("backColor")
     val backColor: String = "",
     @Expose
     @SerializedName("cta")
@@ -296,15 +268,15 @@ data class Banner(
     @SerializedName("applink")
     val applink: String = "",
     @Expose
-    @SerializedName("text_color")
+    @SerializedName("textColor")
     val textColor: String = "",
     @Expose
-    @SerializedName("image_url")
+    @SerializedName("imageUrl")
     val imageUrl: String = "",
     @Expose
     @SerializedName("attribution")
     val attribution: String = "",
-    @SerializedName("gradient_color")
+    @SerializedName("gradientColor")
     val gradientColor: ArrayList<String> = arrayListOf("")
 ) 
 
@@ -319,13 +291,13 @@ data class CtaData(
     @SerializedName("text")
     val text: String = "",
     @Expose
-    @SerializedName("coupon_code")
+    @SerializedName("couponCode")
     val couponCode: String = ""
 )
 
 data class Shop(
     @Expose
-    @SerializedName("shopID")
+    @SerializedName("id")
     val shopId: String = ""
 )
 data class LabelGroup(

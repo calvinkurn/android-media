@@ -80,6 +80,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
 
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
@@ -122,11 +123,11 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
-    implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation rootProject.ext.miscDependencies.navigationUiKtx
-    implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.liveDataKtx
+
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.coroutineCore
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer
@@ -136,7 +137,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation (rootProject.ext.tkpdLibDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
 

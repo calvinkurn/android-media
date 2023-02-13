@@ -30,6 +30,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
@@ -38,7 +39,6 @@ import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ShopStatusUIModel.Companion.mapperShopStatusResponse
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
@@ -93,8 +93,8 @@ class ProductManageViewModel @Inject constructor(
     private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getStatusShop: GetStatusShopUseCase,
+    private val getTickerUseCase: GetTickerUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
-    private val remoteConfig: FirebaseRemoteConfigImpl,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -146,8 +146,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _editVariantStockResult
     val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
-    val onClickPromoTopAds: LiveData<TopAdsPage>
-        get() = _onClickPromoTopAds
     val productManageAccess: LiveData<Result<ProductManageAccess>>
         get() = _productManageAccess
     val deleteProductDialog: LiveData<DeleteProductDialogType>
@@ -181,7 +179,6 @@ class ProductManageViewModel @Inject constructor(
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
-    private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
@@ -397,14 +394,19 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-    fun getTickerData(enableStockAvailable: Boolean= true) {
+    fun getTickerData() {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        _tickerData.value =
-            tickerStaticDataProvider.getTickers(
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                getTickerUseCase.execute()
+            }
+            _tickerData.value = tickerStaticDataProvider.createTicker(
                 isMultiLocationShop,
-                _shopStatus.value?.shopStatus.orEmpty(),
-                enableStockAvailable
+                result.getTargetedTicker?.tickers.orEmpty()
             )
+        }, onError = {
+            _tickerData.value = tickerStaticDataProvider.createTicker(isMultiLocationShop)
+        })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -770,23 +772,6 @@ class ProductManageViewModel @Inject constructor(
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
         _toggleMultiSelect.value = !multiSelectEnabled
-    }
-
-    fun onPromoTopAdsClicked(productId: String) {
-        val topAdsInfo = _topAdsInfo.value
-
-        if (topAdsInfo != null) {
-            val shopHasTopAds = topAdsInfo.isTopAds
-            val shopHasAutoAds = topAdsInfo.isAutoAds
-
-            _onClickPromoTopAds.value = when {
-                shopHasAutoAds -> TopAdsPage.AutoAds(productId)
-                shopHasTopAds -> TopAdsPage.ManualAds(productId)
-                else -> TopAdsPage.OnBoarding(productId)
-            }
-        } else {
-            _onClickPromoTopAds.value = TopAdsPage.OnBoarding(productId)
-        }
     }
 
     fun onDeleteSingleProduct(productName: String, productId: String) {

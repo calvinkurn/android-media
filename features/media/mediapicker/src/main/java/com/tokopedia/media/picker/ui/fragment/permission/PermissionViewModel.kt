@@ -5,7 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.picker.utils.permission.PermissionModel
 import com.tokopedia.media.picker.utils.permission.permissions
 import com.tokopedia.picker.common.types.ModeType
@@ -13,7 +13,7 @@ import com.tokopedia.picker.common.types.PageType
 import javax.inject.Inject
 
 class PermissionViewModel @Inject constructor(
-    private val cacheManager: ParamCacheManager
+    private val cacheManager: PickerCacheManager
 ) : ViewModel() {
 
     /*

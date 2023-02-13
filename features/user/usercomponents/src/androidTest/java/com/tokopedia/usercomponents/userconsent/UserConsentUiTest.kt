@@ -94,6 +94,31 @@ class UserConsentUiTest {
     }
 
     @Test
+    fun loadConsentTnCAllMandatoryThenHideConsent() {
+        repositoryStub?.setTestType(TNC_SINGLE_MANDATORY_HIDE_CONSENT)
+        activityRule.launchActivity(null)
+
+        userUserConsentDebugViewRobot {
+            loadConsentCollection(TNC_SINGLE_MANDATORY_HIDE_CONSENT.name)
+        }
+
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
+
+        userConsentRobot {
+        } validateComponent {
+            shouldViewTnCMandatory(getFakeResponsePurposesData())
+            shouldConsentHide()
+            shouldButtonHide()
+        } validateTracker {
+        }
+    }
+
+    @Test
     fun loadConsentTnCAllOptional() {
         repositoryStub?.setTestType(TNC_SINGLE_OPTIONAL)
         activityRule.launchActivity(null)
