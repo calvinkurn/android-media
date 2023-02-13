@@ -17,5 +17,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/content_common_space_16"
+        android:layout_marginEnd="@dimen/content_common_space_8"
+        android:layout_marginStart="@dimen/content_common_space_8"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>
