@@ -87,8 +87,9 @@ data class VoucherDetailData(
             voucherCode = voucherCode,
             startPeriod = voucherStartTime.toDate(YYYY_MM_DD_T_HH_MM_SS),
             endPeriod = voucherFinishTime.toDate(YYYY_MM_DD_T_HH_MM_SS),
+            warehouseId = warehouseId,
             totalPeriod = totalPeriod,
-            warehouseId = warehouseId
+            isPeriod = isPeriod
         )
     }
 

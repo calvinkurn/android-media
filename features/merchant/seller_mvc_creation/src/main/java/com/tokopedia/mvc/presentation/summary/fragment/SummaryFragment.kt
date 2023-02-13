@@ -263,7 +263,12 @@ class SummaryFragment :
                 showSuccessUploadBottomSheet(it)
             } else {
                 context?.run {
-                    val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
+                    val resMessage = if (it.isPeriod) {
+                        R.string.smvc_summary_page_success_upload_multiperiod_message
+                    } else {
+                        R.string.smvc_summary_page_success_upload_message
+                    }
+                    val message = getString(resMessage, it.voucherName)
                     sharedPreferencesUtil.setUploadResult(this, message)
                     RouteManager.route(this, SELLER_MVC_LIST)
                     activity?.finish()
