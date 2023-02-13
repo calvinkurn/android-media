@@ -230,7 +230,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
                 _videoPostContent.update {
                     it.copy(
-                        items = it.items + result.items,
+                        items = if(isRefresh) result.items else  it.items + result.items,
                         nextCursor = result.nextCursor,
                         status = UserPlayVideoUiModel.Status.Success,
                     )
