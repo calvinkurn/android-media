@@ -308,6 +308,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_MISSION_WIDGET: String = "mission_widget"
             const val LAYOUT_VPS_WIDGET: String = "4_banners_auto_vps_v2"
             const val LAYOUT_LEGO_4_PRODUCT: String = "lego_4_product"
+            const val LAYOUT_TODO_WIDGET_REVAMP: String = "todo_widget"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
