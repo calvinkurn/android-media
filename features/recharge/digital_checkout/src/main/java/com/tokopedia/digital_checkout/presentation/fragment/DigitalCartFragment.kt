@@ -123,6 +123,7 @@ class DigitalCartFragment :
 
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
+    private var isATCFailed: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -163,6 +164,7 @@ class DigitalCartFragment :
                 savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER)
                     ?: DigitalCheckoutDataParameter()
             cartPassData?.needGetCart = true
+            isATCFailed = savedInstanceState.getBoolean(EXTRA_IS_ATC_ERROR)
         } else {
             viewModel.requestCheckoutParam = DigitalCheckoutDataParameter()
         }
@@ -183,6 +185,7 @@ class DigitalCartFragment :
             EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
             viewModel.requestCheckoutParam
         )
+        outState.putBoolean(EXTRA_IS_ATC_ERROR, isATCFailed)
         super.onSaveInstanceState(outState)
     }
 
@@ -198,7 +201,9 @@ class DigitalCartFragment :
 
     private fun loadData() {
         cartPassData?.let {
-            if (it.isFromPDP || it.needGetCart) {
+            if (isATCFailed) {
+                requestAddToCart(it)
+            } else if (it.isFromPDP || it.needGetCart) {
                 requestGetCart(it)
             } else {
                 requestAddToCart(it)
@@ -217,6 +222,7 @@ class DigitalCartFragment :
 
     private fun requestAddToCart(passData: DigitalCheckoutPassData) {
         hideContent()
+        resetAtcError()
         binding?.loaderCheckout?.visible()
         passData.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
         addToCartViewModel.addToCart(
@@ -254,6 +260,7 @@ class DigitalCartFragment :
         }
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
+            updateAtcError()
             showErrorPage(it)
         }
 
@@ -554,6 +561,7 @@ class DigitalCartFragment :
     }
 
     private fun closeViewWithMessageAlert(error: Throwable) {
+        updateAtcError()
         binding?.loaderCheckout?.gone()
         if (cartPassData?.isFromPDP == true) {
             val intent = Intent()
@@ -939,12 +947,21 @@ class DigitalCartFragment :
         return context?.resources?.getDimensionPixelSize(id) ?: Int.ZERO
     }
 
+    private fun resetAtcError() {
+        isATCFailed = false
+    }
+
+    private fun updateAtcError() {
+        isATCFailed = true
+    }
+
     companion object {
 
         const val ARG_PASS_DATA = "ARG_PASS_DATA"
         const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
 
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
+        private const val EXTRA_IS_ATC_ERROR = "EXTRA_IS_ATC_ERROR"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER =
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
 
