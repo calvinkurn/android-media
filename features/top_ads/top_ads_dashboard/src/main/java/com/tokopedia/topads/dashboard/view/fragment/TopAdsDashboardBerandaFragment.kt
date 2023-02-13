@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
@@ -21,6 +22,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT
 import com.tokopedia.topads.dashboard.data.model.beranda.*
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
@@ -39,6 +41,8 @@ import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -74,6 +78,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         LatestReadingTopAdsDashboardRvAdapter { context?.openWebView(it) }
     }
 
+    private var isAutoTopUpActive: Boolean = false
+    private var isAutoTopUpSelected: Boolean = false
+    private var creditPerformance: String = ""
+    private var topUpUCount: Int = 0
+    private var autoTopUpBonus: Double = 0.0
+    private var showAutoTopUpOldFlow = true
+
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
 
@@ -94,7 +105,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding =
             FragmentTopadsDashboardBerandaBaseBinding.inflate(layoutInflater, container, false)
@@ -132,7 +145,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 context?.let {
                     this.layoutRoundedView.imageView.setImageDrawable(
                         ContextCompat.getDrawable(
-                            it, com.tokopedia.unifycomponents.R.drawable.iconunify_product_budget
+                            it,
+                            com.tokopedia.unifycomponents.R.drawable.iconunify_product_budget
                         )
                     )
                 }
@@ -147,7 +161,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 context?.let {
                     this.layoutRoundedView.imageView.setImageDrawable(
                         ContextCompat.getDrawable(
-                            it, com.tokopedia.unifycomponents.R.drawable.iconunify_saldo
+                            it,
+                            com.tokopedia.unifycomponents.R.drawable.iconunify_saldo
                         )
                     )
                 }
@@ -162,7 +177,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 context?.let {
                     this.layoutRoundedView.imageView.setImageDrawable(
                         ContextCompat.getDrawable(
-                            it, com.tokopedia.unifycomponents.R.drawable.iconunify_keyword
+                            it,
+                            com.tokopedia.unifycomponents.R.drawable.iconunify_keyword
                         )
                     )
                 }
@@ -176,9 +192,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             goToCreditHistory(false)
         }
         binding.tambahKreditLayout.addCredit.setOnClickListener {
-            val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
-            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-            startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
+            if (showAutoTopUpOldFlow) {
+                openOldAutoTopUpBottomSheet()
+            } else {
+                openNewAutoTopUpBottomSheet()
+            }
         }
         binding.layoutRingkasan.ivSummaryDropDown.setOnClickListener {
             summaryAdTypesBottomSheet.show(childFragmentManager, "")
@@ -212,6 +230,22 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
         }
+    }
+
+    private fun openNewAutoTopUpBottomSheet() {
+        val intent = Intent(activity, TopAdsCreditTopUpActivity::class.java)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, isAutoTopUpActive)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, isAutoTopUpSelected)
+        intent.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, creditPerformance)
+        intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, topUpUCount)
+        intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, autoTopUpBonus)
+        startActivityForResult(intent, REQUEST_CODE_TOP_UP_CREDIT)
+    }
+
+    private fun openOldAutoTopUpBottomSheet() {
+        val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
+        intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
     }
 
     private fun setUpRecyclerView() {
@@ -257,7 +291,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun showFirstTimeDialog() {
         (activity as? TopAdsDashboardActivity)?.let {
             requireActivity().showDialogWithCoachMark(
-                binding, it.ivEducationTopAdsActionBar
+                binding,
+                it.ivEducationTopAdsActionBar
             )
         }
     }
@@ -280,8 +315,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (summaryAdTypeList.isNotEmpty())
+        if (summaryAdTypeList.isNotEmpty()) {
             selectedAdType = summaryAdTypeList[0]
+        }
 
         setUpRecyclerView()
         observeLiveData()
@@ -360,6 +396,29 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 RouteManager.route(context, linkUrl.toString())
             }
+        }
+
+        topAdsDashboardViewModel.getAutoTopUpDefaultSate.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                isAutoTopUpActive = it.data.isAutoTopUp
+                setButtonRefreshCreditState(it.data.isAutoTopUp)
+                isAutoTopUpSelected = it.data.isAutoTopUpSelected
+                creditPerformance = it.data.creditPerformance
+                topUpUCount = it.data.countTopUp
+            }
+        }
+
+        topAdsDashboardViewModel.autoTopUpStatusLiveData.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                autoTopUpBonus = it.data.statusBonus
+            }
+        }
+
+        topAdsDashboardViewModel.isUserWhitelisted.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                showAutoTopUpOldFlow = !it.data
+            }
+        }
 
             override fun onDismiss() {}
         })
@@ -372,13 +431,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                     String.format(
                         it.getString(R.string.topads_dashboard_kali_hari_value),
                         item.totalSearchCount
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 txtDescription.text = HtmlCompat.fromHtml(
                     String.format(
                         it.getString(R.string.topads_dashboard_produk_berpostensi_desc),
                         item.count
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
             }
             produkBerpotensiAdapter.addItems(TopAdsDashboardBerandaUtils.mapImageModel(item.productList))
@@ -390,13 +451,17 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             context?.resources?.let {
                 layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
                     String.format(
-                        it.getString(R.string.topads_dashboard_kali_hari_value), item.totalClicks
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                        it.getString(R.string.topads_dashboard_kali_hari_value),
+                        item.totalClicks
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 txtDescription.text = HtmlCompat.fromHtml(
                     String.format(
-                        it.getString(R.string.topads_dashboard_anggaran_harian_desc), item.count
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                        it.getString(R.string.topads_dashboard_anggaran_harian_desc),
+                        item.count
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 val list = item.groupList
                 if (list.isNotEmpty()) {
@@ -407,7 +472,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                     if (restCount > 0) {
                         items.add(
                             String.format(
-                                it.getString(R.string.topads_dashboard_grup_iklan), restCount
+                                it.getString(R.string.topads_dashboard_grup_iklan),
+                                restCount
                             )
                         )
                     }
@@ -422,13 +488,17 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             context?.resources?.let {
                 layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
                     String.format(
-                        it.getString(R.string.topads_dashboard_n_grup_iklanmu), item.groupCount
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                        it.getString(R.string.topads_dashboard_n_grup_iklanmu),
+                        item.groupCount
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 txtDescription.text = HtmlCompat.fromHtml(
                     String.format(
-                        it.getString(R.string.topads_dashboard_kata_kunci_desc), item.groupCount
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                        it.getString(R.string.topads_dashboard_kata_kunci_desc),
+                        item.groupCount
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 kataKunciChipsRvAdapter.addItems(
                     item.topGroups,
@@ -438,11 +508,12 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         }
     }
 
-    //method to be invoked when ad type is changed from ringkasan dropdown section
+    // method to be invoked when ad type is changed from ringkasan dropdown section
     private fun adTypeChanged(chip: Chip) {
         fun dismissBottomSheet() {
-            if (summaryAdTypesBottomSheet.isVisible)
+            if (summaryAdTypesBottomSheet.isVisible) {
                 summaryAdTypesBottomSheet.dismiss()
+            }
         }
         if (chip.isSelected) {
             dismissBottomSheet()
@@ -473,6 +544,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         adTypeChanged(selectedAdType)
         topAdsDashboardViewModel.fetchRecommendationStatistics()
         topAdsDashboardViewModel.getTopadsTicker()
+        topAdsDashboardViewModel.getAutoTopUpStatus()
+        topAdsDashboardViewModel.getSelectedTopUpType()
+        topAdsDashboardViewModel.getWhiteListedUser()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -480,8 +554,40 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_CODE_ADD_CREDIT) {
             topAdsDashboardViewModel.fetchShopDeposit()
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
-            if (data?.getBooleanExtra("no_redirect", false) != true)
+            if (data?.getBooleanExtra("no_redirect", false) != true) {
                 goToCreditHistory(true)
+            } else {
+                topAdsDashboardViewModel.getSelectedTopUpType()
+            }
+        } else if (requestCode == REQUEST_CODE_TOP_UP_CREDIT) {
+            topAdsDashboardViewModel.fetchShopDeposit()
+            topAdsDashboardViewModel.getSelectedTopUpType()
+            if (resultCode == Activity.RESULT_OK) {
+                setButtonRefreshCreditState(true)
+                Toaster.build(
+                    binding.root,
+                    getString(R.string.topads_dash_auto_topup_activated_toast),
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
+                ).show()
+            }
+        }
+    }
+
+    private fun setButtonRefreshCreditState(isActive: Boolean) {
+        isAutoTopUpActive = isActive
+        if (isActive) {
+            context?.let {
+                binding.tambahKreditLayout.btnRefreshCredits.setColorFilter(
+                    ContextCompat.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                )
+            }
+        } else {
+            binding.tambahKreditLayout.btnRefreshCredits.clearColorFilter()
         }
     }
 
@@ -491,6 +597,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 TopAdsCreditHistoryActivity.createInstance(
                     it,
                     isFromSelection,
+                    showAutoTopUpOldFlow,
                     (activity as? TopAdsDashboardActivity)?.datePickerIndex
                         ?: DATE_PICKER_DEFAULT_INDEX
                 ),

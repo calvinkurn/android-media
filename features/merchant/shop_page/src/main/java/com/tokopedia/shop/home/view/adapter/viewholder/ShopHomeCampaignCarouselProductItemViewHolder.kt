@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCarouselProductCardBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
@@ -34,6 +35,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_carousel_product_card
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
     private fun findViews(view: View) {
@@ -43,6 +45,14 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
     override fun bind(shopHomeProductViewModel: ShopHomeProductUiModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
         productCard?.applyCarousel()
+        val stockBarLabel = shopHomeProductViewModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         productCard?.setProductModel(
             ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
@@ -50,6 +60,8 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                 shopHomeProductViewModel = shopHomeProductViewModel,
                 widgetName = shopHomeNewProductLaunchCampaignUiModel.name,
                 statusCampaign = shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.statusCampaign.orEmpty()
+            ).copy(
+                stockBarLabelColor = stockBarLabelColor
             )
         )
         setListener()

@@ -144,6 +144,12 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
+
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.junit

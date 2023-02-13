@@ -23,6 +23,10 @@ class KebabIconUiComponent(
             override fun onClicked(view: KebabIconUiView) {
                 bus.emit(Event.OnClicked)
             }
+
+            override fun onImpressed(view: KebabIconUiView) {
+                bus.emit(Event.OnImpressed)
+            }
         }
     )
 
@@ -40,5 +44,6 @@ class KebabIconUiComponent(
 
     sealed interface Event {
         object OnClicked : Event
+        object OnImpressed : Event
     }
 }
