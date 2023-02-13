@@ -9,7 +9,6 @@ import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCase
-import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import com.tokopedia.sellerapp.domain.model.NotificationModel
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.model.SummaryModel
@@ -134,7 +133,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun getNotificationList() {
-        viewModelScope.launch {
+        launch {
             _notifications.emitAll(
                 getNotificationUseCase.getNotificationList().map {
                     UiState.Success(data = it)
@@ -144,7 +143,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun getNotificationDetail(notificationId: String) {
-        viewModelScope.launch {
+        launch {
             _notificationDetail.emitAll(
                 getNotificationUseCase.getNotificationDetail(notificationId).map {
                     UiState.Success(data = it)

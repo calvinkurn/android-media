@@ -8,6 +8,7 @@ import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCaseImpl
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase
+import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCaseImpl
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import dagger.Module
 import dagger.Provides
@@ -36,6 +37,6 @@ class UseCaseModule {
     fun provideNotificationUseCase(
         notificationRepository: NotificationRepository
     ): GetNotificationUseCase {
-        return GetNotificationUseCase(notificationRepository)
+        return GetNotificationUseCaseImpl(notificationRepository)
     }
 }

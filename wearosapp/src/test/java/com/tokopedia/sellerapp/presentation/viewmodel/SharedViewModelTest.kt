@@ -10,6 +10,7 @@ import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper.STATUS_NEW_ORDER
 import com.tokopedia.sellerapp.presentation.viewmodel.data.FakeCapabilityInfo
 import com.tokopedia.sellerapp.presentation.viewmodel.data.FakeNode
 import com.tokopedia.sellerapp.presentation.viewmodel.util.DataMapper.getUpdatedMenuCounter
+import com.tokopedia.sellerapp.presentation.viewmodel.util.DummyData.listNotificationData
 import com.tokopedia.sellerapp.presentation.viewmodel.util.DummyData.listOrderData
 import com.tokopedia.sellerapp.presentation.viewmodel.util.DummyData.listSummaryData
 import com.tokopedia.sellerapp.util.Action
@@ -28,6 +29,32 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class SharedViewModelTest: SharedViewModelFixture() {
+
+    @Test
+    fun `when calling getNotificationList, it should get expected list`() = runBlocking {
+        viewModel.getNotificationList()
+
+        val expectedResult = listNotificationData
+
+        val actualResult = viewModel.notifications.first().data
+
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when calling getNotificationDetail, it should get object with the same notificationId`() = runBlocking {
+        val notificationId = "122113"
+
+        viewModel.getNotificationDetail(
+            notificationId = notificationId
+        )
+
+        val expectedResult = listNotificationData.first { it.notificationId == notificationId }
+
+        val actualResult = viewModel.notificationDetail.first().data
+
+        assertEquals(expectedResult, actualResult)
+    }
 
     @Test
     fun `when calling openOrderPageBasedOnType, it should call sendMessagesToNodes function with OPEN_NEW_ORDER_LIST action`() = runBlocking {

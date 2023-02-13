@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.presentation.viewmodel.util
 
+import com.tokopedia.sellerapp.domain.model.NotificationModel
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.TITLE_CHAT
@@ -58,5 +59,26 @@ object DummyData {
             destinationProvince = "England",
             products = listOf()
         ),
+    )
+
+    val listNotificationData = listOf(
+        NotificationModel(
+            notificationId = "122112",
+            readStatus = 1,
+            status = 2,
+            title = "hello this is a new notification",
+            shortDescription = "this notification has new message",
+            createTimeUnix = 0L,
+            infoThumbnailUrl = "http://www.tokopedia.com"
+        ),
+        NotificationModel(
+            notificationId = "122113",
+            readStatus = 2,
+            status = 1,
+            title = "hello this is second notification",
+            shortDescription = "this notification has new message",
+            createTimeUnix = 0L,
+            infoThumbnailUrl = "http://www.tokopedia.com"
+        )
     )
 }
