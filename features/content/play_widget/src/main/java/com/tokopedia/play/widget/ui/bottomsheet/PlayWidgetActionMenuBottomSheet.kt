@@ -93,6 +93,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                         getString(R.string.play_widget_action_menu_copy_link)
                     ) {
                         mListener?.onClickShare(channel)
+                        dismiss()
                     }
                 )
             }
@@ -107,6 +108,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                         getString(R.string.play_widget_action_menu_see_performance)
                     ) {
                         mListener?.onClickSeePerformance(channel)
+                        dismiss()
                     }
                 )
             }
@@ -120,6 +122,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                     getString(R.string.play_widget_action_menu_delete_video)
                 ) {
                     mListener?.onClickDeleteVideo(channel)
+                    dismiss()
                 }
             )
 

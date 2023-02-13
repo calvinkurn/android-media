@@ -1,6 +1,9 @@
 package com.tokopedia.people.views.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -230,7 +233,7 @@ class UserProfileVideoFragment @Inject constructor(
                         bottomSheet.setChannel(event.channel)
                         bottomSheet.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
                             override fun onClickShare(channel: PlayWidgetChannelUiModel) {
-
+                                submitAction(UserProfileAction.ClickCopyLinkPlayChannel(channel))
                             }
 
                             override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
@@ -238,11 +241,21 @@ class UserProfileVideoFragment @Inject constructor(
                             }
 
                             override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
-
+                                submitAction(UserProfileAction.ClickDeletePlayChannel(channel))
                             }
                         })
 
                         bottomSheet.show(childFragmentManager)
+                    }
+                    is UserProfileUiEvent.CopyLinkPlayVideo -> {
+                        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                            .setPrimaryClip(ClipData.newPlainText("play-widget", event.copyText))
+
+
+                        view?.showToast(getString(R.string.up_play_video_link_copied))
+                    }
+                    is UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog -> {
+                        /** TODO: handle this */
                     }
                 }
             }

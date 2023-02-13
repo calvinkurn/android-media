@@ -37,4 +37,8 @@ sealed interface UserProfileAction {
     ) : UserProfileAction
 
     data class ClickPlayVideoMenuAction(val channel: PlayWidgetChannelUiModel) : UserProfileAction
+
+    data class ClickCopyLinkPlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
+
+    data class ClickDeletePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
 }

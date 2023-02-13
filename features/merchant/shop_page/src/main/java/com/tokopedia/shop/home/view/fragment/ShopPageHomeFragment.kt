@@ -3913,19 +3913,16 @@ open class ShopPageHomeFragment :
                 shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
                 copyToClipboard(channelUiModel.share.fullShareContent)
                 showLinkCopiedToaster()
-                playWidgetActionMenuBottomSheet.dismiss()
             }
 
             override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
                 shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
                 RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
-                playWidgetActionMenuBottomSheet.dismiss()
             }
 
             override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
                 shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
                 showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
-                playWidgetActionMenuBottomSheet.dismiss()
             }
         })
 
