@@ -84,6 +84,10 @@ class PlayWidgetLargeViewHolder {
                 ) {
                     listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
                 }
+
+                override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
+                    listener.onMenuActionButtonClicked(view, item, adapterPosition)
+                }
             })
         }
 
@@ -121,6 +125,12 @@ class PlayWidgetLargeViewHolder {
             fun onToggleReminderChannelClicked(
                 item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType,
+                position: Int
+            )
+
+            fun onMenuActionButtonClicked(
+                view: View,
+                item: PlayWidgetChannelUiModel,
                 position: Int
             )
         }

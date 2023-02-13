@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.ui.listener
 
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 
 /**
@@ -12,6 +13,12 @@ interface PlayWidgetLargeListener : PlayWidgetRouterListener {
         view: PlayWidgetLargeView,
         channelId: String,
         reminderType: PlayWidgetReminderType,
+        position: Int
+    ) {}
+
+    fun onMenuActionButtonClicked(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
         position: Int
     ) {}
 

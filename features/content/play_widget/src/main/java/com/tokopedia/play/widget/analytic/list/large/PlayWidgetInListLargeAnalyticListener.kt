@@ -1,7 +1,6 @@
 package com.tokopedia.play.widget.analytic.list.large
 
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
-import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -69,6 +68,13 @@ interface PlayWidgetInListLargeAnalyticListener {
     /**
      * Others
      */
+    fun onClickMoreActionChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+    ) {}
+
     fun onClickDeleteChannel(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,

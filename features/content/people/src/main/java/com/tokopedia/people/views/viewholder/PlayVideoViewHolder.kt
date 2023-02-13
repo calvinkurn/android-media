@@ -51,6 +51,10 @@ class PlayVideoViewHolder private constructor() {
                 ) {
                     listener.onPlayReminderClick(item)
                 }
+
+                override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
+                    listener.onMenuActionButtonClicked(item)
+                }
             })
         }
 
@@ -72,6 +76,7 @@ class PlayVideoViewHolder private constructor() {
             fun onPlayReminderClick(channel: PlayWidgetChannelUiModel)
             fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int)
             fun onImpressPlayWidgetData(channel: PlayWidgetChannelUiModel, isLive: Boolean, channelId: String, pos: Int)
+            fun onMenuActionButtonClicked(channel: PlayWidgetChannelUiModel)
         }
     }
 

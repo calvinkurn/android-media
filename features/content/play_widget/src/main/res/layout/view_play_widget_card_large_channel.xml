@@ -65,6 +65,21 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/play_widget_iv_action"
+            android:layout_width="@dimen/play_widget_more_action_size"
+            android:layout_height="@dimen/play_widget_more_action_size"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:scaleType="centerInside"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="MENU_KEBAB_VERTICAL"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
         <include

@@ -97,6 +97,23 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 position
             )
         }
+
+        override fun onMenuActionButtonClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            mAnalyticListener?.onClickMenuActionChannel(
+                this@PlayWidgetLargeView,
+                item,
+                position,
+            )
+            mWidgetListener?.onMenuActionButtonClicked(
+                this@PlayWidgetLargeView,
+                item,
+                position,
+            )
+        }
     }
 
     private val bannerCardListener = object : PlayWidgetLargeViewHolder.Banner.Listener {

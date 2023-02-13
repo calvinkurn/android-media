@@ -123,6 +123,10 @@ class UserProfileVideoFragment @Inject constructor(
                         )
                     }
                 }
+
+                override fun onMenuActionButtonClicked(channel: PlayWidgetChannelUiModel) {
+                    submitAction(UserProfileAction.ClickPlayVideoMenuAction(channel))
+                }
             },
             transcodeWidgetListener = object : PlayVideoViewHolder.Transcode.Listener {
                 override fun onDeletePlayChannel(channel: PlayWidgetChannelUiModel) {

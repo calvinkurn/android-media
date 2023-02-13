@@ -31,12 +31,12 @@ object UserProfileVideoMapper {
 
     fun map(
         playSlotList: PlayPostContentItem,
-        shopId: String,
+        userId: String,
     ): PlayWidgetChannelUiModel {
-        return getWidgetItemUiModel(playSlotList, shopId)
+        return getWidgetItemUiModel(playSlotList, userId)
     }
 
-    private fun getWidgetItemUiModel(item: PlayPostContentItem, shopId: String): PlayWidgetChannelUiModel {
+    private fun getWidgetItemUiModel(item: PlayPostContentItem, userId: String): PlayWidgetChannelUiModel {
         // check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
         val performanceSummaryLink = ""
         val poolType = ""
@@ -68,7 +68,7 @@ object UserProfileVideoMapper {
             performanceSummaryLink = performanceSummaryLink,
             poolType = poolType,
             recommendationType = recommendationType,
-            hasAction = shouldHaveActionMenu(channelType, item.id, shopId),
+            hasAction = shouldHaveActionMenu(channelType, item.partner.id, userId),
             channelTypeTransition = PlayWidgetChannelTypeTransition(
                 PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                 PlayWidgetChannelType.getByValue(channelTypeTransitionNext),
@@ -88,7 +88,7 @@ private fun getPromoType(promoLabels: List<PostPromoLabel>): PostPromoLabel {
     return PostPromoLabel("", "")
 }
 
-private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, shopId: String): Boolean {
+private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, userId: String): Boolean {
     return channelType == PlayWidgetChannelType.Vod &&
-        shopId == partnerId
+        userId == partnerId
 }

@@ -113,6 +113,14 @@ class DefaultPlayWidgetInListAnalyticListener(
         analytic.onClickMoreActionChannel(view, item, channelPositionInList, verticalWidgetPosition)
     }
 
+    override fun onClickMenuActionChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onClickMoreActionChannel(view, item, channelPositionInList, verticalWidgetPosition)
+    }
+
     override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int) {
         analytic.onClickDeleteChannel(view, item, channelPositionInList, verticalWidgetPosition)
     }

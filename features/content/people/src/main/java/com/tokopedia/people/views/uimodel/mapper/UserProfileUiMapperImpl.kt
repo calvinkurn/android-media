@@ -11,12 +11,15 @@ import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
 import com.tokopedia.people.views.uimodel.content.*
 import com.tokopedia.people.views.uimodel.profile.*
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on June 29, 2022
  */
-class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
+class UserProfileUiMapperImpl @Inject constructor(
+    private val userSession: UserSessionInterface,
+) : UserProfileUiMapper {
 
     override fun mapUserProfile(response: ProfileHeaderBase): ProfileUiModel {
         return ProfileUiModel(
@@ -130,7 +133,7 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
     override fun mapPlayVideo(response: UserPostModel): UserPlayVideoUiModel {
         val videoList = response.playGetContentSlot.data.firstOrNull()?.items?.map {
-            UserProfileVideoMapper.map(it, "")
+            UserProfileVideoMapper.map(it, userSession.userId)
         } ?: emptyList()
         val nextCursor = response.playGetContentSlot.playGetContentSlot.nextCursor
 

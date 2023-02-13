@@ -35,4 +35,6 @@ sealed interface UserProfileAction {
         val totalView: String,
         val isReminderSet: Boolean,
     ) : UserProfileAction
+
+    data class ClickPlayVideoMenuAction(val channel: PlayWidgetChannelUiModel) : UserProfileAction
 }
