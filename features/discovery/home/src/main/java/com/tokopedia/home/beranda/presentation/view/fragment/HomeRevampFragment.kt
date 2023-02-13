@@ -595,8 +595,9 @@ open class HomeRevampFragment :
 
                         override fun onYposChanged(yOffset: Int) {
                         }
-                    }
-                , isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant())
+                    },
+                    isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant()
+                )
             )
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
@@ -616,7 +617,10 @@ open class HomeRevampFragment :
         } else {
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
-        stickyLoginView = view.findViewById(R.id.sticky_login_text)
+
+        if (!HomeRollenceController.isUsingAtf2Variant() && !HomeRollenceController.isUsingAtf1Variant()) {
+            stickyLoginView = view.findViewById(R.id.sticky_login_text)
+        }
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
