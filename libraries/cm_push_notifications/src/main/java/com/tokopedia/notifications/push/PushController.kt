@@ -97,23 +97,23 @@ class PushController(val context: Context) : CoroutineScope {
 
     private fun handleNotificationBundle(model: BaseNotificationModel) {
         launchCatchError(
-            block = {
-                if(model.isAmplification){
-                    if(!isAmpNotificationValid(model.notificationId))
-                        return@launchCatchError
-                }
-                if (model.notificationMode == NotificationMode.OFFLINE) {
-                    if (isOfflinePushEnabled)
-                        onOfflinePushPayloadReceived(model)
-                } else {
-                    onLivePushPayloadReceived(model)
-                }
+                block = {
+                    if(model.isAmplification){
+                        if(!isAmpNotificationValid(model.notificationId))
+                            return@launchCatchError
+                    }
+                    if (model.notificationMode == NotificationMode.OFFLINE) {
+                        if (isOfflinePushEnabled)
+                            onOfflinePushPayloadReceived(model)
+                    } else {
+                        onLivePushPayloadReceived(model)
+                    }
             }, onError = {
-                ServerLogger.log(Priority.P2, "CM_VALIDATION",
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
                     mapOf("type" to "exception",
                         "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
                         "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-            })
+        })
     }
 
     private suspend fun isAmpNotificationValid(notificationID: Int): Boolean {
