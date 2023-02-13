@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 
 /**
@@ -49,6 +50,14 @@ class ChooseAddressWidgetCallback(
         } else {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         }
+    }
+
+    override fun iconLocation(): Int {
+        return IconUnify.LOCATION_FILLED
+    }
+
+    override fun iconLocationImageColor(): Int {
+        return com.tokopedia.unifyprinciples.R.color.Unify_GN500
     }
 
     override fun onTokonowDataRefreshed() {
