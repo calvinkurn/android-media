@@ -179,7 +179,11 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 targetBuyer = voucherConfiguration.targetBuyer.id,
                 isLockToProduct = isVoucherProduct,
                 productIds = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() },
-                warehouseId = warehouseId.toLongOrZero()
+                warehouseId = warehouseId.toLongOrZero(),
+                isPeriod = voucherConfiguration.isPeriod,
+                periodRepeat = voucherConfiguration.periodRepeat,
+                periodType = voucherConfiguration.periodType,
+                totalPeriod = voucherConfiguration.totalPeriod
             )
         }
     }

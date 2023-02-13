@@ -80,5 +80,17 @@ data class CreateCouponProductParams(
     @SuppressLint("Invalid Data Type") // GQL still using number type
     @SerializedName("warehouse_id")
     @Expose
-    val warehouseId: Long = 0
+    val warehouseId: Long = 0,
+    @SerializedName("is_period")
+    @Expose
+    val isPeriod: Boolean = false,
+    @SerializedName("total_period")
+    @Expose
+    val totalPeriod: Int = 0,
+    @SerializedName("period_type")
+    @Expose
+    val periodType: Int = 0,
+    @SerializedName("period_repeat")
+    @Expose
+    val periodRepeat: Int = 0
 )
