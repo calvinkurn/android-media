@@ -57,6 +57,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.list.MvcListActivity
 import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
@@ -199,8 +200,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             hideLoading()
             when (result) {
                 is Success -> {
-                    binding?.layoutButtonGroup.showToaster(result.data.message)
-                    getVoucherDetailData(voucherId)
+                    redirectToVoucherListPage()
                 }
                 is Fail -> {
                     binding?.layoutButtonGroup.showToasterError(result.throwable)
@@ -1078,6 +1078,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             intent,
             NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION
         )
+    }
+
+    private fun redirectToVoucherListPage() {
+        context?.let { ctx -> MvcListActivity.start(ctx) }
+        activity?.finish()
     }
 
     private fun goToTokopediaCare() {
