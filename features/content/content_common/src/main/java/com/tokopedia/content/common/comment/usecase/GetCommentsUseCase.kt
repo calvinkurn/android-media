@@ -33,7 +33,7 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
             source: PageSource,
             cursor: String,
         ) = mapOf(
-            PARAM_ID to listOf(source.id),
+            PARAM_ID to source.id,
             PARAM_CONTENT_TYPE to source.type,
             PARAM_CURSOR to cursor,
             PARAM_LIMIT to PARAM_LIMIT_VALUE,
