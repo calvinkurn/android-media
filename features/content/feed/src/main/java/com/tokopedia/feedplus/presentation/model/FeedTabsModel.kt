@@ -4,11 +4,11 @@ package com.tokopedia.feedplus.presentation.model
  * Created By : Muhammad Furqan on 09/02/23
  */
 data class FeedTabsModel(
-    val data: List<DataModel>,
+    val data: List<FeedDataModel>,
     val meta: MetaModel
 )
 
-data class DataModel(
+data class FeedDataModel(
     val title: String,
     val key: String,
     val type: String,
