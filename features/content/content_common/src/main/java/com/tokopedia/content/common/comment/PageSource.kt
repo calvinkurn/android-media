@@ -13,7 +13,7 @@ sealed class PageSource {
             get() = channelId
 
         override val type: String
-            get() = "channelID"
+            get() = "PlayChannelID"
 
         override val reportType: String
             get() = "comment"
@@ -24,7 +24,7 @@ sealed class PageSource {
             get() = postId
 
         override val type: String
-            get() = "activityID"
+            get() = "ActivityID"
 
         override val reportType: String
             get() = "post"

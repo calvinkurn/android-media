@@ -9,6 +9,7 @@ import com.tokopedia.content.common.comment.usecase.DeleteCommentUseCase
 import com.tokopedia.content.common.comment.usecase.GetCommentsUseCase
 import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
 import com.tokopedia.content.common.comment.usecase.SubmitReportCommentUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -25,6 +26,15 @@ class ContentCommentRepositoryImpl @Inject constructor(
     private val submitReportCommentUseCase: SubmitReportCommentUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
 ) : ContentCommentRepository {
+
+    private var lastRequestTime: Long = 0L
+
+    private val isCommentAllowed: Boolean
+        get() {
+            val diff = System.currentTimeMillis() - lastRequestTime
+            return diff >= DELAY_MS
+        }
+
     override suspend fun deleteComment(commentId: String): Boolean = withContext(dispatchers.io) {
         val response = deleteCommentUseCase.apply {
             setRequestParams(DeleteCommentUseCase.setParam(commentId))
@@ -37,19 +47,23 @@ class ContentCommentRepositoryImpl @Inject constructor(
         commentType: PostCommentUseCase.CommentType,
         comment: String
     ): CommentUiModel = withContext(dispatchers.io) {
-        val commenterType =
-            if (userSession.isShopOwner) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
-        val response = postCommentUseCase.apply {
-            setRequestParams(
-                PostCommentUseCase.setParam(
-                    source = source,
-                    commentType = commentType,
-                    comment = comment,
-                    commenterType = commenterType
+        return@withContext if(!isCommentAllowed) throw MessageErrorException(ERROR_SPAM_MESSAGE)
+        else {
+            val commenterType =
+                if (userSession.isShopOwner) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
+            val response = postCommentUseCase.apply {
+                setRequestParams(
+                    PostCommentUseCase.setParam(
+                        source = source,
+                        commentType = commentType,
+                        comment = comment,
+                        commenterType = commenterType
+                    )
                 )
-            )
-        }.executeOnBackground()
-        return@withContext mapper.mapComment(response.parent.data)
+            }.executeOnBackground()
+            lastRequestTime = System.currentTimeMillis()
+            mapper.mapComment(response.parent.data)
+        }
     }
 
     override suspend fun reportComment(
@@ -78,4 +92,10 @@ class ContentCommentRepositoryImpl @Inject constructor(
             }.executeOnBackground()
             return@withContext mapper.mapComments(response)
         }
+
+    companion object {
+        private const val DELAY_MS = 5000L
+
+        private const val ERROR_SPAM_MESSAGE = "Oops, tidak bisa memberi komentar."
+    }
 }
