@@ -113,7 +113,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validateLineGraphWidgetsCtaClick() {
         actionTest {
             clearQueries()
@@ -136,7 +136,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validatePostWidgetsCtaClick() {
         actionTest {
             clearQueries()
@@ -160,7 +160,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validateProgressBarWidgetsCtaClick() {
         actionTest {
             clearQueries()
@@ -183,7 +183,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validateDescriptionWidgetsCtaClick() {
         actionTest {
             clearQueries()
@@ -206,7 +206,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validateCarouselWidgetsCtaClick() {
         actionTest {
             clearQueries()
@@ -229,7 +229,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validateCardWidgetClick() {
         actionTest {
             clearQueries()
@@ -248,7 +248,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validatePostWidgetItemClick() {
         actionTest {
             clearQueries()
@@ -267,7 +267,7 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    
+    @Test
     fun validateCarouselWidgetItemClick() {
         actionTest {
             clearQueries()
