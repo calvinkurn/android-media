@@ -13,6 +13,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -109,7 +112,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createRecommendationListCarouselComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    createMixLeftComponent(channel, position, isCache)
+                    val borderStyle = channel.styleParam.parseBorderStyle()
+                    if (borderStyle == BORDER_STYLE_PADDING) {
+                        createMixLeftPaddingComponent(channel, position, isCache)
+                    } else {
+                        createMixLeftComponent(channel, position, isCache)
+                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createProductHighlightComponent(channel, position, isCache)
@@ -317,6 +325,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 visitableList.size, channel) }
     }
 
+    private fun createMixLeftPaddingComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(
+            mappingMixLeftPaddingComponent(
+                channel, isCache, verticalPosition
+            )
+        )
+        context?.let {
+            HomeTrackingUtils.homeDiscoveryWidgetImpression(
+                it,
+                visitableList.size, channel
+            )
+        }
+    }
+
     private fun createMixTopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingMixTopComponent(
                 channel, isCache, verticalPosition
@@ -332,7 +354,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                     trackingQueue,
-                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                    userSessionInterface?.userId.orEmpty()
+            )
         }
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
                 visitableList.size, channel) }
@@ -350,7 +374,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels){
         //best seller widget limited to only 1 widget per list
         if(!isCache && !visitableList.any { it is BestSellerDataModel }) {
-            visitableList.add(BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam, dividerType = channel.dividerType)
+            visitableList.add(
+                BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam,
+                    dividerType = channel.dividerType, dividerSize = channel.styleParam.parseDividerSize())
             )
         }
     }
@@ -481,12 +507,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                                   verticalPosition: Int): Visitable<*> {
         val viewModel = DynamicLegoBannerDataModel(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
-                isCache = isCache
+                isCache = isCache,
+                cardInteraction = true
         )
         if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                     trackingQueue,
-                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                    userSessionInterface?.userId.orEmpty()
+            )
         }
         return viewModel
     }
@@ -542,6 +571,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingMixLeftPaddingComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return MixLeftPaddingDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
     private fun mappingMixTopComponent(
         channel: DynamicHomeChannel.Channels,
         isCache: Boolean,
@@ -566,7 +609,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel,
                 verticalPosition
             ),
-            isCache = isCache
+            isCache = isCache,
+            cardInteraction = true
         )
     }
 

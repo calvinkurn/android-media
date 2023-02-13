@@ -146,7 +146,6 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -625,21 +624,23 @@ class WishlistCollectionDetailFragment :
                             }
                         }
 
-                        toolbarTitle = collectionDetail.headerTitle
-                        if (isBulkAddShow) {
-                            updateCustomToolbarSubTitle(collectionNameDestination)
-                        } else {
-                            if (collectionDetail.description.isNotEmpty()) {
-                                isToolbarHasDesc = true
-                                toolbarDesc = collectionDetail.description
-                                if (!isBulkAddFromOtherCollectionShow) updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
-                            } else {
-                                updateToolbarTitle(toolbarTitle)
-                            }
-                        }
-
                         if (currPage == 1 && collectionDetail.sortFilters.isNotEmpty()) {
                             renderChipsFilter(mapToSortFilterItem(collectionDetail.sortFilters))
+                            setupGearIcon()
+                            setupLayoutTypeIcon()
+
+                            toolbarTitle = collectionDetail.headerTitle
+                            if (isBulkAddShow) {
+                                updateCustomToolbarSubTitle(collectionNameDestination)
+                            } else {
+                                if (collectionDetail.description.isNotEmpty()) {
+                                    isToolbarHasDesc = true
+                                    toolbarDesc = collectionDetail.description
+                                    if (!isBulkAddFromOtherCollectionShow) updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
+                                } else {
+                                    updateToolbarTitle(toolbarTitle)
+                                }
+                            }
                         }
                         if (collectionDetail.hasNextPage) {
                             currPage += 1
@@ -674,9 +675,6 @@ class WishlistCollectionDetailFragment :
                                 SRC_WISHLIST_COLLECTION_SHARING
                             )
                         }
-
-                        setupLayoutTypeIcon()
-                        setupGearIcon()
                     }
                 }
                 is Fail -> {
@@ -1260,13 +1258,11 @@ class WishlistCollectionDetailFragment :
             if (activityWishlistV2 != PARAM_HOME) {
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder().apply {
-                    if (WishlistV2RemoteConfigRollenceUtil.isEnableRollenceWishlistSharing()) {
-                        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
-                        ) {
-                            addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
-                        }
+                    if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
+                    ) {
+                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
                     }
                     addIcon(iconId = IconList.ID_CART, disableRouteManager = true, onClick = { handleGoToCartPage() })
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
@@ -2959,11 +2955,11 @@ class WishlistCollectionDetailFragment :
     private fun doAtc() {
         showLoadingDialog()
         val atcParam = AddToCartRequestParams(
-            productId = wishlistItemOnAtc.id.toLong(),
+            productId = wishlistItemOnAtc.id,
             productName = wishlistItemOnAtc.name,
             price = wishlistItemOnAtc.originalPriceFmt,
             quantity = wishlistItemOnAtc.minOrder.toIntOrZero(),
-            shopId = wishlistItemOnAtc.shop.id.toIntOrZero(),
+            shopId = wishlistItemOnAtc.shop.id,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
         )
         wishlistCollectionDetailViewModel.doAtc(atcParam)

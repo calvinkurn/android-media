@@ -266,4 +266,37 @@
 
     <!-- Product Picker UGC -->
     <string name="play_bro_max_selected_product_reached">Kamu udah pilih %d produk.</string>
+
+    <!-- Banner -->
+    <string name="play_bro_banner_shorts_title">Lebih asik buat video pendek</string>
+    <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
+    <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
+    
+    <!-- Shorts -->
+    <string name="play_shorts_next_action_label">Lanjut</string>
+    <string name="play_shorts_toolbar_title">Buat video sebagai</string>
+    <string name="play_shorts_preparation_coachmark_title">Mau ceritain pengalaman belanjamu?</string>
+    <string name="play_shorts_title_form_hint">Tulis Judul Video</string>
+    <string name="play_shorts_preparation_coachmark_description">Bikin judul yang menarik dan tambahkan produk terkait supaya videomu ramai ditonton!</string>
+
+    <string name="play_shorts_exit_confirmation_title">Yakin mau keluar?</string>
+    <string name="play_shorts_exit_confirmation_description">Persiapan yang sudah kamu buat akan hilang.</string>
+    <string name="play_shorts_exit_confirmation_continue">Lanjut Persiapan</string>
+    <string name="play_shorts_exit_confirmation_exit">Keluar</string>
+
+    <string name="play_shorts_switch_account_to_shop_title">Yakin mau ganti ke akun tokomu?</string>
+    <string name="play_shorts_switch_account_to_shop_description">Persiapan di akun ini akan hilang. Kamu mungkin ulang prosesnya di akun toko.</string>
+    <string name="play_shorts_switch_account_to_shop_confirm">Ganti ke Akun Toko</string>
+    <string name="play_shorts_switch_account_to_user_title">Yakin mau ganti ke akun pembeli?</string>
+    <string name="play_shorts_switch_account_to_user_description">Persiapan di akun ini akan hilang. Kamu mungkin ulang prosesnya di akun pembeli.</string>
+    <string name="play_shorts_switch_account_to_user_confirm">Ganti ke Akun Pembeli</string>
+    <string name="play_shorts_switch_account_cancel">Batal</string>
+
+    <string name="play_shorts_shop_cant_create_content">Yaah, kamu belum bisa konten</string>
+    <string name="play_shorts_account_not_eligible_title">Yaah, belum bisa bikin video</string>
+    <string name="play_shorts_account_not_eligible_description">Fitur video dengan pengalaman terbaik sedang disiapkan untukmu. Kami akan kabari jika kamu sudah bisa bikin video, ya!</string>
+
+    <string name="play_shorts_summary_title">Upload Video</string>
+    <string name="play_shorts_summary_upload_action">Upload Video</string>
 </resources>

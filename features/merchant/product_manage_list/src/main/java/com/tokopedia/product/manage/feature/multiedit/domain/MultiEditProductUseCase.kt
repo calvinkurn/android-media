@@ -1,14 +1,18 @@
 package com.tokopedia.product.manage.feature.multiedit.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.query.BulkProductEditV3
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProduct
 import com.tokopedia.usecase.RequestParams
 
+
+@GqlQuery("BulkProductEditV3GqlQuery", BulkProductEditV3.QUERY)
 class MultiEditProductUseCase(
     graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<MultiEditProduct>(graphqlRepository) {
@@ -53,7 +57,7 @@ class MultiEditProductUseCase(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(BulkProductEditV3.QUERY)
+        setGraphqlQuery(BulkProductEditV3GqlQuery())
         setTypeClass(MultiEditProduct::class.java)
     }
 

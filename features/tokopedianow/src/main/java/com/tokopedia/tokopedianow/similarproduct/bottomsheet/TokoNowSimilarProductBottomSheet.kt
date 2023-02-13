@@ -17,7 +17,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSimilarProductsBinding
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapter
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
@@ -45,7 +45,7 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
         }
     var productListener: SimilarProductViewHolder.SimilarProductListener? = null
 
-    private var listener: SimilarProductListener? = null
+    private var listener: TokoNowSimilarProductTrackerListener? = null
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowSimilarProductsBinding>()
 
@@ -166,7 +166,7 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
         items = newItems
     }
 
-    fun setListener(listener: SimilarProductListener?){
+    fun setListener(listener: TokoNowSimilarProductTrackerListener?){
         this.listener = listener
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
@@ -44,6 +45,10 @@ class GetCourierRecommendationSubscriber(
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
         if (isInitialLoad || isForceReloadRates) {
+            if (isInitialLoad && shipmentCartItemModel.shouldResetCourier) {
+                shipmentCartItemModel.shouldResetCourier = false
+                error("racing condition against epharmacy validation")
+            }
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
                     val logisticPromo =
@@ -98,12 +103,7 @@ class GetCourierRecommendationSubscriber(
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                 shippingCourierUiModel.isSelected = false
                             }
-                            val selectedSpId =
-                                if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
-                                    shippingDurationUiModel.serviceData.selectedShipperProductId
-                                } else {
-                                    spId
-                                }
+                            val selectedSpId = getSelectedSpId(shipmentCartItemModel, spId, shippingDurationUiModel)
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                 if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
@@ -204,13 +204,31 @@ class GetCourierRecommendationSubscriber(
         logisticDonePublisher?.onCompleted()
     }
 
+    private fun getSelectedSpId(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        spId: Int,
+        shippingDurationUiModel: ShippingDurationUiModel
+    ): Int {
+        val currentServiceId =
+            shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier?.serviceId
+        return if (currentServiceId != null &&
+            currentServiceId > 0 &&
+            shippingDurationUiModel.serviceData.serviceId == currentServiceId &&
+            shippingDurationUiModel.serviceData.selectedShipperProductId > 0
+        ) {
+            shippingDurationUiModel.serviceData.selectedShipperProductId
+        } else {
+            spId
+        }
+    }
+
     private fun generateCourierItemData(
         shippingCourierUiModel: ShippingCourierUiModel,
         shippingRecommendationData: ShippingRecommendationData,
         logisticPromo: LogisticPromoUiModel? = null
     ): CourierItemData {
         var courierItemData =
-            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel, shippingRecommendationData)
 
         // Auto apply Promo Stacking Logistic
         var logisticPromoChosen = logisticPromo
@@ -239,7 +257,7 @@ class GetCourierRecommendationSubscriber(
             }.shippingCourierViewModelList.first {
                 it.productData.shipperProductId == logisticPromoChosen.shipperProductId
             }
-            courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel)
+            courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel, shippingRecommendationData)
         }
         logisticPromoChosen?.let {
             courierItemData.logPromoCode = it.promoCode

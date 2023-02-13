@@ -18,7 +18,16 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
-import com.tokopedia.home.beranda.presentation.view.helper.*
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK_INBOX
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_TOKONOW_COACHMARK
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_WALLETAPP2_COACHMARK_BALANCE
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_WALLETAPP_COACHMARK_BALANCE
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -26,9 +35,9 @@ import com.tokopedia.recharge_component.presentation.adapter.viewholder.Recharge
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf
 
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER = "tracker/home/hpb.json"
@@ -164,6 +173,11 @@ fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder) {
 fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+}
+
+fun clickOnMixLeftPaddingSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product_mix_left_padding, 0)
 }
 
 fun clickOnMixTopSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {

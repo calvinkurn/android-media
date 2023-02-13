@@ -1,79 +1,48 @@
 package com.tokopedia.media.picker.di.module
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.common.utils.ParamCacheManager
-import com.tokopedia.media.picker.data.loader.LoaderDataSource
-import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
+import com.tokopedia.media.picker.data.FeatureToggleManager
+import com.tokopedia.media.picker.data.FeatureToggleManagerImpl
+import com.tokopedia.media.picker.data.MediaQueryDataSource
+import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl
 import com.tokopedia.media.picker.data.repository.*
-import com.tokopedia.media.picker.data.repository.CreateMediaRepositoryImpl
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.ui.publisher.PickerEventBusImpl
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 @Module
-object PickerModule {
+abstract class PickerModule {
 
-    @Provides
+    @Binds
     @ActivityScope
-    fun provideUserSession(
-        @ApplicationContext context: Context
-    ): UserSessionInterface {
-        return UserSession(context)
-    }
+    abstract fun providePickerEventBus(source: PickerEventBusImpl) : PickerEventBus
 
-    @Provides
+    @Binds
     @ActivityScope
-    fun provideLoaderDataSource(
-        @ApplicationContext context: Context,
-        cacheManager: ParamCacheManager
-    ) : LoaderDataSource {
-        return LoaderDataSourceImpl(context, cacheManager)
-    }
+    abstract fun provideFeatureToggleManager(source: FeatureToggleManagerImpl) : FeatureToggleManager
 
-    @Provides
+    @Binds
     @ActivityScope
-    fun provideDeviceInfoRepository(
-        dispatcher: CoroutineDispatchers
-    ) = DeviceInfoRepository(dispatcher)
+    abstract fun provideMediaQueryDataSource(source: MediaQueryDataSourceImpl) : MediaQueryDataSource
 
-    @Provides
+    @Binds
     @ActivityScope
-    fun provideAlbumRepository(
-        loaderDataSource: LoaderDataSource,
-        dispatcher: CoroutineDispatchers
-    ) = AlbumRepository(
-        loaderDataSource,
-        dispatcher
-    )
+    abstract fun provideBucketAlbumRepository(repository: BucketAlbumRepositoryImpl): BucketAlbumRepository
 
-    @Provides
+    @Binds
     @ActivityScope
-    fun provideMediaRepository(
-        loaderDataSource: LoaderDataSource,
-        dispatcher: CoroutineDispatchers
-    ): MediaRepository {
-        return MediaRepository(
-            loaderDataSource,
-            dispatcher
-        )
-    }
+    abstract fun provideMediaFileRepository(repository: MediaFileRepositoryImpl): MediaFileRepository
 
-    @Provides
+    @Binds
     @ActivityScope
-    fun provideCreateMediaRepository(): CreateMediaRepository {
-        return CreateMediaRepositoryImpl()
-    }
+    abstract fun provideDeviceInfoRepository(repository: DeviceInfoRepositoryImpl): DeviceInfoRepository
 
-    @Provides
+    @Binds
     @ActivityScope
-    fun provideBitmapConverterRepository(
-        @ApplicationContext context: Context
-    ): BitmapConverterRepository {
-        return BitmapConverterRepositoryImpl(context)
-    }
+    abstract fun provideCreateMediaRepository(repository: CreateMediaRepositoryImpl): CreateMediaRepository
 
+    @Binds
+    @ActivityScope
+    abstract fun provideBitmapConverterRepository(repository: BitmapConverterRepositoryImpl): BitmapConverterRepository
 }

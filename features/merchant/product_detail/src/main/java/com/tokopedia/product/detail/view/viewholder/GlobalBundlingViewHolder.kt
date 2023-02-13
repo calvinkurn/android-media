@@ -112,7 +112,8 @@ class GlobalBundlingViewHolder(
                 listener.onClickProductInBundling(
                     bundle.selectedBundleId,
                     selectedProduct.productId,
-                    componentTrackDataModel
+                    componentTrackDataModel,
+                    false
                 )
             }
         }

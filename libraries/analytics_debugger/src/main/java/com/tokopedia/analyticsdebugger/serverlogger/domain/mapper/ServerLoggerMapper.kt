@@ -3,8 +3,8 @@ package com.tokopedia.analyticsdebugger.serverlogger.domain.mapper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemPriorityUiModel
-import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ItemServerLoggerUiModel
+import com.tokopedia.analyticsdebugger.serverlogger.presentation.uimodel.ServerLoggerPriorityUiModel
 import com.tokopedia.analyticsdebugger.serverlogger.utils.ServerLoggerConstants
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.repository.LoggerRepository
@@ -83,7 +83,7 @@ class ServerLoggerMapper @Inject constructor(
     }
 
     private fun getPriorityList(): List<String> {
-        return listOf(LoggerReporting.P1, LoggerReporting.P2, LoggerReporting.SF)
+        return listOf(LoggerReporting.P1, LoggerReporting.P2)
     }
 
     private fun getDateFormat(timeStamp: Long): String {
@@ -91,5 +91,4 @@ class ServerLoggerMapper @Inject constructor(
         val dateFormat = SimpleDateFormat(datePattern, DateFormatUtils.DEFAULT_LOCALE)
         return dateFormat.format(Date(timeStamp))
     }
-
 }

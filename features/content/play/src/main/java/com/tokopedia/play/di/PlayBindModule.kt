@@ -2,8 +2,12 @@ package com.tokopedia.play.di
 
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalyticImpl
+import com.tokopedia.play.analytic.explorewidget.PlayExploreWidgetAnalytic
+import com.tokopedia.play.analytic.explorewidget.PlayExploreWidgetAnalyticImpl
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
+import com.tokopedia.play.analytic.kebab.PlayKebabAnalytic
+import com.tokopedia.play.analytic.kebab.PlayKebabAnalyticImpl
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
@@ -81,6 +85,14 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindFollowPopUpAnalytic(analytic: PlayFollowPopupAnalyticImpl): PlayFollowPopupAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindKebabAnalyticFactory(factory: PlayKebabAnalyticImpl.Factory): PlayKebabAnalytic.Factory
+
+    @Binds
+    @PlayScope
+    abstract fun bindExploreWidgetAnalyticFactory(factory: PlayExploreWidgetAnalyticImpl.Factory): PlayExploreWidgetAnalytic.Factory
 
     /**
      * Utils

@@ -338,6 +338,7 @@ object DeeplinkMapper {
         DLP.host(ApplinkConst.CATEGORY_HOST) { _, uri, deeplink, _ -> getRegisteredCategoryNavigation(deeplink, uri) },
         DLP.matchPattern(ApplinkConst.PLAY_DETAIL) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
         DLP.startWith(ApplinkConst.PLAY_BROADCASTER) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
+        DLP.startWith(ApplinkConst.PLAY_SHORTS) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
         DLP.host(ApplinkConst.HOME_HOT_HOST) { _, _, deeplink, _ -> getRegisteredHotlist(deeplink) },
         DLP.matchPattern(ApplinkConst.PRODUCT_EDIT) { _, _, _, idList ->
             DeepLinkMapperProductManage.getEditProductInternalAppLink(
@@ -350,6 +351,7 @@ object DeeplinkMapper {
         },
         DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink, _ -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
         DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, uri, _, _ -> getRegisteredNavigationProductReview(uri) },
+        DLP.startWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW) { _, _, _, _ -> ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW },
         DLP.host(ApplinkConst.REVIEW_HOST) { _, _, deeplink, _ -> getRegisteredNavigationReputation(deeplink) },
         DLP.startWith(ApplinkConst.SELLER_REVIEW) { _, _, deeplink, _ -> ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL },
         DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints(deeplink) },
@@ -381,6 +383,11 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { context, uri, deeplink, _ -> getRegisteredNavigationOrder(context, uri, deeplink) },
         DLP.startWith(ApplinkConst.LOGISTIC_SELLER_RESCHEDULE) { _, uri, _, _ -> DeeplinkMapperLogistic.getReschedulePickupDeeplink(uri) },
         DLP.startWith(ApplinkConst.SETTING_EDIT_ADDRESS) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getEditAddressDeeplink(deeplink) },
+        DLP.startWith(ApplinkConst.PINPOINT_WEBVIEW) { _, _, deeplink, _ ->
+            DeeplinkMapperLogistic.getRegisteredNavigationPinpointWebview(
+                deeplink
+            )
+        },
         DLP(Host(ApplinkConst.TOPCHAT_HOST) or Host(ApplinkConst.TOPCHAT_OLD_HOST)) { _, uri, deeplink, _ -> getRegisteredNavigationTopChat(uri, deeplink) },
         DLP.startWith(ApplinkConst.TALK) { _, _, deeplink, _ -> getRegisteredNavigationTalk(deeplink) },
         DLP.startWith(ApplinkConst.EVENTS) { ctx, _, deeplink, _ -> getRegisteredNavigationEvents(deeplink, ctx) },
@@ -484,12 +491,10 @@ object DeeplinkMapper {
 
         DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
         DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD),
-        DLP.matchPattern(ApplinkConst.KOL_COMMENT) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
         DLP.matchPattern(
             ApplinkConst.CONTENT_DETAIL,
             targetDeeplink = { _, _, deeplink, _ -> getKolDeepLink(deeplink) }
         ),
-        DLP.host(ApplinkConst.KOL_YOUTUBE_HOST_BASE) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
         DLP.startWith(ApplinkConst.DISCOVERY) { _, _, deeplink, _ -> getDiscoveryDeeplink(deeplink) },
         DLP(
             DLPLogic { _, uri, _ -> matchWithHostAndHasPath(uri, ApplinkConst.HOST_CATEGORY_P) },
@@ -607,6 +612,12 @@ object DeeplinkMapper {
                 idList?.lastOrNull() ?: ""
             )
         }),
+        DLP.matchPattern(ApplinkConst.POST_ATC, targetDeeplink = { _, _, _, idList ->
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.POST_ATC,
+                idList?.getOrNull(0) ?: ""
+            )
+        }),
         DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         DLP.startWith(ApplinkConst.TokoFood.GOFOOD) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri) },
@@ -703,6 +714,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SHOP_DISCOUNT -> ApplinkConstInternalSellerapp.SHOP_DISCOUNT
             ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
+            ApplinkConst.SellerApp.TOPADS_ADD_CREDIT -> ApplinkConstInternalTopAds.TOP_ADS_ADD_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE
             ApplinkConst.SellerApp.TOPADS_CREATE_ADS -> ApplinkConstInternalTopAds.TOPADS_CREATE_ADS
             ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING -> ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD

@@ -9,7 +9,14 @@ import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -46,7 +53,7 @@ class FeedPlusTopAdsShopTestCase {
                 likeKolPostUseCase = mockk(),
                 addToCartUseCase = mockk(),
                 trackAffiliateClickUseCase = trackAffiliateClickUseCase,
-                submitActionContentUseCase = mockk(),
+                deletePostUseCase = mockk(),
                 sendTopAdsUseCase = sendTopAdsUseCase,
                 playWidgetTools = mockk(),
                 getDynamicFeedNewUseCase = mockk(),
@@ -62,7 +69,8 @@ class FeedPlusTopAdsShopTestCase {
                 shopFollowUseCase = mockk(),
                 doFollowUseCase = mockk(),
                 doUnfollowUseCase = mockk(),
-                profileMutationMapper = mockk()
+                profileMutationMapper = mockk(),
+                getFollowingUseCase = mockk()
             )
         )
     }
