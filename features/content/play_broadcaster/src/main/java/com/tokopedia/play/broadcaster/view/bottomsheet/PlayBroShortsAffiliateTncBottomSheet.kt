@@ -47,6 +47,9 @@ class PlayBroShortsAffiliateTncBottomSheet : BottomSheetUnify() {
     }
 
     private val clickableTnc = object : ClickableSpan() {
+        /** TODO
+         * change the tnc web-view app link later
+         */
         override fun onClick(p0: View) {
             RouteManager.route(
                 requireContext(),
