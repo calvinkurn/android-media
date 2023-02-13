@@ -1133,7 +1133,7 @@ public class GTMAnalytics extends ContextAnalytics {
         /**
          * if the utm_term equals {@value IM_CLICK_ID}
          */
-        if (param.get(AppEventTracking.GTM.UTM_CAMPAIGN).equals(IM_CLICK_ID)) {
+        if (String.valueOf(param.get(AppEventTracking.GTM.UTM_TERM)).equals(IM_CLICK_ID)) {
             bundle.putString("utmTerm", DateUtil.getCurrentTime());
         } else {
             bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
