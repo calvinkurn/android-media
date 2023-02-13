@@ -3,6 +3,9 @@ package com.tokopedia.checkout.data.model.request.checkout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.MINI_CONSULTATION_META_DATA_KEY
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.SCHEDULE_DELIVERY_META_DATA_KEY
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.UPLOAD_PRESCRIPTION_META_DATA_KEY
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
@@ -19,8 +22,7 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
-const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
-const val SCHEDULE_DELIVERY_META_DATA_KEY = "shipping_validation_metadata"
+
 data class Carts(
     @SerializedName("has_promo_stacking")
     var hasPromoStacking: Boolean = false,
@@ -191,6 +193,9 @@ data class OrderMetadata(
 ) {
     companion object {
         const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
+        const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
+        const val MINI_CONSULTATION_META_DATA_KEY = "epharm_consultation"
+        const val SCHEDULE_DELIVERY_META_DATA_KEY = "shipping_validation_metadata"
     }
 }
 
@@ -201,9 +206,10 @@ object CheckoutRequestMapper {
             promos = mapPromos(checkoutRequest.promos)
             isDonation = checkoutRequest.isDonation
             egold = mapEgoldData(checkoutRequest.egoldData)
-            data = mapData(checkoutRequest.data, checkoutRequest.prescriptionIds)
+            data = mapData(checkoutRequest.data)
             val tmpCornerData = checkoutRequest.cornerData
-            tokopediaCorner = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
+            tokopediaCorner =
+                if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
             featureType = checkoutRequest.featureType
@@ -241,15 +247,14 @@ object CheckoutRequestMapper {
     }
 
     private fun mapData(
-        dataCheckoutRequestList: List<DataCheckoutRequest>?,
-        prescriptionIds: ArrayList<String>?
+        dataCheckoutRequestList: List<DataCheckoutRequest>?
     ): List<Data> {
         val checkoutGqlDataList = mutableListOf<Data>()
         dataCheckoutRequestList?.forEach {
             checkoutGqlDataList.add(
                 Data().apply {
                     addressId = it.addressId.toLongOrZero()
-                    shopOrders = mapShopProduct(it.shopProducts, prescriptionIds)
+                    shopOrders = mapShopProduct(it.shopProducts)
                 }
             )
         }
@@ -258,8 +263,7 @@ object CheckoutRequestMapper {
     }
 
     private fun mapShopProduct(
-        shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?,
-        prescriptionIds: ArrayList<String>?
+        shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?
     ): List<ShopOrder> {
         val shopProductList = mutableListOf<ShopOrder>()
         shopProductCheckoutRequests?.forEach {
@@ -277,7 +281,7 @@ object CheckoutRequestMapper {
                     promos = mapPromos(it.promos)
                     bundle = mapBundle(it.productData)
                     checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
-                    orderMetadata = mapOrderMetadata(it, prescriptionIds, it.promos)
+                    orderMetadata = mapOrderMetadata(it, it.promos)
                 }
             )
         }
@@ -327,7 +331,10 @@ object CheckoutRequestMapper {
         return product
     }
 
-    private fun mapShippingInfo(shippingInfo: ShippingInfoCheckoutRequest?, finsurance: Int): ShippingInfo {
+    private fun mapShippingInfo(
+        shippingInfo: ShippingInfoCheckoutRequest?,
+        finsurance: Int
+    ): ShippingInfo {
         return ShippingInfo().apply {
             this.finsurance = finsurance
             shippingId = shippingInfo?.shippingId?.toLong() ?: 0
@@ -351,7 +358,10 @@ object CheckoutRequestMapper {
         }
     }
 
-    private fun mapDropshipData(dropshipData: DropshipDataCheckoutRequest?, isDropship: Int): Dropship {
+    private fun mapDropshipData(
+        dropshipData: DropshipDataCheckoutRequest?,
+        isDropship: Int
+    ): Dropship {
         return Dropship().apply {
             this.isDropship = isDropship
             name = dropshipData?.name ?: ""
@@ -375,7 +385,6 @@ object CheckoutRequestMapper {
 
     private fun mapOrderMetadata(
         shopProductCheckoutRequest: ShopProductCheckoutRequest,
-        prescriptionIds: ArrayList<String>?,
         promos: List<PromoRequest>?
     ): List<OrderMetadata> {
         val orderMetadata = arrayListOf<OrderMetadata>()
@@ -385,8 +394,24 @@ object CheckoutRequestMapper {
             // only add free shipping metadata if the order contains at least 1 promo logistic
             orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
         }
-        if (shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()) {
-            orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
+        if (shopProductCheckoutRequest.needPrescription &&
+            shopProductCheckoutRequest.prescriptionIds.isNotEmpty()
+        ) {
+            orderMetadata.add(
+                OrderMetadata(
+                    UPLOAD_PRESCRIPTION_META_DATA_KEY,
+                    shopProductCheckoutRequest.prescriptionIds.toString()
+                )
+            )
+        } else if (shopProductCheckoutRequest.needPrescription &&
+            shopProductCheckoutRequest.consultationDataString.isNotBlank()
+        ) {
+            orderMetadata.add(
+                OrderMetadata(
+                    MINI_CONSULTATION_META_DATA_KEY,
+                    shopProductCheckoutRequest.consultationDataString
+                )
+            )
         }
         if (shopProductCheckoutRequest.needToSendValidationMetadata) {
             orderMetadata.add(OrderMetadata(SCHEDULE_DELIVERY_META_DATA_KEY, shopProductCheckoutRequest.validationMetadata))

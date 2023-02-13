@@ -160,7 +160,8 @@ class OrderPreferenceCard(
             logisticPromoUiModel = logisticPromoUiModel,
             onChangeDurationListener = {
                 onChangeDuration(shipping)
-            })
+            }
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -228,7 +229,6 @@ class OrderPreferenceCard(
             )
         }
     }
-
 
     private fun renderErrorShipping(shipping: OrderShipment) {
         binding.apply {
@@ -499,17 +499,20 @@ class OrderPreferenceCard(
                 tvInstallmentDetailWrap.gone()
                 btnChangeInstallmentWrap.gone()
                 if (selectedTerm.term > 0) {
-                    tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            selectedTerm.monthlyAmount,
-                            false
-                        ).removeDecimalSuffix()
+                    if (payment.isDynamicPaymentFeeError) {
+                        tvInstallmentDetail.text = "${selectedTerm.term} Bulan x Rp-"
+                    } else {tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        selectedTerm.monthlyAmount,
+                        false
+                    ).removeDecimalSuffix()
                     }"
+                    }
                 } else {
                     tvInstallmentDetail.text =
                         binding.root.context.getString(R.string.lbl_installment_full_payment)
                 }
-                setupPaymentInstallmentError(selectedTerm)
+                if (!payment.isDynamicPaymentFeeError) {setupPaymentInstallmentError(selectedTerm)
                 setMultiViewsOnClickListener(
                     tvInstallmentType,
                     tvInstallmentDetail,
@@ -518,8 +521,12 @@ class OrderPreferenceCard(
                     if (profile.enable) {
                         val selectedCreditCard = payment.creditCard
                         if (selectedCreditCard.availableTerms.isNotEmpty()) {
-                            listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
+                            listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)}
                         }
+                    }
+                } else {
+                    setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
+                        /* no-op */
                     }
                 }
             } else if (!creditCard.isDebit && creditCard.isAfpb && creditCard.selectedTerm == null) {
@@ -538,7 +545,7 @@ class OrderPreferenceCard(
                     tvInstallmentDetail,
                     btnChangeInstallment
                 ) {
-                    if (profile.enable) {
+                    if (profile.enable && !payment.isDynamicPaymentFeeError) {
                         val selectedCreditCard = payment.creditCard
                         listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
                     }
@@ -558,10 +565,13 @@ class OrderPreferenceCard(
                     tvInstallmentDetailWrap.text = tvInstallmentDetailWrap.context.getString(
                         R.string.occ_lbl_gocicil_installment_detail,
                         goCicilData.selectedTerm.installmentTerm,
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        if (payment.isDynamicPaymentFeeError) {
+                            "Rp-"
+                        } else {CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             goCicilData.selectedTerm.installmentAmountPerPeriod,
                             false
                         ).removeDecimalSuffix()
+                    }
                     )
                     tvInstallmentDetailWrap.visible()
                     tvInstallmentErrorMessage.gone()
@@ -576,7 +586,7 @@ class OrderPreferenceCard(
                     tvInstallmentDetailWrap,
                     btnChangeInstallmentWrap
                 ) {
-                    if (profile.enable) {
+                    if (profile.enable && !payment.isDynamicPaymentFeeError) {
                         listener.onGopayInstallmentDetailClicked()
                     }
                 }
@@ -588,6 +598,24 @@ class OrderPreferenceCard(
                 btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
+            }
+
+            if (payment.isDynamicPaymentFeeError) {
+                tvInstallmentType.alpha = DISABLE_ALPHA
+                tvInstallmentDetailWrap.alpha = DISABLE_ALPHA
+                tvInstallmentDetail.alpha = DISABLE_ALPHA
+                btnChangeInstallment.alpha = DISABLE_ALPHA
+                btnChangeInstallmentWrap.alpha = DISABLE_ALPHA
+                tvInstallmentErrorMessage.alpha = DISABLE_ALPHA
+                tvInstallmentErrorAction.alpha = DISABLE_ALPHA
+            } else {
+                tvInstallmentType.alpha = ENABLE_ALPHA
+                tvInstallmentDetailWrap.alpha = ENABLE_ALPHA
+                tvInstallmentDetail.alpha = ENABLE_ALPHA
+                btnChangeInstallment.alpha = ENABLE_ALPHA
+                btnChangeInstallmentWrap.alpha = ENABLE_ALPHA
+                tvInstallmentErrorMessage.alpha = ENABLE_ALPHA
+                tvInstallmentErrorAction.alpha = ENABLE_ALPHA
             }
         }
     }
@@ -630,7 +658,7 @@ class OrderPreferenceCard(
                         tvPaymentDetail,
                         btnChangePayment
                     ) {
-                        if (profile.enable) {
+                        if (profile.enable && !payment.isDynamicPaymentFeeError) {
                             listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                         }
                     }
@@ -692,6 +720,18 @@ class OrderPreferenceCard(
                     listener.choosePayment(profile, payment)
                 }
             }
+
+            if (payment.isDynamicPaymentFeeError) {
+                ivPayment.alpha = DISABLE_ALPHA
+                tvPaymentName.alpha = DISABLE_ALPHA
+                tvPaymentDetail.alpha = DISABLE_ALPHA
+                btnChangePayment.alpha = DISABLE_ALPHA
+            } else {
+                ivPayment.alpha = ENABLE_ALPHA
+                tvPaymentName.alpha = ENABLE_ALPHA
+                tvPaymentDetail.alpha = ENABLE_ALPHA
+                btnChangePayment.alpha = ENABLE_ALPHA
+            }
         }
     }
 
@@ -749,9 +789,13 @@ class OrderPreferenceCard(
     private fun setAddressNameMargin(isMainAddress: Boolean) {
         val displayMetrics = binding.tvAddressName.context?.resources?.displayMetrics ?: return
         binding.tvAddressName.setMargin(
-            if (isMainAddress) MAIN_ADDRESS_LEFT_MARGIN.dpToPx(
-                displayMetrics
-            ) else NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics),
+            if (isMainAddress) {
+                MAIN_ADDRESS_LEFT_MARGIN.dpToPx(
+                    displayMetrics
+                )
+            } else {
+                NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics)
+            },
             ADDRESS_TOP_MARGIN.dpToPx(displayMetrics),
             ADDRESS_RIGHT_MARGIN,
             ADDRESS_BOTTOM_MARGIN

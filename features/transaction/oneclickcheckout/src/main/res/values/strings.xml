@@ -90,4 +90,5 @@
     <string name="occ_payment_fee_title_info">Tentang %s</string>
     <string name="occ_service_fee_title_info">Biaya Layanan</string>
     <string name="occ_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
+    <string name="occ_payment_fee_error_ticker">Total bayar gagal ditampilkan. &lt;a href=&quot;refresh&quot;&gt;Muat Ulang&lt;/a&gt;</string>
 </resources>

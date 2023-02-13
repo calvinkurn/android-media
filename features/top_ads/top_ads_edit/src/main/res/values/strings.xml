@@ -72,6 +72,6 @@
     </string-array>
 
     <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
-    <string name="topads_edit_auto_bid_ticker_title"><![CDATA[Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu sesuai dengan anggaran harianmu. <font color = "#03AC0E"><a href="">Pelajari Selengkapnya</a></font>]]></string>
+    <string name="topads_edit_auto_bid_ticker_title"><![CDATA[Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. <font color = "#03AC0E"><a href="">Pelajari Selengkapnya</a></font>]]></string>
 
 </resources>

@@ -176,24 +176,23 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
-                shopProductCheckout.setNeedPrescription(productInCartNeedsPrescription(shipmentCartItemModel));
+                if (shipmentCartItemModel.getHasEthicalProducts()) {
+                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                        if (!cartItemModel.isError() && cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                            shopProductCheckout.setNeedPrescription(true);
+
+                            shopProductCheckout.setPrescriptionIds(shipmentCartItemModel.getPrescriptionIds());
+                            shopProductCheckout.setConsultationDataString(shipmentCartItemModel.getConsultationDataString());
+                            break;
+                        }
+                    }
+                }
 
                 return shopProductCheckout;
             }
             return null;
         }
         return null;
-    }
-
-    private boolean productInCartNeedsPrescription(ShipmentCartItemModel shipmentCartItemModel) {
-        boolean flag = false;
-        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            if (cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
-                flag = true;
-                break;
-            }
-        }
-        return flag;
     }
 
     public static RatesFeature generateRatesFeature(CourierItemData courierItemData) {

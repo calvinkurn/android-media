@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.CycleInterpolator
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -42,6 +43,12 @@ class ShippingWidget : ConstraintLayout {
 
     private var binding: ItemShipmentShippingExperienceBinding? = null
     private var mListener: ShippingWidgetListener? = null
+
+    val layoutStateNoSelectedShipping: ConstraintLayout?
+        get() = binding?.layoutStateNoSelectedShipping
+
+    val containerShippingExperience: FrameLayout?
+        get() = binding?.containerShippingExperience
 
     init {
         binding =
@@ -99,13 +106,21 @@ class ShippingWidget : ConstraintLayout {
                     .setDuration(VIBRATION_ANIMATION_DURATION)
                     .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
                     .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animator: Animator) {}
+                        override fun onAnimationStart(animator: Animator) {
+                            // no op
+                        }
+
                         override fun onAnimationEnd(animator: Animator) {
                             shipmentCartItemModel.isTriggerShippingVibrationAnimation = false
                         }
 
-                        override fun onAnimationCancel(animator: Animator) {}
-                        override fun onAnimationRepeat(animator: Animator) {}
+                        override fun onAnimationCancel(animator: Animator) {
+                            // no op
+                        }
+
+                        override fun onAnimationRepeat(animator: Animator) {
+                            // no op
+                        }
                     })
                     .start()
             }
@@ -121,9 +136,19 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             shippingNowWidget.gone()
-            labelErrorShippingTitle.text = shipmentCartItemModel.courierSelectionErrorTitle
-            labelErrorShippingDescription.text =
-                shipmentCartItemModel.courierSelectionErrorDescription
+            if (shipmentCartItemModel.courierSelectionErrorTitle.isNullOrEmpty()) {
+                labelErrorShippingTitle.text =
+                    context.getString(R.string.checkout_error_shipping_title)
+            } else {
+                labelErrorShippingTitle.text = shipmentCartItemModel.courierSelectionErrorTitle
+            }
+            if (shipmentCartItemModel.courierSelectionErrorDescription.isNullOrEmpty()) {
+                labelErrorShippingDescription.text =
+                    context.getString(R.string.checkout_error_shipping_description)
+            } else {
+                labelErrorShippingDescription.text =
+                    shipmentCartItemModel.courierSelectionErrorDescription
+            }
             layoutStateHasErrorShipping.visible()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
@@ -476,12 +501,9 @@ class ShippingWidget : ConstraintLayout {
     }
 
     private fun getSingleShippingTitleForScheduleWidget(
-        shipmentCartItemModel: ShipmentCartItemModel,
         selectedCourierItemData: CourierItemData
     ): CharSequence? {
-        return if (shipmentCartItemModel.voucherLogisticItemUiModel != null &&
-            selectedCourierItemData.freeShippingChosenCourierTitle.isNotEmpty()
-        ) {
+        return if (selectedCourierItemData.freeShippingChosenCourierTitle.isNotEmpty()) {
             // Change duration to promo title after promo is applied
             selectedCourierItemData.freeShippingChosenCourierTitle.convertToSpannedString()
         } else {
@@ -704,12 +726,11 @@ class ShippingWidget : ConstraintLayout {
 
         binding?.shippingNowWidget?.bind(
             titleNow2H = getSingleShippingTitleForScheduleWidget(
-                shipmentCartItemModel = shipmentCartItemModel,
                 selectedCourierItemData = selectedCourierItemData
             ),
             descriptionNow2H = getSingleShippingLabelEta(selectedCourierItemData),
             labelNow2H = labelNow2H,
-            scheduleDeliveryUiModel = selectedCourierItemData.scheduleDeliveryUiModel,
+            scheduleDeliveryUiModel = selectedCourierItemData.scheduleDeliveryUiModel?.copy(),
             listener = object : ShippingScheduleWidget.ShippingScheduleWidgetListener {
                 override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
                     mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)

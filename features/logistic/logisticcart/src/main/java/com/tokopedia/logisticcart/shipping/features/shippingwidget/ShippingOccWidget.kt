@@ -16,15 +16,16 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingOccBinding
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.logisticcart.R
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class ShippingOccWidget: ConstraintLayout {
+class ShippingOccWidget : ConstraintLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -42,7 +43,7 @@ class ShippingOccWidget: ConstraintLayout {
 
     fun renderDisabledShipping(
         courierSelectionErrorTitle: String,
-        courierSelectionErrorDescription: String,
+        courierSelectionErrorDescription: String
     ) {
         binding?.apply {
             tvShippingDuration.gone()
@@ -80,6 +81,7 @@ class ShippingOccWidget: ConstraintLayout {
             setInvisible(btnReloadShipping)
             setInvisible(iconReloadShipping)
             setInvisible(tickerShippingPromo)
+            loaderShipping.type = LoaderUnify.TYPE_RECT
             loaderShipping.visible()
         }
     }
@@ -202,7 +204,8 @@ class ShippingOccWidget: ConstraintLayout {
                 R.string.lbl_shipping_with_name_and_price,
                 "$serviceName",
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shippingPrice, false
+                    shippingPrice,
+                    false
                 ).removeDecimalSuffix()
             )
             tvShippingCourier.setWeight(Typography.BOLD)
@@ -242,9 +245,10 @@ class ShippingOccWidget: ConstraintLayout {
     ) {
         binding?.apply {
             tvShippingCourier.text = "$shipperName (${
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shippingPrice, false
-                ).removeDecimalSuffix()
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                shippingPrice,
+                false
+            ).removeDecimalSuffix()
             })"
             if (eta.isNotEmpty()) {
                 tvShippingCourierEta.text = eta
@@ -271,7 +275,8 @@ class ShippingOccWidget: ConstraintLayout {
     ) {
         binding?.apply {
             tvShippingPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                shippingPrice, false
+                shippingPrice,
+                false
             ).removeDecimalSuffix()
             tvShippingPrice.visible()
             tvShippingCourierEta.gone()
@@ -454,8 +459,8 @@ class ShippingOccWidget: ConstraintLayout {
                 tvShippingCourier.text = formattedFreeShippingChosenCourierTitle
             } else {
                 tvShippingCourier.text = "$shipperName (${
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingPrice ?: 0, false)
-                        .removeDecimalSuffix()
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingPrice ?: 0, false)
+                    .removeDecimalSuffix()
                 })"
             }
             if (shippingEta.isNullOrBlank()) {

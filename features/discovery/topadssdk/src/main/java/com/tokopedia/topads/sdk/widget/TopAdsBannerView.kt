@@ -707,7 +707,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         goldShop = if (cpmData.cpm.cpmShop.isPowerMerchant) 1 else 0,
                         productList = productList.map {
                             ShopCardModel.ShopItemProduct(
-                                    id = it.id.toIntOrZero(),
+                                    id = it.id,
                                     name = it.name,
                                     priceFormat = it.priceFormat,
                                     imageUrl = it.imageProduct.imageUrl

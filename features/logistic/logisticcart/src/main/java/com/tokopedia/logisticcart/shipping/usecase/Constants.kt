@@ -125,6 +125,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
               text_detail
               url_detail
               icon_url
+              url_text
             }
             mvc {
               is_mvc
@@ -589,6 +590,7 @@ internal fun scheduleDeliveryRatesQuery() = """
                 is_bebas_ongkir_extra
                 benefit_amount
                 bo_campaign_id
+                disabled
                 free_shipping_metadata {
                   sent_shipper_partner
                   benefit_class

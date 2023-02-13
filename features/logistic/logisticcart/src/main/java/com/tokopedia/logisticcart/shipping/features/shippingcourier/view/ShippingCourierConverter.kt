@@ -69,20 +69,20 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.isSelected = true
             courierItemData.preOrderModel = it.preOrderModel
 
-        /*on time delivery*/
-        if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
-            val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
-            val otd = OntimeDelivery(
-                otdPrev.available,
-                otdPrev.textLabel,
-                otdPrev.textDetail,
-                otdPrev.urlDetail,
-                otdPrev.value,
-                otdPrev.iconUrl,
-                otdPrev.urlText
-            )
-            courierItemData.ontimeDelivery = otd
-        }
+            /*on time delivery*/
+            if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
+                val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
+                val otd = OntimeDelivery(
+                    otdPrev.available,
+                    otdPrev.textLabel,
+                    otdPrev.textDetail,
+                    otdPrev.urlDetail,
+                    otdPrev.value,
+                    otdPrev.iconUrl,
+                    otdPrev.urlText
+                )
+                courierItemData.ontimeDelivery = otd
+            }
 
             /*merchant voucher*/
             if (it.productData.features.merchantVoucherProductData != null) {
@@ -129,7 +129,7 @@ class ShippingCourierConverter @Inject constructor() {
         scheduleDeliveryData: ScheduleDeliveryData?,
         validationMetadata: String?
     ) {
-        scheduleDeliveryData?.takeIf { it.hidden.not() && it.deliveryServices.isNotEmpty() }
+        scheduleDeliveryData?.takeIf { it.hidden.not() }
             ?.apply {
                 scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
                     validationMetadata ?: ""
@@ -160,7 +160,6 @@ class ShippingCourierConverter @Inject constructor() {
     private fun ScheduleDeliveryData.convertToScheduleDeliveryUiModel(
         validationMetadata: String
     ): ScheduleDeliveryUiModel {
-
         return ScheduleDeliveryUiModel(
             isSelected = recommend,
             available = available,

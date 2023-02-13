@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -16,10 +17,12 @@ import com.tokopedia.product.detail.databinding.ItemSellyTimeBinding
 import com.tokopedia.product.estimasiongkir.data.model.shipping.Product
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.Service
+import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingListener
 import kotlin.reflect.KMutableProperty0
 
 class ProductShippingSellyViewHolder(
-    view: View
+    view: View,
+    private val listener: ProductDetailShippingListener
 ) : AbstractViewHolder<ProductShippingSellyDataModel>(view) {
 
     companion object {
@@ -44,6 +47,21 @@ class ProductShippingSellyViewHolder(
             pdpSellyDateList.addView(serviceView)
         }
         pdpSellyTitle.showWithCondition(services.isNotEmpty())
+        root.addOnImpressionListener(element.impressHolder) {
+            impressComponent(services)
+        }
+    }
+
+    private fun impressComponent(services: List<Service>) {
+        val service = services.firstOrNull() ?: return
+        val prices = service.products.map {
+            val price = if (it.isAvailable) it.finalPrice else it.text
+            Pair(it.scheduledTime, price)
+        }
+        listener.impressScheduledDelivery(
+            prices,
+            service.scheduledDate
+        )
     }
 
     private fun renderService(
@@ -55,8 +73,11 @@ class ProductShippingSellyViewHolder(
         }
 
         val products = service.products
-        if (service.isAvailable) renderAvailableDate(this, products, service::isExpanded)
-        else renderNotAvailableDate(this, products)
+        if (service.isAvailable) {
+            renderAvailableDate(this, products, service::isExpanded)
+        } else {
+            renderNotAvailableDate(this, products)
+        }
     }.root
 
     /**
@@ -67,10 +88,16 @@ class ProductShippingSellyViewHolder(
         products: List<Product>,
         isExpandedProperty: KMutableProperty0<Boolean>
     ) {
-        renderScheduledTimes(binding, products.filter {
-            if (isExpandedProperty.get()) true
-            else it.isRecommend
-        })
+        renderScheduledTimes(
+            binding,
+            products.filter {
+                if (isExpandedProperty.get()) {
+                    true
+                } else {
+                    it.isRecommend
+                }
+            }
+        )
 
         binding.pdpSellyExpandableButton.setOnClickListener {
             toggle(binding, products, isExpandedProperty)
@@ -85,17 +112,23 @@ class ProductShippingSellyViewHolder(
         val isExpanded = isExpandedProperty.get()
         pdpSellyTimeList.removeAllViews()
 
-        renderScheduledTimes(binding, products.filter{
-            if (isExpanded) it.isRecommend
-            else true
-        })
+        renderScheduledTimes(
+            binding,
+            products.filter {
+                if (isExpanded) {
+                    it.isRecommend
+                } else {
+                    true
+                }
+            }
+        )
         isExpandedProperty.set(!isExpanded)
 
-        if(isExpanded){
-            pdpSellyExpandableButton.text = "Jadwal Lainnya"
+        if (isExpanded) {
+            pdpSellyExpandableButton.text = getString(R.string.pdp_selly_button_expand)
             pdpSellyExpandableIcon.animate().rotation(0f).start()
-        }else{
-            pdpSellyExpandableButton.text = "Tampilkan lebih sedikit"
+        } else {
+            pdpSellyExpandableButton.text = getString(R.string.pdp_selly_button_collapse)
             pdpSellyExpandableIcon.animate().rotation(180f).start()
         }
     }
@@ -104,13 +137,11 @@ class ProductShippingSellyViewHolder(
         binding: ItemSellyDateBinding,
         products: List<Product>
     ) = with(binding) {
-
         pdpSellyExpandableButton.hide()
         pdpSellyExpandableIcon.hide()
         pdpSellyDate.setTextColor(grayColor)
 
         val product = products.firstOrNull() ?: return@with
-
 
         pdpSellyAdditionalMessage.apply {
             root.show()
@@ -135,27 +166,31 @@ class ProductShippingSellyViewHolder(
         binding: ItemSellyDateBinding,
         products: List<Product>
     ) = with(binding) {
-        products.forEach { product ->
-            val childView = renderChildView(product)
-            pdpSellyTimeList.addView(childView)
+        pdpSellyTimeList.showIfWithBlock(products.isNotEmpty()) {
+            products.forEach { product ->
+                val childView = renderChildView(product)
+                addView(childView)
+            }
         }
     }
 
     private fun renderChildView(
         product: Product
     ) = ItemSellyTimeBinding.inflate(layoutInflater).apply {
-        if (product.isAvailable) renderAvailableTime(this, product)
-        else renderNotAvailableTime(this, product)
+        if (product.isAvailable) {
+            renderAvailableTime(this, product)
+        } else {
+            renderNotAvailableTime(this, product)
+        }
     }.root
 
     private fun renderAvailableTime(
         binding: ItemSellyTimeBinding,
         product: Product
     ) = with(binding) {
-
         val scheduledTime = product.scheduledTime
         pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
-            text = context.getString(R.string.location_dot_builder, scheduledTime)
+            text = context.getString(R.string.pdp_selly_time_format, scheduledTime)
         }
 
         val finalPrice = product.finalPrice
@@ -174,10 +209,9 @@ class ProductShippingSellyViewHolder(
         binding: ItemSellyTimeBinding,
         product: Product
     ) = with(binding) {
-
         val scheduledTime = product.scheduledTime
         pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
-            text = context.getString(R.string.location_dot_builder, scheduledTime)
+            text = context.getString(R.string.pdp_selly_time_format, scheduledTime)
         }
 
         val messageText = product.text

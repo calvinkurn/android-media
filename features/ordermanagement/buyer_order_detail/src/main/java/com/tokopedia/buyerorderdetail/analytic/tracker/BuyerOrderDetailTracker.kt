@@ -6,6 +6,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -108,7 +109,7 @@ object BuyerOrderDetailTracker {
             Bundle().apply {
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID, product.categoryId)
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_40, BuyerOrderDetailTrackerConstant.MARKER_ORDER_LIST_DETAIL_MARKETPLACE)
-                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45, atcResult.find { it.productId.toString() == product.productId }?.cartId.orZero().toString())
+                putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45, atcResult.find { it.productId == product.productId }?.cartId.toZeroStringIfNull())
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_BRAND, "")
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY, product.category)
                 putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRODUCT_ID, product.productId)
@@ -280,7 +281,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN,
             eventLabel = "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_ATTEMPT_BUY_AGAIN} $orderId"
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendUserId(userId)
             .sendGeneralEvent()
     }
@@ -300,11 +301,25 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS,
             eventLabel = "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_BUY_AGAIN_SUCCESS} $orderId"
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendBuyAgainProductEE(products, atcResult, shopId, shopName, shopType)
             .appendProductIds(products)
             .appendUserId(userId)
             .sendEnhancedEcommerce(BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART)
+    }
+
+    fun eventImpressionInsuranceWidget(
+        trackerData: OrderInsuranceUiModel.TrackerData
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_PG_IRIS,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_INSURANCE_WIDGET,
+            eventLabel = "${trackerData.orderStatusCode}${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}${trackerData.orderId}"
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_IMPRESSION_INSURANCE_WIDGET)
+            .sendGeneralEvent()
     }
 
     fun eventClickInsuranceWidget(
@@ -316,7 +331,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_INSURANCE_WIDGET,
             eventLabel = "${trackerData.orderStatusCode}${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}${trackerData.orderId}"
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_CLICK_INSURANCE_WIDGET)
             .sendGeneralEvent()
     }

@@ -55,7 +55,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
@@ -246,12 +245,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
 
                 data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)?.let {
-                    //reset
+                    // reset
                     viewModel.validateUsePromoRevampUiModel = null
                     viewModel.updatePromoStateWithoutCalculate(
                         PromoUiModel().apply {
-                        titleDescription = it.successDataModel.defaultEmptyPromoMessage
-                    })
+                            titleDescription = it.successDataModel.defaultEmptyPromoMessage
+                        }
+                    )
                     viewModel.autoUnApplyBBO()
                     // refresh shipping section and calculate total
                     viewModel.reloadRates()
@@ -440,25 +440,36 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             when (it) {
                 is OccState.Success -> {
                     if (it.data.eligibleForAddressFeatureData.eligibleForRevampAna.eligible) {
-                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                            putExtra(EXTRA_IS_FULL_FLOW, true)
-                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                            putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
-                            putExtra(PARAM_SOURCE, AddEditAddressSource.OCC.source)
-                        }, REQUEST_CODE_ADD_NEW_ADDRESS)
+                        startActivityForResult(
+                            RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                                putExtra(EXTRA_IS_FULL_FLOW, true)
+                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                                putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                                putExtra(PARAM_SOURCE, AddEditAddressSource.OCC.source)
+                            },
+                            REQUEST_CODE_ADD_NEW_ADDRESS
+                        )
                     } else {
-                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                            putExtra(EXTRA_IS_FULL_FLOW, true)
-                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                            putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
-                        }, REQUEST_CODE_ADD_NEW_ADDRESS)
+                        startActivityForResult(
+                            RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                                putExtra(EXTRA_IS_FULL_FLOW, true)
+                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                                putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                            },
+                            REQUEST_CODE_ADD_NEW_ADDRESS
+                        )
                     }
                 }
 
                 is OccState.Failed -> {
                     view?.let { view ->
-                        Toaster.build(view, it.getFailure()?.throwable?.message
-                                ?: getString(R.string.default_osp_error_message), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            view,
+                            it.getFailure()?.throwable?.message
+                                ?: getString(R.string.default_osp_error_message),
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
 
@@ -639,9 +650,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 isOcc = true,
                 pslCode = data.pslCode,
                 shippingDurationBottomsheetListener = getShippingDurationListener(),
-                cartData = data.cartData)
+                cartData = data.cartData
+            )
         }
-
     }
 
     private fun observeOrderShipment() {
@@ -892,36 +903,38 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun updateLocalCacheAddressData(addressModel: ChosenAddressModel) {
         activity?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = it,
-                    addressId = addressModel.addressId.toString(),
-                    cityId = addressModel.cityId.toString(),
-                    districtId = addressModel.districtId.toString(),
-                    lat = addressModel.latitude,
-                    long = addressModel.longitude,
-                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                    postalCode = addressModel.postalCode,
-                    shopId = addressModel.tokonowModel.shopId.toString(),
-                    warehouseId = addressModel.tokonowModel.warehouseId.toString(),
-                    warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(addressModel.tokonowModel.warehouses),
-                    serviceType = addressModel.tokonowModel.serviceType)
+                context = it,
+                addressId = addressModel.addressId.toString(),
+                cityId = addressModel.cityId.toString(),
+                districtId = addressModel.districtId.toString(),
+                lat = addressModel.latitude,
+                long = addressModel.longitude,
+                label = "${addressModel.addressName} ${addressModel.receiverName}",
+                postalCode = addressModel.postalCode,
+                shopId = addressModel.tokonowModel.shopId.toString(),
+                warehouseId = addressModel.tokonowModel.warehouseId.toString(),
+                warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(addressModel.tokonowModel.warehouses),
+                serviceType = addressModel.tokonowModel.serviceType
+            )
         }
     }
 
     private fun updateLocalCacheAddressData(addressModel: SaveAddressDataModel) {
         activity?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = it,
-                    addressId = addressModel.id.toString(),
-                    cityId = addressModel.cityId.toString(),
-                    districtId = addressModel.districtId.toString(),
-                    lat = addressModel.latitude,
-                    long = addressModel.longitude,
-                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                    postalCode = addressModel.postalCode,
-                    shopId = addressModel.shopId.toString(),
-                    warehouseId = addressModel.warehouseId.toString(),
-                    warehouses = TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressModel.warehouses),
-                    serviceType = addressModel.serviceType)
+                context = it,
+                addressId = addressModel.id.toString(),
+                cityId = addressModel.cityId.toString(),
+                districtId = addressModel.districtId.toString(),
+                lat = addressModel.latitude,
+                long = addressModel.longitude,
+                label = "${addressModel.addressName} ${addressModel.receiverName}",
+                postalCode = addressModel.postalCode,
+                shopId = addressModel.shopId.toString(),
+                warehouseId = addressModel.warehouseId.toString(),
+                warehouses = TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressModel.warehouses),
+                serviceType = addressModel.serviceType
+            )
         }
     }
 
@@ -931,28 +944,30 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
                 val newTokoNowData = addressModel.tokoNow
                 val shouldUpdateTokoNowData = newTokoNowData.isModified
-                if (addressModel.state == OrderProfileAddress.STATE_OCC_ADDRESS_ID_NOT_MATCH
-                        || localCache.address_id.isEmpty() || localCache.address_id == "0") {
+                if (addressModel.state == OrderProfileAddress.STATE_OCC_ADDRESS_ID_NOT_MATCH ||
+                    localCache.address_id.isEmpty() || localCache.address_id == "0"
+                ) {
                     ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                            context = it,
-                            addressId = addressModel.addressId,
-                            cityId = addressModel.cityId,
-                            districtId = addressModel.districtId,
-                            lat = addressModel.latitude,
-                            long = addressModel.longitude,
-                            label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                            postalCode = addressModel.postalCode,
-                            shopId = if (shouldUpdateTokoNowData) addressModel.tokoNow.shopId else localCache.shop_id,
-                            warehouseId = if (shouldUpdateTokoNowData) addressModel.tokoNow.warehouseId else localCache.warehouse_id,
-                            warehouses = if (shouldUpdateTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses) else localCache.warehouses,
-                            serviceType = if (shouldUpdateTokoNowData) addressModel.tokoNow.serviceType else localCache.service_type)
+                        context = it,
+                        addressId = addressModel.addressId,
+                        cityId = addressModel.cityId,
+                        districtId = addressModel.districtId,
+                        lat = addressModel.latitude,
+                        long = addressModel.longitude,
+                        label = "${addressModel.addressName} ${addressModel.receiverName}",
+                        postalCode = addressModel.postalCode,
+                        shopId = if (shouldUpdateTokoNowData) addressModel.tokoNow.shopId else localCache.shop_id,
+                        warehouseId = if (shouldUpdateTokoNowData) addressModel.tokoNow.warehouseId else localCache.warehouse_id,
+                        warehouses = if (shouldUpdateTokoNowData) TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses) else localCache.warehouses,
+                        serviceType = if (shouldUpdateTokoNowData) addressModel.tokoNow.serviceType else localCache.service_type
+                    )
                 } else if (shouldUpdateTokoNowData) {
                     ChooseAddressUtils.updateTokoNowData(
-                            context = it,
-                            shopId = addressModel.tokoNow.shopId,
-                            warehouseId = addressModel.tokoNow.warehouseId,
-                            warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
-                            serviceType = addressModel.tokoNow.serviceType
+                        context = it,
+                        shopId = addressModel.tokoNow.shopId,
+                        warehouseId = addressModel.tokoNow.warehouseId,
+                        warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
+                        serviceType = addressModel.tokoNow.serviceType
                     )
                 }
             }
@@ -969,22 +984,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
-        view?.let { v ->
-            MapsAvailabilityHelper.onMapsAvailableState(v) {
-                address?.let {
-                    val locationPass = LocationPass()
-                    locationPass.cityName = it.cityName
-                    locationPass.districtName = it.districtName
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                    val bundle = Bundle()
-                    bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                    intent.putExtras(bundle)
-                    startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
-                    if (shouldUpdatePinpointFlag) {
-                        viewModel.changePinpoint()
-                    }
-                }
+        address?.let {
+            val locationPass = LocationPass()
+            locationPass.cityName = it.cityName
+            locationPass.districtName = it.districtName
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+            val bundle = Bundle()
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            if (shouldUpdatePinpointFlag) {
+                viewModel.changePinpoint()
             }
         }
     }
@@ -1453,16 +1464,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun chooseAddress(currentAddressId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
-                AddressListBottomSheet(getAddressCornerUseCase.get(), object : AddressListBottomSheet.AddressListBottomSheetListener {
-                    override fun onSelect(addressModel: RecipientAddressModel) {
-                        orderSummaryAnalytics.eventClickSelectedAddressOption(addressModel.id, userSession.get().userId)
-                        viewModel.chooseAddress(addressModel)
-                    }
+                AddressListBottomSheet(
+                    getAddressCornerUseCase.get(),
+                    object : AddressListBottomSheet.AddressListBottomSheetListener {
+                        override fun onSelect(addressModel: RecipientAddressModel) {
+                            orderSummaryAnalytics.eventClickSelectedAddressOption(addressModel.id, userSession.get().userId)
+                            viewModel.chooseAddress(addressModel)
+                        }
 
-                    override fun onAddAddress(token: Token?) {
-                        viewModel.checkUserEligibilityForAnaRevamp(token)
+                        override fun onAddAddress(token: Token?) {
+                            viewModel.checkUserEligibilityForAnaRevamp(token)
+                        }
                     }
-                }).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
+                ).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
             }
         }
 
@@ -1470,15 +1484,35 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventChangeCourierOSP(shipment.getRealShipperId().toString())
                 activity?.let {
-                    ShippingCourierBottomsheet().show(it, parentFragmentManager, object : ShippingCourierBottomsheetListener {
-                        override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, courierItemData: CourierItemData, recipientAddressModel: RecipientAddressModel?,
-                                                     cartPosition: Int, isCod: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean, shippingCourierList: List<ShippingCourierUiModel>) {
-                            orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierUiModel.productData.shipperId.toString())
-                            viewModel.chooseCourier(shippingCourierUiModel)
-                        }
+                    ShippingCourierBottomsheet().show(
+                        it,
+                        parentFragmentManager,
+                        object : ShippingCourierBottomsheetListener {
+                            override fun onCourierChoosen(
+                                shippingCourierUiModel: ShippingCourierUiModel,
+                                courierItemData: CourierItemData,
+                                recipientAddressModel: RecipientAddressModel?,
+                                cartPosition: Int,
+                                isCod: Boolean,
+                                isPromoCourier: Boolean,
+                                isNeedPinpoint: Boolean,
+                                shippingCourierList: List<ShippingCourierUiModel>
+                            ) {
+                                orderSummaryAnalytics.eventChooseCourierSelectionOSP(
+                                    shippingCourierUiModel.productData.shipperId.toString()
+                                )
+                                viewModel.chooseCourier(shippingCourierUiModel)
+                            }
 
-                        override fun onCourierShipmentRecommendationCloseClicked() {}
-                    }, list, null, 0, true)
+                            override fun onCourierShipmentRecommendationCloseClicked() {
+                                // no op
+                            }
+                        },
+                        list,
+                        null,
+                        0,
+                        true
+                    )
                 }
             }
         }
@@ -1631,58 +1665,59 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getShippingDurationListener() : ShippingDurationBottomsheetListener = object : ShippingDurationBottomsheetListener {
-        override fun onShippingDurationChoosen(
-            shippingCourierUiModels: List<ShippingCourierUiModel>?,
-            selectedCourier: ShippingCourierUiModel?,
-            recipientAddressModel: RecipientAddressModel?,
-            cartPosition: Int,
-            selectedServiceId: Int,
-            serviceData: ServiceData?,
-            flagNeedToSetPinpoint: Boolean,
-            isDurationClick: Boolean,
-            isClearPromo: Boolean
-        ) {
-            if (selectedCourier != null && serviceData != null) {
-                orderSummaryAnalytics.eventClickSelectedDurationOptionNew(
-                    selectedCourier.productData.shipperProductId.toString(),
-                    userSession.get().userId
-                )
-                val serviceId =
-                    if (flagNeedToSetPinpoint) selectedServiceId else serviceData.serviceId
-                viewModel.chooseDuration(
-                    serviceId,
-                    selectedCourier,
-                    flagNeedToSetPinpoint
-                )
-            }
-        }
-
-        override fun onLogisticPromoChosen(
-            shippingCourierUiModels: List<ShippingCourierUiModel>?,
-            courierData: ShippingCourierUiModel?,
-            recipientAddressModel: RecipientAddressModel?,
-            cartPosition: Int,
-            serviceData: ServiceData?,
-            flagNeedToSetPinpoint: Boolean,
-            promoCode: String?,
-            selectedServiceId: Int,
-            logisticPromo: LogisticPromoUiModel
-        ) {
-            onChoosePromoLogisticShipping(logisticPromo)
-        }
-
-        override fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {
-            listLogisticPromo.forEach { promo ->
-                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(
-                        BBO_DESCRIPTION_MINIMUM_LIMIT[1]
+    private fun getShippingDurationListener(): ShippingDurationBottomsheetListener =
+        object : ShippingDurationBottomsheetListener {
+            override fun onShippingDurationChoosen(
+                shippingCourierUiModels: List<ShippingCourierUiModel>?,
+                selectedCourier: ShippingCourierUiModel?,
+                recipientAddressModel: RecipientAddressModel?,
+                cartPosition: Int,
+                selectedServiceId: Int,
+                serviceData: ServiceData?,
+                flagNeedToSetPinpoint: Boolean,
+                isDurationClick: Boolean,
+                isClearPromo: Boolean
+            ) {
+                if (selectedCourier != null && serviceData != null) {
+                    orderSummaryAnalytics.eventClickSelectedDurationOptionNew(
+                        selectedCourier.productData.shipperProductId.toString(),
+                        userSession.get().userId
                     )
-                ) {
-                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                    val serviceId =
+                        if (flagNeedToSetPinpoint) selectedServiceId else serviceData.serviceId
+                    viewModel.chooseDuration(
+                        serviceId,
+                        selectedCourier,
+                        flagNeedToSetPinpoint
+                    )
+                }
+            }
+
+            override fun onLogisticPromoChosen(
+                shippingCourierUiModels: List<ShippingCourierUiModel>?,
+                courierData: ShippingCourierUiModel?,
+                recipientAddressModel: RecipientAddressModel?,
+                cartPosition: Int,
+                serviceData: ServiceData?,
+                flagNeedToSetPinpoint: Boolean,
+                promoCode: String?,
+                selectedServiceId: Int,
+                logisticPromo: LogisticPromoUiModel
+            ) {
+                onChoosePromoLogisticShipping(logisticPromo)
+            }
+
+            override fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {
+                listLogisticPromo.forEach { promo ->
+                    if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(
+                            BBO_DESCRIPTION_MINIMUM_LIMIT[1]
+                        )
+                    ) {
+                        orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                    }
                 }
             }
         }
-    }
 
     private fun getOrderInsuranceCardListener(): OrderInsuranceCard.OrderInsuranceCardListener {
         return object : OrderInsuranceCard.OrderInsuranceCardListener {
@@ -1739,10 +1774,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun getUploadPrescriptionListener(): UploadPrescriptionListener {
         return object : UploadPrescriptionListener {
-            override fun uploadPrescriptionAction(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-                uploadPrescriptionUiModel.checkoutId?.let {
-                    ePharmacyAnalytics.sendPrescriptionWidgetClick(it)
-                }
+            override fun uploadPrescriptionAction(
+                uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+                buttonText: String,
+                buttonNotes: String
+            ) {
+                ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.checkoutId)
                 val uploadPrescriptionIntent = RouteManager.getIntent(
                     context,
                     UploadPrescriptionViewHolder.EPharmacyAppLink
@@ -1796,6 +1833,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
             override fun onPayClicked() {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
+            }
+
+            override fun onRefreshPaymentClicked() {
+                viewModel.calculateTotal()
             }
         }
     }

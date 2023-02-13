@@ -117,8 +117,7 @@
     <string name="close_youtube">Close</string>
     <string name="video_not_found">Video tidak ditemukan</string>
 
-    <string name="shop_page_play_widget_title"><![CDATA[Ayo cobain <b>live streaming</b>]]></string>
-    <string name="shop_page_play_widget_sgc_content">dan bikin tokomu makin terkenal!</string>
+    <!-- Content Creation -->
     <string name="shop_page_play_widget_sgc_save_video">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
     <string name="shop_page_play_widget_sgc_video_deleted">Video telah dihapus.</string>
     <string name="shop_page_play_widget_sgc_video_saved_success">Yay, video berhasil disimpan!</string>
@@ -128,10 +127,16 @@
     <string name="shop_page_play_widget_sgc_copy_link">Salin link</string>
     <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
     <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
+    <string name="shop_page_broadcast_creation_label">Buat Live</string>
+    <string name="shop_page_shorts_creation_label">Buat Shorts Video</string>
+    <string name="shop_page_start_create_content">Yuk, Mulai</string>
+    <string name="shop_page_play_widget_beta_template">[beta]</string>
+    <string name="shop_page_play_widget_livestream_only_label"><![CDATA[Ayo cobain <b>live streaming</b> [beta]<br />dan bikin tokomu makin terkenal!]]></string>
+    <string name="shop_page_play_widget_livestream_and_shorts_label"><![CDATA[Promosikan produkmu dengan<br /><b>Live</b> atau <b>Shorts Video</b> [beta]]]></string>
+    <string name="shop_page_play_widget_shorts_only_label"><![CDATA[Promosikan produkmu dengan<br /><b>Shorts Video</b> [beta]]]></string>
+
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
-    <string name="shop_page_lottie_sgc_url">https://images.tokopedia.net/android/hydra/sgc_entry_point.json</string>
-
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
     <string name="shop_sort_filter_chips_name">Filter</string>
@@ -141,6 +146,8 @@
     <string name="shop_follow_error_toaster_action_text">Coba Lagi</string>
     <string name="follow_button_label">Follow</string>
     <string name="follow_button_label_npl">Follow Toko</string>
+    <string name="npl_tnc_content_description">NPL Widget TnC Icon Information</string>
+    <string name="npl_footer_exclusive_for_follower">Eksklusif untuk Follower Toko</string>
 
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
@@ -153,8 +160,9 @@
     <string name="shop_page_share_telegram">Telegram</string>
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
-    <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="shop_page_share_text_with_link">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n%2$s</string>
     <string name="label_close">Tutup</string>
+    <string name="shop_page_share_chat_bubble_operational_hour_format">Buka %1s WIB</string>
 
     <!-- content description shop page -->
     <string name="content_desc_shop_page_main_profile_image">image gambar toko</string>
@@ -186,4 +194,7 @@
     <string name="label_report">Laporkan</string>
     <string name="label_report_success">Laporan berhasil terkirim.</string>
 
+    <!-- operational hours -->
+    <string name="shop_ops_hour_open_all_day">Buka 24 jam</string>
+    <string name="shop_ops_hour_holiday">Libur</string>
 </resources>

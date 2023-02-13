@@ -4,10 +4,7 @@ package com.tokopedia.shop.common.constant
  * Created by hendry on 18/07/18.
  */
 object ShopPageConstant {
-    const val ETALASE_TO_SHOW = 5
-    const val MAXIMUM_SELECTED_ETALASE_LIST = 4
     const val START_PAGE = 1
-    const val DEFAULT_PER_PAGE = 10
     const val DEFAULT_PER_PAGE_NON_TABLET = 10
     const val DEFAULT_PER_PAGE_TABLET = 20
     const val SHOP_PRODUCT_EMPTY_STATE_LIMIT = 20
@@ -48,7 +45,6 @@ object ShopPageConstant {
         "android_shop_page_enable_universal_bottom_sheet"
     const val ALL_SHOWCASE_ID = "etalase"
     const val CODE_STATUS_SUCCESS = "200"
-    const val AFFILIATE_PAGE_ID = "pageID"
     const val SHARED_PREF_AFFILIATE_CHANNEL = "SHARED_PREF_AFFILIATE_CHANNEL"
     const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
     object ShopLayoutFeatures{

@@ -426,6 +426,16 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     total_quantity
                   }
                 }
+                additional_data {
+                  epharmacy_data {
+                    consultation_name
+                    consultation_date
+                    consultation_doctor_name
+                    consultation_prescription_number
+                    consultation_expiry_date
+                    consultation_patient_name
+                  }
+                }
                 is_pof
                 has_ppp
               }

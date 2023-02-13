@@ -36,7 +36,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
@@ -69,11 +68,6 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -118,7 +112,6 @@ import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_ATTACH_IMAGE
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -157,7 +150,6 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
-import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
@@ -213,7 +205,6 @@ open class TopChatRoomFragment :
     TopChatContract.View,
     TypingListener,
     SendButtonListener,
-    ImagePickerListener,
     ChatTemplateListener,
     HeaderMenuListener,
     DualAnnouncementListener,
@@ -721,7 +712,7 @@ open class TopChatRoomFragment :
         return TopChatViewStateImpl(
             view, this, this, this,
             this, this, this,
-            this, this,
+            this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             it.isFromBubble = activity?.isFromBubble() == true
@@ -820,13 +811,17 @@ open class TopChatRoomFragment :
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
-    private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
-        val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
-        if (!isFromAnotherChat) {
-            initProductPreview(savedInstanceState)
-            initInvoicePreview(savedInstanceState)
-        }
-        viewModel.initAttachmentPreview()
+    fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
+        try {
+            if (::viewModel.isInitialized) {
+                val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
+                if (!isFromAnotherChat) {
+                    initProductPreview(savedInstanceState)
+                    initInvoicePreview(savedInstanceState)
+                }
+                viewModel.initAttachmentPreview()
+            }
+        } catch (ignored: Throwable) {}
     }
 
     private fun onSuccessGetMessageId(messageId: String) {
@@ -1070,7 +1065,7 @@ open class TopChatRoomFragment :
         // change the retry value
         element.isRetry = false
         adapter.updatePreviewState(element.localId)
-        viewModel.startUploadImages(element)
+        viewModel.startUploadImages(element, isUploadImageSecure())
     }
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
@@ -1445,15 +1440,7 @@ open class TopChatRoomFragment :
         topchatViewState?.setTemplate(null)
     }
 
-    override fun pickImageToUpload() {
-        if (isUsingMediaPicker()) {
-            pickImageWithMediaPicker()
-        } else {
-            pickImageWithImagePicker()
-        }
-    }
-
-    private fun pickImageWithMediaPicker() {
+    private fun pickImageToUpload() {
         context?.let {
             val intent = MediaPicker.intent(it) {
                 pageSource(PageSource.TopChat)
@@ -1464,24 +1451,10 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun pickImageWithImagePicker() {
-        context?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-                .withSimpleMultipleSelection(maxPick = 1).apply {
-                    maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
-                }
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-            intent.putImagePickerBuilder(builder)
-            intent.putParamPageSource(ImagePickerPageSource.TOP_CHAT_PAGE)
-            startActivityForResult(intent, REQUEST_ATTACH_IMAGE)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> onReturnFromSettingTemplate()
-            REQUEST_ATTACH_IMAGE -> onReturnFromChooseImage(resultCode, data)
             REQUEST_CODE_IMAGE_MEDIA_PICKER -> onReturnFromMediaPicker(resultCode, data)
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
@@ -1635,15 +1608,6 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun onReturnFromChooseImage(resultCode: Int, data: Intent?) {
-        topchatViewState?.hideAttachmentMenu()
-        if (resultCode != RESULT_OK || data == null) {
-            return
-        }
-        val imagePathList = getImagePickerResult(data)
-        handleImageToUpload(imagePathList = imagePathList)
-    }
-
     private fun onReturnFromMediaPicker(resultCode: Int, data: Intent?) {
         topchatViewState?.hideAttachmentMenu()
         if (resultCode != RESULT_OK || data == null) {
@@ -1656,7 +1620,7 @@ open class TopChatRoomFragment :
     private fun handleImageToUpload(imagePathList: List<String>) {
         processImagePathToUpload(imagePathList)?.let { model ->
             onSendAndReceiveMessage()
-            viewModel.startUploadImages(model)
+            viewModel.startUploadImages(model, isUploadImageSecure())
             topchatViewState?.scrollToBottom()
             sellerReviewHelper.hasRepliedChat = true
         }
@@ -1730,10 +1694,6 @@ open class TopChatRoomFragment :
                 rvSrw?.hideSrw()
                 rvSrw?.resetSrw()
             })
-    }
-
-    private fun getImagePickerResult(data: Intent): List<String> {
-        return ImagePickerResultExtractor.extract(data).imageUrlOrPathList
     }
 
     private fun processImagePathToUpload(imagePathList: List<String>): ImageUploadUiModel? {
@@ -2269,6 +2229,7 @@ open class TopChatRoomFragment :
                                 context,
                                 v
                             )
+                            success()
                         }
                     }
                 }
@@ -3153,7 +3114,8 @@ open class TopChatRoomFragment :
             UploadImageChatService.enqueueWork(
                 it,
                 image,
-                viewModel.roomMetaData.msgId
+                viewModel.roomMetaData.msgId,
+                isUploadImageSecure()
             )
         }
     }
@@ -3533,10 +3495,6 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun isUsingMediaPicker(): Boolean {
-        return abTestPlatform.getString(ROLLENCE_ENABLE_MEDIA_PICKER) == ROLLENCE_ENABLE_MEDIA_PICKER
-    }
-
     private fun initChatTextAreaLayout() {
         handleSrw(onNewDesign = {
             topchatViewState?.chatTextAreaTabLayout?.initReplyBox(
@@ -3570,6 +3528,13 @@ open class TopChatRoomFragment :
         return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
+    protected fun isUploadImageSecure(): Boolean {
+        return abTestPlatform.getString(
+            key = ROLLENCE_UPLOAD_SECURE,
+            defaultValue = ""
+        ) == ROLLENCE_UPLOAD_SECURE
+    }
+
     override fun onClickSRWTab() {
         val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
         TopChatAnalyticsKt.eventClickSRWTabChatTextAreaLayout(
@@ -3590,12 +3555,9 @@ open class TopChatRoomFragment :
 
     companion object {
         const val PARAM_RATING = "rating"
-        const val PARAM_UTM_SOURCE = "utmSource"
-        const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
         const val BS_CHAT_BUBBLE_MENU = "CHAT_BUBBLE_MENU"
         private const val EXTRA_SOURCE_STOCK = "chat"
         private const val CLIPBOARD_CHAT = "chat message"
-        private const val MAX_SIZE_IMAGE_PICKER = 20360
 
         private const val REQUEST_GO_TO_SHOP = 111
         private const val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -3612,7 +3574,7 @@ open class TopChatRoomFragment :
 
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
-        const val ROLLENCE_ENABLE_MEDIA_PICKER = "and_chat_picker_v2"
+        const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

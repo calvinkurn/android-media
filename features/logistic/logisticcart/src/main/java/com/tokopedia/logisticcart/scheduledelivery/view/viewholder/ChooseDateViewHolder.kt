@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ViewholderChooseDateBinding
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.logisticcart.scheduledelivery.view.adapter.ChooseDateAdapter
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseDateUiModel
-import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 
 class ChooseDateViewHolder(
     private val viewBinding: ViewholderChooseDateBinding,
@@ -25,9 +25,14 @@ class ChooseDateViewHolder(
             }
         }
         viewBinding.rvChooseDate.run {
+            val chooseDateAdapter = ChooseDateAdapter(element.content, listener)
             layoutManager =
                 LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = ChooseDateAdapter(element.content, listener)
+            adapter = chooseDateAdapter
+            val scrollTo = chooseDateAdapter.selectedDatePosition()
+            if (scrollTo != -1) {
+                smoothScrollToPosition(scrollTo)
+            }
         }
     }
 

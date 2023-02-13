@@ -1,15 +1,22 @@
 package com.tokopedia.notifications.common
 
+import android.Manifest
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.notifications.common.CMConstant.GtmTrackerEvents
+import com.tokopedia.notifications.settings.NotificationGeneralPromptSharedPreferences
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.concurrent.TimeUnit
 
 class NotificationSettingsGtmEvents constructor(
     private val userSession: UserSessionInterface,
@@ -24,16 +31,13 @@ class NotificationSettingsGtmEvents constructor(
     private var trackerIdAllow = GtmTrackerEvents.VALUE_TRACKER_ID_ALLOW
     private var trackerIdNotAllow = GtmTrackerEvents.VALUE_TRACKER_ID_NOT_ALLOW
     private var eventCategory = GtmTrackerEvents.VALUE_CATEGORY
-    private var frequency: Int = 0
-
-    fun updateFrequency() {
-        frequency = sharedPreference.getInt(FREQ_KEY, 0)
-        val editor = sharedPreference.edit()
-        editor.putInt(FREQ_KEY, frequency + 1)
-        editor.apply()
-    }
+    private var frequencyNativePrompt: Int = 0
+    private var frequencyGeneralPrompt: Int = 0
+    private var isNativePrompt = false
 
     fun sendPromptImpressionEvent(context: Context) {
+        isNativePrompt = true
+        updateNativePromptFrequency()
         if (GlobalConfig.isSellerApp()) {
             trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_SA
             eventCategory = GtmTrackerEvents.VALUE_CATEGORY_SA
@@ -46,7 +50,15 @@ class NotificationSettingsGtmEvents constructor(
         )
     }
 
+    private fun updateNativePromptFrequency() {
+        frequencyNativePrompt = sharedPreference.getInt(FREQ_KEY_NATIVE_PROMPT, 0)
+        val editor = sharedPreference.edit()
+        editor.putInt(FREQ_KEY_NATIVE_PROMPT, frequencyNativePrompt + 1)
+        editor.apply()
+    }
+
     fun sendActionNotAllowEvent(context: Context) {
+        isNativePrompt = true
         if (GlobalConfig.isSellerApp()) {
             eventCategory = GtmTrackerEvents.VALUE_CATEGORY_SA
             trackerIdNotAllow = GtmTrackerEvents.VALUE_TRACKER_ID_NOT_ALLOW_SA
@@ -60,6 +72,7 @@ class NotificationSettingsGtmEvents constructor(
     }
 
     fun sendActionAllowEvent(context: Context) {
+        isNativePrompt = true
         if (GlobalConfig.isSellerApp()) {
             eventCategory = GtmTrackerEvents.VALUE_CATEGORY_SA
             trackerIdAllow = GtmTrackerEvents.VALUE_TRACKER_ID_ALLOW_SA
@@ -73,6 +86,8 @@ class NotificationSettingsGtmEvents constructor(
     }
 
     fun sendGeneralPromptImpressionEvent(context: Context, pagePath: String) {
+        isNativePrompt = false
+        updateGeneralPromptFrequency()
         eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
         if (GlobalConfig.isSellerApp()) {
             trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_GEN_SA
@@ -89,7 +104,15 @@ class NotificationSettingsGtmEvents constructor(
         )
     }
 
+    private fun updateGeneralPromptFrequency() {
+        frequencyGeneralPrompt = sharedPreference.getInt(FREQ_KEY_GENERAL_PROMPT, 0)
+        val editor = sharedPreference.edit()
+        editor.putInt(FREQ_KEY_GENERAL_PROMPT, frequencyGeneralPrompt + 1)
+        editor.apply()
+    }
+
     fun sendGeneralPromptClickCloseEvent(context: Context, pagePath: String) {
+        isNativePrompt = false
         eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
         if (GlobalConfig.isSellerApp()) {
             trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_GEN_SA
@@ -104,9 +127,59 @@ class NotificationSettingsGtmEvents constructor(
             context,
             pagePath
         )
+        sendAppPushPermissionStatusEvent(context)
+    }
+
+    fun sendAppPushPermissionStatusEvent(context: Context) {
+        try {
+            val dataMap = mutableMapOf<String, Any>()
+            if (GlobalConfig.isSellerApp()) {
+                dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
+                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS;
+            } else {
+                dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
+                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS;
+            }
+            val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
+                ZERO
+            } else {
+                userSession.userId
+            }
+            val repo = NotificationGeneralPromptSharedPreferences(context.applicationContext)
+            val lastShownTimeStamp = repo.getLastShownTimeStamp()
+            val currentTimeStamp = System.currentTimeMillis()
+            val diffTimeInterval = currentTimeStamp - lastShownTimeStamp
+            dataMap[GtmTrackerEvents.KEY_USER_ID_NEW] = userId
+            dataMap[GtmTrackerEvents.KEY_SHOP_ID_NEW] = userSession.shopId
+            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = userSession.adsId
+            dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_NAME] = JOURNEY
+            dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_ID] = ZERO
+            dataMap[GtmTrackerEvents.KEY_EVENT_REFRESH_SOURCE] = HOMEPAGE
+            dataMap[GtmTrackerEvents.KEY_DELAY_HRS_OPEN_HOME_SCR] =
+                if (lastShownTimeStamp > 0) TimeUnit.MILLISECONDS.toHours(diffTimeInterval) else ZERO
+            dataMap[GtmTrackerEvents.KEY_DELAY_DAY_OPEN_HOME_SCR] =
+                if (lastShownTimeStamp > 0) TimeUnit.MILLISECONDS.toDays(diffTimeInterval) else ZERO
+            dataMap[GtmTrackerEvents.KEY_CLIENT_TIMESTAMP] = currentTimeStamp
+            dataMap[GtmTrackerEvents.KEY_DEVICE_MODEL] = Build.MODEL
+            dataMap[GtmTrackerEvents.KEY_OS_VESION] = Build.VERSION.RELEASE
+            dataMap[GtmTrackerEvents.KEY_OS_NAME] = Build.VERSION.CODENAME
+            dataMap[GtmTrackerEvents.KEY_APP_VERSION] = GlobalConfig.VERSION_NAME
+            dataMap[GtmTrackerEvents.KEY_DEVICE_MANUFACTURER] = Build.MANUFACTURER
+            dataMap[GtmTrackerEvents.KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS] =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            else
+                false
+            dataMap[GtmTrackerEvents.KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS] = FALSE
+            IrisAnalytics.getInstance(context).saveEvent(dataMap)
+        } catch (e: Exception) {
+        }
     }
 
     fun sendGeneralPromptClickCtaEvent(context: Context, pagePath: String) {
+        isNativePrompt = false
         eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
         if (GlobalConfig.isSellerApp()) {
             trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_GEN_SA
@@ -116,7 +189,7 @@ class NotificationSettingsGtmEvents constructor(
         }
         createMapAndSendEvent(
             GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
-            GtmTrackerEvents.VALUE_ACTION_CLICK_CLOSE,
+            GtmTrackerEvents.VALUE_ACTION_CLICK_CTA,
             trackerIdView,
             context,
             pagePath
@@ -135,7 +208,11 @@ class NotificationSettingsGtmEvents constructor(
         } else {
             userSession.userId
         }
-        frequency = sharedPreference.getInt(FREQ_KEY, 0)
+        val frequency = if (isNativePrompt) {
+            sharedPreference.getInt(FREQ_KEY_NATIVE_PROMPT, 0)
+        } else {
+            sharedPreference.getInt(FREQ_KEY_GENERAL_PROMPT, 0)
+        }
         val eventLabel =
             "$frequency - $userId - ${userSession.adsId} - ${IrisSession(context).getSessionId()}"
         val map = TrackAppUtils.gtmData(
@@ -157,7 +234,11 @@ class NotificationSettingsGtmEvents constructor(
 
     companion object {
         const val TRACKER_PREF_NAME = "NotificationSettingsTracker"
-        const val FREQ_KEY = "frequency"
+        const val FREQ_KEY_NATIVE_PROMPT = "frequencyNativePrompt"
+        const val FREQ_KEY_GENERAL_PROMPT = "frequencyGeneralPrompt"
         const val ZERO = "0"
+        const val JOURNEY = "Journey"
+        const val HOMEPAGE = "Homepage"
+        const val FALSE = "FALSE"
     }
 }

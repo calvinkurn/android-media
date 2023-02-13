@@ -18,15 +18,19 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.showcase.*
+import com.tokopedia.showcase.ShowCaseBuilder
+import com.tokopedia.showcase.ShowCaseContentPosition
+import com.tokopedia.showcase.ShowCaseDialog
+import com.tokopedia.showcase.ShowCaseObject
+import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.util.*
+import com.tokopedia.unifyprinciples.R as RUnify
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -53,10 +57,12 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     private val flDisableContainer: FrameLayout = itemView.findViewById(R.id.fl_container)
     private val labelDynamicPricing: Label = itemView.findViewById(R.id.lbl_dynamic_pricing)
 
-    fun bindData(shippingDurationUiModel: ShippingDurationUiModel,
-                 shippingDurationAdapterListener: ShippingDurationAdapterListener?,
-                 isDisableOrderPrioritas: Boolean,
-                 isYearEndPromotion: Boolean) {
+    fun bindData(
+        shippingDurationUiModel: ShippingDurationUiModel,
+        shippingDurationAdapterListener: ShippingDurationAdapterListener?,
+        isDisableOrderPrioritas: Boolean,
+        isYearEndPromotion: Boolean
+    ) {
         if (shippingDurationUiModel.isShowShippingInformation && shippingDurationUiModel.etaErrorCode == 1) {
             tvShippingInformation.visibility = View.VISIBLE
         } else {
@@ -120,10 +126,10 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
         if (shippingDurationUiModel.serviceData.texts.errorCode == 0) {
             val shipperNameEta: String = if (shippingDurationUiModel.serviceData.rangePrice.minPrice == shippingDurationUiModel.serviceData.rangePrice.maxPrice) {
                 shippingDurationUiModel.serviceData.serviceName + " " + "(" +
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.minPrice, false).removeDecimalSuffix() + ")"
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.minPrice, false).removeDecimalSuffix() + ")"
             } else {
                 val rangePrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.minPrice, false).removeDecimalSuffix() + " - " +
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.maxPrice, false).removeDecimalSuffix()
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.maxPrice, false).removeDecimalSuffix()
                 shippingDurationUiModel.serviceData.serviceName + " " + "(" + rangePrice + ")"
             }
             if (shippingDurationUiModel.serviceData.texts.textEtaSummarize.isNotEmpty()) {
@@ -156,8 +162,10 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
             if (shippingDurationUiModel.errorMessage.isNullOrEmpty()) {
                 shippingDurationUiModel.isSelected = !shippingDurationUiModel.isSelected
                 shippingDurationAdapterListener?.onShippingDurationChoosen(
-                        shippingDurationUiModel.shippingCourierViewModelList, cartPosition,
-                        shippingDurationUiModel.serviceData)
+                    shippingDurationUiModel.shippingCourierViewModelList,
+                    cartPosition,
+                    shippingDurationUiModel.serviceData
+                )
             }
         }
     }
@@ -172,29 +180,29 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
         showCaseDialog.setShowCaseStepListener { _, _, _ -> false }
         if (!ShowCasePreference.hasShown(itemView.context, ShippingDurationViewHolder::class.java.name)) {
             showCaseDialog.show(
-                    itemView.context as Activity,
-                    ShippingDurationViewHolder::class.java.name,
-                    showCaseObjectList
+                itemView.context as Activity,
+                ShippingDurationViewHolder::class.java.name,
+                showCaseObjectList
             )
         }
     }
 
     private fun createShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .customView(R.layout.show_case_checkout)
-                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .spacingRes(R.dimen.dp_12)
-                .arrowWidth(R.dimen.dp_16)
-                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
-                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.sp_12)
-                .finishStringRes(R.string.label_shipping_show_case_finish)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build()
+            .customView(R.layout.show_case_checkout)
+            .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            .spacingRes(R.dimen.dp_12)
+            .arrowWidth(R.dimen.dp_16)
+            .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
+            .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
+            .textSizeRes(R.dimen.sp_12)
+            .finishStringRes(R.string.label_shipping_show_case_finish)
+            .useCircleIndicator(true)
+            .clickable(true)
+            .useArrow(true)
+            .build()
     }
 
     companion object {

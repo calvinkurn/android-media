@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.data.util.showBidStateChangeConfirmationDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography

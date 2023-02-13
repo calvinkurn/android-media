@@ -2,13 +2,10 @@ package com.tokopedia.media.editor.ui.activity.detail
 
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.media.editor.domain.GetWatermarkUseCase
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
@@ -17,7 +14,6 @@ import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.ResourceProvider
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
@@ -36,7 +32,8 @@ class DetailEditorViewModel @Inject constructor(
     private val watermarkFilterRepository: WatermarkFilterRepository,
     private val rotateFilterRepository: RotateFilterRepository,
     private val saveImageRepository: SaveImageRepository,
-    private val getWatermarkUseCase: GetWatermarkUseCase
+    private val getWatermarkUseCase: GetWatermarkUseCase,
+    private val addLogoFilterRepository: AddLogoFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -195,6 +192,10 @@ class DetailEditorViewModel @Inject constructor(
         return saveImageRepository.saveToCache(
             bitmapParam, filename, sourcePath
         )
+    }
+
+    fun getAvatarShop(): String {
+        return userSession.shopAvatarOriginal
     }
 
     private fun initializeWatermarkAsset() {

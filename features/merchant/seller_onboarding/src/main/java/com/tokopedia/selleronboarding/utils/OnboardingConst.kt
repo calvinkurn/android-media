@@ -11,6 +11,7 @@ object OnboardingConst {
     }
 
     object ImageUrl {
+        const val BG_THEMATIC_RAMADAN = "https://images.tokopedia.net/img/android/seller_onboarding/bg_sob_thematic_ramadhan@2x.png"
         const val IMG_STATISTIC = "https://images.tokopedia.net/img/android/seller_onboarding/img_sob_statistic@3x.png"
         const val IMG_ADS_PROMOTION = "https://images.tokopedia.net/img/android/seller_onboarding/img_sob_ads_promotion@3x.png"
         const val IMG_SOM_CARD = "https://images.tokopedia.net/img/android/seller_onboarding/img_sob_som_card@3x.png"

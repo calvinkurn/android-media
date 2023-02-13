@@ -13,11 +13,12 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
 import java.util.List;
+
+import rx.subjects.PublishSubject;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -33,7 +34,7 @@ public interface ShipmentAdapterActionListener {
 
     void onDataDisableToCheckout(String message);
 
-    void onCheckoutValidationResult(boolean result, Object shipmentData, int position);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, boolean epharmacyError);
 
     void onChangeAddress();
 
@@ -96,7 +97,7 @@ public interface ShipmentAdapterActionListener {
 
     void onProcessToPayment();
 
-    void onChangeTradeInDropOffClicked();
+    void onChangeTradeInDropOffClicked(String latitude, String longitude);
 
     boolean isTradeInByDropOff();
 
@@ -140,8 +141,6 @@ public interface ShipmentAdapterActionListener {
 
     void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList);
 
-    void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel);
-
     void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
@@ -156,5 +155,5 @@ public interface ShipmentAdapterActionListener {
 
     void onInsuranceInfoTooltipClickedTrackingAnalytics();
 
-    void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position);
+    void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher);
 }

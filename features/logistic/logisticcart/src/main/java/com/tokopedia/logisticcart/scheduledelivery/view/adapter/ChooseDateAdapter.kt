@@ -3,11 +3,12 @@ package com.tokopedia.logisticcart.scheduledelivery.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemDateCardBinding
-import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ButtonDateUiModel
 import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ButtonDateUiModel
 import com.tokopedia.unifycomponents.CardUnify2
 
 class ChooseDateAdapter(
@@ -32,28 +33,81 @@ class ChooseDateAdapter(
         return items.size
     }
 
+    fun onDateSelected(dateUiModel: ButtonDateUiModel) {
+        // find previous selected date, set selected to false
+        val previousSelectedDateIndex = items.indexOfFirst { it.isSelected }
+        if (previousSelectedDateIndex != -1) {
+            items.getOrNull(previousSelectedDateIndex)?.isSelected = false
+            notifyItemChanged(previousSelectedDateIndex)
+        }
+        // find current selected date, set selected to true
+        val dateUiModelIndex = items.indexOf(dateUiModel)
+        if (dateUiModelIndex != -1) {
+            items.getOrNull(dateUiModelIndex)?.let {
+                it.isSelected = !it.isSelected
+            }
+            notifyItemChanged(dateUiModelIndex)
+        }
+        listener.onClickDateListener(dateUiModel)
+    }
+
+    fun selectedDatePosition(): Int {
+        return items.indexOfFirst { it.isSelected }
+    }
+
     inner class ChooseDateViewHolder(private val binding: ItemDateCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindData(buttonDateUiModel: ButtonDateUiModel) {
             binding.tvTitleDate.text = buttonDateUiModel.title
             binding.tvDate.text = buttonDateUiModel.date
             setCardState(buttonDateUiModel)
+            setTextColor(buttonDateUiModel)
             setListener(buttonDateUiModel)
             setLabelOufOfSlot(buttonDateUiModel)
+        }
+
+        private fun setTextColor(buttonDateUiModel: ButtonDateUiModel) {
+            updateTextColor(
+                colorId = if (!buttonDateUiModel.isEnabled) {
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                } else if (buttonDateUiModel.isSelected) {
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                } else {
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                }
+            )
+        }
+
+        private fun updateTextColor(colorId: Int) {
+            binding.tvTitleDate.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    colorId
+                )
+            )
+            binding.tvDate.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    colorId
+                )
+            )
         }
 
         private fun setLabelOufOfSlot(buttonDateUiModel: ButtonDateUiModel) {
             if (buttonDateUiModel.isEnabled) {
                 binding.tvLabelOutOfDate.gone()
             } else {
-                binding.tvLabelOutOfDate.visible()
+                binding.tvLabelOutOfDate.run {
+                    opacityLevel = 0.3F
+                    visible()
+                }
             }
         }
 
         private fun setListener(buttonDateUiModel: ButtonDateUiModel) {
             if (buttonDateUiModel.isEnabled) {
                 binding.root.setOnClickListener {
-                    listener.onClickDateListener(buttonDateUiModel)
+                    onDateSelected(buttonDateUiModel)
                 }
             } else {
                 binding.root.setOnClickListener(null)

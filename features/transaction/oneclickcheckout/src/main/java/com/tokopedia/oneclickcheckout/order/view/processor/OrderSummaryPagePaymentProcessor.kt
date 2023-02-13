@@ -7,24 +7,46 @@ import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentFeeRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
+import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
-                                                           private val goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase,
-                                                           private val executorDispatchers: CoroutineDispatchers) {
+class OrderSummaryPagePaymentProcessor @Inject constructor(
+    private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
+    private val goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase,
+    private val dynamicPaymentFeeUseCase: DynamicPaymentFeeUseCase,
+    private val executorDispatchers: CoroutineDispatchers
+) {
 
-    suspend fun getCreditCardAdminFee(orderPaymentCreditCard: OrderPaymentCreditCard, userId: String,
-                                      orderCost: OrderCost, orderCart: OrderCart): List<OrderPaymentInstallmentTerm>? {
+    suspend fun getCreditCardAdminFee(
+        orderPaymentCreditCard: OrderPaymentCreditCard,
+        userId: String,
+        orderCost: OrderCost,
+        orderCart: OrderCart
+    ): List<OrderPaymentInstallmentTerm>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
                 val creditCardData = creditCardTenorListUseCase.executeSuspend(
-                        generateCreditCardTenorListRequest(orderPaymentCreditCard, userId, orderCost, orderCart)
+                    generateCreditCardTenorListRequest(
+                        orderPaymentCreditCard,
+                        userId,
+                        orderCost,
+                        orderCart
+                    )
                 )
                 if (creditCardData.errorMsg.isNotEmpty()) {
                     return@withContext null
@@ -40,22 +62,29 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         return result
     }
 
-    private fun generateCreditCardTenorListRequest(orderPaymentCreditCard: OrderPaymentCreditCard,
-                                                   userId: String, orderCost: OrderCost, orderCart: OrderCart): CreditCardTenorListRequest {
+    private fun generateCreditCardTenorListRequest(
+        orderPaymentCreditCard: OrderPaymentCreditCard,
+        userId: String,
+        orderCost: OrderCost,
+        orderCart: OrderCart
+    ): CreditCardTenorListRequest {
         val cartDetailsItemList = ArrayList<CartDetailsItem>()
-        val cartDetailsItem = CartDetailsItem(shopType = orderCart.shop.shopTier, paymentAmount = orderCost.totalItemPriceAndShippingFee)
+        val cartDetailsItem = CartDetailsItem(
+            shopType = orderCart.shop.shopTier,
+            paymentAmount = orderCost.totalItemPriceAndShippingFee
+        )
         cartDetailsItemList.add(cartDetailsItem)
 
         return CreditCardTenorListRequest(
-                tokenId = orderPaymentCreditCard.tokenId,
-                userId = userId.toLong(),
-                totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice.toDouble(),
-                profileCode = orderPaymentCreditCard.additionalData.profileCode,
-                ccfeeSignature = orderPaymentCreditCard.tenorSignature,
-                timestamp = orderPaymentCreditCard.unixTimestamp,
-                otherAmount = orderCost.totalAdditionalFee,
-                discountAmount = orderCost.totalDiscounts.toDouble(),
-                cartDetails = cartDetailsItemList
+            tokenId = orderPaymentCreditCard.tokenId,
+            userId = userId.toLong(),
+            totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice.toDouble(),
+            profileCode = orderPaymentCreditCard.additionalData.profileCode,
+            ccfeeSignature = orderPaymentCreditCard.tenorSignature,
+            timestamp = orderPaymentCreditCard.unixTimestamp,
+            otherAmount = orderCost.totalAdditionalFee,
+            discountAmount = orderCost.totalDiscounts.toDouble(),
+            cartDetails = cartDetailsItemList
         )
     }
 
@@ -63,41 +92,49 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         var intTerm = 0
         if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toInt()
         return OrderPaymentInstallmentTerm(
-                term = intTerm,
-                isEnable = !tenor.disable,
-                fee = tenor.fee,
-                monthlyAmount = tenor.amount,
-                description = tenor.desc
+            term = intTerm,
+            isEnable = !tenor.disable,
+            fee = tenor.fee,
+            monthlyAmount = tenor.amount,
+            description = tenor.desc
         )
     }
 
-    suspend fun getGopayAdminFee(orderPayment: OrderPayment, userId: String,
-                                 orderCost: OrderCost, orderCart: OrderCart,
-                                 orderProfile: OrderProfile): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
+    suspend fun getGopayAdminFee(
+        orderPayment: OrderPayment,
+        userId: String,
+        orderCost: OrderCost,
+        orderCart: OrderCart,
+        orderProfile: OrderProfile
+    ): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
                 val installmentList = mapInstallmentOptions(
-                        goCicilInstallmentOptionUseCase.executeSuspend(
-                                GoCicilInstallmentRequest(
-                                        gatewayCode = orderPayment.gatewayCode,
-                                        merchantCode = orderPayment.creditCard.additionalData.merchantCode,
-                                        profileCode = orderPayment.creditCard.additionalData.profileCode,
-                                        userId = userId,
-                                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                                        merchantType = orderCart.shop.merchantType,
-                                        address = orderProfile.address,
-                                        products = orderCart.products
-                                )
+                    goCicilInstallmentOptionUseCase.executeSuspend(
+                        GoCicilInstallmentRequest(
+                            gatewayCode = orderPayment.gatewayCode,
+                            merchantCode = orderPayment.creditCard.additionalData.merchantCode,
+                            profileCode = orderPayment.creditCard.additionalData.profileCode,
+                            userId = userId,
+                            paymentAmount = orderCost.totalPriceWithoutPaymentFees,
+                            merchantType = orderCart.shop.merchantType,
+                            address = orderProfile.address,
+                            products = orderCart.products
                         )
+                    )
                 )
                 var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
                 var shouldUpdateCart = false
                 if (selectedTerm == null) {
                     shouldUpdateCart = true
-                    selectedTerm = autoSelectGoCicilTerm(orderPayment.walletData.goCicilData.selectedTenure, installmentList)
+                    selectedTerm = autoSelectGoCicilTerm(
+                        orderPayment.walletData.goCicilData.selectedTenure,
+                        installmentList
+                    )
                 }
-                val selectedInstallment = installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
+                val selectedInstallment =
+                    installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
                 return@withContext Triple(selectedInstallment, installmentList, shouldUpdateCart)
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -108,27 +145,32 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         return result
     }
 
-    private fun mapInstallmentOptions(installmentOptions: List<GoCicilInstallmentOption>): List<OrderPaymentGoCicilTerms> {
+    private fun mapInstallmentOptions(
+        installmentOptions: List<GoCicilInstallmentOption>
+    ): List<OrderPaymentGoCicilTerms> {
         return installmentOptions.map {
             OrderPaymentGoCicilTerms(
-                    installmentTerm = it.installmentTerm,
-                    optionId = it.optionId,
-                    firstInstallmentDate = it.firstInstallmentTime,
-                    lastInstallmentDate = it.estInstallmentEnd,
-                    firstDueMessage = it.firstDueMessage,
-                    interestAmount = it.interestAmount,
-                    feeAmount = it.feeAmount,
-                    installmentAmountPerPeriod = it.installmentAmountPerPeriod,
-                    labelType = it.labelType,
-                    labelMessage = it.labelMessage,
-                    isActive = it.isActive,
-                    description = it.description,
-                    isRecommended = it.isRecommended
+                installmentTerm = it.installmentTerm,
+                optionId = it.optionId,
+                firstInstallmentDate = it.firstInstallmentTime,
+                lastInstallmentDate = it.estInstallmentEnd,
+                firstDueMessage = it.firstDueMessage,
+                interestAmount = it.interestAmount,
+                feeAmount = it.feeAmount,
+                installmentAmountPerPeriod = it.installmentAmountPerPeriod,
+                labelType = it.labelType,
+                labelMessage = it.labelMessage,
+                isActive = it.isActive,
+                description = it.description,
+                isRecommended = it.isRecommended
             )
         }
     }
 
-    private fun autoSelectGoCicilTerm(selectedTenure: Int, installmentTerms: List<OrderPaymentGoCicilTerms>): OrderPaymentGoCicilTerms {
+    private fun autoSelectGoCicilTerm(
+        selectedTenure: Int,
+        installmentTerms: List<OrderPaymentGoCicilTerms>
+    ): OrderPaymentGoCicilTerms {
         var selectedTerm: OrderPaymentGoCicilTerms?
         if (selectedTenure > 0) {
             selectedTerm = installmentTerms.firstOrNull { it.installmentTerm == selectedTenure }
@@ -144,5 +186,28 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
             selectedTerm = installmentTerms.last()
         }
         return selectedTerm
+    }
+
+    suspend fun getPaymentFee(
+        orderPayment: OrderPayment,
+        orderCost: OrderCost
+    ): List<OrderPaymentFee>? {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                return@withContext dynamicPaymentFeeUseCase(
+                    PaymentFeeRequest(
+                        orderPayment.creditCard.additionalData.profileCode,
+                        orderPayment.gatewayCode,
+                        orderCost.totalPriceWithoutPaymentFees
+                    )
+                )
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext null
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
     }
 }

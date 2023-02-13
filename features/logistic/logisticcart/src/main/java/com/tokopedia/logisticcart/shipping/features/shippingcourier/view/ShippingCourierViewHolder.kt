@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
@@ -205,12 +205,13 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
             )
             itemView.setOnClickListener {
                 shippingCourierAdapterListener?.onCourierChoosen(
-                    shippingCourierUiModel, cartPosition, false
+                    shippingCourierUiModel,
+                    cartPosition,
+                    false
                 )
             }
         }
         imgCheck.visibility = if (shippingCourierUiModel.isSelected) View.VISIBLE else View.GONE
-
     }
 
     companion object {

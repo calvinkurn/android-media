@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_DEFAULT
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -75,5 +74,4 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     override fun getItemCount(): Int = mData.size
-
 }

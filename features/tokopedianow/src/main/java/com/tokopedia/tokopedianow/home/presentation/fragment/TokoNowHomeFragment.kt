@@ -92,7 +92,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SH
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
@@ -107,7 +106,6 @@ import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceT
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
@@ -156,6 +154,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -178,7 +177,6 @@ class TokoNowHomeFragment : Fragment(),
     TokoNowView,
     TokoNowChooseAddressWidgetListener,
     HomeTickerViewHolder.HomeTickerListener,
-    TokoNowCategoryGridListener,
     MiniCartWidgetListener,
     TokoNowProductCardListener,
     ShareBottomsheetListener,
@@ -244,7 +242,7 @@ class TokoNowHomeFragment : Fragment(),
                 tokoNowView = this,
                 homeTickerListener = this,
                 tokoNowChooseAddressWidgetListener = this,
-                tokoNowCategoryGridListener = this,
+                tokoNowCategoryMenuListener = createCategoryMenuCallback(),
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
@@ -434,25 +432,6 @@ class TokoNowHomeFragment : Fragment(),
     }
 
     override fun onClickChooseAddressWidgetTracker() {}
-
-    override fun onCategoryRetried() {
-        adapter.getItem(TokoNowCategoryGridUiModel::class.java)?.let {
-            viewModelTokoNow.getCategoryGrid(it, localCacheModel?.warehouse_id.orEmpty())
-        }
-    }
-
-    override fun onAllCategoryClicked() {
-        analytics.onClickAllCategory()
-    }
-
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
-        analytics.onClickCategory(position, categoryId, headerName, categoryName)
-    }
-
-    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
-        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        analytics.trackCategoryImpression(data, warehouseId)
-    }
 
     override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
         carouselScrollState[adapterPosition] = scrollState
@@ -763,8 +742,15 @@ class TokoNowHomeFragment : Fragment(),
     }
 
     private fun loadHeaderBackground() {
-        ivHeaderBackground?.show()
-        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background_shimmering)
+        context?.resources?.apply {
+            val background = VectorDrawableCompat.create(
+                this,
+                R.drawable.tokopedianow_ic_header_background_shimmering,
+                context?.theme
+            )
+            ivHeaderBackground?.setImageDrawable(background)
+            ivHeaderBackground?.show()
+        }
     }
 
     private fun showHeaderBackground() {
@@ -1895,6 +1881,14 @@ class TokoNowHomeFragment : Fragment(),
         return HomeRealTimeRecomAnalytics(userSession)
     }
 
+    private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {
+        return HomeCategoryMenuCallback(
+            analytics = analytics,
+            warehouseId = localCacheModel?.warehouse_id.orEmpty(),
+            viewModel = viewModelTokoNow
+        )
+    }
+
     private fun showDialogReceiverReferral(data: HomeReceiverReferralDialogUiModel) {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
@@ -1952,6 +1946,6 @@ class TokoNowHomeFragment : Fragment(),
     }
 
     private fun openWebView(linkUrl: String) {
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?titlebar=false&url=${linkUrl}")
     }
 }

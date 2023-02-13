@@ -4,12 +4,12 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_INSTAN
 import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_DEFAULT
+import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_INSTAN
 import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_SAMEDAY
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-class NotifierViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class NotifierViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val tickerNotifier: Ticker = itemView.findViewById(R.id.ticker_notifier)
 
@@ -22,8 +22,8 @@ class NotifierViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         tickerNotifier.setTextDescription(notifierText)
     }
 
-    private fun setNotifierText(type: Int) : String {
-        return when(type) {
+    private fun setNotifierText(type: Int): String {
+        return when (type) {
             TYPE_DEFAULT -> {
                 itemView.context.getString(R.string.label_hardcoded_courier_ticker_logistic)
             }

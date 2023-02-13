@@ -8,7 +8,7 @@ data class PurchaseProtectionPlanData(
         var isProtectionAvailable: Boolean = false,
         var protectionTypeId: Int = 0,
         var protectionPricePerProduct: Int = 0,
-        var protectionPrice: Int = 0,
+        var protectionPrice: Double = 0.0,
         var protectionTitle: String = "",
         var protectionSubtitle: String = "",
         var protectionLinkText: String = "",

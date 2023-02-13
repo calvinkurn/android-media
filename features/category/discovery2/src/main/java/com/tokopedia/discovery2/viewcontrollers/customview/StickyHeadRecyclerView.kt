@@ -1,11 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.customview
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -88,12 +91,34 @@ class StickyHeadRecyclerView : ConstraintLayout {
         recyclerView.addItemDecoration(itemDecoration)
     }
 
-    fun smoothScrollToPosition(position: Int = 0) {
+    fun smoothScrollToPosition(position: Int = 0,isHeaderSticky:Boolean = false) {
         if (position == 0) {
             recyclerView.smoothScrollToPosition(position)
-        } else {
-            (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(position, 0)
-
         }
+        else {
+            if(isHeaderSticky) {
+                try {
+                    val smoothScroller: SmoothScroller =
+                        object : LinearSmoothScroller(context) {
+                            override fun getVerticalSnapPreference(): Int {
+                                return SNAP_TO_START
+                            }
+
+                            override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+                                return super.calculateDyToMakeVisible(view, snapPreference) + dpToPx(55).toInt()
+                            }
+                        }
+                    smoothScroller.targetPosition = position
+                    (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.startSmoothScroll(smoothScroller)
+                } catch (e: Exception) {
+                }
+            }
+        else{
+                (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(position, 0)
+            }
+        }
+    }
+    fun dpToPx(dp: Int): Float {
+        return (dp * Resources.getSystem().displayMetrics.density)
     }
 }

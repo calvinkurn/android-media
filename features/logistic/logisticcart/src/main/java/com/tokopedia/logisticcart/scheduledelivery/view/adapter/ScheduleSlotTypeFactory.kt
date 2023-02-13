@@ -9,16 +9,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.logisticcart.databinding.ViewholderChooseDateBinding
 import com.tokopedia.logisticcart.databinding.ViewholderChooseTimeBinding
 import com.tokopedia.logisticcart.databinding.ViewholderTitleSectionBinding
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseDateUiModel
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ScheduleSlotTypeViewHolder
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.TitleSectionUiModel
-import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.logisticcart.scheduledelivery.view.viewholder.ChooseDateViewHolder
 import com.tokopedia.logisticcart.scheduledelivery.view.viewholder.ChooseTimeViewHolder
 import com.tokopedia.logisticcart.scheduledelivery.view.viewholder.TitleSectionViewHolder
 
-class ScheduleSlotTypeFactory(val listener: ScheduleSlotListener) : BaseAdapterTypeFactory(),
+class ScheduleSlotTypeFactory(val listener: ScheduleSlotListener) :
+    BaseAdapterTypeFactory(),
     ScheduleSlotTypeViewHolder {
 
     override fun type(model: ChooseDateUiModel): Int = ChooseDateViewHolder.LAYOUT_RES
@@ -52,7 +53,6 @@ class ScheduleSlotTypeFactory(val listener: ScheduleSlotListener) : BaseAdapterT
                 TitleSectionViewHolder(viewBinding, listener)
             }
             else -> super.createViewHolder(parent, type)
-
         }
     }
 }

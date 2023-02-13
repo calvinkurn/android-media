@@ -20,7 +20,7 @@ class GetUserInfoAndSaveSessionUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = """
         query profile() {
-          profile() {
+          profile(skipCache: true) {
             user_id
             full_name
             first_name
@@ -41,6 +41,7 @@ class GetUserInfoAndSaveSessionUseCase @Inject constructor(
               domain
               level
               logo
+              avatarOriginal
             }
           }
         }
@@ -83,6 +84,7 @@ class GetUserInfoAndSaveSessionUseCase @Inject constructor(
             )
             userSession.setIsShopOfficialStore(isOfficialStore(shopInfo.shopData.shopLevel))
             userSession.shopAvatar = shopInfo.shopData.shopAvatar
+            userSession.shopAvatarOriginal = shopInfo.shopData.shopAvatarOriginal
         }
     }
 

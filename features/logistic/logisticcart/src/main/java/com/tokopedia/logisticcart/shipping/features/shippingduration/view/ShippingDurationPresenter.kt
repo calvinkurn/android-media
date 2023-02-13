@@ -210,9 +210,9 @@ class ShippingDurationPresenter @Inject constructor(
         shippingParam.originPostalCode = shipmentDetailData.shipmentCartData!!.originPostalCode
         shippingParam.originLatitude = shipmentDetailData.shipmentCartData!!.originLatitude
         shippingParam.originLongitude = shipmentDetailData.shipmentCartData!!.originLongitude
-        shippingParam.weightInKilograms = shipmentDetailData.shipmentCartData!!.weight / 1000
+        shippingParam.weightInKilograms = shipmentDetailData.shipmentCartData!!.weight / WEIGHT_DIVIDER_TO_KG
         shippingParam.weightActualInKilograms =
-            shipmentDetailData.shipmentCartData!!.weightActual / 1000
+            shipmentDetailData.shipmentCartData!!.weightActual / WEIGHT_DIVIDER_TO_KG
         shippingParam.shopId = shipmentDetailData.shopId
         shippingParam.shopTier = shipmentDetailData.shipmentCartData!!.shopTier
         shippingParam.token = shipmentDetailData.shipmentCartData!!.token
@@ -401,5 +401,9 @@ class ShippingDurationPresenter @Inject constructor(
             data.serviceId,
             data
         )
+    }
+
+    companion object {
+        private const val WEIGHT_DIVIDER_TO_KG = 1000
     }
 }

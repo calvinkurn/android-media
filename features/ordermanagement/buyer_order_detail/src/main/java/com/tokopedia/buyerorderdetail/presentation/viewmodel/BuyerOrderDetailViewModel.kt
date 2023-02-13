@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
@@ -21,6 +20,7 @@ import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUse
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.AddToCartParamsMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.BuyerOrderDetailUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderInsuranceUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderResolutionTicketStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
@@ -29,11 +29,13 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.PaymentInfoUiStateMapp
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
@@ -44,17 +46,18 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
@@ -77,6 +80,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
+        private const val DELAY_FINISH_ORDER_RESULT = 2000L
         private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 500L
     }
 
@@ -125,6 +129,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val orderInsuranceUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapOrderInsuranceUiState
     ).toStateFlow(OrderInsuranceUiState.Loading)
+    private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
+        ::mapEpharmacyInfoUiState
+    ).catch { t ->
+        //There is a case that additional_info returning null from backend, so make this default yet
+        //it will be hide in the section
+        emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
+    }.toStateFlow(EpharmacyInfoUiState.Loading)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
@@ -135,6 +146,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         pGRecommendationWidgetUiState,
         orderResolutionTicketStatusUiState,
         orderInsuranceUiState,
+        epharmacyInfoUiState,
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
@@ -163,7 +175,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 userId = userSession.get().userId,
                 action = getFinishOrderActionStatus()
             )
-            _finishOrderResult.value = (Success(finishOrderUseCase.get().execute(param)))
+            finishOrderUseCase.get().execute(param).let { result ->
+                delay(DELAY_FINISH_ORDER_RESULT)
+                _finishOrderResult.value = (Success(result))
+            }
         }, onError = {
                 _finishOrderResult.value = (Fail(it))
             })
@@ -180,7 +195,11 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 product to atcUseCase.get().execute(
                     userSession.get().userId,
                     atcMultiQuery.get(),
-                    arrayListOf(product.mapToAddToCartParam())
+                    AddToCartParamsMapper.mapSingleAddToCartParams(
+                        product = product,
+                        shopId = getShopId(),
+                        userId = getUserId()
+                    )
                 )
                 ).let { result ->
                 singleAtcRequestStates.update {
@@ -352,6 +371,15 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
+    private fun mapEpharmacyInfoUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+    ): EpharmacyInfoUiState {
+        return EpharmacyInfoUiStateMapper.map(
+            getBuyerOrderDetailDataRequestState,
+            epharmacyInfoUiState.value
+        )
+    }
+
     private fun mapProductListUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
@@ -411,7 +439,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         shipmentInfoUiState: ShipmentInfoUiState,
         pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
-        orderInsuranceUiState: OrderInsuranceUiState
+        orderInsuranceUiState: OrderInsuranceUiState,
+        epharmacyInfoUiState: EpharmacyInfoUiState
     ): BuyerOrderDetailUiState {
         return BuyerOrderDetailUiStateMapper.map(
             actionButtonsUiState,
@@ -421,7 +450,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             shipmentInfoUiState,
             pgRecommendationWidgetUiState,
             orderResolutionTicketStatusUiState,
-            orderInsuranceUiState
+            orderInsuranceUiState,
+            epharmacyInfoUiState
         )
     }
 
@@ -432,18 +462,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         } else {
             ""
         }
-    }
-
-    private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
-        return AddToCartMultiParam(
-            productId = productId.toLongOrZero(),
-            productName = productName,
-            productPrice = price.toLong(),
-            qty = quantity,
-            notes = productNote,
-            shopId = getShopId().toIntOrZero(),
-            custId = userSession.get().userId.toIntOrZero()
-        )
     }
 
     private fun mapMultiATCResult(result: Result<AtcMultiData>): MultiATCState {

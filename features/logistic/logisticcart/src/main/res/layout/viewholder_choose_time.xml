@@ -17,6 +17,7 @@
         app:layout_constraintBottom_toTopOf="@id/tv_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/Unify_NN950"
         tools:text="Hari ini"/>
 
     <com.tokopedia.unifyprinciples.Typography

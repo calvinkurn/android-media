@@ -19,6 +19,7 @@ import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_RESULT_SOURCE
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
@@ -36,8 +37,9 @@ import javax.inject.Inject
  * @author by jessica on 27/03/19
  */
 
-class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, SearchDestinationTypeFactory>(),
-        SearchDestinationListener {
+class HotelSearchDestinationFragment :
+    BaseListFragment<SearchDestination, SearchDestinationTypeFactory>(),
+    SearchDestinationListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,25 +57,28 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.searchDestination.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Loaded -> {
-                    when (it.data) {
-                        is Success -> {
-                            isLoadingInitialData = true
-                            renderList(it.data.data, false)
-                        }
-                        is Fail -> {
-                            showGetListError(it.data.throwable)
+        destinationViewModel.searchDestination.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    is Loaded -> {
+                        when (it.data) {
+                            is Success -> {
+                                isLoadingInitialData = true
+                                renderList(it.data.data, false)
+                            }
+                            is Fail -> {
+                                showGetListError(it.data.throwable)
+                            }
                         }
                     }
-                }
-                is Shimmering -> {
-                    adapter.clearAllNonDataElement()
-                    adapter.addElement(loadingModel)
+                    is Shimmering -> {
+                        adapter.clearAllNonDataElement()
+                        adapter.addElement(loadingModel)
+                    }
                 }
             }
-        })
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -85,7 +90,6 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
-
     override fun getAdapterTypeFactory(): SearchDestinationTypeFactory {
         return SearchDestinationTypeFactory(this)
     }
@@ -95,6 +99,7 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
         intent.putExtra(HOTEL_DESTINATION_SEARCH_TYPE, searchDestination.searchType)
         intent.putExtra(HOTEL_DESTINATION_SEARCH_ID, searchDestination.searchId)
         intent.putExtra(HOTEL_DESTINATION_NAME, searchDestination.name)
+        intent.putExtra(HOTEL_DESTINATION_RESULT_SOURCE, searchDestination.source)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
@@ -136,5 +141,4 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
-
 }
