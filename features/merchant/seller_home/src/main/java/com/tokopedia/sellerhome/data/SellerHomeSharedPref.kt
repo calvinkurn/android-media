@@ -19,6 +19,7 @@ class SellerHomeSharedPref @Inject constructor(
         private const val KEY_NEW_SELLER_FIRST_ORDER_DIALOG = "new_seller_first_order_dialog_%s"
         private const val KEY_NEW_SELLER_WELCOMING_COACH_MARK = "new_seller_welcoming_coach_mark_%s"
         private const val KEY_PERSONA_ENTRY_POINT = "persona_entry_point_%s"
+        private const val KEY_PERSONA_ENTRY_POPUP = "persona_entry_popup_%s"
     }
 
     private val sharedPref: SharedPreferences by lazy {
@@ -63,5 +64,15 @@ class SellerHomeSharedPref @Inject constructor(
     fun makePersonaEntryPointVisible(userId: String) {
         val key = String.format(KEY_PERSONA_ENTRY_POINT, userId)
         sharedPref.edit().putBoolean(key, true).apply()
+    }
+
+    fun shouldShowPersonaHomePopup(userId: String): Boolean {
+        val key = String.format(KEY_PERSONA_ENTRY_POPUP, userId)
+        return sharedPref.getBoolean(key, true)
+    }
+
+    fun markPersonaHomePopupShown(userId: String) {
+        val key = String.format(KEY_PERSONA_ENTRY_POPUP, userId)
+        sharedPref.edit().putBoolean(key, false).apply()
     }
 }

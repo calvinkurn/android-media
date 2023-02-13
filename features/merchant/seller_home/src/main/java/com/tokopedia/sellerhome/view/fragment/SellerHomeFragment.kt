@@ -219,7 +219,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val FEEDBACK_OPTION_4 = 3
         private const val ANNOUNCEMENT_DISMISSAL_KEY = "widget.announcement.%s"
         private const val POST_LIST_DISMISSAL_KEY = "widget.post.%s"
-        private const val STATUS_PERSONA_SHOW_POPUP = 2
+        private const val STATUS_PERSONA_ACTIVE = 1
         private const val STATUS_PERSONA_NOT_ROLLED_OUT = 3
     }
 
@@ -1464,20 +1464,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         activity?.let {
             if (personaStatus != STATUS_PERSONA_NOT_ROLLED_OUT) {
                 sharedPref.makePersonaEntryPointVisible(userSession.userId)
-            } else if (personaStatus == STATUS_PERSONA_SHOW_POPUP) {
-                if (!it.isFinishing) {
+            } else if (personaStatus == STATUS_PERSONA_ACTIVE) {
+                if (!it.isFinishing && sharedPref.shouldShowPersonaHomePopup(userSession.userId)) {
                     with(SellerPersonaBottomSheet.newInstance()) {
                         setOnDismissListener {
-                            /*val param = SubmitWidgetDismissUiModel(
-                                action = SubmitWidgetDismissUiModel.Action.DISMISS,
-                                dismissKey = NewSellerDialog.DISMISSAL_KEY,
-                                dismissSign = dataSign,
-                                dismissObjectIDs = listOf(NewSellerJourneyHelper.WIDGET_DISMISSAL_ID),
-                                shopId = userSession.shopId,
-                                isFeedbackPositive = true,
-                                feedbackWidgetIDParent = NewSellerJourneyHelper.WIDGET_DISMISSAL_ID
-                            )
-                            sellerHomeViewModel.submitWidgetDismissal(param)*/
+                            sharedPref.markPersonaHomePopupShown(userSession.userId)
                         }
                         show(childFragmentManager)
                     }
