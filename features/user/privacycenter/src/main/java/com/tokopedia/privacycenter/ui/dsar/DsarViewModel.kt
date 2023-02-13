@@ -152,12 +152,8 @@ class DsarViewModel @Inject constructor(
             try {
                 val param = SearchRequestBody(email = userSession.email)
                 val result = searchRequestUseCase(param)
-
                 if (result.status.isNotEmpty()) {
-                    if (result.status != DsarConstants.STATUS_REJECTED &&
-                        result.status != DsarConstants.STATUS_COMPLETED &&
-                        result.status != DsarConstants.STATUS_CLOSED
-                    ) {
+                    if(!DsarConstants.DSAR_STATUS.contains(result.status.lowercase())) {
                         _requestDetails.value = result
                     } else {
                         _showMainLayout.value = true
