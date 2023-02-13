@@ -90,7 +90,7 @@ class GyroEngineRequestUseCase @Inject constructor(
                         parameterObj.put(item.walletCode, item.isActive.toString())
                 }
                 if (walletBalance.balanceList.isEmpty()) {
-                    parameterObj.put(GATEWAY_CODE_PEMUDA, "false")
+                    parameterObj.put(GATEWAY_CODE_PEMUDA, VALUE_FALSE)
                 }
                 jsonObj.toString()
             } catch (e: Exception) { jsonStr }
