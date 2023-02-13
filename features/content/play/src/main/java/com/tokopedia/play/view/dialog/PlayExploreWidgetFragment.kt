@@ -250,6 +250,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.rvWidgets.adapter = widgetAdapter
         binding.rvWidgets.layoutManager = widgetLayoutManager
         binding.rvWidgets.addOnScrollListener(scrollListener)
+        binding.rvWidgets.itemAnimator = null
 
         binding.srExploreWidget.setOnRefreshListener {
             binding.srExploreWidget.isRefreshing = !binding.srExploreWidget.isRefreshing
