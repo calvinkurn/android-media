@@ -27,6 +27,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -142,6 +143,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             setInvisible(btnReloadShipping)
             setInvisible(iconReloadShipping)
             setInvisible(tickerShippingPromo)
+            loaderShipping.type = LoaderUnify.TYPE_RECT
             loaderShipping.visible()
         }
     }
@@ -708,17 +710,36 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvInstallmentDetailWrap.gone()
                 btnChangeInstallmentWrap.gone()
                 if (selectedTerm.term > 0) {
-                    tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
+                    if (payment.isDynamicPaymentFeeError) {
+                        tvInstallmentDetail.text = "${selectedTerm.term} Bulan x Rp-"
+                    } else {
+                        tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                selectedTerm.monthlyAmount,
+                                false
+                            ).removeDecimalSuffix()
+                        }"
+                    }
                 } else {
                     tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_full_payment)
                 }
-                setupPaymentInstallmentError(selectedTerm)
-                setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
-                    if (profile.enable) {
-                        val selectedCreditCard = payment.creditCard
-                        if (selectedCreditCard.availableTerms.isNotEmpty()) {
-                            listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
+                if (!payment.isDynamicPaymentFeeError) {
+                    setupPaymentInstallmentError(selectedTerm)
+                    setMultiViewsOnClickListener(
+                        tvInstallmentType,
+                        tvInstallmentDetail,
+                        btnChangeInstallment
+                    ) {
+                        if (profile.enable) {
+                            val selectedCreditCard = payment.creditCard
+                            if (selectedCreditCard.availableTerms.isNotEmpty()) {
+                                listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
+                            }
                         }
+                    }
+                } else {
+                    setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
+                        /* no-op */
                     }
                 }
             } else if (!creditCard.isDebit && creditCard.isAfpb && creditCard.selectedTerm == null) {
@@ -732,7 +753,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
-                    if (profile.enable) {
+                    if (profile.enable && !payment.isDynamicPaymentFeeError) {
                         val selectedCreditCard = payment.creditCard
                         listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
                     }
@@ -749,9 +770,18 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     tvInstallmentDetailWrap.visible()
                     tvInstallmentErrorMessage.gone()
                 } else {
-                    tvInstallmentDetailWrap.text = tvInstallmentDetailWrap.context.getString(R.string.occ_lbl_gocicil_installment_detail,
+                    tvInstallmentDetailWrap.text = tvInstallmentDetailWrap.context.getString(
+                        R.string.occ_lbl_gocicil_installment_detail,
                         goCicilData.selectedTerm.installmentTerm,
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(goCicilData.selectedTerm.installmentAmountPerPeriod, false).removeDecimalSuffix())
+                        if (payment.isDynamicPaymentFeeError) {
+                            "Rp-"
+                        } else {
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                goCicilData.selectedTerm.installmentAmountPerPeriod,
+                                false
+                            ).removeDecimalSuffix()
+                        }
+                    )
                     tvInstallmentDetailWrap.visible()
                     tvInstallmentErrorMessage.gone()
                 }
@@ -761,7 +791,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 btnChangeInstallmentWrap.visible()
                 tvInstallmentErrorAction.gone()
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetailWrap, btnChangeInstallmentWrap) {
-                    if (profile.enable) {
+                    if (profile.enable && !payment.isDynamicPaymentFeeError) {
                         listener.onGopayInstallmentDetailClicked()
                     }
                 }
@@ -773,6 +803,24 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 btnChangeInstallmentWrap.gone()
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
+            }
+
+            if (payment.isDynamicPaymentFeeError) {
+                tvInstallmentType.alpha = DISABLE_ALPHA
+                tvInstallmentDetailWrap.alpha = DISABLE_ALPHA
+                tvInstallmentDetail.alpha = DISABLE_ALPHA
+                btnChangeInstallment.alpha = DISABLE_ALPHA
+                btnChangeInstallmentWrap.alpha = DISABLE_ALPHA
+                tvInstallmentErrorMessage.alpha = DISABLE_ALPHA
+                tvInstallmentErrorAction.alpha = DISABLE_ALPHA
+            } else {
+                tvInstallmentType.alpha = ENABLE_ALPHA
+                tvInstallmentDetailWrap.alpha = ENABLE_ALPHA
+                tvInstallmentDetail.alpha = ENABLE_ALPHA
+                btnChangeInstallment.alpha = ENABLE_ALPHA
+                btnChangeInstallmentWrap.alpha = ENABLE_ALPHA
+                tvInstallmentErrorMessage.alpha = ENABLE_ALPHA
+                tvInstallmentErrorAction.alpha = ENABLE_ALPHA
             }
         }
     }
@@ -808,7 +856,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     showPaymentCC(payment)
                     btnChangePayment.visible()
                     setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
-                        if (profile.enable) {
+                        if (profile.enable && !payment.isDynamicPaymentFeeError) {
                             listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                         }
                     }
@@ -859,6 +907,18 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (profile.enable) {
                     listener.choosePayment(profile, payment)
                 }
+            }
+
+            if (payment.isDynamicPaymentFeeError) {
+                ivPayment.alpha = DISABLE_ALPHA
+                tvPaymentName.alpha = DISABLE_ALPHA
+                tvPaymentDetail.alpha = DISABLE_ALPHA
+                btnChangePayment.alpha = DISABLE_ALPHA
+            } else {
+                ivPayment.alpha = ENABLE_ALPHA
+                tvPaymentName.alpha = ENABLE_ALPHA
+                tvPaymentDetail.alpha = ENABLE_ALPHA
+                btnChangePayment.alpha = ENABLE_ALPHA
             }
         }
     }

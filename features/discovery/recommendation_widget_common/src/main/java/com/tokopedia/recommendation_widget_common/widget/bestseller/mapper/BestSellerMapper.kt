@@ -17,7 +17,11 @@ import kotlinx.coroutines.Dispatchers
 class BestSellerMapper (
     private val context: Context
 ){
-    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget, cardInteraction: Boolean = false): BestSellerDataModel{
+    suspend fun mappingRecommendationWidget(
+        recommendationWidget: RecommendationWidget,
+        cardInteraction: Boolean = false,
+        currentModel: BestSellerDataModel = BestSellerDataModel()
+    ): BestSellerDataModel{
         val productList = mappingProductCards(recommendationWidget.recommendationItemList, cardInteraction)
         return BestSellerDataModel(
             channelId = recommendationWidget.channelId,
@@ -28,7 +32,9 @@ class BestSellerMapper (
             productCardModelList = productList,
             recommendationItemList = recommendationWidget.recommendationItemList,
             filterChip = recommendationWidget.recommendationFilterChips,
-            seeMoreAppLink = recommendationWidget.seeMoreAppLink
+            seeMoreAppLink = recommendationWidget.seeMoreAppLink,
+            dividerType = currentModel.dividerType,
+            dividerSize = currentModel.dividerSize
         )
     }
 

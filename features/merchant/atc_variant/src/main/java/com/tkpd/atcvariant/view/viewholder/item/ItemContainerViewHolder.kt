@@ -2,31 +2,26 @@ package com.tkpd.atcvariant.view.viewholder.item
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.AlignItems
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxItemDecoration
-import com.google.android.flexbox.FlexboxLayoutManager
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.databinding.ItemAtcVariantContainerViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
-import java.util.Locale
+import com.tokopedia.unifycomponents.ChipsUnify
+import java.util.*
 
 
 /**
- * Created by mzennis on 2020-03-11.
- */
-
-/**
- * please remove this class if [ItemContainerChipGroupViewHolder] has stable
+ * Created by yovi eka putra on 2022-11-10.
  */
 class ItemContainerViewHolder(
     private val binding: ItemAtcVariantContainerViewHolderBinding,
@@ -36,26 +31,21 @@ class ItemContainerViewHolder(
     private val context: Context
         get() = binding.root.context
 
-    private val variantOptionAdapter = AtcVariantOptionAdapter(this)
-
     companion object {
-        private const val NUMBER_OF_VARIANT_THRESHOLD = 25
+
+        private const val ELLIPSIZE_VARIANT_NAME = 15
 
         fun create(
             parent: ViewGroup,
             listener: AtcVariantListener
         ): ItemContainerViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            val binding = ItemAtcVariantContainerViewHolderBinding.inflate(inflater, parent, false)
+            val binding = ItemAtcVariantContainerViewHolderBinding.inflate(
+                inflater,
+                parent,
+                false
+            )
             return ItemContainerViewHolder(binding, listener)
-        }
-    }
-
-    init {
-        with(binding.rvAtcVariant) {
-            adapter = variantOptionAdapter
-            setHasFixedSize(true)
-            itemAnimator = null
         }
     }
 
@@ -74,36 +64,100 @@ class ItemContainerViewHolder(
     }
 
     private fun processBind(variants: List<VariantOptionWithAttribute>) = with(binding) {
-        setupFlexBox(dataSize = variants.size)
-        variantOptionAdapter.setData(variants)
+        chipGroupAtcVariant.removeAllViews()
+
+        variants.forEachIndexed { index, data ->
+            val child = createChip(element = data, position = index)
+            chipGroupAtcVariant.addView(child)
+        }
     }
 
-    /**
-     * Data size is for one level options, we want to use this to treshold flexbox to be column or row
-     * This approach is to fix flexbox issue child disappear when it wrap with scrollview
-     * https://github.com/google/flexbox-layout/issues/420
-     */
-    private fun setupFlexBox(dataSize: Int) = with(binding) {
-        val flexboxManager = FlexboxLayoutManager(context).apply {
-            alignItems = AlignItems.FLEX_START
-        }
-
-        if (dataSize > NUMBER_OF_VARIANT_THRESHOLD) {
-            flexboxManager.flexDirection = FlexDirection.COLUMN
-        } else {
-            flexboxManager.flexDirection = FlexDirection.ROW
-        }
-
-        rvAtcVariant.layoutManager = flexboxManager
-
-        if (rvAtcVariant.itemDecorationCount == 0) {
-            val itemDecoration = FlexboxItemDecoration(context).apply {
-                setDrawable(ContextCompat.getDrawable(context, R.drawable.bg_atc_chip_divider))
-                setOrientation(FlexboxItemDecoration.HORIZONTAL)
+    private fun createChip(element: VariantOptionWithAttribute, position: Int): View {
+        return LayoutInflater.from(context)
+            .inflate(
+                com.tokopedia.product.detail.common.R.layout.atc_variant_chip_viewholder,
+                binding.root,
+                false
+            ).also {
+                it.findViewById<ChipsUnify>(
+                    com.tokopedia.product.detail.common.R.id.atc_variant_chip
+                ).apply {
+                    renderChipUI(element = element)
+                    setState(element = element, position = position)
+                }
             }
+    }
 
-            rvAtcVariant.addItemDecoration(itemDecoration)
+    private fun ChipsUnify.renderChipUI(element: VariantOptionWithAttribute) {
+        val image100 = element.image100
+        chip_image_icon.showIfWithBlock(image100.isNotEmpty()) {
+            loadImage(image100, properties = {
+                centerCrop()
+            })
         }
+
+        chipText = ellipsize(element.variantName)
+    }
+
+    private fun ChipsUnify.setState(element: VariantOptionWithAttribute, position: Int) {
+        setViewListener(
+            element = element,
+            state = VariantConstant.IGNORE_STATE,
+            position = position
+        )
+        renderFlashSale(element = element)
+
+        when (element.currentState) {
+            VariantConstant.STATE_EMPTY -> {
+                chipType = ChipsUnify.TYPE_DISABLE
+            }
+            VariantConstant.STATE_SELECTED, VariantConstant.STATE_SELECTED_EMPTY -> {
+                chipType = ChipsUnify.TYPE_SELECTED
+                setViewListener(
+                    element = element,
+                    state = element.currentState,
+                    position = position
+                )
+            }
+            VariantConstant.STATE_UNSELECTED -> {
+                chipType = ChipsUnify.TYPE_NORMAL
+            }
+            else -> {
+                chipType = ChipsUnify.TYPE_DISABLE
+            }
+        }
+    }
+
+    private fun ChipsUnify.renderFlashSale(element: VariantOptionWithAttribute) {
+        val isCampaignActive = element.flashSale
+        val shouldRender = element.currentState != VariantConstant.STATE_EMPTY
+            && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
+
+        chip_new_notification.showIfWithBlock(shouldRender && isCampaignActive) {
+            text = resources.getString(
+                com.tokopedia.product.detail.common.R.string.atc_variant_promo
+            )
+        }
+    }
+
+    private fun ChipsUnify.setViewListener(
+        element: VariantOptionWithAttribute,
+        state: Int,
+        position: Int
+    ) {
+        setOnClickListener {
+            listener.onVariantClicked(element, state)
+        }
+
+        if (element.currentState == VariantConstant.STATE_SELECTED)
+            listener.onSelectionChanged(this, position)
+    }
+
+    private fun ellipsize(text: String): String {
+        text.take(ELLIPSIZE_VARIANT_NAME)
+        return if (text.length > ELLIPSIZE_VARIANT_NAME) {
+            "${text.substring(0, ELLIPSIZE_VARIANT_NAME)}..."
+        } else text
     }
 
     private fun setSelectedOptionText(data: VariantCategory) = with(binding) {

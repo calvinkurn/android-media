@@ -12,6 +12,8 @@ data class EditorParam(
     private var editorToolsList: ArrayList<Int> = createDefaultEditorTools(),
     private var autoCropRatio: ImageRatioType? = null
 ) : Parcelable {
+    private var addLogoIndex = 0
+
     // getter
     fun ratioList() = ratioList
     fun editorToolsList() = editorToolsList
@@ -19,16 +21,24 @@ data class EditorParam(
 
     // setter
     fun withWatermark() = editorToolsList.add(EditorToolType.WATERMARK)
-    fun withRemoveBackground() = editorToolsList.add(0, EditorToolType.REMOVE_BACKGROUND)
+    fun withRemoveBackground() {
+        editorToolsList.add(0, EditorToolType.REMOVE_BACKGROUND)
+        addLogoIndex = 1
+    }
+
+    fun withAddLogo() = editorToolsList.add(addLogoIndex, EditorToolType.ADD_LOGO)
     fun autoCrop1to1() = apply {
         setAutoCropRatio(ImageRatioType.RATIO_1_1)
     }
+
     fun autoCrop3to4() = apply {
         setAutoCropRatio(ImageRatioType.RATIO_3_4)
     }
+
     fun autoCrop2to1() = apply {
         setAutoCropRatio(ImageRatioType.RATIO_2_1)
     }
+
     fun resetRatioList() = ratioList.clear()
     fun ratioListAdd1to1() = ratioList.add(ImageRatioType.RATIO_1_1)
     fun ratioListAdd3to4() = ratioList.add(ImageRatioType.RATIO_3_4)
