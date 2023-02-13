@@ -33,6 +33,7 @@ import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -140,6 +141,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
+    var isNewSeller = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
         initInjector()
@@ -147,14 +150,14 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onCreate(savedInstanceState)
         setContentView()
 
+        hideStatusBar()
         setupBackground()
         setupToolbar()
         setupStatusBar()
-        setupBottomNav()
         setupNavigator()
         setupShadow()
 
-        setupDefaultPage(savedInstanceState)
+        observeShopStateInfo(savedInstanceState)
 
         checkAppUpdate()
         observeNotificationsLiveData()
@@ -325,6 +328,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun setupToolbar() {
         binding?.run {
+            sahToolbar.show()
             setSupportActionBar(sahToolbar)
         }
     }
@@ -538,6 +542,49 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         homeViewModel.getShopInfo()
     }
 
+    private fun observeShopStateInfo(savedInstanceState: Bundle?) {
+        observe(homeViewModel.shopStateInfo) {
+            hideProgressbarContainer()
+
+            showStatusBarShadow()
+
+            if (it is Success) {
+                val info = it.data
+                this.isNewSeller = info.isNewSellerState
+            }
+
+            setupBottomNav(this.isNewSeller)
+
+            showShadowLines()
+            setupDefaultPage(savedInstanceState)
+        }
+
+        fetchShopStateInfo()
+    }
+
+    private fun hideProgressbarContainer() {
+        binding?.progressBarContainerSah?.hide()
+    }
+
+    private fun fetchShopStateInfo() {
+        binding?.progressBarContainerSah?.show()
+        homeViewModel.getShopStateInfo()
+    }
+
+    private fun hideStatusBar() {
+        binding?.run {
+            statusBarShadow?.hide()
+            statusBarBackground?.hide()
+        }
+    }
+
+    private fun showStatusBarShadow() {
+        binding?.run {
+            statusBarShadow?.show()
+            statusBarBackground?.show()
+        }
+    }
+
     private fun observeIsRoleEligible() {
         homeViewModel.isRoleEligible.observe(this) { result ->
             if (result is Success) {
@@ -548,6 +595,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     }
                 }
             }
+        }
+    }
+
+    private fun showShadowLines() {
+        binding?.run {
+            navBarShadow.show()
         }
     }
 
@@ -586,17 +639,30 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         binding?.sahToolbar?.hide()
     }
 
-    private fun setupBottomNav() {
+    private fun setupBottomNav(isNewSeller: Boolean) {
         binding?.sahBottomNav?.setBackgroundColor(getResColor(android.R.color.transparent))
+
+        val (homeIconActive, homeIconInActive) =
+            if (isNewSeller) {
+                Pair(R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive)
+            } else {
+                Pair(R.drawable.ic_sah_bottom_nav_home_ramadhan_active, R.drawable.ic_sah_bottom_nav_home_ramadhan_inactive)
+            }
+
+        val (homeLottieActive, homeLottieInActive) = if (isNewSeller) {
+            Pair(R.raw.anim_bottom_nav_home_to_enabled, R.raw.anim_bottom_nav_home)
+        } else {
+            Pair(R.raw.anim_bottom_nav_home_ramadhan, R.raw.anim_bottom_nav_home_ramadhan_to_enabled)
+        }
 
         menu.add(
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home,
-                R.raw.anim_bottom_nav_home_to_enabled,
-                R.drawable.ic_sah_bottom_nav_home_active,
-                R.drawable.ic_sah_bottom_nav_home_inactive,
+                homeLottieInActive,
+                homeLottieActive,
+                homeIconActive,
+                homeIconInActive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
