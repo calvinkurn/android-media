@@ -13,11 +13,11 @@ def kotlinFileExecute = [
         '**/*Presenter$*$**.*'
 ]
 
-def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: javaFileExecute)
-def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", includes: kotlinFileExecute)
+def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/liveProdDebug/classes", includes: javaFileExecute)
+def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/liveProdDebug", includes: kotlinFileExecute)
 def javaSrc = "$project.projectDir/src/main/java"
 def kotlinSrc = "$project.projectDir/src/main/kotlin"
-def executionDataFiles = fileTree(dir: project.buildDir, includes: ['jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'])
+def executionDataFiles = fileTree(dir: project.buildDir, includes: ['jacoco/testLiveProdDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'])
 
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testLiveProdDebugUnitTest']) {
 
