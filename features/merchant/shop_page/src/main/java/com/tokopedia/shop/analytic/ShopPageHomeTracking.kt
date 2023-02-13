@@ -976,23 +976,6 @@ class ShopPageHomeTracking(
         )
     }
 
-    private fun createVoucherListMap(
-        parentPosition: Int,
-        listVoucher: List<MerchantVoucherViewModel>
-    ): List<Map<String, Any>> {
-        return mutableListOf<Map<String, Any>>().apply {
-            listVoucher.forEachIndexed { index, merchantVoucherViewModel ->
-                add(
-                    createVoucherItemMap(
-                        parentPosition,
-                        index + 1,
-                        merchantVoucherViewModel
-                    )
-                )
-            }
-        }
-    }
-
     private fun createVoucherItemMap(
         parentPosition: Int,
         position: Int,

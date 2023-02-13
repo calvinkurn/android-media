@@ -159,7 +159,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             it,
             object : ProductTagViewComponent.Listener {
                 override fun impressProductTag(view: ProductTagViewComponent) {
-                    analytic.impressProductTag(parentViewModel.channelId)
+                    analytic.onImpressedProductCarousel()
                 }
 
                 override fun scrollProductTag(
