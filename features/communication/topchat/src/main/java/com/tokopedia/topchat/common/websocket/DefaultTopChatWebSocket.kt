@@ -19,7 +19,7 @@ class DefaultTopChatWebSocket @Inject constructor(
     webSocketParser: WebSocketParser
 ) : TopchatWebSocket {
 
-    var webSocket: WebSocket? = null
+    private var webSocket: WebSocket? = null
     private var isDestroyed = false
 
     private val webSocketListener = DebugWebSocketLogListener(
@@ -31,10 +31,15 @@ class DefaultTopChatWebSocket @Inject constructor(
     override fun connectWebSocket(listener: WebSocketListener) {
         if (isDestroyed) return
 
-        webSocket = okHttpClient.newWebSocket(
-            generateWsRequest(),
-            webSocketListener.build(listener)
-        )
+        /**
+         * Create only one connection at time
+         */
+        if (webSocket == null) {
+            webSocket = okHttpClient.newWebSocket(
+                generateWsRequest(),
+                webSocketListener.build(listener)
+            )
+        }
     }
 
     override fun close() {
@@ -50,8 +55,8 @@ class DefaultTopChatWebSocket @Inject constructor(
     }
 
     override fun reset() {
+        webSocket?.cancel()
         webSocket = null
-        isDestroyed = false
     }
 
     private fun generateWsRequest(): Request {

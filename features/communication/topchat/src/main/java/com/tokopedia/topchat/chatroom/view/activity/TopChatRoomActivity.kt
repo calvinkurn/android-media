@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
@@ -51,6 +52,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
@@ -61,12 +63,19 @@ import com.tokopedia.topchat.common.util.ViewUtil.HALF_OPEN_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.getFoldingFeatureState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 open class TopChatRoomActivity :
     BaseChatToolbarActivity(),
     HasComponent<ChatComponent>,
     StickerFragment.Listener,
     TopChatRoomFlexModeListener {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: TopChatRoomWebSocketViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[TopChatRoomWebSocketViewModel::class.java]
+    }
 
     private var chatComponent: ChatComponent? = null
 
@@ -120,7 +129,6 @@ open class TopChatRoomActivity :
             } else {
                 // open another chatroom, remove attachment & reset web socket
                 bundle.putBoolean(Constant.CHAT_REMOVE_ATTACHMENT, true)
-                bundle.putBoolean(Constant.CHAT_RESET_WEBSOCKET, true)
             }
         }
 
@@ -133,9 +141,15 @@ open class TopChatRoomActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
+        initInjector()
         bindViews()
+        setupLifeCycleObserver()
         setupFragments(savedInstanceState)
         initWindowBackground()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
     }
 
     override fun getComponent(): ChatComponent {
@@ -149,6 +163,10 @@ open class TopChatRoomActivity :
             .build().also {
                 chatComponent = it
             }
+    }
+
+    private fun setupLifeCycleObserver() {
+        this.lifecycle.addObserver(viewModel)
     }
 
     override fun getTagFragment(): String = ""
