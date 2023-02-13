@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
 import com.tokopedia.catalog_library.viewmodels.ProductsBaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

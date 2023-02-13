@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_MOST_VIRAL
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_TOP_FIVE
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_MOST_VIRAL
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_TOP_FIVE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

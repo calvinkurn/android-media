@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.usecase.CatalogRelevantUseCase
 import com.tokopedia.catalog_library.usecase.CatalogSpecialUseCase
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

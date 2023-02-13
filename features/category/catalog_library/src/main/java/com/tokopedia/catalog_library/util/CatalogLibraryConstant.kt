@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.model.util
+package com.tokopedia.catalog_library.util
 
 object CatalogLibraryConstant {
     const val CATALOG_SPECIAL = "catalog_special"

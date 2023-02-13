@@ -8,8 +8,8 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +50,8 @@ class ProductsBaseViewModel @Inject constructor(
     }
 
     private fun onAvailableCatalogListData(
-        catalogListResponse: CatalogListResponse, page: Int = 1
+        catalogListResponse: CatalogListResponse,
+        page: Int = 1
     ) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Catalog List Response Data"))
@@ -86,7 +87,8 @@ class ProductsBaseViewModel @Inject constructor(
             val productHeaderModel = CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
-                CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE, null
+                CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE,
+                null
             )
             visitableList.add(productHeaderModel)
         }

@@ -2,13 +2,11 @@ package com.tokopedia.catalog_library.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
-import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 
 data class CatalogProductLoadMoreDataModel(
     val name: String = ""
-): BaseCatalogLibraryDataModel {
+) : BaseCatalogLibraryDataModel {
     override fun type() = CatalogLibraryConstant.CATALOG_PRODUCT_LOAD
 
     override fun type(typeFactory: CatalogHomepageAdapterFactory): Int {
@@ -24,5 +22,4 @@ data class CatalogProductLoadMoreDataModel(
     override fun getChangePayload(newData: BaseCatalogLibraryDataModel): Bundle? {
         return null
     }
-
 }
