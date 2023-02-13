@@ -17,6 +17,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import io.mockk.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -45,7 +46,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This test is a reminder for developer.
         // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
         // also there developer should also add the corresponding unit test for the deeplink.
-        assert(DeeplinkMapper.getTokopediaSchemeList().size == SIZE_MAPPER)
+        assertEquals(DeeplinkMapper.getTokopediaSchemeList().size, SIZE_MAPPER)
     }
 
     @Test
