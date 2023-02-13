@@ -48,6 +48,13 @@ android {
     testOptions {
         animationsDisabled = true
     }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
 }
 
 dependencies {
@@ -131,6 +138,8 @@ dependencies {
 
     androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
     androidTestImplementation projectOrAar(rootProject.ext.features.filter)
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.0'
 }
 
 project.ext {

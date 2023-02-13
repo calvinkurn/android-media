@@ -3,6 +3,8 @@ package com.tokopedia.content.common.comment
 import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
+import java.time.Duration
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 /**
@@ -25,7 +27,23 @@ class CommentUiModelMapper @Inject constructor() {
             repliesCount = comment.repliesCount,
             appLink = comment.id,
             content = comment.comment,
-            createdTime = comment.createdTime,
+            createdTime = convertTime(comment.createdTime),
         )
+    }
+    private fun convertTime(date: String): String {
+        val now = ZonedDateTime.now()
+        val convert = ZonedDateTime.parse(date) //add try catch handle if null / empty
+        val diff = Duration.between(now, convert)
+        val minute = diff.toMinutes()
+        val hour = diff.toHours()
+        val day = diff.toDays()
+
+        return if (minute < 1) "Beberapa detik yang lalu"
+        else if (hour < 1) "23 menit"
+        else if (hour < 24) "2 jam"
+        else if (day in 1..5) "2 hari"
+        else if (day > 5) "28 Agu"
+        else if (day > 90) "Sep 2020"
+        else ""
     }
 }

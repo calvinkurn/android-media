@@ -9,7 +9,7 @@ sealed interface CommentUiModel {
         val id: String,
         val username: String,
         val content: String,
-        val createdTime: String, //format in map
+        val createdTime: String,
         val photo: String,
         val repliesCount: String,
         val appLink: String,
