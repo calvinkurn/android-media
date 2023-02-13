@@ -435,6 +435,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     items = it.items.filter { item -> item.channelId != channelId }
                 )
             }
+            _uiEvent.emit(UserProfileUiEvent.SuccessDeleteChannel)
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorDeleteChannel(it))
         }

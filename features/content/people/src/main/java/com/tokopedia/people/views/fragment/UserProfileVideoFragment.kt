@@ -223,6 +223,9 @@ class UserProfileVideoFragment @Inject constructor(
                             }
                         }
                     }
+                    is UserProfileUiEvent.SuccessDeleteChannel -> {
+                        view?.showToast(getString(R.string.up_play_video_deleted))
+                    }
                     is UserProfileUiEvent.ErrorDeleteChannel -> {
                         val message = when (event.throwable) {
                             is UnknownHostException, is SocketTimeoutException -> {

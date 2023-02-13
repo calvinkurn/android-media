@@ -21,6 +21,7 @@ sealed interface UserProfileUiEvent {
     data class ErrorBlockUser(val isBlocking: Boolean) : UserProfileUiEvent
     data class BlockingUserState(val throwable: Throwable): UserProfileUiEvent
 
+    object SuccessDeleteChannel : UserProfileUiEvent
     data class ErrorDeleteChannel(val throwable: Throwable) : UserProfileUiEvent
 
     data class OpenPlayVideoActionMenu(val channel: PlayWidgetChannelUiModel) : UserProfileUiEvent
