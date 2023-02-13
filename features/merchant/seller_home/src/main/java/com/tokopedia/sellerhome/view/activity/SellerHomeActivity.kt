@@ -94,7 +94,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
-        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
     }
 
     @Inject
@@ -733,11 +733,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private fun observeWearDialog() {
         homeViewModel.shouldAskInstallCompanionApp.observe(this) {
             val isWearPopupShown: Boolean =
-                wearSharedPreference.getBoolean(WEAR_POPUP_KEY, true)
+                wearSharedPreference.getBoolean(WEAR_POPUP_KEY, false)
             if (it && !isWearPopupShown) {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.apply{
                     setTitle(resources.getString(R.string.wearos_install_popup_title))
+                    setDescription(resources.getString(R.string.wearos_install_popup_description))
                     setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
                     setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
                     setPrimaryCTAClickListener {
@@ -745,6 +746,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                             .addCategory(Intent.CATEGORY_BROWSABLE)
                             .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
                         homeViewModel.launchMarket(marketIntent)
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@SellerHomeActivity,
+                            resources.getString(R.string.wearos_toast_install),
+                            Toast.LENGTH_LONG
+                            ).show()
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()
