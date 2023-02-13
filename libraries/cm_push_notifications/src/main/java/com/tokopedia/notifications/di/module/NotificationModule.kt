@@ -90,8 +90,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
         atcProductUseCase: AddToCartUseCase
     ): DataManager {
         return DataManager(
-            attributionUseCase,
-            atcProductUseCase
+                attributionUseCase,
+                atcProductUseCase
         )
     }
 
