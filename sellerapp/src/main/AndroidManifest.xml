@@ -81,6 +81,7 @@
         <package android:name="com.asistenhidup.terran" />
         <package android:name="com.awantunai.app" />
         <package android:name="com.baga.cabjahbcaefiag" />
+        <package android:name="com.bajingan.bangsat" />
         <package android:name="com.bbxfintech" />
         <package android:name="com.berkem.bang" />
         <package android:name="com.beruangcerdas.finansialapp" />
@@ -162,6 +163,7 @@
         <package android:name="com.electrodialitic.haltere" />
         <package android:name="com.enough.rupiah" />
         <package android:name="com.estakapital.investor" />
+        <package android:name="com.example.myapplication" />
         <package android:name="com.excellence.PinjamanRupiah" />
         <package android:name="com.excelliance.multiaccount" />
         <package android:name="com.excelliance.multiaccounts" />
