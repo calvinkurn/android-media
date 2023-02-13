@@ -153,7 +153,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channel)
             UserProfileAction.BlockUser -> handleBlockUser()
             UserProfileAction.UnblockUser -> handleUnblockUser()
-            is UserProfileAction.DeletePlayChannel -> handleDeletePlayChannel(action.channel)
+            is UserProfileAction.DeletePlayChannel -> handleDeletePlayChannel(action.channelId)
             is UserProfileAction.UpdatePlayChannelInfo -> handleUpdatePlayChannelInfo(action.channelId, action.totalView, action.isReminderSet)
             is UserProfileAction.ClickPlayVideoMenuAction -> handleClickPlayVideoMenuAction(action.channel)
             is UserProfileAction.ClickCopyLinkPlayChannel -> handleClickCopyLinkPlayChannel(action.channel)
@@ -426,9 +426,9 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
+    private fun handleDeletePlayChannel(channelId: String) {
         launchCatchError(block = {
-            val channelId = repo.deletePlayChannel(channel, _profileInfo.value.userID)
+            val channelId = repo.deletePlayChannel(channelId, _profileInfo.value.userID)
 
             _videoPostContent.update {
                 it.copy(

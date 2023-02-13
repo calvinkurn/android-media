@@ -42,6 +42,7 @@ import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.viewholder.PlayVideoViewHolder
 import com.tokopedia.play.widget.ui.bottomsheet.PlayWidgetActionMenuBottomSheet
+import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.user.session.UserSessionInterface
@@ -134,13 +135,21 @@ class UserProfileVideoFragment @Inject constructor(
             },
             transcodeWidgetListener = object : PlayVideoViewHolder.Transcode.Listener {
                 override fun onDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
-                    submitAction(UserProfileAction.DeletePlayChannel(channel))
+                    submitAction(UserProfileAction.DeletePlayChannel(channel.channelId))
                 }
             },
             onLoading = {
                 submitAction(UserProfileAction.LoadPlayVideo())
             }
         )
+    }
+
+    private val playChannelDeleteConfirmationDialog by lazy {
+        PlayWidgetDeleteDialogContainer(object : PlayWidgetDeleteDialogContainer.Listener {
+            override fun onDeleteButtonClicked(channelId: String) {
+                submitAction(UserProfileAction.DeletePlayChannel(channelId))
+            }
+        })
     }
 
     override fun onCreateView(
@@ -255,7 +264,7 @@ class UserProfileVideoFragment @Inject constructor(
                         view?.showToast(getString(R.string.up_play_video_link_copied))
                     }
                     is UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog -> {
-                        /** TODO: handle this */
+                        playChannelDeleteConfirmationDialog.confirmDelete(requireContext(), event.channel.channelId)
                     }
                 }
             }

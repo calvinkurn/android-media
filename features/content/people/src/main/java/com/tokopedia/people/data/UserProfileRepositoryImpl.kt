@@ -197,11 +197,11 @@ class UserProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deletePlayChannel(
-        channel: PlayWidgetChannelUiModel,
+        channelId: String,
         userId: String
     ) = withContext(dispatcher.io) {
         updateChannelUseCase.setQueryParams(
-            UpdateChannelUseCase.createUpdateStatusRequest(channel.channelId, userId, PlayChannelStatusType.Deleted)
+            UpdateChannelUseCase.createUpdateStatusRequest(channelId, userId, PlayChannelStatusType.Deleted)
         )
         updateChannelUseCase.executeOnBackground().id
     }

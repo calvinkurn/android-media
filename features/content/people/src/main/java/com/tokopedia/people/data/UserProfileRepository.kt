@@ -72,7 +72,7 @@ interface UserProfileRepository {
     suspend fun unblockUser(userId: String)
 
     suspend fun deletePlayChannel(
-        channel: PlayWidgetChannelUiModel,
+        channelId: String,
         userId: String,
     ): String
 }
