@@ -44,6 +44,7 @@ object CategoryMenuMapper {
                     title = it.name,
                     imageUrl = it.imageUrl,
                     appLink = it.appLinks,
+                    color = it.color,
                     headerName = headerName
                 )
             }

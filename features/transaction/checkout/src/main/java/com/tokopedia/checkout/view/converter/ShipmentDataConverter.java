@@ -244,6 +244,7 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setCoachmarkPlus(new CoachmarkPlusData());
             }
 
+            shipmentCartItemModel.setEnablerLabel(groupShop.getShop().getEnablerLabel());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -314,6 +315,11 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setAddOnWordingModel(convertFromAddOnWordingData(addOnWording));
         shipmentCartItemModel.setAddOnDefaultFrom(username);
 
+        shipmentCartItemModel.setTimeslotId(groupShop.getScheduleDelivery().getTimeslotId());
+        shipmentCartItemModel.setScheduleDate(groupShop.getScheduleDelivery().getScheduleDate());
+        shipmentCartItemModel.setValidationMetadata(groupShop.getScheduleDelivery().getValidationMetadata());
+        shipmentCartItemModel.setRatesValidationFlow(groupShop.getRatesValidationFlow());
+
         String receiverName = "";
         if (userAddress.getStatus() == ACTIVE_ADDRESS) {
             receiverName = userAddress.getReceiverName();
@@ -328,6 +334,14 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setProductFcancelPartial(fobject.isFcancelPartial() == 1);
         shipmentCartItemModel.setCartItemModels(cartItemModels);
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
+
+        for (Product product : products) {
+            if (product.getEthicalDrugs().getNeedPrescription() && !product.isError()) {
+                shipmentCartItemModel.setHasEthicalProducts(true);
+            } else if (!product.isError()) {
+                shipmentCartItemModel.setHasNonEthicalProducts(true);
+            }
+        }
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));

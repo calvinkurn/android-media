@@ -208,6 +208,7 @@ android {
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            multiDexKeepProguard file('multidex-config.pro')
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
