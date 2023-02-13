@@ -22,6 +22,7 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/flip_btn"
+            app:icon_name="FLIP"
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:layout_constraintBottom_toBottomOf="@id/slider_rotate"
