@@ -23,9 +23,6 @@ class DevOptsAuthorizationViewHolder(
     override fun bind(element: DevOptsAuthorizationUiModel?) {
         val btn = itemView.findViewById<UnifyButton>(R.id.dev_opts_auth_btn)
         val tf = itemView.findViewById<TextFieldUnify>(R.id.dev_opts_auth_tf)
-
-
-        tf.setMessage("2PzRsFPo")
         btn.setOnClickListener {
             val password = tf.textFieldInput.text.toString()
             itemView.context.apply {
