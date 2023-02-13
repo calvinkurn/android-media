@@ -175,7 +175,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 ),
                 CategoryResponse(
                     id = "4",
@@ -185,7 +186,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 1
+                    isAdult = 1,
+                    color = "#FFFFFF"
                 )
             )
         )
@@ -230,7 +232,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 ),
                 CategoryResponse(
                     id = "4",
@@ -240,7 +243,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 1
+                    isAdult = 1,
+                    color = "#FFFFFF"
                 )
             )
         )
@@ -272,7 +276,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 ),
                 CategoryResponse(
                     id = "4",
@@ -282,7 +287,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 1
+                    isAdult = 1,
+                    color = "#FFFFFF"
                 )
             )
         )
