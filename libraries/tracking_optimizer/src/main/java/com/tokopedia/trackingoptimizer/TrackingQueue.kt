@@ -1,17 +1,15 @@
 package com.tokopedia.trackingoptimizer
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.repository.TrackRepositoryImpl
 import com.tokopedia.trackingoptimizer.repository.TrackRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.tokopedia.trackingoptimizer.repository.TrackRepositoryImpl
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -47,8 +45,6 @@ import kotlin.coroutines.CoroutineContext
 
 class TrackingQueue(val context: Context) : CoroutineScope {
 
-    private var hasTrackingQueue = false
-
     override val coroutineContext: CoroutineContext
         get() = TrackingExecutors.executor + TrackingExecutors.handler
 
@@ -69,7 +65,6 @@ class TrackingQueue(val context: Context) : CoroutineScope {
         launch {
             newTrackingRepository.put(map)
         }
-        hasTrackingQueue = true
     }
 
     /**
@@ -84,7 +79,6 @@ class TrackingQueue(val context: Context) : CoroutineScope {
         launch {
             newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
         }
-        hasTrackingQueue = true
     }
 
     /**
@@ -98,7 +92,10 @@ class TrackingQueue(val context: Context) : CoroutineScope {
         launch {
             newTrackingRepository.putEE(map, enhanceECommerceMap)
         }
-        hasTrackingQueue = true
+    }
+
+    private fun isTrackingQueueAvailable(): Boolean {
+        return newTrackingRepository.getAllEE()?.isNotEmpty() ?: false
     }
 
     /**
@@ -108,15 +105,15 @@ class TrackingQueue(val context: Context) : CoroutineScope {
      * validation is added, to start the service only if tracking queue is available
      */
     fun sendAll() {
-        //send all tracking in db to gtm
-        try {
-            if (hasTrackingQueue){
-                SendTrackQueueService.start(context)
-                hasTrackingQueue = false
+        // send all tracking in db to gtm
+        launch {
+            try {
+                if (isTrackingQueueAvailable()) {
+                    SendTrackQueueService.start(context)
+                }
+            } catch (e: Throwable) {
+                // prevent illegal state exception when service is launch when app in background (in O)
             }
-        } catch (e: Throwable) {
-            // prevent illegal state exception when service is launch when app in background (in O)
         }
     }
-
 }
