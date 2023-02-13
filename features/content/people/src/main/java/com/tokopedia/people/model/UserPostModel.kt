@@ -62,6 +62,8 @@ data class PlayPostContentItem(
     val configurations: PlayPostConfigurations = PlayPostConfigurations(),
     @SerializedName("partner")
     val partner: Partner = Partner(),
+    @SerializedName("share")
+    val share: Share = Share(),
     @SerializedName("display_type")
     val displayType: String = "",
 ) : BaseItem()
@@ -71,6 +73,15 @@ data class Partner(
     val id: String = "",
     @SerializedName("name")
     val name: String = "",
+)
+
+data class Share(
+    @SerializedName("text")
+    val text: String = "",
+    @SerializedName("redirect_url")
+    val redirectUrl: String = "",
+    @SerializedName("is_show_button")
+    val isShowButton: Boolean = false,
 )
 
 data class PlayPostContentItemStats(

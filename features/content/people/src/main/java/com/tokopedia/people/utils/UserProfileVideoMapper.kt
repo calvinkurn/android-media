@@ -4,6 +4,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.PostPromoLabel
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
@@ -63,8 +64,7 @@ object UserProfileVideoMapper {
             video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
             channelType = channelType,
             hasGame = mapHasGame(item.configurations.promoLabels),
-            // TODO later
-            share = PlayWidgetShareUiModel("", false),
+            share = mapShare(item),
             performanceSummaryLink = performanceSummaryLink,
             poolType = poolType,
             recommendationType = recommendationType,
@@ -91,4 +91,17 @@ private fun getPromoType(promoLabels: List<PostPromoLabel>): PostPromoLabel {
 private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, userId: String): Boolean {
     return channelType == PlayWidgetChannelType.Vod &&
         userId == partnerId
+}
+
+private fun mapShare(item: PlayPostContentItem): PlayWidgetShareUiModel {
+    val fullShareContent = try {
+        item.share.text.replace("${'$'}{url}", item.share.redirectUrl)
+    } catch (e: Throwable) {
+        "${item.share.text}/n${item.share.redirectUrl}"
+    }
+
+    return PlayWidgetShareUiModel(
+        fullShareContent = fullShareContent,
+        isShow = item.share.isShowButton,
+    )
 }
