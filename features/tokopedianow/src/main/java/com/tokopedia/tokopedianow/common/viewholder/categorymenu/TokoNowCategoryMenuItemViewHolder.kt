@@ -34,7 +34,7 @@ class TokoNowCategoryMenuItemViewHolder(
                     color = data.color,
                     defaultColor = ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        R.color.tokopedianow_card_dms_color
                     )
                 )
             )
