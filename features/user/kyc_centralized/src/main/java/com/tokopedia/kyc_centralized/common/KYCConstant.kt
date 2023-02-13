@@ -49,4 +49,10 @@ object KYCConstant {
     const val MB_6 = 6
     const val MB_10 = 10
     const val MB_15 = 15
+
+    object GotoDataSource {
+        const val TOKO_KYC = "0"
+        const val GOTO_NON_PROGRESSIVE = "1"
+        const val GOTO_PROGRESSIVE = "2"
+    }
 }

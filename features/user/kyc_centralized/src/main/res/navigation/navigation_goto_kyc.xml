@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_goto_kyc"
+    app:startDestination="@id/routerFragment">
+
+    <fragment
+        android:id="@+id/routerFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment"
+        android:label="RouterFragment" >
+        <action
+            android:id="@+id/action_routerFragment_to_statusSubmissionFragment"
+            app:destination="@id/statusSubmissionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/statusSubmissionFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionFragment"
+        android:label="StatusSubmissionFragment" >
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionParam"/>
+    </fragment>
+
+</navigation>
