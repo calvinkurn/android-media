@@ -15,7 +15,7 @@ class ProductDraftListViewHolder(
 
     fun bindData(draft: ProductDraftUiModel) {
         itemView.run {
-            binding.ivProduct.loadImage(draft.imageUrl, R.drawable.ic_image_not_available)
+            binding.ivProduct.setImageUrl(draft.imageUrl)
 
             if (draft.productName.isBlank()) {
                 binding.tvProductName.text = itemView.context.getString(R.string.label_draft_has_not_have_product_name_yet)
