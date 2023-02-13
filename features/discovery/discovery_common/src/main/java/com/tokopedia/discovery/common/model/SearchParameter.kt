@@ -5,7 +5,9 @@ import android.os.Parcelable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 
-class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
+class SearchParameter(
+    private val deepLinkUri: String = "",
+) : Parcelable {
 
     private var searchParameterHashMap = URLParser(deepLinkUri).paramKeyValueMapDecoded
 
@@ -65,6 +67,32 @@ class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
     fun setSearchQuery(query: String) {
         set(SearchApiConst.Q, query)
+        set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_DEFAULT)
+    }
+
+    fun setSearchQueries(queries: List<String>) {
+        set(SearchApiConst.Q, "")
+        set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_MPS)
+        queries.forEachIndexed {index, query ->
+            val key = when(index) {
+                1 -> SearchApiConst.Q2
+                2 -> SearchApiConst.Q3
+                else -> SearchApiConst.Q1
+            }
+            set(key, query)
+        }
+    }
+
+    fun hasQuery1(): Boolean {
+        return contains(SearchApiConst.Q1) && get(SearchApiConst.Q1).isNotBlank()
+    }
+
+    fun hasQuery2(): Boolean {
+        return contains(SearchApiConst.Q2) && get(SearchApiConst.Q2).isNotBlank()
+    }
+
+    fun hasQuery3(): Boolean {
+        return contains(SearchApiConst.Q3) && get(SearchApiConst.Q3).isNotBlank()
     }
 
     fun getSearchQuery(): String {
