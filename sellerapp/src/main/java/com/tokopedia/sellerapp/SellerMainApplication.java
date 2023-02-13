@@ -114,7 +114,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
-        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp;
+        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp_ramadhan;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
