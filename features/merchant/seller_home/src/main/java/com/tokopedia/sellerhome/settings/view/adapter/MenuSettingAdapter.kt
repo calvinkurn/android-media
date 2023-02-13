@@ -48,7 +48,69 @@ class MenuSettingAdapter(
 
     var menuSetingAccess = MenuSettingAccess()
 
-    private val otherSettingList by lazy {
+    fun populateInitialMenus(isShopOwner: Boolean, isMultiLocation: Boolean = false) {
+        val menuList = mutableListOf<SettingUiModel>()
+        if (isShopOwner) {
+            val shopSettingList = if (isMultiLocation) {
+                getShopMultiLocationSettingList()
+            } else {
+                getShopSingleLocationSettingList()
+            }
+            menuList.addAll(shopSettingList)
+        } else {
+            menuList.add(SettingLoadingUiModel)
+        }
+        menuList.addAll(getOtherSettingList())
+        if (isShowScreenRecorder)
+            menuList.add(
+                menuList.size - SCREEN_RECORDER_INDEX_FROM_LAST, MenuItemUiModel(
+                    context?.getString(R.string.setting_screen_recorder).orEmpty(),
+                    clickApplink = ApplinkConstInternalGlobal.SCREEN_RECORDER,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                )
+            )
+        if (GlobalConfig.isAllowDebuggingTools())
+            menuList.add(menuList.size - DEVELOPER_OPTION_INDEX_FROM_LAST, MenuItemUiModel(
+                context?.getString(R.string.setting_menu_developer_options).orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.APP_SETTING
+            ) {
+                context?.let {
+                    RouteManager.route(it, ApplinkConst.DEVELOPER_OPTIONS)
+                }
+            })
+        clearAllElements()
+        addElement(menuList)
+    }
+
+    fun removeLoading() {
+        visitables.find { it is SettingLoadingUiModel }?.let {
+            clearElement(it)
+        }
+    }
+
+    fun showSuccessAccessMenus(settingAccess: MenuSettingAccess, isMultiLocation: Boolean = false) {
+        menuSetingAccess = settingAccess
+        val settingList = if (isMultiLocation) {
+            getShopMultiLocationSettingList()
+        } else {
+            getShopSingleLocationSettingList()
+        }
+        removeLoading()
+        visitables.addAll(0, settingList)
+        notifyItemRangeChanged(0, settingList.size - 1)
+    }
+
+    fun showShopSetting(isMultiLocation: Boolean = false) {
+        val settingList = if (isMultiLocation) {
+            getShopMultiLocationSettingList()
+        } else {
+            getShopSingleLocationSettingList()
+        }
+        visitables.addAll(0, settingList)
+        notifyItemRangeChanged(0, settingList.size - 1)
+    }
+
+    private fun getOtherSettingList(): List<SettingUiModel> {
         val menuList = mutableListOf<SettingUiModel>()
         menuList.add(
             SettingTitleMenuUiModel(
@@ -131,69 +193,7 @@ class MenuSettingAdapter(
                 DividerUiModel(DividerType.THIN_INDENTED)
             )
         )
-        return@lazy menuList
-    }
-
-    fun populateInitialMenus(isShopOwner: Boolean, isMultiLocation: Boolean = false) {
-        val menuList = mutableListOf<SettingUiModel>()
-        if (isShopOwner) {
-            val shopSettingList = if (isMultiLocation) {
-                getShopMultiLocationSettingList()
-            } else {
-                getShopSingleLocationSettingList()
-            }
-            menuList.addAll(shopSettingList)
-        } else {
-            menuList.add(SettingLoadingUiModel)
-        }
-        menuList.addAll(otherSettingList)
-        if (isShowScreenRecorder)
-            menuList.add(
-                menuList.size - SCREEN_RECORDER_INDEX_FROM_LAST, MenuItemUiModel(
-                    context?.getString(R.string.setting_screen_recorder).orEmpty(),
-                    clickApplink = ApplinkConstInternalGlobal.SCREEN_RECORDER,
-                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
-                )
-            )
-        if (GlobalConfig.isAllowDebuggingTools())
-            menuList.add(menuList.size - DEVELOPER_OPTION_INDEX_FROM_LAST, MenuItemUiModel(
-                context?.getString(R.string.setting_menu_developer_options).orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.APP_SETTING
-            ) {
-                context?.let {
-                    RouteManager.route(it, ApplinkConst.DEVELOPER_OPTIONS)
-                }
-            })
-        clearAllElements()
-        addElement(menuList)
-    }
-
-    fun removeLoading() {
-        visitables.find { it is SettingLoadingUiModel }?.let {
-            clearElement(it)
-        }
-    }
-
-    fun showSuccessAccessMenus(settingAccess: MenuSettingAccess, isMultiLocation: Boolean = false) {
-        menuSetingAccess = settingAccess
-        val settingList = if (isMultiLocation) {
-            getShopMultiLocationSettingList()
-        } else {
-            getShopSingleLocationSettingList()
-        }
-        removeLoading()
-        visitables.addAll(0, settingList)
-        notifyItemRangeChanged(0, settingList.size - 1)
-    }
-
-    fun showShopSetting(isMultiLocation: Boolean = false) {
-        val settingList = if (isMultiLocation) {
-            getShopMultiLocationSettingList()
-        } else {
-            getShopSingleLocationSettingList()
-        }
-        visitables.addAll(0, settingList)
-        notifyItemRangeChanged(0, settingList.size - 1)
+        return menuList
     }
 
     private fun getShopMultiLocationSettingList() =
