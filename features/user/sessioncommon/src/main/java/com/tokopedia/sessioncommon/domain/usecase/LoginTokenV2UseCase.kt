@@ -4,21 +4,23 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.query.LoginTokenV2Query
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Yoris Prayogo on 16/02/21.
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
 open class LoginTokenV2UseCase @Inject constructor(
-        val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
-        private val userSession: UserSessionInterface):
-        UseCase<LoginTokenPojoV2>() {
+    val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
+    private val userSession: UserSessionInterface):
+    UseCase<LoginTokenPojoV2>() {
 
     init {
         graphqlUseCase.setGraphqlQuery(LoginTokenV2Query.loginEmailQuery)

@@ -2,15 +2,18 @@ package com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.usecase.RequestParams
+import java.util.HashMap
 import javax.inject.Inject
 
 class UpdateShopBasicDataUseCase @Inject constructor(
-        @ApplicationContext context: Context,
-        repository: GraphqlRepository
+    @ApplicationContext context: Context,
+    repository: GraphqlRepository
 ): GraphqlUseCase<ShopBasicDataMutation>(repository) {
     companion object {
         private const val NAME = "name"
@@ -23,11 +26,11 @@ class UpdateShopBasicDataUseCase @Inject constructor(
 
         @JvmStatic
         fun createRequestParam(
-                name: String?,
-                domain: String?,
-                tagLine: String?,
-                description: String?,
-                imgId: String?
+            name: String?,
+            domain: String?,
+            tagLine: String?,
+            description: String?,
+            imgId: String?
         ): RequestParams {
             val requestParams = RequestParams()
 
