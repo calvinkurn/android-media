@@ -168,6 +168,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_P
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SHARING_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SEARCH_HISTORY
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.GOTO_KYC
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -535,6 +536,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(KYC_INFO) }, DF_USER_SETTINGS, R.string.user_identification_common_title))
             add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_USER_SETTINGS, R.string.user_identification_form_title))
             add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_USER_SETTINGS, R.string.user_identification_info_simple))
+            add(DFP({ it.startsWithPattern(GOTO_KYC) }, DF_USER_SETTINGS, R.string.goto_kyc_title))
             add(DFP({ it.startsWith(ORDER_HISTORY) || it.startsWithPattern(ApplinkConstInternalMarketplace.ORDER_HISTORY) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)

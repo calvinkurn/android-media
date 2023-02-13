@@ -374,6 +374,17 @@ object ApplinkConstInternalUserPlatform {
     const val PARAM_CALL_BACK = "callBack"
 
     /**
+     * ## GoTo KYC
+     * ### Open GoTo KYC
+     *
+     * @class       : GotoKycTransparentActivity
+     * @Applink     : tokopedia-android-internal://user/goto-kyc?projectId={projectId}
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     **/
+    const val GOTO_KYC = "$NEW_INTERNAL_USER/goto-kyc"
+
+    /**
      * ## KYC Param | type
      * This param used for specify the flow of kyc
      * @value:

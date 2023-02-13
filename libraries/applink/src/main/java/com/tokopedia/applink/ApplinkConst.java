@@ -361,6 +361,8 @@ public interface ApplinkConst {
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
     String KYC = "tokopedia://kyc?projectId=1";
 
+    String GOTO_KYC = "tokopedia://goto-kyc?projectId={projectId}";
+
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
