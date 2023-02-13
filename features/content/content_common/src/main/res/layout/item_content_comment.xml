@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/content_common_space_8"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="@dimen/content_common_space_8">
 
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -30,6 +30,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_comment_photo"
         app:layout_constraintTop_toTopOf="@+id/iv_comment_photo"
+        app:typographyType="paragraph_2"
         tools:text="Glorianna Comment CommentCommentComment CommentComment" />
 
     <com.tokopedia.unifyprinciples.Typography

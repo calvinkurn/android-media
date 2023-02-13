@@ -5,6 +5,8 @@ import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
+import com.tokopedia.feedcomponent.util.bold
+import com.tokopedia.feedcomponent.util.buildSpannedString
 import com.tokopedia.media.loader.loadImage
 
 /**
@@ -19,7 +21,11 @@ class CommentViewHolder {
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
                 ivCommentPhoto.loadImage(item.photo)
-                tvCommentContent.text = item.content
+                tvCommentContent.text = buildSpannedString {
+                    bold { append(item.username) }
+                    append("    ")
+                    append(item.content)
+                }
                 tvCommentTime.text = item.createdTime
 
                 tvCommentReply.setOnClickListener {
