@@ -255,7 +255,10 @@ class DigitalCartFragment :
                     isSpecialProduct = cartPassData?.isSpecialProduct
                         ?: false
                 )
-                is Fail -> closeViewWithMessageAlert(it.throwable)
+                is Fail -> {
+                    updateAtcError()
+                    closeViewWithMessageAlert(it.throwable)
+                }
             }
         }
 
@@ -561,7 +564,6 @@ class DigitalCartFragment :
     }
 
     private fun closeViewWithMessageAlert(error: Throwable) {
-        updateAtcError()
         binding?.loaderCheckout?.gone()
         if (cartPassData?.isFromPDP == true) {
             val intent = Intent()
