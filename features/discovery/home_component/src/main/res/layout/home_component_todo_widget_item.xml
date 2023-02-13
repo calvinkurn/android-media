@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2
+    android:id="@+id/card_container_mission_widget"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardUseCompatPadding="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_todo_widget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Pembayaran Virtual Account-mu"
+            android:maxLines="1"
+            app:typographyType="display_3"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <ImageView
+            android:id="@+id/ic_close_todo_widget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title_todo_widget"
+            app:srcCompat="@drawable/ic_close"
+            android:contentDescription="@string/content_desc_reminder" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/content_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_todo_widget"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_todo_widget"
+                android:layout_width="@dimen/home_todo_widget_image_size"
+                android:layout_height="@dimen/home_todo_widget_image_size"
+                android:contentDescription="@string/content_desc_mission_widget"
+                app:unify_image_corner_radius="8"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/due_date_todo_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Jatuh Tempo 2 Hari Lagi"
+                android:maxLines="1"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_YN500"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/desc_todo_widget"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/image_todo_widget"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/desc_todo_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Contextual description maximum 2 lines"
+                android:maxLines="2"
+                app:typographyType="display_3"
+                android:textColor="@color/Unify_NN950"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/image_todo_widget"
+                app:layout_constraintTop_toBottomOf="@id/due_date_todo_widget"
+                app:layout_constraintBottom_toTopOf="@id/price_todo_widget"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/price_todo_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Rp151.000"
+                android:maxLines="2"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_NN950"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/image_todo_widget"
+                app:layout_constraintTop_toBottomOf="@id/desc_todo_widget"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/cta_todo_widget"
+            android:layout_width="@dimen/home_todo_widget_cta_width"
+            android:layout_height="@dimen/home_todo_widget_cta_height"
+            app:layout_constraintTop_toTopOf="@id/content_layout"
+            app:layout_constraintBottom_toBottomOf="@id/content_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/content_layout"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="12dp"
+            app:unifyButtonSize="small"
+            app:unifyButtonVariant="ghost"
+            tools:text="Bayar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

@@ -101,6 +101,7 @@ import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
 import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.listener.LegoProductListener
+import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
@@ -123,6 +124,7 @@ import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
+import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
@@ -146,6 +148,7 @@ import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
+import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -193,7 +196,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val vpsWidgetListener: VpsWidgetListener,
                          private val categoryWidgetV2Listener: CategoryWidgetV2Listener,
                          private val missionWidgetComponentListener: MissionWidgetComponentListener,
-                         private val legoProductListener: LegoProductListener
+                         private val legoProductListener: LegoProductListener,
+                         private val todoWidgetComponentListener: TodoWidgetComponentListener,
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -443,6 +447,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return MixLeftPaddingComponentViewHolder.LAYOUT
     }
 
+    override fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int {
+        return TodoWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -641,8 +649,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     homeComponentListener,
                     cardInteraction = true
                 )
+            TodoWidgetViewHolder.LAYOUT -> viewHolder =
+                TodoWidgetViewHolder(
+                    view,
+                    todoWidgetComponentListener
+                )
             else -> viewHolder = super.createViewHolder(view, type)
-
         }
 
         return viewHolder

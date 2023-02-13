@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/container_todo_widget"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/Unify_Static_Black"
+        tools:layout_height="8dp"
+        tools:visibility="visible" />
+
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/home_component_divider_header" />
+
+    <LinearLayout
+        android:id="@+id/container_todo_widget_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="13dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_component_header_view">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_component_todo_widget_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="-2dp"
+            tools:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/shimmering_todo_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="188dp"
+                android:layout_height="8dp"
+                app:loader_type="rect"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="18dp"/>
+
+            <include
+                layout="@layout/home_component_mission_widget_shimmering" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.LocalLoad
+            android:id="@+id/refresh_todo_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            app:unify_local_load_title="@string/mission_widget_failed_title"
+            app:unify_local_load_description="@string/mission_widget_failed_description"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/container_todo_widget_item"
+        tools:background="@color/Unify_B500"
+        tools:layout_height="8dp"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
