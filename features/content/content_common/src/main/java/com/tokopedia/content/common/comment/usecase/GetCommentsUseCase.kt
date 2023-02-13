@@ -48,13 +48,15 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
                ${"$$PARAM_ID"}: String!, 
                ${"$$PARAM_CONTENT_TYPE"}: String!,
                ${"$$PARAM_CURSOR"}: String!,
-               ${"$$PARAM_LIMIT"}: Int!
+               ${"$$PARAM_LIMIT"}: Int!,
+               ${"$$PARAM_COMMENT_ID"}: String!
               ){
                   feedsCommentGetComments(
                    $PARAM_ID: ${"$$PARAM_ID"},
                    $PARAM_CONTENT_TYPE: ${"$$PARAM_CONTENT_TYPE"},
                    $PARAM_CURSOR: ${"$$PARAM_CURSOR"},
-                   $PARAM_LIMIT: ${"$$PARAM_LIMIT"}
+                   $PARAM_LIMIT: ${"$$PARAM_LIMIT"},
+                   $PARAM_COMMENT_ID: ${"$$PARAM_COMMENT_ID"}
                   ) {
                     comments {
                       id
