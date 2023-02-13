@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="@string/goto_kyc_onboard_progressive_title_account_page"
+        app:typographyType="heading_3"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/goto_kyc_onboard_progressive_subtitle"
+        android:layout_marginTop="8dp"
+        app:typographyType="paragraph_3"/>
+
+    <include
+        android:id="@+id/layout_data_ktp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/item_goto_kyc_onboard_progressive"
+        android:layout_marginTop="8dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_tokopedia_care"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/goto_kyc_onboard_progressive_tokopedia_care"
+        app:typographyType="paragraph_3"
+        android:layout_marginVertical="16dp"/>
+
+</LinearLayout>

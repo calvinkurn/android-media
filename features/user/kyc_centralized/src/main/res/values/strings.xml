@@ -241,5 +241,23 @@
     <string name="goto_kyc_benefit_detail_gopay_title_3">Nikmatin fitur menarik lainnya</string>
     <string name="goto_kyc_benefit_detail_gopay_subtitle_3">Transfer ke bank, tarik tunai dan bayar ke teman &amp; keluarga.</string>
     <string name="goto_kyc_benefit_detail_bottom_sheet_title">Keuntungan setelah verifikasi</string>
+    <string name="goto_kyc_onboard_non_progressive_title_account_page">Verifikasi dulu buat dapetin keuntungannya, ya! Gampang, lho~</string>
+    <string name="goto_kyc_onboard_non_progressive_title_not_account_page">Verifikasi buat jadi %s, yuk! Gampang banget, lho~</string>
+    <string name="goto_kyc_onboard_non_progressive_button">Mulai Verifikasi</string>
+    <string name="goto_kyc_onboard_non_progressive_item_account_linking_title">Sambungin akun Gojek</string>
+    <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_linked">Sip, akun Tokopedia dan Gojek kamu udah kesambung.</string>
+    <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked">Tinggal konfirmasi nomor HP-mu dan akun langsung kesambung.</string>
+    <string name="goto_kyc_onboard_non_progressive_item_ktp_title">Ambil foto KTP</string>
+    <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken">Mantap, kamu udah ambil foto KTP.</string>
+    <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken">Siapin KTP asli kamu dan pastikan masih berlaku, ya.</string>
+    <string name="goto_kyc_onboard_non_progressive_item_ktp_view_image">Lihat Foto KTP</string>
+    <string name="goto_kyc_onboard_non_progressive_item_selfie_title">Ambil selfie</string>
+    <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle">Siap-siap! Cari tempat yang terang, lepas kacamata atau masker kamu.</string>
+    <string name="goto_kyc_onboard_progressive_title_account_page">Selangkah lagi buat dapetin keuntungannya!</string>
+    <string name="goto_kyc_onboard_progressive_title_not_account_page">Selangkah lagi buat jadi %s!</string>
+    <string name="goto_kyc_onboard_progressive_subtitle">Kamu udah terdaftar di GoPay, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
+    <string name="goto_kyc_onboard_progressive_item_title">Nama KTP</string>
+    <string name="goto_kyc_onboard_progressive_tokopedia_care">Bukan KTP kamu? Hubungi Tokopedia Care</string>
+    <string name="goto_kyc_onboard_progressive_tokopedia_care_spannable">Hubungi Tokopedia Care</string>
 
 </resources>

@@ -14,4 +14,8 @@
     <string name="img_url_goto_kyc_benefit_detail_reksadana">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_detail_gopay_reksadana.png</string>
     <string name="img_url_goto_kyc_benefit_detail_paylater">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_detail_gopay_paylater.png</string>
     <string name="img_url_goto_kyc_benefit_detail_gopay">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_benefit_detail_gopay_icon.png</string>
+    <string name="img_url_goto_kyc_onboard_gopay">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_onboard_gopay.png</string>
+    <string name="img_url_goto_kyc_onboard_account_linking">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_onboard_account_linking.png</string>
+    <string name="img_url_goto_kyc_onboard_ktp">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_onboard_ktp.png</string>
+    <string name="img_url_goto_kyc_onboard_selfie">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_onboard_selfie.png</string>
 </resources>
