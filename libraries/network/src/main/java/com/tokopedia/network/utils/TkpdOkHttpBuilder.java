@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import java.util.ArrayList;
 import java.util.Collections;
