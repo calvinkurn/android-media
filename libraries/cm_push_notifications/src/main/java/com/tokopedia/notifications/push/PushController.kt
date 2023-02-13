@@ -72,8 +72,7 @@ class PushController(val context: Context) : CoroutineScope {
 
     fun handleProcessedPushPayload(aidlApiBundle : Bundle?,
                                    baseNotificationModel: BaseNotificationModel,
-                                   advanceTargetingData: AdvanceTargetingData
-    ) {
+                                   advanceTargetingData: AdvanceTargetingData){
         postEventForLiveNotification(baseNotificationModel)
         NotificationAdvanceTargetingHandler().checkForValidityAndAdvanceTargeting(
             context.applicationContext,
@@ -83,8 +82,7 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationDeliveryValidation(baseNotificationModel)
             }, onCancel = {
                 cancelPushNotification(baseNotificationModel)
-            }
-        )
+            })
     }
 
     private fun notificationDeliveryValidation(model: BaseNotificationModel) {
@@ -100,22 +98,31 @@ class PushController(val context: Context) : CoroutineScope {
     private fun handleNotificationBundle(model: BaseNotificationModel) {
         launchCatchError(
             block = {
-                if(model.isAmplification){
-                    if(!isAmpNotificationValid(model.notificationId))
+                if (model.isAmplification) {
+                    if (!isAmpNotificationValid(model.notificationId)) {
                         return@launchCatchError
+                    }
                 }
                 if (model.notificationMode == NotificationMode.OFFLINE) {
-                    if (isOfflinePushEnabled)
+                    if (isOfflinePushEnabled) {
                         onOfflinePushPayloadReceived(model)
+                    }
                 } else {
                     onLivePushPayloadReceived(model)
                 }
-            }, onError = {
-                ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "exception",
+            },
+            onError = {
+                ServerLogger.log(
+                    Priority.P2,
+                    "CM_VALIDATION",
+                    mapOf(
+                        "type" to "exception",
                         "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
-                        "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-            })
+                        "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                    )
+                )
+            }
+        )
     }
 
     private suspend fun isAmpNotificationValid(notificationID: Int): Boolean {
@@ -140,6 +147,7 @@ class PushController(val context: Context) : CoroutineScope {
             createAndPostNotification(baseNotificationModel)
         } else if (baseNotificationModel.startTime == 0L
             || baseNotificationModel.endTime > System.currentTimeMillis()) {
+
             updatedBaseNotificationModel = ImageDownloadManager.downloadImages(context, baseNotificationModel)
             updatedBaseNotificationModel?.let {
                 createAndPostNotification(updatedBaseNotificationModel)
@@ -221,9 +229,9 @@ class PushController(val context: Context) : CoroutineScope {
             }
         } catch (e: Exception) {
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "exception",
-                    "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
-                    "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         }
     }
 
@@ -289,10 +297,9 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel){
-        when (
-            NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
-                baseNotificationModel.channelName
-            )) {
+        when (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
+            baseNotificationModel.channelName
+        )) {
             NotificationSettingsUtils.NotificationMode.ENABLED -> {
                 IrisAnalyticsEvents.sendPushEvent(
                     context,
