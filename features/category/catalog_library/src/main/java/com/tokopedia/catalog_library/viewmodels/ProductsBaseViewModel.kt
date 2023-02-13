@@ -72,6 +72,7 @@ class ProductsBaseViewModel @Inject constructor(
     ): CatalogLibraryDataModel {
         return CatalogLibraryDataModel(
             getProductsVisitableList(
+                data.catalogGetList.categoryName,
                 data.catalogGetList.catalogsProduct,
                 page
             )
@@ -79,15 +80,21 @@ class ProductsBaseViewModel @Inject constructor(
     }
 
     private fun getProductsVisitableList(
+        categoryName: String,
         catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
         page: Int = 1
     ): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        val title = if (categoryName == "") {
+            CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE
+        } else {
+            "Semua katalog ${categoryName.lowercase()}"
+        }
         if (page == 1) {
             val productHeaderModel = CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
-                CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE,
+                title,
                 null
             )
             visitableList.add(productHeaderModel)
