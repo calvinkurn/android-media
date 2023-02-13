@@ -33,7 +33,7 @@ class PayLaterSimulationTenureAdapter(
                 PayLaterSimulationTenureViewHolder.getViewHolder(inflater, parent) { pos ->
                     if (isTenureSelectionChanged(pos)) {
                         showPayLaterOption(
-                            tenureItemList[pos].simulationList!!,
+                            tenureItemList[pos].simulationList ?: arrayListOf(),
                             tenureItemList[pos].tenure.orZero(),
                             tenureItemList[pos].promoName,
                         )

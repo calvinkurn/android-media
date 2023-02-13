@@ -67,7 +67,7 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
 
     private fun setLabelTextColor(label: SimulationUiModel.LabelUiModel) {
         when (label.textColor) {
-            "white" -> {
+            COLOR_WHITE_STRING -> {
                 view.labelInstallment.setTextColor(
                     ContextCompat.getColor(
                         view.context,
@@ -88,12 +88,14 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
 
     private fun getLabelColor(label: SimulationUiModel.LabelUiModel): Int {
         return when (label.bgColor) {
-            "red" -> com.tokopedia.unifycomponents.R.color.Unify_RN500
+            COLOR_RED_STRING -> com.tokopedia.unifycomponents.R.color.Unify_RN500
             else -> com.tokopedia.unifycomponents.R.color.Unify_RN500
         }
     }
 
     companion object {
+        private const val COLOR_RED_STRING = "red"
+        private const val COLOR_WHITE_STRING = "white"
         val LAYOUT_ID = R.layout.paylater_simulation_tenure_item
 
         fun getViewHolder(
