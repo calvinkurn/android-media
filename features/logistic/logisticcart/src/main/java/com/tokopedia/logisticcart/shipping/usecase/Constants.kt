@@ -125,6 +125,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
               text_detail
               url_detail
               icon_url
+              url_text
             }
             mvc {
               is_mvc
