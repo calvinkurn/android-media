@@ -47,7 +47,6 @@ import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.tracker.ProductListPageTracker
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class ProductListFragment : BaseDaggerFragment() {
@@ -182,7 +181,9 @@ class ProductListFragment : BaseDaggerFragment() {
             tracker.sendButtonContinueClickEvent(pageMode ?: return@setOnClickListener)
             viewModel.processEvent(ProductListEvent.TapContinueButton)
         }
-        binding?.btnBack?.setOnClickListener { backToPreviousPage() }
+        binding?.btnBack?.setOnClickListener {
+            viewModel.processEvent(ProductListEvent.TapBackButton)
+        }
     }
 
     private fun setupCheckbox() {
@@ -234,12 +235,15 @@ class ProductListFragment : BaseDaggerFragment() {
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
             is ProductListEffect.RedirectToPreviousPage -> redirectToPreviousPage(effect.selectedProductCount, effect.pageMode)
+            is ProductListEffect.TapBackButton -> {
+                tracker.sendClickBackButtonEvent(effect.originalPageMode)
+            }
         }
     }
 
     private fun redirectToPreviousPage(selectedProductCount: Int, pageMode: PageMode) {
         if (selectedProductCount.isZero()) {
-            tracker.sendClickToolbarBackButtonEvent(pageMode)
+            tracker.sendClickBackButtonEvent(pageMode)
         } else {
             tracker.sendClickToolbarBackButtonWithProductSelectedEvent(pageMode)
         }

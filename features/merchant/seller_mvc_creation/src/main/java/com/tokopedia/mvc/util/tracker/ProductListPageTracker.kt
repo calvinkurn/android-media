@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class ProductListPageTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun sendClickToolbarBackButtonEvent(pageMode: PageMode) {
+    fun sendClickBackButtonEvent(pageMode: PageMode) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click kembali arrow - fourth step")
