@@ -36,7 +36,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     @Provides
     @CMNotificationScope
     fun provideUserSession(
-        @CMNotificationContext context: Context
+            @CMNotificationContext context: Context
     ): UserSessionInterface {
         return UserSession(context)
     }
@@ -50,7 +50,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     @Provides
     @CMNotificationScope
     fun provideGraphqlUseCase(
-        repository: GraphqlRepository
+            repository: GraphqlRepository
     ): GraphqlUseCase<AttributionNotifier> {
         return GraphqlUseCase(repository)
     }
@@ -58,9 +58,9 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     @Provides
     @CMNotificationScope
     fun provideAtcUseCase(
-        useCase: RxUseCase,
-        mapper: AddToCartDataMapper,
-        chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+            useCase: RxUseCase,
+            mapper: AddToCartDataMapper,
+            chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
     ): AddToCartUseCase {
         return AddToCartUseCase(useCase, mapper, chosenAddressAddToCartRequestHelper)
     }
@@ -68,8 +68,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     @Provides
     @CMNotificationScope
     fun provideAttributionUseCase(
-        useCase: GraphqlUseCase<AttributionNotifier>,
-        @Named(ATTRIBUTION_QUERY) query: String
+            useCase: GraphqlUseCase<AttributionNotifier>,
+            @Named(ATTRIBUTION_QUERY) query: String
     ): AttributionUseCase {
         return AttributionUseCase(useCase, query)
     }
@@ -77,8 +77,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     @Provides
     @CMNotificationScope
     fun provideAmplificationUseCase(
-        useCase: GraphqlUseCase<AmplificationNotifier>,
-        @Named(AMPLIFICATION_QUERY) query: String
+            useCase: GraphqlUseCase<AmplificationNotifier>,
+            @Named(AMPLIFICATION_QUERY) query: String
     ): AmplificationUseCase {
         return AmplificationUseCase(useCase, query)
     }
@@ -86,8 +86,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     @Provides
     @CMNotificationScope
     fun provideDataManager(
-        attributionUseCase: AttributionUseCase,
-        atcProductUseCase: AddToCartUseCase
+            attributionUseCase: AttributionUseCase,
+            atcProductUseCase: AddToCartUseCase
     ): DataManager {
         return DataManager(
                 attributionUseCase,
