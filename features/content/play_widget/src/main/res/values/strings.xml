@@ -31,4 +31,9 @@
     <!--Play Widget Promo-->
     <string name="play_widget_only_live_promo">Hanya saat LIVE</string>
 
+    <!-- Play Widget Action Menu Bottom Sheet -->
+    <string name="play_widget_action_menu_delete_video">Hapus video</string>
+    <string name="play_widget_action_menu_copy_link">Salin link</string>
+    <string name="play_widget_action_menu_see_performance">Lihat Performa</string>
+
 </resources>

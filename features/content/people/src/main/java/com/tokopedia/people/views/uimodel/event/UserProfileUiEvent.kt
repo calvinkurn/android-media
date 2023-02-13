@@ -1,5 +1,7 @@
 package com.tokopedia.people.views.uimodel.event
 
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
@@ -20,4 +22,6 @@ sealed interface UserProfileUiEvent {
     data class BlockingUserState(val throwable: Throwable): UserProfileUiEvent
 
     data class ErrorDeleteChannel(val throwable: Throwable) : UserProfileUiEvent
+
+    data class OpenPlayVideoActionMenu(val channel: PlayWidgetChannelUiModel) : UserProfileUiEvent
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.bottomsheet
+package com.tokopedia.play.widget.ui.bottomsheet
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -18,22 +18,29 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.BottomsheetPlayWidgetSellerActionListBinding
-import com.tokopedia.shop.databinding.ItemPlayWidgetSellerActionListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.databinding.BottomsheetPlayWidgetSellerActionListBinding
+import com.tokopedia.play.widget.databinding.ItemPlayWidgetSellerActionListBinding
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by jegul on 04/11/20
  */
-class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
+class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
 
     private val adapter = Adapter()
 
     private var rvActionList: RecyclerView? = null
+
     private var viewBinding by autoClearedNullable<BottomsheetPlayWidgetSellerActionListBinding>()
+
+    private var mListener: Listener? = null
+
+    private var mChannel: PlayWidgetChannelUiModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
@@ -52,15 +59,19 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
+        setupActionMenu()
     }
 
-    fun setActionList(actionList: List<Action>) {
-        adapter.setActionList(actionList)
-        adapter.notifyDataSetChanged()
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    fun setChannel(channel: PlayWidgetChannelUiModel) {
+        mChannel = channel
     }
 
     fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+        if(!isAdded) showNow(fragmentManager, TAG)
     }
 
     private fun setupView(view: View) {
@@ -68,8 +79,70 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
         rvActionList?.addItemDecoration(ItemDecoration(view.context))
     }
 
+    private fun setupActionMenu() {
+        mChannel?.let { channel ->
+            val actionList = mutableListOf<Action>()
+            if (channel.share.isShow) {
+                actionList.add(
+                    Action(
+                        com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                        MethodChecker.getColor(
+                            requireContext(),
+                            com.tokopedia.unifyprinciples.R.color.Unify_N400
+                        ),
+                        getString(R.string.play_widget_action_menu_copy_link)
+                    ) {
+                        mListener?.onClickShare(channel)
+                    }
+                )
+            }
+            if (channel.performanceSummaryLink.isNotBlank() && channel.performanceSummaryLink.isNotEmpty()) {
+                actionList.add(
+                    Action(
+                        R.drawable.ic_play_widget_sgc_performance,
+                        MethodChecker.getColor(
+                            requireContext(),
+                            com.tokopedia.unifyprinciples.R.color.Unify_N400
+                        ),
+                        getString(R.string.play_widget_action_menu_see_performance)
+                    ) {
+                        mListener?.onClickSeePerformance(channel)
+                    }
+                )
+            }
+            actionList.add(
+                Action(
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                    MethodChecker.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_N400
+                    ),
+                    getString(R.string.play_widget_action_menu_delete_video)
+                ) {
+                    mListener?.onClickDeleteVideo(channel)
+                }
+            )
+
+            adapter.setActionList(actionList)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
     companion object {
         private const val TAG = "PlayActionListBottomSheet"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader
+        ): PlayWidgetActionMenuBottomSheet {
+            val existing = fragmentManager.findFragmentByTag(TAG) as? PlayWidgetActionMenuBottomSheet
+            if (existing != null) return existing
+
+            return fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                PlayWidgetActionMenuBottomSheet::class.java.name
+            ) as PlayWidgetActionMenuBottomSheet
+        }
     }
 
     internal class Adapter : RecyclerView.Adapter<ViewHolder>() {
@@ -118,7 +191,7 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
 
     internal class ItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-        private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_widget_seller_action_divider_height)
+        private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_widget_action_divider_height)
 
         private val mPaint = Paint().apply {
             color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
@@ -158,4 +231,10 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
         val subtitle: String,
         val onClick: () -> Unit
     )
+
+    interface Listener {
+        fun onClickShare(channel: PlayWidgetChannelUiModel)
+        fun onClickSeePerformance(channel: PlayWidgetChannelUiModel)
+        fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel)
+    }
 }

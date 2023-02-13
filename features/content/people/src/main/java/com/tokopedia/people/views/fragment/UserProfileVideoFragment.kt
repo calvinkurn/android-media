@@ -38,6 +38,7 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.viewholder.PlayVideoViewHolder
+import com.tokopedia.play.widget.ui.bottomsheet.PlayWidgetActionMenuBottomSheet
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.user.session.UserSessionInterface
@@ -219,6 +220,29 @@ class UserProfileVideoFragment @Inject constructor(
                         }
 
                         view?.showErrorToast(message)
+                    }
+                    is UserProfileUiEvent.OpenPlayVideoActionMenu -> {
+                        val bottomSheet = PlayWidgetActionMenuBottomSheet.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        )
+
+                        bottomSheet.setChannel(event.channel)
+                        bottomSheet.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
+                            override fun onClickShare(channel: PlayWidgetChannelUiModel) {
+
+                            }
+
+                            override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
+
+                            }
+
+                            override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
+
+                            }
+                        })
+
+                        bottomSheet.show(childFragmentManager)
                     }
                 }
             }

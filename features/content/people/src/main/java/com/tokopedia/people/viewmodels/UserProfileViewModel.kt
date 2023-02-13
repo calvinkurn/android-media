@@ -155,6 +155,7 @@ class UserProfileViewModel @AssistedInject constructor(
             UserProfileAction.UnblockUser -> handleUnblockUser()
             is UserProfileAction.DeletePlayChannel -> handleDeletePlayChannel(action.channel)
             is UserProfileAction.UpdatePlayChannelInfo -> handleUpdatePlayChannelInfo(action.channelId, action.totalView, action.isReminderSet)
+            is UserProfileAction.ClickPlayVideoMenuAction -> handleClickPlayVideoMenuAction(action.channel)
         }
     }
 
@@ -461,6 +462,12 @@ class UserProfileViewModel @AssistedInject constructor(
                 }
             }
         }) { }
+    }
+
+    private fun handleClickPlayVideoMenuAction(channel: PlayWidgetChannelUiModel) {
+        launchCatchError(block = {
+            _uiEvent.emit(UserProfileUiEvent.OpenPlayVideoActionMenu(channel))
+        }) {}
     }
 
     /** Helper */

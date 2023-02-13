@@ -122,11 +122,8 @@
     <string name="shop_page_play_widget_sgc_video_deleted">Video telah dihapus.</string>
     <string name="shop_page_play_widget_sgc_video_saved_success">Yay, video berhasil disimpan!</string>
     <string name="shop_page_play_widget_sgc_video_saved_fail">Ada sedikit kendala pada sistem.</string>
-    <string name="shop_page_play_widget_sgc_delete_video">Hapus video</string>
     <string name="shop_page_play_widget_sgc_try_again">Coba Lagi</string>
-    <string name="shop_page_play_widget_sgc_copy_link">Salin link</string>
     <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
-    <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
     <string name="shop_page_broadcast_creation_label">Buat Live</string>
     <string name="shop_page_shorts_creation_label">Buat Shorts Video</string>
     <string name="shop_page_start_create_content">Yuk, Mulai</string>
