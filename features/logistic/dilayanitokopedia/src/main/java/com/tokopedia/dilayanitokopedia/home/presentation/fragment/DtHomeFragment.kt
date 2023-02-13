@@ -252,7 +252,7 @@ class DtHomeFragment :
                 /**
                  * minimize when clicked anchor tab, exclude first position
                  */
-                if (statusBarState == AnchorTabStatus.MAXIMIZE && scrollPosition != 1) {
+                if (statusBarState == AnchorTabStatus.MAXIMIZE) {
                     setAnchorTabMinimize()
                 }
 
