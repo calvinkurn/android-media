@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -49,6 +50,11 @@ class FeedFragment : BaseDaggerFragment() {
         initView()
     }
 
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+
     override fun initInjector() {
 //        TODO("Not yet implemented")
     }
@@ -57,7 +63,7 @@ class FeedFragment : BaseDaggerFragment() {
 
     private fun initView() {
         binding?.let {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = FeedPostAdapter(FeedAdapterTypeFactory())
 
             LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)

@@ -15,6 +15,15 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:background="@color/black" />
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/bottomsheetunify_overlay"
+        app:layout_constraintBottom_toBottomOf="@id/view_feed_tab_indicator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_feed_create_post"
         android:layout_width="28dp"

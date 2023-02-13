@@ -54,6 +54,11 @@ class FeedBaseFragment : BaseDaggerFragment() {
         initView()
     }
 
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+
     override fun initInjector() {
         FeedMainInjector.get(requireContext()).inject(this)
     }
@@ -70,16 +75,16 @@ class FeedBaseFragment : BaseDaggerFragment() {
             it.rvFeedTabItemsContainer.adapter = adapter
 
             it.rvFeedTabItemsContainer.addOnScrollListener(object :
-                    RecyclerView.OnScrollListener() {
-                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                            linearLayoutManager?.let { lm ->
-                                val position = lm.findFirstVisibleItemPosition()
-                                onChangeTab(position)
-                            }
+                RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        linearLayoutManager?.let { lm ->
+                            val position = lm.findFirstVisibleItemPosition()
+                            onChangeTab(position)
                         }
                     }
-                })
+                }
+            })
 
             it.tyFeedForYouTab.setOnClickListener { _ ->
                 it.rvFeedTabItemsContainer.smoothScrollToPosition(TAB_FOR_YOU_INDEX)
