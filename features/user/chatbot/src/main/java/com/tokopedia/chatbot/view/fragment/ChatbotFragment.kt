@@ -494,7 +494,7 @@ class ChatbotFragment :
             } else {
                 isSendButtonActivated = false
 
-                smallReplyBox?.disableSendButton()
+                disableSendButton()
                 isFloatingSendButton = true
                 val labelType = InvoiceStatusLabelHelper.getLabelType(hashMap[STATUS_COLOR])
 
@@ -607,6 +607,7 @@ class ChatbotFragment :
 
         smallReplyBox?.bindCommentTextBackground()
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
+        smallReplyBox?.listener = this
 
         setUpBigReplyBoxListeners()
         replyBubbleOnBoardingHasBeenShow = replyBubbleOnBoarding.hasBeenShown()
@@ -2180,12 +2181,12 @@ class ChatbotFragment :
 
     override fun disableSendButton() {
         isSendButtonActivated = false
-        smallReplyBox?.disableSendButton()
+        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
     }
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-        smallReplyBox?.enableSendButton()
+        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send)
     }
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
