@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DateUtil {
-    private static final String TIME_FORMAT = "ddmmyyhhmm";
+    private static final String TIME_FORMAT = "ddMMyyHHmm";
 
     public static String getCurrentTime() {
         Date currentSystemTime = Calendar.getInstance().getTime();
