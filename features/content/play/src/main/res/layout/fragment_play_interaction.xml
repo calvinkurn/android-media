@@ -75,7 +75,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl8"
-        app:layout_constraintBottom_toBottomOf="@id/view_product_see_more"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
         />
 
     <include
