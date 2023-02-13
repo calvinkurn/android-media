@@ -39,6 +39,7 @@
         app:layout_constraintStart_toStartOf="@id/view_background"
         app:layout_constraintTop_toBottomOf="@id/view_background"
         app:typographyType="display_3"
-        tools:text="TitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitle" />
+        android:breakStrategy="simple"
+        tools:text="Air conditioner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,6 +41,7 @@
         app:layout_constraintStart_toStartOf="@id/view_background"
         app:layout_constraintTop_toBottomOf="@id/view_background"
         app:typographyType="display_3"
+        android:breakStrategy="simple"
         tools:text="TitleTitleTitleTitleTitleTitleTitleTitleTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
