@@ -26,11 +26,8 @@ class PlayAffiliateTnCBottomSheet : BottomSheetUnify() {
     private val binding: BottomSheetPlayAffiliateTncBinding
         get() = _binding!!
 
-    private val boldSpan: StyleSpan
-        get() = StyleSpan(Typeface.BOLD)
-
-    private val colorSpan: ForegroundColorSpan
-        get() = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyPrinciplesR.color.Unify_GN500))
+    private val boldSpan = StyleSpan(Typeface.BOLD)
+    private val colorSpan = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyPrinciplesR.color.Unify_GN500))
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
