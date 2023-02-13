@@ -1174,34 +1174,6 @@ class ShopPageProductListResultFragment :
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaAction = {
-                goToWishlist()
-            }
-        )
-        shopProductAdapter.updateWishListStatus(productId, true)
-    }
-
-    private fun onErrorRemoveWishlist(errorMessage: String) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaAction = {}
-        )
-        shopProductAdapter.updateWishListStatus(productId, false)
-    }
-
-    private fun onErrorAddWishList(errorMessage: String) {
-        onErrorAddToWishList(MessageErrorException(errorMessage))
-    }
-
     private fun onErrorAddToWishList(e: Throwable) {
         if (!viewModel.isLogin) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -1282,10 +1254,6 @@ class ShopPageProductListResultFragment :
                 productId = shopProductUiModel.id ?: ""
             )
         )
-    }
-
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
@@ -1593,7 +1561,6 @@ class ShopPageProductListResultFragment :
 
         private val GRID_SPAN_COUNT = 2
         private const val SORT_NEWEST = "1"
-        private const val ALREADY_FOLLOW_SHOP = 1
         private const val PRODUCT_INELIGIBLE = "ineligible"
 
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"

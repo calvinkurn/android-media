@@ -158,14 +158,14 @@ class PlayModule(val mContext: Context) {
         @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers,
-        localCacheHandler: LocalCacheHandler,
+        localCacheHandler: LocalCacheHandler
     ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
             dispatchers,
             context,
-            localCacheHandler,
+            localCacheHandler
         )
     }
 

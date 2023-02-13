@@ -46,6 +46,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
+    implementation rootProject.ext.miscDependencies.workManager
+
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     //Test

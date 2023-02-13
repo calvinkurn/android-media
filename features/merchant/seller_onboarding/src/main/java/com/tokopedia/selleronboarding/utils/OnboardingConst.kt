@@ -21,5 +21,6 @@ object OnboardingConst {
         const val IMG_SOB_WIDGET_ANDROID = TokopediaImageUrl.IMG_SOB_WIDGET_ANDROID
         const val IMG_SMART_REPLY = TokopediaImageUrl.IMG_SMART_REPLY
         const val IMG_SOB_HOME = TokopediaImageUrl.IMG_SOB_HOME
+        const val BG_THEMATIC_RAMADAN = TokopediaImageUrl.BG_THEMATIC_RAMADAN
     }
 }

@@ -2,10 +2,16 @@ package com.tokopedia.media.picker.ui.activity.album
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.picker.data.entity.Album
-import com.tokopedia.media.picker.data.repository.AlbumRepository
+import com.tokopedia.media.picker.data.repository.BucketAlbumRepository
+import com.tokopedia.media.util.test
+import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -14,7 +20,7 @@ class AlbumViewModelTest {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private val dispatcher = CoroutineTestDispatchersProvider
-    private val albumRepository = mockk<AlbumRepository>(relaxed = true)
+    private val albumRepository = mockk<BucketAlbumRepository>(relaxed = true)
 
     private val viewModel = AlbumViewModel(
         albumRepository,
@@ -22,32 +28,54 @@ class AlbumViewModelTest {
     )
 
     @Test
-    fun `it should be get album list correctly`() {
+    fun `it should be get album list correctly`() = runBlocking {
         // given
-        coEvery {
-            albumRepository(Unit)
-        } returns mockAlbumList
+        every { albumRepository() } returns flow {
+            emit(mockAlbumList)
+        }
 
         // when
-        viewModel.fetch()
+        viewModel.getAlbums()
 
         // then
-        val result = viewModel.albums.value
-        assert(mockAlbumList.size == result?.size)
+        viewModel.getAlbums().test {
+            assert(mockAlbumList.size == awaitItem().size)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `loading state should be invoke when fetch album data`() {
+    fun `it should be get empty album list correctly`() = runBlocking {
         // given
-        coEvery {
-            albumRepository(Unit)
-        } returns mockAlbumList
+        every { albumRepository() } returns flow {
+            emit(emptyList<Album>())
+        }
 
         // when
-        viewModel.fetch()
+        viewModel.getAlbums()
 
         // then
-        assert(viewModel.isLoading.value != null)
+        viewModel.getAlbums().test {
+            assert(awaitItem().isEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `loading state should be invoke when fetch album data`() = runBlocking {
+        // given
+        every { albumRepository() } returns flow {
+            emit(mockAlbumList)
+        }
+
+        // when
+        viewModel.getAlbums()
+
+        // then
+        viewModel.getAlbums().test {
+            assert(viewModel.isLoading.value != null)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     companion object {
