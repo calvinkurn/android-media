@@ -25,18 +25,4 @@
     <!--EXPLICIT PROFILE-->
     <string name="explicit_failed_title">Konten gagal ditampilkan</string>
     <string name="explicit_failed_subtitle">Klik ikon di samping buat coba lagi.</string>
-    <string name="explicit_succes_message">Rekomendasi yang lebih baik akan segera datang untukmu. Lihat detail</string>
-    <string name="explicit_succes_message_action">Lihat detail</string>
-    <string name="explicit_error_attribute">
-      TEMPLATE NAME, PAGE NAME, PAGE PATH or PAGE TYPE are NULL! You must declare its!\n
-      if you use xml, please declare\n
-      example:\n
-      app:template_name="PUT_YOUR_TEMPLATE_NAME"\n
-      app:page_name="PUT_YOUR_PAGE_NAME"\n
-      app:page_path="PUT_YOUR_PAGE_PATH"\n
-      app:page_type="PUT_YOUR_PAGE_TYPE"\n
-      if you create from programmatically please put your TEMPLATE NAME, PAGE NAME, PAGE PATH or PAGE TYPE in AttributeSet or when create view\n
-      example:\n
-      val explicitView = ExplicitView(context, attrs, "PUT_YOUR_TEMPLATE_NAME", "PUT_YOUR_PAGE_NAME", "PUT_YOUR_PAGE_PATH", "PUT_YOUR_PAGE_TYPE")
-    </string>
 </resources>

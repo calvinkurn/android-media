@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -87,7 +89,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/heading_price"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -147,7 +149,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/price"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="16dp"
@@ -167,7 +169,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/state_atc"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="16dp"

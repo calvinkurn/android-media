@@ -29,16 +29,33 @@ data class FeedDetailProductModel (
         val shopName: String ,
         var feedType: String = "",
         var positionInFeed: Int = 0 ,
-        var postId: Int = 0,
+        var postId: String = "",
         var postType: String = "",
         var isFollowed:Boolean = false,
         var description:String = "",
         var isTopads:Boolean = false,
         var adClickUrl:String = "",
-        var playChannelId: String = ""
+        var playChannelId: String = "",
+        val saleType: String = "",
+        val saleStatus: String = "",
+        var isWishlisted: Boolean = false
 ) : Visitable<FeedPlusDetailTypeFactory> {
-    override fun type(typeFactory: FeedPlusDetailTypeFactory): Int {
-        return typeFactory.type(this)
-    }
+        override fun type(typeFactory: FeedPlusDetailTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+
+        val isUpcoming: Boolean
+                get() = saleStatus == UPCOMING
+        val isOngoing: Boolean
+                get() = saleStatus == ONGOING
+        val isRilisanSpl: Boolean
+                get() = saleType == ASGC_RILISAN_SPECIAL
+
+        companion object {
+                const val UPCOMING = "upcoming"
+                private const val ONGOING = "ongoing"
+                private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
+
+        }
 }
 

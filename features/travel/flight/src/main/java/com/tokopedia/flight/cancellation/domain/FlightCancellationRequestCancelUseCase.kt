@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
 
 /**
@@ -37,7 +38,7 @@ class FlightCancellationRequestCancelUseCase @Inject constructor(
                     PARAM_DATA to mapOf(
                             PARAM_INVOICE_ID to invoiceId,
                             PARAM_REASON to reason,
-                            PARAM_REASON_ID to reasonId.toInt(),
+                            PARAM_REASON_ID to reasonId.toIntSafely(),
                             PARAM_ATTACHMENT to arrayListOf<String>(),
                             PARAM_DETAIL to transform(cancellationList)
                     )

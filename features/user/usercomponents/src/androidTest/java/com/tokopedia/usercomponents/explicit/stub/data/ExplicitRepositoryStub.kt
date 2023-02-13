@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 class ExplicitRepositoryStub @Inject constructor() : GraphqlRepository {
 
-    private var _state: TestState = TestState.HIDE_QUESTION
+    private var _state: ExplicitRepositoryState = ExplicitRepositoryState.HIDE_QUESTION
 
-    fun setState(state: TestState) {
+    fun setState(state: ExplicitRepositoryState) {
         _state = state
     }
 
@@ -23,8 +23,8 @@ class ExplicitRepositoryStub @Inject constructor() : GraphqlRepository {
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse =
         when (_state) {
-            TestState.HIDE_QUESTION -> createResponseFromJson<QuestionDataModel>(R.raw.response_get_question_failed)
-            TestState.SHOW_QUESTION -> createResponseFromJson<QuestionDataModel>(R.raw.response_get_question_success)
-            TestState.SUBMIT_QUESTION_SUCCESS -> createResponseFromJson<AnswerDataModel>(R.raw.response_save_question_success)
+            ExplicitRepositoryState.HIDE_QUESTION -> createResponseFromJson<QuestionDataModel>(R.raw.response_get_question_failed)
+            ExplicitRepositoryState.SHOW_QUESTION -> createResponseFromJson<QuestionDataModel>(R.raw.response_get_question_success)
+            ExplicitRepositoryState.SUBMIT_QUESTION_SUCCESS -> createResponseFromJson<AnswerDataModel>(R.raw.response_save_question_success)
         }
 }

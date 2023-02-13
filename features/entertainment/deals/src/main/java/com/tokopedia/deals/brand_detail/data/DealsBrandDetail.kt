@@ -95,10 +95,11 @@ data class Product(
         val displayTags : String = "",
         @SerializedName("mrp")
         @Expose
-        val mrp : Int = 0,
+        val mrp : Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("sales_price")
         @Expose
-        val salesPrice : Int = 0,
+        val salesPrice : Long = 0,
         @SerializedName("priority")
         @Expose
         val priority : Int = 0,

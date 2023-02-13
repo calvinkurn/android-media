@@ -16,8 +16,11 @@ class UserProfileAnalytics {
             get() = TrackApp.getInstance().gtm
 
         val currentSite: String
-            get() = if (GlobalConfig.isSellerApp()) Constants.TOKOPEDIA_SELLER
-            else Constants.TOKOPEDIA_MARKETPLACE
+            get() = if (GlobalConfig.isSellerApp()) {
+                Constants.TOKOPEDIA_SELLER
+            } else {
+                Constants.TOKOPEDIA_MARKETPLACE
+            }
     }
 
     object Function {
@@ -32,8 +35,10 @@ class UserProfileAnalytics {
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
         const val BUSINESS_UNIT = "businessUnit"
+        const val KEY_TRACKER_ID = "trackerId"
         const val CURRENT_SITE = "currentSite"
         const val SESSION_IRIS = "sessionIris"
+        const val TRACKER_ID = "trackerId"
         const val CREATIVE = "creative"
         const val POSITION = "position"
         const val ID = "id"
@@ -57,6 +62,7 @@ class UserProfileAnalytics {
         const val NOT_LIVE = "not live"
         const val VOD = "vod"
         const val LAIN_KALI = "Lain Kali"
+        const val PLAY = "play"
     }
 
     object Event {
@@ -66,9 +72,10 @@ class UserProfileAnalytics {
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_HOME_PAGE = "viewHomepageIris"
         const val EVENT_CLICK_HOME_PAGE = "clickHomepage"
+        const val EVENT_CLICK_CONTENT = "clickContent"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
-
+        const val EVENT_VIEW_CONTENT_IRIS = "viewContentIris"
     }
 
     object ScreenName {
@@ -126,7 +133,6 @@ class UserProfileAnalytics {
             "click - lanjut on onboarding bottomsheet without username"
         const val CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE = "click - ubah profile"
         const val CLICK_USER = "click - user"
-
     }
 
     object Category {

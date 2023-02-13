@@ -6,9 +6,9 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.usecase.coroutines.Success
 
 class BuyerOrderDetailToolbarMenu @JvmOverloads constructor(
         context: Context,
@@ -33,12 +33,17 @@ class BuyerOrderDetailToolbarMenu @JvmOverloads constructor(
 
     private fun setClickListeners() {
         chatIcon?.setOnClickListener {
-            viewModel?.buyerOrderDetailResult?.value?.let {
-                if (it is Success) {
-                    navigator?.goToAskSeller(it.data)
+            viewModel?.buyerOrderDetailUiState?.value?.let { uiState ->
+                if (uiState is BuyerOrderDetailUiState.HasData) {
+                    navigator?.goToAskSeller(
+                        orderStatusUiModel = uiState.orderStatusUiState.data,
+                        productListUiModel = uiState.productListUiState.data,
+                        paymentInfoUiModel = uiState.paymentInfoUiState.data
+                    )
                     BuyerOrderDetailTracker.eventClickChatIcon(
-                            it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId,
-                            it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
+                        orderStatusCode = uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderStatusId,
+                        orderId = uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderId
+                    )
                 }
             }
         }

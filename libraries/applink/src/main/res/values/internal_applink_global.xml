@@ -10,8 +10,6 @@
     <string name="path_change_inactive_phone">/change-inactive-phone</string>
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
-    <string name="path_liveness_detection">/liveness-detection</string>
-    <string name="path_telephony_masking">/telephony-masking</string>
 
     <string name="path_inbox_talk">/inbox-talk</string>
     <string name="path_product_talk">/product-talk/.*\\/</string>
@@ -19,9 +17,6 @@
     <string name="path_add_talk">/add-talk</string>
     <string name="path_talk_seller_settings">/talk-seller-settings/</string>
     <string name="path_shop_talk">/shop-talk/.*\\/</string>
-    <string name="path_user_identification_info">/user-identification-info</string>
-    <string name="path_user_identification_form">/user-identification-form</string>
-    <string name="path_user_identification_only">/user-identification-only</string>
     <string name="path_change_phone_number">/change-phone-number</string>
     <string name="path_silent_verif">/silent-verification</string>
     <string name="path_otp_validator">/otp-validator</string>
@@ -45,17 +40,16 @@
     <string name="path_home_account_old" translatable="false">/account-home-old</string>
     <string name="path_youtube_video" translatable="false">/youtube-video</string>
 
-    <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
-
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
     <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
 
     <string name="path_chat">/topchat</string>
     <string name="path_chat_room" translatable="false">/topchat/.*\</string>
+    <string name="path_chat_report" translatable="false">/chat/report</string>
+    <string name="path_chat_bubble_activation" translatable="false">/bubble-activation</string>
 
 
     <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
-    <string name="path_manage_notification">/manage-notification</string>
 
 
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
@@ -66,11 +60,6 @@
     <string name="path_screen_recorder">/screen-recorder</string>
 
     <string name="path_internal_feedback">/internal-feedback</string>
-
-    <!-- Ovo Register -->
-    <string name="path_ovo_add_name">/ovo-add-name</string>
-    <string name="path_ovo_final_page">/ovo-final-page</string>
-    <string name="path_ovo_regis_init">/ovo-reg-init</string>
 
     <string name="path_image_picker_insta">/image-picker/v2/</string>
     <string name="up_path_user_profile_follower">/people/followers/</string>

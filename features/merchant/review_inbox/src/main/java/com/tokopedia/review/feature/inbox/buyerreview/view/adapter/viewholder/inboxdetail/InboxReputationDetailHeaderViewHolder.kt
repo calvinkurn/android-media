@@ -206,9 +206,8 @@ class InboxReputationDetailHeaderViewHolder(
             userReputationView?.visibility = View.GONE
             shopReputationView?.visibility = View.VISIBLE
             shopReputationView?.setValue(
-                element.revieweeBadgeSellerUiModel.reputationBadge.set,
-                element.revieweeBadgeSellerUiModel.reputationBadge.level,
-                element.revieweeBadgeSellerUiModel.score.toString()
+                element.revieweeBadgeSellerUiModel.reputationBadgeUrl,
+                element.revieweeBadgeSellerUiModel.score
             )
         }
     }

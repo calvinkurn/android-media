@@ -9,14 +9,20 @@ android {
         viewBinding true
     }
     def pathSources = "src/main/res/"
+    def searchPath = "/search/"
     sourceSets {
         main {
             res.srcDirs = [
                     pathSources,
+                    pathSources + 'common',
                     pathSources + 'home',
                     pathSources + 'merchant',
                     pathSources + 'purchase',
-                    pathSources + 'ordertracking'
+                    pathSources + 'ordertracking',
+                    pathSources + searchPath + 'common',
+                    pathSources + searchPath + 'searchbar',
+                    pathSources + searchPath + 'initialstate',
+                    pathSources + searchPath + 'searchresult'
             ]
         }
     }
@@ -52,6 +58,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -83,6 +91,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.total_amount
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.loader_dialog
+    implementation rootProject.ext.unifyDependencies.iconNotification
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

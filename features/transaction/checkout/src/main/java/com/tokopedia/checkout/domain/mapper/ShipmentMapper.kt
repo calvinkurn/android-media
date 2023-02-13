@@ -8,6 +8,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellI
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
@@ -18,12 +19,15 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
+import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
@@ -42,6 +46,11 @@ import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -67,6 +76,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -102,7 +112,7 @@ class ShipmentMapper @Inject constructor() {
                     DISABLED_CROSS_SELL -> isDisableCrossSell = true
                 }
             }
-
+            epharmacyData = mapEpharmacyData(shipmentAddressFormDataResponse.imageUpload)
             keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
             keroToken = shipmentAddressFormDataResponse.keroToken
             keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime
@@ -139,7 +149,22 @@ class ShipmentMapper @Inject constructor() {
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
             addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
             upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
+            newUpsell = mapUpsell(shipmentAddressFormDataResponse.newUpsell)
+            cartData = shipmentAddressFormDataResponse.cartData
+            coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
         }
+    }
+
+    private fun mapEpharmacyData(imageUpload: ImageUploadResponse): EpharmacyData {
+        return EpharmacyData(
+            showImageUpload = imageUpload.showImageUpload,
+            uploadText = imageUpload.text,
+            leftIconUrl = imageUpload.leftIconUrl,
+            checkoutId = imageUpload.checkoutId,
+            frontEndValidation = imageUpload.frontEndValidation,
+            consultationFlow = imageUpload.consultationFlow,
+            rejectedWording = imageUpload.rejectedWording
+        )
     }
 
     private fun mapTickerData(it: Ticker): TickerData {
@@ -179,6 +204,7 @@ class ShipmentMapper @Inject constructor() {
                         unblockingErrorMessage = it.unblockingErrors.joinToString()
                         shippingId = it.shippingId
                         spId = it.spId
+                        boCode = it.boCode
                         dropshipperName = it.dropshiper.name
                         dropshipperPhone = it.dropshiper.telpNo
                         isUseInsurance = it.isInsurance
@@ -228,7 +254,7 @@ class ShipmentMapper @Inject constructor() {
                             shopTypeInfoData
                     )
                     if (product.tradeInInfo.isValidTradeIn) {
-                        productPrice = product.tradeInInfo.newDevicePrice.toLong()
+                        productPrice = product.tradeInInfo.newDevicePrice
                     }
                     isError = !product.errors.isNullOrEmpty() ||
                             shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
@@ -322,6 +348,7 @@ class ShipmentMapper @Inject constructor() {
                         bundleId = "0"
                     }
                     addOnProduct = mapAddOnsData(product.addOns)
+                    ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
                 }
                 productListResult.add(productResult)
             }
@@ -433,6 +460,15 @@ class ShipmentMapper @Inject constructor() {
             isTokoNow = shop.isTokoNow
             shopTickerTitle = shop.shopTickerTitle
             shopTicker = shop.shopTicker
+            enablerLabel = mapEnablerLabel(shop.enabler)
+        }
+    }
+
+    private fun mapEnablerLabel(enablerResponse: EpharmacyEnablerResponse): String {
+        return if (enablerResponse.showLabel) {
+            enablerResponse.labelName
+        } else {
+            ""
         }
     }
 
@@ -442,6 +478,14 @@ class ShipmentMapper @Inject constructor() {
             addOnsButtonModel = mapAddOnButton(addOns.addOnButton)
             addOnsBottomSheetModel = mapAddOnBottomSheet(addOns.addOnBottomsheet)
             addOnsDataItemModelList = mapAddOnListData(addOns.addOnData)
+        }
+    }
+
+    private fun mapEthicalDrugData(addOns: EthicalDrugResponse): EthicalDrugDataModel {
+        return EthicalDrugDataModel().apply {
+            needPrescription = addOns.needPrescription
+            text = addOns.text
+            iconUrl = addOns.iconUrl
         }
     }
 
@@ -595,9 +639,9 @@ class ShipmentMapper @Inject constructor() {
     private fun mapTradeInInfoData(tradeInInfo: TradeInInfo): TradeInInfoData {
         return TradeInInfoData().apply {
             isValidTradeIn = tradeInInfo.isValidTradeIn
-            newDevicePrice = tradeInInfo.newDevicePrice
+            newDevicePrice = tradeInInfo.newDevicePrice.toLong()
             newDevicePriceFmt = tradeInInfo.newDevicePriceFmt
-            oldDevicePrice = tradeInInfo.oldDevicePrice
+            oldDevicePrice = tradeInInfo.oldDevicePrice.toLong()
             oldDevicePriceFmt = tradeInInfo.oldDevicePriceFmt
             isDropOffEnable = tradeInInfo.isDropOffEnable
             deviceModel = tradeInInfo.deviceModel
@@ -665,6 +709,7 @@ class ShipmentMapper @Inject constructor() {
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
             pomlAutoApplied = additionalInfo.pomlAutoApplied
+            bebasOngkirInfo = LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
         }
     }
 
@@ -709,6 +754,7 @@ class ShipmentMapper @Inject constructor() {
                         code = voucherOrdersItem.code
                         uniqueId = voucherOrdersItem.uniqueId
                         message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
+                        type = voucherOrdersItem.type
                     }
             )
         }
@@ -843,6 +889,9 @@ class ShipmentMapper @Inject constructor() {
             subText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.subText
             tickerText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tickerText
             tooltipText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipText
+            hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
+            hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
+            isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {
@@ -1000,6 +1049,32 @@ class ShipmentMapper @Inject constructor() {
                 upsell.description,
                 upsell.appLink,
                 upsell.image
+        )
+    }
+
+    private fun mapUpsell(upsell: NewUpsell): NewUpsellData {
+        return NewUpsellData(
+                upsell.isShow,
+                upsell.isSelected,
+                upsell.description,
+                upsell.appLink,
+                upsell.image,
+                upsell.price,
+                upsell.priceWording,
+                upsell.duration,
+                upsell.summaryInfo,
+                upsell.button.text,
+                upsell.id,
+                upsell.additionalVerticalId,
+                upsell.transactionType
+        )
+    }
+
+    private fun mapCoachmarkPlus(coachmarkPlus: CoachmarkPlusResponse): CheckoutCoachmarkPlusData {
+        return CheckoutCoachmarkPlusData(
+            isShown = coachmarkPlus.plus.isShown,
+            title = coachmarkPlus.plus.title,
+            content = coachmarkPlus.plus.content
         )
     }
 

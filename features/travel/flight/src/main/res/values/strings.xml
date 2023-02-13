@@ -1,5 +1,6 @@
 <resources>
     <string name="flight_search_return">Pulang Pergi</string>
+    <string name="flight_search_airport_departure_title">Asal</string>
     <string name="flight_search_airport_arrival_title">Tujuan</string>
     <string name="flight_search_passenger_class_title">Kelas Penerbangan</string>
     <string name="flight_search_search_ticket">Cari Tiket</string>
@@ -33,7 +34,7 @@
     <string name="flight_search_filter_baggage_label">Gratis Bagasi</string>
     <string name="flight_search_filter_meal_label">In-flight Meal</string>
     <string name="flight_classes_toolbar_title">Kelas penerbangan</string>
-    <string name="flight_labe_all_airport">Semua Bandara</string>
+    <string name="flight_labe_all_airport">Semua Bandara di %s</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
     <string name="flight_dashboard_adult_children">Anak</string>
     <string name="flight_dashboard_adult_infant">Bayi</string>
@@ -361,6 +362,7 @@ di tempatmu.</string>
 
     <string name="flight_order_detail_trip_city">%1$s (%2$s) ➝ %3$s (%4$s)</string>
     <string name="flight_order_detail_airport_with_terminal">%1$s (Terminal %2$s)</string>
+    <string name="share_string_container">Coba cek penerbangan dari %1$s - %2$s di Tokopedia, deh %3$s</string>
     <string name="flight_order_detail_airport_journey_with_transit">%1$s \u2022 %2$s \u2022 %3$d Transit</string>
     <string name="flight_order_detail_airport_journey_without_transit">%1$s \u2022 %2$s</string>
 
@@ -425,4 +427,5 @@ di tempatmu.</string>
     <string name="flight_order_detail_title">Daftar Transaksi</string>
 
     <string name="flight_default_error_img_url">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
+    <string name="flight_popular_airport_label">Bandara Populer</string>
 </resources>

@@ -2,12 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/white"/>
+            <solid android:color="@color/Unify_Static_White"/>
         </shape>
     </item>
     <item android:bottom="@dimen/gami_core_floating_shadow_margin" android:right="@dimen/gami_core_floating_shadow_margin" android:left="@dimen/gami_core_floating_shadow_margin" android:top="@dimen/gami_core_floating_shadow_margin">
         <shape android:shape="oval">
-            <solid android:color="@color/red_pink"/>
+            <solid android:color="@color/promo_gamification_common_dms_floating_counter"/>
         </shape>
     </item>
 </layer-list>

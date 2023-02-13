@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">GoPay Kyc</string>
     <string name="gopay_kyc_upgrade_now">Upgrade Sekarang</string>
-    <string name="gopay_kyc_benefit_header_description_text">Cukup upload selfie dan e-KTP, bisa langsung nikmatin semua keuntungan khusus buat kamu.</string>
-    <string name="gopay_kyc_benefit_header_title_text">Upgrade ke GoPay Plus, gratis!</string>
+    <string name="gopay_kyc_benefit_header_description_text">Tinggal upload e-KTP dan selfie di aplikasi Tokopedia.</string>
+    <string name="gopay_kyc_benefit_header_title_text">Upgrade ke GoPay Plus gratis, bisa isi saldo dan belanja makin banyak</string>
+    <string name="gopay_kyc_benefit_title_text">Langsung nikmatin fitur lengkap GoPay!</string>
 
     <string name="gopay_kyc_wallet_benefit_title_text">Isi saldo sampai Rp10 juta</string>
     <string name="gopay_kyc_wallet_benefit_description_text">Per bulannya, kamu bisa punya saldo sampai Rp10 juta, lho.</string>
@@ -23,6 +24,16 @@
     <string name="gopay_kyc_ktp_photo_front_text">Foto bagian depan e-KTP</string>
     <string name="gopay_kyc_ktp_right_text">Benar</string>
     <string name="gopay_kyc_ktp_wrong">Salah</string>
+
+    <string name="gopay_kyc_limit_balance_title_text">Batas \nSaldo</string>
+    <string name="gopay_kyc_limit_balance_gopay_text">Rp2.000.000</string>
+    <string name="gopay_kyc_limit_balance_gopay_plus_text">Rp20.000.000</string>
+    <string name="gopay_kyc_limit_transaction_per_month_title_text">Batas \nTransaksi \nper Bulan</string>
+    <string name="gopay_kyc_limit_transaction_per_month_gopay_text">Rp20.000.000</string>
+    <string name="gopay_kyc_limit_transaction_per_month_gopay_plus_text">Rp40.000.000</string>
+    <string name="gopay_kyc_transfer_to_fellow_gopay_title_text">Transfer ke \nSesama \nGoPay</string>
+    <string name="gopay_kyc_transfer_to_bank_title_text">Transfer ke \nBank</string>
+    <string name="gopay_kyc_guarantee_balance_return_title_text">Jaminan \nSaldo \nKembali</string>
 
 
     <string name="gopay_ktp_instruction_1">Gunakan e-KTP asli bukan hasil fotokopi.</string>
@@ -51,7 +62,9 @@
     <string name="gopay_kyc_review_title_text">Periksa lagi datamu dan pastikan semua informasi sudah benar.</string>
     <string name="gopay_kyc_privacy_bank_text">GoPay diawasi oleh Bank Indonesia</string>
     <string name="gopay_kyc_privacy_policy_gojek_text">Data hanya digunakan pihak GoPay untuk verifikasi.</string>
-    <string name="gopay_kyc_accept_tnc_text">Dengan klik “Kirim”, kamu menyetujui <![CDATA[<"font color='#03AC0E'><b>syarat &amp; ketentuan</b></font>]]></string>
+    <string name="gopay_kyc_accept_tnc_text">Saya menyetujui Syarat &amp; Ketentuan untuk upgrade akun ke GoPay Plus.</string>
+    <string name="gopay_kyc_accept_tnc_syarat_text">Syarat</string>
+    <string name="gopay_kyc_accept_tnc_untuk_text">untuk</string>
     <string name="gopay_kyc_submit_button_text">Kirim</string>
 
     <string name="gopay_kyc_upload_success_title_text">Upgrade lagi diproses</string>
@@ -67,5 +80,6 @@
     <string name="gopay_kyc_captured_image_description">Captured Image</string>
     <string name="gopay_kyc_image_capture_loading_text">Loading</string>
     <string name="gopay_kyc_finish_kyc_button_text">Oke</string>
+    <string name="kyc_header_title">GoPay | Tokopedia</string>
 
 </resources>

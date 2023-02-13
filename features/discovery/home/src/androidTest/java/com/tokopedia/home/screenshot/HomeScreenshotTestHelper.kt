@@ -53,7 +53,14 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "CueWidgetCategory2x2"),
                 ScreenshotModel(name = "CueWidgetCategory3x2"),
                 ScreenshotModel(name = "VpsWidget"),
-                ScreenshotModel(name = "MissionWidget")
+                ScreenshotModel(name = "MissionWidget"),
+                ScreenshotModel(name = "Lego4Product"),
+                ScreenshotModel(name = "MixLeftPadding"),
+                ScreenshotModel(name = "Lego2ImagePadding"),
+                ScreenshotModel(name = "Lego4ImagePadding"),
+                ScreenshotModel(name = "Lego3ImagePadding"),
+                ScreenshotModel(name = "Lego6ImagePadding"),
+                ScreenshotModel(name = "Lego4AutoPadding"),
         )
     }
 

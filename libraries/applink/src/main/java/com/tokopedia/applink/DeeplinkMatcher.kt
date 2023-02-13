@@ -8,6 +8,7 @@ import com.tokopedia.applink.DeepLinkChecker.CATEGORY
 import com.tokopedia.applink.DeepLinkChecker.CONTENT
 import com.tokopedia.applink.DeepLinkChecker.DEALS
 import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
+import com.tokopedia.applink.DeepLinkChecker.EPHARMACY
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
 import com.tokopedia.applink.DeepLinkChecker.FIND
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
@@ -17,6 +18,7 @@ import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
 import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
 import com.tokopedia.applink.DeepLinkChecker.NATIVE_THANK_YOU
+import com.tokopedia.applink.DeepLinkChecker.NOW_RECIPE
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PLAY
@@ -53,6 +55,7 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 1, mapOf(0 to "invoice.pl")) to INVOICE)
         add(Pattern(GT, 0, mapOf(0 to "blog")) to BLOG)
         add(Pattern(GT, 0, mapOf(0 to "category")) to CATEGORY)
+        add(Pattern(GT, 0, mapOf(0 to "epharmacy")) to EPHARMACY)
         add(Pattern(GT, 0, mapOf(0 to "p")) to CATEGORY)
         add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
         add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
@@ -101,6 +104,7 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 1, mapOf(0 to "snapshot_product")) to SNAPSHOT)
         add(Pattern(EQ, 3, mapOf(1 to "voucher")) to SHOP)
         add(Pattern(GT, 0, mapOf(0 to "gofood")) to TOKOFOOD)
+        add(Pattern(EQ, 3, mapOf(1 to "recipe")) to NOW_RECIPE)
         add(Pattern(EQ, 1, null) to SHOP) // This pattern needs to be on the second last position
         add(Pattern(EQ, 2, null) to PRODUCT) // This pattern needs to be on the last position
     }

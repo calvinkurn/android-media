@@ -1,0 +1,595 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "error_page": {
+        "is_show_error_page": false,
+        "image": "",
+        "title": "",
+        "description": "",
+        "button": {
+          "text": "",
+          "destination": ""
+        }
+      },
+      "result_status": {
+        "code": "200",
+        "message": [
+          "OK"
+        ],
+        "reason": ""
+      },
+      "empty_state": {
+        "title": "Kuponnya tidak ada",
+        "description": "Banyakin belanja ya biar dapet kupon",
+        "image_url": "www.tokopedia.com"
+      },
+      "title": "",
+      "sub_title": "",
+      "promo_recommendation": {
+        "codes": [
+          "PLUSAA",
+          "PROMO2",
+          "PROMO3"
+        ],
+        "message": "Kamu bisa hemat 1000 rupiah"
+      },
+      "coupon_sections": [
+        {
+          "title": "Pilih Promo",
+          "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
+          "is_enabled": true,
+          "id": "",
+          "sub_sections": [
+            {
+              "title": "Bebas Ongkir Plus",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "URL",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2022/08/Plus-Logo.png",
+              "is_enabled": true,
+              "id": "bebas_ongkir_plus",
+              "coupon_groups": [],
+              "coupons": [
+                {
+                  "promo_id": 0,
+                  "code": "PLUSAA-PLUSSC-PLUSGRAB",
+                  "title": "Diskon Pengiriman PLUS Rp100.000",
+                  "message": "",
+                  "coupon_app_link": "//tokopedia",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 100000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": true,
+                  "clashing_infos": [
+                    {
+                      "code": "PROMO2",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "PROMO3",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "XXXXX",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [
+                    {
+                      "code": "PLUSAA",
+                      "unique_id": "239594-0-301643",
+                      "shipping_id": 11,
+                      "sp_id": 18,
+                      "benefit_amount": 30000,
+                      "promo_id": 0
+                    },
+                    {
+                      "code": "PLUSAA",
+                      "unique_id": "111-2",
+                      "shipping_id": 11,
+                      "sp_id": 18,
+                      "benefit_amount": 30000,
+                      "promo_id": 0
+                    },
+                    {
+                      "code": "PLUSGRAB",
+                      "unique_id": "111-3",
+                      "shipping_id": 11,
+                      "sp_id": 18,
+                      "benefit_amount": 40000,
+                      "promo_id": 0
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 0,
+                  "is_group_header": true,
+                  "promo_infos": [],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 10000,
+                      "benefit_type": "discount",
+                      "data_type": "total_shipping_price"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Bebas Ongkir",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "URL",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2022/08/Bebas-Ongkir-Logo.png",
+              "is_enabled": true,
+              "id": "bebas_ongkir",
+              "coupon_groups": [],
+              "coupons": [
+                {
+                  "promo_id": 1,
+                  "code": "WANTER",
+                  "title": "Bebas Ongkir Rp30.000",
+                  "message": "",
+                  "coupon_app_link": "//tokopedia",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": true,
+                  "clashing_infos": [
+                    {
+                      "code": "PROMO2",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "PROMO3",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "XXXXX",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "additional_bo_datas": [
+                    {
+                      "code": "WANTER",
+                      "unique_id": "111-2",
+                      "shipping_id": 11,
+                      "sp_id": 18,
+                      "benefit_amount": 0,
+                      "promo_id": 0
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 0,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Tiba Besok - 11 Feb",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 30000,
+                      "benefit_type": "discount",
+                      "data_type": "total_shipping_price"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Kupon Saya",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "COUPON",
+              "icon_url": "www.tokopedia.com",
+              "is_enabled": true,
+              "id": "my_coupons",
+              "coupon_groups": [
+                {
+                  "id": 1,
+                  "count": 1
+                },
+                {
+                  "id": 1,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 1111,
+                  "code": "XXXXX",
+                  "title": "Gratis Ongkir 20rb",
+                  "message": "",
+                  "coupon_app_link": "//tokopedia",
+                  "unique_id": "cart-string",
+                  "shop_id": 0,
+                  "benefit_amount": 20000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "PROMO2",
+                      "message": "Kupon ini ga bisa dipake bersamaan dengan Promo PROMO2",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "PROMO3",
+                      "message": "Kupon ini ga bisa dipake bersamaan dengan Promo PROMO3",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "WANTER",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "PLUSAA-PLUSSC-PLUSGRAB",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(2.000 TokoPoints + 80.000 OVO Points)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": true,
+                  "group_id": 1,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "top_banner",
+                      "title": "Jangan Lewatkan",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_info",
+                      "title": "Bayar dengan <b>TokoPoints</b>",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "berakhir 3 hari lagi",
+                      "icon": "promo_validity.icon",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 70000,
+                      "benefit_type": "cashback",
+                      "data_type": "total_shipping_price"
+                    }
+                  ]
+                },
+                {
+                  "promo_id": 1111,
+                  "code": "PROMO1",
+                  "title": "Cashback 10rb",
+                  "message": "",
+                  "coupon_app_link": "//tokopedia",
+                  "unique_id": "cart-string",
+                  "shop_id": 0,
+                  "benefit_amount": 50000,
+                  "is_recommended": true,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 2,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Bayar dengan <b>TokoPoints</b>",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "berakhir 6 hari lagi",
+                      "icon": "promo_validity.icon",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 70000,
+                      "benefit_type": "cashback",
+                      "data_type": "total_shipping_price"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Apple Store",
+              "sub_title": "Toko Apel",
+              "icon_unify": "TOKOMEMBER",
+              "icon_url": "www.tokopedia.com",
+              "is_enabled": true,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 3,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 1111,
+                  "code": "PROMO2",
+                  "title": "Gratis Ongkir 30rb",
+                  "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                  "coupon_app_link": "//tokopedia",
+                  "unique_id": "cart-string",
+                  "shop_id": 102,
+                  "benefit_amount": 30000,
+                  "is_recommended": true,
+                  "is_selected": true,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "XXXXX",
+                      "message": "Kupon ini ga bisa dipake bersamaan dengan Promo XXXXX",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "WANTER",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "PLUSAA-PLUSSC-PLUSGRAB",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 3,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Bayar dengan <b>TokoPoints</b>",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "berakhir 10 jam lagi",
+                      "icon": "promo_validity.icon",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 70000,
+                      "benefit_type": "cashback",
+                      "data_type": "total_shipping_price"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Banana Store",
+              "sub_title": "Toko Pisang",
+              "icon_unify": "TOKOMEMBER",
+              "icon_url": "www.tokopedia.com",
+              "is_enabled": true,
+              "id": "merchant_vouchers",
+              "coupon_groups": [
+                {
+                  "id": 4,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 1111,
+                  "code": "PROMO3",
+                  "title": "Gratis Ongkir 60rb",
+                  "message": "Kupon ini berlaku untuk pembelian mainan",
+                  "coupon_app_link": "//tokopedia",
+                  "unique_id": "cart-string",
+                  "shop_id": 103,
+                  "benefit_amount": 60000,
+                  "is_recommended": true,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "XXXXX",
+                      "message": "Kupon ini ga bisa dipake bersamaan dengan Promo XXXXX",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "WANTER",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "PLUSAA-PLUSSC-PLUSGRAB",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    },
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 4,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Bayar dengan <b>TokoPoints</b>",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "berakhir 3 jam lagi",
+                      "icon": "promo_validity.icon",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 70000,
+                      "benefit_type": "cashback",
+                      "data_type": "total_shipping_price"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "attempted_promo_code_error": {
+        "code": "",
+        "message": ""
+      },
+      "section_tabs": [
+        {
+          "id": "bebas_ongkir_plus",
+          "title": "Bebas Ongkir Plus"
+        },
+        {
+          "id": "bebas_ongkir",
+          "title": "Bebas Ongkir"
+        },
+        {
+          "id": "my_coupons",
+          "title": "Kupon Saya"
+        },
+        {
+          "id": "merchant_vouchers",
+          "title": "Kupon Toko"
+        },
+        {
+          "id": "ineligible_coupons",
+          "title": "Belum Bisa Dipakai"
+        }
+      ]
+    }
+  }
+}

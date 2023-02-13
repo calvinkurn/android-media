@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import kotlinx.parcelize.Parcelize
 
@@ -37,7 +38,7 @@ data class CartItemModel(
         var errorMessageDescription: String = "",
         var isProtectionAvailable: Boolean = false,
         var protectionPricePerProduct: Int = 0,
-        var protectionPrice: Int = 0,
+        var protectionPrice: Double = 0.0,
         var protectionSubTitle: String = "",
         var protectionTitle: String = "",
         var protectionLinkText: String = "",
@@ -65,9 +66,9 @@ data class CartItemModel(
         var bundleGroupId: String = "",
         var bundleType: String = "",
         var bundleTitle: String = "",
-        var bundlePrice: Long = 0L,
+        var bundlePrice: Double = 0.0,
         var bundleSlashPriceLabel: String = "",
-        var bundleOriginalPrice: Long = 0L,
+        var bundleOriginalPrice: Double = 0.0,
         var bundleQuantity: Int = 0,
         var bundleIconUrl: String = "",
         var addOnProductLevelModel: AddOnsDataModel = AddOnsDataModel(),
@@ -75,5 +76,6 @@ data class CartItemModel(
         var addOnDefaultTo: String = "",
         var isTokoCabang: Boolean = false,
         var cartString: String = "",
-        var warehouseId: String = ""
+        var warehouseId: String = "",
+        var ethicalDrugDataModel : EthicalDrugDataModel = EthicalDrugDataModel()
 ) : Parcelable

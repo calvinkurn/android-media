@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/home_component_divider_header"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_banner"
+        app:autoScroll="true"
+        app:isInfinite="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        tools:background="@color/Unify_Static_Black"/>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:descendantFocusability="blocksDescendants"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        tools:layout_goneMarginTop="12dp"
+        tools:layout_marginBottom="12dp"
+        app:layout_constraintVertical_bias="0"/>
 
-        <com.tokopedia.home_component.customview.DynamicChannelHeaderView
-            android:id="@+id/home_component_header_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:autoScroll="true"
-            app:isInfinite="true"
-            app:layout_goneMarginTop="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/home_component_header_view" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/home_component_divider_footer"
+    <LinearLayout
+        android:id="@+id/indicator_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_banner"
+        android:gravity="center_horizontal"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
-</LinearLayout>
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

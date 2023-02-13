@@ -41,17 +41,17 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductComparisonViewModel>() , CatalogDetailListener{
+class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductComparisonViewModel>(), CatalogDetailListener {
 
     private var catalogId = ""
     private var catalogName = ""
-    private var brand  = ""
+    private var brand = ""
     private var categoryId = ""
     private var searchKeyword = ""
     private var recommendedCatalogId = ""
 
     @Inject
-    lateinit var viewModelFactoryProvider : ViewModelProvider.Factory
+    lateinit var viewModelFactoryProvider: ViewModelProvider.Factory
 
     @Inject
     lateinit var catalogProductComparisonViewModel: CatalogProductComparisonViewModel
@@ -59,17 +59,23 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     private var userSession: UserSession? = null
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
-    private var recyclerView : RecyclerView? = null
-    private var searchBarTextField : EditText? = null
-    private var searchHandler : Handler? = null
-    private var searchWorker : Runnable ? = null
+    private var recyclerView: RecyclerView? = null
+    private var searchBarTextField: EditText? = null
+    private var searchHandler: Handler? = null
+    private var searchWorker: Runnable ? = null
 
     private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
     private val catalogDetailAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(
-            CatalogDetailDiffUtil())
+            CatalogDetailDiffUtil()
+        )
             .build()
-        CatalogDetailAdapter(requireActivity(),this,catalogId,asyncDifferConfig, catalogAdapterFactory
+        CatalogDetailAdapter(
+            requireActivity(),
+            this,
+            catalogId,
+            asyncDifferConfig,
+            catalogAdapterFactory
         )
     }
 
@@ -103,12 +109,12 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         recommendedCatalogId = requireArguments().getString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, "")
     }
 
-    private fun setUpViews(view : View){
+    private fun setUpViews(view: View) {
         setUpRecyclerView(view)
         setUpSearchView(view)
     }
 
-    private fun setUpRecyclerView(view : View) {
+    private fun setUpRecyclerView(view: View) {
         val staggeredLayoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         view.findViewById<RecyclerView>(R.id.catalog_staggered_recycler_view)?.let { rV ->
             recyclerView = rV
@@ -121,18 +127,18 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         }
     }
 
-    private fun setUpSearchView(view : View){
+    private fun setUpSearchView(view: View) {
         searchHandler = Handler(Looper.getMainLooper())
         searchBarTextField = view.findViewById<SearchBarUnify>(R.id.catalog_product_search)?.searchBarTextField
-        CatalogUtil.setSearchListener(context,view, ::onSearchKeywordEntered , ::onClearSearch, ::onTapSearchBar)
+        CatalogUtil.setSearchListener(context, view, ::onSearchKeywordEntered, ::onClearSearch, ::onTapSearchBar)
         searchBarTextField?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(searchWorker != null) {
+                if (searchWorker != null) {
                     searchHandler?.removeCallbacks(searchWorker!!)
                 }
                 searchWorker = Runnable { onSearchKeywordEntered() }
-                if(searchWorker != null) {
+                if (searchWorker != null) {
                     searchHandler?.postDelayed(searchWorker!!, CatalogConstant.DEBOUNCE_SEARCH)
                 }
             }
@@ -140,7 +146,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         })
     }
 
-    private fun setUpEmptyState(view : View){
+    private fun setUpEmptyState(view: View) {
         view.findViewById<GlobalError>(R.id.global_error)?.run {
             errorIllustration.hide()
             errorSecondaryAction.gone()
@@ -155,17 +161,24 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         }
     }
 
-    private fun makeApiCall(page : Int) {
-        catalogProductComparisonViewModel.getComparisonProducts(recommendedCatalogId,
-            catalogId,brand,
-            categoryId,LIMIT,page,searchKeyword)
+    private fun makeApiCall(page: Int) {
+        catalogProductComparisonViewModel.getComparisonProducts(
+            recommendedCatalogId,
+            catalogId,
+            "",
+            categoryId,
+            LIMIT,
+            page,
+            searchKeyword
+        )
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(hasNextPage)
+                if (hasNextPage) {
                     makeApiCall(page)
+                }
             }
         }
     }
@@ -186,9 +199,9 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun observerDataItems() {
-        catalogProductComparisonViewModel.getDataItems().observe(this ,{ dataList ->
+        catalogProductComparisonViewModel.getDataItems().observe(this, { dataList ->
             if (dataList.isNotEmpty()) {
-               onFetchData(dataList)
+                onFetchData(dataList)
             } else {
                 onEmptyData()
             }
@@ -197,10 +210,12 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     private fun observerHasMoreItems() {
         catalogProductComparisonViewModel.getHasMoreItems().observe(this, { hasMoreItems ->
-            if(hasMoreItems) loadMoreTriggerListener?.setHasNextPage(true)
-            else loadMoreTriggerListener?.setHasNextPage(false)
+            if (hasMoreItems) {
+                loadMoreTriggerListener?.setHasNextPage(true)
+            } else {
+                loadMoreTriggerListener?.setHasNextPage(false)
+            }
         })
-
     }
 
     private fun observeErrorMessage() {
@@ -209,7 +224,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         })
     }
 
-    private fun onFetchData(dataList : ArrayList<BaseCatalogDataModel>){
+    private fun onFetchData(dataList: ArrayList<BaseCatalogDataModel>) {
         hideErrorGroup()
         recyclerView?.show()
         catalogDetailAdapter.submitList(dataList)
@@ -217,7 +232,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         loadMoreTriggerListener?.updateStateAfterGetData()
     }
 
-    private fun onSearchKeywordEntered(){
+    private fun onSearchKeywordEntered() {
         resetPage()
         searchKeyword = searchBarTextField?.text.toString()
         makeApiCall(PAGE_FIRST)
@@ -229,29 +244,29 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         makeApiCall(PAGE_FIRST)
     }
 
-    private fun resetPage(){
+    private fun resetPage() {
         hideErrorGroup()
         loadMoreTriggerListener?.resetState()
     }
 
-    private fun onEmptyData(){
+    private fun onEmptyData() {
         showErrorGroup()
         view?.let { setUpEmptyState(it) }
         recyclerView?.hide()
     }
 
-    private fun showErrorGroup(){
+    private fun showErrorGroup() {
         view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.show()
         view?.findViewById<GlobalError>(R.id.global_error)?.show()
     }
 
-    private fun showError(e : Throwable){
+    private fun showError(e: Throwable) {
         recyclerView?.hide()
         view?.findViewById<DeferredImageView>(R.id.catalog_no_product_view)?.hide()
         view?.findViewById<GlobalError>(R.id.global_error)?.apply {
             show()
-            if (e is UnknownHostException
-                || e is SocketTimeoutException
+            if (e is UnknownHostException ||
+                e is SocketTimeoutException
             ) {
                 setType(GlobalError.NO_CONNECTION)
             } else {
@@ -274,8 +289,11 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK,
-            "$catalogName - $catalogId", userSession?.userId ?: "",catalogId)
-
+            "$catalogName - $catalogId",
+            userSession?.userId ?: "",
+            catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_SEARCH_BAR
+        )
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {
@@ -288,8 +306,10 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
 
     private fun getComponent(): CatalogComponent =
         DaggerCatalogComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication)
-                .baseAppComponent).build()
+            .baseAppComponent(
+                (activity?.applicationContext as BaseMainApplication)
+                    .baseAppComponent
+            ).build()
 
     override fun getViewModelType(): Class<CatalogProductComparisonViewModel> {
         return CatalogProductComparisonViewModel::class.java
@@ -310,9 +330,14 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
         private const val LIMIT = 10
         private const val PAGE_FIRST = 1
 
-        fun newInstance(catalogName : String, catalogId: String, brand: String, categoryId : String,
-                        recommendedCatalogId : String):
-                CatalogProductComparisonFragment {
+        fun newInstance(
+            catalogName: String,
+            catalogId: String,
+            brand: String,
+            categoryId: String,
+            recommendedCatalogId: String
+        ):
+            CatalogProductComparisonFragment {
             return CatalogProductComparisonFragment().apply {
                 val bundle = Bundle()
                 bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
@@ -330,13 +355,17 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_BANDINGKAN_PERBANDINGAN_PRODUK,
-            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",userSession?.userId ?: "",catalogId)
+            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",
+            userSession?.userId ?: "",
+            catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN
+        )
 
         dismissBottomSheet()
         (parentFragment as? CatalogComponentBottomSheet)?.changeComparison(comparedCatalogId)
     }
 
-    private fun dismissBottomSheet () {
+    private fun dismissBottomSheet() {
         (parentFragment as? CatalogComponentBottomSheet)?.dismissCatalogComponentBottomSheet()
     }
 }

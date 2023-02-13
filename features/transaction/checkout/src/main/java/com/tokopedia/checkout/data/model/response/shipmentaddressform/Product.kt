@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
 import com.tokopedia.checkout.domain.model.cartshipmentform.ProductVariantsResponse
 
 data class Product(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
-        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         val productId: Long = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("cart_id")
         val cartId: Long = 0,
         @SerializedName("product_name")
@@ -20,11 +19,11 @@ data class Product(
         @SerializedName("product_price_fmt")
         val productPriceFmt: String = "",
         @SerializedName("product_price")
-        val productPrice: Long = 0,
+        val productPrice: Double = 0.0,
         @SerializedName("product_original_price")
-        val productOriginalPrice: Long = 0,
+        val productOriginalPrice: Double = 0.0,
         @SerializedName("product_wholesale_price")
-        val productWholesalePrice: Long = 0,
+        val productWholesalePrice: Double = 0.0,
         @SerializedName("product_wholesale_price_fmt")
         val productWholesalePriceFmt: String = "",
         @SerializedName("product_weight_fmt")
@@ -96,5 +95,7 @@ data class Product(
         @SerializedName("variant_description_detail")
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
         @SerializedName("add_ons")
-        val addOns: AddOnsResponse = AddOnsResponse()
+        val addOns: AddOnsResponse = AddOnsResponse(),
+        @SerializedName("ethical_drug")
+        val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse()
 )

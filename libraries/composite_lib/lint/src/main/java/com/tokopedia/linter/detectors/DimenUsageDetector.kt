@@ -19,8 +19,8 @@ class DimenUsageDetector : Detector(), XmlScanner {
             id = "DimageUsage",
             briefDescription = "Avoid using dimen if possible, especially dimen from external module. " +
                     "Must be replaced with actual value for more readable and better performance.",
-            explanation = "The dimen resource is located in different module. " +
-                    "To be more readable and better performance, please use actual value instead. Example : " +
+            explanation = "Avoid use dimens from other modules to minimize dependencies, please use dimens from own module or actual value. " +
+                    "Don't put your values in dimens.xml if it is going to make them more difficult to maintain. Example : " +
                     "\n❌ : android:padding=\"@dimen/layout_lvl0\" " +
                     "\n✅ : android:padding=\"0dp\"",
             category = Category.CORRECTNESS,

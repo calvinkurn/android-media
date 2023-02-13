@@ -1,11 +1,11 @@
 package com.tokopedia.createpost.view.subscriber
 
 import android.text.TextUtils
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
-import com.tokopedia.createpost.domain.entity.GetContentFormDomain
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
+import com.tokopedia.createpost.domain.entity.GetContentFormDomain
 import rx.Subscriber
 
 /**
@@ -49,12 +49,11 @@ class GetContentFormSubscriber(private val view: CreatePostContract.View?,
 
     private fun handleCheckQuota(domain: GetContentFormDomain) {
         val checkQuotaQuery = domain.checkQuotaQuery
-        if (checkQuotaQuery == null || checkQuotaQuery.data == null) {
+        if (checkQuotaQuery?.data == null) {
             onError(RuntimeException())
             return
         }
         if (checkQuotaQuery.data.number == 0) {
-            view?.onErrorNoQuota()
             return
         }
     }

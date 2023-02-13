@@ -5,45 +5,52 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartShopHolderData(
-        var cartString: String = "",
-        var shopId: String = "",
-        var shopName: String = "",
-        var shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
-        var isFulfillment: Boolean = false,
-        var fulfillmentName: String = "",
-        var fulfillmentBadgeUrl: String = "",
-        var estimatedTimeArrival: String = "",
-        var productUiModelList: MutableList<CartItemHolderData> = ArrayList(),
-        var isShowPin: Boolean = false,
-        var pinCoachmarkMessage: String = "",
-        var isTokoNow: Boolean = false,
-        var preOrderInfo: String = "",
-        var incidentInfo: String = "",
-        var isFreeShippingExtra: Boolean = false,
-        var freeShippingBadgeUrl: String = "",
-        var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
-        var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
-        var maximumWeightWording: String = "",
-        var maximumShippingWeight: Double = 0.0,
-        var totalWeight: Double = 0.0,
-        var isAllSelected: Boolean = false,
-        var isPartialSelected: Boolean = false,
-        var isCollapsible: Boolean = false,
-        var isCollapsed: Boolean = false,
-        var clickedCollapsedProductIndex: Int = -1,
-        var isNeedToRefreshWeight: Boolean = false,
-        var isError: Boolean = false,
-        var promoCodes: List<String> = emptyList(),
-        var shopShipments: List<ShopShipment> = emptyList(),
-        var districtId: String = "",
-        var postalCode: String = "",
-        var latitude: String = "",
-        var longitude: String = "",
-        var boMetadata: BoMetadata = BoMetadata(),
-        var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
-        var addOnText: String = "",
-        var addOnImgUrl: String = "",
-        var addOnId: String = ""
+    var cartString: String = "",
+    var shopId: String = "",
+    var shopName: String = "",
+    var shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+    var isFulfillment: Boolean = false,
+    var fulfillmentName: String = "",
+    var fulfillmentBadgeUrl: String = "",
+    var estimatedTimeArrival: String = "",
+    var productUiModelList: MutableList<CartItemHolderData> = ArrayList(),
+    var isShowPin: Boolean = false,
+    var pinCoachmarkMessage: String = "",
+    var isTokoNow: Boolean = false,
+    var preOrderInfo: String = "",
+    var incidentInfo: String = "",
+    var isFreeShippingExtra: Boolean = false,
+    var freeShippingBadgeUrl: String = "",
+    var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
+    var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
+    var maximumWeightWording: String = "",
+    var maximumShippingWeight: Double = 0.0,
+    var totalWeight: Double = 0.0,
+    var isAllSelected: Boolean = false,
+    var isPartialSelected: Boolean = false,
+    var isCollapsible: Boolean = false,
+    var isCollapsed: Boolean = false,
+    var clickedCollapsedProductIndex: Int = -1,
+    var isNeedToRefreshWeight: Boolean = false,
+    var isError: Boolean = false,
+    var promoCodes: List<String> = emptyList(),
+    var shopShipments: List<ShopShipment> = emptyList(),
+    var districtId: String = "",
+    var postalCode: String = "",
+    var latitude: String = "",
+    var longitude: String = "",
+    var boMetadata: BoMetadata = BoMetadata(),
+    var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
+    var addOnText: String = "",
+    var addOnImgUrl: String = "",
+    var addOnId: String = "",
+    var addOnType: Int = 0,
+    var warehouseId: Long = 0,
+    var isPo: Boolean = false,
+    var poDuration: String = "",
+    var boCode: String = "",
+    var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
+    var enablerLabel: String = ""
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -89,26 +96,42 @@ data class CartShopHolderData(
             latitude = this.latitude,
             longitude = this.longitude,
             boMetadata = this.boMetadata,
-            boAffordability = this.boAffordability
+            boAffordability = this.boAffordability,
+            addOnText = this.addOnText,
+            addOnImgUrl = this.addOnImgUrl,
+            addOnId = this.addOnId,
+            warehouseId = this.warehouseId,
+            isPo = this.isPo,
+            poDuration = this.poDuration,
+            boCode = this.boCode,
         )
     }
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+
+        const val ADD_ON_GIFTING = 1
+        const val ADD_ON_EPHARMACY = 2
     }
 }
 
 class CartShopBoAffordabilityData(
-        var enable: Boolean = true,
-        var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.LOADING,
-        var tickerText: String = "",
-        var errorText: String = "",
+    var enable: Boolean = true,
+    var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.FIRST_LOAD,
+    var tickerText: String = "",
+    var errorText: String = "",
 
-        // list of cartIds for tracker
-        var cartIds: String = "",
-        var hasSeenTicker: Boolean = false,
+    // list of cartIds for tracker
+    var cartIds: String = "",
+    var hasSeenTicker: Boolean = false,
+)
+
+class CartShopCoachmarkPlusData(
+    val isShown: Boolean = false,
+    val title: String = "",
+    val content: String = "",
 )
 
 enum class CartShopBoAffordabilityState {
-    LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
+    FIRST_LOAD, LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
 }

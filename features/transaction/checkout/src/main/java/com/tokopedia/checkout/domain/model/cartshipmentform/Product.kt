@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.parcelize.Parcelize
@@ -15,9 +16,9 @@ data class Product(
         var productId: Long = 0,
         var productName: String = "",
         var productPriceFmt: String = "",
-        var productPrice: Long = 0,
-        var productOriginalPrice: Long = 0,
-        var productWholesalePrice: Long = 0,
+        var productPrice: Double = 0.0,
+        var productOriginalPrice: Double = 0.0,
+        var productWholesalePrice: Double = 0.0,
         var productWholesalePriceFmt: String = "",
         var productWeightFmt: String = "",
         var productWeight: Int = 0,
@@ -58,10 +59,11 @@ data class Product(
         var bundleGroupId: String = "",
         var bundleType: String = "",
         var bundleTitle: String = "",
-        var bundlePrice: Long = 0L,
+        var bundlePrice: Double = 0.0,
         var bundleSlashPriceLabel: String = "",
-        var bundleOriginalPrice: Long = 0L,
+        var bundleOriginalPrice: Double = 0.0,
         var bundleQuantity: Int = 0,
         var bundleIconUrl: String = "",
-        var addOnProduct: AddOnsDataModel = AddOnsDataModel()
+        var addOnProduct: AddOnsDataModel = AddOnsDataModel(),
+        var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel()
 ) : Parcelable

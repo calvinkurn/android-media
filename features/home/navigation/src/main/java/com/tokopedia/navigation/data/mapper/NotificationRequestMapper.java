@@ -7,7 +7,6 @@ import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.util.IntegerUtil;
 import com.tokopedia.navigation_common.model.FeedModel;
-import com.tokopedia.navigation_common.model.HomeFlagModel;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
@@ -30,8 +29,7 @@ public class NotificationRequestMapper implements Func1<GraphqlResponse, Notific
 
     public static Notification notificationMapper(NotificationsModel entity,
                                                   NotifcenterUnread unread,
-                                                  FeedModel feedModel,
-                                                  HomeFlagModel homeFlagModel) {
+                                                  FeedModel feedModel) {
         Notification data = new Notification();
         try {
             data.totalNewInbox = entity.getTotalNewInbox();
@@ -40,7 +38,6 @@ public class NotificationRequestMapper implements Func1<GraphqlResponse, Notific
             data.setTotalInbox(totalInbox(entity));
             data.setTotalNotif(totalNotif(entity, unread));
             data.setHaveNewFeed(feedModel.getNewFeeds());
-            data.setShouldOsAppear((homeFlagModel != null) && homeFlagModel.isOSBottomNav());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

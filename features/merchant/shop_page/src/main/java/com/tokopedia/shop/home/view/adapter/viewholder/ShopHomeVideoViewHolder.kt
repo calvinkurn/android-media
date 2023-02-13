@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.Group
@@ -12,14 +11,13 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
-import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
@@ -29,8 +27,8 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
  */
 
 class ShopHomeVideoViewHolder(
-        val view: View,
-        private val listener: ShopHomeDisplayWidgetListener
+    val view: View,
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), View.OnClickListener {
 
     companion object {
@@ -67,10 +65,10 @@ class ShopHomeVideoViewHolder(
             videoData?.let {
                 youTubeThumbnailShopPageImageUnify?.addOnImpressionListener(it) {
                     listener.onDisplayItemImpression(
-                            model,
-                            it,
-                            adapterPosition,
-                            0
+                        model,
+                        it,
+                        adapterPosition,
+                        0
                     )
                 }
             }
@@ -132,30 +130,35 @@ class ShopHomeVideoViewHolder(
             val uri = Uri.parse(youTubeVideoModel?.data?.firstOrNull()?.videoUrl ?: "")
             val youTubeVideoId = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                    == YouTubeInitializationResult.SUCCESS) {
+                == YouTubeInitializationResult.SUCCESS
+            ) {
                 it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, youTubeVideoId))
             } else {
-                it.startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + youTubeVideoId)))
+                it.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + youTubeVideoId)
+                    )
+                )
             }
         }
     }
 
     private fun YoutubeVideoDetailModel?.getMaxResThumbnailUrl(): String {
         return this?.items?.firstOrNull()?.snippet?.thumbnails?.let { thumbnails ->
-            thumbnails.maxres?.let{
+            thumbnails.maxres?.let {
                 return it.url.orEmpty()
             }
-            thumbnails.standard?.let{
+            thumbnails.standard?.let {
                 return it.url.orEmpty()
             }
-            thumbnails.high?.let{
+            thumbnails.high?.let {
                 return it.url.orEmpty()
             }
-            thumbnails.medium?.let{
+            thumbnails.medium?.let {
                 return it.url.orEmpty()
             }
-            thumbnails.default?.let{
+            thumbnails.default?.let {
                 return it.url.orEmpty()
             }
         } ?: ""

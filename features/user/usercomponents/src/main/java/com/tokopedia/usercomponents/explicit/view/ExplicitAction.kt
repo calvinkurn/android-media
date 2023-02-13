@@ -1,5 +1,6 @@
 package com.tokopedia.usercomponents.explicit.view
 
+import com.tokopedia.usercomponents.explicit.domain.model.OptionsItem
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 
 interface ExplicitAction {
@@ -18,7 +19,7 @@ interface ExplicitAction {
     fun onQuestionShow()
     fun onButtonPositiveClicked()
     fun onButtonNegativeClicked()
-    fun onSubmitSuccessShow()
+    fun onSubmitSuccessShow(data: OptionsItem?)
     fun onDismiss()
     fun onFailed()
     fun onCleared()

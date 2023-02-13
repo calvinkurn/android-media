@@ -23,9 +23,9 @@ data class CartItemHolderData(
         var productInformation: List<String> = emptyList(),
         var productInformationWithIcon: List<ProductInformationWithIcon> = emptyList(),
         var productAlertMessage: String = "",
-        var productPrice: Long = 0,
-        var productOriginalPrice: Long = 0,
-        var productInitialPriceBeforeDrop: Long = 0,
+        var productPrice: Double = 0.0,
+        var productOriginalPrice: Double = 0.0,
+        var productInitialPriceBeforeDrop: Double = 0.0,
         var productSlashPriceLabel: String = "",
         var productQtyLeft: String = "", // eg : sisa 3
         var variant: String = "",
@@ -50,15 +50,18 @@ data class CartItemHolderData(
         var bundleId: String = "",
         var bundleGroupId: String = "",
         var bundleTitle: String = "",
-        var bundlePrice: Long = 0L,
+        var bundlePrice: Double = 0.0,
         var bundleSlashPriceLabel: String = "",
-        var bundleOriginalPrice: Long = 0L,
+        var bundleOriginalPrice: Double = 0.0,
         var bundleQuantity: Int = 0,
         var originalBundleQuantity: Int = 0,
         var editBundleApplink: String = "",
         var bundleIconUrl: String = "",
         var bundleGrayscaleIconUrl: String = "",
         var bundleLabelQuantity: Int = 0,
+        var needPrescription: Boolean = false,
+        var butuhResepText: String = "",
+        var butuhResepIconUrl: String = "",
 
         // Analytics data
         var shopId: String = "",
@@ -83,7 +86,7 @@ data class CartItemHolderData(
         var shopBoAffordabilityData: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
 
         // Will be set after calculation
-        var wholesalePrice: Long = 0,
+        var wholesalePrice: Double = 0.0,
         var wholesalePriceFormatted: String? = null
 ) {
     companion object {

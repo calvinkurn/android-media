@@ -19,7 +19,7 @@
         android:layout_height="0dp"
         android:paddingTop="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_4"
-        android:paddingEnd="@dimen/dp_11"
+        android:paddingEnd="11dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

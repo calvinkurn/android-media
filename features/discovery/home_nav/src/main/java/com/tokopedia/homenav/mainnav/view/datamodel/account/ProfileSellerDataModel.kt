@@ -11,7 +11,8 @@ data class ProfileSellerDataModel  (
     var shopNotifCount: String = "",
     var shopApplink: String = "",
     var adminRoleText: String? = null,
-    var canGoToSellerAccount: Boolean = true,
+    var isLocationAdmin: Boolean = false,
+    var adminStatus: String = "",
 
     /**
      * Status
@@ -21,5 +22,9 @@ data class ProfileSellerDataModel  (
 ) : Visitable<SellerTypeFactory> {
     override fun type(typeFactory: SellerTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    companion object {
+        const val ADMIN_ACTIVE = "1"
     }
 }

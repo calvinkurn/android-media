@@ -8,10 +8,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductEditingMockResponseConfig
@@ -27,7 +26,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -65,16 +64,15 @@ class AddEditProductEditingAnalyticTest {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_EXTERNAL_STORAGE)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     private val SAMPLE_PRODUCT_ID = "000"
 
     @Before
     fun beforeTest() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP
-
-        gtmLogDBSource.deleteAll().toBlocking().first()
 
         setupGraphqlMockResponse(AddEditProductEditingMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
@@ -86,7 +84,6 @@ class AddEditProductEditingAnalyticTest {
     @After
     fun afterTest() {
         InstrumentedTestUtil.deleteAllDraft()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -112,8 +109,6 @@ class AddEditProductEditingAnalyticTest {
         doAnalyticDebuggerTest(PRODUCT_DESCRIPTION_PAGE_CLICK_CONTINUE)
         //shipment
         doAnalyticDebuggerTest(PRODUCT_SHIPPING_PAGE_CLICK_INSURANCE_TOGGLE)
-
-        activityRule.activity.finish()
     }
 
     @Test
@@ -127,8 +122,11 @@ class AddEditProductEditingAnalyticTest {
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS)
+    }
 
-        activityRule.activity.finish()
+    @After
+    fun tearDown() {
+        activityRule.activity.finishAndRemoveTask()
     }
 
     private fun testEditDetail() {
@@ -197,9 +195,6 @@ class AddEditProductEditingAnalyticTest {
     }
 
     private fun doAnalyticDebuggerTest(fileName: String) {
-        MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
-                hasAllSuccess()
-        )
+        assertThat(cassavaRule.validate(fileName), hasAllSuccess())
     }
 }

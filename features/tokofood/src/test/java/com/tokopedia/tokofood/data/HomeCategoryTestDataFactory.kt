@@ -25,14 +25,12 @@ import com.tokopedia.tokofood.feature.home.domain.data.DynamicHomeIcon
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.domain.data.Header
 import com.tokopedia.tokofood.feature.home.domain.data.HomeLayoutResponse
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.tokofood.feature.home.domain.data.TickerItem
 import com.tokopedia.tokofood.feature.home.domain.data.Tickers
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeUSPResponse
-import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantList
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantListResponse
 import com.tokopedia.tokofood.feature.home.domain.data.USP
 import com.tokopedia.tokofood.feature.home.domain.data.USPResponse
@@ -49,6 +47,8 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgress
 import com.tokopedia.tokofood.common.domain.response.KeroEditAddress
 import com.tokopedia.tokofood.common.domain.response.KeroEditAddressData
 import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
+import com.tokopedia.tokofood.common.domain.response.Merchant
+import com.tokopedia.tokofood.common.domain.response.TokoFoodMerchantList
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_Background"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_width="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_bookmark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_tags"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:clipToPadding="false"
+            android:translationZ="1dp"
+            app:layout_constraintEnd_toEndOf="@+id/iu_recipe_picture"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_tokopedianow_tag" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_recipe_picture"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:scaleType="centerCrop"
+            app:unify_image_corner_radius="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iu_recipe_picture"
+            tools:text="Opor ayam spesial"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tp_title"
+            app:layout_constraintTop_toBottomOf="@+id/tp_title"
+            app:typographyType="small"
+            tools:text="35 Menit | 2 Orang" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icu_bookmark"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="15dp"
+            app:icon_name="BOOKMARK_FILLED"
+            app:icon_color_light_enable="@color/Unify_NN500"
+            app:icon_color_night_enable="@color/Unify_NN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/tp_title"
+            app:layout_constraintTop_toBottomOf="@+id/iu_recipe_picture"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

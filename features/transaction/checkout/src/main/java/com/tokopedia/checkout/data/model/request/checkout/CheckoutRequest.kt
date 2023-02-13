@@ -3,6 +3,8 @@ package com.tokopedia.checkout.data.model.request.checkout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.MINI_CONSULTATION_META_DATA_KEY
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.UPLOAD_PRESCRIPTION_META_DATA_KEY
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
@@ -21,175 +23,177 @@ const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
 
 data class Carts(
-        @SerializedName("has_promo_stacking")
-        var hasPromoStacking: Boolean = false,
-        @SerializedName("is_donation")
-        var isDonation: Int = 0,
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("leasing_id")
-        var leasingId: Long = 0,
-        @SerializedName("promos")
-        var promos: List<Promo> = emptyList(),
-        @SerializedName("egold_data")
-        var egold: Egold = Egold(),
-        @SerializedName("tokopedia_corner_data")
-        var tokopediaCorner: TokopediaCorner? = null,
-        @SerializedName("feature_type")
-        var featureType: Int = 0,
-        @SerializedName("cross_sell")
-        var crossSell: CrossSellRequest? = null,
+    @SerializedName("has_promo_stacking")
+    var hasPromoStacking: Boolean = false,
+    @SerializedName("is_donation")
+    var isDonation: Int = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("leasing_id")
+    var leasingId: Long = 0,
+    @SerializedName("promos")
+    var promos: List<Promo> = emptyList(),
+    @SerializedName("egold_data")
+    var egold: Egold = Egold(),
+    @SerializedName("tokopedia_corner_data")
+    var tokopediaCorner: TokopediaCorner? = null,
+    @SerializedName("feature_type")
+    var featureType: Int = 0,
+    @SerializedName("cross_sell")
+    var crossSell: CrossSellRequest? = null,
 
-        @SerializedName("data")
-        var data: List<Data> = emptyList()
+    @SerializedName("data")
+    var data: List<Data> = emptyList()
 )
 
 data class Data(
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("address_id")
-        var addressId: Long = 0,
-        @SerializedName("shop_orders")
-        var shopOrders: List<ShopOrder> = emptyList()
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("address_id")
+    var addressId: Long = 0,
+    @SerializedName("shop_orders")
+    var shopOrders: List<ShopOrder> = emptyList()
 )
 
 data class ShopOrder(
-        @SerializedName("bundle")
-        var bundle: List<Bundle> = emptyList(),
-        @SerializedName("cartstring")
-        var cartstring: String = "",
-        @SerializedName("dropship_data")
-        var dropship: Dropship = Dropship(),
-        @SerializedName("is_preorder")
-        var isPreorder: Int = 0,
-        @SerializedName("order_feature")
-        var orderFeature: OrderFeature = OrderFeature(),
-        @SerializedName("promos")
-        var promos: List<Promo> = emptyList(),
-        @SerializedName("shipping_info")
-        var shippingInfo: ShippingInfo = ShippingInfo(),
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("shop_id")
-        var shopId: Long = 0,
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("warehouse_id")
-        var warehouseId: Long = 0,
-        @SerializedName("items")
-        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
-        @SerializedName("order_metadata")
-        var orderMetadata: List<OrderMetadata> = emptyList()
+    @SerializedName("bundle")
+    var bundle: List<Bundle> = emptyList(),
+    @SerializedName("cartstring")
+    var cartstring: String = "",
+    @SerializedName("dropship_data")
+    var dropship: Dropship = Dropship(),
+    @SerializedName("is_preorder")
+    var isPreorder: Int = 0,
+    @SerializedName("order_feature")
+    var orderFeature: OrderFeature = OrderFeature(),
+    @SerializedName("promos")
+    var promos: List<Promo> = emptyList(),
+    @SerializedName("shipping_info")
+    var shippingInfo: ShippingInfo = ShippingInfo(),
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("shop_id")
+    var shopId: Long = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("warehouse_id")
+    var warehouseId: Long = 0,
+    @SerializedName("items")
+    var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
+    @SerializedName("order_metadata")
+    var orderMetadata: List<OrderMetadata> = emptyList()
 )
 
 data class Bundle(
-        @SerializedName("bundle_info")
-        var bundleInfo: BundleInfo = BundleInfo(),
-        @SerializedName("product_data")
-        var productData: List<Product> = emptyList()
+    @SerializedName("bundle_info")
+    var bundleInfo: BundleInfo = BundleInfo(),
+    @SerializedName("product_data")
+    var productData: List<Product> = emptyList()
 )
 
 data class Product(
-        @SerializedName("is_ppp")
-        var isPpp: Boolean = false,
-        @SerializedName("product_id")
-        var productId: String = "",
-        @SerializedName("items")
-        var checkoutGiftingProductLevel: List<CheckoutGiftingAddOn> = emptyList()
+    @SerializedName("is_ppp")
+    var isPpp: Boolean = false,
+    @SerializedName("product_id")
+    var productId: String = "",
+    @SerializedName("items")
+    var checkoutGiftingProductLevel: List<CheckoutGiftingAddOn> = emptyList()
 )
 
 data class CheckoutGiftingAddOn(
-        @SerializedName("item_type")
-        var itemType: String = "",
-        @SerializedName("item_id")
-        var itemId: String = "",
-        @SerializedName("item_qty")
-        var itemQty: Int = 0,
-        @SerializedName("item_metadata")
-        var itemMetadata: String = ""
+    @SerializedName("item_type")
+    var itemType: String = "",
+    @SerializedName("item_id")
+    var itemId: String = "",
+    @SerializedName("item_qty")
+    var itemQty: Int = 0,
+    @SerializedName("item_metadata")
+    var itemMetadata: String = ""
 )
 
 data class BundleInfo(
-        @SerializedName("bundle_group_id")
-        var bundleGroupId: String = "",
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("bundle_id")
-        var bundleId: Long = 0
+    @SerializedName("bundle_group_id")
+    var bundleGroupId: String = "",
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("bundle_id")
+    var bundleId: Long = 0
 )
 
 data class Dropship(
-        @SerializedName("is_dropship")
-        var isDropship: Int = 0,
-        @SerializedName("name")
-        var name: String = "",
-        @SerializedName("telp_no")
-        var telpNo: String = ""
+    @SerializedName("is_dropship")
+    var isDropship: Int = 0,
+    @SerializedName("name")
+    var name: String = "",
+    @SerializedName("telp_no")
+    var telpNo: String = ""
 )
 
 data class OrderFeature(
-        @SerializedName("is_order_priority")
-        var isOrderPriority: Int = 0
+    @SerializedName("is_order_priority")
+    var isOrderPriority: Int = 0
 )
 
 data class ShippingInfo(
-        @SerializedName("checksum")
-        var checksum: String = "",
-        @SerializedName("finsurance")
-        var finsurance: Int = 0,
-        @SerializedName("rates_feature")
-        var ratesFeature: RatesFeature = RatesFeature(),
-        @SerializedName("rates_id")
-        var ratesId: String = "",
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("shipping_id")
-        var shippingId: Long = 0,
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("sp_id")
-        var spId: Long = 0,
-        @SerializedName("ut")
-        var ut: String = ""
+    @SerializedName("checksum")
+    var checksum: String = "",
+    @SerializedName("finsurance")
+    var finsurance: Int = 0,
+    @SerializedName("rates_feature")
+    var ratesFeature: RatesFeature = RatesFeature(),
+    @SerializedName("rates_id")
+    var ratesId: String = "",
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("shipping_id")
+    var shippingId: Long = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("sp_id")
+    var spId: Long = 0,
+    @SerializedName("ut")
+    var ut: String = ""
 )
 
 data class RatesFeature(
-        @SerializedName("ontime_delivery_guarantee")
-        var ontimeDeliveryGuarantee: OntimeDeliveryGuarantee = OntimeDeliveryGuarantee()
+    @SerializedName("ontime_delivery_guarantee")
+    var ontimeDeliveryGuarantee: OntimeDeliveryGuarantee = OntimeDeliveryGuarantee()
 )
 
 data class OntimeDeliveryGuarantee(
-        @SerializedName("available")
-        var available: Boolean = false,
-        @SerializedName("duration")
-        var duration: Int = 0
+    @SerializedName("available")
+    var available: Boolean = false,
+    @SerializedName("duration")
+    var duration: Int = 0
 )
 
 data class Egold(
-        @SerializedName("gold_amount")
-        var goldAmount: Long = 0,
-        @SerializedName("is_egold")
-        var isEgold: Boolean = false
+    @SerializedName("gold_amount")
+    var goldAmount: Long = 0,
+    @SerializedName("is_egold")
+    var isEgold: Boolean = false
 )
 
 data class Promo(
-        @SerializedName("code")
-        var code: String = "",
-        @SerializedName("type")
-        var type: String = ""
+    @SerializedName("code")
+    var code: String = "",
+    @SerializedName("type")
+    var type: String = ""
 )
 
 data class TokopediaCorner(
-        @SerializedName("is_tokopedia_corner")
-        var isTokopediaCorner: Boolean = false,
-        @SerializedName("user_corner_id")
-        var userCornerId: String = "",
-        @SerializedName("corner_id")
-        @SuppressLint("Invalid Data Type")
-        var cornerId: Long = 0
+    @SerializedName("is_tokopedia_corner")
+    var isTokopediaCorner: Boolean = false,
+    @SerializedName("user_corner_id")
+    var userCornerId: String = "",
+    @SerializedName("corner_id")
+    @SuppressLint("Invalid Data Type")
+    var cornerId: Long = 0
 )
 
 data class OrderMetadata(
-        @SerializedName("key")
-        val key: String = "",
-        @SerializedName("value")
-        val value: String = ""
+    @SerializedName("key")
+    val key: String = "",
+    @SerializedName("value")
+    val value: String = ""
 ) {
     companion object {
         const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
+        const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
+        const val MINI_CONSULTATION_META_DATA_KEY = "epharm_consultation"
     }
 }
 
@@ -202,7 +206,8 @@ object CheckoutRequestMapper {
             egold = mapEgoldData(checkoutRequest.egoldData)
             data = mapData(checkoutRequest.data)
             val tmpCornerData = checkoutRequest.cornerData
-            tokopediaCorner = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
+            tokopediaCorner =
+                if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
             featureType = checkoutRequest.featureType
@@ -213,10 +218,12 @@ object CheckoutRequestMapper {
     private fun mapPromos(promos: List<PromoRequest>?): List<Promo> {
         val promosGqlData = mutableListOf<Promo>()
         promos?.forEach {
-            promosGqlData.add(Promo().apply {
-                type = it.type
-                code = it.code
-            })
+            promosGqlData.add(
+                Promo().apply {
+                    type = it.type
+                    code = it.code
+                }
+            )
         }
 
         return promosGqlData
@@ -237,36 +244,44 @@ object CheckoutRequestMapper {
         }
     }
 
-    private fun mapData(dataCheckoutRequestList: List<DataCheckoutRequest>?): List<Data> {
+    private fun mapData(
+        dataCheckoutRequestList: List<DataCheckoutRequest>?
+    ): List<Data> {
         val checkoutGqlDataList = mutableListOf<Data>()
         dataCheckoutRequestList?.forEach {
-            checkoutGqlDataList.add(Data().apply {
-                addressId = it.addressId.toLongOrZero()
-                shopOrders = mapShopProduct(it.shopProducts)
-            })
+            checkoutGqlDataList.add(
+                Data().apply {
+                    addressId = it.addressId.toLongOrZero()
+                    shopOrders = mapShopProduct(it.shopProducts)
+                }
+            )
         }
 
         return checkoutGqlDataList
     }
 
-    private fun mapShopProduct(shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?): List<ShopOrder> {
+    private fun mapShopProduct(
+        shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?
+    ): List<ShopOrder> {
         val shopProductList = mutableListOf<ShopOrder>()
         shopProductCheckoutRequests?.forEach {
-            shopProductList.add(ShopOrder().apply {
-                cartstring = it.cartString ?: ""
-                shopId = it.shopId
-                warehouseId = it.warehouseId
-                isPreorder = it.isPreorder
-                orderFeature = OrderFeature().apply {
-                    isOrderPriority = it.isOrderPriority
+            shopProductList.add(
+                ShopOrder().apply {
+                    cartstring = it.cartString ?: ""
+                    shopId = it.shopId
+                    warehouseId = it.warehouseId
+                    isPreorder = it.isPreorder
+                    orderFeature = OrderFeature().apply {
+                        isOrderPriority = it.isOrderPriority
+                    }
+                    shippingInfo = mapShippingInfo(it.shippingInfo, it.finsurance)
+                    dropship = mapDropshipData(it.dropshipData, it.isDropship)
+                    promos = mapPromos(it.promos)
+                    bundle = mapBundle(it.productData)
+                    checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
+                    orderMetadata = mapOrderMetadata(it, it.promos)
                 }
-                shippingInfo = mapShippingInfo(it.shippingInfo, it.finsurance)
-                dropship = mapDropshipData(it.dropshipData, it.isDropship)
-                promos = mapPromos(it.promos)
-                bundle = mapBundle(it.productData)
-                checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
-                orderMetadata = mapOrderMetadata(it)
-            })
+            )
         }
 
         return shopProductList
@@ -294,7 +309,7 @@ object CheckoutRequestMapper {
                 bundleInfo = BundleInfo().apply {
                     if (it.key.isNotBlankOrZero()) {
                         bundleId = it.key.toLongOrZero()
-                        bundleGroupId = bundleIdGroupIdMap.get(it.key) ?: ""
+                        bundleGroupId = bundleIdGroupIdMap[it.key] ?: ""
                     }
                 }
                 productData = it.value
@@ -314,7 +329,10 @@ object CheckoutRequestMapper {
         return product
     }
 
-    private fun mapShippingInfo(shippingInfo: ShippingInfoCheckoutRequest?, finsurance: Int): ShippingInfo {
+    private fun mapShippingInfo(
+        shippingInfo: ShippingInfoCheckoutRequest?,
+        finsurance: Int
+    ): ShippingInfo {
         return ShippingInfo().apply {
             this.finsurance = finsurance
             shippingId = shippingInfo?.shippingId?.toLong() ?: 0
@@ -327,7 +345,9 @@ object CheckoutRequestMapper {
         }
     }
 
-    private fun mapRatesFeature(ratesFeature: com.tokopedia.checkout.data.model.request.common.RatesFeature?): RatesFeature {
+    private fun mapRatesFeature(
+        ratesFeature: com.tokopedia.checkout.data.model.request.common.RatesFeature?
+    ): RatesFeature {
         return RatesFeature().apply {
             ontimeDeliveryGuarantee = OntimeDeliveryGuarantee().apply {
                 available = ratesFeature?.ontimeDeliveryGuarantee?.available ?: false
@@ -336,7 +356,10 @@ object CheckoutRequestMapper {
         }
     }
 
-    private fun mapDropshipData(dropshipData: DropshipDataCheckoutRequest?, isDropship: Int): Dropship {
+    private fun mapDropshipData(
+        dropshipData: DropshipDataCheckoutRequest?,
+        isDropship: Int
+    ): Dropship {
         return Dropship().apply {
             this.isDropship = isDropship
             name = dropshipData?.name ?: ""
@@ -358,10 +381,35 @@ object CheckoutRequestMapper {
         return listCheckoutGiftingAddOn.toList()
     }
 
-    private fun mapOrderMetadata(shopProductCheckoutRequest: ShopProductCheckoutRequest): List<OrderMetadata> {
+    private fun mapOrderMetadata(
+        shopProductCheckoutRequest: ShopProductCheckoutRequest,
+        promos: List<PromoRequest>?
+    ): List<OrderMetadata> {
         val orderMetadata = arrayListOf<OrderMetadata>()
-        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank()) {
+        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank() &&
+            promos?.firstOrNull { it.type == PromoRequest.TYPE_LOGISTIC } != null
+        ) {
+            // only add free shipping metadata if the order contains at least 1 promo logistic
             orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
+        }
+        if (shopProductCheckoutRequest.needPrescription &&
+            shopProductCheckoutRequest.prescriptionIds.isNotEmpty()
+        ) {
+            orderMetadata.add(
+                OrderMetadata(
+                    UPLOAD_PRESCRIPTION_META_DATA_KEY,
+                    shopProductCheckoutRequest.prescriptionIds.toString()
+                )
+            )
+        } else if (shopProductCheckoutRequest.needPrescription &&
+            shopProductCheckoutRequest.consultationDataString.isNotBlank()
+        ) {
+            orderMetadata.add(
+                OrderMetadata(
+                    MINI_CONSULTATION_META_DATA_KEY,
+                    shopProductCheckoutRequest.consultationDataString
+                )
+            )
         }
         return orderMetadata
     }

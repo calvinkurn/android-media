@@ -17,14 +17,28 @@ buildscript {
     }
 }
 
+android {
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
+    testOptions {
+        animationsDisabled = true
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.websocket)
-    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
-    implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
+
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -46,16 +60,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation projectOrAar(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.features.mediapickerCommon)
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
-
-    //test
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -63,13 +73,20 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
-    
+
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.coreKtx
+
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk
@@ -80,6 +97,16 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 }
 
 project.ext {

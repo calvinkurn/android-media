@@ -10,8 +10,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.core.app.TaskStackBuilder;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,8 +21,9 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
@@ -30,7 +31,6 @@ import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
-import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -50,6 +50,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -70,9 +71,6 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -94,7 +92,6 @@ import javax.inject.Inject;
 import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
-import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -102,7 +99,6 @@ import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 public abstract class SellerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
-        TopAdsModuleRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
@@ -111,7 +107,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         SellerHomeRouter,
         LoginRouter {
 
-    private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
 
     protected RemoteConfig remoteConfig;
@@ -212,14 +207,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         if (tetraDebugger != null) {
             tetraDebugger.setUserId(userId);
         }
-    }
-
-    @Override
-    public TopAdsComponent getTopAdsComponent() {
-        if (topAdsComponent == null) {
-            topAdsComponent = TopAdsComponentInstance.getComponent(this);
-        }
-        return topAdsComponent;
     }
 
     @Override
@@ -448,12 +435,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public Fragment getSomListFragment(@NotNull Context context, @Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
         Bundle bundle = new Bundle();
-        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
+        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_NEW_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putString(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
         if (DeviceScreenInfo.isTablet(context)) {
-            if (orderId != null && orderId.trim().length() > 0) {
+            if (orderId.trim().length() > 0) {
                 bundle.putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId);
             }
             return SomContainerFragment.newInstance(bundle);
@@ -506,6 +493,16 @@ public abstract class SellerRouterApplication extends MainApplication implements
             }
             gcmUpdateComponent.inject(this);
         }
+    }
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        //Do nothing
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+        //Do nothing
     }
 
 }

@@ -12,7 +12,11 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -25,7 +29,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.getElemen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.After
@@ -248,8 +252,7 @@ class DigitalCartActivityWithDisableVoucher {
 
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_title))))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_description))))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(not(isDisplayed())))
         onView(withId(R.id.iv_promo_checkout_right)).check(matches(not(isDisplayed())))
         Thread.sleep(1000)
     }

@@ -17,6 +17,7 @@ import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.databinding.FragmentHotelContactDataBinding
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
@@ -29,7 +30,8 @@ import com.tokopedia.travel.passenger.util.QueryGetContactList
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
+class HotelContactDataFragment : BaseDaggerFragment(),
+    TravelContactArrayAdapter.ContactArrayListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,11 +57,15 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
         arguments?.let {
             contactData = it.getParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA)
-                    ?: TravelContactData()
+                ?: TravelContactData()
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentHotelContactDataBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -75,9 +81,11 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
-            contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
-        })
+        bookingViewModel.contactListResult.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { contactList ->
+                contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
+            })
 
     }
 
@@ -87,12 +95,16 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         when (requestCode) {
             REQUEST_CODE_PHONE_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                    val countryPhoneCode =
+                        data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
                             ?: TravelCountryPhoneCode()
                     contactData.phoneCode = countryPhoneCode.countryPhoneCode
 
                     spinnerData.clear()
-                    spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
+                    spinnerData += getString(
+                        com.tokopedia.common.travel.R.string.phone_code_format,
+                        contactData.phoneCode
+                    )
                     spinnerAdapter.notifyDataSetChanged()
                 }
             }
@@ -104,10 +116,21 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         binding?.tilContactName?.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_hint))
 
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
-            (binding?.tilContactName?.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+            travelContactArrayAdapter = TravelContactArrayAdapter(
+                it,
+                com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
+                arrayListOf(),
+                this
+            )
+            (binding?.tilContactName?.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(
+                travelContactArrayAdapter
+            )
 
-            (binding?.tilContactName?.getAutoCompleteTextView() as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
+            (binding?.tilContactName?.getAutoCompleteTextView() as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id ->
+                autofillView(
+                    travelContactArrayAdapter.getItem(position)
+                )
+            }
         }
 
         binding?.tilContactName?.setEditableText(contactData.name)
@@ -120,7 +143,8 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         binding?.tilContactPhoneNumber?.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_hint))
         binding?.tilContactPhoneNumber?.setEditableText(contactData.phone)
 
-        val initialPhoneCode = getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
+        val initialPhoneCode =
+            getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
         spinnerData += initialPhoneCode
         context?.run {
             spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
@@ -128,10 +152,13 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         }
         binding?.spContactPhoneCode?.adapter = spinnerAdapter
         binding?.spContactPhoneCode?.setSelection(0)
-        binding?.spContactPhoneCode?.setOnTouchListener {v, event ->
+        binding?.spContactPhoneCode?.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 v.performClick()
-                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
+                startActivityForResult(
+                    PhoneCodePickerActivity.getCallingIntent(requireContext()),
+                    REQUEST_CODE_PHONE_CODE
+                )
             }
             true
         }
@@ -141,14 +168,21 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
     private fun autofillView(contact: TravelContactListModel.Contact?) {
         if (contact != null) {
-            selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
+            selectedContact = TravelContactListModel.Contact(
+                fullName = contact.fullName,
+                email = contact.email,
+                phoneNumber = contact.phoneNumber
+            )
 
             binding?.tilContactEmail?.setEditableText(contact.email)
             binding?.tilContactPhoneNumber?.setEditableText(contact.phoneNumber)
 
             contactData.phoneCode = contact.phoneCountryCode
             spinnerData.clear()
-            spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contact.phoneCountryCode)
+            spinnerData += getString(
+                com.tokopedia.common.travel.R.string.phone_code_format,
+                contact.phoneCountryCode
+            )
             spinnerAdapter.notifyDataSetChanged()
         }
     }
@@ -158,11 +192,18 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
             contactData.name = binding?.tilContactName?.getEditableValue() ?: ""
             contactData.email = binding?.tilContactEmail?.getEditableValue() ?: ""
             contactData.phone = binding?.tilContactPhoneNumber?.getEditableValue() ?: ""
-            contactData.phoneCode = (binding?.spContactPhoneCode?.selectedItem as String).toInt()
+            contactData.phoneCode =
+                (binding?.spContactPhoneCode?.selectedItem as String).toIntSafely()
 
-            bookingViewModel.updateContactList(MutationUpsertContact(),
-                    TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
-                            phoneCountryCode = contactData.phoneCode))
+            bookingViewModel.updateContactList(
+                MutationUpsertContact(),
+                TravelUpsertContactModel.Contact(
+                    fullName = contactData.name,
+                    email = contactData.email,
+                    phoneNumber = contactData.phone,
+                    phoneCountryCode = contactData.phoneCode
+                )
+            )
 
             activity?.run {
                 val intent = Intent()
@@ -191,7 +232,8 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     }
 
     private fun isValidEmail(contactEmail: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.")
+        return Patterns.EMAIL_ADDRESS.matcher(contactEmail)
+            .matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.")
     }
 
     override fun getScreenName(): String = ""
@@ -210,10 +252,10 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         const val MIN_PHONE_NUMBER_DIGIT = 9
 
         fun getInstance(contactData: TravelContactData): HotelContactDataFragment =
-                HotelContactDataFragment().also {
-                    it.arguments = Bundle().apply {
-                        putParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
-                    }
+            HotelContactDataFragment().also {
+                it.arguments = Bundle().apply {
+                    putParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
                 }
+            }
     }
 }

@@ -14,6 +14,8 @@ import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetCreateReviewProgressBarBinding
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewProgressBar @JvmOverloads constructor(
     context: Context,
@@ -28,8 +30,6 @@ class CreateReviewProgressBar @JvmOverloads constructor(
         private const val QUARTER_PROGRESS = 25
         private const val PARTIALLY_COMPLETE_PROGRESS = 66
         private const val EMPTY_PROGRESS = 33
-
-        private const val TRANSITION_DURATION = 300L
     }
 
     private val transitionHandler = TransitionHandler()
@@ -180,15 +180,19 @@ class CreateReviewProgressBar @JvmOverloads constructor(
         layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_bad_need_reason)
     }
 
-    fun updateUi(uiState: CreateReviewProgressBarUiState) {
+    fun updateUi(uiState: CreateReviewProgressBarUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewProgressBarUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewProgressBarUiState.Showing -> {
                 binding.showProgressBar(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }
@@ -196,7 +200,7 @@ class CreateReviewProgressBar @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutProgressBar.root)
                 addTarget(binding.layoutProgressBarLoading.root)
                 interpolator = AccelerateInterpolator()

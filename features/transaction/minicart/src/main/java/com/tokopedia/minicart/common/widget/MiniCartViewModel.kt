@@ -43,8 +43,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundleGroup
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -337,7 +337,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 bundleName = bundleName,
                 bundleType = bundleType,
                 bundlePosition = bundlePosition,
-                priceCut = priceCut
+                priceCut = priceCut,
+                productDetails = productDetails
             )
         }) { throwable ->
             _globalEvent.postValue(
@@ -357,7 +358,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         bundleName: String,
         bundleType: String,
         bundlePosition: Int,
-        priceCut: String
+        priceCut: String,
+        productDetails: List<ShopHomeBundleProductUiModel>,
     ) {
         response.validateResponse(
             onSuccess = {
@@ -367,7 +369,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                     )
                 )
 
-                val productData = response.addToCartBundleDataModel.data.firstOrNull()
+                val products = response.addToCartBundleDataModel.data
                 _productBundleRecomTracker.postValue(
                     ProductBundleRecomTracker(
                         shopId = shopId,
@@ -377,8 +379,10 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                         bundleType = bundleType,
                         bundlePosition = bundlePosition,
                         priceCut = priceCut,
-                        cartId = productData?.cartId.orEmpty(),
-                        quantity = productData?.quantity.toString(),
+                        atcItems = miniCartListUiModelMapper.mapToProductBundlRecomAtcItemTracker(
+                            productList = products,
+                            productDetails = productDetails
+                        ),
                         state = STATE_PRODUCT_BUNDLE_RECOM_ATC
                     )
                 )
@@ -412,10 +416,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
 
-            /**
-            * Don't remove this line of code. Need to wait get product bundle recom from BE to production
-            **/
-//            getProductBundleRecommendation(tmpMiniCartListUiModel)
+            getProductBundleRecommendation(tmpMiniCartListUiModel)
 
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad
@@ -1005,10 +1006,10 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
 
         // Calculate total price
         var totalQty = 0
-        var sellerCashbackValue = 0L
-        var totalPrice = 0L
-        var totalValue = 0L
-        var totalDiscount = 0L
+        var sellerCashbackValue = 0.0
+        var totalPrice = 0.0
+        var totalValue = 0.0
+        var totalDiscount = 0.0
         var totalWeight = 0
 
         val allProductList = visitables.filterIsInstance<MiniCartProductUiModel>()
@@ -1031,7 +1032,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                     else -> productPrice
                 }
                 totalPrice += productQty * price
-                sellerCashbackValue += (productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price).toLong()
+                sellerCashbackValue += (productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price)
                 val originalPrice = when {
                     productOriginalPrice > 0 -> productOriginalPrice
                     visitable.productWholeSalePrice > 0 && !visitable.isBundlingItem -> {
@@ -1042,7 +1043,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 totalValue += productQty * originalPrice
                 val discountValue = when {
                     productOriginalPrice > 0 -> productOriginalPrice - productPrice
-                    else -> 0
+                    else -> 0.0
                 }
                 totalDiscount += productQty * discountValue
             }
@@ -1096,7 +1097,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
 
             // Reset wholesale price not eligible and previously has wholesale price
             if (!isEligibleForWholesalePrice && visitable.productWholeSalePrice > 0L) {
-                updatedProduct.productWholeSalePrice = 0
+                updatedProduct.productWholeSalePrice = 0.0
                 isUpdatedWholeSalePrice = true
             }
 

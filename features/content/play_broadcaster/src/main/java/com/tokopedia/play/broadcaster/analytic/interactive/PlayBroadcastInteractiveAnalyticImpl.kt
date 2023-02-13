@@ -9,11 +9,17 @@ import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
 import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
 import com.tokopedia.play.broadcaster.analytic.currentSite
 import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.analytic.KEY_SHOP_ID
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACKER_ID
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
 import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT
+import com.tokopedia.play.broadcaster.analytic.sessionIris
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -23,9 +29,16 @@ import javax.inject.Inject
  * Created by mzennis on 22/07/21.
  */
 class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val hydraConfig: HydraConfigStore,
 ) : PlayBroadcastInteractiveAnalytic {
-    private val shopId: String = userSession.shopId
+
+    private val shopId = userSession.shopId
+    private val authorId: String
+        get() = hydraConfig.getAuthorId()
+    private val authorTypeName: String
+        get() = hydraConfig.getAuthorTypeName()
+
 
     override fun onImpressInteractiveTool(channelId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -221,20 +234,6 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun onClickQuizGift(channelId: String, channelTitle: String) {
-        sendClickEvent(
-            "click - giveaway optional",
-            "$shopId - $channelId - $channelTitle",
-        )
-    }
-
-    override fun onClickCloseQuizGift(channelId: String, channelTitle: String) {
-        sendClickEvent(
-            "click - x giveaway optional",
-            "$shopId - $channelId - $channelTitle",
-        )
-    }
-
     override fun onClickStartQuiz(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - start quiz",
@@ -372,6 +371,21 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             "click - quiz result option report page",
             "$shopId - $channelId - $channelTitle - $interactiveId - $interactiveTitle",
             )
+    }
+
+    override fun onImpressedProductCarousel() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_VIEW_EVENT)
+            .setEventAction("impressed - product carousel")
+            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setCustomProperty(KEY_TRACKER_ID, "26735")
+            .setEventLabel("$authorId - $authorTypeName")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(currentSite)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
     private fun sendClickEvent(

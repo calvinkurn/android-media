@@ -14,7 +14,7 @@ import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.helper.utils.PickerCameraViewActions
 import com.tokopedia.media.picker.ui.PickerTest
-import com.tokopedia.media.picker.ui.component.BottomNavComponent
+import com.tokopedia.media.picker.ui.component.BottomNavUiComponent
 import org.hamcrest.CoreMatchers.not
 
 abstract class CameraPageTest : PickerTest() {
@@ -41,7 +41,7 @@ abstract class CameraPageTest : PickerTest() {
 
         fun clickLanjutButton() {
             onView(
-                withId(R.id.btn_done)
+                withId(R.id.action_text_done)
             ).perform(click())
         }
 
@@ -93,7 +93,7 @@ abstract class CameraPageTest : PickerTest() {
             onView(
                 withId(R.id.tab_page)
             ).perform(
-                PickerCameraViewActions.clickGalleryTabAction(BottomNavComponent.PAGE_GALLERY_INDEX)
+                PickerCameraViewActions.clickGalleryTabAction(BottomNavUiComponent.PAGE_GALLERY_INDEX)
             )
         }
 

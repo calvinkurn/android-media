@@ -1,0 +1,42 @@
+<resources>
+    <string name="epharmacy_ketentuan_foto_resep">Ketentuan foto resep</string>
+    <string name="epharmacy_upload_title">Upload Foto Resep</string>
+    <string name="epharmacy_upload_instruction_1">Pastikan seluruh bagian kertas terlihat dan dapat terbaca</string>
+    <string name="epharmacy_upload_instruction_2">Upload foto resep sesuai dengan obat yang dibeli</string>
+    <string name="epharmacy_upload_instruction_3">Boleh upload lebih dari 1 resep dari dokter/klinik/kunjungan berbeda</string>
+    <string name="epharmacy_foto_resep">Foto Resep</string>
+    <string name="epharmacy_terms">Dengan klik “Foto Resep” kamu setuju dengan</string>
+    <string name="epharmacy_terms_hyper_text">Syarat dan Ketentuan.</string>
+    <string name="epharmacy_selesai">Selesai</string>
+    <string name="epharmacy_products_title">Obat butuh resep dokter</string>
+    <string name="epharmacy_upload_error">Gagal upload foto resep. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="epharmacy_internet_error">Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="epharmacy_quantity_weight_text">"%s Barang (%s)"</string>
+    <string name="epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
+    <string name="epharmacy_upload_title_view_only">Foto Resep Dokter</string>
+    <string name="epharmacy_upload_resep_dokter_chooser_title">Upload Resep Dokter</string>
+    <string name="epharmacy_upload_resep_dokter_chooser_subtitle">Sudah punya resep? Bisa langsung upload, ya.</string>
+    <string name="epharmacy_mini_consult_chooser_title">Chat Dokter</string>
+    <string name="eepharmacy_mini_consult_chooser_subtitle">Belum punya resep? Yuk, chat dokter dari Dkonsul buat dapat resep digital.</string>
+    <string name="epharmacy_dilayani_oleh">Dilayani oleh</string>
+
+    <string name="epharmacy_prescription_attachment_page_title">Lampirkan resep dokter</string>
+    <string name="epharmacy_partner_resmi">Partner resmi</string>
+    <string name="epharmacy_tampilkan_lebih_sedikit">Tampilkan lebih sedikit</string>
+
+    <string name="epharmacy_lanjut_ke_pengiriman">Lanjut ke Pengiriman</string>
+    <string name="epharmacy_ticker_rejected_error_description">Pesanan ini tidak bisa diproses karena pembelian obat kerasnya tidak disetujui dokter.</string>
+
+    <string name="epharmacy_reminder_title">Yaah, belum ada dokter yang tersedia saat ini</string>
+    <string name="epharmacy_reminder_description">Semua dokter mungkin sedang sibuk. Silakan hubungi dokter di %s – %s WIB.</string>
+    <string name="epharmacy_reminder_description_outside">Silakan hubungi di jam operasional dokter pada %s – %s WIB, ya.</string>
+    <string name="epharmacy_reminder_button_text">Ingatkan Saya</string>
+    <string name="epharmacy_reminder_success">Kami akan kirim pengingat jika ada dokter yang tersedia, ya!</string>
+    <string name="epharmacy_reminder_fail">Silakan Coba lagi</string>
+    <string name="epharmacy_upload_resep_atau_chat_dokter">Upload Resep atau Chat Dokter</string>
+    <string name="epharmacy_local_prescription_not_uploaded_error">Kamu punya pesanan obat keras yang butuh resep dokter. Segera lengkapi, ya!</string>
+    <string name="epharmacy_local_prescription_rejected_error">Yaah, dokter tidak memberikan resep digital.</string>
+    <string name="epharmacy_show_more">Tampilkan lebih banyak</string>
+    <string name="epharmacy_show_less">Tampilkan lebih sedikit</string>
+    <string name="epharmacy_baru">BARU</string>
+</resources>

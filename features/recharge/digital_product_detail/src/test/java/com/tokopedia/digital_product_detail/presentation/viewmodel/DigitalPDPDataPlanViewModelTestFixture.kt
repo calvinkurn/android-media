@@ -14,6 +14,7 @@ import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomMo
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -268,6 +269,11 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
             expectedResponse,
             (actualResponse as RechargeNetworkResult.Success).data
         )
+    }
+
+    protected fun verifyAddToCartErrorNotEmpty(expectedResponse: ErrorAtc){
+        val actualResponse = viewModel.errorAtc.value
+        Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyAddToCartError(expectedResponse: Throwable) {

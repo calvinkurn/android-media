@@ -1,13 +1,15 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
 class GetOccCartData(
+        @SerializedName("cart_data")
+        val cartData: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("error_code")
@@ -38,6 +40,8 @@ class GetOccCartData(
         val customerData: CustomerData = CustomerData(),
         @SerializedName("payment_additional_data")
         val paymentAdditionalData: PaymentAdditionalData = PaymentAdditionalData(),
+        @SerializedName("image_upload")
+        val imageUpload: ImageUploadResponse = ImageUploadResponse(),
         @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse(),
         @SerializedName("total_product_price")
@@ -49,9 +53,8 @@ class GetOccCartData(
 )
 
 class CustomerData(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
-        val id: Long = 0,
+        val id: String = "",
         @SerializedName("name")
         val name: String = "",
         @SerializedName("email")

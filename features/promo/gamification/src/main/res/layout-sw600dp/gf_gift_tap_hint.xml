@@ -19,7 +19,6 @@
     android:paddingEnd="@dimen/gami_dp_55"
     android:paddingRight="@dimen/gami_dp_55"
     android:paddingBottom="10dp"
-    android:textColor="@color/gf_box_hint_color"
     app:typographyType="heading_2"
     app:typographyWeight="bold"
     tools:alpha="1"

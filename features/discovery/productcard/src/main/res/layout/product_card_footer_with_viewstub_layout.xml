@@ -19,10 +19,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/buttonNotifyStubBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="buttonNotifyStub"
+        />
+
     <FrameLayout
         android:id="@+id/buttonRemoveFromWishlist"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="@drawable/product_card_bg_button_delete"
         android:clickable="true"
         android:focusable="true"
@@ -57,7 +66,7 @@
         android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
         app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
-        app:layout_constraintTop_toBottomOf="@id/buttonNotify"
+        app:layout_constraintTop_toBottomOf="@id/buttonNotifyStubBarrier"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible"/>
 

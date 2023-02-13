@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.domain
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -10,7 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetShopPageHomeLayoutV2UseCase @Inject constructor(
-        private val gqlUseCase: MultiRequestGraphqlUseCase
+    private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<ShopLayoutWidgetV2>() {
 
     companion object {
@@ -21,17 +20,16 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
 
-
         @JvmStatic
         fun createParams(
-                paramsModel: ShopLayoutWidgetParamsModel
+            paramsModel: ShopLayoutWidgetParamsModel
         ) = mapOf(
-                KEY_WIDGET_REQUEST to paramsModel.listWidgetRequest,
-                KEY_SHOP_ID to paramsModel.shopId,
-                KEY_DISTRICT_ID to paramsModel.districtId,
-                KEY_CITY_ID to paramsModel.cityId,
-                KEY_LATITUDE to paramsModel.latitude,
-                KEY_LONGITUDE to paramsModel.longitude
+            KEY_WIDGET_REQUEST to paramsModel.listWidgetRequest,
+            KEY_SHOP_ID to paramsModel.shopId,
+            KEY_DISTRICT_ID to paramsModel.districtId,
+            KEY_CITY_ID to paramsModel.cityId,
+            KEY_LATITUDE to paramsModel.latitude,
+            KEY_LONGITUDE to paramsModel.longitude
         )
     }
 
@@ -46,6 +44,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                   type
                   header {
                     title
+                    subtitle
                     ctaText
                     ctaLink
                     cover
@@ -164,6 +163,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       totalNotifyWording
                       totalProduct
                       totalProductWording
+                      voucherWording
                       dynamicRule {
                         dynamicRoleData {
                           ruleName
@@ -207,6 +207,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         maximumOrder
                         childIDs
                         parentID
+                        showStockbar
                       }
                       backgroundGradientColor {
                         firstColor
@@ -218,14 +219,16 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
               }
             }
 
-        """.trimIndent()
+    """.trimIndent()
 
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ShopLayoutWidgetV2 {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+        )
 
         val gqlRequest = GraphqlRequest(query, ShopLayoutWidgetV2.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
@@ -233,7 +236,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ShopLayoutWidgetV2.Response>(ShopLayoutWidgetV2.Response::class.java)
-                    .shopLayoutWidgetV2
+                .shopLayoutWidgetV2
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
@@ -242,5 +245,4 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
     fun clearCache() {
         gqlUseCase.clearCache()
     }
-
 }

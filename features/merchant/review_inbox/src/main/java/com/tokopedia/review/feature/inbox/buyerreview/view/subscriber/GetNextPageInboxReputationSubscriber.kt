@@ -1,6 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation
 
 /**
@@ -16,8 +16,8 @@ class GetNextPageInboxReputationSubscriber constructor(viewListener: InboxReputa
         viewListener.onErrorGetNextPage(e)
     }
 
-    override fun onNext(inboxReputationDomain: InboxReputationDomain) {
+    override fun onNext(inboxReputationResponse: InboxReputationResponseWrapper.Data.Response) {
         viewListener.finishLoading()
-        viewListener.onSuccessGetNextPage(mappingToViewModel(inboxReputationDomain))
+        viewListener.onSuccessGetNextPage(mappingToViewModel(inboxReputationResponse))
     }
 }

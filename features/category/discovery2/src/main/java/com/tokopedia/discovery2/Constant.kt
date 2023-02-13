@@ -34,7 +34,7 @@ object Constant {
     }
 
     object ATCButtonCTATypes {
-        const val MINI_CART = "minicart_cta"
+        const val MINI_CART = "minicart_atc"
         const val GENERAL_CART = "general_atc"
     }
 
@@ -99,4 +99,8 @@ object Constant {
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"
+
+    object TopAdsSdk{
+        const val TOP_ADS_GSLP_TDN = "topads gslp"
+    }
 }

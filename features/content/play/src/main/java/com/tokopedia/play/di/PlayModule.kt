@@ -23,6 +23,12 @@ import com.tokopedia.play.util.share.PlayShareExperienceImpl
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
+import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
@@ -41,6 +47,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -147,13 +154,18 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
+    fun provideWebSocket(
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers,
+        localCacheHandler: LocalCacheHandler
+    ): PlayWebSocket {
         return PlayWebSocketImpl(
-                OkHttpClient.Builder(),
-                userSession,
-                dispatchers,
-                mContext,
-                localCacheHandler,
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers,
+            context,
+            localCacheHandler
         )
     }
 
@@ -175,8 +187,12 @@ class PlayModule(val mContext: Context) {
      */
     @PlayScope
     @Provides
-    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, mContext)
+    fun providePlaySSE(
+        @ApplicationContext appContext: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers
+    ): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers, appContext)
 
     /**
      * Sharing Experience
@@ -189,4 +205,22 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun providePlayMetrics(): PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
+
+    @PlayScope
+    @Provides
+    fun provideWidgetTools(
+        playWidgetUseCase: PlayWidgetUseCase,
+        playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+        playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+        mapper: PlayWidgetUiMapper,
+        connectionUtil: PlayWidgetConnectionUtil
+    ): PlayWidgetTools {
+        return PlayWidgetTools(
+            playWidgetUseCase,
+            playWidgetReminderUseCase,
+            playWidgetUpdateChannelUseCase,
+            mapper,
+            connectionUtil
+        )
+    }
 }

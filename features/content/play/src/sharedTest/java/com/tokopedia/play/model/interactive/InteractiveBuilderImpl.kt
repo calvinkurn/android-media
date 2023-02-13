@@ -1,15 +1,13 @@
 package com.tokopedia.play.model.interactive
 
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.LeadeboardType
-import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
-import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
+import com.tokopedia.play_common.model.ui.LeadeboardType
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import java.util.Calendar
 
 /**
  * Created by kenny.hadisaputra on 11/05/22
@@ -17,56 +15,23 @@ import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 class InteractiveBuilderImpl : InteractiveBuilder {
 
     override fun buildLeaderboard(
-        data: PlayLeaderboardInfoUiModel,
+        data: List<LeaderboardGameUiModel>,
         state: ResultState,
     ) = LeaderboardUiModel(
         data = data,
         state = state,
     )
 
-    override fun buildLeaderboardInfo(
-        leaderboardWinners: List<PlayLeaderboardUiModel>,
-        totalParticipant: String,
-        config: PlayLeaderboardConfigUiModel,
-    ) = PlayLeaderboardInfoUiModel(
-        leaderboardWinners = leaderboardWinners,
-        totalParticipant = totalParticipant,
-        config = config,
-    )
+    override fun buildLeaderBoardContent(data: List<LeaderboardGameUiModel>): List<LeaderboardGameUiModel> = data
 
-    override fun buildLeaderboardConfig(
-        sellerMessage: String,
-        winnerMessage: String,
-        winnerDetail: String,
-        loserMessage: String,
-        loserDetail: String,
-    ) = PlayLeaderboardConfigUiModel(
-        sellerMessage = sellerMessage,
-        winnerMessage = winnerMessage,
-        winnerDetail = winnerDetail,
-        loserMessage = loserMessage,
-        loserDetail = loserDetail,
-    )
-
-    override fun buildLeaderboardDetails(
+    override fun buildHeader(
         title: String,
-        winners: List<PlayWinnerUiModel>,
-        choices: List<QuizChoicesUiModel>,
-        otherParticipantText: String,
-        otherParticipant: Long,
-        emptyLeaderBoardCopyText: String,
         reward: String,
+        endsIn: Calendar?,
         leaderBoardType: LeadeboardType,
-    ) = PlayLeaderboardUiModel(
-        title = title,
-        winners = winners,
-        choices = choices,
-        otherParticipantText = otherParticipantText,
-        otherParticipant = otherParticipant,
-        emptyLeaderBoardCopyText = emptyLeaderBoardCopyText,
-        reward = reward,
-        leaderBoardType = leaderBoardType,
-        id = "1"
+        id: String
+    ): LeaderboardGameUiModel.Header = LeaderboardGameUiModel.Header(
+        title, reward, endsIn, leaderBoardType, id
     )
 
     override fun buildWinner(
@@ -76,7 +41,7 @@ class InteractiveBuilderImpl : InteractiveBuilder {
         imageUrl: String,
         allowChat: () -> Boolean,
         topChatMessage: String,
-    ) = PlayWinnerUiModel(
+    ) = LeaderboardGameUiModel.Winner(
         rank = rank,
         id = id,
         name = name,
@@ -84,6 +49,15 @@ class InteractiveBuilderImpl : InteractiveBuilder {
         allowChat = allowChat,
         topChatMessage = topChatMessage,
     )
+
+    override fun buildFooter(
+        id: String,
+        totalParticipant: Long,
+        leaderBoardType: LeadeboardType,
+        otherParticipantText: String,
+        otherParticipant: Long,
+        emptyLeaderBoardCopyText: String,
+    ): LeaderboardGameUiModel.Footer = LeaderboardGameUiModel.Footer(id, totalParticipant, leaderBoardType, otherParticipantText, otherParticipant, emptyLeaderBoardCopyText)
 
     override fun buildQuizChoices(
         index: Int,
@@ -107,8 +81,8 @@ class InteractiveBuilderImpl : InteractiveBuilder {
         id: String,
         title: String,
         waitingDuration: Long,
-        status: InteractiveUiModel.Giveaway.Status,
-    ) = InteractiveUiModel.Giveaway(
+        status: GameUiModel.Giveaway.Status,
+    ) = GameUiModel.Giveaway(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
@@ -119,15 +93,13 @@ class InteractiveBuilderImpl : InteractiveBuilder {
         id: String,
         title: String,
         waitingDuration: Long,
-        status: InteractiveUiModel.Quiz.Status,
+        status: GameUiModel.Quiz.Status,
         listOfChoices: List<QuizChoicesUiModel>,
-        reward: String,
-    ) = InteractiveUiModel.Quiz(
+    ) = GameUiModel.Quiz(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
         status = status,
         listOfChoices = listOfChoices,
-        reward = reward,
     )
 }

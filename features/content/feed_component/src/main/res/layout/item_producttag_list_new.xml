@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -12,17 +13,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="4dp">
 
         <FrameLayout
             android:id="@+id/productLayout"
-            android:layout_width="@dimen/dp_96"
-            android:layout_height="@dimen/dp_96"
-            android:padding="@dimen/dp_2"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:padding="2dp"
             android:background="@drawable/bg_frame_rounded"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/productNameSection">
+            app:layout_constraintTop_toTopOf="@id/productNameSection"
+            app:layout_constraintBottom_toBottomOf="@id/productNameSection">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/productImage"
@@ -44,7 +46,8 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/productLayout"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/product_atc_wishlist_section">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productName"
@@ -68,13 +71,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:labelType="general_light_red"
+                    android:layout_marginEnd="@dimen/unify_space_4"
                     tools:text="50%" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/productTag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
                     android:textColor="@color/Unify_N400"
                     app:typographyType="small"
                     tools:text="Cashback 10%" />
@@ -99,8 +102,8 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/star"
-                    android:layout_width="@dimen/dp_13"
-                    android:layout_height="@dimen/dp_13"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
@@ -120,7 +123,7 @@
 
                 <View
                     android:id="@+id/divider"
-                    android:layout_width="@dimen/dp_1"
+                    android:layout_width="1dp"
                     android:layout_height="10dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="4dp"
@@ -144,7 +147,25 @@
                 android:adjustViewBounds="false"
                 android:contentDescription="@string/content_desc_free_shipping"
                 android:scaleType="fitStart" />
+
+            <include
+                android:id="@+id/product_stock_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:visibility="gone"
+                layout="@layout/item_stock_progress_view"
+                android:scaleType="fitStart"
+                tools:visibility="visible"
+                />
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="productLayout,productNameSection" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu"
@@ -154,8 +175,22 @@
             android:layout_marginEnd="@dimen/feed_component_dp_6"
             android:layout_marginBottom="@dimen/feed_component_dp_6"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            android:id="@+id/product_atc_wishlist_section"
+            layout="@layout/item_sale_atc_wishlist_layout"
+            app:layout_constraintStart_toStartOf="@id/productLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_layout"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </com.tokopedia.unifycomponents.CardUnify>

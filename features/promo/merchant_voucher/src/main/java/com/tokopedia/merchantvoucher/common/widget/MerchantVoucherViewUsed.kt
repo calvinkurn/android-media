@@ -57,7 +57,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                 MethodChecker.getDrawable(context, R.drawable.bg_voucher_button)
         )
         btnUseVoucher.setTextColor(
-                context.resources.getColorStateList(R.color.text_color_voucher_button)
+                context.resources.getColorStateList(com.tokopedia.merchantvoucher.R.color.merchant_voucher_dms_voucher_button)
         )
     }
 
@@ -77,7 +77,10 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         merchantVoucherViewModel?.run {
             var voucherImageUrl = ""
             when (merchantVoucherViewModel.merchantVoucherType) {
-                MerchantVoucherTypeDef.TYPE_DISCOUNT, MerchantVoucherTypeDef.TYPE_CASHBACK -> {
+                MerchantVoucherTypeDef.TYPE_DISCOUNT -> {
+                    voucherImageUrl = MerchantVoucherConst.DISCOUNT_VOUCHER_IMAGE_URL
+                }
+                MerchantVoucherTypeDef.TYPE_CASHBACK -> {
                     voucherImageUrl = MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
                 }
                 MerchantVoucherTypeDef.TYPE_FREE_ONGKIR -> {

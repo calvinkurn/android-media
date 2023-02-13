@@ -11,15 +11,19 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
-import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.ArrayList
 import javax.inject.Inject
 
-class DefaultWebsocketPayloadGenerator @Inject constructor(
+open class DefaultWebsocketPayloadGenerator @Inject constructor(
     private val userSession: UserSessionInterface
 ) : WebsocketPayloadGenerator {
+
+    override fun generateLocalId(): String {
+        return IdentifierUtil.generateLocalId()
+    }
 
     override fun generatePreviewMsg(
         message: String,
@@ -28,7 +32,7 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         referredMsg: ParentReply?
     ): SendableUiModel {
         val startTime = SendableUiModel.generateStartTime()
-        val localId = IdentifierUtil.generateLocalId()
+        val localId = generateLocalId()
         return MessageUiModel.Builder()
             .withMsgId(roomMetaData.msgId)
             .withFromUid(userSession.userId)
@@ -74,7 +78,10 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         localId: String
     ): String {
         return sendablePreview.generateMsgObj(
-            roomMetaData, message, userLocationInfo, localId
+            roomMetaData,
+            message,
+            userLocationInfo,
+            localId
         ).toString()
     }
 
@@ -84,7 +91,8 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         message: String
     ): SendableUiModel {
         return sendablePreview.generatePreviewMessage(
-            roomMetaData, message
+            roomMetaData,
+            message
         )
     }
 
@@ -128,11 +136,15 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
 
     override fun generateImageWsPayload(
         roomMetaData: RoomMetaData,
-        uploadId: String,
-        imageUploadUiModel: ImageUploadUiModel
+        filePath: String,
+        imageUploadUiModel: ImageUploadUiModel,
+        isSecure: Boolean
     ): String {
         return TopChatWebSocketParam.generateParamSendImage(
-            roomMetaData.msgId, uploadId, imageUploadUiModel
+            roomMetaData.msgId,
+            filePath,
+            imageUploadUiModel,
+            isSecure
         )
     }
 }

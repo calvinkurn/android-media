@@ -5,12 +5,15 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.pms.R
 import com.tokopedia.test.application.espresso_component.CommonActions
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.CoreMatchers.allOf
 
 class PmsListPageRobot {
 
@@ -87,6 +90,12 @@ class PmsListPageRobot {
     fun actionClickView(resId: Int) {
         val viewInteraction =
             onView(allOf(withId(resId))).check(matches(isDisplayed()))
+        viewInteraction.perform(click())
+    }
+
+    fun actionClickString(buttonText: String) {
+        val viewInteraction =
+            onView(allOf(withText(buttonText))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
     }
 }

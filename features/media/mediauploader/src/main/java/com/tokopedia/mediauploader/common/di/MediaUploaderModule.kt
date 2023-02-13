@@ -1,14 +1,18 @@
 package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.internal.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
+import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
@@ -50,6 +54,13 @@ class MediaUploaderModule {
     }
 
     @Provides
+    fun provideSourcePolicyManager(
+        @ApplicationContext context: Context,
+    ): SourcePolicyManager {
+        return SourcePolicyManagerImpl(context)
+    }
+
+    @Provides
     @MediaUploaderQualifier
     fun provideVideoUploaderManager(
         policyManager: SourcePolicyManager,
@@ -86,15 +97,25 @@ class MediaUploaderModule {
 
     @Provides
     @MediaUploaderQualifier
+    fun provideGetImageSecurePolicyUseCase(
+        repository: GraphqlRepository
+    ): GetImageSecurePolicyUseCase {
+        return GetImageSecurePolicyUseCase(repository)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
     fun provideImageUploaderManager(
         policyManager: SourcePolicyManager,
         imagePolicyUseCase: GetImagePolicyUseCase,
-        imageUploaderUseCase: GetImageUploaderUseCase
+        imageUploaderUseCase: GetImageUploaderUseCase,
+        imageSecurePolicyUseCase: GetImageSecurePolicyUseCase
     ): ImageUploaderManager {
         return ImageUploaderManager(
             policyManager,
             imagePolicyUseCase,
-            imageUploaderUseCase
+            imageUploaderUseCase,
+            imageSecurePolicyUseCase
         )
     }
 

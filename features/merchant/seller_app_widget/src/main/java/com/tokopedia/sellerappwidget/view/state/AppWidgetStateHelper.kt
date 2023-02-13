@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.sellerappwidget.R
@@ -74,7 +75,11 @@ abstract class AppWidgetStateHelper {
                 action = Const.Action.REFRESH
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
             }
-            val reloadPendingIntent = PendingIntent.getBroadcast(context, 0, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val reloadPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(context, 0, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+            } else {
+                PendingIntent.getBroadcast(context, 0, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
             setOnClickPendingIntent(viewId, reloadPendingIntent)
         }
     }

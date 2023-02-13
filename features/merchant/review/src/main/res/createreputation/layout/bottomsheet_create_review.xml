@@ -8,21 +8,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:viewBindingIgnore="true" >
+        tools:viewBindingIgnore="true">
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/review_form_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fillViewport="true"
             app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toTopOf="@id/review_form_progress_bar_divider"
             app:layout_constraintTop_toTopOf="parent"
-            tools:viewBindingIgnore="true" >
+            tools:viewBindingIgnore="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:viewBindingIgnore="true" >
+                tools:viewBindingIgnore="true">
 
                 <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewProductCard
                     android:id="@+id/review_form_product_card"
@@ -68,12 +69,18 @@
                     android:paddingHorizontal="12dp"
                     app:layout_constraintTop_toBottomOf="@id/review_form_text_area_title" />
 
+                <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTopics
+                    android:id="@+id/review_form_topics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/review_form_bad_rating_categories" />
+
                 <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
                     android:id="@+id/review_form_text_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/review_form_bad_rating_categories" />
+                    app:layout_constraintTop_toBottomOf="@id/review_form_topics" />
 
                 <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTemplate
                     android:id="@+id/review_form_templates"

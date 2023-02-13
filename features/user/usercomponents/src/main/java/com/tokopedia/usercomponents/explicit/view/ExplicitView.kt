@@ -13,12 +13,11 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.R
@@ -26,13 +25,14 @@ import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitFailedBindin
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
 import com.tokopedia.usercomponents.explicit.analytics.ExplicitAnalytics
+import com.tokopedia.usercomponents.explicit.domain.model.OptionsItem
 import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 
 class ExplicitView constructor(
     context: Context,
     attrs: AttributeSet? = null
-) : CardUnify2(context, attrs), ExplicitAction {
+) : CardUnify(context, attrs), ExplicitAction {
 
     private var explicitViewContract: ExplicitViewContract? = null
 
@@ -58,8 +58,12 @@ class ExplicitView constructor(
 
     private fun initView() {
         initBinding()
-        initObserver()
-        initListener()
+        if (explicitViewContract?.isLoggedIn() == true) {
+            initObserver()
+            initListener()
+        } else {
+            onDismiss()
+        }
     }
 
     private fun initBinding() {
@@ -92,7 +96,7 @@ class ExplicitView constructor(
 
         explicitViewContract?.statusSaveAnswer?.observe(lifecycleOwner) {
             when (it) {
-                is Success -> onSubmitSuccessShow()
+                is Success -> onSubmitSuccessShow(it.data.first)
                 is Fail -> onFailed()
             }
         }
@@ -208,9 +212,13 @@ class ExplicitView constructor(
         saveAnswer()
     }
 
-    override fun onSubmitSuccessShow() {
+    override fun onSubmitSuccessShow(data: OptionsItem?) {
         showShadow(true)
-        initSuccessMessageText()
+        initSuccessMessageText(
+            data?.message.orEmpty(),
+            data?.textApplink.orEmpty(),
+            data?.applink.orEmpty()
+        )
         replaceView(bindingSuccess?.root)
     }
 
@@ -238,13 +246,20 @@ class ExplicitView constructor(
         }
     }
 
-    private fun initSuccessMessageText() {
-        val message = context.getString(R.string.explicit_succes_message)
+    private fun initSuccessMessageText(
+        messageSuccess: String,
+        textApplink: String,
+        applink: String
+    ) {
+        val message = "$messageSuccess $textApplink"
+        val indexStar = messageSuccess.length + 1
+        val indexEnd = indexStar + textApplink.length
+
         val spannable = SpannableString(message)
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
-                    goToExplicitProfilePreference()
+                    goToExplicitProfilePreference(applink)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -255,18 +270,18 @@ class ExplicitView constructor(
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             },
-            message.indexOf(context.getString(R.string.explicit_succes_message_action)),
-            message.indexOf(context.getString(R.string.explicit_succes_message_action)) + context.getString(
-                R.string.explicit_succes_message_action
-            ).length,
+            indexStar,
+            indexEnd,
             0
         )
-        bindingSuccess?.txtSuccessTitle?.movementMethod = LinkMovementMethod.getInstance()
-        bindingSuccess?.txtSuccessTitle?.setText(spannable, TextView.BufferType.SPANNABLE)
+        bindingSuccess?.txtSuccessTitle?.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            setText(spannable, TextView.BufferType.SPANNABLE)
+        }
     }
 
-    private fun goToExplicitProfilePreference() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE)
+    private fun goToExplicitProfilePreference(applink: String) {
+        val intent = RouteManager.getIntent(context, applink)
         context.startActivity(intent)
     }
 

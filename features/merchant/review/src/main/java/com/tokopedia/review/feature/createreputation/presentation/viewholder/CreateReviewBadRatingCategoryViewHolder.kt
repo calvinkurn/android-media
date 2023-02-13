@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.createreputation.presentation.viewholder
 import android.view.View
 import android.widget.CompoundButton
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.ItemCreateReviewBadRatingCategoryBinding
@@ -14,7 +13,9 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 class CreateReviewBadRatingCategoryViewHolder(
     itemView: View,
     private val listener: Listener
-) : BaseCreateReviewViewHolder<ItemCreateReviewBadRatingCategoryBinding, CreateReviewBadRatingCategoryUiModel>(itemView) {
+) : BaseCreateReviewViewHolder<ItemCreateReviewBadRatingCategoryBinding, CreateReviewBadRatingCategoryUiModel>(
+    itemView
+) {
 
     companion object {
         val LAYOUT = R.layout.item_create_review_bad_rating_category
@@ -25,7 +26,7 @@ class CreateReviewBadRatingCategoryViewHolder(
     private var badRatingCategory: BadRatingCategory? = null
 
     init {
-        binding.setupCheckboxContainer()
+        binding.setupCheckboxTextListener()
     }
 
     override fun bind(element: CreateReviewBadRatingCategoryUiModel) {
@@ -34,7 +35,6 @@ class CreateReviewBadRatingCategoryViewHolder(
             with(binding) {
                 setupCheckbox(element.uiState.badRatingCategory)
                 setupImpressionHandler(element.uiState)
-                reviewBadRatingCategoryContainer.show()
             }
         }
     }
@@ -43,15 +43,15 @@ class CreateReviewBadRatingCategoryViewHolder(
         bind(element)
     }
 
-    private fun ItemCreateReviewBadRatingCategoryBinding.setupCheckboxContainer() {
-        reviewBadRatingCategoryContainer.setBackgroundResource(R.drawable.bg_review_highlighted_topic)
+    private fun ItemCreateReviewBadRatingCategoryBinding.setupCheckboxTextListener() {
+        root.setOnClickListener { reviewBadRatingCategoryCheckbox.toggle() }
     }
 
     private fun ItemCreateReviewBadRatingCategoryBinding.setupCheckbox(
         badRatingCategory: BadRatingCategory
     ) {
         reviewBadRatingCategoryCheckbox.setOnCheckedChangeListener(null)
-        reviewBadRatingCategoryCheckbox.text = badRatingCategory.description
+        tvReviewBadRatingCategory.text = badRatingCategory.description
         if (reviewBadRatingCategoryCheckbox.isChecked != badRatingCategory.selected) {
             reviewBadRatingCategoryCheckbox.isChecked = badRatingCategory.selected
             reviewBadRatingCategoryCheckbox.skipAnimation()
@@ -62,12 +62,12 @@ class CreateReviewBadRatingCategoryViewHolder(
     private fun ItemCreateReviewBadRatingCategoryBinding.setupImpressionHandler(
         uiState: CreateReviewBadRatingCategoryUiState
     ) {
-        reviewBadRatingCategoryContainer.addOnImpressionListener(ImpressHolder()) {
+        root.addOnImpressionListener(ImpressHolder()) {
             listener.onImpressBadRatingCategory(uiState.badRatingCategory.description)
         }
     }
 
-    private inner class CheckboxListener: CompoundButton.OnCheckedChangeListener {
+    private inner class CheckboxListener : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
             badRatingCategory?.run {
                 listener.onBadRatingCategoryClicked(description, isChecked, id, shouldRequestFocus)
@@ -77,6 +77,11 @@ class CreateReviewBadRatingCategoryViewHolder(
 
     interface Listener {
         fun onImpressBadRatingCategory(description: String)
-        fun onBadRatingCategoryClicked(description: String, checked: Boolean, id: String, shouldRequestFocus: Boolean)
+        fun onBadRatingCategoryClicked(
+            description: String,
+            checked: Boolean,
+            id: String,
+            shouldRequestFocus: Boolean
+        )
     }
 }

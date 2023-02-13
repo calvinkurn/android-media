@@ -157,8 +157,6 @@ object AccountConstants {
     }
 
     object Query {
-        const val NEW_QUERY_BUYER_ACCOUNT_HOME = "query_account_buyer"
-        const val QUERY_USER_REWARDSHORCUT = "query_account_shortcut"
         const val QUERY_GET_BALANCE = "query_get_balance"
         const val QUERY_GET_USER_ASSET_CONFIG = "query_get_user_asset_config"
         const val QUERY_TOKOPOINTS_DRAWER_LIST = "query_tokopoints_drawerr_list"
@@ -173,7 +171,7 @@ object AccountConstants {
         const val PATH_ABOUT_US = "about"
         const val OVO_IMG = "/img/android/ovo/drawable-xxxhdpi/ovo.png"
         const val KEY_IMAGE_HOST = "image_host"
-        const val CDN_URL = "https://ecs7.tokopedia.net"
+        const val CDN_URL = "https://images.tokopedia.net"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
         const val TOKOPOINTS_ICON = "https://images.tokopedia.net/img/img/phoenix/tokopoints.png"
         const val SALDO_ICON = "https://images.tokopedia.net/img/android/user/emoney/saldo.png"
@@ -258,5 +256,11 @@ object AccountConstants {
 
     object RollenceKey {
         const val BIOMETRIC_ENTRY_POINT = "and_biom_entry_point"
+    }
+
+    object OfferInterruptionList {
+        const val OFFER_PHONE = "phone"
+        const val OFFER_VERIFY_PHONE = "phone-verif"
+        const val OFFER_ACCOUNT_LINKING = "account-link"
     }
 }

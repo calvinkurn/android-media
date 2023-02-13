@@ -26,9 +26,11 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
@@ -145,6 +147,11 @@ class HomeTopAdsVerificationTest {
                     if(recom.isTopAds) count++
                 }
             }
+            is Lego4ProductDataModel -> {
+                for (grid in item.channelModel.channelGrids){
+                    if(grid.isTopads) count++
+                }
+            }
         }
         return count
     }
@@ -152,6 +159,7 @@ class HomeTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixTopComponentViewHolder -> {
+                waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
@@ -165,6 +173,7 @@ class HomeTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is FeaturedShopViewHolder -> {
+                waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is HomeRecommendationFeedViewHolder -> {
@@ -174,6 +183,9 @@ class HomeTopAdsVerificationTest {
             is BestSellerViewHolder -> {
                 waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
+            }
+            is Lego4ProductViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
             }
         }
     }

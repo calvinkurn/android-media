@@ -16,7 +16,7 @@
             android:id="@+id/cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_160"
+            android:layout_marginTop="160dp"
             android:layout_marginBottom="@dimen/tp_margin_small"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
@@ -27,7 +27,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="30dp"
                 android:padding="@dimen/tp_padding_medium">
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_title"
@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:letterSpacing="-0.01"
-                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:lineSpacingExtra="6sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:lineSpacingExtra="6sp"
                     android:textColor="@color/Unify_N700_44"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
                     android:id="@+id/btn_sentSuccess"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="@dimen/dp_50"
+                    android:layout_marginTop="50dp"
                     android:background="@drawable/bg_rounded_gift_sendbtn"
                     android:gravity="center"
                     android:text="@string/tp_okay"
@@ -71,8 +71,8 @@
         </androidx.cardview.widget.CardView>
         <ImageView
             android:id="@+id/iv_banner"
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_200"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">kyc_centralized</string>
 
-    <string name="alert_not_verified_text">Tingkatkan kepercayaan calon pembeli dengan
-        upload KTP. Upload Sekarang</string>
+    <string name="alert_not_verified_text">Tingkatkan kepercayaan calon pembeli dengan upload KTP. Upload Sekarang</string>
     <string name="alert_not_verified_highlight_text">Upload Sekarang</string>
 
     <string name="alert_waiting_verification_text">Akun toko Anda sedang dalam proses menunggu
@@ -23,13 +22,13 @@
     <string name="kyc_intro_button">Mulai Verifikasi</string>
 
     <string name="kyc_pending_title">Dokumen sedang kami proses</string>
-    <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x12 jam ya.</string>
+    <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x24 jam ya.</string>
     <string name="kyc_pending_button">Mengerti</string>
 
-    <string name="kyc_failed_title">Gagal Verifikasi</string>
-    <string name="kyc_failed_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.\n\nSilakan unggah ulang dokumen Anda. Pastikan foto tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
-    <string name="kyc_failed_text_with_reason">Sistem kami tidak bisa memproses foto identitasmu karena:</string>
-    <string name="kyc_failed_button">Upload Ulang</string>
+    <string name="kyc_failed_title">Yaah, verifikasinya gagal</string>
+    <string name="kyc_failed_text">Silakan upload ulang dokumenmu. Pastikan fotonya tidak terpotong dan info di dalamnya terbaca jelas.</string>
+    <string name="kyc_failed_text_with_reason">Tenang, kamu masih bisa verifikasi ulang. Verifikasimu gagal karena:</string>
+    <string name="kyc_failed_button">Verifikasi Ulang</string>
 
     <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
     <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan\ndan terlindungi dengan aman di dalam\nsistem Tokopedia.</string>
@@ -92,7 +91,7 @@
 
     <string name="title_kyc_form_fail_verification">Verifikasi Gagal</string>
 
-    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x12 jam.</string>
+    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x24 jam.</string>
 
     <string name="error_upload_image_kyc">Terjadi kesalahan. Mohon coba beberapa saat lagi
         (%s)</string>
@@ -192,4 +191,12 @@
 
     <string name="kyc_consent_text"><![CDATA[Saya setuju untuk bagikan data KTP & foto wajah ke Tokopedia sesuai Syarat & Ketentuan.]]></string>
 
+
+    <!--  MIGRATE FROM USER_IDENTIFICATION_COMMON  -->
+
+    <string name="kyc_error_compress_image">Gagal memproses gambar. Silahkan pilih gambar lain.</string>
+    <string name="ktp_body">"<![CDATA[<font color='#dbdee2'>\u25CF</font> &nbsp Gunakan KTP asli yang masih berlaku.<br>
+        <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP berada dalam bingkai.<br>
+        <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP terlihat terang dan jelas.]]>"</string>
+    <string name="user_identification_common_retake_photo">Foto Ulang</string>
 </resources>

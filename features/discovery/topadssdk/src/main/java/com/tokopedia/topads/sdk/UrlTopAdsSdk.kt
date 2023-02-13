@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk
 
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 
 object UrlTopAdsSdk {
 
@@ -11,4 +12,6 @@ object UrlTopAdsSdk {
             else -> "https://gql.tokopedia.com/graphql/ta"
         }
     }
+
+    var TOP_ADS_BASE_URL = getInstance().TA
 }

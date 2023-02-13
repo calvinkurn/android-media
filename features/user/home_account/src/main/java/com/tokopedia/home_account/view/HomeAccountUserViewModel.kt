@@ -7,12 +7,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
-import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
@@ -20,6 +19,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -40,9 +40,10 @@ class HomeAccountUserViewModel @Inject constructor(
     @Named(SessionModule.SESSION_MODULE)
     private val userSession: UserSessionInterface,
     private val accountPref: AccountPreference,
+    private val fingerprintPreference: FingerprintPreference,
     private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
     private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-    private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+    private val setUserProfileSafeModeUseCase: UpdateSafeModeUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
@@ -52,10 +53,11 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
-    private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
+    private val userProfileSafeModeUseCase: GetSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
     private val tokopediaPlusUseCase: TokopediaPlusUseCase,
     private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
+    private val offerInterruptUseCase: OfferInterruptUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -135,43 +137,58 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getSafeModeValue() {
-        userProfileSafeModeUseCase.executeQuerySafeMode(
-            { (profileSettingResponse) ->
-                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, profileSettingResponse.safeMode)
-                _safeModeStatus.value = profileSettingResponse.safeMode
-            },
-            { it.printStackTrace() }
-        )
+    fun setSafeMode(isActive: Boolean) {
+        launch {
+            try {
+                val param = SafeModeParam(isActive)
+                setUserProfileSafeModeUseCase(param)
+                val safeMode = userProfileSafeModeUseCase(Unit).userProfileSetting.safeMode
+                updateSaveModeValue(safeMode)
+            } catch (ignored: Exception) { }
+        }
     }
 
-    fun setSafeMode(isActive: Boolean) {
-        setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
-                { getSafeModeValue() },
-                { throwable ->
-                    throwable.printStackTrace()
-                }, isActive)
+    fun getSafeModeValue() {
+        launch {
+            try {
+                val result = userProfileSafeModeUseCase(Unit)
+                updateSaveModeValue(result.userProfileSetting.safeMode)
+            } catch (ignored: Exception) { }
+        }
+    }
+
+    fun updateSaveModeValue(isActive: Boolean) {
+        accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+        _safeModeStatus.value = isActive
     }
 
     fun getShortcutData() {
-        launchCatchError(block = {
-            val shortcutResponse = getUserShortcutUseCase(Unit)
-            _shortcutData.value = Success(shortcutResponse)
-        }, onError = {
-            _shortcutData.value = Fail(it)
-        })
+        launch {
+            try {
+                val shortcutResponse = getUserShortcutUseCase(Unit)
+                _shortcutData.value = Success(shortcutResponse)
+            } catch (e: Exception) {
+                _shortcutData.value = Fail(e)
+            }
+        }
     }
 
-    fun getBuyerData() {
+    fun getBuyerData(isSupportBiometric: Boolean = false) {
         launch {
             try {
                 coroutineScope {
                     val homeAccountUser =  async { getHomeAccountUserUseCase(Unit) }
                     val linkStatus = async { getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE) }
+                    val offerInterruption = offerInterruptUseCase(mapOf(
+                        OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric,
+                        OfferInterruptUseCase.PARAM_DEVICE_BIOMETRIC to fingerprintPreference.getUniqueId()
+                    ))
 
                     val accountModel = homeAccountUser.await().apply {
                         this.linkStatus = linkStatus.await().response
+                        this.offerInterrupt = offerInterruption.data
                     }
+
                     _buyerAccountData.value = Success(accountModel)
                     // This is executed after setting live data to save load time
                     saveAttributeOnLocal(accountModel)
@@ -303,7 +320,6 @@ class HomeAccountUserViewModel @Inject constructor(
     /**
      * Tokopedia Plus (Goto Plus)
      */
-
     fun getTokopediaWidgetContent() {
         launchCatchError(coroutineContext, {
             val response = tokopediaPlusUseCase(mapOf(

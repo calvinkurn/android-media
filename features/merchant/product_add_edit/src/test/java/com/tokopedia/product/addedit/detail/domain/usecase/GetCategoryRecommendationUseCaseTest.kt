@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.product.addedit.detail.domain.mapper.CategoryRecommendationMapper
 import com.tokopedia.product.addedit.detail.domain.model.GetCategoryRecommendationDataModel
 import com.tokopedia.product.addedit.detail.domain.model.GetCategoryRecommendationResponse
+import com.tokopedia.product.addedit.util.UnitTestFileUtils
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -77,9 +78,7 @@ class GetCategoryRecommendationUseCaseTest {
             }.orEmpty()
 
     fun getJsonFromFile(path: String): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(path)
-        val file = File(uri.path)
-        return String(file.readBytes())
+        return UnitTestFileUtils.getJsonFromAsset(path)
     }
 
     inline fun <reified T> parseJson(json: String): T {

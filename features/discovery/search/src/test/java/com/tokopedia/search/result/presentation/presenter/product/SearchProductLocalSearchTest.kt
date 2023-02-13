@@ -11,10 +11,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
@@ -232,18 +232,14 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify view added broad match`(searchProductModel: SearchProductModel) {
-        verify {
-            productListView.addProductList(capture(visitableListSlot))
-        }
-
         val visitableList = visitableListSlot.captured
-        visitableList[0].shouldBeInstanceOf<SuggestionDataView>()
+        visitableList[1].shouldBeInstanceOf<SuggestionDataView>()
 
         val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
         visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
 
         var index = visitableList.indexOfFirst { it is BroadMatchDataView }
-        index shouldBe 1
+        index shouldBe 2
 
         repeat(otherRelated.size) {
             val visitable = visitableList[index]
@@ -321,6 +317,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptyStateDataView.globalSearchApplink shouldBe ""
         emptyStateDataView.keyword shouldBe keyword
         emptyStateDataView.pageTitle shouldBe ""
+        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe false
     }
 
     private fun `Then verify get local search recommendation is not called`() {

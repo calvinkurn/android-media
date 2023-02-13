@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -67,21 +68,21 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
 
     private fun renderItemError(element: BalanceDrawerItemModel) {
         binding?.shimmerItemBalanceWidget?.root?.gone()
-        binding?.homeContainerBalance?.show()
+        binding?.homeContainerBalance?.homeContainerBalance?.show()
         showFailedImage()
-        binding?.homeHeaderTitleBalance?.text = element.headerTitle
-        binding?.homeTvBalance?.text =
+        binding?.homeContainerBalance?.homeHeaderTitleBalance?.text = element.headerTitle
+        binding?.homeContainerBalance?.homeTvBalance?.text =
             itemView.context.getString(com.tokopedia.home.R.string.balance_widget_failed_to_load)
-        binding?.homeTvReserveBalance?.setTextColor(
+        binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
             ContextCompat.getColor(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
         )
-        binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
-        binding?.homeTvReserveBalance?.text =
+        binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.BOLD)
+        binding?.homeContainerBalance?.homeTvReserveBalance?.text =
             itemView.context.getString(com.tokopedia.home.R.string.text_reload)
-        binding?.homeContainerBalance?.handleItemClickType(
+        binding?.homeContainerBalance?.homeContainerBalance?.handleItemClickType(
             element = element,
             rewardsAction = { showLoading(element) },
             walletAppAction = { showLoading(element) }
@@ -89,7 +90,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
     }
 
     private fun showFailedImage() {
-        binding?.homeIvLogoBalance?.setImageDrawable(
+        binding?.homeContainerBalance?.homeIvLogoBalance?.setImageDrawable(
             ContextCompat.getDrawable(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_N75
@@ -99,7 +100,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
 
     private fun renderItemLoading(element: BalanceDrawerItemModel) {
         binding?.shimmerItemBalanceWidget?.root?.show()
-        binding?.homeContainerBalance?.gone()
+        binding?.homeContainerBalance?.homeContainerBalance?.invisible()
         if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
             listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
         } else if (element.drawerItemType == TYPE_REWARDS) {
@@ -111,36 +112,36 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
         setPaddingCard()
         showImageSuccess(element)
 
-        //Load Text
+        // Load Text
         val balanceText = element.balanceTitleTextAttribute?.text ?: ""
-        binding?.homeTvBalance?.text = balanceText
-        binding?.homeHeaderTitleBalance?.text = element.headerTitle
+        binding?.homeContainerBalance?.homeTvBalance?.text = balanceText
+        binding?.homeContainerBalance?.homeHeaderTitleBalance?.text = element.headerTitle
 
-        //load reserve balance
+        // load reserve balance
         val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
-        binding?.homeTvReserveBalance?.text = reserveBalance
+        binding?.homeContainerBalance?.homeTvReserveBalance?.text = reserveBalance
         setFontReserveBalance(element)
 
         handleClickSuccess(element, reserveBalance)
         binding?.shimmerItemBalanceWidget?.root?.gone()
-        binding?.homeContainerBalance?.show()
+        binding?.homeContainerBalance?.homeContainerBalance?.show()
     }
 
     private fun setFontReserveBalance(element: BalanceDrawerItemModel) {
         if (
-            (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus)
-            || element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+            (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) ||
+            element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
         ) {
-            binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
-            binding?.homeTvReserveBalance?.setTextColor(
+            binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.BOLD)
+            binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
         } else {
-            binding?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
-            binding?.homeTvReserveBalance?.setTextColor(
+            binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
+            binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN600
@@ -150,23 +151,23 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
     }
 
     private fun showImageSuccess(element: BalanceDrawerItemModel) {
-        if (!element.iconImageUrl.isNullOrBlank())
-            binding?.homeIvLogoBalance?.setImageUrl(element.iconImageUrl)
-        else {
+        if (!element.iconImageUrl.isNullOrBlank()) {
+            binding?.homeContainerBalance?.homeIvLogoBalance?.setImageUrl(element.iconImageUrl)
+        } else {
             showFailedImage()
         }
     }
 
     private fun setPaddingCard() {
         if (totalItems == BALANCE_WIDGET_2_ITEMS && adapterPosition == POSITION_2) {
-            binding?.homeContainerBalance?.setPadding(
+            binding?.homeContainerBalance?.homeContainerBalance?.setPadding(
                 paddingLeftPosition2Size2,
                 paddingBalanceWidget,
                 paddingBalanceWidget,
                 paddingBalanceWidget
             )
         } else {
-            binding?.homeContainerBalance?.setPadding(
+            binding?.homeContainerBalance?.homeContainerBalance?.setPadding(
                 paddingBalanceWidget,
                 paddingBalanceWidget,
                 paddingBalanceWidget,
@@ -177,7 +178,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
 
     private fun showLoading(element: BalanceDrawerItemModel) {
         binding?.shimmerItemBalanceWidget?.root?.show()
-        binding?.homeContainerBalance?.gone()
+        binding?.homeContainerBalance?.homeContainerBalance?.invisible()
         if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
             element.state = BalanceDrawerItemModel.STATE_LOADING
             listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
@@ -188,10 +189,10 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
     }
 
     private fun handleClickSuccess(element: BalanceDrawerItemModel, reserveBalance: String) {
-        binding?.homeContainerBalance?.handleItemClickType(
+        binding?.homeContainerBalance?.homeContainerBalance?.handleItemClickType(
             element = element,
             rewardsAction = {
-                //handle click for type rewards
+                // handle click for type rewards
                 BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
                     listener?.userId ?: ""
                 )

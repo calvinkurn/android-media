@@ -1,8 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
@@ -24,9 +26,11 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import javax.inject.Inject
 
 /**
@@ -35,7 +39,7 @@ import javax.inject.Inject
 
 class LayoutMapper @Inject constructor(
     private val tooltipMapper: TooltipMapper
-) : BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
+) : BaseResponseMapper<GetLayoutResponse, WidgetLayoutUiModel> {
 
     companion object {
         private const val EMPTY_WIDGET_MESSAGE =
@@ -46,8 +50,8 @@ class LayoutMapper @Inject constructor(
     override fun mapRemoteDataToUiData(
         response: GetLayoutResponse,
         isFromCache: Boolean
-    ): List<BaseWidgetUiModel<out BaseDataUiModel>> {
-        val widgets = response.layout?.widget.orEmpty()
+    ): WidgetLayoutUiModel {
+        val widgets = response.layout.widget.orEmpty()
         if (widgets.isNotEmpty()) {
             val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
             widgets.forEach {
@@ -78,8 +82,24 @@ class LayoutMapper @Inject constructor(
                     )
                 }
             }
-            return mappedList
-        } else throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+
+            return WidgetLayoutUiModel(
+                widgetList = mappedList,
+                shopState = getShopState(response.layout.shopState)
+            )
+        } else {
+            throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+        }
+    }
+
+    private fun getShopState(shopState: Long): ShopStateUiModel {
+        return when (shopState) {
+            ShopStateUiModel.NEW_REGISTERED_SHOP -> ShopStateUiModel.NewRegisteredShop
+            ShopStateUiModel.ADDED_PRODUCT -> ShopStateUiModel.AddedProduct
+            ShopStateUiModel.VIEWED_PRODUCT -> ShopStateUiModel.ViewedProduct
+            ShopStateUiModel.HAS_ORDER -> ShopStateUiModel.HasOrder
+            else -> ShopStateUiModel.None
+        }
     }
 
     private fun mapToUnificationWidget(
@@ -102,7 +122,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -123,7 +144,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -147,7 +169,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -171,7 +194,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -195,7 +219,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -212,7 +237,11 @@ class LayoutMapper @Inject constructor(
             ctaText = widget.ctaText.orEmpty(),
             gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             maxData = widget.maxData.orZero(),
-            maxDisplay = widget.maxDisplay.orZero(),
+            maxDisplay = if (widget.maxDisplay.isMoreThanZero()) {
+                widget.maxDisplay.orZero()
+            } else {
+                PostMapper.MAX_ITEM_PER_PAGE
+            },
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             postFilter = widget.postFilter?.mapIndexed { i, filter ->
@@ -225,7 +254,14 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            },
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -249,7 +285,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -279,7 +316,8 @@ class LayoutMapper @Inject constructor(
                     filter.value.orEmpty(),
                     isSelected = i.isZero()
                 )
-            }.orEmpty()
+            }.orEmpty(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -292,7 +330,7 @@ class LayoutMapper @Inject constructor(
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
-            dataKey = widget.dataKey.orEmpty(),
+            dataKey = widget.id.orZero().toString(),
             ctaText = widget.ctaText.orEmpty(),
             gridSize = WidgetGridSize.GRID_SIZE_4,
             isShowEmpty = widget.isShowEmpty.orFalse(),
@@ -324,7 +362,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -348,7 +387,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -373,7 +413,8 @@ class LayoutMapper @Inject constructor(
             isLoading = false,
             isFromCache = isFromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
-            isComparePeriodeOnly = widget.isComparePeriodeOnly
+            isComparePeriodOnly = widget.isComparePeriodOnly,
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -397,7 +438,14 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            },
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -421,7 +469,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -445,7 +494,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -469,7 +519,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 

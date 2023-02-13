@@ -1,5 +1,6 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -27,17 +28,15 @@ data class Product(
         @SerializedName("campaign_id")
         val campaignId: String = "",
         @SerializedName("initial_price")
-        val initialPrice: Long = 0,
+        val initialPrice: Double = 0.0,
         @SerializedName("initial_price_fmt")
         val initialPriceFmt: String = "",
         @SerializedName("product_price_fmt")
         val productPriceFmt: String = "",
         @SerializedName("product_price")
-        val productPrice: Long = 0,
+        val productPrice: Double = 0.0,
         @SerializedName("product_original_price")
-        val productOriginalPrice: Long = 0,
-        @SerializedName("is_slash_price")
-        val isSlashPrice: Boolean = false,
+        val productOriginalPrice: Double = 0.0,
         @SerializedName("slash_price_label")
         val slashPriceLabel: String = "",
         @SerializedName("category_id")
@@ -46,6 +45,7 @@ data class Product(
         val category: String = "",
         @SerializedName("catalog_id")
         val catalogId: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("wholesale_price")
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight_fmt")
@@ -70,8 +70,6 @@ data class Product(
         val productMinOrder: Int = 0,
         @SerializedName("product_max_order")
         val productMaxOrder: Int = 0,
-        @SerializedName("product_rating")
-        val productRating: Double = 0.toDouble(),
         @SerializedName("product_invenage_value")
         val productInvenageValue: Int = 0,
         @SerializedName("product_switch_invenage")
@@ -80,8 +78,6 @@ data class Product(
         val productWarningMessage: String = "",
         @SerializedName("product_alert_message")
         val productAlertMessage: String = "",
-        @SerializedName("price_changes")
-        val priceChanges: PriceChanges = PriceChanges(),
         @SerializedName("product_invenage_total")
         val productInvenageTotal: ProductInvenageTotal = ProductInvenageTotal(),
         @SerializedName("currency_rate")
@@ -102,10 +98,6 @@ data class Product(
         val productWeightUnitCode: Int = 0,
         @SerializedName("product_weight_unit_text")
         val productWeightUnitText: String = "",
-        @SerializedName("last_update_price")
-        val lastUpdatePrice: Long = 0,
-        @SerializedName("is_update_price")
-        val isUpdatePrice: Boolean = false,
         @SerializedName("product_preorder")
         val productPreorder: ProductPreorder = ProductPreorder(),
         @SerializedName("product_showcase")
@@ -127,5 +119,7 @@ data class Product(
         @SerializedName("selected_unavailable_action_link")
         val selectedUnavailableActionLink: String = "",
         @SerializedName("warehouse_id")
-        val warehouseId: String = ""
+        val warehouseId: String = "",
+        @SerializedName("ethical_drug")
+        val ethicalDrug: EthicalDrug = EthicalDrug()
 )

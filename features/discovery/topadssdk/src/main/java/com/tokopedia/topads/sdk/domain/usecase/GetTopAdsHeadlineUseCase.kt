@@ -5,10 +5,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_SRC
-import com.tokopedia.topads.sdk.domain.TopAdsParams.KEY_SRC
+import com.tokopedia.topads.sdk.domain.TopAdsParams.Companion.DEFAULT_KEY_SRC
+import com.tokopedia.topads.sdk.domain.TopAdsParams.Companion.KEY_SRC
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.utils.*
+import javax.inject.Inject
 
 const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${'$'}displayParams: String!) {
   displayAdsV3(displayParams: ${'$'}displayParams) {
@@ -38,6 +39,11 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
         image {
           full_url
           full_ecs
+        }
+        flash_sale_campaign_detail{
+          start_time
+          end_time
+          campaign_type
         }
         shop {
           id
@@ -101,8 +107,8 @@ private const val PARAMS_QUERY = "displayParams"
 private const val KEY_SEEN_ADS = "seen_ads"
 
 @GqlQuery("GetTopadsHeadlineQuery", GET_TOPADS_HEADLINE_QUERY)
-class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<TopAdsHeadlineResponse>(graphqlRepository) {
+class GetTopAdsHeadlineUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+    GraphqlUseCase<TopAdsHeadlineResponse>(graphqlRepository) {
 
     init {
         setTypeClass(TopAdsHeadlineResponse::class.java)
@@ -148,9 +154,9 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
         headlineProductCount: String,
         item: String,
         device: String = "android",
-        seenAds: String
+        seenAds: String?
     ): String {
-        val map = mapOf(
+        val map = mutableMapOf(
             PARAM_USER_ID to userId,
             PARAM_PAGE to page,
             PARAM_EP to ep,
@@ -159,8 +165,10 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
             PARAM_HEADLINE_PRODUCT_COUNT to headlineProductCount,
             PARAM_ITEM to item,
             PARAM_DEVICE to device,
-            KEY_SEEN_ADS to seenAds
+            KEY_SEEN_ADS to (seenAds ?: "")
         )
+
+        seenAds?.let { map.remove(KEY_SEEN_ADS) }
 
         return map.entries.joinToString("&")
 

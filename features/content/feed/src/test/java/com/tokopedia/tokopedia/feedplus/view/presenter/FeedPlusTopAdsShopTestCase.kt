@@ -4,12 +4,19 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -41,10 +48,29 @@ class FeedPlusTopAdsShopTestCase {
         sendTopAdsUseCase = mockk(relaxed = true)
         feedViewModel = spyk(
             FeedViewModel(
-                baseDispatcher, mockk(), mockk(),
-                mockk(), mockk(), mockk(),
-                mockk(), mockk(), trackAffiliateClickUseCase,
-                mockk(), sendTopAdsUseCase, mockk(), mockk(), mockk(), mockk(), mockk(),mockk(), mockk(), mockk()
+                baseDispatcher = baseDispatcher,
+                userSession = mockk(),
+                likeKolPostUseCase = mockk(),
+                addToCartUseCase = mockk(),
+                trackAffiliateClickUseCase = trackAffiliateClickUseCase,
+                deletePostUseCase = mockk(),
+                sendTopAdsUseCase = sendTopAdsUseCase,
+                playWidgetTools = mockk(),
+                getDynamicFeedNewUseCase = mockk(),
+                getWhiteListNewUseCase = mockk(),
+                sendReportUseCase = mockk(),
+                addToWishlistV2UseCase = mockk(),
+                trackVisitChannelBroadcasterUseCase = mockk(),
+                feedXTrackViewerUseCase = mockk(),
+                checkUpcomingCampaignReminderUseCase = mockk(),
+                postUpcomingCampaignReminderUseCase = mockk(),
+                shopRecomUseCase = mockk(),
+                shopRecomMapper = mockk(),
+                shopFollowUseCase = mockk(),
+                doFollowUseCase = mockk(),
+                doUnfollowUseCase = mockk(),
+                profileMutationMapper = mockk(),
+                getFollowingUseCase = mockk()
             )
         )
     }
@@ -76,7 +102,7 @@ class FeedPlusTopAdsShopTestCase {
         feedViewModel.doTrackAffiliate(trackUrl)
         assertEquals(
             feedViewModel.trackAffiliateResp.value,
-            Success(TrackAffiliateViewModel(true, trackUrl))
+            Success(TrackAffiliateModel(true, trackUrl))
         )
     }
 

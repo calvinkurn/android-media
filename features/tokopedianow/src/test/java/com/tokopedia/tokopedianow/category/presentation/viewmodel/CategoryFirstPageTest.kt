@@ -13,6 +13,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
 import org.hamcrest.CoreMatchers.instanceOf
+import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -99,6 +100,10 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         assertThat(tokoNowCategoryViewModel.isContentLoadingLiveData.value, shouldBe(false))
     }
 
+    private fun `Then assert product feedback loop not visible`(){
+        Assert.assertEquals(tokoNowCategoryViewModel.isProductFeedbackLoopVisible(),false)
+    }
+
     @Test
     fun `test first page has next page`() {
         val categoryModel = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
@@ -113,5 +118,6 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
         `Then assert get first page success interactions`(categoryModel)
+        `Then assert product feedback loop not visible`()
     }
 }

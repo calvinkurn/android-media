@@ -39,7 +39,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/hidden_trial_title"
-            android:textColor="@color/topads_heading_color"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toTopOf="@+id/desc_1"
             app:layout_constraintEnd_toEndOf="@id/desc_1"
             app:layout_constraintStart_toStartOf="@id/icon1"

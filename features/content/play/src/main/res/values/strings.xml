@@ -2,7 +2,6 @@
 <resources>
     <string name="play_title">Play</string>
     <string name="play_chat_placeholder">Chat di sini&#8230;</string>
-    <string name="play_action_view">Lihat</string>
     <string name="play_follow">Follow</string>
     <string name="play_watch_again">Tonton Ulang</string>
 
@@ -11,17 +10,19 @@
     <string name="play_product_add_to_card">Tambah ke Keranjang</string>
     <string name="play_discount_percent">%d%%</string>
     <string name="play_stock_available">Stok Tersedia</string>
-    <string name="play_add_to_cart_message_success">Barang berhasil ditambahkan</string>
     <string name="play_product_empty_title">Barang &amp; promo\n pilihan telah habis</string>
     <string name="play_product_empty_desc">Wah, barang &amp; promo pilihan sudah habis, Yuk\n cek barang menarik lainnya dari toko ini!</string>
     <string name="play_product_empty_action">Ke Halaman Toko</string>
     <string name="play_product_updated">Produk telah diupdate</string>
     <string name="play_link_copied">Link berhasil disalin</string>
     <string name="play_product_atc">Keranjang</string>
+
+    <!--Upcoming-->
     <string name="play_product_upcoming_reminder_success">Oke, kami akan ingatkan!</string>
     <string name="play_product_upcoming_reminder_error">Pengingat telah dihapus.</string>
     <string name="play_add_to_cart_message_success_mixed">1 barang berhasil ditambahkan ke keranjang Tokopedia NOW!</string>
     <string name="play_add_to_cart_message_success_tokonow">1 barang berhasil ditambahkan ke keranjang.</string>
+    <string name="play_upcoming_description_read_more">Selengkapnya</string>
 
     <!--Floating Window / PiP-->
     <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
@@ -38,27 +39,22 @@
     <string name="play_buffer_reason_seller_side">Siarannya sedang berkendala, nih.\nTunggu sebentar, ya!</string>
     <string name="play_buffer_reason_waiting">Live streaming akan segera mulai sesaat lagi, ya!</string>
 
-    <string name="play_voucher_code_copied">Kode kupon berhasil disalin, gunakan saat transaksi</string>
+    <string name="play_voucher_code_copied">Kode kupon berhasil disalin. Pakai kuponnya di halaman Keranjang, ya.</string>
+    <string name="play_voucher_public">Kupon toko bisa dipilih di halaman Keranjang atau Pengiriman, ya.</string>
 
     <string name="play_action_ok">Oke</string>
+    <string name="play_action_lihat">Lihat</string>
     <string name="play_out_of_stock">Stok Habis</string>
 
     <!--Pinned Message-->
     <string name="play_pinned_msg_applink_text">Ayo Lihat</string>
 
     <!--Engagement Tools-->
-    <string name="play_interactive_prestart_timer_text">Dimulai dalam:</string>
-    <string name="play_interactive_prestart_follow_button">Follow Buat Ikutan</string>
 
-    <string name="play_interactive_error_text">Oops, game gagal dimuat. Coba lagi, ya!</string>
-    <string name="play_interactive_error_action">Muat Ulang</string>
+    <string name="play_interactive_follow_success">Yay, berhasil follow kreator ini!</string>
 
-    <string name="play_interactive_live_timer_text">Berakhir dalam:</string>
+    <string name="play_quiz_finished">Lihat hasil game di sini, ya.</string>
 
-    <string name="play_interactive_tap_action_tap_text">Tap terus!</string>
-    <string name="play_interactive_tap_action_follow_text">Follow dulu</string>
-
-    <string name="play_interactive_follow_success">Berhasil follow toko.</string>
 
     <!--Upcoming page-->
     <string name="play_remind_me">Ingatkan Saya</string>
@@ -68,6 +64,8 @@
     <string name="play_will_start_on">Akan mulai dalam</string>
     <string name="play_failed_remind_me">Oops, gagal tersambung</string>
     <string name="play_try_again">Coba Lagi</string>
+    <string name="play_remind_me_cancel">Batalkan Pengingat</string>
+    <string name="play_cancel_remind_me_success">Yaah, pengingat batal dikirim.</string>
 
     <!--Chromecast-->
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>
@@ -82,11 +80,18 @@
 
     <!--Coupon Sheet-->
     <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>
-    <string name="play_title_coupon">Daftar kupon toko</string>
+    <string name="play_product_voucher_header_empty_desc">Ayo pakai promonya biar makin hemat!</string>
+    <string name="play_title_coupon">Daftar kupon</string>
     <string name="play_voucher_sheet_coupon_expired">Berakhir dalam %1$s hari</string>
+    <string name="play_voucher_widget_single">Cek kuponnya!</string>
+    <string name="play_voucher_widget_low_quantity">Sisa %1$s kupon%2$s</string>
+    <string name="play_voucher_widget_default">+ %1$s Kupon lainnya</string>
 
     <!--Kebab Menu-->
     <string name="play_kebab_report_title">Laporkan Video</string>
+    <string name="play_kebab_pip">Picture in Picture</string>
+    <string name="play_kebab_chromecast">Chromecast</string>
+    <string name="play_kebab_watch_mode">Mode Nonton</string>
 
     <!--User Report-->
     <string name="play_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
@@ -106,13 +111,28 @@
     <string name="play_change_address_widget_wording">Ganti Alamat</string>
     <string name="play_address_widget_info">Lokasimu belum tersedia di NOW! <![CDATA[<strong><span style="color:#03AC0E">Cek Jangkauan</span></strong>]]></string>
     <string name="play_tokonow_info_weblink">help/article/apa-itu-tokopedia-now</string>
-    <string name="play_toaster_global_wording">Lihat Keranjang</string>
     <string name="play_toaster_tokonow_wording">Lihat</string>
     <string name="play_tokonow_minicart_applink">\?isMiniCartOpen=true</string>
     <string name="play_tokopedia_now_wording">Tokopedia NOW!</string>
+    <string name="play_upcoming_description_less">Tampilkan sedikit</string>
 
     <!--Pinned Product-->
     <string name="play_product_pinned">Pin Dipasang</string>
     <string name="play_product_pinned_atc">+</string>
     <string name="play_product_pinned_info_separator">\u00b7</string>
+    <string name="play_follow_popup_header_title">Suka videonya kreator ini?</string>
+    <string name="play_voucher_header">Kupon bisa dipilih di halaman Keranjang jika ada produk dari toko</string>
+
+    <string name="play_archived_title">Video telah dihapus</string>
+    <string name="play_archived_description">Video ini telah dihapus.</string>
+    <string name="play_failed_follow">Oops, gagal follow kreator.</string>
+
+    <!--Explore Widget-->
+    <string name="play_explore_widget_header_title">Video lainnya</string>
+    <string name="play_explore_widget_name">Eksplor</string>
+    <string name="play_empty_title_explore_widget">Yaah, lagi gak ada video nih</string>
+    <string name="play_empty_desc_explore_widget">Yuk, cek tontonan lainnya. </string>
+    <string name="play_explore_widget_default_errmessage">Oops, gagal menampilkan video.</string>
+    <string name="play_explore_widget_noconn_errmessage">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="play_explore_widget_empty">Cek Sekarang</string>
 </resources>

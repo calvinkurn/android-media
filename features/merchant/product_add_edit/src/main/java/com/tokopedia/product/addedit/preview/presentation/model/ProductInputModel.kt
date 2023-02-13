@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.preview.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
@@ -30,7 +29,8 @@ data class ProductInputModel (
         // when click back pressed in add mode
         var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE){NO_DATA},
         var itemSold: Int = 0, // count of successful item transaction
-        var isDataChanged: Boolean = false
+        var isDataChanged: Boolean = false,
+        var isDuplicate: Boolean = false
 ) : Parcelable {
         @IgnoredOnParcel
         var lastVariantData = ProductVariantInputModel()

@@ -23,8 +23,8 @@
 
         <FrameLayout
             android:id="@+id/productLayout"
-            android:layout_width="@dimen/dp_85"
-            android:layout_height="@dimen/dp_85"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:background="@drawable/bg_frame_rounded">

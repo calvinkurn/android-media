@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
@@ -34,7 +35,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     fun postCreditCard(rawQuery: String, categoryId: String, paramSubmitCC: HashMap<String, String>) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[CATEGORY_ID] = categoryId.toInt()
+            mapParam[CATEGORY_ID] = categoryId.toIntSafely()
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCSignatureReponse::class.java, mapParam)

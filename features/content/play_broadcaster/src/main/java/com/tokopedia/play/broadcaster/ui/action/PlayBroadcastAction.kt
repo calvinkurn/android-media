@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.action
 
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -7,6 +8,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import java.util.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
@@ -24,6 +26,9 @@ sealed interface PlayBroadcastAction {
 
     data class SetSchedule(val date: Date) : PlayBroadcastAction
     object DeleteSchedule : PlayBroadcastAction
+    object SuccessOnBoardingUGC: PlayBroadcastAction
+    data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN): PlayBroadcastAction
+    data class SwitchAccount(val needLoading: Boolean = true): PlayBroadcastAction
 
     object ExitLive : PlayBroadcastAction
 
@@ -46,7 +51,6 @@ sealed interface PlayBroadcastAction {
     data class InputQuizTitle(val title: String) : PlayBroadcastAction
     data class InputQuizOption(val order: Int, val text: String) : PlayBroadcastAction
     data class SelectQuizOption(val order: Int) : PlayBroadcastAction
-    data class InputQuizGift(val text: String) : PlayBroadcastAction
     data class SelectQuizDuration(val duration: Long) : PlayBroadcastAction
     data class SaveQuizData(val quizFormData: QuizFormDataUiModel) : PlayBroadcastAction
     object SubmitQuizForm : PlayBroadcastAction

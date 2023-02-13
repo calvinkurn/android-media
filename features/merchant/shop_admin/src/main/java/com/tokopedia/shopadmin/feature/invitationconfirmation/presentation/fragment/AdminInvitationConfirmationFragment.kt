@@ -23,6 +23,7 @@ import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.analytics.ShopAdminTrackers
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
+import com.tokopedia.shopadmin.common.presentation.navigator.goToPlayStoreOrSellerApp
 import com.tokopedia.shopadmin.common.utils.ShopAdminErrorLogger
 import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationConfirmationBinding
@@ -45,7 +46,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-
 
 class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
@@ -316,7 +316,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun showAdminType(adminStatus: String, shopId: String) {
         when (adminStatus) {
-            AdminStatus.ACTIVE -> navigator.goToShopAccount()
+            AdminStatus.ACTIVE -> activity?.goToPlayStoreOrSellerApp()
             AdminStatus.WAITING_CONFIRMATION, AdminStatus.REJECT -> {
                 setShopId(shopId)
                 invitationConfirmationParam.setAdminType(adminStatus)
@@ -365,10 +365,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun setupToolbar(isError: Boolean) {
         (activity as? AppCompatActivity)?.run {
             binding?.headerInvitationConfirmation?.apply {
-                val drawableIcon = if (isError)
+                val drawableIcon = if (isError) {
                     ContextCompat.getDrawable(this@run, R.drawable.ic_shop_admin_arrow_back)
-                else
+                } else {
                     ContextCompat.getDrawable(this@run, R.drawable.ic_shop_admin_close)
+                }
                 navigationIcon = drawableIcon
                 setSupportActionBar(this)
                 show()
@@ -465,7 +466,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             if (userSession.email.isNullOrEmpty()) {
                 adminInvitationWithEmailSection.root.hide()
                 adminInvitationWithNoEmailSection.root.show()
-                setAccessAcceptedBtnDisabled()
                 emailTypingListener()
                 shopAdminTrackers.impressInvitationPageInputEmail()
             } else {

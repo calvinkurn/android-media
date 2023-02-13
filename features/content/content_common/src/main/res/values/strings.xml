@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="feed_account_bottom_sheet_title">Pilih Akun</string>
+
+    <!--Terms and Condition-->
+    <string name="play_bro_tnc_title">Yaah, kamu belum bisa Live</string>
+    <string name="play_bro_tnc_condition_title">Pastikan tokomu memenuhi syarat berikut:</string>
+    <string name="play_bro_tnc_benefit_title">Keuntungan yang bisa kamu dapetin dari bikin Live:</string>
+    <string name="play_bro_tnc_benefit_1">Membangun branding &amp; meningkatkan performa tokomu</string>
+    <string name="play_bro_tnc_benefit_2">Bisa berinteraksi langsung dengan calon pembeli</string>
+    <string name="play_bro_tnc_benefit_3">Bantu meningkatkan penjualanmu</string>
+    <string name="play_bro_tnc_ok">Oke, Mengerti</string>
+
+    <string name="play_cancel_live_stream" tools:ignore="UnusedResources">Batalkan</string>
+
+    <!--CONTENT-->
+    <string name="feed_content_position_text" tools:ignore="UnusedResources">Tag produk pada postingan ini %s</string>
+    <string name="feed_content_post_tag_text" tools:ignore="UnusedResources">Lihat Produk</string>
+    <string name="feed_content_tag_product_text" tools:ignore="UnusedResources">Tag Produk</string>
+    <string name="feed_content_product_bottom_sheet_name" tools:ignore="UnusedResources">Yang ada di post ini</string>
+    <string name="feed_content_caption_text" tools:ignore="UnusedResources">Tulis deskripsi yang menarik, ya!</string>
+    <string name="feed_content_post_sebagai" tools:ignore="UnusedResources">Post sebagai</string>
+    <string name="feed_content_live_sebagai" tools:ignore="UnusedResources">Live sebagai</string>
+    <string name="feed_content_dialog_title" tools:ignore="UnusedResources">Yakin nggak lanjut tag produk?</string>
+    <string name="feed_content_dialog_desc" tools:ignore="UnusedResources">Tag produk akan hilang jika kamu keluar dari halaman ini.</string>
+    <string name="feed_content_primary_cta_text" tools:ignore="UnusedResources">Lanjut Tag Produk</string>
+    <string name="feed_content_sec_cta_text" tools:ignore="UnusedResources">Keluar</string>
+    <string name="feed_content_text_lanjut" tools:ignore="UnusedResources">Lanjut</string>
+    <string name="feed_content_text_post" tools:ignore="UnusedResources">Post</string>
+    <string name="feed_content_delete_toaster_text" tools:ignore="UnusedResources">Tag produk telah dihapus.</string>
+    <string name="feed_content_post_successful_toaster" tools:ignore="UnusedResources">Yay, post kamu berhasil di-upload!</string>
+    <string name="feed_content_more_than_5_product_tag" tools:ignore="UnusedResources">Oops, tag produkmu sudah maksimum. Hapus salah satu media jika ingin menggantinya.</string>
+    <string name="feed_content_progress_bar_failed_text" tools:ignore="UnusedResources">Gagal Diproses</string>
+    <string name="feed_content_coba_lagi_text">Coba Lagi</string>
+    <string name="feed_content_no_product_sheet_header" tools:ignore="UnusedResources">Kamu belum punya produk</string>
+    <string name="feed_content_no_product_sheet_body" tools:ignore="UnusedResources">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
+    <string name="feed_content_product_list_page_error" tools:ignore="UnusedResources">Gagal memuat produk. Silakan ulangi.</string>
+    <string name="feed_product_page_search_bar_placeholder_text" tools:ignore="UnusedResources">Cari produk di %s </string>
+    <string name="feed_product_page_filter_title" tools:ignore="UnusedResources">Urutkan</string>
+    <string name="feed_content_default_filter_value" tools:ignore="UnusedResources">Pembaruan Terakhir</string>
+    <string name="content_creation_search_bs_header" tools:ignore="UnusedResources">Pilih produk dari</string>
+    <string name="content_creation_tagging_page_header_text" tools:ignore="UnusedResources">Pilih produk dari <![CDATA["<font color='#212121'><b> %s </b></font> ]]></string>
+    <string name="content_creation_search_bs_item_tokopedia" tools:ignore="UnusedResources">Tokopedia</string>
+    <string name="content_creation_search_bs_header_item_tokopedia" tools:ignore="UnusedResources">Akun saya</string>
+    <string name="content_creation_search_bs_item_last_purchase">Terakhir Dibeli</string>
+    <string name="content_creation_search_bs_item_wishlist">Wishlist</string>
+    <string name="content_creation_search_bs_header_item_shop" tools:ignore="UnusedResources">Toko saya</string>
+    <string name="content_creation_search_coachmark_header">Bisa nge-tag produk pilihanmu</string>
+    <string name="content_creation_search_coachmark_desc">Kamu juga bisa nge-tag dari yang produk yang terakhir dibeli.</string>
+    <string name="content_creation_search_shop_item_button_text" tools:ignore="UnusedResources">Lihat Toko</string>
+    <string name="content_creation_barang_text">Barang</string>
+    <string name="content_creation_toko_text">Toko</string>
+
+    <!-- Product Tag -->
+    <string name="content_creation_product_tag_title">Tag Produk</string>
+    <string name="content_creation_multiple_product_tag_title">Pilih produk (%d/%d)</string>
+    <string name="cc_product_tag_source_label">Pilih produk dari</string>
+    <string name="cc_product_tag_source_my_account_label">Akun saya</string>
+    <string name="cc_product_tag_source_my_shop_label">Toko saya</string>
+    <string name="cc_product_tag_search_hint">Cari di Tokopedia</string>
+    <string name="cc_product_tag_search_hint_template">Cari di %s</string>
+    <string name="cc_failed_load_product">Gagal memuat produk. Silahkan ulangi.</string>
+    <string name="cc_failed_load_shop">Gagal memuat toko. Silahkan ulangi.</string>
+
+    <string name="cc_no_product_tag_title">Kamu belum pernah nge-tag produk, lho</string>
+    <string name="cc_no_product_tag_desc">Coba cari dulu produknya, atau kamu juga bisa pilih produk dari pencarian yang lain.</string>
+
+    <string name="cc_no_last_purchased_product_title">Kamu belum pernah beli produk di Tokopedia</string>
+    <string name="cc_no_last_purchased_product_desc">Ayo mulai belanja, supaya kamu bisa ceritain pengalamanmu di Feed.</string>
+
+    <string name="cc_product_stock_template">Stok %d</string>
+
+    <string name="cc_shop_closed">Toko Tutup Sementara</string>
+    <string name="cc_shop_moderated">Dalam Pengawasan</string>
+    <string name="cc_shop_inactive">Toko Sudah Tidak Aktif</string>
+
+    <string name="cc_no_my_shop_product_title">Kamu belum punya produk</string>
+    <string name="cc_no_my_shop_product_desc">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
+    <string name="cc_no_my_shop_product_filter_title">Oops, produknya tidak ada di tokomu</string>
+    <string name="cc_no_my_shop_product_filter_desc">Yuk, cari produknya lagi supaya bisa nge-tag di postingan!</string>
+
+    <string name="cc_no_shop_product_title">Oops, toko ini belum punya produk</string>
+    <string name="cc_no_shop_product_desc">Yuk, cari produk di toko lainnya supaya bisa nge-tag di postingan!</string>
+    <string name="cc_no_shop_product_filter_title">Oops, produknya tidak ada di toko ini</string>
+    <string name="cc_no_shop_product_filter_desc">Yuk, cari produknya di toko lain aja supaya bisa nge-tag di postingan!</string>
+
+    <string name="cc_product_tag_filter_label">Filter</string>
+    <string name="cc_product_tag_sort_label">Urutkan</string>
+    <string name="cc_product_tag_save">Simpan</string>
+    <string name="cc_filter_product_count_template">Tampilkan %s produk</string>
+    <string name="cc_filter_product_count_label">Tampilkan produk</string>
+    <string name="cc_filter_shop_count_template">Tampilkan %s Toko</string>
+    <string name="cc_filter_shop_count_label">Tampilkan Toko</string>
+
+    <string name="cc_global_search_product_filter_not_found_title">Nggak ada barang yang sesuai dari filter ini</string>
+    <string name="cc_global_search_product_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="cc_global_search_product_query_not_found_title">Oops, barangnya nggak ketemu</string>
+    <string name="cc_global_search_product_query_not_found_desc">Coba periksa lagi kata kunci atau cek rekomendasi lainnya.</string>
+
+    <string name="cc_global_search_shop_filter_not_found_title">Nggak ada toko yang sesuai dari filter ini</string>
+    <string name="cc_global_search_shop_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="cc_global_search_shop_query_not_found_title">Oops, tokonya nggak ketemu</string>
+    <string name="cc_global_search_shop_query_not_found_desc">Coba periksa lagi kata kunci atau cek rekomendasi lainnya.</string>
+
+    <!--SWITCHING ACCOUNT-->
+    <string name="sa_coach_mark_title">Bisa ganti profil sesukamu, dong~</string>
+    <string name="sa_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli buat live di Tokopedia Play!</string>
+    <string name="sa_livestream_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli buat live di Tokopedia Play!</string>
+    <string name="sa_shorts_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli untuk buat konten, lho.</string>
+
+    <!--USER PROFILE-->
+    <string name="up_webview_template">%s?url=%s</string>
+    <string name="up_input_username_info">Username hanya bisa diubah 1 kali</string>
+
+    <!--UGC-->
+    <string name="ugc_onboarding_accept_tnc_privacy_policy">Kebijakan Privasi</string>
+    <string name="ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
+    <string name="ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
+    <string name="ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
+    <string name="ugc_onboarding_unknown_error">Terjadi kesalahan. Ulangi beberapa saat lagi</string>\
+    <string name="ugc_complete_onboarding_title">Bikin username dulu</string>
+    <string name="ugc_tnc_onboarding_title">Yang perlu kamu tahu</string>
+    <string name="ugc_complete_onboarding_desc">Sebelum buat postingan, bikin username yang unik supaya kamu lebih mudah dikenal.</string>
+    <string name="ugc_complete_onboarding_username">Username</string>
+    <string name="ugc_complete_onboarding_username_prepend">\@</string>
+    <string name="ugc_complete_onboarding_tnc_title">Pastikan postinganmu nanti sesuai ketentuan berikut:</string>
+    <string name="ugc_onboarding_tnc_1">Hanya posting pengalaman belanja di Tokopedia</string>
+    <string name="ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
+    <string name="ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
+    <string name="ugc_onboarding_continue">Lanjut</string>
+    <string name="ugc_account_non_active" tools:ignore="UnusedResources">Akun dinonaktifkan</string>
+    <string name="ugc_warning_both_account_banned_title">Semua akun kamu melanggar\nketentuan Tokopedia</string>
+    <string name="ugc_warning_both_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun toko dan pembeli.</string>
+    <string name="ugc_get_to_know_more">Pelajari Selengkapnya</string>
+    <string name="ugc_get_to_know_more_link">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
+    <string name="ugc_warning_both_account_live_title">Akunmu sedang siaran di\nperangkat lain</string>
+    <string name="ugc_warning_both_account_live_subtitle">Akhiri Live di perangkat lain jika ingin\nmengambil alih siaran.</string>
+    <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
+    <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
+</resources>

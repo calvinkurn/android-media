@@ -15,5 +15,8 @@ data class SendOrderExtensionRequestParam(
     val reasonCode: Int,
     @SerializedName("reason_text")
     @Expose
-    val reasonText: String
+    val reasonText: String,
+    @SerializedName("extension_time")
+    @Expose
+    val extensionTime: Int
 )

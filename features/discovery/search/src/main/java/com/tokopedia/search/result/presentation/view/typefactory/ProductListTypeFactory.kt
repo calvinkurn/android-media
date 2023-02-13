@@ -2,26 +2,29 @@ package com.tokopedia.search.result.presentation.view.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleDataView
+import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
@@ -37,7 +40,6 @@ interface ProductListTypeFactory {
     fun type(titleViewModel: RecommendationTitleDataView): Int
     fun type(recommendationItemDataView: RecommendationItemDataView): Int
     fun type(bannedProductsEmptySearchDataView: BannedProductsEmptySearchDataView): Int
-    fun type(bannedProductsTickerDataView: BannedProductsTickerDataView): Int
     fun type(emptySearchProductDataView: EmptyStateKeywordDataView): Int
     fun type(emptySearchFilterDataView: EmptyStateFilterDataView): Int
     fun type(broadMatchDataView: BroadMatchDataView): Int
@@ -50,6 +52,9 @@ interface ProductListTypeFactory {
     fun type(lastFilterDataView: LastFilterDataView): Int
     fun type(sizeDataView: InspirationSizeDataView): Int
     fun type(violationView: ViolationDataView) : Int
-    var recyclerViewItem: Int
+    fun type(inspirationProductBundleDataView: InspirationProductBundleDataView) : Int
+    fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
+    fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int
+    fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

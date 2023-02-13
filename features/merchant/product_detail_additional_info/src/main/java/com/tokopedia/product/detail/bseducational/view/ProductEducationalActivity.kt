@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductEducationalHelper
+import com.tokopedia.product.detail.common.showImmediately
 import timber.log.Timber
 
 /**
@@ -44,7 +45,13 @@ class ProductEducationalActivity : BaseSimpleActivity() {
             Timber.e(th)
         }
 
-        ProductEducationalBottomSheet().show(type, productId, shopId, supportFragmentManager)
+        showImmediately(supportFragmentManager, ProductEducationalBottomSheet.EDUCATIONAL_SHEET_TAG) {
+            ProductEducationalBottomSheet.instance(
+                typeParam = type,
+                productId = productId,
+                shopId = shopId
+            )
+        }
     }
 
     private fun adjustOrientation() {

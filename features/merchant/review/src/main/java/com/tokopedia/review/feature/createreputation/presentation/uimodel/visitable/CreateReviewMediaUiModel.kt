@@ -74,7 +74,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         }
 
         override fun areContentsTheSame(other: Any?): Boolean {
-            return other is Image && state == other.state
+            return other is Video && state == other.state
         }
 
         override fun getChangePayload(other: Any?): Bundle {
@@ -141,7 +141,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         }
 
         override fun areContentsTheSame(other: Any?): Boolean {
-            return other is AddLarge
+            return this == other
         }
 
         override fun getChangePayload(other: Any?): Bundle {

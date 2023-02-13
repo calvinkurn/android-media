@@ -20,7 +20,6 @@ import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.view.fragment.PlayVideoFragment
-import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
@@ -158,10 +157,7 @@ class PlayViewerPiPView : ConstraintLayout {
                 removePiP()
                 val intent = RouteManager.getIntent(
                         context,
-                        UriUtil.buildUriAppendParams(
-                                ApplinkConst.PLAY_DETAIL,
-                                getApplinkQueryParams(pipInfo)
-                        ),
+                        getAppLink(pipInfo),
                         pipInfo.channelId
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .putExtra(EXTRA_PLAY_START_TIME, mVideoPlayer.getCurrentPosition().toString())
@@ -205,17 +201,17 @@ class PlayViewerPiPView : ConstraintLayout {
         )
     }
 
-    private fun getApplinkQueryParams(pipInfo: PiPInfoUiModel): Map<String, Any> {
-        return when (pipInfo.source) {
-            PlaySource.Unknown -> emptyMap()
-            is PlaySource.Shop -> mapOf(
-                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
-                    PLAY_KEY_SOURCE_ID to pipInfo.source.sourceId
-            )
-            else -> mapOf(
-                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
-            )
+    private fun getAppLink(pipInfo: PiPInfoUiModel): String {
+        val map = mutableMapOf<String, Any>().apply {
+            if (pipInfo.source.id.isNotEmpty()) this[PLAY_KEY_SOURCE_ID] = pipInfo.source.id
+            if (pipInfo.source.type.isNotEmpty()) this[PLAY_KEY_SOURCE_TYPE] = pipInfo.source.type
         }
+
+        return UriUtil.buildUriAppendParams(
+            ApplinkConst.PLAY_DETAIL,
+            if (map.isNotEmpty()) map
+            else null
+        )
     }
 
     companion object {

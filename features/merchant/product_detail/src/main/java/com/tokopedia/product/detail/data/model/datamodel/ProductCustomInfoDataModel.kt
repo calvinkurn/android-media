@@ -9,19 +9,19 @@ import com.tokopedia.unifycomponents.Label
  * Created by Yehezkiel on 13/08/20
  */
 data class ProductCustomInfoDataModel(
-        var name: String = "",
-        var type: String = "",
+    var name: String = "",
+    var type: String = "",
 
-        var title: String = "",
-        var icon: String = "",
-        var description: String = "",
-        var separator: String = "",
-        var applink: String = "",
-        val lightIcon: String = "",
-        val darkIcon: String = "",
+    var title: String = "",
+    var icon: String = "",
+    var description: String = "",
+    var separator: String = "",
+    var applink: String = "",
+    val lightIcon: String = "",
+    val darkIcon: String = "",
 
-        var labelValue: String = "",
-        var labelColor: String = ""
+    var labelValue: String = "",
+    var labelColor: String = ""
 ) : DynamicPdpDataModel {
 
     fun getLabelTypeByColor(): Int {
@@ -52,12 +52,12 @@ data class ProductCustomInfoDataModel(
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductCustomInfoDataModel) {
             title == newData.title
-                    && icon == newData.icon
-                    && description == newData.description
-                    && separator == newData.separator
-                    && applink == newData.applink
-                    && labelValue == newData.labelValue
-                    && labelColor == newData.labelColor
+                && icon == newData.icon
+                && description == newData.description
+                && separator == newData.separator
+                && applink == newData.applink
+                && labelValue == newData.labelValue
+                && labelColor == newData.labelColor
         } else {
             false
         }
@@ -84,4 +84,13 @@ data class ProductCustomInfoDataModel(
 
         return iconUrl.ifBlank { icon }
     }
+
+    val shouldRenderContent
+        get() = title.isNotBlank() || description.isNotBlank() || labelValue.isNotBlank()
+
+    val shouldTopSeparatorShowing
+        get() = separator == SEPARATOR_BOTH || separator == SEPARATOR_TOP
+
+    val shouldBottomSeparatorShowing
+        get() = separator == SEPARATOR_BOTH || separator == SEPARATOR_BOTTOM
 }

@@ -1,9 +1,55 @@
 package com.tokopedia.deals.common.analytics
 
+import android.os.Bundle
 import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.deals.brand_detail.data.Product
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CART_PAGE_LOADED
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_1
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_2
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CLICK_PAYMENT_OPTION
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CLICK_PROCEED_PAYMENT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CLICK_PROMO
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.VIEW_CHECKOUT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BRAND
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BUSINESS_UNIT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CART_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_OPTION
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_STEP
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DASH_STRING
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DEALS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DIMENSION_40
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.BEGIN_CHECKOUT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.CHECKOUT_PROGRESS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_DEALS_CLICK
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.INDEX
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEMS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_BRAND
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_CATEGORY
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_LIST
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_NAME
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_VARIANT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Item.none
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.FOUR_STRING_PATTERN
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.THREE_STRING_PATTERN
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.TWO_STRING_PATTERN
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.NON_PROMO
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PROMO
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_CHECKOUT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_NAME
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_TYPE
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SLASH_DEALS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ZERO_STRING
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
@@ -16,9 +62,13 @@ import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.HashMap
 import javax.inject.Inject
 
 class DealsAnalytics @Inject constructor(
@@ -135,7 +185,7 @@ class DealsAnalytics @Inject constructor(
     private fun getECommerceDataVoucherListSearchPage(items: List<VoucherModel>): MutableList<MutableMap<String, Any>> {
         val dataImpressions = mutableListOf<MutableMap<String, Any>>()
         items.forEach {
-            val price = if (it.realPrice.isNotEmpty()) it.realPrice.toInt() else 0
+            val price = if (it.realPrice.isNotEmpty()) it.realPrice.toLong() else 0L
             val impression = DataLayer.mapOf(
                     DealsAnalyticsConstants.Item.name, it.voucherName,
                     DealsAnalyticsConstants.Item.id, it.voucherId,
@@ -178,7 +228,7 @@ class DealsAnalytics @Inject constructor(
     }
 
     private fun getECommerceDataVoucherSearchPage(item: VoucherModel): MutableList<MutableMap<String, Any>> {
-        val price = if (item.realPrice.isNotEmpty()) item.realPrice.toInt() else 0
+        val price = if (item.realPrice.isNotEmpty()) item.realPrice.toLong() else 0L
 
         val data = mutableListOf<MutableMap<String, Any>>()
         data.add(DataLayer.mapOf(
@@ -607,7 +657,7 @@ class DealsAnalytics @Inject constructor(
     private fun getECommerceCuratedProduct(curatedProduct: CuratedProductCategoryDataView): MutableList<MutableMap<String, Any>> {
         val dataImpressions = mutableListOf<MutableMap<String, Any>>()
         curatedProduct.productCards.forEachIndexed { index, it ->
-            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toInt() else 0
+            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toLong() else 0L
             val impression = DataLayer.mapOf(
                     DealsAnalyticsConstants.Item.name, it.title,
                     DealsAnalyticsConstants.Item.id, it.id,
@@ -641,7 +691,7 @@ class DealsAnalytics @Inject constructor(
     }
 
     private fun getCuratedProductClick(productCardDataView: ProductCardDataView, position: Int): MutableList<MutableMap<String, Any>> {
-        val price = if (productCardDataView.priceNonCurrency.isNotEmpty()) productCardDataView.priceNonCurrency.toInt() else 0
+        val price = if (productCardDataView.priceNonCurrency.isNotEmpty()) productCardDataView.priceNonCurrency.toLong() else 0L
         val data = mutableListOf<MutableMap<String, Any>>()
 
         data.add(DataLayer.mapOf(
@@ -739,7 +789,7 @@ class DealsAnalytics @Inject constructor(
     private fun getECommerceProductCategory(productCardDataView: ProductCardDataView, position: Int): MutableList<MutableMap<String, Any>> {
         val dataImpressions = mutableListOf<MutableMap<String, Any>>()
         productCardDataView.let {
-            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toInt() else 0
+            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toLong() else 0L
             val impression = DataLayer.mapOf(
                     DealsAnalyticsConstants.Item.name, it.title,
                     DealsAnalyticsConstants.Item.id, it.id,
@@ -891,7 +941,7 @@ class DealsAnalytics @Inject constructor(
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_VIEW,
                 DealsAnalyticsConstants.Action.IMPRESSION_PRODUCT_BRAND,
-                String.format(DealsAnalyticsConstants.Label.BRAND_DETAIL_IMPRESSION, brandName, position.toString())
+                String.format(TWO_STRING_PATTERN, brandName, position.toString())
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
                 DealsAnalyticsConstants.CURRENCY_CODE, DealsAnalyticsConstants.IDR,
@@ -906,7 +956,7 @@ class DealsAnalytics @Inject constructor(
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_CLICK,
                 DealsAnalyticsConstants.Action.CLICK_PRODUCT_BRAND,
-                String.format(DealsAnalyticsConstants.Label.BRAND_DETAIL_IMPRESSION, product.displayName, position.toString())
+                String.format(TWO_STRING_PATTERN, product.displayName, position.toString())
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
                 DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD,
@@ -955,5 +1005,258 @@ class DealsAnalytics @Inject constructor(
         return dataImpressions
     }
 
+    fun pdpSendScreenName() {
+        val map = HashMap<String, String>()
+        map[BUSINESS_UNIT] = TRAVELENTERTAINMENT_BU
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_DEALS
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME_DEALS_PDP, map)
+    }
 
+    fun pdpViewProduct(id: String, salesPrice: Long, displayName: String, brandTitle: String) {
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.VIEW_ITEM,
+            DealsAnalyticsConstants.Action.PDP_VIEW_PRODUCT,
+            brandTitle.lowercase()
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(ITEM_ID, id)
+                putLong(PRICE, salesPrice)
+                putString(DIMENSION_40, String.format(THREE_STRING_PATTERN, DEALS, BRAND, displayName))
+                putInt(INDEX, Int.ONE)
+                putString(ITEM_NAME, displayName)
+                putString(ITEM_BRAND, brandTitle)
+                putString(ITEM_VARIANT, none)
+                putString(ITEM_CATEGORY, DEALS)
+            }
+        )
+        eventDataLayer.putString(ITEM_LIST, "")
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM, eventDataLayer)
+    }
+
+    fun pdpClick(action: String, brandName: String, displayName: String) {
+        val label = String.format(TWO_STRING_PATTERN, brandName, displayName)
+        val map = TrackAppUtils.gtmData(
+            EVENT_DEALS_CLICK,
+            DealsAnalyticsConstants.Category.DIGITAL_DEALS,
+            action,
+            label.lowercase() ?: ""
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun pdpCheckout(id: String, categoryId: String, salesPrice: Long,  displayName: String, brandTitle: String) {
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.ADD_TO_CART,
+            DealsAnalyticsConstants.Action.CLICK_BELI,
+            brandTitle.lowercase()
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(CART_ID, Int.ZERO.toString())
+                putInt(QUANTITY, Int.ZERO)
+                putString(ITEM_ID, id)
+                putString(CATEGORY_ID, categoryId)
+                putLong(PRICE, salesPrice)
+                putString(ITEM_NAME, displayName)
+                putString(ITEM_VARIANT, none)
+                putString(ITEM_CATEGORY, DEALS)
+            }
+        )
+        eventDataLayer.putString(ITEM_LIST, "")
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.ADD_TO_CART, eventDataLayer)
+    }
+
+    fun pdpRecommendationClick(id: String, index: Int, salesPrice: Long, displayName: String, brandTitle: String) {
+        val eventDataLayer = Bundle()
+        val label = String.format(
+            TWO_STRING_PATTERN,
+            displayName,
+            index.toString()
+        )
+        val list = String.format(
+            FOUR_STRING_PATTERN,
+            SLASH_DEALS,
+            brandTitle,
+            index,
+            displayName
+        )
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.SELECT_CONTENT,
+            DealsAnalyticsConstants.Action.CLICK_RECOMMENDATION,
+            label.lowercase()
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(ITEM_ID, id)
+                putLong(PRICE, salesPrice)
+                putString(DIMENSION_40, "")
+                putInt(INDEX, index)
+                putString(ITEM_NAME, displayName)
+                putString(ITEM_BRAND, brandTitle)
+                putString(ITEM_VARIANT, none)
+                putString(ITEM_CATEGORY, DEALS)
+            }
+        )
+        eventDataLayer.putString(ITEM_LIST, list)
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.SELECT_CONTENT, eventDataLayer)
+    }
+
+    fun pdpRecommendationImpression(id: String, index: Int, salesPrice: Long, displayName: String, brandTitle: String, categoryName: String?) {
+        val eventDataLayer = Bundle()
+        val label = String.format(
+            TWO_STRING_PATTERN,
+            categoryName,
+            index.toString()
+        )
+        val list = String.format(
+            FOUR_STRING_PATTERN,
+            SLASH_DEALS,
+            brandTitle,
+            index,
+            displayName
+        )
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.VIEW_ITEM_LIST,
+            DealsAnalyticsConstants.Action.IMPRESS_RECOMMENDATION,
+            label.lowercase()
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(ITEM_ID, id)
+                putLong(PRICE, salesPrice)
+                putString(DIMENSION_40, list)
+                putInt(INDEX, index)
+                putString(ITEM_NAME, displayName)
+                putString(ITEM_BRAND, brandTitle)
+                putString(ITEM_VARIANT, none)
+                putString(ITEM_CATEGORY, DEALS)
+            }
+        )
+        eventDataLayer.putString(ITEM_LIST, list)
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM_LIST, eventDataLayer)
+    }
+
+    fun checkoutSendScreenName() {
+        val map = HashMap<String, String>()
+        map[BUSINESS_UNIT] = TRAVELENTERTAINMENT_BU
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_DEALS
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME_DEALS_CHECKOUT, map)
+    }
+
+    fun checkoutPromoClick(brandName: String, promoApplied: Boolean) {
+        val promo = getPromoStatus(promoApplied)
+        val label = String.format(TWO_STRING_PATTERN, brandName, promo)
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalBusiness()
+        eventDataLayer.generalTracker(
+            EVENT_DEALS_CLICK,
+            CLICK_PROMO,
+            label.lowercase()
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(EVENT_DEALS_CLICK, eventDataLayer)
+    }
+
+    fun checkoutCartPageLoaded(quantity: Int, categoryId: String, itemId: String, itemName: String,
+                                    brandName: String, price: String) {
+        val label = brandName
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalBusiness()
+        eventDataLayer.generalTracker(
+            BEGIN_CHECKOUT,
+            VIEW_CHECKOUT,
+            label.lowercase()
+        )
+        eventDataLayer.putString(CHECKOUT_OPTION, CART_PAGE_LOADED)
+        eventDataLayer.putString(CHECKOUT_STEP, CHECKOUT_STEP_1)
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(CART_ID, ZERO_STRING)
+                putString(SHOP_ID, DASH_STRING)
+                putInt(QUANTITY, quantity)
+                putString(CATEGORY_ID, categoryId)
+                putString(ITEM_ID, itemId)
+                putLong(PRICE, price.toIntSafely().toLong())
+                putString(SHOP_TYPE, DASH_STRING)
+                putString(ITEM_NAME, itemName)
+                putString(SHOP_NAME, DASH_STRING)
+                putString(ITEM_BRAND, "")
+                putString(ITEM_VARIANT, "")
+                putString(ITEM_CATEGORY, DEALS)
+            }
+        )
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(BEGIN_CHECKOUT, eventDataLayer)
+    }
+
+    fun checkoutProceedPaymentClick(quantity: Int, categoryId: String, itemId: String, itemName: String,
+                                    brandName: String, promoApplied: Boolean, price: String) {
+        val promo = getPromoStatus(promoApplied)
+        val label = String.format(TWO_STRING_PATTERN, brandName, promo)
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalBusiness()
+        eventDataLayer.generalTracker(
+            CHECKOUT_PROGRESS,
+            CLICK_PROCEED_PAYMENT,
+            label.lowercase()
+        )
+        eventDataLayer.putString(CHECKOUT_OPTION, CLICK_PAYMENT_OPTION)
+        eventDataLayer.putString(CHECKOUT_STEP, CHECKOUT_STEP_2)
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(CART_ID, ZERO_STRING)
+                putString(SHOP_ID, DASH_STRING)
+                putInt(QUANTITY, quantity)
+                putString(CATEGORY_ID, categoryId)
+                putString(ITEM_ID, itemId)
+                putString(SHOP_TYPE, DASH_STRING)
+                putString(ITEM_NAME, itemName)
+                putString(SHOP_NAME, DASH_STRING)
+                putString(ITEM_BRAND, "")
+                putString(ITEM_VARIANT, "")
+                putString(ITEM_CATEGORY, DEALS)
+                putLong(PRICE, price.toIntSafely().toLong())
+            }
+        )
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CHECKOUT_PROGRESS, eventDataLayer)
+    }
+
+    private fun Bundle.generalTracker(event: String, action: String, label: String): Bundle {
+        this.putString(TrackAppUtils.EVENT, event)
+        this.putString(TrackAppUtils.EVENT_CATEGORY, DealsAnalyticsConstants.Category.DIGITAL_DEALS)
+        this.putString(TrackAppUtils.EVENT_ACTION, action)
+        this.putString(TrackAppUtils.EVENT_LABEL, label)
+        return this
+    }
+
+    private fun Bundle.generalBusiness(): Bundle {
+        this.putString(BUSINESS_UNIT, TRAVELENTERTAINMENT_BU)
+        this.putString(CURRENT_SITE, TOKOPEDIA_DIGITAL_DEALS)
+        return this
+    }
+
+    private fun getPromoStatus(promoApplied: Boolean): String {
+        return if (promoApplied) PROMO else NON_PROMO
+    }
 }

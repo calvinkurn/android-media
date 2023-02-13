@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.list.analytics
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.manage.common.feature.list.constant.CLICK
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.BUSINESS_UNIT_BROADCAST_CHAT
@@ -9,6 +10,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDa
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_ACTION_CLICK_BROADCAST_CHAT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CAROUSEL
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_CATEGORY
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_CATEGORY_PRODUCT_LIST_PAGE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_CATEGORY_PRODUCT_MANAGE_PAGE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_LABEL_BROADCAST_CHAT
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -17,48 +19,106 @@ import com.tokopedia.track.TrackApp
 object ProductManageTracking {
 
     private fun eventProductManage(action: String, label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(EventTracking(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            EventTracking(
                 ProductManageDataLayer.EVENT_NAME,
-                ProductManageDataLayer.EVENT_CATEGORY,
+                EVENT_CATEGORY,
                 action,
                 label
-        ).dataTracking)
+            ).dataTracking
+        )
     }
 
     private fun eventEditProduct(action: String, shopId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(EventTracking(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            EventTracking(
                 ProductManageDataLayer.EVENT_NAME_EDIT_PRODUCT,
                 ProductManageDataLayer.EVENT_CATEGORY_EDIT_PRODUCT,
                 action,
                 "",
                 shopId
-        ).dataTracking)
+            ).dataTracking
+        )
     }
 
     private infix fun String.withAllocationType(isVariant: Boolean): String {
         val allocationType =
-                if (isVariant) {
-                    ProductManageDataLayer.ALLOCATION_VARIANT_PRODUCT
-                } else {
-                    ProductManageDataLayer.ALLOCATION_SINGLE_PRODUCT
-                }
+            if (isVariant) {
+                ProductManageDataLayer.ALLOCATION_VARIANT_PRODUCT
+            } else {
+                ProductManageDataLayer.ALLOCATION_SINGLE_PRODUCT
+            }
         return this.plus(allocationType)
     }
 
     private fun eventClickBroadcastChatCustom(
-            action: String,
-            category: String,
-            label: String,
-            userId: String,
-            currentSite: String,
-            businessUnit: String,
+        action: String,
+        category: String,
+        label: String,
+        userId: String,
+        currentSite: String,
+        businessUnit: String,
     ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(EventTracking(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            EventTracking(
                 ProductManageDataLayer.EVENT_NAME,
                 category,
                 action,
                 label
-        ).dataTracking.customDimension(userId, currentSite, businessUnit))
+            ).dataTracking.customDimension(userId, currentSite, businessUnit)
+        )
+    }
+
+    fun eventClickNotifyMeIcon(
+        productId: String, parentId: String = "0"
+    ) {
+        val trackerId = getTrackerIdPlatform(
+            sellerappTrackerId = "36711",
+            mainappTrackerId = "36727"
+        )
+
+        val label = arrayOf(productId, parentId).joinToString(" - ")
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            EventTracking(
+                ProductManageDataLayer.EVENT_NAME_CLICK_PG,
+                EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_OOS_NOTIFY_ME,
+                label
+            ).dataTracking.customDimension(trackerId)
+        )
+    }
+
+    fun eventClickAturStockNotifyMe(productId: String, parentId: String = "0") {
+        val trackerId = getTrackerIdPlatform(
+            sellerappTrackerId = "36712",
+            mainappTrackerId = "36728"
+        )
+
+        val label = arrayOf(productId, parentId).joinToString(" - ")
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            EventTracking(
+                ProductManageDataLayer.EVENT_NAME_CLICK_PG,
+                EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_ATUR_STOCK_OOS_NOTIFY_ME,
+                label
+            ).dataTracking.customDimension(trackerId)
+        )
+    }
+
+    fun eventClickFilterNotifyMe() {
+        val trackerId = getTrackerIdPlatform(
+            sellerappTrackerId = "36718",
+            mainappTrackerId = "36734"
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            EventTracking(
+                ProductManageDataLayer.EVENT_NAME_CLICK_PG,
+                EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_FILTER_NOTIFY_ME,
+                ""
+            ).dataTracking.customDimension(trackerId)
+        )
     }
 
     fun eventDraftClick(label: String) {
@@ -120,11 +180,23 @@ object ProductManageTracking {
 
     fun eventClickBroadcastChat(userId: String = "", productId: String = "", isCarousel: Boolean) {
         if (isCarousel) {
-            eventClickBroadcastChatCustom(action = EVENT_ACTION_CLICK_ON_CAROUSEL, category = EVENT_CATEGORY_PRODUCT_MANAGE_PAGE,
-                    label = EVENT_LABEL_BROADCAST_CHAT, userId = userId, currentSite = CURRENT_SITE_BROADCAST_CHAT, businessUnit = BUSINESS_UNIT_BROADCAST_CHAT)
+            eventClickBroadcastChatCustom(
+                action = EVENT_ACTION_CLICK_ON_CAROUSEL,
+                category = EVENT_CATEGORY_PRODUCT_MANAGE_PAGE,
+                label = EVENT_LABEL_BROADCAST_CHAT,
+                userId = userId,
+                currentSite = CURRENT_SITE_BROADCAST_CHAT,
+                businessUnit = BUSINESS_UNIT_BROADCAST_CHAT
+            )
         } else {
-            eventClickBroadcastChatCustom(action = EVENT_ACTION_CLICK_BROADCAST_CHAT, category = EVENT_CATEGORY,
-                    label = productId, userId = userId, currentSite = CURRENT_SITE_BROADCAST_CHAT_SA, businessUnit = BUSINESS_UNIT_BROADCAST_CHAT_SA)
+            eventClickBroadcastChatCustom(
+                action = EVENT_ACTION_CLICK_BROADCAST_CHAT,
+                category = EVENT_CATEGORY,
+                label = productId,
+                userId = userId,
+                currentSite = CURRENT_SITE_BROADCAST_CHAT_SA,
+                businessUnit = BUSINESS_UNIT_BROADCAST_CHAT_SA
+            )
         }
     }
 
@@ -139,11 +211,17 @@ object ProductManageTracking {
     }
 
     fun eventFeaturedProductPopUpSave() {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_SAVE, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_SAVE,
+            ""
+        )
     }
 
     fun eventFeaturedProductPopUpMore() {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_MORE, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_MORE,
+            ""
+        )
     }
 
     fun eventDeleteProduct(label: String) {
@@ -177,7 +255,8 @@ object ProductManageTracking {
     }
 
     fun eventMoreOthersFilter(filterName: String, state: String) {
-        val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER} - $filterName - $state"
+        val action =
+            "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER} - $filterName - $state"
         eventProductManage(action, "")
     }
 
@@ -190,7 +269,10 @@ object ProductManageTracking {
     }
 
     fun eventBulkSettingsMoveEtalase() {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_BULK_SETTINGS_MOVE_ETALASE, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ON_BULK_SETTINGS_MOVE_ETALASE,
+            ""
+        )
     }
 
     fun eventBulkSettingsDeactive() {
@@ -198,7 +280,10 @@ object ProductManageTracking {
     }
 
     fun eventBulkSettingsDeleteBulk() {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_BULK_SETTINGS_DELETE_BULK, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ON_BULK_SETTINGS_DELETE_BULK,
+            ""
+        )
     }
 
     fun eventEditPriceSave(label: String) {
@@ -219,12 +304,14 @@ object ProductManageTracking {
     }
 
     fun eventSortingFilterName(sortName: String) {
-        val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_SORTING_FILTER_NAME} - $sortName"
+        val action =
+            "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_SORTING_FILTER_NAME} - $sortName"
         eventProductManage(action, "")
     }
 
     fun eventOthersFilterName(filterName: String) {
-        val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_OTHERS_FILTER_NAME} - $filterName"
+        val action =
+            "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_OTHERS_FILTER_NAME} - $filterName"
         eventProductManage(action, "")
     }
 
@@ -268,11 +355,17 @@ object ProductManageTracking {
     }
 
     fun eventClickCloseStockAllocation(isVariant: Boolean) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_CLOSE withAllocationType isVariant, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_CLOSE withAllocationType isVariant,
+            ""
+        )
     }
 
     fun eventClickAllocationMainStock(isVariant: Boolean) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_MAIN_STOCK withAllocationType isVariant, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_MAIN_STOCK withAllocationType isVariant,
+            ""
+        )
     }
 
     fun eventClickAllocationProductStatus(
@@ -303,11 +396,17 @@ object ProductManageTracking {
     ) {
         var label = source
         label = addProductIdAndShopId(label, productId, shopId)
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK withAllocationType isVariant, label)
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK withAllocationType isVariant,
+            label
+        )
     }
 
     fun eventClickAllocationInputStock(isVariant: Boolean) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK withAllocationType isVariant, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK withAllocationType isVariant,
+            ""
+        )
     }
 
     fun eventClickAllocationIncreaseStock(
@@ -318,11 +417,17 @@ object ProductManageTracking {
     ) {
         var label = source
         label = addProductIdAndShopId(label, productId, shopId)
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK withAllocationType isVariant, label)
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK withAllocationType isVariant,
+            label
+        )
     }
 
     fun eventClickAllocationOnStockCampaign(isVariant: Boolean) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_STOCK_CAMPAIGN withAllocationType isVariant, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_STOCK_CAMPAIGN withAllocationType isVariant,
+            ""
+        )
     }
 
     fun eventClickAllocationSaveStock(
@@ -338,12 +443,16 @@ object ProductManageTracking {
             ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
         }
         label = label.plus(" - $productId - $shopId")
-        val eventAction = ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant
+        val eventAction =
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant
         eventProductManage(eventAction, label)
     }
 
     fun eventClickPreviewVariantProduct() {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT, "")
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT,
+            ""
+        )
     }
 
     fun eventClickCreateProductCoupon(shopId: String) {
@@ -353,11 +462,13 @@ object ProductManageTracking {
                 ProductManageDataLayer.EVENT_CATEGORY_PRODUCT_LIST_PAGE,
                 ProductManageDataLayer.EVENT_ACTION_CLICK_CREATE_PRODUCT_COUPON,
                 ""
-            ).dataTracking.plus(mapOf(
-                ProductManageDataLayer.CURRENT_SITE to ProductManageDataLayer.TOKOPEDIA_SELLER,
-                ProductManageDataLayer.SHOP_ID to shopId,
-                ProductManageDataLayer.BUSINESS_UNIT to ProductManageDataLayer.PHYSICAL_GOODS
-            ))
+            ).dataTracking.plus(
+                mapOf(
+                    ProductManageDataLayer.CURRENT_SITE to ProductManageDataLayer.TOKOPEDIA_SELLER,
+                    ProductManageDataLayer.SHOP_ID to shopId,
+                    ProductManageDataLayer.BUSINESS_UNIT to ProductManageDataLayer.PHYSICAL_GOODS
+                )
+            )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
@@ -367,18 +478,30 @@ object ProductManageTracking {
     }
 
     fun sendScreen(screenName: String, pageSource: String) {
-        val customDimension = mapOf(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE to pageSource)
+        val customDimension =
+            mapOf(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE to pageSource)
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
     fun sendStockAllocationScreen(isVariant: Boolean) {
         val screenName =
-                if (isVariant) {
-                    ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_VARIANT
-                } else {
-                    ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_SINGLE
-                }
+            if (isVariant) {
+                ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_VARIANT
+            } else {
+                ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_SINGLE
+            }
         sendScreen(screenName)
+    }
+
+    private fun getTrackerIdPlatform(
+        sellerappTrackerId: String,
+        mainappTrackerId: String
+    ) : String {
+        return if (GlobalConfig.isSellerApp()) {
+            sellerappTrackerId
+        } else {
+            mainappTrackerId
+        }
     }
 
     private fun addProductIdAndShopId(

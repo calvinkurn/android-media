@@ -27,9 +27,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
@@ -163,7 +165,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
-    override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(e: MotionEvent): Boolean {
         autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
             e != null && !e.isAboveCloseButton() && !e.isAboveReviewerBasicInfo() &&
@@ -287,6 +289,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         icReviewMediaGalleryKebab.setOnClickListener {
             sharedReviewMediaGalleryViewModel.showActionMenuBottomSheet()
         }
+        ivBgHeaderReviewMediaGallery.setImageResource(R.drawable.bg_header)
     }
 
     private fun ActivityDetailedReviewMediaGalleryBinding.setupCounter() {
@@ -332,14 +335,8 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         ) { (orientationUiState, showOverlay, currentReviewDetail) ->
             val isInPortrait = orientationUiState.isPortrait()
             val isReportable = currentReviewDetail?.isReportable.orFalse()
-            val headerBackground = if (isInPortrait && currentReviewDetail != null) {
-                R.drawable.bg_header
-            } else {
-                Int.ZERO
-            }
             binding?.headerReviewMediaGallery?.apply {
                 showWithCondition(showOverlay)
-                setBackgroundResource(headerBackground)
                 val layoutParamsCopy = layoutParams
                 layoutParamsCopy.height = if (isInPortrait) {
                     HEADER_HEIGHT_IN_PORTRAIT.toPx()
@@ -348,10 +345,17 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 }
                 layoutParams = layoutParamsCopy
             }
+            if (isInPortrait && currentReviewDetail != null) {
+                binding?.ivBgHeaderReviewMediaGallery?.show()
+            } else {
+                binding?.ivBgHeaderReviewMediaGallery?.gone()
+            }
             binding?.icReviewMediaGalleryClose?.showWithCondition(showOverlay)
-            binding?.icReviewMediaGalleryKebab?.showWithCondition(
-                showOverlay && isInPortrait && isReportable
-            )
+            if (showOverlay && isInPortrait && isReportable) {
+                binding?.icReviewMediaGalleryKebab?.show()
+            } else {
+                binding?.icReviewMediaGalleryKebab?.invisible()
+            }
         }
     }
 
@@ -508,7 +512,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private inner class DetailedReviewMediaGalleryGestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             sharedReviewMediaGalleryViewModel.toggleOverlayVisibility()
             return true
         }
@@ -555,12 +559,12 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         private val callback = Callback()
 
         fun attachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.registerNetworkCallback(networkRequest, callback)
         }
 
         fun detachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.unregisterNetworkCallback(callback)
         }
 

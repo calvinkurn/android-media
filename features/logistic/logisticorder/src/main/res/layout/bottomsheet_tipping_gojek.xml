@@ -9,7 +9,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/payment_tipping_layout"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_tipping_gojek"
@@ -128,8 +128,9 @@
                 android:orientation="horizontal">
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/tipping_method"
-                    android:layout_width="24dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="24dp"
+                    android:adjustViewBounds="true"
                     android:paddingEnd="6dp"
                     android:paddingRight="6dp"/>
                 <com.tokopedia.unifyprinciples.Typography

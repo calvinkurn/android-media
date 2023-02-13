@@ -69,7 +69,7 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
         data?.let {
-            RouteManager.route(fragment.context, applink)
+            applink?.let { it1 -> RouteManager.route(fragment.context, it1) }
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsHeadlineAdsClick(position, applink, it, topAdsHeadlineViewModel.components, topAdsHeadlineViewModel.isUserLoggedIn())
         }
     }

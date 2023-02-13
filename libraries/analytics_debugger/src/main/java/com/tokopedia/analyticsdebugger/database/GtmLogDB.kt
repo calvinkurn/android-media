@@ -27,6 +27,5 @@ data class GtmLogDB (
     var timestamp: Long = 0,
 
     @ColumnInfo(name = "source")
-    @AnalyticsSource
     var source: String? = null
 )

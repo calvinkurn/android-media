@@ -13,6 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/Unify_Background"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.viewpager.widget.ViewPager
@@ -32,8 +33,9 @@
                 android:id="@+id/collapsing_toolbar_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="@color/white"
-                app:layout_scrollFlags="scroll|enterAlways">
+                app:contentScrim="@color/Unify_Background"
+                app:layout_scrollFlags="scroll|enterAlways"
+                android:background="@color/Unify_Background">
 
                 <com.tokopedia.header.HeaderUnify
                     android:id="@+id/header_toolbar"
@@ -41,19 +43,22 @@
                     android:layout_height="wrap_content"
                     app:unify_header_is_show_back_button="true"
                     app:unify_header_is_show_shadow="false"
-                    app:unify_header_title="@string/topads_group_detail" />
+                    app:unify_header_title="@string/topads_group_detail"
+                    android:background="@color/Unify_Background"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_50"
+                    android:background="@color/Unify_Background"
                     android:orientation="vertical">
 
                     <com.tokopedia.unifycomponents.DividerUnify
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:background="@color/Unify_Background"/>
 
                     <include
                         android:id="@+id/hari_ini"

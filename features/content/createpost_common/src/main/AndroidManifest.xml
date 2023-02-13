@@ -7,9 +7,5 @@
             android:name="com.tokopedia.createpost.common.view.service.SubmitPostService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name="com.tokopedia.createpost.common.view.service.SubmitPostServiceNew"
-            android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>

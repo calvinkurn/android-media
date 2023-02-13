@@ -5,8 +5,23 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pms.analytics.PmsIdlingResource
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pms.paymentlist.domain.data.*
-import com.tokopedia.pms.paymentlist.domain.usecase.*
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.CancelDetail
+import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
+import com.tokopedia.pms.paymentlist.domain.data.CancelPayment
+import com.tokopedia.pms.paymentlist.domain.data.EmptyState
+import com.tokopedia.pms.paymentlist.domain.data.Fail
+import com.tokopedia.pms.paymentlist.domain.data.LoadingState
+import com.tokopedia.pms.paymentlist.domain.data.PaymentList
+import com.tokopedia.pms.paymentlist.domain.data.PaymentListItem
+import com.tokopedia.pms.paymentlist.domain.data.PaymentResult
+import com.tokopedia.pms.paymentlist.domain.data.ProgressState
+import com.tokopedia.pms.paymentlist.domain.data.Success
+import com.tokopedia.pms.paymentlist.domain.usecase.CancelPaymentUseCase
+import com.tokopedia.pms.paymentlist.domain.usecase.GetPaymentListCountUseCase
+import com.tokopedia.pms.paymentlist.domain.usecase.PaymentCancelDetailUseCase
+import com.tokopedia.pms.paymentlist.domain.usecase.PaymentListMapperUseCase
+import com.tokopedia.pms.paymentlist.domain.usecase.PaymentListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -23,8 +38,8 @@ class PaymentListViewModel @Inject constructor(
 
     private val _paymentListResultLiveData =
         MutableLiveData<PaymentResult<ArrayList<BasePaymentModel>>>()
-    val paymentListResultLiveData: LiveData<PaymentResult<ArrayList<BasePaymentModel>>> =
-        _paymentListResultLiveData
+    val paymentListResultLiveData: LiveData<PaymentResult<ArrayList<BasePaymentModel>>>
+        get() = _paymentListResultLiveData
     private val _cancelPaymentDetailLiveData = MutableLiveData<PaymentResult<CancelDetailWrapper>>()
     val cancelPaymentDetailLiveData: LiveData<PaymentResult<CancelDetailWrapper>> =
         _cancelPaymentDetailLiveData
@@ -43,8 +58,10 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun onCountReceived(count: Int) {
-        if (count >= 40) _paymentListResultLiveData.postValue(ProgressState)
-        else _paymentListResultLiveData.postValue(LoadingState)
+        if (count >= 40)
+            _paymentListResultLiveData.postValue(ProgressState)
+        else
+            _paymentListResultLiveData.postValue(LoadingState)
         getPaymentList("")
     }
 

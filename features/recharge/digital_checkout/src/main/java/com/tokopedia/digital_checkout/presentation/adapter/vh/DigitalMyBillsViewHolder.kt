@@ -3,18 +3,23 @@ package com.tokopedia.digital_checkout.presentation.adapter.vh
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
+import com.tokopedia.digital_checkout.databinding.ItemDigitalCheckoutMyBillsSectionBinding
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.view.*
 
 /**
  * @author by jessica on 10/03/21
  */
 
-class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) :
-    RecyclerView.ViewHolder(view) {
+class DigitalMyBillsViewHolder(
+    view: View,
+    val listener: MyBillsActionListener
+) : RecyclerView.ViewHolder(view) {
+
     fun bindSubscription(subscription: FintechProduct) {
-        with(itemView) {
+        val binding = ItemDigitalCheckoutMyBillsSectionBinding.bind(itemView)
+
+        with(binding) {
             if (subscription.info.title.isNotEmpty()) {
                 itemView.show()
                 listener.onSubscriptionImpression(subscription)
@@ -51,7 +56,8 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
     }
 
     fun bindFintechProduct(fintechProduct: FintechProduct, position: Int) {
-        with(itemView) {
+        val binding = ItemDigitalCheckoutMyBillsSectionBinding.bind(itemView)
+        with(binding) {
             if (fintechProduct.info.title.isNotEmpty()) {
                 widgetMyBills.setTitle(fintechProduct.info.title)
                 widgetMyBills.setDescription(fintechProduct.info.subtitle)
@@ -79,7 +85,7 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
                     }
                 }
 
-                widgetMyBills.visibility = View.VISIBLE
+                widgetMyBills.show()
 
                 if (fintechProduct.checkBoxDisabled) {
                     widgetMyBills.disableCheckBox()
@@ -94,6 +100,7 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
 }
 
 interface MyBillsActionListener {
+
     fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean)
     fun onSubscriptionImpression(fintechProduct: FintechProduct)
     fun onSubscriptionMoreInfoClicked(fintechProduct: FintechProduct)

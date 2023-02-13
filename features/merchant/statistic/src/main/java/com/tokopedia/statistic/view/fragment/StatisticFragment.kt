@@ -21,6 +21,7 @@ import com.google.android.gms.common.util.DeviceProperties
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -477,13 +478,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
+    override fun setOnAnnouncementWidgetCtaClicked(element: AnnouncementWidgetUiModel) {
         statisticPage?.let {
-            StatisticTracker.sendAnnouncementCtaClickEvent(it)
+            val isRouting = RouteManager.route(context, element.data?.appLink.orEmpty())
+            if (isRouting) {
+                StatisticTracker.sendAnnouncementCtaClickEvent(it)
+            }
         }
     }
-
-    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
 
     override fun sendTableFilterImpression(element: TableWidgetUiModel) {
         getCategoryPage()?.let { categoryPage ->

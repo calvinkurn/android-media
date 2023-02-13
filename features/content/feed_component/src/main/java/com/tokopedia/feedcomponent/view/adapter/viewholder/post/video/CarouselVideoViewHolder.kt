@@ -14,7 +14,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
@@ -37,7 +36,7 @@ class CarouselVideoViewHolder(
 
     private var videoPlayer: FeedExoPlayer? = null
 
-    private val playButtonVideo = itemView.findViewById<ImageView>(R.id.ic_play)
+    private val playButtonVideo = itemView.findViewById<ImageUnify>(R.id.ic_play)
     private val frameVideo = itemView.findViewById<ConstraintLayout>(R.id.frame_video)
     private val layoutVideo = itemView.findViewById<PlayerView>(R.id.layout_video)
     private val videoPreviewImage = itemView.findViewById<ImageUnify>(R.id.videoPreviewImage)
@@ -45,7 +44,7 @@ class CarouselVideoViewHolder(
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
     private val volumeIcon = itemView.findViewById<ImageView>(R.id.volume_icon)
     private val loader = itemView.findViewById<LoaderUnify>(R.id.loader)
-    private val icPlay = itemView.findViewById<ImageView>(R.id.ic_play)
+    private val icPlay = itemView.findViewById<ImageUnify>(R.id.ic_play)
     private val timerView = itemView.findViewById<Typography>(R.id.timer_view)
 
     private var mMedia = FeedXMedia()
@@ -68,11 +67,11 @@ class CarouselVideoViewHolder(
 
     init {
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View?) {
+            override fun onViewAttachedToWindow(v: View) {
 
             }
 
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 clearVideo()
             }
         })
@@ -113,10 +112,6 @@ class CarouselVideoViewHolder(
             toggleMute(item)
         }
 
-        frameVideo.setOnClickListener {
-            toggleMute(item)
-            runAutoHideMute()
-        }
     }
 
     private fun toggleMute(media: FeedXMedia) {
@@ -153,8 +148,6 @@ class CarouselVideoViewHolder(
         videoPlayer?.destroy()
         videoPlayer = null
         layoutVideo.player = null
-
-        isMuted = true
 
         videoPreviewImage.visible()
         icPlay.visible()
@@ -203,8 +196,11 @@ class CarouselVideoViewHolder(
             videoPlayer = FeedExoPlayer(itemView.context)
             layoutVideo.player = videoPlayer?.getExoPlayer()
             layoutVideo.videoSurfaceView?.setOnClickListener {
+                toggleMute(media)
+                runAutoHideMute()
                 listener.onVideoSurfaceTapped(this, media, isMuted)
             }
+            videoPlayer?.toggleVideoVolume(isMuted)
             videoPlayer?.setVideoStateListener(createVideoStateListener(media))
         }
         media.canPlay = true

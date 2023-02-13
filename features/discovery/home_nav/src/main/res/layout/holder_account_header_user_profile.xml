@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_4"
-        android:textSize="@dimen/sp_16"
+        android:textSize="16sp"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"

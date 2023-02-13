@@ -1,5 +1,6 @@
 package com.tokopedia.emoney.util
 
+import android.annotation.SuppressLint
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
@@ -8,6 +9,7 @@ import com.tokopedia.emoney.data.BalanceTapcash
 
 object TapcashObjectMapper {
 
+    @SuppressLint("Method Call Prohibited")
     fun mapTapcashtoEmoney(tapcash: BalanceTapcash, balance: String = "",
                            isCheckBalanceTapcash: Boolean = false, issuerTapcash: Int = 3): EmoneyInquiry {
         val attributes = tapcash.rechargeUpdateBalance.attributes

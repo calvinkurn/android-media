@@ -125,7 +125,6 @@
     <string name="review_form_dismiss_form_dialog_title">Ulasanmu belum dikirim, lho</string>
     <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
     <string name="review_form_dismiss_form_dialog_stay">Lanjutkan Ulasan</string>
-    <string name="review_form_templates_formatting">%s.&#160;</string>
     <string name="review_form_neutral_title">Apa yang bikin kamu kurang puas?</string>
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
     <string name="review_form_good_helper">Yuk, ceritain kepuasanmu tentang kualitas barang &amp; pelayanan penjual.</string>
@@ -140,6 +139,7 @@
     <string name="review_form_media_picker_toaster_failed_upload_message">Proses upload belum berhasil. Coba cek koneksi internetmu dan upload ulang, ya. Kode Error: (%1$s)</string>
     <string name="review_form_media_picker_toaster_wait_for_upload_message">Tunggu foto atau videomu selesai di-upload, ya. Setelah itu kamu bisa kirim ulasanmu.</string>
     <string name="review_form_cannot_add_more_media_while_uploading">Sebelum tambah foto atau video lagi, tunggu proses upload kamu selesai, ya.</string>
+    <string name="review_form_topics_label">Sering dibahas:</string>
 
     <!--  Review Form Poem  -->
     <string name="review_form_waiting_upload_poem">Buah sawo buah pepaya, kita upload dulu ya…</string>
@@ -151,6 +151,7 @@
     <string name="review_refresh">Refresh</string>
     <string name="review_toaster_page_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
     <string name="review_oke">Oke</string>
+    <string name="review_cancel">Batal</string>
     <string name="review_back_to_home">Ke Homepage</string>
 
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
@@ -437,4 +438,11 @@
     <string name="ic_create_review_image_remove_content_description">Buang gambar</string>
     <string name="ic_create_review_video_remove_content_description">Buang video</string>
     <string name="image_review_content_description">Lampiran gambar</string>
+
+    <string name="review_raw_string_format">%s</string>
+    <string name="create_review_anonymous_info_header">Privasi ulasan ini bisa diatur, lho!</string>
+    <string name="create_review_anonymous_info_description">Kalau kamu ingin sembunyikan nama, maka:</string>
+    <string name="bullet">•</string>
+    <string name="create_review_anonymous_info_description_point_one">Ulasan ini tidak akan ditampilkan di halaman Profil kamu.</string>
+    <string name="create_review_anonymous_info_description_point_two">Nama dan foto profil kamu tidak dapat dilihat di ulasan ini (saat ditampilkan di halaman produk dan halaman toko).</string>
 </resources>

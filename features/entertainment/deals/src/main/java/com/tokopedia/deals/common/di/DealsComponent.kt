@@ -12,6 +12,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.logging.HttpLoggingInterceptor
 
 /**
  * @author by jessica on 11/06/20
@@ -40,4 +41,6 @@ interface DealsComponent {
     fun dispatcherProvider(): CoroutineDispatchers
 
     fun inject(dealsBaseActivity: DealsBaseActivity)
+
+    fun httpLoggingInterceptor(): HttpLoggingInterceptor
 }

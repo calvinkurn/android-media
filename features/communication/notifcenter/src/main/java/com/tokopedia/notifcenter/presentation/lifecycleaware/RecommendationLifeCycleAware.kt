@@ -16,8 +16,6 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notifcenter.R
-import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.viewmodel.INotificationViewModel
@@ -27,14 +25,10 @@ import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
 class RecommendationLifeCycleAware constructor(
         private val topAdsAnalytic: NotificationTopAdsAnalytic,
@@ -79,24 +73,10 @@ class RecommendationLifeCycleAware constructor(
     private fun handleWishListActionForLoggedInUser(
             productCardOptionsModel: ProductCardOptionsModel
     ) {
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isSuccess) {
-            if (isUsingWishlistV2) handleWishListV2ActionSuccess(productCardOptionsModel)
-            else handleWishListActionSuccess(productCardOptionsModel)
+            handleWishListV2ActionSuccess(productCardOptionsModel)
         } else {
-            if (isUsingWishlistV2) handleWishlistV2ActionFailed(productCardOptionsModel.wishlistResult)
-            else handleWishlistActionFailed()
-        }
-    }
-
-    private fun handleWishListActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val isAddWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
-        topAdsAnalytic.eventClickRecommendationWishlist(isAddWishlist)
-        rvAdapter?.notifyItemChanged(productCardOptionsModel.productPosition, isAddWishlist)
-        if (isAddWishlist) {
-            showSuccessAddWishlist()
-        } else {
-            showSuccessRemoveWishlist()
+            handleWishlistV2ActionFailed(productCardOptionsModel.wishlistResult)
         }
     }
 
@@ -111,18 +91,6 @@ class RecommendationLifeCycleAware constructor(
         }
     }
 
-    private fun showSuccessAddWishlist() {
-        val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-        val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
-        val ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label)
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-            ctaText,
-            View.OnClickListener { v: View? ->
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }
-        ).show()
-    }
-
     private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
         context?.let { context ->
@@ -134,27 +102,12 @@ class RecommendationLifeCycleAware constructor(
         return context?.getString(stringRes) ?: ""
     }
 
-    private fun showSuccessRemoveWishlist() {
-        val view: View? = fragment?.activity?.findViewById(android.R.id.content)
-        val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist)
-        if (view == null) return
-        Toaster.build(view, message, Toaster.LENGTH_LONG).show()
-    }
-
     private fun showSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view: View? = fragment?.activity?.findViewById(android.R.id.content)
         context?.let { context ->
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
             }
-        }
-    }
-
-    private fun handleWishlistActionFailed() {
-        val rootView = fragment?.view?.rootView
-        rootView?.let {
-            Toaster.build(it, ErrorHandler.getErrorMessage(rootView.context, null),
-                    Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -215,17 +168,6 @@ class RecommendationLifeCycleAware constructor(
 
     private fun onImpressionOrganic(item: RecommendationItem) {
         topAdsAnalytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
-    }
-
-    override fun onWishlistClick(
-            item: RecommendationItem, isAddWishlist: Boolean,
-            callback: (Boolean, Throwable?) -> Unit
-    ) {
-        if (isAddWishlist) {
-            viewModel?.addWishlist(item, callback)
-        } else {
-            viewModel?.removeWishList(item, callback)
-        }
     }
 
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {

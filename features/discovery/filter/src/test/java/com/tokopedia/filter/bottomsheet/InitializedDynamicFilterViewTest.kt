@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheetViewModel.Companion.MAX_OPTION_SIZE
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterItemDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
@@ -126,6 +127,8 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
                 this.assertAsPriceFilterViewModel(expectedFilter)
             expectedFilter.isKeywordFilter ->
                 this.assertAsKeywordFilterDataView(expectedFilter)
+            expectedFilter.isPriceRangeCheckboxFilter ->
+                this.assertAsPriceRangeCheckboxDataView(expectedFilter)
             else ->
                 this.assertAsFilterViewModel(expectedFilter)
         }
@@ -186,6 +189,26 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
 
         assert(position == expectedPosition) {
             "Price Option View Model Position is $position, expected is ${expectedPosition}."
+        }
+    }
+
+    private fun Visitable<*>.assertAsPriceRangeCheckboxDataView(expectedFilter: Filter) {
+        val filterRangeCheckboxUiModel = this as PriceRangeFilterCheckboxDataView
+        val actualKeywordFilter = filterRangeCheckboxUiModel.filter
+        assert(actualKeywordFilter == expectedFilter) {
+            "Keyword filter is $actualKeywordFilter.\nExpected $expectedFilter"
+        }
+
+        val priceRangeItemList = filterRangeCheckboxUiModel.optionViewModelList
+        val priceRangeOptions = expectedFilter.options
+        val priceRangeOptionCount = priceRangeOptions.size
+        assert(priceRangeItemList.size == priceRangeOptionCount) {
+            "Price range checkbox item size is ${priceRangeItemList.size}, " +
+                "expected is $priceRangeOptionCount"
+        }
+
+        priceRangeItemList.forEach { priceRangeItem ->
+            priceRangeItem.assertOptionViewModel(priceRangeItem.option)
         }
     }
 

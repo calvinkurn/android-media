@@ -31,6 +31,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,26 +59,31 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.locationmanager.RequestLocationType;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.picker.common.MediaPicker;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -105,6 +111,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
+    public final static String FILE_PREFIX = "file:";
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
@@ -133,6 +140,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
+    private static final String ANDROID_PRINT_JS_INTERFACE = "AndroidPrint";
 
     @NonNull
     protected String url = "";
@@ -183,6 +191,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         Bundle args = getArguments();
         if (args == null || !args.containsKey(KEY_URL)) {
             return;
@@ -202,7 +211,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private String getUrlFromArguments(Bundle args) {
@@ -226,10 +234,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else {
             try {
                 return onCreateWebView(inflater, container, savedInstanceState);
-            } catch (Exception e) {
+            } catch (InflateException e) {
                 redirectToWebViewPlaystore();
                 return null;
+            } catch (Exception e) {
+                logCrashToFirebase(e);
+                return null;
             }
+        }
+    }
+
+    private void logCrashToFirebase(Exception e) {
+        try {
+            FirebaseCrashlytics.getInstance().recordException(e);
+        } catch (IllegalStateException ignored) {
         }
     }
 
@@ -258,8 +276,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
+        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PRINT_JS_INTERFACE, true);
+
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
+        if (isEnablePrintJsInterface) {
+            webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
+        }
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -300,8 +323,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isTokopediaUrl) {
             webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
+        } else if(isWhitelisted(url)) {
+            webView.requestFocus();
+            webView.loadAuthUrl(url, null);
         } else {
             redirectToNativeBrowser();
+        }
+    }
+
+    private boolean isWhitelisted(String mUrl) {
+        try {
+            if (getActivity() instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity baseSimpleWebViewActivity = (BaseSimpleWebViewActivity) getActivity();
+                return baseSimpleWebViewActivity.isDomainWhitelisted(baseSimpleWebViewActivity.getDomainName(baseSimpleWebViewActivity.getBaseDomain(mUrl)));
+            }
+            return false;
+        } catch (Exception ex) {
+            return false;
         }
     }
 
@@ -352,7 +390,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
             webView.loadUrl(kycRedirectionUrl);
             return;
         }
@@ -384,9 +422,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     }
 
                     String dataString = intent.getDataString();
-                    if (dataString != null) {
+                    if(dataString != null) {
                         results = new Uri[]{Uri.parse(dataString)};
-
+                    }else {
+                        List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
+                        if(!images.isEmpty()){
+                            results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0))};
+                        }
                     }
                 }
             }
@@ -517,6 +559,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType("*/*");
             Intent[] intentArray = new Intent[0];
+            if(getContext() != null){
+                intentArray = new Intent[1];
+                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
+                intentArray[0] = mediaPickerIntent;
+            }
 
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
             chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
@@ -562,22 +609,25 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private void checkLocationPermission(GeolocationPermissions.Callback callback, String origin) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             permissionCheckerHelper = new PermissionCheckerHelper();
-            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
 
-                @Override
-                public void onNeverAskAgain(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
+            permissionCheckerHelper.checkPermissions(this,
+                    LocationDetectorHelper.Companion.getPermissions(RequestLocationType.APPROXIMATE_OR_PRECISE),
+                    new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
 
-                @Override
-                public void onPermissionGranted() {
-                    callback.invoke(origin, true, false);
-                }
-            }, getString(R.string.webview_rationale_need_location));
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
+
+                        @Override
+                        public void onPermissionGranted() {
+                            callback.invoke(origin, true, false);
+                        }
+                    }, getString(R.string.webview_rationale_need_location));
         } else callback.invoke(origin, true, false);
     }
 
@@ -592,7 +642,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        if (permissionCheckerHelper != null) {
+            permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        }
     }
 
     class MyWebViewClient extends WebViewClient {
@@ -966,10 +1018,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void gotoAlaCarteKyc(Uri uri) {
-        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
-        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        String kycType = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE);
+        String projectId = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
+        String layout = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_SHOW_INTRO);
+        String kycType = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE);
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl, kycType);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }

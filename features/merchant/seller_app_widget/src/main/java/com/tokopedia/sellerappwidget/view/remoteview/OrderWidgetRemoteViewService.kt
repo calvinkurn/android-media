@@ -27,8 +27,8 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
     }
 
     class OrderAppWidgetFactory(
-            private val context: Context,
-            intent: Intent
+        private val context: Context,
+        intent: Intent
     ) : RemoteViewsFactory {
 
         private var items: ArrayList<OrderItemUiModel> = arrayListOf()
@@ -60,7 +60,8 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
                 val productCount = item.productCount.orZero()
                 if (productCount > 1) {
                     setInt(R.id.tvSawOrderItemOtherOrder, Const.Method.SET_VISIBILITY, View.VISIBLE)
-                    val otherProducts = "+${productCount.minus(1)} ${context.getString(R.string.saw_product)}"
+                    val otherProducts =
+                        "+${productCount.minus(1)} ${context.getString(R.string.saw_product)}"
                     setTextViewText(R.id.tvSawOrderItemOtherOrder, otherProducts)
                 } else {
                     setInt(R.id.tvSawOrderItemOtherOrder, Const.Method.SET_VISIBILITY, View.GONE)
@@ -76,9 +77,9 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
                 val px46 = context.pxToDp(46).toInt()
                 val radius = context.pxToDp(6).toInt()
                 val builder = Glide.with(context)
-                        .asBitmap()
-                        .load(item.product?.picture)
-                        .transform(CenterCrop(), RoundedCorners(radius))
+                    .asBitmap()
+                    .load(item.product?.picture)
+                    .transform(CenterCrop(), RoundedCorners(radius))
                 val futureTarget = builder.submit(px46, px46)
 
                 try {
@@ -90,7 +91,10 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
         }
 
         override fun getLoadingView(): RemoteViews {
-            return RemoteViews(context.packageName, R.layout.saw_app_widget_order_item_shimmer).apply {
+            return RemoteViews(
+                context.packageName,
+                R.layout.saw_app_widget_order_item_shimmer
+            ).apply {
                 setInt(R.id.shimmerSawOrder1, Const.Method.SET_VISIBILITY, View.INVISIBLE)
                 setInt(R.id.shimmerSawOrder2, Const.Method.SET_VISIBILITY, View.INVISIBLE)
                 setInt(R.id.shimmerSawOrder3, Const.Method.SET_VISIBILITY, View.INVISIBLE)

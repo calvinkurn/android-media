@@ -37,6 +37,7 @@ import static com.tokopedia.user.session.Constants.PROFILE_PICTURE;
 import static com.tokopedia.user.session.Constants.REFRESH_TOKEN;
 import static com.tokopedia.user.session.Constants.REFRESH_TOKEN_KEY;
 import static com.tokopedia.user.session.Constants.SHOP_AVATAR;
+import static com.tokopedia.user.session.Constants.SHOP_AVATAR_ORIGINAL;
 import static com.tokopedia.user.session.Constants.SHOP_ID;
 import static com.tokopedia.user.session.Constants.SHOP_NAME;
 import static com.tokopedia.user.session.Constants.TEMP_EMAIL;
@@ -54,7 +55,10 @@ import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.google.crypto.tink.Aead;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.encryption.security.AeadEncryptor;
+import com.tokopedia.user.session.datastore.DataStorePreference;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +81,10 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     @Inject
     public UserSession(Context context) {
         super(context);
+    }
+
+    public UserSession(Context context, DataStorePreference dataStorePreference, Aead encryptor) {
+        super(context, dataStorePreference, encryptor);
     }
 
     public String getAccessToken() {
@@ -412,6 +420,16 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     @Override
     public void setShopAvatar(String shopAvatar) {
         setString(LOGIN_SESSION, SHOP_AVATAR, shopAvatar);
+    }
+
+    @Override
+    public String getShopAvatarOriginal() {
+        return getAndTrimOldString(LOGIN_SESSION, SHOP_AVATAR_ORIGINAL, "");
+    }
+
+    @Override
+    public void setShopAvatarOriginal(String shopAvatarOriginal) {
+        setString(LOGIN_SESSION, SHOP_AVATAR_ORIGINAL, shopAvatarOriginal);
     }
 
     @Override

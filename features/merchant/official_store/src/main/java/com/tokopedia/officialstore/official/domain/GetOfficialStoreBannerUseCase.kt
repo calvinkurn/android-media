@@ -22,7 +22,7 @@ class GetOfficialStoreBannerUseCase @Inject constructor(
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
         return graphqlResponse.run {
-            getData<OfficialStoreBanners.Response>(OfficialStoreBanners.Response::class.java).officialStoreBanners
+            getData<OfficialStoreBanners.Response>(OfficialStoreBanners.Response::class.java)?.officialStoreBanners ?: OfficialStoreBanners()
         }
     }
 

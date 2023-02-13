@@ -15,17 +15,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
@@ -44,11 +39,7 @@ import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 
@@ -58,16 +49,13 @@ class ProductDetailActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
-
     @get:Rule
     var activityRule: ActivityTestRule<ProductDetailActivity> = IntentsTestRule(ProductDetailActivity::class.java,
             false,
             false)
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(isFromNetwork = true,
-            sendValidationResult = true)
+    var cassavaRule = CassavaTestRule()
 
     private val idlingResource by lazy {
         ProductDetailNetworkIdlingResource(object : ProductIdlingInterface {
@@ -106,7 +94,6 @@ class ProductDetailActivityTest {
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         clearLogin()
-        gtmLogDBSource.deleteAll().toBlocking().first()
 
         fakeLogin()
         val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
@@ -122,25 +109,6 @@ class ProductDetailActivityTest {
                 idlingResource)
     }
 
-    /**
-     * view product page
-     * impression - modular component
-     */
-    @Test
-    fun tracker_journey_id_56() {
-        actionTest {
-            fakeLogin()
-
-        } assertTest {
-            assertIsLoggedIn(true)
-            waitForTrackerSent()
-            performClose(activityRule)
-
-            assertThanos("56")
-            finishTest()
-        }
-    }
-
     @Test
     fun validateClickBuyIsLogin() {
         actionTest {
@@ -151,8 +119,7 @@ class ProductDetailActivityTest {
             assertIsLoggedIn(true)
             waitForTrackerSent()
             performClose(activityRule)
-            validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
-            finishTest()
+            validate(cassavaRule, BUTTON_BUY_LOGIN_PATH)
         }
     }
 
@@ -167,8 +134,7 @@ class ProductDetailActivityTest {
             if (addToCartBottomSheetIsVisible() == true) {
                 performClose(activityRule)
                 waitForTrackerSent()
-                validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
-                finishTest()
+                validate(cassavaRule, ADD_TO_CART_LOGIN_PATH)
             } else {
                 performClose(activityRule)
             }
@@ -186,8 +152,7 @@ class ProductDetailActivityTest {
             assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
-            finishTest()
+            validate(cassavaRule, BUTTON_BUY_NON_LOGIN_PATH)
         }
     }
 
@@ -202,8 +167,7 @@ class ProductDetailActivityTest {
             assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
-            finishTest()
+            validate(cassavaRule, ADD_TO_CART_NON_LOGIN_PATH)
         }
     }
 
@@ -214,8 +178,7 @@ class ProductDetailActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, GUIDE_ON_SIZE_CHART_PATH)
-            finishTest()
+            validate(cassavaRule, GUIDE_ON_SIZE_CHART_PATH)
         }
     }
 
@@ -228,8 +191,7 @@ class ProductDetailActivityTest {
             assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, DISCUSSION_PRODUCT_TAB_PATH)
-            finishTest()
+            validate(cassavaRule, DISCUSSION_PRODUCT_TAB_PATH)
         }
     }
 
@@ -242,8 +204,7 @@ class ProductDetailActivityTest {
             assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, SEE_ALL_ON_LATEST_DISCUSSION_PATH)
-            finishTest()
+            validate(cassavaRule, SEE_ALL_ON_LATEST_DISCUSSION_PATH)
         }
     }
 
@@ -256,8 +217,7 @@ class ProductDetailActivityTest {
             assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, THREAD_DETAIL_ON_DISCUSSION_PATH)
-            finishTest()
+            validate(cassavaRule, THREAD_DETAIL_ON_DISCUSSION_PATH)
         }
     }
 
@@ -304,10 +264,6 @@ class ProductDetailActivityTest {
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
         IdlingRegistry.getInstance().register(idlingResource)
         waitVariantToLoad()
-    }
-
-    private fun finishTest() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {
@@ -378,10 +334,6 @@ class ProductDetailActivityTest {
 
     private fun intendingIntent() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-    }
-
-    private fun assertThanos(trackerId: String) {
-        assertThat(cassavaTestRule.validate(trackerId), hasAllSuccess())
     }
 
     private fun assertIsLoggedIn(actualIsLoggedIn: Boolean) {

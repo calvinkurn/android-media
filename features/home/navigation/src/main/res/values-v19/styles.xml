@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TokopediaTransparentStatus" parent="Theme.TokopediaNavigation">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowBackground">@color/Unify_Background</item>
+    </style>
+</resources>

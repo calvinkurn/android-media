@@ -20,19 +20,17 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.mock.HotelSearchMockResponseConfig
-import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.HotelSearchMapItemViewHolder
+import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -138,7 +136,7 @@ class HotelSearchMapActivityTest {
 
     private fun clickOnChangeDestination() {
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.rightContentID)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(targetContext.getString(R.string.hotel_search_result_change))).perform(ViewActions.click())
 
         Thread.sleep(2000)
         Intents.intending(IntentMatchers.hasComponent(HotelDestinationActivity::class.java.name)).respondWith(createDummyDestination())

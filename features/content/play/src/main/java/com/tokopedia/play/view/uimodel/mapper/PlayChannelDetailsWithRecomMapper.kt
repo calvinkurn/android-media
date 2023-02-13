@@ -19,7 +19,9 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -44,7 +46,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
-                    emptyBottomSheetInfo = mapEmptyBottomSheet(it)
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it),
+                    popupConfig = mapPopUp(it),
+                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig)
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
@@ -53,7 +57,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
                 leaderboard = mapLeaderboardInfo(),
-                upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime),
+                upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime, it.description),
                 tagItems = mapTagItems(it.config),
                 status = mapStatus(it.config, it.title),
             )
@@ -232,14 +236,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapLeaderboardInfo() = LeaderboardUiModel.Empty
 
-    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) =
+    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String, description: String) =
         PlayUpcomingUiModel(
             title = title,
             isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON,
             isReminderSet = isReminderSet,
             coverUrl = coverUrl,
             startTime = startTime,
-            isAlreadyLive = false
+            isAlreadyLive = false,
+            description = description,
         )
 
     private fun emptyVideoMetaInfo() = PlayVideoMetaInfoUiModel(
@@ -255,7 +260,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         configResponse: ChannelDetailsWithRecomResponse.Config,
         title: String
     ): PlayStatusUiModel {
-        val statusType = mapStatusType(!configResponse.active || configResponse.freezed)
+        val statusType = PlayStatusType.getByValue(
+            configResponse.status
+        )
         return PlayStatusUiModel(
             channelStatus = PlayChannelStatus(
                 statusType = statusType,
@@ -265,6 +272,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             config = PlayStatusConfig(
                 bannedModel = mapBannedModel(configResponse.bannedData),
                 freezeModel = mapFreezeUiModel(configResponse.freezeData, title),
+                archivedModel = mapArchived(configResponse.archiveConfig),
             ),
         )
     }
@@ -278,6 +286,25 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
         PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
+    }
+
+    private fun mapExploreWidgetConfig(
+        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+    ) = ExploreWidgetConfig(
+       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId,
+    )
+
+    private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {
+        ArchivedUiModel(
+            title = title,
+            description = description,
+            btnTitle = buttonText,
+            appLink = appLink,
+        )
+    }
+
+    private fun mapPopUp(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.popupConfig){
+        PlayPopUpConfigUiModel(isEnabled = isEnabled, text = copyText, duration = TimeUnit.SECONDS.toMillis(duration))
     }
 
     companion object {

@@ -1,9 +1,11 @@
 package com.tokopedia.chatbot.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.chatbot.view.activity.ChatbotOnboardingActivity
 import com.tokopedia.chatbot.view.activity.ContactUsMigrationActivity
 import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import dagger.Component
 
 /**
@@ -13,7 +15,8 @@ import dagger.Component
 @Component(
     modules = arrayOf(
         ChatbotModule::class,
-        ChatViewModelModule::class
+        ChatViewModelModule::class,
+        MediaUploaderModule::class
     ),
     dependencies = arrayOf(BaseAppComponent::class)
 )
@@ -24,5 +27,7 @@ interface ChatbotComponent {
     fun inject(contactUsMigrationActivity: ContactUsMigrationActivity)
 
     fun inject(chatbotProvideRatingFragment : ChatBotProvideRatingFragment)
+
+    fun inject(chatbotOnboardingActivity: ChatbotOnboardingActivity)
 
 }

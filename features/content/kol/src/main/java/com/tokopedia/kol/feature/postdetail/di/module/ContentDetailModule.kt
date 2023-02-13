@@ -3,6 +3,8 @@ package com.tokopedia.kol.feature.postdetail.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.domain.SUSPEND_GRAPHQL_REPOSITORY
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapperImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -13,7 +15,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -28,12 +29,6 @@ class ContentDetailModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @ContentDetailScope
-    @Provides
-    fun provideAddWishListUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
     }
 
     @ContentDetailScope
@@ -64,4 +59,10 @@ class ContentDetailModule {
     @ContentDetailScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
+
+    @ContentDetailScope
+    @Provides
+    fun provideProfileUiMapper(@ApplicationContext context: Context): ProfileMutationMapper {
+        return ProfileMutationMapperImpl(context)
+    }
 }

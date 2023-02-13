@@ -5,9 +5,9 @@ import com.tokopedia.discovery.common.constants.SearchConstant.TopAdsComponent.B
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
+import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.DynamicCarouselProduct
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -18,7 +18,6 @@ private const val dynamicProductCarousel = "searchproduct/inspirationcarousel/dy
 internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
-    private val className = "SearchClassName"
 
     @Test
     fun `Impressed top ads broad match`() {
@@ -68,26 +67,28 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
 
     private fun `Then verify broad match top ads impressed`(broadMatchAdsData: BroadMatchItemDataView) {
         verify {
-            productListView.className
-
             topAdsUrlHitter.hitImpressionUrl(
-                    className,
-                    broadMatchAdsData.topAdsViewUrl,
-                    broadMatchAdsData.id,
-                    broadMatchAdsData.name,
-                    broadMatchAdsData.imageUrl,
-                    BROAD_MATCH_ADS
+                className,
+                broadMatchAdsData.topAdsViewUrl,
+                broadMatchAdsData.id,
+                broadMatchAdsData.name,
+                broadMatchAdsData.imageUrl,
+                BROAD_MATCH_ADS
             )
         }
     }
 
     private fun `Then verify interaction for Broad Match Item impression`(itemData: BroadMatchItemDataView) {
         verify {
-            productListView.trackEventImpressionBroadMatchItem(itemData)
+            broadMatchView.trackEventImpressionBroadMatchItem(itemData)
         }
 
         verify(exactly = 0) {
-            productListView.trackDynamicProductCarouselImpression(any(), any(), any())
+            inspirationCarouselDynamicProductView.trackDynamicProductCarouselImpression(
+                any(),
+                any(),
+                any()
+            )
         }
     }
 
@@ -117,7 +118,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
     private fun `Then verify interaction for dynamic carousel impression`(dynamicProductCarousel: BroadMatchItemDataView) {
         verify {
             val carouselProductType = dynamicProductCarousel.carouselProductType as DynamicCarouselProduct
-            productListView.trackDynamicProductCarouselImpression(
+            inspirationCarouselDynamicProductView.trackDynamicProductCarouselImpression(
                 dynamicProductCarousel,
                 carouselProductType.type,
                 carouselProductType.inspirationCarouselProduct,
@@ -125,7 +126,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
         }
 
         verify(exactly = 0) {
-            productListView.trackEventImpressionBroadMatchItem(any())
+            broadMatchView.trackEventImpressionBroadMatchItem(any())
         }
     }
 
@@ -152,7 +153,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
 
     private fun `Then verify impression broad match`(broadMatchDataView: BroadMatchDataView) {
         verify {
-            productListView.trackEventImpressionBroadMatch(broadMatchDataView)
+            broadMatchView.trackEventImpressionBroadMatch(broadMatchDataView)
         }
     }
 
@@ -169,7 +170,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
 
     private fun `Then verify broad match impression is not called`() {
         verify(exactly = 0) {
-            productListView.trackEventImpressionBroadMatch(any())
+            broadMatchView.trackEventImpressionBroadMatch(any())
         }
     }
 }

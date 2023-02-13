@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.analytics.v2.MixLeftComponentTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
@@ -9,28 +10,47 @@ import com.tokopedia.home_component.model.ChannelModel
 /**
  * @author by yoasfs on 09/06/20
  */
-class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
-    : MixLeftComponentListener {
+class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener) :
+    MixLeftComponentListener {
 
     override fun onMixLeftImpressed(channel: ChannelModel, parentPos: Int) {
-        homeCategoryListener.putEEToTrackingQueue(MixLeftComponentTracking.getMixLeftBannerView(channel, parentPos, homeCategoryListener.userId) as java.util.HashMap<String, Any>)
+        if (parentPos != RecyclerView.NO_POSITION) {
+            homeCategoryListener.putEEToTrackingQueue(MixLeftComponentTracking.getMixLeftBannerView(channel, parentPos, homeCategoryListener.userId) as java.util.HashMap<String, Any>)
+        }
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
+        // because we have empty value at beginning of list, we need to reduce pos by 1
         val itemPos = position - 1
-        //GA
-        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-                MixLeftComponentTracking.getMixLeftProductView(channel, channelGrid, itemPos, adapterPosition) as HashMap<String, Any>)
-        //iris
-        homeCategoryListener.putEEToIris(MixLeftComponentTracking.getMixLeftIrisProductView(channel, channelGrid, itemPos, adapterPosition)as java.util.HashMap<String, Any>)
-
+        if (adapterPosition != RecyclerView.NO_POSITION) {
+            // GA
+            homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+                MixLeftComponentTracking.getMixLeftProductView(
+                    channel,
+                    channelGrid,
+                    itemPos,
+                    adapterPosition,
+                    homeCategoryListener.userId
+                ) as HashMap<String, Any>
+            )
+            // iris
+            homeCategoryListener.putEEToIris(
+                MixLeftComponentTracking.getMixLeftIrisProductView(
+                    channel,
+                    channelGrid,
+                    itemPos,
+                    adapterPosition
+                ) as java.util.HashMap<String, Any>
+            )
+        }
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
+        // because we have empty value at beginning of list, we need to reduce pos by 1
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
-        MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1, adapterPosition)
+        if (adapterPosition != RecyclerView.NO_POSITION) {
+            MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1, adapterPosition)
+        }
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {

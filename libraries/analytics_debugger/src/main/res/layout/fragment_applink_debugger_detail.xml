@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/dp_15">
+        android:padding="15dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/applink_text_timestamp"
@@ -82,7 +82,7 @@
             app:typographyType="body_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginTop="15dp"
             android:text="Traces:" />
 
         <com.tokopedia.unifyprinciples.Typography

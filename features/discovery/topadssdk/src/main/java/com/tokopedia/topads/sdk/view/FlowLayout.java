@@ -17,7 +17,6 @@ import java.util.List;
 
 public class FlowLayout extends ViewGroup
 {
-    private static final String TAG = FlowLayout.class.getSimpleName();
     private static final int LEFT = -1;
     private static final int CENTER = 0;
     private static final int RIGHT = 1;

@@ -68,7 +68,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
             mBannerCarouselComponentViewModel.getComponents().observe(it, Observer { component ->
                 component.data?.let { bannerList ->
                     if (bannerList.isNotEmpty()) {
-                        sendBannerCarouselImpression(bannerList)
+                        sendBannerCarouselImpression(bannerList, component.properties?.compType)
                     }
                 }
             })
@@ -131,8 +131,8 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         mBannerCarouselRecyclerView.addItemDecoration(bannerRecyclerViewDecorator)
     }
 
-    private fun sendBannerCarouselImpression(item: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerImpression(item)
+    private fun sendBannerCarouselImpression(item: List<DataItem>, compType: String?) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerImpression(item, compType ?: "")
     }
 
     private fun addShimmer() {

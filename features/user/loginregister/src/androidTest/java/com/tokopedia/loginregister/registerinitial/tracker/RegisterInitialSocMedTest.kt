@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.registerinitial.tracker
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents.intending
@@ -10,7 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
@@ -53,8 +52,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
 
     private fun checkRegisterGoogle() {
         intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, Intent()))
-        Thread.sleep(1000)
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         onView(ViewMatchers.withId(R.id.socmed_btn))
             .perform(click())

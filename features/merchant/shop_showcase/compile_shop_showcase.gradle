@@ -22,5 +22,5 @@ include "libraries:iris"
 include "libraries:device_info"
 include "libraries:weaver"
 include "features:merchant:gold_merchant_resource"
-include "features:discovery:wishlist_common"
+include "features:transaction:wishlist_common"
 

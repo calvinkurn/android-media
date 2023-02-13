@@ -172,16 +172,35 @@
             tools:text="Rp30.000" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/uoh_btn_action"
+            android:id="@+id/uoh_btn_action_1"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:minWidth="@dimen/dp_110"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_goneMarginEnd="0dp"
+            android:minWidth="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/uoh_btn_action_2"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_uoh_total_belanja_value"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
+            tools:text="action 1" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/uoh_btn_action_2"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:minWidth="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="filled"
-            tools:text="Revisi File" />
+            app:unifyButtonVariant="ghost"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="action 2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

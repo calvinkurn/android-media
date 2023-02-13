@@ -5,15 +5,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
+import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -22,13 +26,17 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.encryption.security.RSA;
+import com.tokopedia.encryption.utils.RSAKeys;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
+import com.tokopedia.journeydebugger.JourneySubscriber;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -37,6 +45,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -51,9 +60,11 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +76,8 @@ import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -74,11 +87,16 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
-    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_v3_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
     private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
     private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle_seller";
+    private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle_seller";
+    private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+    private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -111,6 +129,24 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initCacheManager();
         initEmbrace();
 
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            new Cassava.Builder(this)
+                    .setRemoteValidator(new RemoteSpec() {
+                        @NonNull
+                        @Override
+                        public String getUrl() {
+                            return TokopediaUrl.getInstance().getAPI();
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                        }
+                    })
+                    .setLocalRootPath("tracker")
+                    .initialize();
+        }
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -119,6 +155,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         TrackApp.getInstance().initializeAllApis();
 
         super.onCreate();
+        initRobust();
         initLogManager();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.setContextData(this);
@@ -132,6 +169,15 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         Loader.init(this);
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        showDevOptNotification();
+        initDevMonitoringTools();
+    }
+
+    private void initRobust() {
+        if(remoteConfig.getBoolean(com.tokopedia.remoteconfig.RemoteConfigKey.SELLER_ENABLE_ROBUST, true)) {
+            TokoPatch.init(this);
+        }
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -147,6 +193,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         LogManager.init(SellerMainApplication.this, new LoggerProxy() {
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
+
+            final RSA encryptorRSA = new RSA();
+            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR);
 
             @Override
             public Function1<String, String> getDecrypt() {
@@ -164,6 +213,16 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
                     @Override
                     public String invoke(String s) {
                         return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getDecryptNrKey() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptorRSA.decrypt(s, privateKeyRSA, com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM);
                     }
                 };
             }
@@ -245,15 +304,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             String version = versions.getFirst();
             String suffixVersion = versions.getSecond();
 
-            if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-                GlobalConfig.VERSION_NAME = version;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-            } else {
+            if (TextUtils.isEmpty(suffixVersion)) {
                 GlobalConfig.VERSION_NAME = pInfo.versionName;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            } else {
+                GlobalConfig.VERSION_NAME = version;
+                GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
             }
-            com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;// save raw version name
+            GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -265,6 +322,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+            registerActivityLifecycleCallbacks(new JourneySubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
@@ -272,6 +330,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
         registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
+        registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
     }
 
     @Override
@@ -341,5 +400,22 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
         }).build();
+    }
+
+    private void showDevOptNotification() {
+        new DevOptNotificationManager(this).start();
+    }
+
+    private void initDevMonitoringTools(){
+        DevMonitoring devMonitoring = new DevMonitoring(SellerMainApplication.this);
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
+    }
+
+    private boolean getStrictModeLeakPublisherToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE);
     }
 }

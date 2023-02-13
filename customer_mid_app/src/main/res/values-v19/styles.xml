@@ -13,9 +13,4 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
-
-    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowBackground">@android:color/white</item>
-    </style>
 </resources>

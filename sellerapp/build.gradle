@@ -1,7 +1,4 @@
 apply plugin: 'com.android.application'
-if (project.hasProperty("auto-patch")) {
-    apply plugin: 'auto-patch-plugin'
-}
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
@@ -48,8 +45,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 200000123;
-        defaultVersionName = "2.00.123";
+        defaultVersionCode = 220412500;
+        defaultVersionName = "2.125-test";
     }
 
     packagingOptions {
@@ -103,13 +100,14 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
 //            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            multiDexKeepProguard file('multidex-config.pro')
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
@@ -138,8 +136,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     configurations.all {
@@ -216,7 +214,6 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.features.developerOptionsNoop)
     }
-    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
@@ -229,7 +226,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
     implementation projectOrAar(rootProject.ext.features.topAdsDashboard)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
-    implementation projectOrAar(rootProject.ext.features.topAdsManagement)
     implementation projectOrAar(rootProject.ext.features.report)
     implementation projectOrAar(rootProject.ext.features.topAdsAutoAds)
     implementation projectOrAar(rootProject.ext.features.topAdsCreate)
@@ -243,7 +239,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.contactUs)
     implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.features.logout)
-    implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
     implementation projectOrAar(rootProject.ext.features.saldodetails)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.homecredit)
@@ -312,6 +307,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
@@ -323,9 +319,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
 
-    implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
-    implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
-
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
@@ -333,8 +326,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
@@ -344,6 +339,12 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)
     } else {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebuggerNoop)
     }
 
     if (rootProject.ext.debugToolsEnabled) {
@@ -379,6 +380,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.autopatchbase
     implementation projectOrAar(rootProject.ext.libraries.keys)
+    implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
@@ -421,9 +423,10 @@ dependencies {
     //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
 
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+    implementation project(rootProject.ext.features.watch)
 }
 
 apply plugin: 'com.google.gms.google-services'

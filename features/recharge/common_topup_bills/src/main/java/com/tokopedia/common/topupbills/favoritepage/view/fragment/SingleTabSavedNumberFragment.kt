@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.databinding.FragmentPersoSingleTabSavedNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -28,6 +30,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
     private var number: String = ""
     private var loyaltyStatus: String = ""
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
+    private var pageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO
 
     private var binding: FragmentPersoSingleTabSavedNumberBinding? = null
 
@@ -46,6 +49,12 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             dgOperatorIds = arguments.getStringArrayList(ARG_PARAM_DG_OPERATOR_IDS) ?: arrayListOf()
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
+
+            val favoriteNumberPageConfig = arguments
+                .getSerializable(ARG_PARAM_FAVORITE_NUMBER_PAGE_CONFIG) as? FavoriteNumberPageConfig
+            if (favoriteNumberPageConfig != null) {
+                pageConfig = favoriteNumberPageConfig
+            }
         }
     }
 
@@ -73,9 +82,19 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initPageConfig()
         initChildView()
         initListener()
         observeData()
+    }
+
+    private fun initPageConfig() {
+        binding?.run {
+            (activity as? BaseToolbarActivity)?.updateTitle(getString(pageConfig.headerTextRes))
+            commonTopupBillsSingleFavoriteNumberClue.text = getString(pageConfig.clueTextRes)
+            commonTopupBillsSingleSavedNumSearchbar.searchBarTextField
+                .hint = getString(pageConfig.searchBarHintRes)
+        }
     }
 
     private fun initChildView() {
@@ -85,7 +104,8 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             currentCategoryName,
             dgCategoryIds,
             dgOperatorIds,
-            loyaltyStatus
+            loyaltyStatus,
+            pageConfig,
         )
         childFragmentManager
             .beginTransaction()
@@ -158,7 +178,8 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
         fun newInstance(
             clientNumberType: String, number: String,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
-            digitalOperatorIds: ArrayList<String>, loyaltyStatus: String
+            digitalOperatorIds: ArrayList<String>, loyaltyStatus: String,
+            favoriteNumberPageConfig: FavoriteNumberPageConfig
         ): Fragment {
 
             val fragment = SingleTabSavedNumberFragment()
@@ -169,6 +190,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putStringArrayList(ARG_PARAM_DG_OPERATOR_IDS, digitalOperatorIds)
+            bundle.putSerializable(ARG_PARAM_FAVORITE_NUMBER_PAGE_CONFIG, favoriteNumberPageConfig)
             fragment.arguments = bundle
             return fragment
         }
@@ -179,5 +201,6 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
         const val ARG_PARAM_DG_OPERATOR_IDS = "ARG_PARAM_DG_OPERATOR_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
+        const val ARG_PARAM_FAVORITE_NUMBER_PAGE_CONFIG = "ARG_PARAM_FAVORITE_NUMBER_PAGE_CONFIG"
     }
 }

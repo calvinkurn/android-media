@@ -22,8 +22,8 @@ class InboxViewModel @Inject constructor(
     val notifications: LiveData<Result<Notifications>>
         get() = _notifications
 
-    fun getNotifications() {
-        notificationUseCase.getNotification(
+    fun getNotifications(shopId: String) {
+        notificationUseCase.getNotification(shopId,
                 {
                     _notifications.value = Success(it)
                 },

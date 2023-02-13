@@ -14,6 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.BuildConfig
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -54,6 +56,8 @@ import java.util.*
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ProductChooserIdGenerator {
+
+    private val parentViewModel by lazy { mockk<PlayBroadcastViewModel>(relaxed = true) }
 
     private val mockSelectedProducts = listOf(
         ProductUiModel(
@@ -109,28 +113,21 @@ class ProductChooserIdGenerator {
     private val configStore = mockk<HydraConfigStore>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private val mockParentViewModelFactoryCreator = object : PlayBroadcastViewModelFactory.Creator {
-        override fun create(activity: FragmentActivity): PlayBroadcastViewModelFactory {
-            return PlayBroadcastViewModelFactory(
-                activity = activity,
-                playBroViewModelFactory = object : PlayBroadcastViewModel.Factory {
-                    override fun create(handle: SavedStateHandle): PlayBroadcastViewModel {
-                        return mockk(relaxed = true)
-                    }
-                }
-            )
-        }
-    }
     private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
         override fun create(
+            creationId: String,
+            maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
-            savedStateHandle: SavedStateHandle
+            savedStateHandle: SavedStateHandle,
+            isEligibleForPin: Boolean
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
+                creationId = creationId,
+                maxProduct = maxProduct,
                 productSectionList = mockProductSections,
                 savedStateHandle = savedStateHandle,
+                isEligibleForPin = isEligibleForPin,
                 repo = repo,
-                configStore = configStore,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
             )
@@ -140,7 +137,7 @@ class ProductChooserIdGenerator {
     private val fragmentFactory = PlayBroTestFragmentFactory(
         mapOf(
             ProductSetupFragment::class.java to {
-                ProductSetupFragment(mockParentViewModelFactoryCreator, mockProductSetupViewModelFactory)
+                ProductSetupFragment(mockProductSetupViewModelFactory)
             },
             ProductChooserBottomSheet::class.java to {
                 ProductChooserBottomSheet(
@@ -149,7 +146,8 @@ class ProductChooserIdGenerator {
                     ProductChooserAnalyticManager(
                         mockk(relaxed = true),
                         CoroutineDispatchersProvider,
-                    )
+                    ),
+                    mockk(relaxed = true),
                 )
             },
             EtalaseListBottomSheet::class.java to {
@@ -182,6 +180,17 @@ class ProductChooserIdGenerator {
     private val fileWriter = FileWriter()
 
     init {
+        coEvery { parentViewModel.uiState.value.selectedContentAccount } returns ContentAccountUiModel(
+            id = "1",
+            name = "Halo",
+            iconUrl = "",
+            badge = "",
+            type = ContentCommonUserType.TYPE_SHOP,
+            hasUsername = true,
+            hasAcceptTnc = true,
+            enable = true,
+        )
+
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
             dataList = mockSelectedProducts,
             hasNextPage = false,

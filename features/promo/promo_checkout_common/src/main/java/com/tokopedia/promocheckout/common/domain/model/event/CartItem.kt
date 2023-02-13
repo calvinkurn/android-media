@@ -20,10 +20,9 @@ data class CartItem(
         @SerializedName("discount")
         @Expose
         val discount: Int = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("discounted_price")
         @Expose
-        val discountedPrice: Int = 0,
+        val discountedPrice: Double = 0.0,
         @SerializedName("display_sequence")
         @Expose
         val displaySequence: Int = 0,
@@ -64,10 +63,9 @@ data class CartItem(
         @SerializedName("title")
         @Expose
         val title: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0,
+        val totalPrice: Double = 0.0,
         @SerializedName("url")
         @Expose
         val url: String = "",

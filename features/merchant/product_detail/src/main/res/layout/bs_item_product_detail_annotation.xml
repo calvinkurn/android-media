@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/pdp_header_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="vertical" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_header_product_see_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:text="@string/merchant_product_detail_label_selengkapnya"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

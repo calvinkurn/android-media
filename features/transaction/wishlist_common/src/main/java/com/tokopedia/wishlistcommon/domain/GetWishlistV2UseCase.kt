@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.util.GQL_WISHLIST_V2
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PARAMS
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistV2", GQL_WISHLIST_V2)
@@ -29,9 +30,5 @@ class GetWishlistV2UseCase @Inject constructor(private val graphqlRepository: Gr
 
     fun setParams(param: WishlistV2Params) {
         params = mapOf(PARAMS to param)
-    }
-
-    companion object {
-        const val PARAMS = "params"
     }
 }

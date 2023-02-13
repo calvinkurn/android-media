@@ -8,7 +8,7 @@ class CampaignNotifyMeResponse(
 ) {
     data class CheckCampaignNotifyMeResponse(
             @SerializedName("campaign_id")
-            val campaignID: Int? = 0,
+            val campaignID: Long? = 0,
             @SerializedName("product_id")
             val productID: Long? = 0,
             @SerializedName("success")

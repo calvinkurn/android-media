@@ -47,8 +47,9 @@ class MvcTextContainer @JvmOverloads constructor(
         tvSubTitle.text = subtitle
         if (imageUrl.isEmpty()) return
 
-        if (!(context as Activity).isFinishing) {
+        try {
             imageCoupon.loadImage(imageUrl)
+        } catch (e: Throwable) {
         }
     }
 }

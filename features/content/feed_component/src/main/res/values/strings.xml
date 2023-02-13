@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">kol_component</string>
     <string name="kol_action_share">Share</string>
     <string name="kol_action_like">Like</string>
@@ -9,8 +9,8 @@
 
     <!--Post Time-->
     <string name="post_time_just_now">Baru saja</string>
-    <string name="post_time_minutes_ago">\u0020menit yang lalu</string>
-    <string name="post_time_hours_ago">\u0020jam yang lalu</string>
+    <string name="post_time_minutes_ago">\u0020menit</string>
+    <string name="post_time_hours_ago">\u0020jam</string>
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
 
@@ -18,19 +18,19 @@
     <string name="post_time_just_now_new">1 menit</string>
     <string name="post_time_few_moments_ago">Beberapa detik yang lalu</string>
     <string name="post_time_minutes_ago_new">menit</string>
-    <string name="post_comment_time_minute_ago_new">menit yang lalu</string>
+    <string name="post_comment_time_minute_ago_new">menit</string>
     <string name="post_time_hours_ago_new">jam </string>
-    <string name="post_comment_time_hours_ago_new">jam yang lalu </string>
+    <string name="post_comment_time_hours_ago_new">jam</string>
     <string name="post_time_days_ago">hari</string>
-    <string name="post_comment_time_days_ago">hari yang lalu</string>
+    <string name="post_comment_time_days_ago">hari</string>
     <string name="post_time_hour_new">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
 
     <!--Post Time Comment -->
     <string name="comment_time_just_now"> Beberapa detik yang lalu</string>
-    <string name="comment_time_minutes_ago"> menit yang lalu</string>
-    <string name="comment_time_hours_ago"> jam yang lalu</string>
-    <string name="comment_time_days_ago"> hari yang lalu</string>
+    <string name="comment_time_minutes_ago"> menit</string>
+    <string name="comment_time_hours_ago"> jam</string>
+    <string name="comment_time_days_ago"> hari</string>
 
     <!-- Action -->
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
@@ -126,11 +126,12 @@
 
     <!--Follow Functionalities ASSETS-->
     <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
+    <string name="feed_component_follow_success_toast">Berhasil mengikuti toko ini</string>
     <string name="feed_component_unfollow_fail_toast">Oops, gagal meng-unfollow.</string>
     <string name="feed_component_follow_fail_toast">Oops, gagal mem-follow.</string>
     <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> · </b></font> ]]></string>
     <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
-    <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
+    <string name="kol_action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
     <string name="feed_header_follow_count_text">Rekomendasi • %s Followers</string>
     <string name="feed_header_follow_count_less_text">Rekomendasi</string>
 
@@ -200,36 +201,32 @@
     <string name="feeds_asgc_disc_one_products">Cek Sekarang! Diskon s.d %s</string>
     <string name="feeds_ads_text">Ad</string>
     <string name="feeds_asgc_new_product_text">Barang Terbaru</string>
-    <string name="feeds_asgc_restock_text">Restock</string>
+    <string name="feeds_asgc_restock_text">Barang Restock</string>
 
     //video Tab in feed
-    <string name="feed_video_tab_success_add_reminder">Pengingat berhasil terpasang!</string>
-    <string name="feed_video_tab_success_remove_reminder">Pengingat berhasil terhapus!</string>
+    <string name="feed_video_tab_success_add_reminder">Kami akan kirim pengingat, ya!</string>
+    <string name="feed_video_tab_success_remove_reminder">Yaah, pengingat batal dikirim.</string>
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="feed_video_tab_failed_to_set_reminder_text">Gagal pasang pengingat. Coba lagi, ya.</string>
+    <string name="feed_video_tab_failed_to_unset_reminder_text">Gagal batalkan pengingat. Coba lagi, ya.</string>
     <string name="feed_asgc_diskon_toko">Barang Diskon</string>
+    <string name="feed_asgc_flash_sale_toko">Flash Sale</string>
+    <string name="feed_asgc_rilisan_special">Rilisan Spesial</string>
+    <string name="feed_asgc_reminder_activate_fst_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Flash Sale dimulai.</string>
+    <string name="feed_asgc_reminder_activate_rs_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Rilisan Spesial dimulai.</string>
+    <string name="feed_asgc_reminder_deactivate_message" tools:ignore="UnusedResources">Pengingat telah dibatalkan.</string>
 
+    <string name="feed_fab_create_live">Buat Live</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
+    <string name="feed_fab_create_shorts">Buat Video</string>
+
+    <!-- Play Short Entry Point Coach Mark -->
+    <string name="feed_play_shorts_entry_point_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="feed_play_shorts_entry_point_coachmark_description">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
 
     <string name="feed_webview_template">%s?url=%s</string>
-    <!-- Feed UGC Onboarding -->
-    <string name="feed_ugc_complete_onboarding_title">Bikin username dulu</string>
-    <string name="feed_ugc_tnc_onboarding_title">Yang perlu kamu tahu</string>
-    <string name="feed_ugc_complete_onboarding_desc">Sebelum buat postingan, bikin username yang unik supaya kamu lebih mudah dikenal.</string>
-    <string name="feed_ugc_complete_onboarding_username">Username</string>
-    <string name="feed_ugc_complete_onboarding_username_prepend">\@</string>
-    <string name="feed_ugc_complete_onboarding_tnc_title">Pastikan postinganmu nanti sesuai ketentuan berikut:</string>
-    <string name="feed_ugc_onboarding_tnc_1">Hanya posting pengalaman belanja di Tokopedia</string>
-    <string name="feed_ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
-    <string name="feed_ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
-    <string name="feed_ugc_onboarding_continue">Lanjut</string>
-    <string name="up_input_username_info">Username hanya bisa diubah 1 kali</string>
     <string name="feed_post_sebagai">Post sebagai</string>
-    <string name="feed_ugc_onboarding_accept_tnc_privacy_policy">Kebijakan Privasi</string>
-    <string name="feed_ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
-    <string name="feed_ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
-    <string name="feed_ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
-    <string name="feed_ugc_onboarding_unknown_error">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
     <!-- Shop Recommendation -->
     <string name="other_shops_based_on_your_recommendation">Toko lain sesuai rekomendasimu</string>
@@ -237,4 +234,30 @@
     <string name="btn_text_following">Following</string>
     <string name="empty_page_title">Belum ada postingan</string>
     <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
+    <string name="up_error_unfollow">Gagal unfollow. Coba lagi ya."</string>
+    <string name="up_error_follow">Gagal follow. Coba lagi ya."</string>
+
+    <!-- Flash Sale and Rilisan Special -->
+    <string name="btn_asgc_flash_sale_name">Sneaker Fest</string>
+    <string name="btn_asgc_flash_sale_time_text">Dimulai dalam</string>
+    <string name="btn_asgc_ongoing_flash_sale_rs_endtime_text">Berakhir dalam</string>
+    <string name="btn_asgc_flash_remind_btn_text">Ingatkan Saya</string>
+    <string name="btn_asgc_flash_remind_btn_text_disabled">Pengingat Aktif</string>
+    <string name="btn_add_to_cart_text">+ Keranjang</string>
+    <string name="btn_add_to_cart_text_disabled">Segera Hadir</string>
+
+    <!--Follow Bottom Sheet-->
+    <string name="feed_follow_bottom_sheet_success_toaster_text" tools:ignore="UnusedResources">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
+    <string name="feed_follow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil mengikuti akun ini</string>
+    <string name="feed_unfollow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil berhenti mengikuti akun ini</string>
+    <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
+    <string name="feed_follow_bottom_sheet_button_text">Follow</string>
+    <string name="feed_follow_bottom_sheet_title_text">Follow toko ini dulu, yuk!</string>
+    <string name="feed_follow_bottom_sheet_desc_upcoming_text">Supaya nanti kamu bisa beli
+produk eksklusif ini.</string>
+    <string name="feed_follow_bottom_sheet_desc_ongoing_text">Supaya kamu bisa beli produk eksklusif ini.</string>
+    <string name="feed_asgc_campaign_toaster_action_text" tools:ignore="UnusedResources">Oke</string>
+
+    <!-- Product Sharing Experience -->
+    <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
 </resources>

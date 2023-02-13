@@ -50,7 +50,7 @@
     <string name="title_profile_completion">Lengkapi Profil</string>
     <string name="change_profile_info_title">Ubah Info Profil</string>
     <string name="title_change_gender">Jenis Kelamin</string>
-    <string name="title_add_phone">Tambah Nomor HP</string>
+    <string name="add_phone_title_add_phone">Tambah Nomor HP</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
@@ -59,6 +59,12 @@
 
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
+
+    <!--    Dynamic feature for Privacy Account-->
+    <string name="title_privacy_center">Privacy Center</string>
+    <string name="dsar_activity_title">Download Data</string>
+    <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
+    <string name="privacy_policy_label">Privacy Policy</string>
 
     <!--    Dynamic feature for Login Fingerprint-->
     <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
@@ -86,6 +92,8 @@
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="ovop2p_app_name">Saldo</string>
     <string name="title_kyc_info_simple">Dokumen Data Diri</string>
+    <string name="title_kyc_form_upload">Kirim Dokumen</string>
+    <string name="title_kyc_info">Verifikasi Data Diri</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
     <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
@@ -170,6 +178,7 @@
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
     <string name="label_affiliate">Affiliate</string>
+    <string name="title_category_epharmacy">E-Pharmacy</string>
 
 
     <!--Contact Us-->
@@ -345,6 +354,12 @@
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
+    <string name="page_name_wishlist">Wishlist</string>
+    <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_edit">Ubah Wishlist</string>
+    <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
     <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
@@ -412,6 +427,7 @@
 
     <string name="title_image_picker_insta_df">Media Picker</string>
 
+    <string name="title_feed_content_creation">Feed Content Creation</string>
     <string name="title_feed_create_post">Create Post</string>
     <string name="title_feed_people">People</string>
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
@@ -430,4 +446,10 @@
 
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
+
+    <!-- Product Ar   -->
+    <string name="title_product_ar">Product Ar</string>
+
+    <!-- Toko Chat -->
+    <string name="df_title_tokochat">Toko Chat</string>
 </resources>

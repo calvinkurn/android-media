@@ -1,102 +1,27 @@
 <resources>
     <string name="app_name">tkpdcustomer</string>
     <!--Feed-->
-    <string name="tab_explore">Explore</string>
-    <string name="tab_my_feed">My Feed</string>
-    <string name="inspiration_header">Inspired by your ,%1$s.</string>
-    <string name="official_store_header">Produk Terbaik Official Store.</string>
-    <string name="favorite">Favoritkan</string>
-    <string name="favorited">Favorit</string>
-    <string name="period">Periode: "</string>
-    <string name="title_code">Kode:</string>
-    <string name="title_copy">Salin</string>
     <string name="label_close">Tutup</string>
-    <string name="title_share_feed">Bagikan Post ini</string>
     <string name="title_detail_feed">Product Lainnya</string>
-    <string name="title_feed_onboarding">Topik Favorit</string>
-    <string name="title_feed_play_live">Lagi Live ini</string>
-    <string name="see_shop">Kunjungi Toko</string>
-    <string name="see_promo">Lihat Promo</string>
-    <string name="see_all">Lihat Semua</string>
-    <string name="wholesale">Grosir</string>
-    <string name="action_share">Bagikan</string>
-    <string name="action_buy">Beli</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
     <string name="promote_info_text">Promosi oleh TopAds yang muncul berdasarkan minat Anda.
     </string>
-    <string name="copy_promo_success">Kode promo berhasil disalin.</string>
-    <string name="string_empty_feed">Oops, feed masih kosong</string>
-    <string name="empty_feed_subtitle">Segera favoritkan toko yang Anda sukai untuk mendapatkan
-        update produk terbaru di sini.
-    </string>
-    <string name="search_shop">Cari Toko</string>
     <string name="feed_deleted">Feed ini telah dihapus.</string>
-    <string name="feed_retry">Mohon maaf terjadi kendala, silakan coba lagi.</string>
-    <string name="feed_retry_button">Coba Lagi</string>
-    <string name="feed_add_more">Mau lihat update produk lebih banyak?</string>
-    <string name="feed_add_more_1">Segera favoritkan toko yang Anda sukai</string>
-    <string name="find_shop">Cari Toko</string>
-    <string name="see_all_promo">Lihat Semua\nPromo</string>
     <string name="return_to_feed">Kembali ke Feed</string>
-    <string name="recent_view">Terakhir Dilihat</string>
     <string name="you_have_new_feed">Post Terbaru</string>
-    <string name="share_gplus">Google+</string>
-    <string name="share_fb">Facebook</string>
-    <string name="share_twitter">Twitter</string>
-    <string name="share_line">Line</string>
-    <string name="share_wa">Whatsapp</string>
-    <string name="share_sms">SMS</string>
-    <string name="share_copy">Copy Link</string>
-    <string name="share_others">Lainnya</string>
-    <string name="discount_off">% Off</string>
-    <string name="title_toppicks">Top Picks</string>
-    <string name="action_follow_english">Follow</string>
-    <string name="read_more_english">Read More</string>
-    <string name="action_like">Like</string>
-    <string name="following">Following</string>
-    <string name="explore_more">Explore Lebih Lanjut</string>
-    <string name="comment">Comment</string>
-    <string name="failed_to_follow">Gagal follow </string>
-    <string name="failed_to_unfollow">Gagal unfollow </string>
     <string name="shop_success_follow"> berhasil difollow</string>
     <string name="shop_success_unfollow"> dihapus dari toko yang difollow</string>
-    <string name="see_other_product">Lihat %s Produk Lainnya</string>
-
-    <string name="feed_empty_title">Feed masih kosong</string>
-    <string name="feed_empty_msg">Masuk untuk mendapatkan update produk terbaru disini</string>
-    <string name="empty_button">Masuk Sekarang</string>
-
-    <string name="react_native_explore_page_title">Explore</string>
-    <string name="react_native_content_detail_title">Post Detail</string>
 
     <string name="cta_refresh_feed">Refresh</string>
-    <string name="total_voter">%s telah memilih</string>
-
-    <string name="string_btn_whitelist">Buat Post</string>
 
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
-    <string name="feed_see_shop">Lihat Toko</string>
-    <string name="feed_see_profile">Lihat Profil</string>
-    <string name="feed_report">Laporkan</string>
     <string name="feed_delete">Hapus</string>
-    <string name="feed_non_login_title">Mau tahu update terbaru Toko dan Konten kesayanganmu?</string>
     <string name="feed_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
-    <string name="post_personal">Post Pribadi</string>
-    <string name="post_shop">Post Toko</string>
-    <string name="create_post_as">Buat Sebagai</string>
-    <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
-    <string name="feed_create_post_shop">Buat Post Toko</string>
 
-    <string name="recommendation_for_you">Rekomendasi Untukmu</string>
-
-    <string name="feed_open_feed">Buka Feed</string>
-    <string name="feed_finish_follow_recommendation">Yeay, updatenya siap dilihat!</string>
     <string name="feed_delete_post">Ingin hapus postingan ini?</string>
     <string name="feed_after_delete_cant">Postingan yang dihapus akan hilang
 dari Feed.</string>
     <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
-    <string name="feed_msg_remove_wishlist">Sukses menghapus wishlist</string>
-    <string name="feed_msg_add_wishlist">Sukses menambah wishlist</string>
 
     <!-- Onboarding -->
     <string name="feed_onboarding_create_post_title">Coba post di Feed, yuk!</string>
@@ -105,7 +30,16 @@ dari Feed.</string>
     <string name="feed_choose_topic_you_like">Pilih %s topik yang kamu suka:</string>
     <string name="feed_onboarding_name_format">Hai, %s</string>
 
+    <!-- Coachmarks in Feed -->
+    <string name="feed_onboarding_user_profile_coachmark_title">Cek profil kamu di sini, yuk!</string>
+    <string name="feed_onboarding_user_profile_coachmark_description">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
+    <string name="feed_onboarding_video_tab_coachmark_title">Makin asik nontonin video!</string>
+    <string name="feed_onboarding_video_tab_coachmark_description">Nonton live shopping dan cari inspirasi lewat video pendek di sini ✨</string>
+
+
     <string name="feed_con_desc_btn_search">button search</string>
+    <!-- Empty feed result -->
+    <string name="feed_result_empty">Empty result</string>
 
     <!-- Like -->
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
@@ -134,8 +68,18 @@ dari Feed.</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
     <string name="feed_fab_create_live">Buat Live</string>
+    <string name="feed_fab_create_shorts_video">Buat Video</string>
     <string name="feed_detail_page_header">Dalam Post Ini</string>
     <string name="feed_play_header_text">Lagi Live, Nih!</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
+    <string name="btn_add_to_cart_text">+ Keranjang</string>
 
+    <!-- User Profile Entry Point -->
+    <string name="feed_user_profile_entry_point_coach_mark">Kayak apa si halaman\nprofilmu? Cek di sini, yuk!</string>
+
+    <!-- Upload -->
+    <string name="cp_common_progress_bar_text">Memproses...</string>
+    <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
+    <string name="feed_upload_shorts_success">Yay, video kamu berhasil di-upload!</string>
+    <string name="feed_upload_shorts_see_video">Lihat</string>
 </resources>

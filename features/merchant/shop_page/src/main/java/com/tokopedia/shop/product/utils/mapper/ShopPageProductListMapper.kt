@@ -24,27 +24,27 @@ import java.text.NumberFormat
 
 object ShopPageProductListMapper {
 
-    private const val POSTFIX_VIEW_COUNT="%1s orang"
+    private const val POSTFIX_VIEW_COUNT = "%1s orang"
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
 
     fun mapToShopProductEtalaseListDataModel(
-            listShopEtalaseModel: List<ShopEtalaseModel>
-    ): List<ShopEtalaseItemDataModel>{
+        listShopEtalaseModel: List<ShopEtalaseModel>
+    ): List<ShopEtalaseItemDataModel> {
         return listShopEtalaseModel.map { mapToShopEtalaseViewModel(it) }
     }
 
     private fun mapToShopEtalaseViewModel(shopEtalaseModel: ShopEtalaseModel): ShopEtalaseItemDataModel {
         val id = if (shopEtalaseModel.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) shopEtalaseModel.alias else shopEtalaseModel.id
         return ShopEtalaseItemDataModel(
-                id,
-                shopEtalaseModel.alias,
-                shopEtalaseModel.name,
-                shopEtalaseModel.type,
-                shopEtalaseModel.badge,
-                shopEtalaseModel.count.toLong(),
-                shopEtalaseModel.highlighted,
-                shopEtalaseModel.rules
+            id,
+            shopEtalaseModel.alias,
+            shopEtalaseModel.name,
+            shopEtalaseModel.type,
+            shopEtalaseModel.badge,
+            shopEtalaseModel.count.toLong(),
+            shopEtalaseModel.highlighted,
+            shopEtalaseModel.rules
         )
     }
 
@@ -55,163 +55,159 @@ object ShopPageProductListMapper {
         etalaseType: Int? = null,
         isEnableDirectPurchase: Boolean
     ): ShopProductUiModel =
-            with(shopProduct) {
-                ShopProductUiModel().also {
-                    it.id = productId
-                    it.name = name
-                    it.displayedPrice = price.textIdr
-                    it.originalPrice = campaign.originalPriceFmt
-                    it.discountPercentage = campaign.discountedPercentage
-                    it.imageUrl = primaryImage.original
-                    it.imageUrl300 = primaryImage.resize300
-                    it.totalReview = stats.reviewCount.toString()
-                    it.rating = stats.rating.toDouble() / PRODUCT_RATING_DIVIDER
-                    if (cashback.cashbackPercent > 0) {
-                        it.cashback = cashback.cashbackPercent.toDouble()
-                    }
-                    it.isWholesale = flags.isWholesale
-                    it.isPo = flags.isPreorder
-                    it.isFreeReturn = flags.isFreereturn
-                    it.isWishList = flags.isWishlist
-                    it.productUrl = productUrl
-                    it.isSoldOut = flags.isSold
-                    it.isShowWishList = !isMyOwnProduct
-                    it.isShowFreeOngkir = freeOngkir.isActive
-                    it.freeOngkirPromoIcon = freeOngkir.imgUrl
-                    it.etalaseId = etalaseId
-                    it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
-                    it.etalaseType = etalaseType
-                    it.stock = stock.toLong()
-                    it.maximumOrder = getMaximumOrder(shopProduct)
-                    it.isEnableDirectPurchase = isEnableDirectPurchase
-                    when (it.etalaseType) {
-                        ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
-                            it.isUpcoming  = campaign.isUpcoming
-                            if (!campaign.isUpcoming) {
-                                val viewCount = stats.viewCount
-                                if (viewCount >= THRESHOLD_VIEW_COUNT)
-                                    it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
-                                it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
-                                    labelGroup.position.isEmpty()
-                                }?.title ?: ""
-                                it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
-                            }
-                            it.hideGimmick = campaign.hideGimmick
-                            it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
-                            it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
-                            setStockAndSoldOutForCampaignEtalase(it, shopProduct)
-                        }
-                        ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> {
-                            it.isUpcoming  = campaign.isUpcoming
-                            it.hideGimmick = campaign.hideGimmick
-                            if (!campaign.isUpcoming) {
-                                val viewCount = stats.viewCount
-                                if (viewCount >= THRESHOLD_VIEW_COUNT)
-                                    it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
-                                it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
-                                    labelGroup.position.isEmpty()
-                                }?.title ?: ""
-                                it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
-                                it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
-                            }
-                            else {
-                                // hide discount percentage when flash sale campaign is upcoming
-                                it.discountPercentage = ZERO_PRODUCT_DISCOUNT
-                                it.displayedPrice = campaign.discountedPriceFmt
-                            }
-                            it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
-                            setStockAndSoldOutForCampaignEtalase(it, shopProduct)
-                        }
-                        ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN -> {
-                            it.isEnableDirectPurchase = false
-                        }
-                    }
-                    it.isVariant = hasVariant
-                    it.minimumOrder = minimumOrder
-                    it.parentId = parentId
+        with(shopProduct) {
+            ShopProductUiModel().also {
+                it.id = productId
+                it.name = name
+                it.displayedPrice = price.textIdr
+                it.originalPrice = campaign.originalPriceFmt
+                it.discountPercentage = campaign.discountedPercentage
+                it.imageUrl = primaryImage.original
+                it.imageUrl300 = primaryImage.resize300
+                it.totalReview = stats.reviewCount.toString()
+                it.rating = stats.rating.toDouble() / PRODUCT_RATING_DIVIDER
+                if (cashback.cashbackPercent > 0) {
+                    it.cashback = cashback.cashbackPercent.toDouble()
                 }
+                it.isWholesale = flags.isWholesale
+                it.isPo = flags.isPreorder
+                it.isFreeReturn = flags.isFreereturn
+                it.isWishList = flags.isWishlist
+                it.productUrl = appLink
+                it.isSoldOut = flags.isSold
+                it.isShowWishList = !isMyOwnProduct
+                it.isShowFreeOngkir = freeOngkir.isActive
+                it.freeOngkirPromoIcon = freeOngkir.imgUrl
+                it.etalaseId = etalaseId
+                it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                it.etalaseType = etalaseType
+                it.stock = stock.toLong()
+                it.maximumOrder = getMaximumOrder(shopProduct)
+                it.isEnableDirectPurchase = isEnableDirectPurchase
+                when (it.etalaseType) {
+                    ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
+                        it.isUpcoming = campaign.isUpcoming
+                        if (!campaign.isUpcoming) {
+                            val viewCount = stats.viewCount
+                            if (viewCount >= THRESHOLD_VIEW_COUNT)
+                                it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                            it.stockLabel = labelGroupList.firstOrNull()?.title.takeIf { showStockBar }.orEmpty()
+                            it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                        }
+                        it.hideGimmick = campaign.hideGimmick
+                        it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        setStockAndSoldOutForCampaignEtalase(it, shopProduct)
+                    }
+                    ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> {
+                        it.isUpcoming = campaign.isUpcoming
+                        it.hideGimmick = campaign.hideGimmick
+                        if (!campaign.isUpcoming) {
+                            val viewCount = stats.viewCount
+                            if (viewCount >= THRESHOLD_VIEW_COUNT)
+                                it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                            it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
+                                labelGroup.position.isEmpty()
+                            }?.title ?: ""
+                            it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                            it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        } else {
+                            // hide discount percentage when flash sale campaign is upcoming
+                            it.discountPercentage = ZERO_PRODUCT_DISCOUNT
+                            it.displayedPrice = campaign.discountedPriceFmt
+                        }
+                        it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        setStockAndSoldOutForCampaignEtalase(it, shopProduct)
+                    }
+                    ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN -> {
+                        it.isEnableDirectPurchase = false
+                    }
+                }
+                it.isVariant = hasVariant
+                it.minimumOrder = minimumOrder
+                it.parentId = parentId
             }
+        }
 
     private fun setStockAndSoldOutForCampaignEtalase(
         shopProductUiModel: ShopProductUiModel,
         shopProduct: ShopProduct
     ) {
-        shopProductUiModel.stock = shopProduct.campaign.customStock.toLongOrZero().takeIf {!it.isZero()} ?: shopProduct.stock.toLong()
+        shopProductUiModel.stock = shopProduct.campaign.customStock.toLongOrZero().takeIf { !it.isZero() } ?: shopProduct.stock.toLong()
         shopProductUiModel.isSoldOut = shopProductUiModel.stock.isZero()
     }
 
     private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
         return LabelGroupUiModel(
-                position = labelGroup.position,
-                title = labelGroup.title,
-                type = labelGroup.type,
-                url = labelGroup.url
+            position = labelGroup.position,
+            title = labelGroup.title,
+            type = labelGroup.type,
+            url = labelGroup.url
         )
     }
 
     fun mapShopFeaturedProductToProductViewModel(shopFeaturedProduct: ShopFeaturedProduct, isMyOwnProduct: Boolean): ShopProductUiModel =
-            with(shopFeaturedProduct) {
-                ShopProductUiModel().also {
-                    it.id = productId.toString()
-                    it.name = name
-                    it.displayedPrice = price
-                    it.originalPrice = originalPrice
-                    it.discountPercentage = percentageAmount.toString()
-                    it.imageUrl = imageUri
-                    it.totalReview = totalReview
-                    if (isRated) {
-                        it.rating = ratingAverage.toDoubleOrZero()
-                    }
-                    if (cashback) {
-                        it.cashback = cashbackDetail.cashbackPercent.toDouble()
-                    }
-                    it.isWholesale = wholesale
-                    it.isPo = preorder
-                    it.isFreeReturn = returnable
-                    it.isWishList = isWishlist
-                    it.productUrl = uri
-                    it.isShowWishList = !isMyOwnProduct
-                    it.isShowFreeOngkir = freeOngkir.isActive
-                    it.freeOngkirPromoIcon = freeOngkir.imgUrl
-                    it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+        with(shopFeaturedProduct) {
+            ShopProductUiModel().also {
+                it.id = productId.toString()
+                it.name = name
+                it.displayedPrice = price
+                it.originalPrice = originalPrice
+                it.discountPercentage = percentageAmount.toString()
+                it.imageUrl = imageUri
+                it.totalReview = totalReview
+                if (isRated) {
+                    it.rating = ratingAverage.toDoubleOrZero()
                 }
+                if (cashback) {
+                    it.cashback = cashbackDetail.cashbackPercent.toDouble()
+                }
+                it.isWholesale = wholesale
+                it.isPo = preorder
+                it.isFreeReturn = returnable
+                it.isWishList = isWishlist
+                it.productUrl = uri
+                it.isShowWishList = !isMyOwnProduct
+                it.isShowFreeOngkir = freeOngkir.isActive
+                it.freeOngkirPromoIcon = freeOngkir.imgUrl
+                it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             }
+        }
 
     fun mapTopMembershipViewModel(data: MembershipStampProgress): List<BaseMembershipViewModel> {
-        if (!data.membershipStampProgress.isShown || (data.membershipStampProgress.membershipProgram.membershipQuests.isEmpty() && data.membershipStampProgress.isUserRegistered)){
+        if (!data.membershipStampProgress.isShown || (data.membershipStampProgress.membershipProgram.membershipQuests.isEmpty() && data.membershipStampProgress.isUserRegistered)) {
             return mutableListOf()
         } else {
             val url = data.membershipStampProgress.infoMessage.membershipCta.url
             if (!data.membershipStampProgress.isUserRegistered) {
                 return mutableListOf(
-                        ItemUnregisteredViewModel(bannerTitle = data.membershipStampProgress.infoMessage.title,
-                                btnText = data.membershipStampProgress.infoMessage.membershipCta.text,
-                                url = url))
+                    ItemUnregisteredViewModel(
+                        bannerTitle = data.membershipStampProgress.infoMessage.title,
+                        btnText = data.membershipStampProgress.infoMessage.membershipCta.text,
+                        url = url
+                    )
+                )
             } else if (data.membershipStampProgress.membershipProgram.membershipQuests.isNotEmpty()) {
                 val listOfMembershipQuests: MutableList<BaseMembershipViewModel> = mutableListOf()
                 val quests = data.membershipStampProgress.membershipProgram.membershipQuests
                 var count = 1
-                listOfMembershipQuests.addAll(quests.map {
-                    it.startCountTxt = count
-                    count += it.targetProgress
-                    ItemRegisteredViewModel(it, url)
-                })
+                listOfMembershipQuests.addAll(
+                    quests.map {
+                        it.startCountTxt = count
+                        count += it.targetProgress
+                        ItemRegisteredViewModel(it, url)
+                    }
+                )
                 return listOfMembershipQuests
             }
             return mutableListOf()
         }
     }
 
-    fun mapToMerchantVoucherViewModel(
-            merchantVoucherResponse: List<MerchantVoucherModel>
-    ): List<MerchantVoucherViewModel> {
-        return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
-    }
-
     fun mapToProductCardModel(
-            shopProductUiModel: ShopProductUiModel,
-            isWideContent: Boolean,
-            isShowThreeDots: Boolean = true
+        shopProductUiModel: ShopProductUiModel,
+        isWideContent: Boolean,
+        isShowThreeDots: Boolean = true
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -228,21 +224,21 @@ object ShopPageProductListMapper {
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductUiModel.isShowFreeOngkir, shopProductUiModel.freeOngkirPromoIcon ?: "")
 
         val baseProductCardModel = ProductCardModel(
-                productImageUrl = shopProductUiModel.imageUrl ?: "",
-                productName = shopProductUiModel.name ?: "",
-                discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
-                slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
-                formattedPrice = shopProductUiModel.displayedPrice ?: "",
-                countSoldRating = if (shopProductUiModel.rating != 0.0) shopProductUiModel.rating.toString() else "",
-                freeOngkir = freeOngkirObject,
-                labelGroupList = shopProductUiModel.labelGroupList.map {
-                    mapToProductCardLabelGroup(it)
-                },
-                hasThreeDots = if (shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_FLASH_SALE) false else isShowThreeDots,
-                pdpViewCount = shopProductUiModel.pdpViewCount,
-                stockBarLabel = shopProductUiModel.stockLabel,
-                stockBarPercentage = shopProductUiModel.stockBarPercentage,
-                isWideContent = isWideContent
+            productImageUrl = shopProductUiModel.imageUrl ?: "",
+            productName = shopProductUiModel.name ?: "",
+            discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
+            slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
+            formattedPrice = shopProductUiModel.displayedPrice ?: "",
+            countSoldRating = if (shopProductUiModel.rating != 0.0) shopProductUiModel.rating.toString() else "",
+            freeOngkir = freeOngkirObject,
+            labelGroupList = shopProductUiModel.labelGroupList.map {
+                mapToProductCardLabelGroup(it)
+            },
+            hasThreeDots = if (shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_FLASH_SALE) false else isShowThreeDots,
+            pdpViewCount = shopProductUiModel.pdpViewCount,
+            stockBarLabel = shopProductUiModel.stockLabel,
+            stockBarPercentage = shopProductUiModel.stockBarPercentage,
+            isWideContent = isWideContent
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {
@@ -309,15 +305,17 @@ object ShopPageProductListMapper {
     fun mapRestrictionEngineResponseToModel(restrictionEngineResponse: RestrictionEngineDataResponse?): RestrictionEngineModel {
         return RestrictionEngineModel().apply {
             status = restrictionEngineResponse?.status ?: ""
-            val list : MutableList<Actions> = mutableListOf()
+            val list: MutableList<Actions> = mutableListOf()
             restrictionEngineResponse?.actions?.map {
-                list.add(Actions(
+                list.add(
+                    Actions(
                         actionType = it.actionType,
                         title = it.title,
                         description = it.description,
                         actionUrl = it.actionUrl,
                         attributeName = it.attributeName
-                ))
+                    )
+                )
             }
             actions = list
         }
@@ -325,10 +323,10 @@ object ShopPageProductListMapper {
 
     private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
-                position = labelGroupUiModel.position,
-                title = labelGroupUiModel.title,
-                type = labelGroupUiModel.type,
-                imageUrl = labelGroupUiModel.url
+            position = labelGroupUiModel.position,
+            title = labelGroupUiModel.title,
+            type = labelGroupUiModel.type,
+            imageUrl = labelGroupUiModel.url
         )
     }
 
@@ -344,9 +342,9 @@ object ShopPageProductListMapper {
     }
 
     private fun getMaximumOrder(shopProductResponse: ShopProduct): Int {
-        return shopProductResponse.campaign.maxOrder.takeIf { !it.isZero() } ?:
-        shopProductResponse.maximumOrder.takeIf { !it.isZero() } ?:
-        shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() } ?:
-        shopProductResponse.stock
+        return shopProductResponse.campaign.maxOrder.takeIf { !it.isZero() }
+            ?: shopProductResponse.maximumOrder.takeIf { !it.isZero() }
+            ?: shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() }
+            ?: shopProductResponse.stock
     }
 }

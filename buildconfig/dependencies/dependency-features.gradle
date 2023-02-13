@@ -3,6 +3,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     features = [
 			shopDiscount		: ":features:merchant:shop_discount",
+			productAr		                : ":features:merchant:product_ar",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
             appCommon                       : ":features:common:app_common",
@@ -22,18 +23,18 @@ ext {
             categoryLevels                  : ":features:category:category_levels",
             agerestriction                  : ":features:category:age_restriction",
             affiliateToko                  : ":features:category:affiliate_toko",
-            findNative                      : ":features:category:find_native",
+            ePharmacy                       : ":features:category:epharmacy",
+            commonEPharmacy                 : ":features:category:common_epharmacy",
             tradeIn                         : ":features:category:tradein",
             moneyIn                         : ":features:category:moneyin",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
+            contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
-            interestPick                    : ":features:content:interest_pick",
-            interestPickCommon              : ":features:content:interest_pick_common",
             kol                             : ":features:content:kol",
             kolCommon                       : ":features:content:kol_common",
             affiliate                       : ":features:content:affiliate",
@@ -44,7 +45,7 @@ ext {
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
-            playTest                        : ":features:content:play_test",
+            contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
@@ -72,8 +73,8 @@ ext {
             travelPassenger                 : ":features:travel:travel_passenger",
 
             deals                           : ":features:entertainment:deals",
-            digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
+            commonEntertainment             : ":features:entertainment:common_entertainment",
 
             umrah                           : ":features:salam:umrah",
 
@@ -82,12 +83,10 @@ ext {
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
-            homeWishlist                    : ":features:discovery:home_wishlist",
             homeNav                         : ":features:discovery:home_nav",
             recentview                      : ":features:discovery:recentview",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
-            wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
             productCardOptions              : ":features:discovery:productcard_options",
             carouselProductCard             : ":features:discovery:carousel_productcard",
@@ -110,7 +109,8 @@ ext {
             layanan                         : ":features:fintech:layanan_finansial",
             paylater                        : ":features:fintech:paylater",
             pdpPaylaterWidget               : ":features:fintech:pdp_fintech_widget",
-            fintechHomeWidget                : ":features:fintech:fintech_home_widget",
+            fintechHomeWidget               : ":features:fintech:fintech_home_widget",
+            insurance                       : ":features:fintech:insurance",
 
             dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
@@ -133,6 +133,7 @@ ext {
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
+            mediaeditor		                : ":features:media:mediaeditor",
             mediapicker		                : ":features:media:mediapicker",
             mediapickerCommon		        : ":features:media:mediapicker-common",
 
@@ -187,6 +188,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             voucherCreation                 : ":features:merchant:voucher_creation",
             sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
+            sellerTokopediaFlashSale        : ":features:merchant:seller_tokopedia_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
             campaignList                    : ":features:merchant:campaign_list",
             favorite                        : ":features:merchant:favorite",
@@ -222,14 +224,11 @@ ext {
             tokomemberUiCommon              : ":features:promo:tokomember_common_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
-            topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
             topAdsCreate                 : ":features:top_ads:top_ads_create",
             topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
-            topAdsManagement                : ":features:top_ads:top_ads_management",
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
-            topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
             topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
             topAdsOnBoarding                : ":features:top_ads:top_ads_on_boarding",
@@ -267,6 +266,9 @@ ext {
             notifCenter                     : ":features:communication:notifcenter",
             orderhistory                    : ":features:communication:orderhistory",
             attachvoucher                   : ":features:communication:attachvoucher",
+            tokochat                        : ":features:communication:tokochat",
+            tokochat_common                 : ":features:communication:tokochat_common",
+            tokochat_config_common          : ":features:communication:tokochat_config_common",
 
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
@@ -284,6 +286,7 @@ ext {
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            privacycenter                   : ":features:user:privacycenter",
             profileCompletion               : ":features:user:profilecompletion",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",
@@ -301,6 +304,7 @@ ext {
             logintestapp                    : ":testapp-features:user:logintestapp",
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking",
+            watch                           : ":features:watch",
             tokofood                        : ":features:tokofood"
     ]
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tapAction_deals"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_lvl3"
+    android:layout_marginRight="@dimen/spacing_lvl3"
+    android:layout_marginTop="@dimen/spacing_lvl1"
+    android:background="@color/Unify_Background"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/voucher_code_title_deals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/redeem_btn_deals"
+        android:layout_margin="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:padding="@dimen/spacing_lvl3"
+        android:text="@string/voucher_code_title_deals"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/redeem_btn_deals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/layout_lvl8"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_margin="@dimen/spacing_lvl3"
+        android:layout_alignParentEnd="true"
+        android:text="@string/redeem_deals_btn"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"/>
+
+    <View
+        android:id="@+id/divider_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/deals_voucher_divider_size"
+        android:layout_marginHorizontal="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_below="@id/redeem_btn_deals"
+        android:visibility="visible"
+        android:background="@drawable/dash_line_grey"/>
+</RelativeLayout>

@@ -44,6 +44,7 @@
     <string name="copy_label_receiver_address">bom_receiver_address</string>
     <string name="copy_label_dropship">bom_dropship</string>
     <string name="bom_recommendation_lbl">Rekomendasi untukmu</string>
+    <string name="buyer_order_detail_platform_fee_info">Belum termasuk biaya jasa aplikasi dan biaya lainnya. &lt;b&gt;&lt;a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-biaya-jasa-aplikasi"&gt;Lihat S&amp;K&lt;/a&gt;&lt;/b&gt;</string>
 
     <!--Product Bundling-->
     <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
@@ -71,4 +72,7 @@
     <string name="order_addons_read_more">&lt;a href="#"&gt;Lihat Selengkapnya&lt;/a&gt;</string>
     <string name="order_addons_close"> &lt;a href="#"&gt;Tutup&lt;/a&gt;</string>
     <string name="order_addons_type_and_name">%1$s - %2$s</string>
+
+    <!--Resolution-->
+    <string name="order_resolution_deadline_label">Batas respons</string>
 </resources>

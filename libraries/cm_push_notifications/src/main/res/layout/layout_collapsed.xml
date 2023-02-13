@@ -23,7 +23,7 @@
             android:fadingEdge="horizontal"
             android:singleLine="true"
             android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/sp_15" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/tv_collapsed_message"

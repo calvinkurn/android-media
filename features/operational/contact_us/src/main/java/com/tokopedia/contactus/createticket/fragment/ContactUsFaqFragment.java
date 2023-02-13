@@ -1,5 +1,9 @@
 package com.tokopedia.contactus.createticket.fragment;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
+import static com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic.ACTION_CREATE_TICKET;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +21,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
@@ -27,17 +30,15 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.contactus.createticket.utils.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
 
-import org.jetbrains.annotations.NotNull;
-
-import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 
 /**
  * Created by nisie on 8/12/16.
@@ -53,12 +54,13 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
     private TkpdWebView webView;
-    private ProgressBar progressBar;
+    private LoaderUnify progressBar;
     public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
     private UserSessionInterface session;
     ContactUsFaqListener listener;
     String url;
     private Bundle savedState;
+    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
 
     @Override
     protected String getScreenName() {
@@ -108,6 +110,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         } else
             url = getArguments().getString(EXTRAS_PARAM_URL);
 
+        newRelicLogging.sendToNewRelicLog(url);
         webView.loadAuthUrlWithFlags(url, session);
     }
 
@@ -124,12 +127,12 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
 
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());
-        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
         WebSettings webSettings = webView.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
-        webSettings.setAppCacheEnabled(false);
+//        webSettings.setAppCacheEnabled(false);
         MethodChecker.setAllowMixedContent(webSettings);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }
@@ -176,7 +179,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                 if (newProgress == 100) {
                     webView.setVisibility(View.VISIBLE);
                     view.setVisibility(View.VISIBLE);
-                    progressBar.setIndeterminate(false);
+                    progressBar.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -235,11 +238,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            try {
-                progressBar.setIndeterminate(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @SuppressWarnings("deprecation")
@@ -263,35 +262,42 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                         webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
                                 .BASE_CONTACT_US, mContext), session);
                     }
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID,
-                            url.getQueryParameter(SOLUTION_ID) == null ? "" : url
-                                    .getQueryParameter(SOLUTION_ID));
-                    bundle.putString(ContactUsActivity.PARAM_TAG,
-                            url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS));
+                    String solutionId = url.getQueryParameter(SOLUTION_ID) == null ? "" : url
+                            .getQueryParameter(SOLUTION_ID);
+                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID, solutionId);
+                    String tag = url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS);
+                    bundle.putString(ContactUsActivity.PARAM_TAG, tag);
                     bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
                             url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter
                                     (ORDER_ID));
+                    newRelicLogging.sendToNewRelicLog(url.toString(), ACTION_CREATE_TICKET, solutionId, tag);
                     listener.onGoToCreateTicket(bundle);
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("return")) {
                     Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.finish_contact_us)), Toast.LENGTH_LONG).show();
                     getActivity().finish();
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.toString().contains(CHATBOT_SCHEME)) {
                     String messageId = url.getLastPathSegment();
-                    Intent chatBotIntent = RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
-                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
+                    String chatRoute = ApplinkConst.CHATBOT
+                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId);
+                    newRelicLogging.sendToNewRelicLog(url.toString(), chatRoute);
+                    Intent chatBotIntent = RouteManager.getIntent(getContext(), chatRoute);
                     startActivity(chatBotIntent);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)) {
                     RouteManager.route(getActivity(), url.toString());
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else {
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return false;
                 }
             } catch (NullPointerException e) {
@@ -306,8 +312,6 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (progressBar != null)
-            progressBar.setIndeterminate(false);
     }
 
     public BackButtonListener getBackButtonListener() {

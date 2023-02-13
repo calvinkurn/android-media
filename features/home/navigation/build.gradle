@@ -44,7 +44,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
@@ -95,7 +94,6 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
-    implementation project(rootProject.ext.features.homeWishlist)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
     testImplementation rootProject.ext.testDependencies.robolectric

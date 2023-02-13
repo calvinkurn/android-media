@@ -107,8 +107,8 @@ public class DoubleTextView extends LinearLayout {
             bottomTextView.setTypeface(Typeface.DEFAULT);
     }
 
-    public void setBottomTextRightPadding(int left,int top,int right, int bottom) {
-        bottomTextView.setPadding(left,top,right,bottom);
+    public void setBottomTextRightPadding(int left, int top, int right, int bottom) {
+        bottomTextView.setPadding(left, top, right, bottom);
     }
 
     @SuppressWarnings("unused")
@@ -121,19 +121,25 @@ public class DoubleTextView extends LinearLayout {
     }
 
     public void setBottomGravity(int gravity) {
-        if(this.llBottomTextView != null) {
+        if (this.llBottomTextView != null) {
             this.llBottomTextView.setGravity(gravity);
         }
     }
 
-    public void setBottomLinearLayoutWeight(float layoutWeight){
+    public void setBottomTextGravity(int gravity) {
+        if (this.bottomTextView != null) {
+            this.bottomTextView.setGravity(gravity);
+        }
+    }
+
+    public void setBottomLinearLayoutWeight(float layoutWeight) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.weight = layoutWeight;
         llBottomTextView.setLayoutParams(params);
     }
 
-    public void setMainLayoutTopMargin(int topMargin){
+    public void setMainLayoutTopMargin(int topMargin) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(0, topMargin, 0, 0);

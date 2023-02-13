@@ -13,29 +13,34 @@ object AffiliateAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    fun sendEvent(event: String, action: String, category: String,
-                  label: String, userId : String) {
-        HashMap<String,Any>().apply {
-            put(EventKeys.KEY_EVENT,event)
-            put(EventKeys.KEY_EVENT_ACTION,action)
-            put(EventKeys.KEY_EVENT_CATEGORY,category)
-            put(EventKeys.KEY_EVENT_LABEL,label)
-            put(EventKeys.KEY_USER_ID,userId)
-            put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
-            put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+    fun sendEvent(
+        event: String,
+        action: String,
+        category: String,
+        label: String,
+        userId: String
+    ) {
+        HashMap<String, Any>().apply {
+            put(EventKeys.KEY_EVENT, event)
+            put(EventKeys.KEY_EVENT_ACTION, action)
+            put(EventKeys.KEY_EVENT_CATEGORY, category)
+            put(EventKeys.KEY_EVENT_LABEL, label)
+            put(EventKeys.KEY_USER_ID, userId)
+            put(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
+            put(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
         }.also {
             getTracker().sendGeneralEvent(it)
         }
     }
 
-    fun sendOpenScreenEvent(event: String, screenName: String, isLoggedIn: Boolean, userId : String) {
-        HashMap<String,Any>().apply {
-            put(EventKeys.KEY_EVENT,event)
-            put(EventKeys.SCREEN_NAME,screenName)
-            put(EventKeys.IS_LOGGED_IN,isLoggedIn.toString())
-            put(EventKeys.KEY_USER_ID,userId)
-            put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
-            put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+    fun sendOpenScreenEvent(event: String, screenName: String, isLoggedIn: Boolean, userId: String) {
+        HashMap<String, Any>().apply {
+            put(EventKeys.KEY_EVENT, event)
+            put(EventKeys.SCREEN_NAME, screenName)
+            put(EventKeys.IS_LOGGED_IN, isLoggedIn.toString())
+            put(EventKeys.KEY_USER_ID, userId)
+            put(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
+            put(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
         }.also {
             getTracker().sendGeneralEvent(it)
         }
@@ -50,29 +55,60 @@ object AffiliateAnalytics {
         position: Int,
         itemName: String?,
         label: String?,
-        itemList: String = ""
-    ){
+        itemList: String = "",
+        itemsKey: String = ITEMS
+    ) {
         val listBundle = Bundle().apply {
-            putString(EventKeys.KEY_ITEM_ID,productId)
+            putString(EventKeys.KEY_ITEM_ID, productId)
             putString(EventKeys.INDEX, (position).toString())
-            putString(EventKeys.KEY_ITEM_NAME,itemName)
+            putString(EventKeys.KEY_ITEM_NAME, itemName)
         }
         val bundle = Bundle().apply {
             putString(EventKeys.KEY_EVENT, event)
-            putString(EventKeys.KEY_EVENT_CATEGORY,category)
-            putString(EventKeys.KEY_EVENT_ACTION,action)
+            putString(EventKeys.KEY_EVENT_CATEGORY, category)
+            putString(EventKeys.KEY_EVENT_ACTION, action)
             putString(EventKeys.KEY_EVENT_LABEL, label)
-            putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
-            putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
-            putParcelableArrayList(ITEMS,arrayListOf(listBundle))
-            putString(EventKeys.KEY_USER_ID,userId)
-            if(itemList.isNotEmpty()){
-                putString(ITEM_LIST,itemList)
+            putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
+            putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
+            putParcelableArrayList(itemsKey, arrayListOf(listBundle))
+            putString(EventKeys.KEY_USER_ID, userId)
+            if (itemList.isNotEmpty()) {
+                putString(ITEM_LIST, itemList)
             }
         }
 
+        getTracker().sendEnhanceEcommerceEvent(event, bundle)
+    }
 
-        getTracker().sendEnhanceEcommerceEvent(event,bundle)
+    fun sendEducationTracker(
+        event: String?,
+        action: String?,
+        category: String?,
+        eventLabel: String? = null,
+        position: Int? = null,
+        itemId: String? = null,
+        userId: String,
+        creativeName: String? = null
+    ) {
+        val bundle = Bundle()
+        val itemBundle = Bundle().apply {
+            putString(EventKeys.KEY_CREATIVE_NAME, creativeName)
+            if (position != null) {
+                putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
+            }
+            putString(EventKeys.KEY_ITEM_ID, itemId)
+            putString(EventKeys.KEY_ITEM_NAME, ItemKeys.AFFILIATE_EDUCATION_PAGE)
+        }
+        bundle.putString(EventKeys.KEY_EVENT, event)
+        bundle.putString(EventKeys.KEY_EVENT_ACTION, action)
+        bundle.putString(EventKeys.KEY_EVENT_CATEGORY, category)
+        bundle.putString(EventKeys.KEY_EVENT_LABEL, eventLabel)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
+        bundle.putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
+        bundle.putString(EventKeys.KEY_USER_ID, userId)
+        bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
+
+        getTracker().sendEnhanceEcommerceEvent(event, bundle)
     }
 
     fun sendIcomeTracker(
@@ -83,23 +119,23 @@ object AffiliateAnalytics {
         position: Int,
         itemId: String,
         userId: String
-    ){
+    ) {
         val bundle = Bundle()
         val itemBundle = Bundle().apply {
-            putString(EventKeys.KEY_ITEM_ID,itemId)
+            putString(EventKeys.KEY_ITEM_ID, itemId)
             putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
-            putString(EventKeys.KEY_ITEM_NAME,ItemKeys.AFFILIATE_TRANSACTION_PAGE)
+            putString(EventKeys.KEY_ITEM_NAME, ItemKeys.AFFILIATE_TRANSACTION_PAGE)
         }
-        bundle.putString(EventKeys.KEY_EVENT , event)
-        bundle.putString(EventKeys.KEY_EVENT_CATEGORY,category)
-        bundle.putString(EventKeys.KEY_EVENT_ACTION,action)
-        bundle.putString(EventKeys.KEY_EVENT_LABEL,eventLabel)
-        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
-        bundle.putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
-        bundle.putString(EventKeys.KEY_USER_ID,userId)
+        bundle.putString(EventKeys.KEY_EVENT, event)
+        bundle.putString(EventKeys.KEY_EVENT_CATEGORY, category)
+        bundle.putString(EventKeys.KEY_EVENT_ACTION, action)
+        bundle.putString(EventKeys.KEY_EVENT_LABEL, eventLabel)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
+        bundle.putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
+        bundle.putString(EventKeys.KEY_USER_ID, userId)
         bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
 
-        getTracker().sendEnhanceEcommerceEvent(event,bundle)
+        getTracker().sendEnhanceEcommerceEvent(event, bundle)
     }
     fun sendTickerEvent(
         event: String,
@@ -110,23 +146,23 @@ object AffiliateAnalytics {
         itemId: Long,
         itemName: String,
         userId: String
-    ){
+    ) {
         val bundle = Bundle()
         val itemBundle = Bundle().apply {
-            putLong(EventKeys.KEY_ITEM_ID,itemId)
+            putLong(EventKeys.KEY_ITEM_ID, itemId)
             putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
             putString(EventKeys.KEY_ITEM_NAME, itemName)
         }
-        bundle.putString(EventKeys.KEY_EVENT , event)
-        bundle.putString(EventKeys.KEY_EVENT_CATEGORY,category)
-        bundle.putString(EventKeys.KEY_EVENT_ACTION,action)
-        bundle.putString(EventKeys.KEY_EVENT_LABEL,eventLabel)
-        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
-        bundle.putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
-        bundle.putString(EventKeys.KEY_USER_ID,userId)
+        bundle.putString(EventKeys.KEY_EVENT, event)
+        bundle.putString(EventKeys.KEY_EVENT_CATEGORY, category)
+        bundle.putString(EventKeys.KEY_EVENT_ACTION, action)
+        bundle.putString(EventKeys.KEY_EVENT_LABEL, eventLabel)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
+        bundle.putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
+        bundle.putString(EventKeys.KEY_USER_ID, userId)
         bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
 
-        getTracker().sendEnhanceEcommerceEvent(event,bundle)
+        getTracker().sendEnhanceEcommerceEvent(event, bundle)
     }
 
     interface EventKeys {
@@ -143,7 +179,7 @@ object AffiliateAnalytics {
             const val KEY_BUSINESS_UNIT = "businessUnit"
             const val KEY_CURRENT_SITE = "currentSite"
 
-            const val BUSINESS_UNIT_VALUE= "affiliate"
+            const val BUSINESS_UNIT_VALUE = "affiliate"
             const val CURRENT_SITE_VALUE = "tokopediamarketplace"
 
             const val EVENT_VALUE_CLICK = "clickAffiliate"
@@ -183,7 +219,7 @@ object AffiliateAnalytics {
             const val PENDAPATAN_PAGE = "pendapatan page"
             const val REGISTRATION_PAGE = "registration page"
             const val AFFILIATE_REGISTRATION_PAGE = "affiliate registration page"
-            const val AFFILIATE_REGISTRATION_PAGE_PROMOTION_CHANNEL= "affiliate registration page - promotion channel input"
+            const val AFFILIATE_REGISTRATION_PAGE_PROMOTION_CHANNEL = "affiliate registration page - promotion channel input"
             const val AFFILIATE_REG_T_ANC_C = "affiliate registration page - terms and condition"
             const val AFFILIATE_HOME_PAGE = "affiliate home page"
             const val AFFILIATE_HOME_PAGE_LINK_HISTORY = "affiliate home page - generated link history"
@@ -195,6 +231,11 @@ object AffiliateAnalytics {
             const val AFFILIATE_PENDAPATAN_PAGE_FILTER = "affiliate pendapatan page - filter date"
             const val AFFILIATE_PROMOSIKAN_BOTTOM_SHEET = "affiliate promosikan page - bottom sheet"
             const val AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION = "affiliate home page - bottom sheet communication"
+            const val AFFILIATE_EDUKASI_PAGE = "affiliate edukasi page"
+            const val AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE = "affiliate edukasi page - category landing page - article"
+            const val AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT = "affiliate edukasi page - category landing page - event"
+            const val AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL = "affiliate edukasi page - category landing page - tutorial"
+            const val AFFILIATE_PROMOSIKAN_SSA_PAGE = "affiliate promosikan page - ssa shop list"
         }
     }
 
@@ -228,13 +269,13 @@ object AffiliateAnalytics {
             const val CLICK_KELUAR = "click - keluar"
             const val CLICK_MASUK = "click - masuk"
             const val CLICK_PELJARI = "click - pelajari"
-            const val CLICK_TAMBAH_SOCIAL_MEDIA= "click - tambah social media"
+            const val CLICK_TAMBAH_SOCIAL_MEDIA = "click - tambah social media"
             const val CLICK_BACK = "click - back"
             const val CLICK_SYARAT = "click - syarat dan ketentuan"
             const val CLICK_FILTER_DATE = "click - filter date"
             const val CLICK_SIMPAN = "click - simpan"
             const val CLICK_IMPRESSION_PRODUCT_PRODUK = "impression - product - produk yang dipromosikan"
-            const val CLICK_PRODUCT_PRODUK_YANG= "click - product - produk yang dipromosikan"
+            const val CLICK_PRODUCT_PRODUK_YANG = "click - product - produk yang dipromosikan"
             const val CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN = "click - salin link - produk yang dipromosikan"
             const val CLICK_GENERATED_LINK_HISTORY = "click - generated link history"
             const val CLICK_PERNAH_DIBELI_TAB = "click - pernah dibeli tab"
@@ -250,20 +291,53 @@ object AffiliateAnalytics {
             const val PROMISIKAN_PERNAH_DIBELI = "click - promosikan - pernah dibeli"
             const val PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
             const val IMPRESSION_PRODUCT_SEARCH_RESULT_PAGE = "impression - product - search result page"
+            const val IMPRESSION_SHOP_SEARCH_RESULT_PAGE = "impression - shop - search result page"
             const val CLICK_PROMOSIKAN_SEARCH_RESULT_PAGE = "click - promosikan - search result page"
             const val CLICK_SALIN_LINK_RESULT_PAGE = "click - salin link - search result page"
             const val CLICK_TOTAL_KOMISI_CARD = "click - total komisi card"
-            const val CLICK_KLIK_CARD= "click - klik card"
-            const val IMPRESSION_TICKER_COMMUNICATION= "impression - ticker communication"
-            const val CLICK_TICKER_COMMUNICATION= "click - ticker communication"
+            const val CLICK_KLIK_CARD = "click - klik card"
+            const val IMPRESSION_TICKER_COMMUNICATION = "impression - ticker communication"
+            const val CLICK_TICKER_COMMUNICATION = "click - ticker communication"
             const val CLICK_CLOSE = "click - close"
             const val CLICK_PRIMARY_BUTTON = "click - primary button"
             const val CLICK_SECONDARY_BUTTON = "click - secondary button"
+            const val CLICK_SHOP_LINK_DENGAN_PERFORMA = "click - shop - link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA = "click - salin link - shop - link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_SEARCH_RESULT = "click - salin link - shop - search result page"
+            const val CLICK_SHOP_SEARCH_RESULT_PAGE = "click - shop - search result page"
+            const val IMPRESSION_SHOP_LINK_DENGAN_PERFORMA = "impression - shop - link dengan performa"
+            const val CLICK_PROMOTED_PAGE_FILTER_TAB = "click - promoted page filter tab"
+            const val CLICK_MAIN_BANNER = "click - main banner"
+            const val CLICK_EVENT_CARD = "click - event card"
+            const val CLICK_LATEST_ARTICLE_CARD = "click - latest article card"
+            const val CLICK_ARTICLE_CARD = "click - article card"
+            const val IMPRESSION_ARTICLE_CARD = "impression - article card"
+            const val IMPRESSION_TUTORIAL_CARD = "impression - tutorial card"
+            const val CLICK_TUTORIAL_CARD = "click - tutorial card"
+            const val IMPRESSION_MAIN_BANNER = "impression - main banner"
+            const val IMPRESSION_EVENT_CARD = "impression - event card"
+            const val IMPRESSION_LATEST_ARTICLE_CARD = "impression - latest article card"
+            const val CLICK_ARTICLE_CATEGORY = "click - article category"
+            const val IMPRESSION_ARTICLE_CATEGORY = "impression - article category"
+            const val IMPRESSION_TUTORIAL_CATEGORY = "impression - tutorial category"
+            const val IMPRESSION_EVENT_CATEGORY = "impression - event category"
+            const val CLICK_TUTORIAL_CATEGORY = "click - tutorial category"
+            const val CLICK_LIHAT_SEMUA_EVENT_CARD = "click - lihat semua - event card"
+            const val CLICK_LIHAT_SEMUA_LATEST_ARTICLE_CARD = "click - lihat semua - latest article card"
+            const val IMPRESSION_SOCIAL_MEDIA_CARD = "impression - social media card"
+            const val CLICK_SOCIAL_MEDIA_CARD = "click - social media card"
+            const val CLICK_KAMUS_AFFILIATE = "click - kamus affiliate"
+            const val CLICK_BANTUAN = "click - bantuan"
+            const val CLICK_EVENT_CATEGORY = "click - event category"
+            const val CLICK_SSA_SHOP_BANNER = "click - ssa shop banner"
+            const val CLICK_SSA_SHOP_PAGE = "click - shop - ssa shop list"
+            const val CLICK_SALIN_LINK_SSA_SHOP = "click - salin link - ssa shop list"
+            const val IMPRESSION_SSA_SHOP = "impression - shop - ssa shop list"
         }
     }
 
-    interface ScreenKeys{
-        companion object{
+    interface ScreenKeys {
+        companion object {
             const val AFFILIATE_HOME_SCREEN_NAME = "/affiliate portal - home page"
             const val AFFILIATE_LOGIN_SCREEN_NAME = "/affiliate portal - affiliate registration page - "
             const val AFFILIATE_PORTFOLIO_NAME = "/affiliate portal - affiliate registration page - promotion channel input - "
@@ -271,11 +345,15 @@ object AffiliateAnalytics {
             const val AFFILIATE_HOME_FRAGMENT = "/affiliate portal - affiliate home page - "
             const val AFFILIATE_PROMOSIKAN_PAGE = "/affiliate portal - affiliate promosikan page"
             const val AFFILIATE_PENDAPATAN_PAGE = "/affiliate portal - affiliate pendapatan page"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_SHOP = "/affiliate portal - affiliate pendapatan page - transaction detail - order - shop"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_PRODUCT = "/affiliate portal - affiliate pendapatan page - transaction detail - order - product"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_SHOP = "/affiliate portal - affiliate pendapatan page - transaction detail - traffic - shop"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_PRODUCT = "/affiliate portal - affiliate pendapatan page - transaction detail - traffic - product"
         }
     }
 
-    interface ItemKeys{
-        companion object{
+    interface ItemKeys {
+        companion object {
             const val AFFILIATE_PERNAH_DIBEL = "/affiliate - promosikan pernah dibeli"
             const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
             const val AFFILIATE_TRANSACTION_PAGE = "/affiliate pendapatan page - transaction history"
@@ -287,6 +365,10 @@ object AffiliateAnalytics {
             const val AFFILIATE_HOME_TICKER_COMMUNICATION = "/affiliate home page - ticker communication"
             const val AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION = "/affiliate promosikan page - ticker communication"
             const val AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION = "/affiliate pendapatan page - ticker communication"
+            const val AFFILAITE_HOME_SHOP_SELECT_CONTENT = "/affiliate home page - link dengan performa - shop"
+            const val AFFILIATE_SEARCH_SHOP_CLICK = "/affiliate promosikan page - search result page - shop"
+            const val AFFILIATE_EDUCATION_PAGE = "/affiliate edukasi page"
+            const val AFFILIATE_SSA_SHOP_CLICK = "/affiliate promosikan page - ssa shop list"
         }
     }
 
@@ -309,11 +391,11 @@ object AffiliateAnalytics {
             const val NON_PM_OS_SHOP = "non PM or OS shop"
             const val AVAILABLE = "available"
             const val EMPTY_STOCK = "empty stock"
-            const val ALMOST_OOS =  "almost OOS"
+            const val ALMOST_OOS = "almost OOS"
             const val SHOP_INACTIVE = "shop inactive"
             const val PRODUCT_INACTIVE = "product inactive"
-
+            const val SHOP_ACTIVE = "shop active"
+            const val SHOP_CLOSED = "shop closed"
         }
     }
-
 }

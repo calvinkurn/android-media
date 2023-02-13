@@ -13,7 +13,7 @@ import com.tokopedia.webview.KEY_URL
 class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
 
     private var extArray: Array<String>? = null
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     companion object {
         val ARGS_EXT = "KEY_EXT"
@@ -45,7 +45,7 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
     private fun checkPermissionAndDownload(url: String) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             permissionCheckerHelper = PermissionCheckerHelper()
-            permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
+            permissionCheckerHelper?.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
                 }
 
@@ -65,7 +65,7 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(requireActivity().applicationContext, requestCode, permissions, grantResults)
+            permissionCheckerHelper?.onRequestPermissionsResult(requireActivity().applicationContext, requestCode, permissions, grantResults)
         }
     }
 

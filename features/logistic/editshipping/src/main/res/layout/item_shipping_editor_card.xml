@@ -31,12 +31,13 @@
 
             <ImageView
                 android:id="@+id/img_shipment_item"
-                android:layout_width="@dimen/dp_64"
+                android:layout_width="64dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/shipment_name"
-                app:layout_constraintBottom_toBottomOf="@id/shipment_category"/>
+                app:layout_constraintBottom_toBottomOf="@id/shipment_category"
+                tools:visibility="gone"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shipment_name"
@@ -47,7 +48,8 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N700_96"
-                android:textSize="@dimen/sp_16"
+                android:textSize="16sp"
+                app:layout_goneMarginStart="16dp"
                 app:layout_constraintStart_toEndOf="@id/img_shipment_item"
                 app:layout_constraintTop_toBottomOf="@id/ticker_shipper"
                 app:typographyType="heading_6" />
@@ -57,9 +59,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_2"
-                android:layout_marginEnd="@dimen/dp_30"
+                android:layout_marginEnd="30dp"
                 android:textColor="@color/Unify_N700_96"
-                android:textSize="@dimen/sp_16"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/shipment_name"
                 app:layout_constraintTop_toBottomOf="@id/shipment_name"
                 app:layout_constraintEnd_toStartOf="@id/cb_shipment_item"
@@ -69,7 +71,7 @@
                 android:id="@+id/cb_shipment_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_18"
+                android:layout_marginEnd="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/img_shipment_item"
                 app:layout_constraintBottom_toBottomOf="@id/img_shipment_item" />
@@ -92,8 +94,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginStart="12dp"
-                android:layout_marginBottom="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_18"
+                android:layout_marginBottom="18dp"
+                android:layout_marginEnd="18dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/label_feature_items"
@@ -127,7 +129,7 @@
                 <View
                     android:id="@+id/divider_shipment"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
+                    android:layout_height="1dp"
                     android:background="@color/Unify_N75"
                     android:layout_marginTop="14dp"
                     android:layout_marginEnd="@dimen/unify_space_12"

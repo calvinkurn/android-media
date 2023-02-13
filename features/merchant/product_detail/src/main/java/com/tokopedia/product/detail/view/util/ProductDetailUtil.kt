@@ -12,6 +12,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -281,7 +282,7 @@ fun String.goToWebView(context: Context) {
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
 fun Throwable.asFail(): Fail = Fail(this)
 
-internal fun View?.animateExpand() = this?.run {
+internal fun View?.animateExpand(duration: Long = 200) = this?.run {
     val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
     val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
     measure(matchParentMeasureSpec, wrapContentMeasureSpec)
@@ -303,11 +304,11 @@ internal fun View?.animateExpand() = this?.run {
         }
     }
 
-    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    animation.duration = duration
     startAnimation(animation)
 }
 
-internal fun View?.animateCollapse() = this?.run {
+internal fun View?.animateCollapse(duration: Long = 200) = this?.run {
     val initialHeight = measuredHeight
     val animation: Animation = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
@@ -325,7 +326,7 @@ internal fun View?.animateCollapse() = this?.run {
         }
     }
 
-    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    animation.duration = duration
     startAnimation(animation)
 }
 
@@ -360,4 +361,13 @@ internal fun RecommendationItem.createProductCardOptionsModel(position: Int): Pr
     productCardOptionsModel.productPosition = position
     productCardOptionsModel.screenName = header
     return productCardOptionsModel
+}
+
+fun ViewStub.inflateWithBinding(onInflate: (View) -> Unit) {
+    if (this.parent != null) {
+        this.setOnInflateListener { _, view ->
+            onInflate(view)
+        }
+        this.inflate()
+    }
 }

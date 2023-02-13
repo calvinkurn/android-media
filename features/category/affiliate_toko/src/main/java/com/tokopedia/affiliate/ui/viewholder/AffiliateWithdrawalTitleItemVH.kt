@@ -18,7 +18,14 @@ class AffiliateWithdrawalTitleItemVH(itemView: View)
 
     override fun bind(element: AffiliateWithdrawalTitleItemModel?) {
         itemView.findViewById<Typography>(R.id.title)?.apply {
-            text = itemView.context.getString(R.string.affiliate_withdrwal_title_terms)
+            val pageType = if (element?.pageType.equals("PDP", true)) {
+                "Produk"
+            } else if (element?.pageType.equals("shop", true)) {
+                "Toko"
+            } else {
+                "Produk"
+            }
+            text = getString(R.string.affiliate_withdrwal_title_terms, pageType)
         }
     }
 }

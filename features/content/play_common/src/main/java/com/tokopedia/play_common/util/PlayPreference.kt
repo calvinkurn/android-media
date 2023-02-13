@@ -2,57 +2,46 @@ package com.tokopedia.play_common.util
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by jegul on 17/01/20
  */
 class PlayPreference @Inject constructor(
-        @ApplicationContext context: Context
+    @ApplicationContext context: Context,
+    private val userSession: UserSessionInterface
 ) {
 
     companion object {
         private const val PLAY_PREFERENCE = "play_preference"
 
-        private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
-        private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
+        private const val A_DAY_IN_MILLIS: Long = 86400000
+
+        private const val FOLLOW_POP_UP = "follow_pop_up_%1s_%2s"
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
 
-    fun setOnboardingShown(tag: String) {
-        setSwipeOnboardingShown(tag)
-    }
-
-    fun isOnboardingShown(tag: String): Boolean {
-        return isSwipeOnboardingShown(tag)
-    }
-
     /**
-     * Valid from Initial Play -> Swipe Room
+     * check last visit
      */
-    private fun setOneTapOnboardingShown(tag: String) {
-        sharedPref.edit().putBoolean(String.format(FORMAT_ONE_TAP_ONBOARDING, tag), true).apply()
+
+    private val currentTime: Long
+        get() = System.currentTimeMillis()
+
+    private val generateUserId: String
+        get() = if(userSession.userId.isEmpty()) "0" else userSession.userId
+
+    //StreamerId = authorId/shopId
+    fun setFollowPopUp(streamerId: String) {
+        if(isFollowPopup(streamerId))
+            sharedPref.edit().putLong(String.format(FOLLOW_POP_UP, generateUserId, streamerId), currentTime).apply()
     }
 
-    /**
-     * Valid from Initial Play -> Swipe Room
-     */
-    private fun isOneTapOnboardingShown(tag: String): Boolean {
-        return sharedPref.getBoolean(String.format(FORMAT_ONE_TAP_ONBOARDING, tag), false)
-    }
-
-    /**
-     * Valid since Swipe Room
-     */
-    private fun setSwipeOnboardingShown(tag: String) {
-        sharedPref.edit().putBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag), true).apply()
-    }
-
-    /**
-     * Valid since Swipe Room
-     */
-    private fun isSwipeOnboardingShown(tag: String): Boolean {
-        return sharedPref.getBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag), false)
+    fun isFollowPopup(streamerId: String) : Boolean {
+        return if(!sharedPref.contains(String.format(FOLLOW_POP_UP, generateUserId, streamerId)))
+            true
+        else (currentTime - sharedPref.getLong(String.format(FOLLOW_POP_UP, generateUserId, streamerId), 0)) >= A_DAY_IN_MILLIS
     }
 }

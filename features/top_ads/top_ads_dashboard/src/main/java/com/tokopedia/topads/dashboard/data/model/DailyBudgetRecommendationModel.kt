@@ -7,12 +7,12 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.parcel.Parcelize
 
 data class DailyBudgetRecommendationModel(
-        @SerializedName("topadsGetDailyBudgetRecommendation")
-        val topadsGetDailyBudgetRecommendation: TopadsGetDailyBudgetRecommendation = TopadsGetDailyBudgetRecommendation()
+        @SerializedName("topadsGetDailyBudgetRecommendationV2")
+        val topadsGetDailyBudgetRecommendation: TopadsGetDailyBudgetRecommendationV2 = TopadsGetDailyBudgetRecommendationV2()
 )
 
 @Parcelize
-data class TopadsGetDailyBudgetRecommendation(
+data class TopadsGetDailyBudgetRecommendationV2(
         @SerializedName("data")
         val data: List<DataBudget> = listOf(),
         @SerializedName("errors")

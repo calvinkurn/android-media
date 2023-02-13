@@ -17,8 +17,7 @@
 //import androidx.test.espresso.matcher.ViewMatchers.withId
 //import androidx.test.espresso.matcher.ViewMatchers.withText
 //import androidx.test.platform.app.InstrumentationRegistry
-//import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-//import com.tokopedia.cassavatest.hasAllSuccess
+//import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 //import com.tokopedia.product.addedit.R
 //import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
 //import com.tokopedia.product.addedit.stub.AddEditProductDraftActivityStub
@@ -45,11 +44,9 @@
 //    var activityRule: IntentsTestRule<AddEditProductDraftActivityStub> = IntentsTestRule(
 //        AddEditProductDraftActivityStub::class.java, false, false)
 //    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-//    private val gtmLogDBSource = GtmLogDBSource(context)
 //
 //    @Before
 //    fun beforeTest() {
-//        gtmLogDBSource.deleteAll().toBlocking().first()
 //        setupGraphqlMockResponse(AddEditProductAddingMockResponseConfig())
 //
 //        InstrumentationAuthHelper.loginInstrumentationTestUser2()
@@ -58,7 +55,6 @@
 //
 //    @After
 //    fun afterTest() {
-//        gtmLogDBSource.deleteAll().toBlocking().first()
 //        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
 //    }
 //

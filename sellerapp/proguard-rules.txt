@@ -1,5 +1,6 @@
-
-
+-printusage usage.txt
+-printseeds seeds.txt
+-printconfiguration config.txt
 
 # Obfuscation parameters:
 -dontwarn java.nio.file.Files
@@ -41,11 +42,12 @@
 -keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
     public static final *** NULL;
 }
--keepnames @com.google.android.gms.common.annotation.KeepName class *
+-keep @com.google.android.gms.common.annotation.KeepName class *
 -keepclassmembernames class * {
     @com.google.android.gms.common.annotation.KeepName *;
 }
--keepnames class * implements android.os.Parcelable {
+
+-keep class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
 #end com.google.android.gms
@@ -165,8 +167,8 @@
 -dontwarn kotlinx.coroutines.flow.**
 -dontwarn kotlinx.coroutines.reactive.**
 
--keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keep class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
@@ -287,9 +289,9 @@
 -dontwarn org.bouncycastle.**
 
 # Keep fragment class name
--keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
--keepnames class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
--keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
+-keep class com.tokopedia.dynamicfeatures.DFInstallerFragment
+-keep class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
+-keep class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
 
 # feed_shop
 -keepnames class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
@@ -298,4 +300,22 @@
 -keep class com.tokopedia.stability.**{*;}
 -keepclassmembers class **{
 public static com.tokopedia.stability.ChangeDelegate *;
+}
+
+-keepclassmembers,allowobfuscation class * {
+ @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+-keep class kotlin.coroutines.Continuation
+
+# Startup Initializer
+-keepnames class * extends androidx.startup.Initializer
+# These Proguard rules ensures that ComponentInitializers are are neither shrunk nor obfuscated,
+# and are a part of the primary dex file. This is because they are discovered and instantiated
+# during application startup.
+-keep class * extends androidx.startup.Initializer {
+    # Keep the public no-argument constructor while allowing other methods to be optimized.
+    <init>();
 }

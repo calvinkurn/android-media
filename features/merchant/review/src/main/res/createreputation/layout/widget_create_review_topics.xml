@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp"
+    android:scrollbars="none"
+    tools:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_review_form_topics"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_color_light_disabled="@color/Unify_TN500"
+            app:icon_color_light_enable="@color/Unify_TN500"
+            app:icon_color_night_disabled="@color/Unify_TN500"
+            app:icon_color_night_enable="@color/Unify_TN500"
+            app:icon_name="LIGHT_BULB"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_review_form_topics_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/review_form_topics_label"
+            android:textColor="@color/Unify_TN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ic_review_form_topics"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="paragraph_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_review_form_topics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_review_form_topics_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="paragraph_3"
+            tools:text="Packaging • Kesesuaian • Berfungsi • Warna • Penjual" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</HorizontalScrollView>

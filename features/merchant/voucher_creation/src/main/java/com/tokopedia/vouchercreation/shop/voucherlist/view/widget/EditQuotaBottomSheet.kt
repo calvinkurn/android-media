@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -169,7 +170,7 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
 
                 btnMvcSaveQuota.run {
                     setOnClickListener {
-                        val textEditQuota = editMvcQuota.textFieldInput.text?.toString()?.toInt() ?: quota
+                        val textEditQuota = editMvcQuota.textFieldInput.text?.toString()?.toIntOrZero() ?: quota
                         if (textEditQuota != quota) {
                             viewModel.changeQuotaValue(this@voucher.id, textEditQuota)
                             isLoading = true

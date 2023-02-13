@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -15,8 +16,12 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
@@ -25,90 +30,99 @@ import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailListener
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
+import com.tokopedia.product.detail.view.util.animateCollapse
+import com.tokopedia.product.detail.view.util.animateExpand
 
 /**
  * Created by Yehezkiel on 23/11/20
  */
 @SuppressLint("WrongConstant")
 class VideoPictureView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), ProductMainThumbnailListener {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
     private var mListener: DynamicProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
     private var thumbnailAdapter: ProductMainThumbnailAdapter? = null
-    private var animator: ThumbnailAnimator? = null
-    private var binding: WidgetVideoPictureBinding = WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
-    private var lastPosition = 0
+    private var binding: WidgetVideoPictureBinding =
+        WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
+    private var pagerSelectedLastPosition = 0
     private var smoothScroller = ThumbnailSmoothScroller(
-            context,
-            binding.pdpMainThumbnailRv
+        context,
+        binding.pdpMainThumbnailRv
     )
 
     init {
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
-        measureScreenHeight(binding)
-    }
-
-    private fun measureScreenHeight(binding: WidgetVideoPictureBinding) {
-        val screenWidth = binding.root.resources.displayMetrics.widthPixels
-        binding.viewPagerContainer.layoutParams.height = screenWidth
     }
 
     private fun showThumbnail() {
         if (binding.pdpMainThumbnailRv.visibility == View.GONE) {
-            animator?.animateShow()
+            binding.pdpMainThumbnailRv.animateExpand(duration = THUMBNAIL_ANIMATION_DURATION)
         }
     }
 
-    fun setup(media: List<MediaDataModel>,
-              listener: DynamicProductDetailListener?,
-              componentTrackDataModel: ComponentTrackDataModel?,
-              initialScrollPosition: Int,
-              shouldAnimateLabel: Boolean) {
+    private fun hideThumbnail() {
+        if (binding.pdpMainThumbnailRv.visibility == View.VISIBLE) {
+            binding.pdpMainThumbnailRv.animateCollapse(duration = THUMBNAIL_ANIMATION_DURATION)
+        }
+    }
+
+    fun setup(
+        media: List<MediaDataModel>,
+        listener: DynamicProductDetailListener?,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        initialScrollPosition: Int,
+        containerType: MediaContainerType
+    ) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
 
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
-            setupViewPager()
-            //If first position is video and selected: process the video
+            setupViewPager(containerType = containerType)
+            // If first position is video and selected: process the video
         }
 
         if (thumbnailAdapter == null) {
-            setupThumbnailRv(media)
+            setupThumbnailRv()
         }
 
-        updateInitialThumbnail(media)
-        updateImages(media)
-        updateMediaLabel(lastPosition, shouldAnimateLabel)
-        scrollToPosition(initialScrollPosition)
-        renderVideoOnceAtPosition(initialScrollPosition)
+        updateInitialThumbnail(media = media)
+        updateImages(listOfImage = media)
+        updateMediaLabel(position = pagerSelectedLastPosition)
+        scrollToPosition(position = initialScrollPosition)
+        renderVideoOnceAtPosition(position = initialScrollPosition)
     }
 
     private fun updateInitialThumbnail(media: List<MediaDataModel>) {
-        val mediaList = processMedia(media)
-
-        if (hideThumbnail(mediaList)) {
+        if (isRollenceHideThumbnail()) {
             return
         }
 
-        thumbnailAdapter?.submitList(mediaList.mapIndexed { index, data ->
-            val isSelected = lastPosition == index
-            ThumbnailDataModel(data, isSelected)
-        })
+        val mediaSelected = videoPictureAdapter?.currentList?.getOrNull(pagerSelectedLastPosition)
+        val thumbList = getThumbnailVariantOnly(media = media)
+            .mapIndexed { index, data ->
+                val isMediaSame = data.id == mediaSelected?.id
+                val thumbPosition = if (isMediaSame) index else -Int.ONE
+                val isSelected = thumbPosition == index
+                ThumbnailDataModel(data, isSelected)
+            }
+        thumbnailAdapter?.submitList(thumbList)
     }
 
     override fun onThumbnailClicked(element: ThumbnailDataModel) {
-        val selectedPosition = thumbnailAdapter?.currentList?.indexOfFirst {
-            it.media.id == element.media.id
-        } ?: Int.ZERO
+        val pagerSelectedPosition = videoPictureAdapter?.currentList?.indexOfFirst {
+            it.id == element.media.id
+        }.orZero()
 
-        updateThumbnail(selectedPosition)
-        scrollToPosition(selectedPosition, true)
-        renderVideoOnceAtPosition(selectedPosition)
+        updateThumbnail(pagerSelectedPosition)
+        scrollToPosition(pagerSelectedPosition, true)
+        renderVideoOnceAtPosition(pagerSelectedPosition)
     }
 
     private fun updateImages(listOfImage: List<MediaDataModel>?) {
@@ -116,52 +130,68 @@ class VideoPictureView @JvmOverloads constructor(
         videoPictureAdapter?.submitList(mediaList)
     }
 
-    private fun updateThumbnail(selectedPosition: Int) {
-        showThumbnail()
-        thumbnailAdapter?.submitList(thumbnailAdapter?.currentList?.toMutableList()?.mapIndexed { index, data ->
-            val isSelected = selectedPosition == index
-            data.copy(isSelected = isSelected)
-        } ?: listOf())
+    private fun updateThumbnail(pagerPosition: Int) {
+        val mediaSelected = videoPictureAdapter?.currentList?.getOrNull(pagerPosition)
+        var thumbSelectedPosition = -Int.ZERO
+
+        thumbnailAdapter?.currentList.orEmpty()
+            .mapIndexed { index, data ->
+                val isMediaSame = data.media.id == mediaSelected?.id
+                val thumbPosition = if (isMediaSame) {
+                    thumbSelectedPosition = index
+                    index
+                } else {
+                    -Int.ONE
+                }
+                val isSelected = thumbPosition == index
+
+                data.copy(isSelected = isSelected)
+            }.also {
+                thumbnailAdapter?.submitList(it)
+            }
 
         binding.pdpMainThumbnailRv.addOneTimeGlobalLayoutListener {
-            smoothScroller.scrollThumbnail(selectedPosition)
+            if (thumbSelectedPosition >= Int.ZERO) {
+                smoothScroller.scrollThumbnail(thumbSelectedPosition)
+            }
         }
+
+        thumbnailVisibilityState(mediaSelected = mediaSelected)
     }
 
     fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {
-        if (position == RecyclerView.NO_POSITION || lastPosition == position) {
+        if (position == RecyclerView.NO_POSITION || pagerSelectedLastPosition == position) {
             return
         }
-        lastPosition = position
+        pagerSelectedLastPosition = position
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         updateMediaLabel(position)
         updateThumbnail(position)
     }
 
-    private fun setupThumbnailRv(media: List<MediaDataModel>) {
+    private fun setupThumbnailRv() {
         binding.pdpMainThumbnailRv.layoutParams.height = 0
 
-        if (hideThumbnail(media)) {
+        if (isRollenceHideThumbnail()) {
             return
         }
         thumbnailAdapter = ProductMainThumbnailAdapter(
-                this,
-                mListener,
-                componentTrackDataModel
+            this,
+            mListener,
+            componentTrackDataModel
         )
 
-        binding.pdpMainThumbnailRv.layoutManager = LinearLayoutManager(context,
-                LinearLayoutManager.HORIZONTAL,
-                false)
+        binding.pdpMainThumbnailRv.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         binding.pdpMainThumbnailRv.adapter = thumbnailAdapter
-        animator = ThumbnailAnimator(binding.pdpMainThumbnailRv)
     }
 
-    private fun hideThumbnail(media: List<MediaDataModel>): Boolean {
-        if (media.size < MIN_MEDIA_TO_SHOW_THUMBNAIL
-                || mListener?.showThumbnailImage() == false) {
+    private fun isRollenceHideThumbnail(): Boolean {
+        if (mListener?.showThumbnailImage() == false) {
             thumbnailAdapter = null
-            animator = null
             binding.pdpMainThumbnailRv.layoutParams.height = 0
             binding.pdpMainThumbnailRv.hide()
             return true
@@ -170,14 +200,25 @@ class VideoPictureView @JvmOverloads constructor(
         return false
     }
 
-    private fun setupViewPager() {
+    private fun setupViewPager(
+        containerType: MediaContainerType
+    ) {
         videoPictureAdapter = VideoPictureAdapter(
-                mListener,
-                componentTrackDataModel)
+            listener = mListener,
+            componentTrackDataModel = componentTrackDataModel,
+            containerType = containerType
+        )
 
-        binding.pdpViewPager.adapter = videoPictureAdapter
-        binding.pdpViewPager.setPageTransformer { _, _ ->
-            //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
+        val viewPager = binding.pdpViewPager
+        viewPager.adapter = videoPictureAdapter
+        viewPager.setPageTransformer { _, _ ->
+            // NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
+        }
+
+        viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            if (this != null) {
+                dimensionRatio = containerType.ratio
+            }
         }
     }
 
@@ -191,41 +232,81 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupViewPagerCallback() {
-        binding.pdpViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                if (lastPosition != position) {
-                    videoPictureAdapter?.currentList?.getOrNull(position)?.run {
-                        mListener?.onSwipePicture(type, if (isVideoType()) videoUrl else urlOriginal, position + 1, componentTrackDataModel)
-                    }
-                    updateMediaLabel(position)
-                    updateThumbnail(position)
-                    lastPosition = position
+        binding.pdpViewPager.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    onMediaPageSelected(position)
                 }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    if (state == RecyclerView.SCROLL_STATE_IDLE) {
+                        mListener?.getProductVideoCoordinator()
+                            ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                    }
+                }
+            })
+    }
+
+    private fun onMediaPageSelected(position: Int) {
+        if (pagerSelectedLastPosition != position) {
+            val selected = videoPictureAdapter?.currentList?.getOrNull(position)
+
+            if (selected != null) {
+                val url = if (selected.isVideoType()) {
+                    selected.videoUrl
+                } else {
+                    selected.urlOriginal
+                }
+
+                mListener?.onSwipePicture(
+                    type = selected.type,
+                    url = url,
+                    position = position + Int.ONE,
+                    variantOptionId = selected.variantOptionId,
+                    componentTrackDataModel = componentTrackDataModel
+                )
             }
 
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    mListener?.getProductVideoCoordinator()?.onScrollChangedListener(binding.pdpViewPager, lastPosition)
-                }
+            updateMediaLabel(position)
+            updateThumbnail(position)
+            pagerSelectedLastPosition = position
+        }
+    }
+
+    private fun thumbnailVisibilityState(mediaSelected: MediaDataModel?) {
+        if (!isRollenceHideThumbnail()) {
+            if (mediaSelected?.variantOptionId.toIntOrZero() > Int.ZERO) {
+                showThumbnail()
+            } else {
+                hideThumbnail()
             }
-        })
+        }
     }
 
     private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
-        return if (media == null || media.isEmpty()) {
+        return if (media.isNullOrEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
-            val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                    + "://" + res.getResourcePackageName(resId)
-                    + '/'.toString() + res.getResourceTypeName(resId)
-                    + '/'.toString() + res.getResourceEntryName(resId))
-            mutableListOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
-        } else
-            media.toMutableList()
+            val uriNoPhoto = Uri.parse(
+                ContentResolver.SCHEME_ANDROID_RESOURCE +
+                    "://" + res.getResourcePackageName(resId) +
+                    '/'.toString() + res.getResourceTypeName(resId) +
+                    '/'.toString() + res.getResourceEntryName(resId)
+            )
+            listOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
+        } else {
+            media
+        }
     }
 
-    private fun updateMediaLabel(position: Int,
-                                 shouldAnimateLabel: Boolean = false) {
+    private fun getThumbnailVariantOnly(media: List<MediaDataModel>?): List<MediaDataModel> {
+        return processMedia(media = media)
+            .filter {
+                it.variantOptionId.toIntOrZero() > Int.ZERO
+            }
+    }
+
+    private fun updateMediaLabel(position: Int) {
         val mediaData = videoPictureAdapter?.currentList?.getOrNull(position)
         val variantName = mediaData?.mediaDescription ?: ""
         val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
@@ -249,16 +330,16 @@ class VideoPictureView @JvmOverloads constructor(
             }
         }
 
-        val ignoreUpdateLabel = position == RecyclerView.NO_POSITION
-                || binding.txtAnimLabel.getCurrentText() == stringLabel
+        val ignoreUpdateLabel = position == RecyclerView.NO_POSITION ||
+            binding.txtAnimLabel.getCurrentText() == stringLabel
         if (ignoreUpdateLabel) return
 
-        binding.txtAnimLabel.showView(stringLabel, shouldAnimateLabel)
+        binding.txtAnimLabel.showView(stringLabel)
     }
 
     companion object {
         private const val VIDEO_PICTURE_PAGE_LIMIT = 3
         private const val HIDE_LABEL_IMAGE_COUNT_MIN = 1
-        private const val MIN_MEDIA_TO_SHOW_THUMBNAIL = 4
+        private const val THUMBNAIL_ANIMATION_DURATION = 300L
     }
 }

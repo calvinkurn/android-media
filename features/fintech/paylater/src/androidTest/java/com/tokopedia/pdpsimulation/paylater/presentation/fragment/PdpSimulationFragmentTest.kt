@@ -7,8 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.pdpsimulation.PdpSimulationMockResponseConfig
 import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
@@ -36,19 +35,12 @@ class PdpSimulationFragmentTest {
     var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setUp() {
-        clearData()
         login()
         setupGraphqlMockResponse(PdpSimulationMockResponseConfig())
         launchActivity()
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
 
@@ -60,17 +52,12 @@ class PdpSimulationFragmentTest {
             clickInstallmentBottomSheet()
         } assertTest {
             hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
-            clearData()
         }
     }
 
 
     private fun waitForData() {
         Thread.sleep(5000)
-    }
-
-    private fun clearData() {
-        gtmLogDBSource.deleteAll().toBlocking()
     }
 
     private fun launchActivity() {

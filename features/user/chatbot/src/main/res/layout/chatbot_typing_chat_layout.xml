@@ -15,7 +15,7 @@
         android:id="@+id/image"
         android:layout_height="@dimen/dp_chatbot_36"
         android:layout_width="@dimen/dp_chatbot_60"
-        android:src="@color/Unify_R200"
+        android:src="@color/transparent"
         android:contentDescription="@null"/>
 
 </LinearLayout>

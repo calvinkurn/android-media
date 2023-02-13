@@ -30,6 +30,7 @@ object SomConsts {
     const val STATUS_NAME_ALL_ORDER = "Semua Pesanan"
 
     const val DETAIL_HEADER_TYPE = "header"
+    const val DETAIL_RESO_TYPE = "reso"
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
@@ -58,6 +59,7 @@ object SomConsts {
     const val KEY_PRINT_AWB = "print"
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
     const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
+    const val KEY_RETURN_TO_SHIPPER = "confirm_return"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -118,7 +120,7 @@ object SomConsts {
     const val TOPADS_MANUAL_ADS = 3
     const val TOPADS_AUTO_ADS = 4
 
-    //SOM FILTER LABEL
+    // SOM FILTER LABEL
     const val FILTER_SORT = "Urutkan"
     const val FILTER_STATUS_ORDER = "Status Pesanan"
     const val FILTER_TYPE_ORDER = "Tipe Pesanan"
@@ -133,8 +135,8 @@ object SomConsts {
     const val SORT_BY_PAYMENT_DATE_DESCENDING = 2L
 
     // Som List Illustration
-    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
-    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://images.tokopedia.net/android/others/som_list_empty_state_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://images.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
 
     // Som print awb
     const val PATH_PRINT_AWB = "shipping-label"

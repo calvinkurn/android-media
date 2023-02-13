@@ -24,7 +24,11 @@ import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -70,7 +74,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by atc from mini cart widget success THEN global event state should be updated accordingly`() {
         //given
-        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAvailableAndUnavailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataBundleAvailableAndUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = true,
@@ -94,7 +98,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by atc from mini cart bottom sheet success THEN global event state should be updated accordingly`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = true,
@@ -118,7 +122,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by atc from mini cart bottom sheet error THEN global event state should be updated accordingly`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = true,
@@ -144,7 +148,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by atc from mini cart bottom sheet failed with data THEN atc data should not be empty`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = true,
@@ -170,7 +174,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart widget success THEN global event state should be updated accordingly`() {
         //given
-        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAvailableAndUnavailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataBundleAvailableAndUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = false,
@@ -195,7 +199,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart bottom sheet success THEN global event state should be updated accordingly`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = false,
@@ -220,7 +224,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart bottom sheet error THEN global event state should be updated accordingly`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = false,
@@ -246,7 +250,7 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart bottom sheet failed with data THEN update cart data should not be empty`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.setMiniCartABTestData(
                 isOCCFlow = false,

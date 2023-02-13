@@ -32,4 +32,10 @@ class AppStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startu
     }
 
     override fun traceName() = ""
+
+    override fun setupMock() {
+    }
+
+    override fun setupEnvironment() {
+    }
 }

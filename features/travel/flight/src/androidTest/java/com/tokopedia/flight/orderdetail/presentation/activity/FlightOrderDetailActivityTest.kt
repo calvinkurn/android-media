@@ -14,10 +14,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.flight.CustomScrollActions.nestedScrollTo
 import com.tokopedia.flight.R
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
@@ -35,7 +34,6 @@ import org.junit.runner.RunWith
 class FlightOrderDetailActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var activityRule: IntentsTestRule<FlightOrderDetailActivity> =

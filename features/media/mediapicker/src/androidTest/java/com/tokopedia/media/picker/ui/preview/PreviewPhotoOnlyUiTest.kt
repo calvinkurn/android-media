@@ -29,7 +29,7 @@ class PreviewPhotoOnlyUiTest : PreviewTest() {
         startPreviewPage()
 
         // When
-        onView(withId(R.id.btn_done)).perform(click())
+        onView(withId(R.id.action_text_done)).perform(click())
         val uploadResult =
             activityTestRule.activityResult.resultData.extras?.get(EXTRA_RESULT_PICKER) as PickerResult
 

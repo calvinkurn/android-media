@@ -84,6 +84,7 @@ class CategoryNavigationViewModelTest {
         viewModel.onAttachToViewHolder()
         assert(viewModel.getListData().value is Success)
         assert((viewModel.getListData().value as Success).data === list)
+        unmockkStatic(Dispatchers::class)
     }
 
     @Test

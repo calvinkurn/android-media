@@ -73,6 +73,7 @@ class CouponListResultPresenterTest {
         presenter.showAutoApplyMessage(autoApplyResponse, autoApplyMessage)
 
         code = ""
+        every { autoApplyResponse.tokopointsSetAutoApply?.resultStatus?.code } returns code
         presenter.showAutoApplyMessage(autoApplyResponse, autoApplyMessage)
     }
 

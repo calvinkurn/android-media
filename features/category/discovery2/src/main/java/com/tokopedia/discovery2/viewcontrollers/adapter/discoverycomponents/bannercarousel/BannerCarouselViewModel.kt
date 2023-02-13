@@ -63,7 +63,7 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
                     if (!component.data.isNullOrEmpty()) {
                         bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(component.data!!, ComponentNames.BannerCarouselItemView.componentName,
                                 component.name, position, component.properties?.design
-                                ?: "")
+                                ?: "", properties = component.properties)
                         title.value = component.properties?.bannerTitle ?: ""
                     } else {
                         _hideShimmer.value = true

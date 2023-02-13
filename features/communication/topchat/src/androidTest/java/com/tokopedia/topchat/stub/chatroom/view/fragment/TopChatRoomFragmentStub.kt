@@ -29,16 +29,19 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return FakeTopChatViewStateImpl(
-                view, this, this, this,
-                this, this, this, this,
-                (activity as BaseChatToolbarActivity).getToolbar(), analytics,
+            view, this, this, this,
+            this, this, this,
+            this,
+            (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             topchatViewState = it
         }
     }
 
     override fun showMsgMenu(
-        msg: BaseChatUiModel, text: CharSequence, menus: List<Int>
+        msg: BaseChatUiModel,
+        text: CharSequence,
+        menus: List<Int>
     ) {
         super.showMsgMenu(msg, text, menus)
         childFragmentManager.executePendingTransactions()
@@ -51,7 +54,10 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
     override fun uploadImage(image: ImageUploadServiceModel) {
         UploadImageChatServiceStub.enqueueWork(
-                context!!, image, viewModel.roomMetaData.msgId
+            context!!,
+            image,
+            viewModel.roomMetaData.msgId,
+            isUploadImageSecure()
         )
     }
 
@@ -63,7 +69,7 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         var isOCCActive = false
         var SUCCESS_CHANGE_ADDRESS = true
         fun createInstance(
-                bundle: Bundle
+            bundle: Bundle
         ): TopChatRoomFragmentStub {
             return TopChatRoomFragmentStub().apply {
                 arguments = bundle

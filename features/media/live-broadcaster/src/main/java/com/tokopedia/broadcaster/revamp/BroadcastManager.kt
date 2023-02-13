@@ -50,6 +50,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     private var mAudioCaptureState: Streamer.CAPTURE_STATE? = Streamer.CAPTURE_STATE.FAILED
 
     private var mCameraManager: BroadcasterCameraManager? = null
+    private var mSelectedCamera: BroadcasterCamera? = null
 
     private var mAdaptiveBitrate: BroadcasterAdaptiveBitrate? = null
 
@@ -68,6 +69,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private var mBroadcastOn = false
 
+    private var mAudioRate: String? = null
+    private var mVideoRate: String? = null
+    private var mVideoFps: String? = null
+
     private val mAudioCallback =
         Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
 
@@ -84,6 +89,12 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             // raw pcm data before it goes to aac encoder.
             // Arrays.fill(data, (byte) 0); // "Mute" audio
         }
+
+    override fun setConfig(audioRate: String, videoRate: String, videoFps: String) {
+        mAudioRate = audioRate
+        mVideoRate = videoRate
+        mVideoFps = videoFps
+    }
 
     override fun addListener(listener: Broadcaster.Listener) {
         mListeners.add(listener)
@@ -131,18 +142,18 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         builder.setUserAgent("Larix/$VERSION_NAME")
 
         // audio
-        val audioConfig = BroadcasterUtil.getAudioConfig()
+        val audioConfig = BroadcasterUtil.getAudioConfig(mAudioRate)
         builder.setAudioConfig(audioConfig)
 
         // video
         builder.setCamera2(BroadcasterCameraManager.allowCamera2Support(context))
 
-        val videoConfig = BroadcasterUtil.getVideoConfig()
+        val videoConfig = BroadcasterUtil.getVideoConfig(mVideoRate, mVideoFps)
 
-        // get default camera id
-        val activeCamera = cameraList.firstOrNull {
-            it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT
-        } ?: cameraManager.getCameraList().first()
+        // get camera id
+        val activeCamera = mSelectedCamera ?: findPreferredCamera(cameraList).also {
+            mSelectedCamera = it
+        }
 
         // video resolution for stream and mp4 recording,
         // larix uses same resolution for camera preview and stream to simplify setup
@@ -314,10 +325,18 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         if (success) broadcastStateChanged(BroadcastState.Started)
     }
 
+    private fun isStreamerReady(): Boolean {
+        return isAudioCaptureStarted() && isVideoCaptureStarted()
+    }
+
+    private fun isInternetAvailable(context: Context): Boolean {
+        return DeviceConnectionInfo.isConnectWifi(context) ||
+                DeviceConnectionInfo.isConnectCellular(context)
+    }
+
     private fun createConnection(connectionConfig: ConnectionConfig): Boolean {
         val context = mContext ?: return false
-        val isStreamerReady = isAudioCaptureStarted() && isVideoCaptureStarted()
-        if (!isStreamerReady) {
+        if (!isStreamerReady()) {
             broadcastStateChanged(
                 BroadcastState.Error(
                     BroadcasterException(BroadcasterErrorType.ServiceNotReady)
@@ -326,10 +345,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return false
         }
 
-        if (!DeviceConnectionInfo.isInternetAvailable(context,
-                checkWifi = true,
-                checkCellular = true,
-                checkEthernet = true)) {
+        if (!isInternetAvailable(context)) {
             broadcastStateChanged(
                 BroadcastState.Error(
                     BroadcasterException(BroadcasterErrorType.InternetUnavailable)
@@ -406,6 +422,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     override fun destroy() {
         mContext = null
         mHandler = null
+        mSelectedCamera = null
     }
 
     override fun flip() {
@@ -416,7 +433,14 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mAdaptiveBitrate?.pause()
         mStreamerGL?.flip()
 
-        updateFpsRanges()
+        // Re-select camera
+        val cameraManager = mCameraManager ?: return
+        val cameraList = cameraManager.getCameraList()
+        if (cameraList.isNullOrEmpty()) return
+        mSelectedCamera = findPreferredCamera(cameraList)
+
+        updateFpsRanges(mSelectedCamera)
+
         if (mBroadcastOn) mAdaptiveBitrate?.resume()
     }
 
@@ -581,6 +605,21 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mStreamer?.changeFpsRange(fpsRange)
     }
 
+    private fun findPreferredCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
+        val activeCamId = mStreamerGL?.activeCameraId
+        if (activeCamId != null) {
+            val activeCamera = cameraList.firstOrNull { it.cameraId == activeCamId }
+            if (activeCamera != null)
+                return activeCamera
+        }
+
+        val frontFacingCamera = cameraList.firstOrNull { it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT }
+        if (frontFacingCamera != null)
+            return frontFacingCamera
+
+        return cameraList.first()
+    }
+
     private fun startAudioCapture() {
         // Pass Streamer.AudioCallback instance to access raw pcm audio and calculate audio level
         mStreamer?.startAudioCapture(mAudioCallback)
@@ -598,14 +637,11 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         return mVideoCaptureState == Streamer.CAPTURE_STATE.STARTED
     }
 
-    private fun updateFpsRanges() {
+    private fun updateFpsRanges(activeCamera: BroadcasterCamera?) {
+        if (activeCamera == null) return
         if (mAdaptiveBitrate == null) return
 
-        val camId = mStreamerGL?.activeCameraId
-        val activeCamera = mCameraManager?.getCameraList()?.firstOrNull { it.cameraId == camId }
-        activeCamera?.let {
-            if (it.fpsRanges != null) mAdaptiveBitrate?.setFpsRanges(it.fpsRanges)
-        }
+        if (activeCamera.fpsRanges != null) mAdaptiveBitrate?.setFpsRanges(activeCamera.fpsRanges)
     }
 
     private fun startTracking(connectionId: Int) {

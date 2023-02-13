@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/credit_topads"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN1000"
             app:layout_constraintStart_toEndOf="@id/creditHistoryImage"
             app:layout_constraintTop_toBottomOf="@id/credit_topads"
             app:layout_constraintBottom_toBottomOf="@id/creditHistoryImage"
@@ -56,7 +56,7 @@
             android:layout_height="@dimen/unify_space_12"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_toEndOf="@id/creditAmount"
-            android:src="@drawable/topads_dash_auto_debit"
+            app:srcCompat="@drawable/icon_refresh_credit"
             app:layout_constraintBottom_toBottomOf="@id/creditAmount"
             app:layout_constraintStart_toEndOf="@id/creditAmount"
             app:layout_constraintTop_toTopOf="@id/creditAmount" />

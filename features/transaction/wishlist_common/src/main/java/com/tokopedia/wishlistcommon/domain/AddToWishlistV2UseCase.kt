@@ -10,12 +10,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.GQL_WISHLIST_ADD_V2
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_SHARING
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_ID
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE_COLLECTION_ID
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.USER_ID
 import javax.inject.Inject
 
 @GqlQuery("AddToWishlistV2", GQL_WISHLIST_ADD_V2)
-class AddToWishlistV2UseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Result<AddToWishlistV2Response.Data.WishlistAddV2>>() {
+open class AddToWishlistV2UseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Result<AddToWishlistV2Response.Data.WishlistAddV2>>() {
     private var params: Map<String, Any?>? = null
 
     override suspend fun executeOnBackground(): Result<AddToWishlistV2Response.Data.WishlistAddV2> {
@@ -30,7 +32,20 @@ class AddToWishlistV2UseCase @Inject constructor(private val gqlRepository: Grap
 
     fun setParams(productId: String, userId: String) {
         params = mapOf(
-                PRODUCT_ID to productId,
-                USER_ID to userId)
+            PRODUCT_ID to productId,
+            USER_ID to userId
+        )
+    }
+
+    fun setParams(productId: String, userId: String, sourceCollectionId: String) {
+        val collectionSharingParams = mapOf(
+            SOURCE_COLLECTION_ID to sourceCollectionId
+        )
+
+        params = mapOf(
+            PRODUCT_ID to productId,
+            USER_ID to userId,
+            COLLECTION_SHARING to collectionSharingParams
+        )
     }
 }

@@ -14,9 +14,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_TWO_STRING
 import com.tokopedia.deals.R
@@ -25,8 +24,6 @@ import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.After
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
@@ -36,14 +33,12 @@ import org.junit.Test
 class DealsHomeActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private lateinit var localCacheHandler: LocalCacheHandler
 
     @get:Rule
     var activityRule: IntentsTestRule<DealsHomeActivity> = object : IntentsTestRule<DealsHomeActivity>(DealsHomeActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
             localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
             localCacheHandler.apply {
                 putBoolean(SHOW_COACH_MARK_KEY, false)
@@ -56,6 +51,9 @@ class DealsHomeActivityTest {
             return DealsHomeActivity.getCallingIntent(context)
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Test
     fun testHomeLayout() {
@@ -74,8 +72,7 @@ class DealsHomeActivityTest {
         actionOnPopularLandmarkViewHolder()
         actionOnFavouriteCategoryViewHolder()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_HOMEPAGE),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_HOMEPAGE), hasAllSuccess())
     }
 
     private fun changeLocation() {
@@ -205,11 +202,6 @@ class DealsHomeActivityTest {
     private fun clickOnOrderList() {
         Thread.sleep(2000)
         onView(withId(R.id.imgDealsOrderListMenu)).check(matches(isDisplayed())).perform(click())
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:viewBindingIgnore="true">
+    tools:viewBindingIgnore="true"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
@@ -29,7 +30,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:orientation="horizontal"
             android:padding="@dimen/spacing_lvl4">
 
@@ -40,20 +40,29 @@
                 app:srcCompat="@drawable/iconunify_auto_debit" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:text="@string/label_topads_automatic_topup"
-                android:textColor="@color/Unify_NN950"
+                android:textColor="@color/Unify_NN900"
                 app:typographyType="display_2"
                 app:typographyWeight="bold" />
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipAutoHistory"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900" />
+
             <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                 android:id="@+id/auto_topup_status"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+
                 app:typographyType="body_2" />
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
@@ -66,6 +75,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:padding="12dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/card_auto_topup_status">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -119,7 +129,7 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/iconunify_chevron_down"
+                    app:srcCompat="@drawable/iconunify_chevron_down"
                     android:tint="@color/Unify_NN950" />
             </LinearLayout>
 
@@ -160,7 +170,7 @@
                 android:layout_width="@dimen/unify_space_12"
                 android:layout_height="@dimen/unify_space_12"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:src="@drawable/iconunify_information"
+                app:srcCompat="@drawable/iconunify_information"
                 android:tint="@color/Unify_NN950"
                 app:layout_constraintBottom_toBottomOf="@id/deductionTitle"
                 app:layout_constraintStart_toEndOf="@id/deductionTitle"
@@ -189,6 +199,17 @@
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
+
+    <include
+        android:id="@+id/autoTopUpCreditHistoryLayout"
+        layout="@layout/top_ads_auto_top_up_history_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_auto_topup_status"
+        tools:visibility="visible"/>
 
     <include
         android:id="@+id/offLayout"

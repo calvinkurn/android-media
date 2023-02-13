@@ -9,7 +9,6 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.Inbo
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
-import java.util.*
 
 interface InboxDetailContract {
     interface InboxDetailView : InboxBaseView {

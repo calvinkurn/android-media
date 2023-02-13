@@ -46,12 +46,15 @@
     <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
     <string name="sfs_cannot_stop_campaign">Campaign yang masuk ke partisipasi event tidak dapat dihentikan.</string>
     <string name="sfs_cannot_edit_campaign">Campaign yang masuk ke partisipasi event hanya bisa diedit di versi desktop.</string>
-    <string name="sfs_ineligible_access_title">Kamu tidak memiliki kuota untuk membuat Flash Sale Toko</string>
-    <string name="sfs_ineligible_access_description">Upgrade tokomu ke Power Merchant PRO untuk dapat kuota Flash Sale  Toko, ya.</string>
-    <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>
     <string name="sfs_campaign_cancelled">%s berhasil dibatalkan.</string>
     <string name="sfs_campaign_stopped">%s berhasil dihentikan.</string>
-
+    <string name="sfs_quota_monitoring_value_placeholder_normal_state">Sisa Kuota: &lt;b>%d&lt;/b> dari &lt;b>%2d&lt;/b> |</string>
+    <string name="sfs_quota_monitoring_value_placeholder_empty_state"><![CDATA[Sisa Kuota: <b><font color=#F94D63>%d</font></b> dari <b>%2d</b> |]]></string>
+    <string name="sfs_quota_source_monitoring_value_placeholder">Sumber Kuota: &lt;b>%d&lt;/b> sumber</string>
+    <string name="sfs_cannot_update_campaign_title">Kamu belum bisa ubah campaign baru</string>
+    <string name="sfs_cannot_create_campaign_title">Kamu belum bisa buat campaign</string>
+    <string name="sfs_cannot_create_campaign_description">Upgrade ke PM PRO atau beli paket lainnya supaya bisa buat campaign baru</string>
+    <string name="sfs_vps_package_auto_switch">Sumber kuota dan jadwal campaign telah diubah secara otomatis karena ada paket yang sudah kedaluwarsa</string>
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
 
@@ -75,6 +78,8 @@
     <string name="sfs_forbidden_access_title">Yah, kamu belum bisa akses ke Flash Sale Toko</string>
     <string name="sfs_forbidden_access_description">Pelajari dulu agar tokomu bisa pakai Flash Sale Toko, yuk!</string>
     <string name="sfs_forbidden_access_learn_more">Pelajari Flash Sale Toko</string>
+    <string name="sfs_learn_pm_pro">Pelajari PM PRO</string>
+    <string name="sfs_understand">Oke, Mengerti</string>
 
     <!--Share Component-->
     <string name="sfs_share_description_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>
@@ -86,6 +91,7 @@
     <string name="sfs_info_campaign">Info Campaign</string>
     <string name="sfs_campaign_name">Nama campaign</string>
     <string name="sfs_schedule_start_date">Jadwal mulai</string>
+    <string name="sfs_quota_source">Sumber kuota</string>
     <string name="sfs_schedule_end_date">Jadwal berakhir</string>
     <string name="sfs_min_duration">Durasi min. 30 menit</string>
     <string name="sfs_teaser_description">Tampilkan campaign di tokomu sebelum jadwal campaign berlangsung</string>
@@ -96,6 +102,7 @@
     <string name="sfs_hex_code">Kode Hexa</string>
     <string name="sfs_coachmark_first">Isi informasi campaign-mu dan klik lanjut untuk ke tahap berikutnya, ya.</string>
     <string name="sfs_coachmark_second">Jika ingin melengkapi informasi campaign di lain waktu, klik Simpan Draft di sini.</string>
+    <string name="sfs_coachmark_third">Jangan lupa untuk pilih sumber kuota campaign-mu di sini sebelum lanjut, ya!</string>
     <string name="sfs_error_message_min_char">Min. 5 huruf</string>
     <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang. Pelajari</string>
     <string name="sfs_error_message_field_not_filled">Wajib diisi</string>
@@ -108,7 +115,6 @@
     <string name="sfs_cancel_edit_campaign_confirmation_description">Perubahan info campaign tidak akan tersimpan dan campaign-mu akan sama seperti sebelumnya</string>
     <string name="sfs_confirm_delete">Ya, Hapus</string>
     <string name="sfs_confirm_exit">Ya, Keluar</string>
-    <string name="sfs_date_picker_description">Kamu hanya bisa menjadwal maks. 5 campaign tiap bulan dengan maks. durasi 7 hari.</string>
     <string name="sfs_select_campaign_date">Pilih tanggal campaign</string>
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
@@ -116,12 +122,15 @@
     <string name="sfs_placeholder_empty_current_month_quota">Kuotamu di Bulan %s sudah habis</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
     <string name="sfs_placeholder_length_counter">%s/%s</string>
+    <string name="sfs_placeholder_date_picker_description">Kamu hanya bisa menjadwalkan campaign sesuai dengan periode campaign pada sumber kuota yang kamu pilih, yaitu dari %s - %s</string>
     <string name="sfs_hashtag">#</string>
     <string name="sfs_invalid_hex_color">Kode tidak valid</string>
     <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>
     <string name="sfs_min_hex_color_length">Min. 6 karakter</string>
     <string name="sfs_green_dot">Indikator campaign aktif</string>
-
+    <string name="sfs_placeholder_remaining_vps_quota">%d/%d Kuota terpakai</string>
+    <string name="sfs_placeholder_vps_quota_period">berlaku untuk periode campaign dari %s - %s</string>
+    <string name="sfs_empty_quota">Kuota habis</string>
     <string name="sfs_error_message_schedule_lapsed_title">Jadwal campaign pilihanmu sudah lewat</string>
     <string name="sfs_error_message_schedule_lapsed_description">Yuk, atur ulang jadwal campaignmu dulu!</string>
 
@@ -134,8 +143,10 @@
     <string name="campaign_teaser_info_title">Informasi Teaser Campaign</string>
 
     <!--no campaign quota dialog box-->
-    <string name="no_campaign_quota_primary_cta_text">Cek Keanggotaan Toko</string>
-    <string name="no_campaign_quota_secondary_cta_text">Kembali</string>
+    <string name="sfs_empty_quota_title">Yaah, kuota campaign-mu habis</string>
+    <string name="sfs_empty_quota_description">Dapatkan tambahan kuota campaign dengan upgrade keanggotaan tokomu dulu, ya!</string>
+    <string name="sfs_no_campaign_quota_primary_cta_text">Cek Keanggotaan Toko</string>
+    <string name="sfs_no_campaign_quota_secondary_cta_text">Kembali</string>
 
     <!--forbidden words info bottom sheet-->
     <string name="forbidden_words_info_title">Informasi daftar larangan kata</string>
@@ -363,5 +374,20 @@
     <string name="campaign_detail_campaign_price_label">Harga Campaign</string>
     <string name="campaign_detail_remaining_label">Sisa</string>
     <string name="campaign_detail_sold_label">Terjual</string>
+    <string name="sfs_placeholder_quota_resource">Sumber kuota: %s</string>
+    <string name="sfs_placeholder_event_registered">Terdaftar event: [%s]</string>
+    <string name="package_info_label">Dibuat dengan kuota</string>
+    <string name="package_info_placeholder">[%s]</string>
 
+    <!--    Kuota Flash Sale Toko-mu-->
+    <string name="ssfs_title_your_shop_flash_sale_quota">Kuota Flash Sale Toko-mu</string>
+    <string name="ssfs_remaining_quota_value_placeholder">Sisa Kuota : %d dari %2d</string>
+    <string name="ssfs_title_quota_resource_label">Kuota Flash Sale Toko-mu bersumber dari:</string>
+    <string name="ssfs_label_resource_and_remaining_quota"><![CDATA[Sumber & Sisa Kuota]]></string>
+    <string name="ssfs_expire_label">Kedaluwarsa</string>
+    <string name="ssfs_quota_monitoring_ticker_description">Agar bisa punya kuota lebih banyak, upgrade tipe keanggotaan tokomu atau cek Paket Promosi, yuk!</string>
+    <string name="ssfs_label_learn_quota">Pelajari Tentang Kuota</string>
+    <string name="ssfs_remaining_and_total_quota_value_placeholder">%d/%2d</string>
+    <string name="ssfs_expire_soon_value_placeholder"><![CDATA[<b><font color=#F94D63>%d</font></b> sumber akan <font color=#F94D63>segera</font> kedaluwarsa ]]></string>
+    <string name="stfs_nothing_label">Tidak Ada</string>
 </resources>

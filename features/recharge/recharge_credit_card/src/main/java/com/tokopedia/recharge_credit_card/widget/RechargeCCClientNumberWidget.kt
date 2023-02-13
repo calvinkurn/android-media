@@ -7,21 +7,21 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.recharge_credit_card.databinding.WidgetClientNumberWidgetCcBinding
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
@@ -38,6 +38,7 @@ import com.tokopedia.recharge_component.widget.setMainPadding
 import com.tokopedia.recharge_component.widget.showClearIconUnify
 import com.tokopedia.recharge_component.widget.validateContactName
 import com.tokopedia.recharge_credit_card.R
+import com.tokopedia.recharge_credit_card.databinding.WidgetClientNumberWidgetCcBinding
 import com.tokopedia.recharge_credit_card.toEditable
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MAX_SYMBOLS_LENGTH
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DIVIDER
@@ -48,18 +49,27 @@ import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
 
 /**
  * @author by misael on 14/06/22
  * */
-class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                             defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class RechargeCCClientNumberWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
     private var binding: WidgetClientNumberWidgetCcBinding = WidgetClientNumberWidgetCcBinding.inflate(
-        LayoutInflater.from(context), this)
+        LayoutInflater.from(context),
+        this
+    )
 
     private var mInputFieldListener: ClientNumberInputFieldListener? = null
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
@@ -77,12 +87,13 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
         initInputField()
         initSortFilterChip()
         initPrimaryButton()
+        initTickerView()
     }
 
     private fun initInputField() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
             clearIconView.setOnClickListener {
-                this.onClickClearIconUnify(textFieldStaticLabel, { onClickClearIcon()})
+                this.onClickClearIconUnify(textFieldStaticLabel, { onClickClearIcon() })
             }
             editText.imeOptions = EditorInfo.IME_ACTION_DONE
         }
@@ -114,9 +125,13 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
                             if (input.toString().isNumeric() && it.length <= TOTAL_SYMBOLS) {
                                 if (!RechargeCCUtil.isInputCorrect(it, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
                                     removeTextChangedListener(this)
-                                    it.replace(0, it.length, RechargeCCUtil.concatStringWith16D(
-                                        RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS), DIVIDER
-                                    ))
+                                    it.replace(
+                                        0, it.length,
+                                        RechargeCCUtil.concatStringWith16D(
+                                            RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS),
+                                            DIVIDER
+                                        )
+                                    )
                                     addTextChangedListener(this)
                                 }
                             }
@@ -133,7 +148,6 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
                         count: Int,
                         after: Int
                     ) {
-
                     }
 
                     override fun onTextChanged(
@@ -202,6 +216,23 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
     private fun setSortFilterChip(favnum: List<RechargeClientNumberChipModel>) {
         val sortFilter = arrayListOf<SortFilterItem>()
 
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSeeAll.run {
+            if (favnum.isNotEmpty()) {
+                chip_text.hide()
+                chipType = ChipsUnify.TYPE_ALTERNATE
+                chipImageResource = getIconUnifyDrawable(
+                    context,
+                    IconUnify.VIEW_LIST,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                setOnClickListener {
+                    mFilterChipListener?.onClickIcon(true)
+                }
+                show()
+            } else {
+                hide()
+            }
+        }
+
         // create each chip
         for (number in favnum) {
             val sortFilterItem = if (number.clientName.isEmpty()) {
@@ -231,7 +262,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
     }
 
-    private fun onClickClearIcon(){
+    private fun onClickClearIcon() {
         clearErrorState()
         hideOperatorIcon()
         mInputFieldListener?.onClearInput()
@@ -245,7 +276,8 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
         autoCompleteAdapter?.updateItems(
             suggestions.map {
                 TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, it.token)
-            }.toMutableList())
+            }.toMutableList()
+        )
     }
 
     fun setInputFieldType(type: InputFieldType) {
@@ -266,9 +298,39 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
 
     fun setInputNumber(inputNumber: String) {
         val formattedInputNumber = RechargeCCUtil.concatStringWith16D(
-            RechargeCCUtil.getDigitArray(inputNumber.toEditable(), TOTAL_DIGITS), DIVIDER)
+            RechargeCCUtil.getDigitArray(inputNumber.toEditable(), TOTAL_DIGITS),
+            DIVIDER
+        )
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText
             .setText(formattedInputNumber)
+    }
+
+    private fun initTickerView() {
+        val messages = arrayListOf(
+            TickerData(
+                title = context.getString(R.string.cc_ticker_title),
+                description = context.getString(R.string.cc_ticker_desc),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            ),
+            TickerData(
+                title = "",
+                description = context.getString(R.string.cc_ticker_2_desc),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            )
+        )
+
+        val tickerAdapter = TickerPagerAdapter(context, messages).apply {
+            setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                    mCreditCardActionListener?.onNavigateTokoCardWebView()
+                }
+            })
+        }
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetTicker.run {
+            autoSlideDelay = TICKER_AUTO_SLIDE_DELAY
+            addPagerView(tickerAdapter, messages)
+        }
     }
 
     fun getInputNumber(): String {
@@ -334,14 +396,14 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
     }
 
     fun showOperatorIcon(url: String) {
-        with (binding) {
+        with(binding) {
             clientNumberWidgetOperatorGroup.show()
             clientNumberWidgetOperatorIcon.loadImage(url)
         }
     }
 
     fun hideOperatorIcon() {
-        with (binding) {
+        with(binding) {
             clientNumberWidgetOperatorGroup.invisible()
         }
     }
@@ -390,5 +452,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
     interface CreditCardActionListener {
         fun onClickNextButton(clientNumber: String)
         fun onManualInput()
+        fun onNavigateTokoCardWebView()
+    }
+
+    companion object {
+        private val TICKER_AUTO_SLIDE_DELAY = 5000
     }
 }

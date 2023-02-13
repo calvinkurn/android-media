@@ -71,12 +71,14 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 meta {
                     productListType
                     isPostProcessing
+                    showButtonAtc
                 }
             }
             data {
                 isQuerySafe
                 autocompleteApplink
                 backendFilters
+                keywordIntention
                 redirection {
                     redirectApplink
                 }
@@ -208,6 +210,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     wishlist
                     applink
                     customVideoURL
+                    parentId
                 }
                 violation {
                     headerText
@@ -259,6 +262,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     uri
                     relative_uri
                     price_format
+                    price_range
                     wholesale_price {
                         price_format
                         quantity_max_format
@@ -294,6 +298,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         url
                     }
                     customvideo_url
+                    parent_id
                 }
                 shop{
                     id
@@ -349,6 +354,11 @@ private const val HEADLINE_ADS_QUERY = """
                         full_url
                         full_ecs
                     }
+                    flash_sale_campaign_detail{
+                        start_time
+                        end_time
+                        campaign_type
+                     }
                     shop {
                         id
                         name

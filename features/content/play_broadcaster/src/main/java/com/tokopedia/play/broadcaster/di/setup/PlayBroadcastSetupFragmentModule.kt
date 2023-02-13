@@ -2,10 +2,10 @@ package com.tokopedia.play.broadcaster.di.setup
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
 import dagger.Binds
 import dagger.Module
@@ -15,7 +15,7 @@ import dagger.multibindings.IntoMap
 abstract class PlayBroadcastSetupFragmentModule {
 
     @Binds
-    abstract fun bindFragmentFactory(fragmentFactory: PlayBroadcastFragmentFactory): FragmentFactory
+    abstract fun bindFragmentFactory(fragmentFactory: TkpdFragmentFactory): FragmentFactory
 
     /**
      * Cover

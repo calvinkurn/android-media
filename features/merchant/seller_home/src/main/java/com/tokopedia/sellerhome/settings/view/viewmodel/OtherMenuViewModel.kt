@@ -26,15 +26,15 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
+import com.tokopedia.sellerhome.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetTotalTokoMemberUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -55,6 +55,7 @@ class OtherMenuViewModel @Inject constructor(
     private val balanceInfoUseCase: BalanceInfoUseCase,
     private val getShopBadgeUseCase: GetShopBadgeUseCase,
     private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
+    private val getShopTotalTokoMembersUseCase: GetTotalTokoMemberUseCase,
     private val getUserShopInfoUseCase: GetUserShopInfoUseCase,
     private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
     private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
@@ -85,6 +86,8 @@ class OtherMenuViewModel @Inject constructor(
         MutableLiveData<SettingResponseState<TokoPlusBadgeUiModel>>()
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<String>>()
+    private val _totalTokoMemberLiveData = MutableLiveData<SettingResponseState<String>>()
+
     private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
     private val _shopOperationalLiveData =
         MutableLiveData<SettingResponseState<ShopOperationalData>>()
@@ -97,6 +100,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _shopBadgeLiveData
     val shopTotalFollowersLiveData: LiveData<SettingResponseState<String>>
         get() = _shopTotalFollowersLiveData
+    val totalTokoMemberLiveData: LiveData<SettingResponseState<String>>
+        get() = _totalTokoMemberLiveData
     val userShopInfoLiveData: LiveData<SettingResponseState<ShopStatusUiModel>>
         get() = _userShopInfoLiveData
     val shopOperationalLiveData: LiveData<SettingResponseState<ShopOperationalData>>
@@ -115,6 +120,9 @@ class OtherMenuViewModel @Inject constructor(
     private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
             value = value?.getUpdatedErrorMap(OtherMenuDataType.Badge, it)
+        }
+        addSource(_totalTokoMemberLiveData) {
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.TotalTokoMember, it)
         }
         addSource(_shopTotalFollowersLiveData) {
             value = value?.getUpdatedErrorMap(OtherMenuDataType.Followers, it)
@@ -144,6 +152,9 @@ class OtherMenuViewModel @Inject constructor(
             addSource(_shopBadgeLiveData) {
                 value = value?.getUpdatedSuccessMap(OtherMenuDataType.Badge, it)
             }
+            addSource(_totalTokoMemberLiveData) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.TotalTokoMember, it)
+            }
             addSource(_shopTotalFollowersLiveData) {
                 value = value?.getUpdatedSuccessMap(OtherMenuDataType.Followers, it)
             }
@@ -159,6 +170,7 @@ class OtherMenuViewModel @Inject constructor(
             addSource(_isShowTagCentralizePromo) {
                 value = value?.getUpdatedSuccessMap(OtherMenuDataType.IsShowTagCentralizePromo, it)
             }
+
         }
 
     private val _shouldShowMultipleErrorToaster = MediatorLiveData<Boolean>().apply {
@@ -216,6 +228,7 @@ class OtherMenuViewModel @Inject constructor(
         resetTopadsToggleCount()
 
         getShopBadgeData()
+        getTotalTokomemberData()
         getShopTotalFollowersData()
         getUserShopInfoData()
         getFreeShippingStatusData()
@@ -260,6 +273,7 @@ class OtherMenuViewModel @Inject constructor(
             if (it.value) {
                 when (it.key) {
                     OtherMenuDataType.Badge -> getShopBadge()
+                    OtherMenuDataType.TotalTokoMember -> getTotalTokoMember()
                     OtherMenuDataType.Followers -> getShopTotalFollowers()
                     OtherMenuDataType.Status -> getUserShopInfo()
                     OtherMenuDataType.Operational -> getShopOperational()
@@ -280,6 +294,11 @@ class OtherMenuViewModel @Inject constructor(
     fun getShopBadge() {
         _shopBadgeLiveData.value = SettingResponseState.SettingLoading
         getShopBadgeData()
+    }
+
+    fun getTotalTokoMember() {
+        _totalTokoMemberLiveData.value = SettingResponseState.SettingLoading
+        getTotalTokomemberData()
     }
 
     fun getShopTotalFollowers() {
@@ -333,6 +352,7 @@ class OtherMenuViewModel @Inject constructor(
         if (_errorStateMap.value == null) {
             _errorStateMap.value = mutableMapOf(
                 OtherMenuDataType.Badge to false,
+                OtherMenuDataType.TotalTokoMember to false,
                 OtherMenuDataType.Followers to false,
                 OtherMenuDataType.Status to false,
                 OtherMenuDataType.Operational to false,
@@ -363,7 +383,7 @@ class OtherMenuViewModel @Inject constructor(
         _isToasterAlreadyShown.value = isShown
     }
 
-   private fun getIsShowTagCentralizePromo() {
+    fun getIsShowTagCentralizePromo() {
         launchCatchError(
             block = {
                 val data = withContext(dispatcher.io) {
@@ -433,6 +453,24 @@ class OtherMenuViewModel @Inject constructor(
             },
             onError = {
                 _shopTotalFollowersLiveData.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    private fun getTotalTokomemberData() {
+        launchCatchError(
+            block = {
+                val totalTokoMember = withContext(dispatcher.io) {
+                    getShopTotalTokoMembersUseCase.params =
+                        GetTotalTokoMemberUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                    getShopTotalTokoMembersUseCase.executeOnBackground()
+                }
+                _totalTokoMemberLiveData.value = SettingResponseState.SettingSuccess(
+                    totalTokoMember.thousandFormatted()
+                )
+            },
+            onError = {
+                _totalTokoMemberLiveData.value = SettingResponseState.SettingError(it)
             }
         )
     }

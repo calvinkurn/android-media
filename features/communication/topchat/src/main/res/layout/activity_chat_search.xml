@@ -34,8 +34,9 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:visibility="gone"
-            app:typographyType="heading_4"
             app:typographyWeight="bold"
+            app:typographyType="heading_4"
+            android:textColor="@color/Unify_N700_96"
             tools:text="'Lorem Ipsum set amet dolor'"
             tools:visibility="visible" />
 

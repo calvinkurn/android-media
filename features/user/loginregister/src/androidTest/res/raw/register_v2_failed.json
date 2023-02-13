@@ -1,0 +1,23 @@
+{
+  "register_v2": {
+    "user_id": 219039651,
+    "is_active": 1,
+    "access_token": "",
+    "refresh_token": "",
+    "token_type": "",
+    "sid": "pG-pMmqzn5H",
+    "enable_2fa": true,
+    "enable_skip_2fa": false,
+    "errors": [
+      {
+        "name": "register",
+        "message": "Gagal mendaftar!"
+      }
+    ],
+    "popup_error": {
+      "header": "",
+      "body": "",
+      "action": ""
+    }
+  }
+}

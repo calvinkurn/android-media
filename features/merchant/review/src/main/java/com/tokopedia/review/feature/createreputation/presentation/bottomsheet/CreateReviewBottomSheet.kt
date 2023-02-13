@@ -6,18 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.imagepicker.common.putParamPageSource
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
@@ -44,6 +41,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.Create
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousInfoBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewIncentiveBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
@@ -65,7 +63,9 @@ import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -76,6 +76,10 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         private const val MAX_VIDEO_COUNT = 1
         private const val MAX_IMAGE_COUNT = 4
         private const val MAX_VIDEO_SIZE_BYTE = 250L * 1024L * 1024L
+        private const val SHOW_TEXT_AREA_AUTO_SCROLL_DELAY = 500L
+
+        const val TEMPLATES_ROW_COUNT = 2
+        const val BAD_RATING_OTHER_ID = "6"
 
         fun createInstance(
             rating: Int,
@@ -108,6 +112,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private val baseCreateReviewCustomViewListener = BaseCreateReviewCustomViewListener()
     private val anonymousListener = AnonymousListener()
     private val badRatingCategoryListener = BadRatingCategoryListener()
+    private val createReviewAnonymousInfoBottomSheetListener = CreateReviewAnonymousInfoBottomSheetListener()
     private val incentiveOvoBottomSheetListener = IncentiveOvoBottomSheetListener()
     private val mediaPickerListener = MediaPickerListener()
     private val ratingListener = RatingListener()
@@ -160,6 +165,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
     private fun setupLayout() {
         setupCreateReviewTextArea()
+        setupCreateReviewTemplate()
     }
 
     private fun setupListeners() {
@@ -175,6 +181,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         setCloseClickListener {
             handleDismiss()
         }
+        setupInsetListener()
         baseCreateReviewCustomViewListener.attachListener()
         ratingListener.attachListener()
         tickerListener.attachListener()
@@ -185,6 +192,32 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         templateListener.attachListener()
         anonymousListener.attachListener()
         submitButtonListener.attachListener()
+    }
+
+    private fun setupInsetListener() {
+        dialog?.window?.decorView?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
+                viewModel.setBottomSheetBottomInset(insets.systemWindowInsetBottom)
+                insets
+            }
+        }
+    }
+
+    private suspend fun shouldScheduleScrollToTextArea(bottomInset: Int) {
+        if (bottomInset.isMoreThanZero()) {
+            delay(SHOW_TEXT_AREA_AUTO_SCROLL_DELAY)
+            scrollToTextArea()
+        }
+    }
+
+    private fun scrollToTextArea() {
+        binding?.let {
+            val mediaPickerBottom = it.reviewFormTextArea.bottom + CreateReviewTextArea.PADDING_BOTTOM.toPx()
+            val scrollViewHeight = it.reviewFormScrollView.height
+            val scrollX = Int.ZERO
+            val scrollY = mediaPickerBottom - scrollViewHeight
+            it.reviewFormScrollView.smoothScrollTo(scrollX, scrollY)
+        }
     }
 
     private fun handleDismiss() {
@@ -282,6 +315,10 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         binding?.reviewFormTextArea?.setMaxLine(TEXT_AREA_MAX_MIN_LINE)
     }
 
+    private fun setupCreateReviewTemplate() {
+        binding?.reviewFormTemplates?.setMargins(top = 6.toPx())
+    }
+
     private object ArgumentHandler {
 
         private const val ARG_RATING = "argRating"
@@ -322,17 +359,9 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
     private inner class ActivityResultHandler {
         private fun handleMediaPickerResult(data: Intent) {
-            val mediaCount = if (viewModel.shouldUseUniversalMediaPicker()) {
-                val result = MediaPicker.result(data)
-                viewModel.updateMediaPicker(result.originalPaths)
-                result.originalPaths.size
-            } else {
-                val result = ImagePickerResultExtractor.extract(data)
-                val selectedImage = result.imageUrlOrPathList
-                val imagesFedIntoPicker = result.imagesFedIntoPicker
-                viewModel.updateMediaPicker(selectedImage, imagesFedIntoPicker)
-                selectedImage.size
-            }
+            val result = MediaPicker.result(data)
+            viewModel.updateMediaPicker(result.originalPaths)
+            val mediaCount = result.originalPaths.size
             trackingHandler.trackOnReceiveMediaFromMediaPicker(mediaCount)
         }
 
@@ -365,6 +394,12 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             return (childFragmentManager.findFragmentByTag(
                 CreateReviewPostSubmitBottomSheet.TAG
             ) as? CreateReviewPostSubmitBottomSheet)
+        }
+
+        private fun getCreateReviewAnonymousInfoBottomSheetFromFragmentManager(): CreateReviewAnonymousInfoBottomSheet? {
+            return (childFragmentManager.findFragmentByTag(
+                CreateReviewAnonymousInfoBottomSheet.TAG
+            ) as? CreateReviewAnonymousInfoBottomSheet)
         }
 
         fun showOvoIncentiveBottomSheet(data: IncentiveOvoBottomSheetUiModel) {
@@ -413,6 +448,14 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                 }
         }
 
+        fun showCreateReviewAnonymousInfoBottomSheet() {
+            getCreateReviewAnonymousInfoBottomSheetFromFragmentManager()
+                ?: CreateReviewAnonymousInfoBottomSheet().also {
+                    it.setListener(createReviewAnonymousInfoBottomSheetListener)
+                    it.show(childFragmentManager, CreateReviewAnonymousInfoBottomSheet.TAG)
+                }
+        }
+
         fun dismissOvoIncentiveBottomSheet() {
             getOvoIncentiveBottomSheetFromFragmentManager()?.dismiss()
         }
@@ -423,6 +466,10 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         fun dismissCreateReviewPostSubmitBottomSheet() {
             getCreateReviewPostSubmitBottomSheetFromFragmentManager()?.dismiss()
+        }
+
+        fun dismissCreateReviewAnonymousInfoBottomSheet() {
+            getCreateReviewAnonymousInfoBottomSheetFromFragmentManager()?.dismiss()
         }
     }
 
@@ -444,7 +491,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             secondaryCtaAction: () -> Unit
         ) {
             context?.let {
-                DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                     setTitle(title)
                     setDescription(description)
                     setPrimaryCTAText(primaryCtaText)
@@ -594,7 +641,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             )
         }
 
-        fun trackClickBadRatingReason(title: String, selected: Boolean, ) {
+        fun trackClickBadRatingReason(title: String, selected: Boolean) {
             CreateReviewTracking.eventClickBadRatingReason(
                 viewModel.getOrderId(),
                 viewModel.getProductId(),
@@ -621,12 +668,12 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         fun trackOnReceiveMediaFromMediaPicker(mediaCount: Int) {
             CreateReviewTracking.reviewOnImageUploadTracker(
-                viewModel.getOrderId(),
-                viewModel.getProductId(),
-                true,
-                mediaCount.toString(),
-                false,
-                viewModel.getFeedbackId()
+                orderId = viewModel.getOrderId(),
+                productId = viewModel.getProductId(),
+                isSuccessful = true,
+                imageNum = mediaCount.toString(),
+                isEditReview = false,
+                feedbackId = viewModel.getFeedbackId()
             )
         }
 
@@ -647,6 +694,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             collectTickerUiState()
             collectTextAreaTitleUiState()
             collectBadRatingCategoriesUiState()
+            collectTopicsUiState()
             collectTextAreaUiState()
             collectTemplateUiState()
             collectMediaPickerUiState()
@@ -656,6 +704,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             collectIncentiveBottomSheetUiState()
             collectTextAreaBottomSheetUiState()
             collectPostSubmitBottomSheetUiState()
+            collectAnonymousInfoBottomSheetUiState()
             collectToasterQueue()
             collectSubmitReviewResult()
         }
@@ -678,13 +727,18 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         private fun collectCreateReviewBottomSheet() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.createReviewBottomSheetUiState) {
-                if (it is CreateReviewBottomSheetUiState.ShouldDismiss) {
-                    context?.let { context ->
-                        finishIfRoot(
-                            it.success,
-                            it.message.getStringValue(context),
-                            it.feedbackId
-                        )
+                when (it) {
+                    is CreateReviewBottomSheetUiState.Showing -> {
+                        shouldScheduleScrollToTextArea(it.bottomInset)
+                    }
+                    is CreateReviewBottomSheetUiState.ShouldDismiss -> {
+                        context?.let { context ->
+                            finishIfRoot(
+                                it.success,
+                                it.message.getStringValue(context),
+                                it.feedbackId
+                            )
+                        }
                     }
                 }
             }
@@ -692,67 +746,97 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         private fun collectProductCardUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.productCardUiState) {
-                binding?.reviewFormProductCard?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormProductCard?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectRatingUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.ratingUiState) {
-                binding?.reviewFormRating?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormRating?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectTickerUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.tickerUiState) {
-                binding?.reviewFormTicker?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTicker?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectTextAreaTitleUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaTitleUiState) {
-                binding?.reviewFormTextAreaTitle?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTextAreaTitle?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectBadRatingCategoriesUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.badRatingCategoriesUiState) {
-                binding?.reviewFormBadRatingCategories?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormBadRatingCategories?.updateUi(it, continuation)
+                }
+            }
+        }
+
+        private fun collectTopicsUiState() {
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.topicsUiState) {
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTopics?.updateUI(it, continuation)
+                }
             }
         }
 
         private fun collectTextAreaUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaUiState) {
-                binding?.reviewFormTextArea?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTextArea?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA, continuation)
+                }
             }
         }
 
         private fun collectTemplateUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.templateUiState) {
-                binding?.reviewFormTemplates?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTemplates?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectMediaPickerUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.mediaPickerUiState) {
-                binding?.reviewFormMediaPicker?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormMediaPicker?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectAnonymousUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.anonymousUiState) {
-                binding?.reviewFormAnonymous?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormAnonymous?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectProgressBarUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.progressBarUiState) {
-                binding?.reviewFormProgressBarWidget?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormProgressBarWidget?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectSubmitButtonUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.submitButtonUiState) {
-                binding?.reviewFormSubmitButton?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormSubmitButton?.updateUi(it, continuation)
+                }
             }
         }
 
@@ -788,6 +872,16 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                     is PostSubmitUiState.ShowThankYouToaster -> {
                         showThankYouToaster(it.data)
                     }
+                }
+            }
+        }
+
+        private fun collectAnonymousInfoBottomSheetUiState() {
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.anonymousInfoBottomSheetUiState) {
+                if (it is CreateReviewAnonymousInfoBottomSheetUiState.Showing) {
+                    bottomSheetHandler.showCreateReviewAnonymousInfoBottomSheet()
+                } else {
+                    bottomSheetHandler.dismissCreateReviewAnonymousInfoBottomSheet()
                 }
             }
         }
@@ -879,6 +973,10 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             viewModel.setAnonymous(anonymous)
         }
 
+        override fun onClickSeeAnonymousInfo() {
+            viewModel.showAnonymousInfoBottomSheet()
+        }
+
         fun attachListener() {
             binding?.reviewFormAnonymous?.setListener(this)
         }
@@ -912,24 +1010,14 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private inner class MediaPickerListener: CreateReviewMediaPicker.Listener {
         private fun goToMediaPicker() {
             context?.let {
-                val intent = if (viewModel.shouldUseUniversalMediaPicker()) {
-                    trackingHandler.trackOpenUniversalMediaPicker()
-                    MediaPicker.intent(it) {
-                        pageSource(PageSource.Review)
-                        modeType(ModeType.COMMON)
-                        maxMediaItem(MAX_IMAGE_COUNT)
-                        maxVideoItem(MAX_VIDEO_COUNT)
-                        maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
-                    }
-                } else {
-                    val builder = ImagePickerBuilder.getSquareImageBuilder(it)
-                        .withSimpleEditor()
-                        .withSimpleMultipleSelection(viewModel.getSelectedMediasUrl())
-                        .apply { title = getString(R.string.image_picker_title) }
-                    RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER).apply {
-                        putImagePickerBuilder(builder)
-                        putParamPageSource(ImagePickerPageSource.REVIEW_PAGE)
-                    }
+                trackingHandler.trackOpenUniversalMediaPicker()
+                val intent = MediaPicker.intent(it) {
+                    pageSource(PageSource.Review)
+                    modeType(ModeType.COMMON)
+                    maxMediaItem(MAX_IMAGE_COUNT)
+                    maxVideoItem(MAX_VIDEO_COUNT)
+                    maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
+                    includeMedias(viewModel.getSelectedMediasUrl())
                 }
                 startActivityForResult(intent, CreateReviewFragment.REQUEST_CODE_IMAGE)
             }
@@ -969,7 +1057,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private inner class SubmitButtonListener : CreateReviewSubmitButton.Listener {
         override fun onSubmitButtonClicked() {
             trackingHandler.trackClickSubmitForm()
-            if (!viewModel.isReviewComplete() && viewModel.hasIncentive()) {
+            if (!viewModel.isReviewComplete() && (viewModel.hasIncentive() || viewModel.hasOngoingChallenge())) {
                 dialogHandler.showReviewIncompleteDialog()
             } else {
                 viewModel.submitReview()
@@ -1040,6 +1128,12 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                 ),
                 feedbackId = viewModel.getFeedbackId()
             )
+        }
+    }
+
+    private inner class CreateReviewAnonymousInfoBottomSheetListener: CreateReviewAnonymousInfoBottomSheet.Listener {
+        override fun onDismissCreateReviewAnonymousInfoBottomSheet() {
+            viewModel.dismissAnonymousInfoBottomSheet()
         }
     }
 }

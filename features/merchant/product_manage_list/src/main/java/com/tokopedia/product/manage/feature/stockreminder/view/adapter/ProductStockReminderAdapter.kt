@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.adapter
 
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -55,7 +56,6 @@ class ProductStockReminderAdapter(
     inner class ProductStockReminderViewHolder(private val binding: ItemProductStockReminderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-
         private var textChangeListener: TextWatcher? = null
 
         private var firstStateChecked = false
@@ -67,7 +67,6 @@ class ProductStockReminderAdapter(
             setAddButtonClickListener()
             setSubtractButtonClickListener()
             firstStateChecked = true
-
         }
 
         private fun setupStatusSwitch(product: ProductStockReminderUiModel) {
@@ -82,14 +81,14 @@ class ProductStockReminderAdapter(
 
         private fun setupStockEditorText(product: ProductStockReminderUiModel) {
             binding.qeStock.editText.run {
+                val maxLength = InputFilter.LengthFilter(StockReminderConst.MAXIMUM_LENGTH)
+                filters = arrayOf(maxLength)
                 textChangeListener = createTextChangeListener(product)
                 addTextChangedListener(textChangeListener)
             }
 
-            binding.qeStock.setValue(product.stockAlertCount)
-
             binding.qeStock.run {
-                maxValue = Int.MAX_VALUE
+                maxValue = product.maxStock ?: MAXIMUM_STOCK_REMINDER
                 editText.setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         clearFocus()
@@ -98,6 +97,7 @@ class ProductStockReminderAdapter(
                     true
                 }
             }
+            binding.qeStock.setValue(product.stockAlertCount)
         }
 
         private fun createTextChangeListener(product: ProductStockReminderUiModel): TextWatcher {
@@ -209,13 +209,14 @@ class ProductStockReminderAdapter(
                 val isActive = binding.swStockReminder.isChecked.orFalse()
                 if (isActive) {
                     listener.onChangeStockReminder(
-                        productId, stock,
+                        productId,
+                        stock,
                         REMINDER_ACTIVE
                     )
-
                 } else {
                     listener.onChangeStockReminder(
-                        productId, stock,
+                        productId,
+                        stock,
                         REMINDER_INACTIVE
                     )
                 }

@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -33,6 +35,11 @@ class DigitalAddToCartViewModel @Inject constructor(
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
 
+    private val _errorAtc = MutableLiveData<ErrorAtc>()
+    val errorAtc: LiveData<ErrorAtc>
+        get() = _errorAtc
+
+
     fun addToCart(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
@@ -56,14 +63,14 @@ class DigitalAddToCartViewModel @Inject constructor(
 
                 data?.let {
                     rechargeAnalytics.eventAddToCart(it)
-                    if (it.categoryId.isNotEmpty()) {
-                        _addToCartResult.postValue(Success(it.categoryId))
+                    if (it.atcError != null) {
+                        _errorAtc.postValue(it.atcError)
                     } else {
-                        _addToCartResult.postValue(
-                            Success(
-                                digitalCheckoutPassData.categoryId ?: ""
-                            )
-                        )
+                        if (it.categoryId.isNotEmpty()) {
+                            _addToCartResult.postValue(Success(it.categoryId))
+                        } else {
+                            _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
+                        }
                     }
                     return@launchCatchError
                 }
@@ -71,6 +78,8 @@ class DigitalAddToCartViewModel @Inject constructor(
             }) {
                 if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                     _addToCartResult.postValue(Fail(MessageErrorException(it.message)))
+                } else if (it is DigitalAtcErrorException) {
+                    _errorAtc.postValue(it.getError())
                 } else {
                     _addToCartResult.postValue(Fail(it))
                 }

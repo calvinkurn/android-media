@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="@dimen/dp_36"
+            android:layout_marginBottom="36dp"
             android:text="@string/review_reminder_how_to_description_2"
             app:typographyType="body_2" />
 

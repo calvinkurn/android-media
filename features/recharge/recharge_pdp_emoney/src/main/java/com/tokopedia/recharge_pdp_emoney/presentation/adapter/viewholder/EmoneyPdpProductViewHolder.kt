@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.ItemEmoneyProductBinding
 import com.tokopedia.unifycomponents.CardUnify
@@ -26,13 +27,17 @@ class EmoneyPdpProductViewHolder(val view: View,
             if (item.attributes.price.isNotEmpty()) {
                 emoneyProductPrice.text = item.attributes.price
             } else {
-                emoneyProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(item.attributes.pricePlain.toIntOrZero())
+                emoneyProductPrice.text = CurrencyFormatUtil
+                    .convertPriceValueToIdrFormatNoSpace(
+                        item.attributes.pricePlain.toIntSafely()
+                    )
             }
             root.setOnClickListener { listener?.onClickProduct(item, position) }
             emoneyProductSeeDetailText.setOnClickListener {
                 listener?.onClickSeeDetailProduct(item)
             }
-            cardEmoneyProduct.cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_SHADOW
+            cardEmoneyProduct.cardType = if (isSelectedItem)
+                CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_SHADOW
         }
     }
 

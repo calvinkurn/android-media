@@ -5,10 +5,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailShippingSectionBinding
+import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingDetailUiModel
 
 class ShippingDetailViewHolder(view: View):
-    BaseOrderTrackingViewHolder<ShippingDetailUiModel>(view) {
+    CustomPayloadViewHolder<ShippingDetailUiModel>(view) {
 
     companion object {
         @LayoutRes

@@ -6,23 +6,25 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kyc_centralized.data.model.KycProjectInfo
 import com.tokopedia.kyc_centralized.test.R
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
+import javax.inject.Inject
 
-class FakeGraphqlRepository : GraphqlRepository {
+class FakeGraphqlRepository @Inject constructor() : GraphqlRepository {
 
     var infoCount = 0
 
     override suspend fun response(
         requests: List<GraphqlRequest>,
-        cacheStrategy: GraphqlCacheStrategy
+        cacheStrategy: GraphqlCacheStrategy,
     ): GraphqlResponse {
         return when (GqlQueryParser.parse(requests).first()) {
             "kycProjectInfo" -> {
-                val obj = when(infoCount) {
+                val obj = when (infoCount) {
                     0 -> MockProvider.notRegisteredUser()
                     else -> MockProvider.pending()
                 }
@@ -44,13 +46,11 @@ class FakeGraphqlRepository : GraphqlRepository {
 
         fun pending(): KycUserProjectInfoPojo {
             return KycUserProjectInfoPojo().apply {
-                kycProjectInfo = KycProjectInfo().apply {
-                    isSelfie = false
-                    status = 0
-                    setReasonList(arrayListOf())
-                }
+                kycProjectInfo = KycProjectInfo(
+                    isSelfie = false,
+                    status = 0,
+                    reasonList = arrayListOf())
             }
         }
     }
-
 }

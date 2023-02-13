@@ -114,7 +114,7 @@ class VideoAnalyticHelper(
     private fun sendVideoBufferingAnalytic() {
         analytic.trackVideoBuffering(
                 bufferCount = bufferTrackingModel.bufferCount,
-                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / DURATION_DIVIDER).toInt()
+                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / DURATION_DIVIDER)
         )
     }
 

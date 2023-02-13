@@ -46,6 +46,7 @@ import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
 import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
+import com.tokopedia.shop.flashsale.common.extension.daysDifference
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
 import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
@@ -71,6 +72,7 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignWithVpsPackages
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
@@ -79,13 +81,18 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.TimePickerSelectionMode
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.VpsPackageBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
+import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
+import com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel.CampaignInformationViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.removeTime
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Date
 import javax.inject.Inject
@@ -102,12 +109,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val TWELVE = 12
         private const val SIX_DAYS = 6
         private const val THREE_MONTH = 3
+        private const val THREE_HOUR = 3
         private const val TWO_HOURS = 2
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
         private const val LEARN_MORE_CTA_TEXT_LENGTH = 8
         private const val REDIRECT_TO_PREVIOUS_PAGE_DELAY : Long = 1_500
         private const val ONE = 1
+        private const val VPS_PACKAGE_ID_NOT_SELECTED : Long = 0
+        private const val EMPTY_QUOTA = 0
+        private const val ALPHA_DISABLED = 0.3f
 
         @JvmStatic
         fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
@@ -148,7 +159,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             defaultGradientColor.first,
             defaultGradientColor.second,
             PaymentType.INSTANT,
-            Int.ZERO
+            Int.ZERO,
+            VPS_PACKAGE_ID_NOT_SELECTED
         )
     }
 
@@ -196,7 +208,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeCampaignUpdate()
         observeCampaignDetail()
         observeCampaignQuota()
+        observeVpsPackages()
         observeSaveDraft()
+        observeEmptyQuotaVpsPackageError()
         handlePageMode()
         viewModel.getCurrentMonthRemainingQuota()
     }
@@ -303,6 +317,61 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
 
+    private fun observeVpsPackages() {
+        viewModel.vpsPackages.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val vpsPackages = result.data
+                    viewModel.storeVpsPackage(vpsPackages)
+
+                    val defaultVpsPackage = vpsPackages.firstOrNull() ?: return@observe
+                    viewModel.setSelectedVpsPackage(defaultVpsPackage)
+                    displaySelectedVpsPackage(defaultVpsPackage)
+                }
+                is Fail -> {
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeEmptyQuotaVpsPackageError() {
+        viewModel.emptyQuotaVpsPackage.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    displaySelectedVpsPackage(result.data)
+                }
+                is Fail -> {
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+
+    private fun displaySelectedVpsPackage(vpsPackage : VpsPackageUiModel?) {
+        val isUsingShopTierBenefit = vpsPackage?.isShopTierBenefit.orFalse()
+        val isUsingVpsPackage = !isUsingShopTierBenefit
+
+        val helperMessage = if (isUsingShopTierBenefit) {
+            ""
+        } else {
+            String.format(
+                getString(R.string.sfs_placeholder_remaining_vps_quota),
+                vpsPackage?.currentQuota.orZero(),
+                vpsPackage?.originalQuota.orZero()
+            )
+        }
+
+        binding?.tauVpsPackageName?.editText?.setText(vpsPackage?.packageName)
+        binding?.tauVpsPackageName?.setMessage(helperMessage)
+
+        if (isUsingVpsPackage && vpsPackage?.remainingQuota == EMPTY_QUOTA) {
+            displayVpsQuotaEmptyError(vpsPackage.originalQuota)
+            binding?.btnCreateCampaign?.disable()
+        }
+    }
+
     private fun setupView() {
         binding?.switchTeaser?.isChecked = true
         setupToolbar()
@@ -310,7 +379,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
+        setupQuotaSource()
     }
+
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.itemAnimator = null
@@ -365,7 +436,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             }
 
             switchTeaser.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.setShowTeaser(isChecked)
                 handleSwitchTeaser(isChecked)
             }
 
@@ -405,12 +475,30 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupQuotaSource() {
+        binding?.run {
+            tauVpsPackageName.editText.inputType = InputType.TYPE_NULL
+            tauVpsPackageName.editText.isFocusable = false
+            tauVpsPackageName.editText.setOnClickListener { displayQuotaSourceBottomSheet() }
+        }
+    }
+
     private fun handlePageMode() {
         if (pageMode == PageMode.CREATE) {
             viewModel.storeAsDefaultSelection(defaultState)
+            viewModel.getVpsPackages(VPS_PACKAGE_ID_NOT_SELECTED)
         }
 
         if (pageMode == PageMode.UPDATE) {
+            binding?.loader?.visible()
+            binding?.groupContent?.gone()
+            viewModel.getCampaignDetail(campaignId)
+            binding?.btnDraft?.gone()
+            binding?.tauVpsPackageName?.disable()
+            binding?.tauVpsPackageName?.icon1?.alpha = ALPHA_DISABLED
+        }
+
+        if (pageMode == PageMode.DRAFT) {
             binding?.loader?.visible()
             binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
@@ -476,7 +564,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
                 viewModel.submit(selection)
             }
-
         }
     }
 
@@ -567,20 +654,18 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
+        val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return
+        val maximumCampaignEndDate = viewModel.findCampaignMaxEndDateByVpsRule(selectedVpsPackage, maximumEndDate)
+
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
-            TimePickerSelectionMode.START_TIME,
+            TimePickerSelectionMode.CAMPAIGN_START_DATE,
             selectedDate,
             minimumDate,
-            maximumEndDate
+            maximumCampaignEndDate,
+            viewModel.getSelectedVpsPackage() ?: return
         )
-        bottomSheet.setOnDateTimePicked { newStartDate ->
-            viewModel.setSelectedStartDate(newStartDate)
-            binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-            adjustEndDate()
-            val quantityPickerCurrentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
-            adjustQuantityPicker(quantityPickerCurrentValue, newStartDate)
-            viewModel.getCampaignQuota(newStartDate.extractMonth(), newStartDate.extractYear())
-        }
+
+        bottomSheet.setOnDateTimePicked { newStartDate -> handleCampaignNewStartDate(newStartDate) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
@@ -588,27 +673,61 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return
+
+        val maximumEndDate = if (selectedVpsPackage.isShopTierBenefit) {
+            viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        } else {
+            selectedVpsPackage.packageEndTime
+        }
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
-            TimePickerSelectionMode.END_TIME,
+            TimePickerSelectionMode.CAMPAIGN_END_DATE,
             endDate,
             minimumDate,
-            maximumEndDate
+            maximumEndDate,
+            viewModel.getSelectedVpsPackage() ?: return
         )
-        bottomSheet.setOnDateTimePicked { newEndDate ->
-            viewModel.setSelectedEndDate(newEndDate)
-            binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-        }
+        bottomSheet.setOnDateTimePicked { newEndDate -> handleCampaignNewEndDate(newEndDate) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun adjustEndDate() {
-        val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
+    private fun handleCampaignNewStartDate(newStartDate: Date) {
+        viewModel.setSelectedStartDate(newStartDate)
+        binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+        adjustEndDate()
 
-        viewModel.setSelectedEndDate(endDate)
-        binding?.tauEndDate?.editText?.setText(endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+        val quantityPickerCurrentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+        adjustQuantityPicker(quantityPickerCurrentValue, newStartDate)
+
+        val vpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
+        viewModel.getCampaignQuotaOfSelectedMonth(
+            newStartDate.extractMonth(),
+            newStartDate.extractYear(),
+            vpsPackageId
+        )
+    }
+
+    private fun handleCampaignNewEndDate(newEndDate: Date) {
+        viewModel.setSelectedEndDate(newEndDate)
+        binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+    }
+
+
+    private fun adjustEndDate() {
+        val startDate = viewModel.getSelectedStartDate()
+        val endDate = viewModel.getSelectedEndDate()
+
+        val differenceInDays = endDate.daysDifference(startDate)
+        val modifiedEndDate = if (differenceInDays > SIX_DAYS) {
+            viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        } else {
+            startDate.advanceMinuteBy(THIRTY_MINUTE)
+        }
+
+        viewModel.setSelectedEndDate(modifiedEndDate)
+        val formattedEndDate = modifiedEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+        binding?.tauEndDate?.editText?.setText(formattedEndDate)
     }
 
     private fun adjustQuantityPicker(currentValue : Int, newStartDate : Date) {
@@ -628,6 +747,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val secondColor = viewModel.getColor().second
         val paymentType = viewModel.getPaymentType()
         val remainingQuota = viewModel.getRemainingQuota()
+        val vpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
 
         return CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString(),
@@ -638,7 +758,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             firstColor,
             secondColor,
             paymentType,
-            remainingQuota
+            remainingQuota,
+            vpsPackageId
         )
     }
 
@@ -702,6 +823,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerErrorMessage?.visible()
         binding?.tickerErrorMessage?.tickerTitle = title
         binding?.tickerErrorMessage?.setTextDescription(description)
+        binding?.tickerErrorMessage?.tickerShape = Ticker.SHAPE_LOOSE
+        binding?.tickerErrorMessage?.tickerType = Ticker.TYPE_ERROR
+    }
+
+    private fun showVpsPackageAutomaticallyAdjustedTicker() {
+        binding?.tickerErrorMessage?.visible()
+        binding?.tickerErrorMessage?.tickerTitle = ""
+        binding?.tickerErrorMessage?.setTextDescription(getString(R.string.sfs_vps_package_auto_switch))
+        binding?.tickerErrorMessage?.tickerShape = Ticker.SHAPE_LOOSE
+        binding?.tickerErrorMessage?.tickerType = Ticker.TYPE_ANNOUNCEMENT
     }
 
     private fun hideErrorTicker() {
@@ -716,21 +847,52 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerLapsedTeaser?.gone()
     }
 
-    private fun displayCampaignDetail(campaign: CampaignUiModel) {
+    private fun displayCampaignDetail(campaignWithSelectedVpsPackage: CampaignWithVpsPackages) {
+        val now = Date()
+        val campaign = campaignWithSelectedVpsPackage.campaign
+        val matchedResult = viewModel.findSelectedVpsPackage(
+            campaign.packageInfo.packageId,
+            campaignWithSelectedVpsPackage.vpsPackages
+        )
+
+        val selectedVpsPackage = matchedResult ?: campaignWithSelectedVpsPackage.vpsPackages.first()
+
+        val updatedVpsPackage = viewModel.findSuggestedVpsPackage(now, selectedVpsPackage, campaignWithSelectedVpsPackage.vpsPackages) ?: return
+        val isSelectedVpsPackageExpired = now.after(selectedVpsPackage.packageEndTime)
+
+        val campaignStartDate = if (isSelectedVpsPackageExpired) {
+            now.advanceHourBy(TWO_HOURS)
+        } else {
+            campaign.startDate.removeTimeZone()
+        }
+
+        val campaignEndDate = if (isSelectedVpsPackageExpired) {
+            campaignStartDate.advanceMinuteBy(THIRTY_MINUTE)
+        } else {
+            campaign.endDate.removeTimeZone()
+        }
+
+        val campaignUpcomingDate = if (isSelectedVpsPackageExpired) {
+            campaignStartDate.decreaseHourBy(ONE_HOUR)
+        } else {
+            campaign.upcomingDate.removeTimeZone()
+        }
+
+        if (isSelectedVpsPackageExpired) showVpsPackageAutomaticallyAdjustedTicker()
+
         binding?.run {
             tauCampaignName.editText.setText(campaign.campaignName)
 
+            displaySelectedVpsPackage(updatedVpsPackage)
+
             val isEditDateEnabled = campaign.status == CampaignStatus.DRAFT
-            tauStartDate.editText.setText(campaign.startDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-            tauEndDate.editText.setText(campaign.endDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauStartDate.editText.setText(campaignStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauEndDate.editText.setText(campaignEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
             tauStartDate.isEnabled = isEditDateEnabled
             tauEndDate.isEnabled = isEditDateEnabled
 
-            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(
-                campaign.startDate.removeTimeZone(),
-                campaign.upcomingDate.removeTimeZone()
-            )
-            val maxValue = viewModel.getTeaserQuantityEditorMaxValue( campaign.startDate.removeTimeZone(), Date())
+            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(campaignStartDate, campaignUpcomingDate)
+            val maxValue = viewModel.getTeaserQuantityEditorMaxValue(campaignStartDate, Date())
             binding?.quantityEditor?.maxValue = maxValue
             binding?.quantityEditor?.setValue(upcomingTimeInHours)
             binding?.quantityEditor?.addButton?.isEnabled = upcomingTimeInHours != QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -741,23 +903,25 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             renderSelectedColor(campaign)
         }
 
-        viewModel.setSelectedStartDate(campaign.startDate.removeTimeZone())
-        viewModel.setSelectedEndDate(campaign.endDate.removeTimeZone())
-        viewModel.setShowTeaser(campaign.useUpcomingWidget)
+        viewModel.setSelectedStartDate(campaignStartDate)
+        viewModel.setSelectedEndDate(campaignEndDate)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
+        viewModel.storeVpsPackage(campaignWithSelectedVpsPackage.vpsPackages)
+        viewModel.setSelectedVpsPackage(updatedVpsPackage)
 
         viewModel.storeAsDefaultSelection(
             CampaignInformationViewModel.Selection(
                 campaign.campaignName,
-                campaign.startDate.removeTimeZone(),
-                campaign.endDate.removeTimeZone(),
+                campaignStartDate,
+                campaignEndDate,
                 campaign.useUpcomingWidget,
-                campaign.upcomingDate.removeTimeZone(),
+                campaignUpcomingDate,
                 campaign.gradientColor.first,
                 campaign.gradientColor.second,
                 campaign.paymentType,
-                Int.ZERO
+                Int.ZERO,
+                campaign.packageInfo.packageId
             )
         )
     }
@@ -789,7 +953,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleBackConfirmation() {
         val remainingQuota = viewModel.getRemainingQuota()
-        val updatedDefaultSelection = viewModel.getDefaultSelection()?.copy(remainingQuota = remainingQuota) ?: return
+        val selectedVpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
+        val updatedDefaultSelection = viewModel.getDefaultSelection()?.copy(
+            remainingQuota = remainingQuota,
+            vpsPackageId = selectedVpsPackageId
+        ) ?: return
 
         val isDataChanged = viewModel.isDataChanged(updatedDefaultSelection, getCurrentSelection())
         if (!isDataChanged) {
@@ -833,6 +1001,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun populateCoachMarkItems(): ArrayList<CoachMark2Item> {
         val firstAnchorView = binding?.btnCreateCampaign ?: return arrayListOf()
         val secondAnchorView = binding?.btnDraft ?: return arrayListOf()
+        val thirdAnchorView = binding?.tauVpsPackageName?.icon1 ?: return arrayListOf()
 
         return arrayListOf(
             CoachMark2Item(
@@ -847,6 +1016,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 "",
                 CoachMark2.POSITION_TOP
             ),
+            CoachMark2Item(
+                thirdAnchorView,
+                getString(R.string.sfs_coachmark_third),
+                "",
+                CoachMark2.POSITION_BOTTOM
+            )
+
         )
     }
 
@@ -854,6 +1030,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         if (result.isSuccess) {
             ManageProductActivity.start(activity ?: return, result.campaignId, pageMode)
         } else {
+            viewModel.recheckLatestSelectedVpsPackageQuota()
             handleCreateCampaignError(result)
         }
     }
@@ -866,7 +1043,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             if (result.isSuccess) {
                 activity?.apply {
                     // handle campaign save draft is not opened from campaign list case
-                    if (pageMode == PageMode.UPDATE) {
+                    if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
                         CampaignListActivity.start(
                             this,
                             isSaveDraft = true,
@@ -913,5 +1090,51 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun TextFieldUnify2?.applySecondaryColor() {
         val secondaryColorStateList = ColorStateList(binding?.tauEndDate?.disabledStateList, binding?.tauEndDate?.secondaryColorList)
         this?.textInputLayout?.setHelperTextColor(secondaryColorStateList)
+    }
+
+    private fun displayQuotaSourceBottomSheet() {
+        val selectedVpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
+        val vpsPackages = ArrayList(viewModel.getStoredVpsPackages())
+        val bottomSheet = VpsPackageBottomSheet.newInstance(selectedVpsPackageId, vpsPackages)
+        bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
+            binding?.tauVpsPackageName?.isInputError = false
+            viewModel.setSelectedVpsPackage(selectedVpsPackage)
+            displaySelectedVpsPackage(selectedVpsPackage)
+            val campaignName = binding?.tauCampaignName?.editText?.text.toString()
+            binding?.btnCreateCampaign?.isEnabled = viewModel.shouldEnableProceedButton(campaignName, selectedVpsPackage)
+            handleSwitchVpsPackageRule(selectedVpsPackage)
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayVpsQuotaEmptyError(originalQuota: Int) {
+        val errorMessage =  String.format(
+            getString(R.string.sfs_placeholder_remaining_vps_quota),
+            originalQuota,
+            originalQuota
+        )
+        binding?.tauVpsPackageName?.setMessage(errorMessage)
+        binding?.tauVpsPackageName?.isInputError = true
+    }
+
+    private fun handleSwitchVpsPackageRule(selectedVpsPackage: VpsPackageUiModel) {
+        if (selectedVpsPackage.isShopTierBenefit) return
+
+        val isTodayInVpsPeriod = viewModel.isTodayInVpsPeriod(selectedVpsPackage)
+
+        if (isTodayInVpsPeriod) {
+            val now = Date()
+            val startDate = now.advanceHourBy(THREE_HOUR)
+            val endDate = startDate.advanceMinuteBy(THIRTY_MINUTE)
+
+            handleCampaignNewStartDate(startDate)
+            handleCampaignNewEndDate(endDate)
+        } else {
+            val startDate = selectedVpsPackage.packageStartTime.removeTime()
+            val endDate = startDate.advanceMinuteBy(THIRTY_MINUTE)
+
+            handleCampaignNewStartDate(startDate)
+            handleCampaignNewEndDate(endDate)
+        }
     }
 }

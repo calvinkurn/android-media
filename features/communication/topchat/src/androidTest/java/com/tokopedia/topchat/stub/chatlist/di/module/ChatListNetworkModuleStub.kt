@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.util.Session
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -18,7 +19,12 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
-import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.common.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.common.websocket.DefaultWebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.TopchatWebSocket
+import com.tokopedia.topchat.common.websocket.WebSocketParser
+import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,12 +33,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 
 @Module
-class ChatListNetworkModuleStub(
-        private val userSessionInterface: UserSessionInterface
-) {
+class ChatListNetworkModuleStub {
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -41,12 +44,15 @@ class ChatListNetworkModuleStub(
 
     @ChatListScope
     @Provides
-    fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
+    fun provideChatRetrofit(
+        @ApplicationContext context: Context,
+        userSession: UserSession
+    ): Retrofit {
         return CommonNetwork.createRetrofit(
-                context,
-                ChatUrl.TOPCHAT,
-                context as NetworkRouter,
-                userSession
+            context,
+            ChatUrl.TOPCHAT,
+            context as NetworkRouter,
+            userSession
         )
     }
 
@@ -64,12 +70,6 @@ class ChatListNetworkModuleStub(
 
     @ChatListScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return userSessionInterface
-    }
-
-    @ChatListScope
-    @Provides
     fun provideResources(@TopchatContext context: Context): Resources {
         return context.resources
     }
@@ -83,10 +83,12 @@ class ChatListNetworkModuleStub(
     @ChatListScope
     @Provides
     fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
-        return OkHttpRetryPolicy(NET_READ_TIMEOUT,
-                NET_WRITE_TIMEOUT,
-                NET_CONNECT_TIMEOUT,
-                NET_RETRY)
+        return OkHttpRetryPolicy(
+            NET_READ_TIMEOUT,
+            NET_WRITE_TIMEOUT,
+            NET_CONNECT_TIMEOUT,
+            NET_RETRY
+        )
     }
 
     @ChatListScope
@@ -103,63 +105,77 @@ class ChatListNetworkModuleStub(
 
     @ChatListScope
     @Provides
-    fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
-                                      userSessionInterface: UserSessionInterface):
-            FingerprintInterceptor {
+    fun provideFingerprintInterceptor(
+        networkRouter: NetworkRouter,
+        userSessionInterface: UserSessionInterface
+    ):
+        FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSessionInterface)
     }
 
     @ChatListScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                   networkRouter: NetworkRouter,
-                                   userSessionInterface: UserSessionInterface):
-            TkpdAuthInterceptor {
+    fun provideTkpdAuthInterceptor(
+        @ApplicationContext context: Context,
+        networkRouter: NetworkRouter,
+        userSessionInterface: UserSessionInterface
+    ):
+        TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ChatListScope
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context,
-                            retryPolicy: OkHttpRetryPolicy,
-                            errorResponseInterceptor: ErrorResponseInterceptor,
-                            chuckInterceptor: ChuckerInterceptor,
-                            fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor):
-            OkHttpClient {
+    fun provideOkHttpClient(
+        retryPolicy: OkHttpRetryPolicy,
+        errorResponseInterceptor: ErrorResponseInterceptor,
+        chuckInterceptor: ChuckerInterceptor,
+        fingerprintInterceptor: FingerprintInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor
+    ):
+        OkHttpClient {
         val builder = OkHttpClient.Builder()
-                .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(fingerprintInterceptor)
+            .addInterceptor(errorResponseInterceptor)
+            .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+            .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
-                    .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
         }
         return builder.build()
     }
 
-    // TODO: switch to fake
+    // Need to switch to fake later
     @ChatListScope
     @Provides
     fun provideTopChatWebSocket(
-            userSession: UserSessionInterface,
-            client: OkHttpClient,
-            abTestPlatform: AbTestPlatform
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface,
+        client: OkHttpClient,
+        irisSession: Session,
+        parser: WebSocketParser
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
-                "?os_type=1" +
-                "&device_id=" + userSession.deviceId +
-                "&user_id=" + userSession.userId
-        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken,
-            "chatlist", abTestPlatform)
+            "?os_type=1" +
+            "&device_id=" + userSession.deviceId +
+            "&user_id=" + userSession.userId
+        return DefaultTopChatWebSocket(
+            context,
+            client,
+            webSocketUrl,
+            userSession.accessToken,
+            "chatlist",
+            irisSession,
+            parser
+        )
     }
 
     @ChatListScope
     @Provides
-    fun provideAbTestPlatform() : AbTestPlatform {
+    fun provideAbTestPlatform(): AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
 }

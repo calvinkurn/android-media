@@ -13,8 +13,8 @@
         android:id="@+id/fl_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_1"
-        android:layout_marginRight="@dimen/dp_1">
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_1"
@@ -70,8 +70,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:layout_marginLeft="@dimen/dp_1"
-                android:layout_marginRight="@dimen/dp_1"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
                 app:cardBackgroundColor="@color/Unify_N0"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="2dp">
@@ -84,8 +84,8 @@
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:layout_gravity="top"
-            android:layout_marginLeft="@dimen/dp_1"
-            android:layout_marginRight="@dimen/dp_1"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
             android:background="@color/Unify_N0" />
     </FrameLayout>
 </LinearLayout>

@@ -78,6 +78,18 @@ class DetailFeedAdapter(typeFactory: FeedPlusDetailTypeFactory) : RecyclerView.A
         add(loadingMoreModel)
     }
 
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<*>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty() && holder is FeedDetailViewHolder) {
+            (holder).bind((list[position] as? FeedDetailProductModel), payloads)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     fun dismissLoadingMore() {
         remove(loadingMoreModel)
     }

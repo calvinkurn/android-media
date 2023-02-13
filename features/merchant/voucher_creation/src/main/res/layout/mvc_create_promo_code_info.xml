@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/mvc_promo_code_bg"
-    android:paddingStart="@dimen/layout_lvl1"
-    android:paddingEnd="@dimen/layout_lvl1"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
     android:paddingTop="@dimen/mvc_create_promo_code_info_padding_vertical"
     android:paddingBottom="@dimen/mvc_create_promo_code_info_padding_vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">

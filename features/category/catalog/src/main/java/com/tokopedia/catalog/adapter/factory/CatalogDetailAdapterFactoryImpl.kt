@@ -12,7 +12,7 @@ import com.tokopedia.catalog.viewholder.containers.*
 import com.tokopedia.catalog.viewholder.shimmer.CatalogForYouShimmerCardItemVH
 import com.tokopedia.catalog.viewholder.shimmer.CatalogStaggeredShimmerCardItemVH
 
-class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: CatalogDetailListener) : BaseAdapterTypeFactory() , CatalogDetailAdapterFactory {
+class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: CatalogDetailListener) : BaseAdapterTypeFactory(), CatalogDetailAdapterFactory {
 
     override fun type(data: CatalogInfoDataModel): Int {
         return CatalogInfoViewHolder.LAYOUT
@@ -28,10 +28,6 @@ class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: Catalog
 
     override fun type(data: CatalogVideoDataModel): Int {
         return CatalogVideosContainerViewHolder.LAYOUT
-    }
-
-    override fun type(data: CatalogComparisionDataModel): Int {
-        return CatalogComparisionContainerViewHolder.LAYOUT
     }
 
     override fun type(data: CatalogReviewDataModel): Int {
@@ -54,20 +50,23 @@ class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: Catalog
         return CatalogForYouViewHolder.LAYOUT
     }
 
+    override fun type(data: CatalogComparisonNewDataModel): Int {
+        return CatalogComparisonContainerNewViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return when (type){
+        return when (type) {
             CatalogInfoViewHolder.LAYOUT -> CatalogInfoViewHolder(view, catalogDetailListener)
             CatalogSpecificationsContainerViewHolder.LAYOUT -> CatalogSpecificationsContainerViewHolder(view, catalogDetailListener)
             CatalogVideosContainerViewHolder.LAYOUT -> CatalogVideosContainerViewHolder(view, catalogDetailListener)
-            CatalogComparisionContainerViewHolder.LAYOUT -> CatalogComparisionContainerViewHolder(view, catalogDetailListener)
             CatalogReviewContainerViewHolder.LAYOUT -> CatalogReviewContainerViewHolder(view, catalogDetailListener)
             CatalogProductsContainerViewHolder.LAYOUT -> CatalogProductsContainerViewHolder(view, catalogDetailListener)
-            CatalogStaggeredProductCardItemVH.LAYOUT -> CatalogStaggeredProductCardItemVH(view,catalogDetailListener)
+            CatalogStaggeredProductCardItemVH.LAYOUT -> CatalogStaggeredProductCardItemVH(view, catalogDetailListener)
             CatalogStaggeredShimmerCardItemVH.LAYOUT -> CatalogStaggeredShimmerCardItemVH(view)
             CatalogForYouShimmerCardItemVH.LAYOUT -> CatalogForYouShimmerCardItemVH(view)
-            CatalogForYouViewHolder.LAYOUT -> CatalogForYouViewHolder(view,catalogDetailListener)
-            else -> super.createViewHolder(view,type)
+            CatalogForYouViewHolder.LAYOUT -> CatalogForYouViewHolder(view, catalogDetailListener)
+            CatalogComparisonContainerNewViewHolder.LAYOUT -> CatalogComparisonContainerNewViewHolder(view, catalogDetailListener)
+            else -> super.createViewHolder(view, type)
         }
     }
-
 }

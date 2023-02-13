@@ -7,9 +7,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -30,103 +27,13 @@ class ImagePreviewPdpViewModelTest : BaseProductViewModelTest() {
     lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
-
-    @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     private val viewModel by lazy {
-        ImagePreviewPdpViewModel(userSessionInterface, addWishListUseCase, removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, CoroutineTestDispatchersProvider)
-    }
-
-    @Test
-    fun `success add product to wishlist`() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun `error add product to wishlist because product id empty`() {
-        val productId = ""
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList("", productId)
-        }
-
-        viewModel.addWishList(productId, {
-            Assert.assertEquals(it, "")
-        }, null)
-    }
-
-    @Test
-    fun `error add product to wishlist`() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (addWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(errorMessage, productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    @Test
-    fun `success remove product from wishlist`() {
-        val productId = "123"
-        every { (removeWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessRemoveWishlist(productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun `error remove product from wishlist because product id empty`() {
-        val productId = ""
-        every { (removeWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist("", productId)
-        }
-
-        viewModel.removeWishList(productId, {
-            Assert.assertTrue(it == "")
-        }, null)
-    }
-
-    @Test
-    fun `error remove product from wishlist`() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (removeWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist(errorMessage, productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
+        ImagePreviewPdpViewModel(userSessionInterface, addToWishlistV2UseCase, deleteWishlistV2UseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test

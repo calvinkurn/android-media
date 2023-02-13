@@ -1,7 +1,8 @@
 package com.tokopedia.gm.common.constant
 
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 /**
  * Created By @ilhamsuaib on 21/03/21
@@ -33,8 +34,8 @@ object PMConstant {
     }
 
     object AppLink {
-        private const val APPLINK_PARAMS_KYC_PM =
-            "${KYCConstant.PARAM_PROJECT_ID}=${KYCConstant.MERCHANT_KYC_PROJECT_ID}"
+        private const val MERCHANT_KYC_PROJECT_ID = 10
+        private const val APPLINK_PARAMS_KYC_PM = "${ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
         const val KYC_POWER_MERCHANT = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC_PM"
     }
 

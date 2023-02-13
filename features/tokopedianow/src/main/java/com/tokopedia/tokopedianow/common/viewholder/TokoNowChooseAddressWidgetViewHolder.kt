@@ -12,7 +12,6 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowChooseAddressWidgetBinding
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryBinding
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.utils.view.binding.viewBinding
@@ -66,6 +65,10 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
 
                 override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */ }
+
+                override fun isFromTokonowPage(): Boolean {
+                    return true
+                }
             })
         }
     }

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class GetBuyerOrderDetailResponse(
     @Expose
@@ -76,10 +77,49 @@ data class GetBuyerOrderDetailResponse(
             val addonInfo: AddonInfo? = AddonInfo(),
             @SerializedName("details")
             @Expose
-            val details: Details? = Details()
+            val details: Details? = Details(),
+            @SerializedName("has_reso_status")
+            @Expose
+            val hasResoStatus: Boolean? = false,
+            @SerializedName("has_ppp")
+            @Expose
+            val hasInsurance: Boolean? = false,
+            @SerializedName("additional_data")
+            @Expose
+            val additionalData: BomAdditionalData = BomAdditionalData()
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
+            }
+            fun getPodInfo(): LogisticSectionInfo? {
+                return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.POD_INFO }
+            }
+
+            data class BomAdditionalData(
+                @SerializedName("epharmacy_data")
+                @Expose
+                val epharmacyData: EpharmacyData = EpharmacyData()
+            ) {
+                data class EpharmacyData(
+                    @SerializedName("consultation_date")
+                    @Expose
+                    val consultationDate: String = String.EMPTY,
+                    @SerializedName("consultation_doctor_name")
+                    @Expose
+                    val consultationDoctorName: String = String.EMPTY,
+                    @SerializedName("consultation_expiry_date")
+                    @Expose
+                    val consultationExpiryDate: String = String.EMPTY,
+                    @SerializedName("consultation_name")
+                    @Expose
+                    val consultationName: String = String.EMPTY,
+                    @SerializedName("consultation_patient_name")
+                    @Expose
+                    val consultationPatientName: String = String.EMPTY,
+                    @SerializedName("consultation_prescription_number")
+                    @Expose
+                    val consultationPrescriptionNumber: String = String.EMPTY,
+                )
             }
 
             data class Button(
@@ -346,30 +386,30 @@ data class GetBuyerOrderDetailResponse(
             data class LogisticSectionInfo(
                 @Expose
                 @SerializedName("index")
-                val index: Long,
+                val index: Long = 0L,
                 @Expose
                 @SerializedName("id")
-                val id: String,
+                val id: String = "",
                 @Expose
                 @SerializedName("image_link")
-                val imageUrl: String,
+                val imageUrl: String = "",
                 @Expose
                 @SerializedName("title")
-                val title: String,
+                val title: String = "",
                 @Expose
                 @SerializedName("subtitle")
-                val subtitle: String,
+                val subtitle: String = "",
                 @Expose
                 @SerializedName("action")
-                val action: Action
+                val action: Action = Action()
             ) {
                 data class Action(
                     @Expose
                     @SerializedName("name")
-                    val name: String,
+                    val name: String = "",
                     @Expose
                     @SerializedName("link")
-                    val link: String
+                    val link: String = ""
                 )
             }
 
@@ -417,10 +457,6 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("button")
                         @Expose
                         val button: Button? = null,
-
-                        @SerializedName("bundle_id")
-                        @Expose
-                        val bundleId: String = "0",
 
                         @SerializedName("category_id")
                         @Expose

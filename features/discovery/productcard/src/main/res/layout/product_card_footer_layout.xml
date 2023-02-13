@@ -31,8 +31,8 @@
 
     <FrameLayout
         android:id="@+id/buttonRemoveFromWishlist"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="@drawable/product_card_bg_button_delete"
         android:clickable="true"
         android:focusable="true"

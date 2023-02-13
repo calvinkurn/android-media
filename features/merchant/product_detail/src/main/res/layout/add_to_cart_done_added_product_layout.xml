@@ -23,8 +23,8 @@
             android:padding="8dp">
             <ImageView
                 android:id="@+id/image_view_added_product"
-                android:layout_width="@dimen/dp_64"
-                android:layout_height="@dimen/dp_64"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:src="@drawable/ic_logistic_som_tokocabang_normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>

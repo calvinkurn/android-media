@@ -12,16 +12,14 @@ import androidx.fragment.app.FragmentTransaction;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
-import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+
 
 /**
  * Created by nisie on 8/12/16.
@@ -42,11 +40,15 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     String url;
     Bundle bundleCreateTicket;
     private BackButtonListener listener;
+    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        String dataAppLink = getIntent().getData().toString();
+        newRelicLogging.sendToNewRelicLog(dataAppLink);
     }
 
     @Override

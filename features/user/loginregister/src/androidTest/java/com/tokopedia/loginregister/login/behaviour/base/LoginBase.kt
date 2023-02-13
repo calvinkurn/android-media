@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.behaviour.base
 
 import android.content.Intent
+import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -9,14 +10,15 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.ViewIdGenerator.waitOnView
+import com.tokopedia.loginregister.di.FakeActivityComponentFactory
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.GeneratePublicKeyUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenV2UseCaseStub
-import com.tokopedia.loginregister.di.FakeActivityComponentFactory
-import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -85,7 +87,7 @@ open class LoginBase: LoginRegisterBase() {
         val viewInteraction = onView(withId(R.id.forgot_pass)).check(matches(isDisplayed()))
         viewInteraction.perform(click())
 
-        onView(withId(R.id.ub_forgot_password)).perform(click())
+        waitOnView(withId(R.id.ub_forgot_password)).perform(click())
     }
 
     fun clickUbahButton() {
@@ -93,7 +95,9 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     fun inputPassword(value: String) {
-        val viewInteraction = onView(withId(R.id.text_field_input)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withInputType(
+            InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)
+        ).check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.typeText(value))
     }
 

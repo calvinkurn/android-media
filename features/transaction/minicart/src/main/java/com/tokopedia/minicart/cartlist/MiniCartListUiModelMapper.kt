@@ -2,6 +2,7 @@ package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.ProductDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -25,12 +26,13 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomAtcItemTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -38,7 +40,6 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class MiniCartListUiModelMapper @Inject constructor() {
@@ -110,6 +111,20 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     }
                 }
             }
+        }
+    }
+
+    fun mapToProductBundlRecomAtcItemTracker(
+        productList :List<ProductDataModel>,
+        productDetails: List<ShopHomeBundleProductUiModel>
+    ): List<ProductBundleRecomAtcItemTracker> {
+        return productList.map {  product ->
+            ProductBundleRecomAtcItemTracker(
+                id = product.productId,
+                name = productDetails.firstOrNull { it.productId == product.productId }?.productName.orEmpty(),
+                cartId = product.cartId,
+                quantity = product.quantity
+            )
         }
     }
 
@@ -365,7 +380,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
             productSlashPriceLabel = product.slashPriceLabel
             productOriginalPrice = product.productOriginalPrice
-            productWholeSalePrice = 0
+            productWholeSalePrice = 0.0
             productInitialPriceBeforeDrop = product.initialPrice
             productPrice = product.productPrice
             productInformation = product.productInformation

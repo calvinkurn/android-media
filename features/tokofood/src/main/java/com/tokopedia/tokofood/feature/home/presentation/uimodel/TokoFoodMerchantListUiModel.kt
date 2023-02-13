@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.home.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
+import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodMerchantListTypeFactory
 
 data class TokoFoodMerchantListUiModel(

@@ -15,8 +15,8 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
@@ -51,16 +51,16 @@ object AtcCommonMapper {
         return when (actionButtonCart) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 AddToCartOcsRequestParams().apply {
-                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
-                    shopId = shopIdInt
+                    productId = selectedChild?.productId.toZeroStringIfNull()
+                    shopId = shopIdInt.toString()
                     quantity = selectedChild?.getFinalMinOrder() ?: 0
                     notes = ""
-                    customerId = userId.toIntOrZero()
-                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
+                    customerId = userId
+                    warehouseId = selectedWarehouse?.id.toZeroStringIfNull()
                     trackerAttribution = trackerAttributionPdp
                     trackerListName = trackerListNamePdp
                     isTradeIn = false
-                    shippingPrice = shippingMinPrice.roundToIntOrZero()
+                    shippingPrice = shippingMinPrice
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
@@ -94,13 +94,13 @@ object AtcCommonMapper {
                     selectedChild?.getFinalMinOrder() ?: 0
 
                 AddToCartRequestParams().apply {
-                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
-                    shopId = shopIdInt
+                    productId = selectedChild?.productId.toZeroStringIfNull()
+                    shopId = shopIdInt.toString()
                     quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
-                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
+                    warehouseId = selectedWarehouse?.id.toZeroStringIfNull()
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                     productName = selectedChild?.name ?: ""
                     category = categoryName
@@ -308,7 +308,8 @@ object AtcCommonMapper {
                                  atcMessage: String? = null,
                                  shouldRefreshPreviousPage: Boolean? = null,
                                  isFollowShop: Boolean? = null,
-                                 requestCode: Int? = null): ProductVariantResult {
+                                 requestCode: Int? = null,
+                                 cartId: String? = null): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
         if (selectedProductId != null) result.selectedProductId = selectedProductId
@@ -318,6 +319,7 @@ object AtcCommonMapper {
         if (shouldRefreshPreviousPage != null) result.shouldRefreshPreviousPage = shouldRefreshPreviousPage
         if (requestCode != null) result.requestCode = requestCode
         if (isFollowShop != null) result.isFollowShop = isFollowShop
+        if (cartId != null) result.cartId = cartId
 
         return result
     }
@@ -344,8 +346,7 @@ object AtcCommonMapper {
         val headerData = ProductHeaderData(
                 productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted()
                         ?: "",
-                productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage?.toInt()
-                        ?: 0,
+                productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage.orZero(),
                 isCampaignActive = isCampaignActive,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",

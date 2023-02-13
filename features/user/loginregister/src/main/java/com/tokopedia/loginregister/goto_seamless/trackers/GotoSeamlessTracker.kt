@@ -5,42 +5,45 @@ import com.tokopedia.track.TrackAppUtils
 
 object GotoSeamlessTracker {
 
-    fun viewGotoSeamlessPage() {
+    fun viewGotoSeamlessPage(label: String) {
         val data = TrackAppUtils.gtmData(
             Event.VIEW_ACC_IRIS,
             Category.SEAMLESS_LOGIN_PAGE,
             Action.VIEW_GOTO_SEAMLESS_PAGE,
-            ""
+            label
         )
         track(data, trackerId = "33190")
     }
 
-    fun clickOnSeamlessButton(label: String) {
+    fun clickOnSeamlessButton(label: String, variant: String) {
+        val finalLabel = if(variant.isNotEmpty()) {
+            "$label - $variant"
+        } else { label }
         val data = TrackAppUtils.gtmData(
             Event.CLICK_ACCOUNT,
             Category.SEAMLESS_LOGIN_PAGE,
             Action.CLICK_LOGIN_WITH_SEAMLESS,
-            label
+            finalLabel
         )
         track(data, trackerId = "33191")
     }
 
-    fun clickOnMasukAkunLain() {
+    fun clickOnMasukAkunLain(label: String) {
         val data = TrackAppUtils.gtmData(
             Event.CLICK_ACCOUNT,
             Category.SEAMLESS_LOGIN_PAGE,
             Action.CLICK_LOGIN_WITH_OTHER_ACC,
-            ""
+            label
         )
         track(data, trackerId = "33192")
     }
 
-    fun clickOnBackBtn() {
+    fun clickOnBackBtn(label: String) {
         val data = TrackAppUtils.gtmData(
             Event.CLICK_ACCOUNT,
             Category.SEAMLESS_LOGIN_PAGE,
             Action.CLICK_BACK_BTN,
-            ""
+            label
         )
         track(data, trackerId = "33193")
     }

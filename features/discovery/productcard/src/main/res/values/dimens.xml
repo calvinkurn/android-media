@@ -132,7 +132,7 @@
     <dimen name="product_card_flashsale_width">140dp</dimen>
 
     <dimen name="product_card_quantity_editor_margin_top">8dp</dimen>
-    <dimen name="product_card_quantity_editor_height">30dp</dimen>
+    <dimen name="product_card_quantity_editor_height">32dp</dimen>
 
     <dimen name="product_card_button_delete_cart_margin_top">8dp</dimen>
     <dimen name="product_card_button_delete_cart_height">24dp</dimen>

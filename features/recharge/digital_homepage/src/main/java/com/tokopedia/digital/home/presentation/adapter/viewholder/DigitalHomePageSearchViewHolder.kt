@@ -4,16 +4,17 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchCategoryItemBinding
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
+import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 
-class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener,
-                                      private val listener: SearchAutoCompleteListener
+class DigitalHomePageSearchViewHolder(
+    itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener,
+    private val listener: SearchAutoCompleteListener
 ) :
-        AbstractViewHolder<DigitalHomePageSearchCategoryModel>(itemView) {
+    AbstractViewHolder<DigitalHomePageSearchCategoryModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSearchCategoryModel) {
         val bind = ViewRechargeHomeSearchCategoryItemBinding.bind(itemView)
@@ -21,17 +22,25 @@ class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCateg
             digitalHomepageSearchCategoryImage.loadImage(element.icon)
 
             // Add search query shading to category name
-            digitalHomepageSearchCategoryName.text = RechargeHomepageSectionMapper.boldReverseSearchAutoComplete(element.label, element.searchQuery)
+            digitalHomepageSearchCategoryName.text =
+                RechargeHomepageSectionMapper.boldReverseSearchAutoComplete(
+                    element.label,
+                    element.searchQuery
+                )
 
-            itemView.addOnImpressionListener(element, {
-                if (!element.trackerUser.keyword.isNullOrEmpty()){
-                 listener.impressCategoryListener(element.trackerUser, element.trackerItem)
+            itemView.addOnImpressionListener(element) {
+                if (!element.trackerUser.keyword.isNullOrEmpty()) {
+                    listener.impressCategoryListener(element.trackerUser, element.trackerItem)
                 }
-            })
+            }
 
             root.setOnClickListener {
                 if (!element.trackerUser.keyword.isNullOrEmpty()) {
-                    listener.clickCategoryListener(element, element.trackerUser, element.trackerItem)
+                    listener.clickCategoryListener(
+                        element,
+                        element.trackerUser,
+                        element.trackerItem
+                    )
                 } else {
                     onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition)
                 }

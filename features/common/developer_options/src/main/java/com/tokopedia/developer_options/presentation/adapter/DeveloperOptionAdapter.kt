@@ -20,6 +20,7 @@ class DeveloperOptionAdapter(
      * Keyword you need while searching something
      **/
     companion object {
+        const val KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION = "Enable Developer Options on Notification"
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
         const val KEYWORD_SYSTEM_APPS = "System Apps"
@@ -36,7 +37,9 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_TOPADS_LOG_ON_NOTIFICATION = "Enable TopAds Log on Notification"
         const val KEYWORD_VIEW_TOPADS_LOG = "View TopAds Log"
         const val KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION = "Enable Applink Log on Notification"
+        const val KEYWORD_ENABLE_JOURNEY_LOG_ON_NOTIFICATION = "Enable Journey Log on Notification"
         const val KEYWORD_VIEW_APPLINK_LOG = "View Applink Log"
+        const val KEYWORD_VIEW_JOURNEY_LOG = "View Journey Log"
         const val KEYWORD_ENABLE_FPM_LOG_ON_FILE = "Enable FPM Log on File (Download/fpm-auto-log.txt)"
         const val KEYWORD_ENABLE_FPM_LOG_ON_NOTIFICATION = "Enable FPM Log on Notification"
         const val KEYWORD_VIEW_FPM_LOG = "View FPM Log"
@@ -46,6 +49,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_IRIS_SAVE_LOG = "View Iris Save Log"
         const val KEYWORD_VIEW_IRIS_SEND_LOG = "View Iris Send Log"
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
+        const val KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY = "Enable Strict Mode"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
         const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
@@ -85,6 +89,8 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
+        const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
+        const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
     }
 
     /**
@@ -93,12 +99,15 @@ class DeveloperOptionAdapter(
      * Variable contains UiModels that you want to show in RecyclerView, put keyword as param
      **/
     private val defaultItems = mutableListOf(
+        DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),
-        SystemNonSystemAppsUiModel(listOf(
-            KEYWORD_SYSTEM_APPS,
-            KEYWORD_NON_SYSTEM_APPS)
+        SystemNonSystemAppsUiModel(
+            listOf(
+                KEYWORD_SYSTEM_APPS,
+                KEYWORD_NON_SYSTEM_APPS
+            )
         ),
         ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
         ForceLogoutUiModel(listOf(KEYWORD_FORCE_LOGOUT)),
@@ -115,66 +124,85 @@ class DeveloperOptionAdapter(
         ViewTopAdsLogUiModel(listOf(KEYWORD_VIEW_TOPADS_LOG)),
         ApplinkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION)),
         ViewApplinkLogUiModel(listOf(KEYWORD_VIEW_APPLINK_LOG)),
+        JourneyLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_JOURNEY_LOG_ON_NOTIFICATION)),
+        ViewJourneyLogUiModel(listOf(KEYWORD_VIEW_JOURNEY_LOG)),
         FpmLogOnFileUiModel(listOf(KEYWORD_ENABLE_FPM_LOG_ON_FILE)),
         FpmLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_FPM_LOG_ON_NOTIFICATION)),
         ViewFpmLogUiModel(listOf(KEYWORD_VIEW_FPM_LOG)),
         AnalyticsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_ANALYTICS_LOG_ON_NOTIFICATION)),
         CassavaUiModel(listOf(KEYWORD_CASSAVA)),
         ViewAnalyticsLogUiModel(listOf(KEYWORD_VIEW_ANALYTICS_LOG)),
-        ViewIrisLogUiModel(listOf(
-            KEYWORD_VIEW_IRIS_SAVE_LOG,
-            KEYWORD_VIEW_IRIS_SEND_LOG
-        )),
+        ViewIrisLogUiModel(
+            listOf(
+                KEYWORD_VIEW_IRIS_SAVE_LOG,
+                KEYWORD_VIEW_IRIS_SEND_LOG
+            )
+        ),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
+        StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
-        LoggingToServerUiModel(listOf(
-            KEYWORD_LOGGING_TO_SERVER,
-            KEYWORD_SEND_LOG_TO_SERVER,
-            KEYWORD_VIEW_SERVER_LOGGER
-        )
+        LoggingToServerUiModel(
+            listOf(
+                KEYWORD_LOGGING_TO_SERVER,
+                KEYWORD_SEND_LOG_TO_SERVER,
+                KEYWORD_VIEW_SERVER_LOGGER
+            )
         ),
         SellerAppReviewDebuggingUiModel(listOf(KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING)),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
         AppVersionUiModel(listOf(KEYWORD_APP_VERSION)),
-        UrlEnvironmentUiModel(listOf(
-            KEYWORD_CHOOSE_URL_ENVIRONMENT,
-            KEYWORD_STAGING, KEYWORD_LIVE)
+        UrlEnvironmentUiModel(
+            listOf(
+                KEYWORD_CHOOSE_URL_ENVIRONMENT,
+                KEYWORD_STAGING,
+                KEYWORD_LIVE
+            )
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
         DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
-        TranslatorUiModel(listOf(
-            KEYWORD_API_KEY_SETTING,
-            KEYWORD_VISIT_BELOW_FOR_API_KEY,
-            KEYWORD_LANGUAGE_SETTING,
-            KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
-            KEYWORD_TOTAL_TRANSLATED_TEXT
-        )),
+        TranslatorUiModel(
+            listOf(
+                KEYWORD_API_KEY_SETTING,
+                KEYWORD_VISIT_BELOW_FOR_API_KEY,
+                KEYWORD_LANGUAGE_SETTING,
+                KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
+                KEYWORD_TOTAL_TRANSLATED_TEXT
+            )
+        ),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
-        RollenceAbTestingManualSwitcherUiModel(listOf(
-            KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER,
-            KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS)
+        RollenceAbTestingManualSwitcherUiModel(
+            listOf(
+                KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER,
+                KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS
+            )
         ),
-        HomeAndNavigationRevampSwitcherUiModel(listOf(
-            KEYWORD_TRANSLATOR,
-            KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
-            KEYWORD_NEW_NAVIGATION,
-            KEYWORD_ALWAYS_OS_EXPERIMENT,
-            KEYWORD_OLD_BALANCE_WIDGET,
-            KEYWORD_NEW_BALANCE_WIDGET,
-            KEYWORD_OLD_INBOX,
-            KEYWORD_NEW_INBOX,
-            KEYWORD_OLD_CART_CHECKOUT,
-            KEYWORD_NEW_CART_CHECKOUT
-        )),
-        PlayWebSocketSseLoggingUiModel(listOf(
-            KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING,
-            KEYWORD_VIEW_SSE_LOGGING
-        )),
+        HomeAndNavigationRevampSwitcherUiModel(
+            listOf(
+                KEYWORD_TRANSLATOR,
+                KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
+                KEYWORD_NEW_NAVIGATION,
+                KEYWORD_ALWAYS_OS_EXPERIMENT,
+                KEYWORD_OLD_BALANCE_WIDGET,
+                KEYWORD_NEW_BALANCE_WIDGET,
+                KEYWORD_OLD_INBOX,
+                KEYWORD_NEW_INBOX,
+                KEYWORD_OLD_CART_CHECKOUT,
+                KEYWORD_NEW_CART_CHECKOUT
+            )
+        ),
+        PlayWebSocketSseLoggingUiModel(
+            listOf(
+                KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING,
+                KEYWORD_VIEW_SSE_LOGGING
+            )
+        ),
         ConvertResourceIdUiModel(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
-        )
+        ),
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST)),
+        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
     )
 
     init {
@@ -200,7 +228,6 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        removeWidget(LeakCanaryUiModel::class.java)
         removeWidget(AppAuthSecretUiModel::class.java)
     }
 
@@ -218,6 +245,6 @@ class DeveloperOptionAdapter(
     }
 
     private fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
-        return defaultItems.find { it.javaClass == itemClass}
+        return defaultItems.find { it.javaClass == itemClass }
     }
 }

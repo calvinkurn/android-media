@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class ProfileCompletionSettingModule(private val context: Context) {
+open class ProfileCompletionSettingModule(private val context: Context) {
 
     @Provides
     @ProfileCompletionContext
@@ -28,7 +28,7 @@ class ProfileCompletionSettingModule(private val context: Context) {
     }
 
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository =
+    open fun provideGraphQlRepository(): GraphqlRepository =
 	GraphqlInteractor.getInstance().graphqlRepository
 
     @ProfileCompletionSettingScope
@@ -36,7 +36,7 @@ class ProfileCompletionSettingModule(private val context: Context) {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
+    open fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
 	UserSession(context)
 
     @Provides

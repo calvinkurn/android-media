@@ -1,11 +1,13 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
@@ -17,28 +19,48 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmFilterCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.LOADED
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TmShareBottomSheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.viewFlipperCoupon
 import kotlinx.android.synthetic.main.tm_dash_coupon_list.*
 import kotlinx.android.synthetic.main.tm_layout_no_access.*
@@ -46,18 +68,25 @@ import javax.inject.Inject
 
 
 class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
-    TmCouponListRefreshCallback, TmFilterCallback {
+    TmCouponListRefreshCallback, TmFilterCallback,ShareBottomsheetListener {
 
+    private var hasNext = false
+    private var linearLayoutManager: LinearLayoutManager? = null
+    private var currentPage = 1
+    private var perPage = 10
+    private var tmCouponDetailCallback:TmCouponDetailCallback?=null
+    private var shareBottomSheet:TmShareBottomSheet?=null
+    private var voucherShareData:VouchersItem?=null
     private var showButton: Boolean = true
     private var filterStatus: SortFilterItem? = null
     private var filterType: SortFilterItem? = null
     private var voucherStatus = "1,2,3,4"
-    private var voucherType = 0
     private var voucherIdToUpdate = 0
     private var voucherStatusToUpdate = ""
     private var selectedType = "0"
     private lateinit var selectedStatus: StringBuilder
     private var selectedStatusList = arrayListOf<String>()
+    private var tmTracker : TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -69,19 +98,26 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     private val tmCouponAdapter: TmCouponAdapter by lazy{
-        TmCouponAdapter(arrayListOf(), childFragmentManager, this)
+        TmCouponAdapter(arrayListOf(), childFragmentManager, this,tmCouponDetailCallback, tmTracker, this)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is TmCouponDetailCallback){
+            tmCouponDetailCallback = context
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        tmTracker = TmTracker()
         return inflater.inflate(R.layout.tm_dash_coupon_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val filterData = ArrayList<SortFilterItem>()
         filterStatus = SortFilterItem("Semua Status")
         selectedStatus = StringBuilder()
@@ -94,13 +130,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             options.add(Option(name = "Belum Aktif", key = "Belum Aktif", value = "1", inputType = Option.INPUT_TYPE_RADIO))
             options.add(Option(name = "Sudah Berakhir", key = "Sudah Berakhir", value = "4", inputType = Option.INPUT_TYPE_RADIO))
             options.forEach {
-                val cs: CharSequence = it.value
-//                if(selectedStatus.contains(cs.toString(), false)){
                 if(selectedStatusList.contains(it.value)){
                     it.inputState = "true"
                 }
             }
-            val cs: CharSequence = "0"
             if(voucherStatus.contains("1,2,3,4")){
                 options[0].inputState = "true"
             }
@@ -114,7 +147,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     override fun onApplyButtonClicked(optionList: List<Option>?) {
                         optionList?.forEachIndexed { index, option ->
                             if(option.inputState == "true"){
-                                val cs: CharSequence = option.value
                                 if(!selectedStatusList.contains(option.value)){
                                     selectedStatusList.add(option.value)
                                 }
@@ -132,12 +164,8 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         else{
                             filterStatus?.type = ChipsUnify.TYPE_SELECTED
                         }
-                        if(selectedType.toInt() == 0){
-                            tmCouponViewModel.getCouponList(voucherStatus, null)
-                        }
-                        else {
-                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
-                        }
+                        currentPage = 1
+                        getCouponList()
                     }
                 }
             )
@@ -149,7 +177,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         filterType?.chevronListener
         filterType?.iconDrawable = context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_DOWN) }
         filterType?.listener = {
-            val filterList = ArrayList<Filter>()
             val options = ArrayList<Option>()
             options.add(Option(name = "Semua Tipe", key = "Semua Tipe", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
             options.add(Option(name = "Cashback", key = "Cashback", value = "3", inputType = Option.INPUT_TYPE_RADIO))
@@ -191,12 +218,8 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         else{
                             filterType?.type = ChipsUnify.TYPE_SELECTED
                         }
-                        if(selectedType.toInt() == 0){
-                            tmCouponViewModel.getCouponList(voucherStatus, null)
-                        }
-                        else {
-                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
-                        }
+                        currentPage = 1
+                        getCouponList()
                     }
                 },
             )
@@ -210,14 +233,16 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         filter_error.parentListener = {
             TmFilterBottomsheet.show(childFragmentManager, this, voucherStatus, selectedType)
         }
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv_coupon.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = linearLayoutManager
             adapter = tmCouponAdapter
         }
 
         if(showButton) {
             btn_create_coupon.show()
             btn_create_coupon.setOnClickListener {
+                tmTracker?.clickButtonCouponList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 TmDashCreateActivity.openActivity(
                     activity,
                     CreateScreenType.COUPON_SINGLE,
@@ -232,14 +257,28 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
 
         observeViewModel()
-        if(selectedType.toInt() == 0){
-            tmCouponViewModel.getCouponList(voucherStatus, null)
-        }
-        else {
-            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
-        }
+        getInitialCouponList()
 
         setEmptyCouponListData()
+        handleCouponListPagination()
+    }
+
+    private fun getInitialCouponList(){
+        if(selectedType.toIntOrZero() == 0){
+            tmCouponViewModel.getInitialCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
+        }
+        else {
+            tmCouponViewModel.getInitialCouponList(voucherStatus, selectedType.toIntOrZero(), page = currentPage, perPage = perPage)
+        }
+    }
+
+    private fun getCouponList() {
+        if(selectedType.toIntOrZero() == 0){
+            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
+        }
+        else {
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toIntOrZero(), page = currentPage, perPage = perPage)
+        }
     }
 
     private fun setEmptyCouponListData() {
@@ -253,23 +292,31 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     private fun observeViewModel() {
-
-        tmCouponViewModel.couponListLiveData.observe(viewLifecycleOwner, {
+        tmCouponViewModel.couponListLiveData.observe(viewLifecycleOwner){
             when (it.status) {
                 TokoLiveDataResult.STATUS.LOADING ->{
                     viewFlipperCoupon.displayedChild = 0
                     filter_error.hide()
                 }
+                TokoLiveDataResult.STATUS.INFINITE_LOADING ->{
+                    viewFlipperCoupon.displayedChild = 1
+                    tmCouponAdapter.vouchersItemList = tmCouponViewModel.couponList
+                    tmCouponAdapter.notifyItemInserted(tmCouponViewModel.couponList.size-1)
+                }
                 TokoLiveDataResult.STATUS.SUCCESS ->{
-                    if(it.data?.merchantPromotionGetMVList?.data?.vouchers.isNullOrEmpty()){
+                    tmCouponViewModel.refreshListState(LOADED)
+                    hasNext = it.data?.merchantPromotionGetMVList?.data?.paging?.hasNext == true
+                    it.data?.merchantPromotionGetMVList?.data?.paging?.perPage?.let{
+                        perPage = it
+                    }
+                    if(it.data?.merchantPromotionGetMVList?.data?.vouchers.isNullOrEmpty() && tmCouponAdapter.vouchersItemList.isNullOrEmpty()){
                         viewFlipperCoupon.displayedChild = 2
                         filter_error.show()
                     }
                     else {
                         filter_error.hide()
                         viewFlipperCoupon.displayedChild = 1
-                        tmCouponAdapter.vouchersItemList.clear()
-                        tmCouponAdapter.vouchersItemList = it.data?.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
+                        tmCouponAdapter.vouchersItemList = tmCouponViewModel.couponList
                         tmCouponAdapter.notifyDataSetChanged()
                     }
                 }
@@ -277,9 +324,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
                 }
             }
-        })
+        }
 
-        tmCouponViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
+        tmCouponViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner){
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING ->{
 
@@ -293,9 +340,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
                 }
             }
-        })
+        }
 
-        tmCouponViewModel.tmCouponUpdateLiveData.observe(viewLifecycleOwner, {
+        tmCouponViewModel.tmCouponUpdateLiveData.observe(viewLifecycleOwner){
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING ->{
 
@@ -314,7 +361,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
                 }
             }
-        })
+        }
     }
 
     override fun getScreenName() = ""
@@ -350,7 +397,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
-                    voucherIdToUpdate = voucherId.toInt()
+                    voucherIdToUpdate = voucherId.toIntOrZero()
                     voucherStatusToUpdate = DELETE
                     tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
                     dialog.dismiss()
@@ -358,7 +405,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             EDIT ->{
-                TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId.toInt(), this, edit = true)
+                TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId.toIntOrZero(), this, edit = true)
             }
             STOP ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
@@ -370,7 +417,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
-                    voucherIdToUpdate = voucherId.toInt()
+                    voucherIdToUpdate = voucherId.toIntOrZero()
                     voucherStatusToUpdate = STOP
                     tmCouponViewModel.getInitialCouponData("update", couponType.lowercase())
                     dialog.dismiss()
@@ -378,18 +425,29 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             ADD_QUOTA ->{
-                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this, maxCashback)
+                tmTracker?.clickCouponOptionBsQuota(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this, this,maxCashback)
+            }
+            DUPLICATE ->{
+                TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId.toIntOrZero(), this, edit = false, duplicate = true)
+            }
+            SHARE -> {
+                val voucherList = tmCouponViewModel.couponListLiveData.value?.data?.merchantPromotionGetMVList?.data?.vouchers
+                voucherList?.let{
+                    voucherList
+                        .find { it?.voucherId==voucherId }
+                        ?.let { it1 ->
+                            voucherShareData = it1
+                            showShareBottomSheet(it1)
+                        }
+                }
             }
         }
     }
 
     override fun refreshCouponList(action: String) {
-        if(selectedType.toInt() == 0){
-            tmCouponViewModel.getCouponList(voucherStatus, null)
-        }
-        else {
-            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
-        }
+        currentPage = 1
+        getCouponList()
         var message = ""
         when(action){
             ACTION_EDIT -> {
@@ -397,6 +455,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             }
             ACTION_CREATE ->{
                 message = "Yay, kupon TokoMember berhasil dibuat!"
+            }
+            ACTION_DUPLICATE ->{
+                message = "Asyik, kupon TokoMember berhasil dibuat!"
             }
             ADD_QUOTA ->{
                 message = "Yay, kuota kupon berhasil ditambahkan!"
@@ -422,13 +483,120 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         else{
             filterStatus?.type = ChipsUnify.TYPE_SELECTED
         }
-        if(selectedType.toInt() == 0){
+        if(selectedType.toIntOrZero() == 0){
             filterType?.type = ChipsUnify.TYPE_NORMAL
-            tmCouponViewModel.getCouponList(voucherStatus, null)
+            currentPage = 1
+            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
         }
         else {
             filterType?.type = ChipsUnify.TYPE_SELECTED
-            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+            currentPage = 1
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toIntOrZero(), page = currentPage, perPage = perPage)
         }
+    }
+
+    //** Sharing Feature **//
+    private fun showShareBottomSheet(data:VouchersItem){
+        var shareBmThumbnailTitle = ""
+        val couponImages:ArrayList<String> = ArrayList()
+        couponImages.apply {
+            data.apply {
+                if(voucherImageSquare.isNotEmpty()) add(voucherImageSquare)
+                if(voucherImage.isNotEmpty()) add(voucherImage)
+                if(voucherImagePortrait.isNotEmpty()) add(voucherImagePortrait)
+            }
+        }
+        shareBmThumbnailTitle = data.voucherName
+        shareBottomSheet = TmShareBottomSheet().apply {
+            init(this@TokomemberDashCouponFragment)
+            setMetaData(
+                tnTitle = shareBmThumbnailTitle,
+                tnImage = if(couponImages.isNotEmpty()) couponImages[0] else TmDashCouponDetailFragment.AVATAR_IMAGE,
+                imageList = couponImages
+            )
+            setOgImageUrl(if(couponImages.isNotEmpty()) couponImages[0] else TmDashCouponDetailFragment.AVATAR_IMAGE)
+        }
+        val bottomSheetTitle = context?.resources?.getString(R.string.tm_share_bottomsheet_title).orEmpty()
+        shareBottomSheet?.setTmShareBottomSheetTitle(bottomSheetTitle)
+        shareBottomSheet?.setTmShareBottomImgOptionsTitle(context?.resources?.getString(R.string.tm_share_bottomsheet_img_options_title).orEmpty())
+        shareBottomSheet?.show(childFragmentManager,this,null)
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val couponData = voucherShareData
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            id = couponData?.galadrielVoucherId.toString()
+            name = couponData?.voucherName.orEmpty()
+            type = LinkerData.MERCHANT_VOUCHER
+            uri  = couponData?.weblink.orEmpty()
+            deepLink = couponData?.applink.orEmpty()
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+            isThrowOnError = true
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+            0,linkerShareData,object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    val shareString = requireContext().resources.getString(R.string.tm_share_coupon_string,couponData?.voucherName,linkerShareData?.url)
+                    SharingUtil.executeShareIntent(
+                        shareModel,
+                        linkerShareData,
+                        requireActivity(),
+                        view,
+                        shareString
+                    )
+                    shareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    shareBottomSheet?.dismiss()
+                }
+            }
+        ))
+    }
+
+    override fun onCloseOptionClicked() {
+        shareBottomSheet?.dismiss()
+    }
+
+    private fun handleCouponListPagination() {
+        rv_coupon?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount: Int? = linearLayoutManager?.childCount
+                val totalItemCount: Int? = linearLayoutManager?.itemCount
+                val firstVisibleItemPosition: Int? = linearLayoutManager?.findFirstVisibleItemPosition()
+                if ((tmCouponViewModel.tmCouponListStateLiveData.value)?.equals(LOADED) == true) {
+                    if (visibleItemCount != null && firstVisibleItemPosition != null && totalItemCount != null) {
+                        if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition > 0) {
+                            if(hasNext) {
+                                tmCouponViewModel.refreshListState(REFRESH)
+                                currentPage += 1
+                                if (selectedType.toIntOrZero() == 0) {
+                                    filterType?.type = ChipsUnify.TYPE_NORMAL
+                                    tmCouponViewModel.getCouponList(
+                                        voucherStatus,
+                                        null,
+                                        page = currentPage, perPage = perPage
+                                    )
+                                } else {
+                                    filterType?.type = ChipsUnify.TYPE_SELECTED
+                                    tmCouponViewModel.getCouponList(
+                                        voucherStatus,
+                                        selectedType.toIntOrZero(),
+                                        page = currentPage, perPage = perPage
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 }

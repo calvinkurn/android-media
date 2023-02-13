@@ -11,27 +11,38 @@ buildscript {
         gradlePluginPortal()
         google()
         maven { url "https://maven.google.com" }
-        jcenter()
         mavenLocal()
         maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://central.maven.org/maven2/' }
+        maven {
+            url 'http://central.maven.org/maven2/'
+            allowInsecureProtocol = true
+        }
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven {
+            url "${gcp_artifactory_url}" + "/libs-release-local";
+            credentials {
+                username = "${gcp_artifactory_username}"
+                password = "${gcp_artifactory_password}"
+            }
+            allowInsecureProtocol = true
+        }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
             }
+            allowInsecureProtocol = true
         }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:4.2.1') {
+        classpath ('com.android.tools.build:gradle:7.0.4') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
-        classpath('net.sf.proguard:proguard-gradle:6.0') {
+        classpath('net.sf.proguard:proguard-gradle:6.0.3') {
             force = true
         }
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
@@ -46,10 +57,10 @@ buildscript {
         classpath 'com.tokopedia.patch:auto-patch-plugin:0.0.1'
         classpath 'com.tokopedia.patch:autopatchbase:0.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21"
-        classpath "com.google.gms:google-services:4.3.3"
+        classpath "com.google.gms:google-services:4.3.14"
         classpath "io.fabric.tools:gradle:1.28.0"
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
     }
 }
 

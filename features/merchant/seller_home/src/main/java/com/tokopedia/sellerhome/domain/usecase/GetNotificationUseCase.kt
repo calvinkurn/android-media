@@ -7,10 +7,12 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.seller.menu.common.domain.entity.Param
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created By @ilhamsuaib on 2020-03-03
@@ -19,10 +21,12 @@ import com.tokopedia.usecase.RequestParams
 @GqlQuery("GetNotificationGqlQuery", GetNotificationUseCase.QUERY)
 class GetNotificationUseCase(
     private val gqlRepository: GraphqlRepository,
-    private val mapper: NotificationMapper
+    private val mapper: NotificationMapper,
+    private val userSession: UserSessionInterface
 ) : BaseGqlUseCase<NotificationUiModel>() {
 
     override suspend fun executeOnBackground(): NotificationUiModel {
+        setAdditionalParam()
         val gqlRequest = GraphqlRequest(
             GetNotificationGqlQuery(),
             GetNotificationsResponse::class.java,
@@ -40,10 +44,16 @@ class GetNotificationUseCase(
         }
     }
 
+    private fun setAdditionalParam() {
+        params.parameters[PARAM_INPUT] = Param(userSession.shopId)
+    }
+
     companion object {
+        private const val PARAM_INPUT = "input"
+
         const val QUERY = """
-            query getNotifications(${'$'}typeId: Int!) {
-              notifications {
+            query getNotifications(${'$'}typeId: Int!, $$PARAM_INPUT: NotificationRequest) {
+              notifications(input: $$PARAM_INPUT){
                 chat {
                   unreadsSeller
                 }

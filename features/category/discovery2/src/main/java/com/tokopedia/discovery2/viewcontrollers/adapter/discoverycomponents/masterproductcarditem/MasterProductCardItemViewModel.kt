@@ -202,7 +202,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private fun getNotifyRequestBundle(dataItem: DataItem): CampaignNotifyMeRequest {
         val campaignNotifyMeRequest = CampaignNotifyMeRequest()
-        campaignNotifyMeRequest.campaignID = dataItem.campaignId.toIntOrZero()
+        campaignNotifyMeRequest.campaignID = dataItem.campaignId.toLongOrZero()
         campaignNotifyMeRequest.productID = dataItem.productId.toLongOrZero()
         campaignNotifyMeRequest.action = if (dataItem.notifyMe == true) {
             UNREGISTER

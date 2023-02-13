@@ -9,7 +9,18 @@ import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
-import com.tokopedia.logisticCommon.data.response.*
+import com.tokopedia.logisticCommon.data.response.AddAddressResponse
+import com.tokopedia.logisticCommon.data.response.AddressResponse
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.data.response.GetDefaultAddressResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
@@ -102,23 +113,25 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
 
     suspend fun saveAddress(model: SaveAddressDataModel, source: String): AddAddressResponse {
         val param = AddAddressParam(
-            addr_name = model.addressName,
-            receiver_name = model.receiverName,
-            address_1 = model.address1,
-            address_2 = model.address2,
-            postal_code = model.postalCode,
+            addrName = model.addressName,
+            receiverName = model.receiverName,
+            address1 = model.address1,
+            address1Notes = model.address1Notes,
+            address2 = model.address2,
+            postalCode = model.postalCode,
             phone = model.phone,
             province = model.provinceId.toString(),
             city = model.cityId.toString(),
             district = model.districtId.toString(),
             latitude = model.latitude,
             longitude = model.longitude,
-            is_ana_positive = model.isAnaPositive,
-            set_as_primary_address = model.setAsPrimaryAddresss,
-            apply_name_as_new_user_fullname = model.applyNameAsNewUserFullname,
-            source = source
+            isAnaPositive = model.isAnaPositive,
+            setAsPrimaryAddress = model.setAsPrimaryAddresss,
+            applyNameAsNewUserFullname = model.applyNameAsNewUserFullname,
+            source = source,
+            isTokonowRequest = model.isTokonowRequest
         )
-        val gqlParam = mapOf("input" to param.toMap())
+        val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(KeroLogisticQuery.kero_add_address_query,
                 AddAddressResponse::class.java, gqlParam)
         return gql.getResponse(request)
@@ -131,6 +144,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             addressName = model.addressName,
             receiverName = model.receiverName,
             address1 = model.address1,
+            address1Notes = model.address1Notes,
             address2 = model.address2,
             postalCode = model.postalCode,
             district = model.districtId.toString(),
@@ -139,7 +153,8 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             phone = model.phone,
             latitude = model.latitude,
             longitude = model.longitude,
-            source = source
+            source = source,
+            isTokonowRequest = model.isTokonowRequest
         )
         val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(KeroLogisticQuery.kero_edit_address,

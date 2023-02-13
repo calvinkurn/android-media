@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.NEW_DATE_FORMAT
 import com.tokopedia.affiliate.TRANSACTION_ID
 import com.tokopedia.affiliate.adapter.AffiliateSaldoWithdrawalStatusAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -17,6 +18,7 @@ import com.tokopedia.affiliate.model.response.FeeDetailData
 import com.tokopedia.affiliate.model.response.WithdrawalInfoData
 import com.tokopedia.affiliate.ui.custom.AffiliateWithdrawalDetailsList
 import com.tokopedia.affiliate.ui.viewholder.AffiliateTransactionHistoryItemVH
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate.viewmodel.WithdrawalDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -73,12 +75,12 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
     }
 
     private fun initObservers() {
-        withdrawalDetailViewModel.withdrawalInfoLiveData.observe(viewLifecycleOwner, {
+        withdrawalDetailViewModel.withdrawalInfoLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessWithdrawalDetailLoaded(it.data)
                 is Fail -> onErrorLoading(it.throwable)
             }
-        })
+        }
     }
 
     private fun onErrorLoading(throwable: Throwable) {
@@ -125,7 +127,9 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
         view?.findViewById<Typography>(R.id.tvWithdrawalAmount)?.text = data.amountFormatted
         view?.findViewById<Typography>(R.id.tvBankName)?.text = data.bankName
         view?.findViewById<Typography>(R.id.tvAccountName)?.text = data.accountName
-        view?.findViewById<Typography>(R.id.tvWithdrawalDate)?.text = data.createdTime
+        view?.findViewById<Typography>(R.id.tvWithdrawalDate)?.text = data.createdTime?.let {
+            DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it)
+        }
         view?.findViewById<Label>(R.id.withdrawalStatusLabel)?.apply {
             when (data.statusLabel?.labelType) {
                 AffiliateTransactionHistoryItemVH.DANGER -> setLabelType(Label.HIGHLIGHT_LIGHT_RED)
@@ -137,7 +141,7 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
         }
     }
     private fun setFeeDetailBreakup(data: WithdrawalInfoData) {
-        view?.findViewById<AffiliateWithdrawalDetailsList>(R.id.llWithdrawalDetail)?.setData(data.feeDetailData, context?.getString(com.tokopedia.affiliate_toko.R.string.affiliate_saldo_withdrawal_info_details))
+        view?.findViewById<AffiliateWithdrawalDetailsList>(R.id.llWithdrawalDetail)?.setData(data.feeDetailData, context?.getString(R.string.affiliate_saldo_withdrawal_info_details))
     }
 
     private fun setWithdrawalStatusData(data: WithdrawalInfoData) {

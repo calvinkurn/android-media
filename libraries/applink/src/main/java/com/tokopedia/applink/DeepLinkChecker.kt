@@ -64,6 +64,8 @@ object DeepLinkChecker {
     const val SNAPSHOT = 42
     const val TOKOFOOD = 43
     const val TOP_ADS_CLICK_LINK = 44
+    const val NOW_RECIPE = 45
+    const val EPHARMACY = 46
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -131,13 +133,14 @@ object DeepLinkChecker {
 
     @JvmStatic
     fun getDeepLinkType(context: Context, url: String): Int {
+        val uri: Uri = Uri.parse(url)
         if (url.contains("accounts.tokopedia.com")) {
             return ACCOUNTS
         }
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
         }
-        if (url.contains("ta.tokopedia.com")|| url.contains("ta-staging.tokopedia.com")) {
+        if (uri.host == "ta.tokopedia.com") {
             return TOP_ADS_CLICK_LINK
         }
         return try {

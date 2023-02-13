@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.centralizedpromo.di.CentralizedPromoViewModelModule
-import com.tokopedia.centralizedpromoold.di.CentralizedPromoViewModelModuleOld
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
@@ -19,8 +18,7 @@ import dagger.multibindings.IntoMap
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-@Module(includes = [CentralizedPromoViewModelModule::class,
-    CentralizedPromoViewModelModuleOld::class])
+@Module(includes = [CentralizedPromoViewModelModule::class])
 abstract class SellerHomeViewModelModule {
 
     @Binds
