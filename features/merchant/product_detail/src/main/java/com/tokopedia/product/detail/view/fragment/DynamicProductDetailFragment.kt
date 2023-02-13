@@ -114,6 +114,7 @@ import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.PostAtcHelper
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
@@ -3632,36 +3633,15 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showAddToCartDoneBottomSheet(cartId: String) {
-        viewModel.getDynamicProductInfoP1?.let {
-            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
-            val productName = it.getProductName
-            val productImageUrl = it.data.getFirstProductImage()
-            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
-                it.basic.productID,
-                productName,
-                productImageUrl,
-                it.data.variant.isVariant,
-                it.basic.getShopId(),
-                viewModel.getBebasOngkirDataByProductId().imageURL,
-                cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
-            )
-            val bundleData = Bundle()
-            bundleData.putParcelable(
-                AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL,
-                addedProductDataModel
-            )
-            addToCartDoneBottomSheet.arguments = bundleData
-            addToCartDoneBottomSheet.setDismissListener {
-                shouldShowCartAnimation = true
-                updateCartNotification()
-            }
-            fragmentManager?.let {
-                addToCartDoneBottomSheet.show(
-                    it,
-                    "TAG"
-                )
-            }
-        }
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val context = context ?: return
+        PostAtcHelper.start(
+            context,
+            productInfo.basic.productID,
+            cartId = cartId,
+            pageSource = PostAtcHelper.Source.PDP,
+            layoutId = productInfo.basic.postAtcLayout.layoutId
+        )
     }
 
     override fun openShipmentClickedBottomSheet(
