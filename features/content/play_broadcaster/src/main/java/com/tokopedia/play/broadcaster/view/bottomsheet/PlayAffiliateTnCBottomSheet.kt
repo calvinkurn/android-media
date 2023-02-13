@@ -13,25 +13,29 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayAffiliateTncBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
-class PlayAffiliateTnCBottomSheet : BottomSheetUnify() {
+class PlayAffiliateTnCBottomSheet @Inject constructor(
+    private val router: Router,
+) : BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayAffiliateTncBinding? = null
     private val binding: BottomSheetPlayAffiliateTncBinding
         get() = _binding!!
 
     private val boldSpan = StyleSpan(Typeface.BOLD)
-    private val colorSpan = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyPrinciplesR.color.Unify_GN500))
+    private val colorSpan: ForegroundColorSpan
+        get() = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyPrinciplesR.color.Unify_GN500))
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
-            RouteManager.route(
+            router.route(
                 requireContext(),
                 generateWebViewApplink(getString(contentCommonR.string.ugc_onboarding_privacy_policy_link))
             )
@@ -48,7 +52,7 @@ class PlayAffiliateTnCBottomSheet : BottomSheetUnify() {
          * change the tnc web-view app link later
          */
         override fun onClick(p0: View) {
-            RouteManager.route(
+            router.route(
                 requireContext(),
                 generateWebViewApplink(getString(contentCommonR.string.ugc_onboarding_tnc_link))
             )
@@ -104,7 +108,7 @@ class PlayAffiliateTnCBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        if (!isAdded) show(fragmentManager, TAG)
+        if (!isAdded) showNow(fragmentManager, TAG)
     }
 
     private fun getTncText(): CharSequence {
@@ -122,7 +126,7 @@ class PlayAffiliateTnCBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "PlayAffiliateTnCBottomSheet"
+        private const val TAG = "PlayAffiliateTnCBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
@@ -130,10 +134,10 @@ class PlayAffiliateTnCBottomSheet : BottomSheetUnify() {
         ): PlayAffiliateTnCBottomSheet {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayAffiliateTnCBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+            return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayAffiliateTnCBottomSheet::class.java.name
-            ) as PlayAffiliateTnCBottomSheet
+            ) as PlayAffiliateTnCBottomSheet)
         }
     }
 }

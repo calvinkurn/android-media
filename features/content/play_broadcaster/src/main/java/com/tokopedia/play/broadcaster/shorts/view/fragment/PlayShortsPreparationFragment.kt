@@ -675,14 +675,9 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun openShortsAffiliateTncBottomSheet() {
-        childFragmentManager.executePendingTransactions()
-        val existingFragment = childFragmentManager.findFragmentByTag(PlayAffiliateTnCBottomSheet.TAG)
-        if (existingFragment is PlayAffiliateTnCBottomSheet && existingFragment.isVisible) return
-        try {
-            PlayAffiliateTnCBottomSheet
-                .getFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
-        } catch (e: Exception) {}
+        PlayAffiliateTnCBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun openProductPicker() {
