@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
-import com.tokopedia.feedplus.presentation.model.FeedTabType
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
 
 /**
  * Created By : Muhammad Furqan on 01/02/23
@@ -20,7 +20,7 @@ class FeedFragment : BaseDaggerFragment() {
 
     private var binding: FragmentFeedImmersiveBinding? = null
 
-    private var feedType: FeedTabType = FeedTabType.FOR_YOU
+    private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
 
@@ -28,12 +28,9 @@ class FeedFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            feedType =
-                if (it.getString(ARGUMENT_TYPE) == FeedTabType.FOR_YOU.value) FeedTabType.FOR_YOU
-                else FeedTabType.FOLLOWING
+            data = it.getParcelable(ARGUMENT_DATA, FeedDataModel::class.java)
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,14 +80,13 @@ class FeedFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        private const val ARGUMENT_TYPE = "ARGUMENT_TYPE"
+        private const val ARGUMENT_DATA = "ARGUMENT_DATA"
 
-        fun createFeedFragment(type: FeedTabType): FeedFragment =
+        fun createFeedFragment(data: FeedDataModel): FeedFragment =
             FeedFragment().also {
                 it.arguments = Bundle().apply {
-                    putString(ARGUMENT_TYPE, type.value)
+                    putParcelable(ARGUMENT_DATA, data)
                 }
             }
     }
-
 }

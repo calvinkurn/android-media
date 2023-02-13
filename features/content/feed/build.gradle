@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../../compile-instrument-test.gradle"
+apply plugin: 'kotlin-parcelize'
 
 android {
     packagingOptions {

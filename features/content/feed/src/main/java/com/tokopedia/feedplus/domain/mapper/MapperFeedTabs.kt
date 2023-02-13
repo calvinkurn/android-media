@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.feedplus.data.FeedTabsEntity
-import com.tokopedia.feedplus.presentation.model.DataModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 
@@ -16,10 +16,10 @@ object MapperFeedTabs {
                 profileApplink = entity.meta.myProfileApplink,
                 profileWeblink = entity.meta.myProfileWeblink,
                 profilePhotoUrl = entity.meta.myProfilePhotoUrl,
-                showMyProfile = entity.meta.showMyProfile,
+                showMyProfile = entity.meta.showMyProfile
             ),
             data = entity.getSortedData().map {
-                DataModel(
+                FeedDataModel(
                     title = it.title,
                     key = it.key,
                     type = it.type,

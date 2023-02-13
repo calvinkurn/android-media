@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedTabType
 
 /**
  * Created By : Muhammad Furqan on 13/02/23
@@ -20,13 +19,7 @@ class FeedPagerAdapter(activity: FragmentActivity, private val tabsList: List<Fe
     override fun createFragment(position: Int): Fragment {
         if (position >= fragmentList.size) {
             fragmentList.add(
-                FeedFragment.createFeedFragment(
-                    when (tabsList[position].type) {
-                        "foryou" -> FeedTabType.FOR_YOU
-                        "following" -> FeedTabType.FOLLOWING
-                        else -> FeedTabType.FOR_YOU
-                    }
-                )
+                FeedFragment.createFeedFragment(tabsList[position])
             )
         }
 
