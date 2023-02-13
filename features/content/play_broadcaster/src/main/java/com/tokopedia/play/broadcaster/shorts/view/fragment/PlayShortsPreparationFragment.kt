@@ -41,7 +41,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroShortsAffiliateTncBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayAffiliateTnCBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
@@ -676,10 +676,10 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun openShortsAffiliateTncBottomSheet() {
         childFragmentManager.executePendingTransactions()
-        val existingFragment = childFragmentManager.findFragmentByTag(PlayBroShortsAffiliateTncBottomSheet.TAG)
-        if (existingFragment is PlayBroShortsAffiliateTncBottomSheet && existingFragment.isVisible) return
+        val existingFragment = childFragmentManager.findFragmentByTag(PlayAffiliateTnCBottomSheet.TAG)
+        if (existingFragment is PlayAffiliateTnCBottomSheet && existingFragment.isVisible) return
         try {
-            PlayBroShortsAffiliateTncBottomSheet
+            PlayAffiliateTnCBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
                 .show(childFragmentManager)
         } catch (e: Exception) {}
