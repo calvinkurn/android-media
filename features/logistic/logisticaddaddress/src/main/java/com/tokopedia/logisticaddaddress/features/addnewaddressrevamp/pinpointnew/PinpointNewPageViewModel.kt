@@ -38,6 +38,10 @@ class PinpointNewPageViewModel @Inject constructor(
     var isEdit: Boolean = false
     var isPolygon: Boolean = false
     var source: String? = ""
+    var isGetPinPointOnly: Boolean = false
+
+    val isEditOrGetPinPointOnly: Boolean
+        get() = isEdit || isGetPinPointOnly
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -65,6 +69,7 @@ class PinpointNewPageViewModel @Inject constructor(
         isFromAddressForm: Boolean,
         isEdit: Boolean,
         source: String,
+        isGetPinPointOnly: Boolean,
     ) {
         this.currentPlaceId = currentPlaceId
         setLatLong(latitude, longitude)
@@ -76,6 +81,7 @@ class PinpointNewPageViewModel @Inject constructor(
         this.isFromAddressForm = isFromAddressForm
         this.isEdit = isEdit
         this.source = source
+        this.isGetPinPointOnly = isGetPinPointOnly
     }
 
     fun getDistrictData(lat: Double, long: Double) {
@@ -146,7 +152,7 @@ class PinpointNewPageViewModel @Inject constructor(
             this.saveAddressDataModel.copy(latitude = lat.toString(), longitude = long.toString())
     }
 
-    fun getCurrentLocationDetail() {
+    fun getLocationFromLatLong() {
         getDistrictData(
             saveAddressDataModel.latitude.toDoubleOrZero(),
             saveAddressDataModel.longitude.toDoubleOrZero()

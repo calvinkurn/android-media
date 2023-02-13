@@ -43,6 +43,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
@@ -117,7 +118,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 isPolygon = it.getBoolean(EXTRA_IS_POLYGON),
                 isEdit = it.getBoolean(EXTRA_IS_EDIT, false),
                 source = it.getString(PARAM_SOURCE, ""),
-                addressData = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+                addressData = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL),
+                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY),
             )
         }
     }
@@ -260,7 +262,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.let {
             it.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             it.rvAddressList.adapter = autoCompleteAdapter
-            if (viewModel.isEdit) {
+            if (viewModel.isEdit || viewModel.isGetPinPointOnly) {
                 it.tvMessageSearch.visibility = View.GONE
                 it.tvSearchCurrentLocation.text = getString(R.string.tv_discom_current_location_text)
             }
@@ -577,7 +579,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         bundle.putBoolean(EXTRA_IS_POLYGON, viewModel.isPolygon)
         bundle.putString(PARAM_SOURCE, viewModel.source)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
-        if (!viewModel.isEdit) {
+        if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
             startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
         } else {
             activity?.run {
@@ -592,6 +594,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                         putExtra(EXTRA_IS_POLYGON, viewModel.isPolygon)
                         putExtra(EXTRA_IS_EDIT, viewModel.isEdit)
                         putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+                        putExtra(EXTRA_IS_GET_PINPOINT_ONLY, viewModel.isGetPinPointOnly)
                     }
                 )
                 finish()
@@ -619,6 +622,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
                     putBoolean(EXTRA_IS_EDIT, bundle.getBoolean(EXTRA_IS_EDIT))
                     putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
+                    putBoolean(EXTRA_IS_GET_PINPOINT_ONLY, bundle.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY))
                 }
             }
         }

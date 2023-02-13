@@ -32,6 +32,7 @@ class SearchPageViewModel @Inject constructor(
     var isPolygon: Boolean = false
     var isEdit: Boolean = false
     var source: String = ""
+    var isGetPinPointOnly: Boolean = false
 
     var currentLat: Double = DEFAULT_LAT
     var currentLong: Double = DEFAULT_LONG
@@ -46,13 +47,15 @@ class SearchPageViewModel @Inject constructor(
         isPolygon: Boolean,
         isEdit: Boolean,
         source: String,
-        addressData: SaveAddressDataModel?
+        addressData: SaveAddressDataModel?,
+        isGetPinPointOnly: Boolean
     ) {
         this.isPositiveFlow = isPositiveFlow
         this.isFromPinpoint = isFromPinpoint
         this.isPolygon = isPolygon
         this.isEdit = isEdit
         this.source = source
+        this.isGetPinPointOnly = isGetPinPointOnly
 
         addressData?.apply {
             saveAddressDataModel = this

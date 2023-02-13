@@ -63,6 +63,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PINPOINT
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ADD_ON_GIFTING
@@ -326,6 +327,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SHOP_EDIT_ADDRESS) }, DF_BASE, R.string.path_edit_shop_address))
             add(DFP({ it.startsWith(SELLER_WAREHOUSE_DATA) }, DF_BASE, R.string.path_shop_settings_address))
             add(DFP({ it.startsWith(ADD_ADDRESS_V3) }, DF_BASE, R.string.path_add_address_v3))
+            add(DFP({ it.startsWith(PINPOINT) }, DF_BASE, R.string.path_pinpoint))
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))

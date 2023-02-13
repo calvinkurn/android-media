@@ -91,6 +91,7 @@ class SearchPageViewModelTest {
         val isEdit = true
         val source = "source"
         val addressData = spyk<SaveAddressDataModel>()
+        val isGetPinPointOnly = false
 
         // When
         searchPageViewModel.setDataFromArguments(
@@ -99,7 +100,8 @@ class SearchPageViewModelTest {
             isPolygon,
             isEdit,
             source,
-            addressData
+            addressData,
+            isGetPinPointOnly
         )
 
         // Then
@@ -110,6 +112,7 @@ class SearchPageViewModelTest {
             Assert.assertTrue(this.isEdit)
             Assert.assertEquals(this.source, source)
             Assert.assertEquals(this.saveAddressDataModel, addressData)
+            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
         }
     }
 
@@ -121,6 +124,7 @@ class SearchPageViewModelTest {
         val isPolygon = false
         val isEdit = false
         val source = ""
+        val isGetPinPointOnly = true
 
         // When
         searchPageViewModel.setDataFromArguments(
@@ -129,7 +133,8 @@ class SearchPageViewModelTest {
             isPolygon,
             isEdit,
             source,
-            null
+            null,
+            isGetPinPointOnly
         )
 
         // Then
@@ -140,6 +145,7 @@ class SearchPageViewModelTest {
             Assert.assertFalse(this.isEdit)
             Assert.assertEquals(this.source, source)
             Assert.assertNotNull(this.saveAddressDataModel)
+            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
         }
     }
 }

@@ -74,7 +74,7 @@ class PinpointNewPageViewModelTest {
     @Test
     fun `Get District Data Fail`() {
         coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getCurrentLocationDetail()
+        pinpointNewPageViewModel.getLocationFromLatLong()
         verify { autofillDistrictDataObserver.onChanged(match { it is Fail }) }
     }
 
@@ -150,6 +150,7 @@ class PinpointNewPageViewModelTest {
         val isFromAddressForm = false
         val isEdit = false
         val source = "source"
+        val isGetPinPointOnly = false
 
         // When
         pinpointNewPageViewModel.setDataFromArguments(
@@ -161,7 +162,8 @@ class PinpointNewPageViewModelTest {
             isPolygon,
             isFromAddressForm,
             isEdit,
-            source
+            source,
+            isGetPinPointOnly
         )
 
         // Then
@@ -174,6 +176,8 @@ class PinpointNewPageViewModelTest {
             Assert.assertEquals(this.isFromAddressForm, isFromAddressForm)
             Assert.assertEquals(this.isEdit, isEdit)
             Assert.assertEquals(this.source, source)
+            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
+            Assert.assertFalse(this.isEditOrGetPinPointOnly)
         }
     }
 
@@ -188,6 +192,7 @@ class PinpointNewPageViewModelTest {
         val isFromAddressForm = false
         val isEdit = false
         val source = "source"
+        val isGetPinPointOnly = true
 
         // When
         pinpointNewPageViewModel.setDataFromArguments(
@@ -199,7 +204,8 @@ class PinpointNewPageViewModelTest {
             isPolygon,
             isFromAddressForm,
             isEdit,
-            source
+            source,
+            isGetPinPointOnly
         )
 
         // Then
@@ -212,6 +218,8 @@ class PinpointNewPageViewModelTest {
             Assert.assertEquals(this.isFromAddressForm, isFromAddressForm)
             Assert.assertEquals(this.isEdit, isEdit)
             Assert.assertEquals(this.source, source)
+            Assert.assertEquals(this.isGetPinPointOnly, isGetPinPointOnly)
+            Assert.assertTrue(this.isEditOrGetPinPointOnly)
         }
     }
 }

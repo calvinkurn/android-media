@@ -41,6 +41,14 @@ data class SaveAddressDataModel(
     var isTokonowRequest: Boolean = false
 ) : Parcelable {
     fun hasPinpoint(): Boolean {
-        return latitude.isNotEmpty() && longitude.isNotEmpty()
+        return latitude.isValidPinpoint() && longitude.isValidPinpoint()
+    }
+
+    private fun String.isValidPinpoint(): Boolean {
+        return this.isNotBlank() && this != EMPTY_COORDINATE
+    }
+
+    companion object {
+        private const val EMPTY_COORDINATE = "0.0"
     }
 }

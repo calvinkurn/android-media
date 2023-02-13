@@ -19,5 +19,6 @@
     <string name="path_pinpoint_webview" translatable="false">/pin-point-picker-result</string>
 
     <string name="path_proof_of_delivery" translatable="false">/shipping/pod/.*</string>
+    <string name="path_pinpoint" translatable="false">/pinpoint</string>
 
 </resources>
