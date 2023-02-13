@@ -153,7 +153,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             }
             masterProductCardListView?.let {
                 it.applyCarousel()
-                productCardView.layoutParams?.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_200)
                 productCardView.layoutParams?.width = Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_70)
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
