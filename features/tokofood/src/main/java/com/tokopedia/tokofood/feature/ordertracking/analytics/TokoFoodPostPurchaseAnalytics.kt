@@ -24,16 +24,16 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
     fun viewOrderDetailPage(shopId: String) {
         val mapData = mapOf(
             TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.OPEN_SCREEN,
-            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.ORDER_DETAIL_PAGE,
+            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE,
             TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.VIEW_TOKOFOOD_ORDER_DETAIL_PAGE,
             TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.PHYSICAL_GOODS,
             TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
             TokoFoodAnalyticsConstants.IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
-            TokoFoodAnalyticsConstants.SCREEN_NAME to TokoFoodAnalyticsConstants.ORDER_DETAIL_PAGE,
+            TokoFoodAnalyticsConstants.SCREEN_NAME to TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE,
             TokoFoodAnalyticsConstants.SHOP_ID to shopId,
             TokoFoodAnalyticsConstants.USER_ID to userSession.userId
         )
-        tracking.sendScreenAuthenticated(TokoFoodAnalyticsConstants.ORDER_DETAIL_PAGE, mapData)
+        tracking.sendScreenAuthenticated(TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE, mapData)
     }
 
     fun clickCallDriverIcon(orderId: String, shopId: String) {
