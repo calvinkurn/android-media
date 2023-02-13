@@ -22,6 +22,8 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.sellerapp.data.datasource.remote.ActivityMessageListener
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.presentation.screen.ConnectionFailureScreen
@@ -48,6 +50,8 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
         private const val timeoutMaxProgress = 1f
         private const val timeoutStartProgress = 0f
         private const val transitionDelay = 800L
+        private const val TAG_WEAROS_OPEN_SCREEN = "WEAROS_OPEN_SCREEN"
+        private const val DEVICE_MODEL = "deviceModel"
     }
 
     private lateinit var navController: NavHostController
@@ -65,9 +69,10 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
     private val phoneConnectionFailed = mutableStateOf(false)
     private var timer: CountDownTimer? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ServerLogger.log(Priority.P2, TAG_WEAROS_OPEN_SCREEN, mapOf(DEVICE_MODEL to Build.MODEL))
+
         lifecycleScope.launch {
             sharedViewModel.ifPhoneHasApp.collect {
                 it?.let {

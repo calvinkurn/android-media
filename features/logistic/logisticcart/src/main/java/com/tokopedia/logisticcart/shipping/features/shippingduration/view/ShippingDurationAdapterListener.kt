@@ -11,7 +11,5 @@ interface ShippingDurationAdapterListener {
     fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>,
                                   cartPosition: Int, serviceData: ServiceData)
 
-    fun isToogleYearEndPromotionOn(): Boolean
-
     fun onLogisticPromoClicked(data: LogisticPromoUiModel)
 }
