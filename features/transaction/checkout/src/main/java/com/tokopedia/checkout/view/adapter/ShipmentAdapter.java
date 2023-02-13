@@ -109,6 +109,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
     private CompositeSubscription compositeSubscription;
+    private CompositeSubscription scheduleDeliverySubscription;
 
     private boolean isShowOnboarding;
     private int lastChooseCourierItemPosition;
@@ -183,7 +184,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
-            return new ShipmentItemViewHolder(view, shipmentAdapterActionListener);
+            if (scheduleDeliverySubscription == null || scheduleDeliverySubscription.isUnsubscribed()) {
+                scheduleDeliverySubscription = new CompositeSubscription();
+            }
+            return new ShipmentItemViewHolder(view, shipmentAdapterActionListener, scheduleDeliverySubscription);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, layoutInflater);
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
@@ -279,6 +283,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void clearCompositeSubscription() {
         if (compositeSubscription != null) {
             compositeSubscription.clear();
+        }
+        if (scheduleDeliverySubscription != null) {
+            scheduleDeliverySubscription.clear();
         }
     }
 
@@ -752,6 +759,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(newCourierItemData);
@@ -763,6 +771,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             }
             updateShipmentCostModel();
             checkDataForCheckout();
@@ -961,10 +970,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     } else if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
                         shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                .getSelectedCourier().getShipperPrice();
+                                .getSelectedCourier().getSelectedShipper().getShipperPrice();
                         if (useInsurance != null && useInsurance) {
                             insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourier().getInsurancePrice();
+                                    .getSelectedCourier().getSelectedShipper().getInsurancePrice();
                         }
                         if (isOrderPriority != null && isOrderPriority) {
                             orderPriorityFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()

@@ -25,6 +25,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeade
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDashedDividerViewHolder
@@ -56,6 +57,7 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationData: DigitalRecommendationData,
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
+    private val productListToggleListener: ProductListToggleViewHolder.Listener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
@@ -103,6 +105,7 @@ open class BuyerOrderDetailTypeFactory(
             PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
             OrderInsuranceViewHolder.LAYOUT -> OrderInsuranceViewHolder(parent, navigator)
             EpharmacyInfoViewHolder.LAYOUT -> EpharmacyInfoViewHolder(parent)
+            ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -199,5 +202,9 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(ePharmarcyUiModel: EpharmacyInfoUiModel): Int {
         return EpharmacyInfoViewHolder.LAYOUT
+    }
+
+    fun type(productListCollapseUiModel: ProductListUiModel.ProductListToggleUiModel): Int {
+        return ProductListToggleViewHolder.LAYOUT
     }
 }

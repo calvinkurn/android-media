@@ -514,4 +514,95 @@ internal fun ratesQuery() = """
     }
 """.trimIndent()
 
+internal fun scheduleDeliveryRatesQuery() = """
+    query ongkirGetScheduledDeliveryRates(${"$"}param: OngkirGetScheduledDeliveryRatesInput!) {
+      ongkirGetScheduledDeliveryRates(input: ${"$"}param) {
+        data {
+          rates_id
+          available
+          hidden
+          recommend
+          delivery_type
+          title
+          text
+          notice {
+            title
+            text
+          }
+          error {
+            error_id
+            error_message
+          }
+          delivery_services {
+            title
+            title_label
+            id
+            available
+            hidden
+            error {
+              error_id
+              error_message
+            }
+            delivery_products {
+              title
+              text
+              text_eta
+              promo_text
+              timeslot_id
+              available
+              hidden
+              recommend
+              service_id
+              service_name
+              shipper_id
+              shipper_name
+              shipper_product_id
+              shipper_product_name
+              final_price
+              real_price
+              text_final_price
+              text_real_price
+              checksum
+              insurance {
+                insurance_type
+                insurance_price
+                insurance_type_info
+                insurance_used_type
+                insurance_used_info
+                insurance_used_default
+              }
+              features {
+                ontime_delivery_guarantee {
+                  available
+                  value
+                  text_label
+                  text_detail
+                  icon_url
+                  url_detail
+                }
+              }
+              ut
+              promo_stacking {
+                promo_code
+                promo_chargeable
+                benefit_class
+                is_bebas_ongkir_extra
+                benefit_amount
+                bo_campaign_id
+                disabled
+                free_shipping_metadata {
+                  sent_shipper_partner
+                  benefit_class
+                  shipping_subsidy
+                  additional_data
+                }
+              }
+              validation_metadata
+            }
+          }
+        }
+      }
+    }
+""".trimIndent()
+
 internal const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan. Ulangi beberapa saat lagi"
