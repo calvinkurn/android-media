@@ -38,7 +38,7 @@ class SubmitWithdrawalViewModel @Inject constructor(
     }
 
     private fun onRequestSubmitted(submitWithdrawalResponse: SubmitWithdrawalResponse) {
-        if (submitWithdrawalResponse.status == WITHDRAWAL_SUCCESS) {
+        if (submitWithdrawalResponse.shouldRedirectToThankYouPage()) {
             submitWithdrawalResponseLiveData.postValue(Success(submitWithdrawalResponse))
         } else {
             val errorMessage = submitWithdrawalResponse.messageErrorStr ?: ""
@@ -51,10 +51,4 @@ class SubmitWithdrawalViewModel @Inject constructor(
         submitWithdrawalResponseLiveData.postValue(Fail(throwable))
         isAlreadyRequested = false
     }
-
-
-    companion object {
-        const val WITHDRAWAL_SUCCESS = "success"
-    }
-
 }

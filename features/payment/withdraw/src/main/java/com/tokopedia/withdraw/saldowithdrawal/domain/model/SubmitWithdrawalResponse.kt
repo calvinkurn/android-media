@@ -36,8 +36,13 @@ data class SubmitWithdrawalResponse(
         @SerializedName("image")
         val image: String? = null,
 ) : Parcelable {
-    fun isSuccess(): Boolean {
-        return status == SubmitWithdrawalViewModel.WITHDRAWAL_SUCCESS
+    fun shouldRedirectToThankYouPage(): Boolean {
+        return status == STATUS_SUCCESS || status == STATUS_INVALID_DATA
+    }
+
+    companion object {
+        const val STATUS_SUCCESS = "success"
+        const val STATUS_INVALID_DATA = "invalid_data"
     }
 }
 
