@@ -36,16 +36,18 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
 
     override fun onError(e: Throwable) {
         Timber.d(e)
+        val boPromoCode = getBoPromoCode()
         if (isInitialLoad) {
             view.renderCourierStateFailed(itemPosition, false, false)
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
-        view.logOnErrorLoadCourier(e, itemPosition)
+        view.logOnErrorLoadCourier(e, itemPosition, boPromoCode)
         logisticDonePublisher?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+        val boPromoCode = getBoPromoCode()
         if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
@@ -69,7 +71,8 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                                 MessageErrorException(
                                                     shippingCourierUiModel.productData.error?.errorMessage
                                                 ),
-                                                itemPosition
+                                                itemPosition,
+                                                boPromoCode
                                             )
                                             logisticDonePublisher?.onCompleted()
                                             return
@@ -120,7 +123,8 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                             MessageErrorException(
                                                 shippingCourierUiModel.productData.error?.errorMessage
                                             ),
-                                            itemPosition
+                                            itemPosition,
+                                            boPromoCode
                                         )
                                         logisticDonePublisher?.onCompleted()
                                         return
@@ -138,7 +142,8 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                             )
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException("rates ui hidden but no promo"),
-                                                itemPosition
+                                                itemPosition,
+                                                boPromoCode
                                             )
                                             logisticDonePublisher?.onCompleted()
                                             return
@@ -188,7 +193,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                 }
             }
             view.renderCourierStateFailed(itemPosition, false, false)
-            view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
+            view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition, boPromoCode)
         } else {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
@@ -295,5 +300,12 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                 selectedShipmentCartItemModel.validationMetadata = ""
             }
         }
+    }
+
+    private fun getBoPromoCode(): String {
+        if (isBoUnstackEnabled && !isForceReloadRates) {
+            return shipmentCartItemModel.boCode
+        }
+        return ""
     }
 }
