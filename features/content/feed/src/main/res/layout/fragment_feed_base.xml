@@ -94,7 +94,6 @@
         android:textAlignment="center"
         android:textColor="@color/Unify_NN0"
         android:textSize="7sp"
-
         app:layout_constraintBottom_toBottomOf="@id/btn_feed_live"
         app:layout_constraintEnd_toEndOf="@id/btn_feed_live"
         app:layout_constraintStart_toStartOf="@id/btn_feed_live"
