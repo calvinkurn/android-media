@@ -23,7 +23,7 @@ class CommentViewHolder {
                 ivCommentPhoto.loadImage(item.photo)
                 tvCommentContent.text = buildSpannedString {
                     bold { append(item.username) }
-                    append("    ")
+                    append("   ")
                     append(item.content)
                 }
                 tvCommentTime.text = item.createdTime

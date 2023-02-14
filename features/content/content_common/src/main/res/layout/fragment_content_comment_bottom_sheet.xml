@@ -17,6 +17,9 @@
         android:id="@+id/rv_comment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/content_common_space_8"
+        android:layout_marginTop="@dimen/content_common_space_16"
+        android:layout_marginEnd="@dimen/content_common_space_8"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/view_comment_send"
@@ -29,9 +32,9 @@
         android:id="@+id/view_comment_send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/content_common_space_16"
         android:background="@color/Unify_Background"
         android:orientation="horizontal"
+        android:padding="@dimen/content_common_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -45,24 +48,24 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/new_comment"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="@dimen/content_common_space_8"
             android:layout_height="@dimen/layout_lvl4"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/content_common_space_8"
+            android:layout_weight="1"
             android:inputType="textMultiLine" />
 
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_comment_send"
-            android:layout_marginStart="@dimen/content_common_space_8"
             android:layout_width="@dimen/content_common_space_40"
             android:layout_height="@dimen/content_common_space_40"
-            app:icon_color_light_enable="@color/Unify_NN0"
-            app:icon_color_light_disabled="@color/Unify_NN0"
-            app:icon_color_night_enable="@color/Unify_NN0"
-            app:icon_color_night_disabled="@color/Unify_NN0"
-            android:padding="@dimen/content_common_space_8"
+            android:layout_marginStart="@dimen/content_common_space_8"
             android:background="@color/Unify_NN300"
+            android:padding="@dimen/content_common_space_8"
+            app:icon_color_light_disabled="@color/Unify_NN0"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_color_night_disabled="@color/Unify_NN0"
+            app:icon_color_night_enable="@color/Unify_NN0"
             app:icon_name="SEND_TEXT" />
 
     </LinearLayout>
