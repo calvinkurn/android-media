@@ -112,6 +112,7 @@ class MvcIntroFragment :
     private fun HeaderUnify.setupHeader() {
         title = context.getString(R.string.smvc_intro_voucher_toolbar_text)
         setNavigationOnClickListener {
+            mvcIntroPageTracker.sendMvcIntroPageArrowButton()
             activity?.finish()
         }
         setGreenBackgroundForToolbar()
@@ -243,7 +244,6 @@ class MvcIntroFragment :
 
     // When user clicks on the Arrow Button
     override fun onClickButton() {
-        mvcIntroPageTracker.sendMvcIntroPageArrowButton()
         mvcLayoutManager?.scrollToPositionWithOffset(FIRST_INDEX, ZEROTH_INDEX)
         setWhiteBackgroundForToolbar()
     }
