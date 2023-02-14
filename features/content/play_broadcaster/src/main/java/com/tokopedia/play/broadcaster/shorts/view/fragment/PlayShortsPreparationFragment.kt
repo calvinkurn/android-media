@@ -245,6 +245,19 @@ class PlayShortsPreparationFragment @Inject constructor(
             navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
         }
+
+        /** TODO
+         * some logic to check whether to show banner affiliate or not
+         * but BE team is not ready yet
+         */
+        binding.bannerShorts.apply {
+            title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
+            description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
+            bannerIcon = IconUnify.SALDO
+            setOnClickListener {
+                openShortsAffiliateTncBottomSheet()
+            }
+        }
     }
 
     private fun setupListener() {
@@ -455,12 +468,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             val mediaSource = mediaSourceFactory.create(curr.media.mediaUri)
             exoPlayer.prepare(mediaSource)
             binding.exoPlayer.player = exoPlayer
-
-            /** TODO
-             * some logic to check whether to show bottom sheet affiliate or not
-             * but BE team is not ready yet
-             */
-            openShortsAffiliateTncBottomSheet()
         }
     }
 

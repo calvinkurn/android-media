@@ -272,7 +272,9 @@
     <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
     <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
-    
+    <string name="play_bro_banner_shorts_join_affiliate_title">Yuk, daftar Tokopedia Affiliate!</string>
+    <string name="play_bro_banner_shorts_join_affiliate_description">Biar bisa dapat komisi cuma dengan promosikan produk di videomu.</string>
+
     <!-- Shorts -->
     <string name="play_shorts_next_action_label">Lanjut</string>
     <string name="play_shorts_toolbar_title">Buat video sebagai</string>
