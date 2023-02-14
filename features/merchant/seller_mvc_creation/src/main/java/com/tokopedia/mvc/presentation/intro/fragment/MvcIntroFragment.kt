@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentIntroBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -24,8 +27,11 @@ import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroPageTracker
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroRecyclerViewScrollListener
+import com.tokopedia.mvc.presentation.intro.viewmodel.MvcIntroViewModel
 import com.tokopedia.mvc.util.constant.FIRST_INDEX
 import com.tokopedia.mvc.util.constant.ZEROTH_INDEX
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -38,10 +44,15 @@ class MvcIntroFragment :
     })
 
     private var mvcAdapter: MvcIntroAdapter? = null
-    private var contentList: List<Visitable<*>> = emptyList()
     private var mvcLayoutManager: LinearLayoutManager? = null
     private var scrollerListener: MvcIntroRecyclerViewScrollListener? = null
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: MvcIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(this, viewModelFactory).get(MvcIntroViewModel::class.java)
+    }
     @Inject
     lateinit var mvcIntroPageTracker: MvcIntroPageTracker
 
@@ -55,13 +66,41 @@ class MvcIntroFragment :
         return binding?.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeVoucherCreationMetadata()
+
+        viewModel.getVoucherCreationMetadata()
+
         binding?.apply {
             header.setupHeader()
             btnViewMore.setUpListener(this@MvcIntroFragment)
         }
-        this.contentList = getContentList()
+
+        binding?.btnCreateVoucher?.setOnClickListener {
+            mvcIntroPageTracker.sendMvcIntroPageCreateVoucherEvent()
+            RouteManager.route(context, CREATE_VOUCHER_SHOP_APPLINK)
+        }
+    }
+
+    private fun observeVoucherCreationMetadata() {
+        viewModel.voucherCreationMetadata.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    binding?.loader?.gone()
+                    setupRecyclerView(result.data.discountActive)
+                }
+                is Fail -> {
+                    binding?.loader?.gone()
+                    binding?.root?.showToasterError(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView(isDiscountPromoTypeEnabled: Boolean) {
+        val contentList = getContentList(isDiscountPromoTypeEnabled)
         mvcAdapter = MvcIntroAdapter()
 
         mvcLayoutManager = LinearLayoutManager(
@@ -76,10 +115,6 @@ class MvcIntroFragment :
         binding?.recyclerView?.apply {
             adapter = mvcAdapter
             initRvScroller(this)
-        }
-        binding?.btnCreateVoucher?.setOnClickListener {
-            mvcIntroPageTracker.sendMvcIntroPageCreateVoucherEvent()
-            RouteManager.route(context, CREATE_VOUCHER_SHOP_APPLINK)
         }
     }
 
@@ -112,12 +147,12 @@ class MvcIntroFragment :
         setGreenBackgroundForToolbar()
     }
 
-    private fun getContentList(): List<Visitable<*>> {
+    private fun getContentList(isDiscountPromoTypeEnabled: Boolean): List<Visitable<*>> {
         return context?.resources?.let {
             listOf(
                 it.getIntroVoucher(),
                 it.getIntroTypeData(),
-                it.getIntroCarouselData(),
+                it.getIntroCarouselData(isDiscountPromoTypeEnabled),
                 it.getChoiceOfVoucherData()
             )
         } ?: emptyList()
@@ -165,33 +200,60 @@ class MvcIntroFragment :
         )
     }
 
-    private fun Resources.getIntroCarouselData(): VoucherIntroCarouselUiModel {
+    private fun Resources.getIntroCarouselData(isDiscountPromoTypeEnabled: Boolean): VoucherIntroCarouselUiModel {
+        val tabs = if(isDiscountPromoTypeEnabled) allTabs() else cashbackAndFreeShippingTabsOnly()
+
         return VoucherIntroCarouselUiModel(
             headerTitle = getString(R.string.smvc_intro_voucher_view_pager_header),
-            tabsList = listOf(
-                VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                    getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
-                    getString(R.string.smvc_intro_voucher_view_pager_tab_1_description),
-                    listOf(
-                        getString(R.string.smvc_intro_voucher_carousel_cashback_1),
-                        getString(R.string.smvc_intro_voucher_carousel_cashback_2)
-                    )
-                ),
-                VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                    getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
-                    getString(R.string.smvc_intro_voucher_view_pager_tab_2_description),
-                    listOf(
-                        getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
-                        getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
-                    )
-                ),
-                VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                    getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
-                    getString(R.string.smvc_intro_voucher_view_pager_tab_3_description),
-                    listOf(
-                        getString(R.string.smvc_intro_voucher_carousel_diskon_1),
-                        getString(R.string.smvc_intro_voucher_carousel_diskon_2)
-                    )
+            tabsList = tabs
+        )
+    }
+
+    private fun allTabs(): List<VoucherIntroCarouselUiModel.VoucherIntroTabsData> {
+        return listOf(
+            VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
+                getString(R.string.smvc_intro_voucher_view_pager_tab_1_description),
+                listOf(
+                    getString(R.string.smvc_intro_voucher_carousel_cashback_1),
+                    getString(R.string.smvc_intro_voucher_carousel_cashback_2)
+                )
+            ),
+            VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
+                getString(R.string.smvc_intro_voucher_view_pager_tab_2_description),
+                listOf(
+                    getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
+                    getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
+                )
+            ),
+            VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
+                getString(R.string.smvc_intro_voucher_view_pager_tab_3_description),
+                listOf(
+                    getString(R.string.smvc_intro_voucher_carousel_diskon_1),
+                    getString(R.string.smvc_intro_voucher_carousel_diskon_2)
+                )
+            )
+        )
+    }
+
+    private fun cashbackAndFreeShippingTabsOnly(): List<VoucherIntroCarouselUiModel.VoucherIntroTabsData> {
+        return listOf(
+            VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
+                getString(R.string.smvc_intro_voucher_view_pager_tab_1_description),
+                listOf(
+                    getString(R.string.smvc_intro_voucher_carousel_cashback_1),
+                    getString(R.string.smvc_intro_voucher_carousel_cashback_2)
+                )
+            ),
+            VoucherIntroCarouselUiModel.VoucherIntroTabsData(
+                getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
+                getString(R.string.smvc_intro_voucher_view_pager_tab_2_description),
+                listOf(
+                    getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
+                    getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
                 )
             )
         )

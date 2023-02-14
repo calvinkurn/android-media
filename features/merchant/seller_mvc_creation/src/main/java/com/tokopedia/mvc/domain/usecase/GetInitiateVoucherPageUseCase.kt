@@ -71,7 +71,7 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
         return mapper.map(data)
     }
 
-    suspend fun getToken(): VoucherCreationMetadata {
+    suspend fun execute(): VoucherCreationMetadata {
         val request = buildRequest()
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetInitiateVoucherPageResponse>()

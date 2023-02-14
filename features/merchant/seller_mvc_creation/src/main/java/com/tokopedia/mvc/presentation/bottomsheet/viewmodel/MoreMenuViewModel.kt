@@ -1,26 +1,53 @@
 package com.tokopedia.mvc.presentation.bottomsheet.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.util.StringHandler
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
 class MoreMenuViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private var menuItem: List<MoreMenuUiModel> = emptyList()
 
+    private val _voucherCreationMetadata = MutableLiveData<Result<VoucherCreationMetadata>>()
+    val voucherCreationMetadata: LiveData<Result<VoucherCreationMetadata>> get() = _voucherCreationMetadata
+
+    fun getVoucherCreationMetadata() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute()
+
+                _voucherCreationMetadata.postValue(Success(voucherCreationMetadata))
+            },
+            onError = { error ->
+                _voucherCreationMetadata.postValue(Fail(error))
+            }
+        )
+    }
+
     fun getMenuList(
         voucher: Voucher?,
         voucherStatus: VoucherStatus?,
-        pageSource: String
+        pageSource: String,
+        isDiscountPromoTypeEnabled: Boolean
     ): List<MoreMenuUiModel> {
         if (pageSource == VoucherDetailFragment::class.java.simpleName) {
             menuItem =
@@ -55,13 +82,13 @@ class MoreMenuViewModel @Inject constructor(
                         else {
                             when (voucher.status) {
                                 VoucherStatus.ENDED -> {
-                                    getOptionsListForEndedPromo(voucher)
+                                    getOptionsListForEndedPromo(voucher, isDiscountPromoTypeEnabled)
                                 }
                                 VoucherStatus.STOPPED -> {
-                                    getOptionsListForStoppedPromo(voucher)
+                                    getOptionsListForStoppedPromo(voucher, isDiscountPromoTypeEnabled)
                                 }
                                 else ->
-                                    getEndedOrCancelledOptionsListMenu()
+                                    getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled)
                             }
                         }
                 }
@@ -99,23 +126,29 @@ class MoreMenuViewModel @Inject constructor(
         }
     }
 
-    private fun getOptionsListForStoppedPromo(voucher: Voucher): List<MoreMenuUiModel> {
+    private fun getOptionsListForStoppedPromo(
+        voucher: Voucher,
+        isDiscountPromoTypeEnabled: Boolean
+    ): List<MoreMenuUiModel> {
         return if (voucher.isVps) {
-            getCancelledVpsSubsidyListMenu()
+            getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
         } else if (voucher.isSubsidy) {
-            getCancelledVpsSubsidyListMenu()
+            getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
         } else {
-            getEndedOrCancelledOptionsListMenu()
+            getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled)
         }
     }
 
-    private fun getOptionsListForEndedPromo(voucher: Voucher): List<MoreMenuUiModel> {
+    private fun getOptionsListForEndedPromo(
+        voucher: Voucher,
+        isDiscountPromoTypeEnabled: Boolean
+    ): List<MoreMenuUiModel> {
         return if (voucher.isVps) {
             getEndedVpsSubsidyListMenu()
         } else if (voucher.isSubsidy) {
             getEndedVpsSubsidyListMenu()
         } else {
-            getEndedOrCancelledOptionsListMenu()
+            getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled)
         }
     }
 
@@ -172,15 +205,25 @@ class MoreMenuViewModel @Inject constructor(
         )
     }
 
-    private fun getEndedOrCancelledOptionsListMenu(): List<MoreMenuUiModel> {
-        return listOf(
-            MoreMenuUiModel.Copy(
-                StringHandler.ResourceString(R.string.voucher_bs_duplikat)
-            ),
-            MoreMenuUiModel.Clipboard(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
+    private fun getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled: Boolean): List<MoreMenuUiModel> {
+        val menu = if (isDiscountPromoTypeEnabled) {
+            listOf(
+                MoreMenuUiModel.Copy(
+                    StringHandler.ResourceString(R.string.voucher_bs_duplikat)
+                ),
+                MoreMenuUiModel.Clipboard(
+                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
+                )
             )
-        )
+        } else {
+            listOf(
+                MoreMenuUiModel.Clipboard(
+                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
+                )
+            )
+        }
+
+        return menu
     }
 
     private fun getVoucherDetailUpcomingOptionsListMenu(): List<MoreMenuUiModel> {
@@ -260,15 +303,25 @@ class MoreMenuViewModel @Inject constructor(
         )
     }
 
-    private fun getCancelledVpsSubsidyListMenu(): List<MoreMenuUiModel> {
-        return listOf(
-            MoreMenuUiModel.Copy(
-                StringHandler.ResourceString(R.string.voucher_bs_duplikat)
-            ),
-            MoreMenuUiModel.Clipboard(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
+    private fun getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled: Boolean): List<MoreMenuUiModel> {
+        val menu = if (isDiscountPromoTypeEnabled) {
+            listOf(
+                MoreMenuUiModel.Copy(
+                    StringHandler.ResourceString(R.string.voucher_bs_duplikat)
+                ),
+                MoreMenuUiModel.Clipboard(
+                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
+                )
             )
-        )
+        } else {
+            listOf(
+                MoreMenuUiModel.Clipboard(
+                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
+                )
+            )
+        }
+
+        return menu
     }
 
     // Can be used from bottomsheet recurring period

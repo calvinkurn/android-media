@@ -100,7 +100,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
     }
 
     private suspend fun initiateCoupon(): VoucherCreationMetadata {
-        return initiateCouponUseCase.getToken()
+        return initiateCouponUseCase.execute()
     }
 
     companion object {
