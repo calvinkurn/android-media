@@ -64,10 +64,10 @@ class GetPersonaDataUseCase @Inject constructor(
         )
     }
 
-    private fun getPersonaStatusType(personaStatus: String): PersonaStatus {
+    private fun getPersonaStatusType(personaStatus: Int): PersonaStatus {
         return when (personaStatus) {
-            Int.ZERO.toString() -> PersonaStatus.INACTIVE
-            Int.ONE.toString() -> PersonaStatus.ACTIVE
+            Int.ZERO -> PersonaStatus.INACTIVE
+            Int.ONE -> PersonaStatus.ACTIVE
             else -> PersonaStatus.UNDEFINED
         }
     }

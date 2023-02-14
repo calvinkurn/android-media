@@ -21,7 +21,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.common.Utils
-import com.tokopedia.sellerpersona.data.remote.model.TogglePersonaModel
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
@@ -101,12 +100,9 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         }
     }
 
-    private fun setOnToggleSuccess(toggleStatus: TogglePersonaModel) {
-        if (toggleStatus.isError) {
-            showToggleErrorMessage()
-        } else {
-            goToSellerHome()
-        }
+    private fun setOnToggleSuccess(status: PersonaStatus) {
+        isPersonaActive = status == PersonaStatus.ACTIVE
+        goToSellerHome()
     }
 
     private fun goToSellerHome() {

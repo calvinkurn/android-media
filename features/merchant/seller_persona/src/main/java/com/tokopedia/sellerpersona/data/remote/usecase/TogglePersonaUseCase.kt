@@ -4,7 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.sellerpersona.data.remote.model.TogglePersonaModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerpersona.data.remote.model.TogglePersonaResponse
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.usecase.RequestParams
@@ -24,9 +24,17 @@ class TogglePersonaUseCase @Inject constructor(
         setTypeClass(TogglePersonaResponse::class.java)
     }
 
-    suspend fun execute(shopId: String, status: PersonaStatus): TogglePersonaModel {
-        setRequestParams(createParam(shopId, status).parameters)
-        return executeOnBackground().toggleUserPersona
+    suspend fun execute(shopId: String, status: PersonaStatus): PersonaStatus {
+        try {
+            setRequestParams(createParam(shopId, status).parameters)
+            val result = executeOnBackground().toggleUserPersona
+            if (result.isError) {
+                throw MessageErrorException(result.errorMsg)
+            }
+            return status
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     private fun createParam(shopId: String, status: PersonaStatus): RequestParams {

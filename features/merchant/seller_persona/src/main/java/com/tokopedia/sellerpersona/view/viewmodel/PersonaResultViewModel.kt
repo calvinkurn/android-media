@@ -33,11 +33,11 @@ class PersonaResultViewModel @Inject constructor(
 
     val personaData: LiveData<Result<PersonaDataUiModel>>
         get() = _personaData
-    val togglePersonaStatus: LiveData<Result<TogglePersonaModel>>
+    val togglePersonaStatus: LiveData<Result<PersonaStatus>>
         get() = _togglePersonaStatus
 
     private val _personaData = MutableLiveData<Result<PersonaDataUiModel>>()
-    private val _togglePersonaStatus = MutableLiveData<Result<TogglePersonaModel>>()
+    private val _togglePersonaStatus = MutableLiveData<Result<PersonaStatus>>()
 
     fun fetchPersonaData() {
         launchCatchError(block = {
