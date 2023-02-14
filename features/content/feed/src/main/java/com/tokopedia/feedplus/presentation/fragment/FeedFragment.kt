@@ -28,8 +28,16 @@ class FeedFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            data = it.getParcelable(ARGUMENT_DATA, FeedDataModel::class.java)
+            data = it.getParcelable(ARGUMENT_DATA)
+        } ?: savedInstanceState?.let {
+            data = it.getParcelable(ARGUMENT_DATA)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putParcelable(ARGUMENT_DATA, data)
     }
 
     override fun onCreateView(
