@@ -201,6 +201,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_ticker"
+        app:layout_goneMarginTop="10dp"
         app:unify_tips_description="Test"
         tools:visibility="visible" />
 
