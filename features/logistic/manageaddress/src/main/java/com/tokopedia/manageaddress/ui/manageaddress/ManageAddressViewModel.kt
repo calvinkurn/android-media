@@ -392,12 +392,11 @@ class ManageAddressViewModel @Inject constructor(
     private fun GetTargetedTickerResponse.GetTargetedTickerData.toUiModel(): TickerModel {
         return TickerModel(
             item = this@toUiModel.list.sortedBy { it.priority }.map {
-                val url = it.action.getUrl()
                 TickerModel.TickerItem(
                     type = it.toTickerType(),
                     title = it.title,
-                    content = it.generateContent(url),
-                    linkUrl = url,
+                    content = it.generateContent(),
+                    linkUrl = it.action.getUrl(),
                     priority = it.priority
                 )
             }
@@ -408,10 +407,13 @@ class ManageAddressViewModel @Inject constructor(
         return this.appURL.ifEmpty { this.webURL }
     }
 
-    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.generateContent(actionUrl: String): String {
+    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.generateContent(): String {
         return java.lang.StringBuilder().apply {
             append(this@generateContent.content)
-            appendHyperlinkText(label = this@generateContent.action.label, url = actionUrl)
+            this@generateContent.action.takeIf { it.label.isNotEmpty() }?.let {
+                    action ->
+                appendHyperlinkText(label = action.label, url = action.getUrl())
+            }
         }.toString()
     }
 
