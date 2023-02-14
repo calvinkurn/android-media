@@ -618,9 +618,9 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-        if (!HomeRollenceController.isUsingAtf2Variant() && !HomeRollenceController.isUsingAtf1Variant()) {
-            stickyLoginView = view.findViewById(R.id.sticky_login_text)
-        }
+//        if (!HomeRollenceController.isUsingAtf2Variant() && !HomeRollenceController.isUsingAtf1Variant()) {
+        stickyLoginView = view.findViewById(R.id.sticky_login_text)
+//        }
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
