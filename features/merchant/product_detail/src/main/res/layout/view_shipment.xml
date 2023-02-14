@@ -183,12 +183,25 @@
         android:layout_marginEnd="12dp"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
-        app:descriptionText="Halo halo halo"
+        tools:descriptionText="Maaf, pengiriman terjadwal belum tersedia untuk beberapa produk pada kategori ini."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_2"
         app:tickerShapeType="loose"
         app:tickerType="announcement"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.TipsUnify
+        android:id="@+id/pdp_shipment_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_ticker"
+        app:unify_tips_description="Test"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -199,7 +212,7 @@
         android:textColor="@color/Unify_NN900"
         app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
         app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
-        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_ticker"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_tips"
         app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />
 

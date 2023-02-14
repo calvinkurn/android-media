@@ -169,7 +169,7 @@
     <string name="pdp_video_divider"> / </string>
 
     <string name="pdp_shipping_weight_checkout_label">Total ongkir akhir akan dihitung saat checkout.</string>
-    <string name="pdp_shipping_simulation_label">Simulasi Pengiriman</string>
+    <string name="pdp_shipping_simulation_label">Simulasi pengiriman</string>
     <string name="pdp_shipping_available_cod_label">Bisa COD</string>
     <string name="pdp_shipping_to_builder">Dikirim ke <![CDATA[<b>%1s</b>]]></string>
     <string name="pdp_shipping_from_builder">Dari %1s</string>
@@ -201,6 +201,6 @@
 
     <string name="pdp_selly_time_format">&#160;• %s</string>
     <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
-    <string name="pdp_selly_button_collapse">Jadwal Lainnya</string>
+    <string name="pdp_selly_button_collapse">Tampilkan lebih sedikit</string>
 
 </resources>
