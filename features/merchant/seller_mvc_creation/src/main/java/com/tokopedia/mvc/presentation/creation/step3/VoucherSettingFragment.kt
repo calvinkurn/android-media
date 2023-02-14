@@ -205,33 +205,20 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         voucherConfiguration: VoucherConfiguration,
         isDiscountPromoTypeEnabled: Boolean
     ) {
-        promoTypeSectionBinding?.chipDiscount?.showNewNotification = isDiscountPromoTypeEnabled
-
         when (voucherConfiguration.promoType) {
-            PromoType.FREE_SHIPPING -> {
-                if (isDiscountPromoTypeEnabled) {
-                    promoTypeSectionBinding?.chipDiscount?.setNormal()
-                }
-
-                setFreeShippingSelected()
-            }
-            PromoType.CASHBACK -> {
-                if (isDiscountPromoTypeEnabled) {
-                    promoTypeSectionBinding?.chipDiscount?.setNormal()
-                }
-
-                setCashbackSelected()
-            }
+            PromoType.FREE_SHIPPING -> setFreeShippingSelected(isDiscountPromoTypeEnabled)
+            PromoType.CASHBACK -> setCashbackSelected(isDiscountPromoTypeEnabled)
             PromoType.DISCOUNT -> {
-                setDiscountSelected()
+                if (isDiscountPromoTypeEnabled) {
+                    setDiscountSelected()
+                }
             }
         }
 
+        promoTypeSectionBinding?.chipDiscount?.showNewNotification = isDiscountPromoTypeEnabled
+
         if (!isDiscountPromoTypeEnabled) {
             promoTypeSectionBinding?.chipDiscount?.disable()
-        } else {
-            promoTypeSectionBinding?.chipDiscount?.chip_container?.isEnabled = true
-            promoTypeSectionBinding?.chipDiscount?.chip_sub_container?.isEnabled = true
         }
     }
 
@@ -550,15 +537,12 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             if (pageMode == PageMode.CREATE) {
                 chipFreeShipping.chip_container.setOnClickListener {
                     setPromoType(PromoType.FREE_SHIPPING)
-                    setFreeShippingSelected()
                 }
                 chipCashback.chip_container.setOnClickListener {
                     setPromoType(PromoType.CASHBACK)
-                    setCashbackSelected()
                 }
                 chipDiscount.chip_container.setOnClickListener {
                     setPromoType(PromoType.DISCOUNT)
-                    setDiscountSelected()
                 }
             }
         }
@@ -570,10 +554,14 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     // Free shipping input region
-    private fun setFreeShippingSelected() {
+    private fun setFreeShippingSelected(isDiscountPromoTypeEnabled: Boolean) {
         promoTypeSectionBinding?.run {
             chipFreeShipping.setSelected()
             chipCashback.setNormal()
+        }
+
+        if (isDiscountPromoTypeEnabled) {
+            promoTypeSectionBinding?.chipDiscount?.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.visible()
@@ -707,11 +695,15 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     // Cashback input region
-    private fun setCashbackSelected() {
+    private fun setCashbackSelected(isDiscountPromoTypeEnabled: Boolean) {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
             chipFreeShipping.setNormal()
             chipCashback.setSelected()
+        }
+
+        if (isDiscountPromoTypeEnabled) {
+            promoTypeSectionBinding?.chipDiscount?.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
@@ -955,7 +947,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
 
         promoTypeSectionBinding?.run {
-            chipDiscount?.setSelected()
+            chipDiscount.setSelected()
             chipFreeShipping.setNormal()
             chipCashback.setNormal()
         }
@@ -1382,8 +1374,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun ChipsUnify.disable() {
+        val color = ContextCompat.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
         chipType = ChipsUnify.TYPE_DISABLE
-        chip_container.isEnabled = false
-        chip_sub_container.isEnabled = false
+        chip_image_icon.setColorFilter(color)
     }
 }
