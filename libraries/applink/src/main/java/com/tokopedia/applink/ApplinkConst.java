@@ -171,6 +171,14 @@ public interface ApplinkConst {
             "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    /**
+     * Bubble Chat / Notif Bubbles Activation apge
+     */
+    String TOPCHAT_BUBBLE_ACTIVATION = "tokopedia://chatsettings/bubble-activation";
+
+    /**
+     * Tokochat (Chat with Gojek)
+     */
     String TOKO_CHAT = "tokopedia://tokochat";
 
     String CHATBOT_HOST = "chatbot";
@@ -556,7 +564,7 @@ public interface ApplinkConst {
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
         String PRODUCT_MANAGE = "sellerapp://product/manage";
-
+        String TOPCHAT_BUBBLE_ACTIVATION = "sellerapp://chatsettings/bubble-activation";
     }
 
     interface TokopediaNow {
