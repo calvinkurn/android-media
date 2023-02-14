@@ -25,7 +25,6 @@ class MvcIntroViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute()
-
                 _voucherCreationMetadata.postValue(Success(voucherCreationMetadata))
             },
             onError = { error ->

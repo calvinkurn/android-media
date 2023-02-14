@@ -94,7 +94,7 @@ class VoucherSettingViewModel @Inject constructor(
                     isVoucherProduct = voucherConfiguration.isVoucherProduct
                 )
                 val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute(metadataParam)
-                val isDiscountPromoTypeActive = false
+                val isDiscountPromoTypeActive = voucherCreationMetadata.discountActive
 
                 _uiState.update {
                     it.copy(
