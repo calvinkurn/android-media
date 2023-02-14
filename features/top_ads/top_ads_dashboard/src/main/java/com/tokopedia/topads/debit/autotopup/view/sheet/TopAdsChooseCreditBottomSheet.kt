@@ -39,6 +39,22 @@ import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsCreditListAdapter
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAktifkanTambahKreditManualDiModalTambahKreditEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAktifkanTambahKreditOtomatisDiModalTambahKreditEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAktifkanTambahKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAmountOfAutoTopupDiModalTambahKreditEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAmountOfAutoTopupEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAmountOfManualTopupDiModalTambahKreditEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickBatalPerubahanPengaturanKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickChecklistTncKreditOtomatisDiModalTambahKreditEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickClosePopupKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickInfoFrekuensiTambahKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickInfoMinimalTresholdKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickInformasiKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickPilihTambahKreditManualEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickPilihTambahKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickUbahPengaturanKreditOtomatisDiModalTambahKreditEvent
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -47,8 +63,8 @@ import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
-
-class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
+class TopAdsChooseCreditBottomSheet :
+    BottomSheetUnify(),
     TopAdsCreditListAdapter.NominalClickListener {
 
     private var creditItemRecyclerView: RecyclerView? = null
@@ -92,6 +108,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     var isAutoTopUpActive: Boolean = false
     var isAutoTopUpSelected: Boolean = false
     var isShowEditHistory: Boolean = false
+    var isFromEditAutoTopUp: Boolean = false
     private var isCreditHistoryReceived: Boolean = false
     var onSaved: ((isAutoAdsSaved: Boolean) -> Unit)? = null
     var onCancel: (() -> Unit)? = null
@@ -118,7 +135,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         initInjector()
         initChildLayout()
@@ -193,11 +210,18 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             if (!isAutoTopUpActive) onCancel?.invoke()
             if (activity is TopAdsCreditTopUpActivity) activity?.finish()
         }
+        setCloseClickListener {
+            sendClickClosePopupKreditOtomatisEvent()
+        }
     }
 
     private fun checkRadioDefaultTopUpType() {
-        if (isAutoTopUpSelected) autoRadioButton?.isChecked =
-            true else manualRadioButton?.isChecked = true
+        if (isAutoTopUpSelected) {
+            autoRadioButton?.isChecked =
+                true
+        } else {
+            manualRadioButton?.isChecked = true
+        }
     }
 
     private fun setAutoRadioButtonLabel() {
@@ -210,12 +234,10 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         changeButtonState(true)
         if (manualRadioButton?.isChecked == true) {
             changeToManualState()
-
         } else if (autoRadioButton?.isChecked == true) {
             changeToAutoState()
         }
     }
-
 
     private fun setUpRecyclerView() {
         adapter.setNominalClickListener(this)
@@ -227,23 +249,38 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     private fun setUpClickListener() {
         saveButton?.setOnClickListener {
             if (it.tag == IS_EDIT_TOP_UP) {
+                sendClickUbahPengaturanKreditOtomatisDiModalTambahKreditEvent()
                 enableEditAutoTopUpState()
             } else if (manualRadioButton?.isChecked == true) {
+                sendClickAktifkanTambahKreditManualDiModalTambahKreditEvent(
+                    selectedNominal?.productPrice ?: ""
+                )
                 openManualAdsCreditWebView()
             } else {
+                sendClickAktifkanTambahKreditOtomatisDiModalTambahKreditEvent(
+                    "${selectedNominal?.productPrice}, ${
+                    getTextFromFrequency(
+                        context,
+                        autoTopUpFrequencySelected
+                    )
+                    }"
+                )
                 saveAutoTopUp()
             }
         }
 
         cancelButton?.setOnClickListener {
+            sendClickBatalPerubahanPengaturanKreditOtomatisEvent()
             resetToCreditHistoryState()
         }
 
         applyButton?.setOnClickListener {
+            sendClickAktifkanTambahKreditOtomatisEvent()
             saveAutoTopUp()
         }
 
         toolTipAuto?.setOnClickListener {
+            sendClickInformasiKreditOtomatisEvent()
             TopAdsToolTipBottomSheet.newInstance().also {
                 it.setTitle(context?.getString(R.string.label_topads_automatic_topup) ?: "")
                 it.setDescription(
@@ -262,6 +299,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         }
 
         toolTipMaxCreditLimit?.setOnClickListener {
+            sendClickInfoMinimalTresholdKreditOtomatisEvent()
             TopAdsToolTipBottomSheet.newInstance().also {
                 it.setTitle(context?.getString(R.string.toapds_dash_tooltip_title) ?: "")
                 it.setDescription(
@@ -271,6 +309,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         }
 
         toolTipFrequencyHistory?.setOnClickListener {
+            sendClickInfoFrekuensiTambahKreditOtomatisEvent()
             TopAdsToolTipBottomSheet.newInstance().also {
                 it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
                 it.setDescription(
@@ -316,7 +355,8 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
         val defaultEditList = autoTopUpCreditHistoryTriple?.let { triple ->
             viewModel?.getAutoTopUpCreditListFromSelected(
-                triple.first, autoTopUpNominalList
+                triple.first,
+                autoTopUpNominalList
             )
         }
 
@@ -355,25 +395,43 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
         radioGroupAutoTopUpFrequency?.setOnCheckedChangeListener { _, id ->
             when (id) {
-                jarangRadioButton?.id -> autoTopUpFrequencySelected = TOP_UP_FREQUENCY_FOUR
-                normalRadioButton?.id -> autoTopUpFrequencySelected = DEFAULT_TOP_UP_FREQUENCY
-                seringRadioButton?.id -> autoTopUpFrequencySelected = TOP_UP_FREQUENCY_EIGHT
+                jarangRadioButton?.id -> {
+                    autoTopUpFrequencySelected = TOP_UP_FREQUENCY_FOUR
+                    sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
+                        isFromEditAutoTopUp,
+                        context?.getString(R.string.topads_frequency_four_text) ?: ""
+                    )
+                }
+                normalRadioButton?.id -> {
+                    autoTopUpFrequencySelected = DEFAULT_TOP_UP_FREQUENCY
+                    sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
+                        isFromEditAutoTopUp,
+                        context?.getString(R.string.topads_frequency_six_text) ?: ""
+                    )
+                }
+                seringRadioButton?.id -> {
+                    autoTopUpFrequencySelected = TOP_UP_FREQUENCY_EIGHT
+                    sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
+                        isFromEditAutoTopUp,
+                        context?.getString(R.string.topads_frequency_eight_text) ?: ""
+                    )
+                }
             }
 
             if (autoRadioButton?.isChecked == true) {
                 setAutoStateFields()
                 tncAutoCreditCheckBox?.isChecked = false
-                applyButton?.isEnabled = tncAutoCreditCheckBox?.isChecked?: false
+                applyButton?.isEnabled = tncAutoCreditCheckBox?.isChecked ?: false
             }
         }
 
         tncAutoCreditCheckBox?.setOnCheckedChangeListener { compoundButton, _ ->
+            sendClickChecklistTncKreditOtomatisDiModalTambahKreditEvent(isFromEditAutoTopUp)
             saveButton?.isEnabled =
                 compoundButton.isChecked && !selectedNominal?.productPrice.isNullOrEmpty()
             applyButton?.isEnabled =
                 compoundButton.isChecked && !selectedNominal?.productPrice.isNullOrEmpty() && compoundButton?.isEnabled == true
         }
-
     }
 
     private fun saveAutoTopUp() {
@@ -396,6 +454,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     }
 
     private fun changeToManualState() {
+        sendClickPilihTambahKreditManualEvent()
         manageAutoTopUpActiveState()
         addNominalList(manualNominalList)
         groupFrequencyAutoTopUp?.hide()
@@ -414,6 +473,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     }
 
     private fun changeToAutoState() {
+        sendClickPilihTambahKreditOtomatisEvent()
         normalRadioButton?.isChecked = true
         groupFrequencyAutoTopUp?.showWithCondition(!isAutoTopUpActive)
         manualNominalList.reset()
@@ -451,7 +511,8 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             String.format(
                 getString(R.string.topads_dash_auto_topup_bonus),
                 selectedNominal?.bonus
-            ), HtmlCompat.FROM_HTML_MODE_LEGACY
+            ),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         maxCreditLimit?.text = autoTopUpCreditHistoryTriple?.third?.first
         val autoTopUpFrequencySelectedText =
@@ -461,7 +522,8 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
                 getString(R.string.topads_dash_auto_topup_frequency),
                 autoTopUpFrequencySelectedText,
                 autoTopUpCreditHistoryTriple?.third?.second
-            ), HtmlCompat.FROM_HTML_MODE_LEGACY
+            ),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         autoTopUpMaxCreditLimit = viewModel?.getAutoTopUpMaxCreditLimit(
             autoTopUpFrequencySelected,
@@ -476,8 +538,10 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         saveButton?.tag = IS_EDIT_TOP_UP
         groupAutoTopUpCreditHistory?.showWithCondition(isCreditHistoryReceived)
         autoTopUpCreditTips?.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            if (selectedFrequncyTambahCredit?.id != null) topToBottom =
-                selectedFrequncyTambahCredit?.id!!
+            if (selectedFrequncyTambahCredit?.id != null) {
+                topToBottom =
+                    selectedFrequncyTambahCredit?.id!!
+            }
         }
         autoTopUpCreditTips?.showWithCondition(isCreditHistoryReceived)
     }
@@ -511,7 +575,6 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             setCheckBoxText()
             tncAutoCreditCheckBox?.show()
         }
-
     }
 
     private fun setCheckBoxText() {
@@ -550,7 +613,6 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
                     isAutoTopUpActive = true
                     handleResponseSaving()
                     dismiss()
-
                 }
                 is Loading -> {
                     saveButton?.isLoading = true
@@ -614,17 +676,23 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         selectedNominal?.clicked = true
         adapter.submitList(nominalList.toMutableList())
         if (autoRadioButton?.isChecked == true) {
+            if (!isFromEditAutoTopUp) {
+                sendClickAmountOfAutoTopupEvent(selectedNominal?.productPrice ?: "")
+            } else {
+                sendClickAmountOfAutoTopupDiModalTambahKreditEvent()
+            }
             setAutoStateFields()
             tncAutoCreditCheckBox?.isEnabled = true
             tncAutoCreditCheckBox?.isChecked = false
             applyButton?.isEnabled = tncAutoCreditCheckBox?.isChecked ?: false
         } else {
+            sendClickAmountOfManualTopupDiModalTambahKreditEvent(selectedNominal?.productPrice ?: "")
             saveButton?.isEnabled = true
         }
     }
 
-    private fun collapseBottomSheet(){
-        if (dialog?.isShowing == true){
+    private fun collapseBottomSheet() {
+        if (dialog?.isShowing == true) {
             frameDialogView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
         }
@@ -645,7 +713,6 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             }
             startActivity(intent)
         }
-
     }
 }
 

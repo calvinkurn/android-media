@@ -15,6 +15,9 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickCobaSekarangKreditOtomatisEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickPelajariSelengkapnyaEvent
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickTambahKreditManualEvent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -45,7 +48,7 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -94,11 +97,11 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     }
 
     private fun renderTitle(context: Context, isInsufficientCredit: Boolean) {
-       if (isInsufficientCredit){
-           interruptSheetTitle?.text = context.getString(R.string.top_ads_interrupt_bottom_sheet_title_two)
-       }else{
-           interruptSheetTitle?.text = context.getString(R.string.top_ads_interrupt_bottom_sheet_title_one)
-       }
+        if (isInsufficientCredit) {
+            interruptSheetTitle?.text = context.getString(R.string.top_ads_interrupt_bottom_sheet_title_two)
+        } else {
+            interruptSheetTitle?.text = context.getString(R.string.top_ads_interrupt_bottom_sheet_title_one)
+        }
     }
 
     private fun renderBulletPoint(context: Context) {
@@ -106,19 +109,21 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
             String.format(
                 context.getString(R.string.topads_dash_top_credit_interrupt_sheet_edu_point_three),
                 autoTopUpBonus.toString()
-            ), HtmlCompat.FROM_HTML_MODE_LEGACY
+            ),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
         )
     }
 
     private fun renderDescription(context: Context, isInsufficientCredit: Boolean) {
-        if (isInsufficientCredit){
+        if (isInsufficientCredit) {
             interruptSheetDescription?.text = context.getString(R.string.topads_dash_top_credit_interrupt_sheet_description_two)
-        }else{
+        } else {
             interruptSheetDescription?.text = HtmlCompat.fromHtml(
                 String.format(
                     context.getString(R.string.topads_dash_top_credit_interrupt_sheet_description_one),
                     topUpCount
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                ),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
     }
@@ -126,12 +131,14 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     private fun setClickListeners() {
         interruptSheetLearnMoreLinkTypography?.setOnClickListener {
             context?.let {
+                sendClickPelajariSelengkapnyaEvent()
                 it.openWebView(it.getString(R.string.topads_credit_top_up_url))
             }
         }
 
         interruptSheetCancelButton?.setOnClickListener {
-           TopAdsChooseCreditBottomSheet.newInstance().also {
+            sendClickTambahKreditManualEvent()
+            TopAdsChooseCreditBottomSheet.newInstance().also {
                 it.isAutoTopUpActive = isAutoTopUpActive
                 it.show((context as FragmentActivity).supportFragmentManager)
                 onButtonClick?.invoke(true)
@@ -140,6 +147,7 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
         }
 
         interruptSheetApplyButton?.setOnClickListener {
+            sendClickCobaSekarangKreditOtomatisEvent()
             TopAdsChooseCreditBottomSheet.newInstance().also {
                 it.isAutoTopUpSelected = true
                 it.isAutoTopUpActive = isAutoTopUpActive
@@ -152,11 +160,8 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     }
 
     fun show(
-        fragmentManager: FragmentManager,
+        fragmentManager: FragmentManager
     ) {
         show(fragmentManager, "")
     }
 }
-
-
-
