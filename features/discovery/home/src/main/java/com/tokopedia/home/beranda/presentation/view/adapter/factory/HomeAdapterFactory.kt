@@ -31,6 +31,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringIconViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
@@ -549,7 +550,7 @@ class HomeAdapterFactory(
                     BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
             DynamicIconViewHolder.LAYOUT ->
                 viewHolder =
-                    DynamicIconViewHolder(view, dynamicIconComponentListener)
+                    DynamicIconViewHolder(view, dynamicIconComponentListener, HomeRollenceController.isUsingAtf2Variant())
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
             ErrorStateChannelOneViewHolder.LAYOUT ->
                 viewHolder =

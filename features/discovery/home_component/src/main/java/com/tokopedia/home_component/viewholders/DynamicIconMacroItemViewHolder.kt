@@ -45,6 +45,7 @@ class DynamicIconMacroItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon_item_interaction
+        val LAYOUT_REVAMP = R.layout.home_component_dynamic_icon_revamp_item_interaction
         private const val SCALE_MIN_IMAGE = 0.8f
         private const val SCALE_MAX_IMAGE = 1f
         private const val MAX_ALPHA_RIPPLE = 0.6f

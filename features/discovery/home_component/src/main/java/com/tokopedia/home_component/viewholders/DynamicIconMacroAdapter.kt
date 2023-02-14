@@ -10,7 +10,7 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 /**
  * Created by dhaba
  */
-class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconMacroItemViewHolder>() {
+class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) : RecyclerView.Adapter<DynamicIconMacroItemViewHolder>() {
     private val iconList = mutableListOf<DynamicIconComponent.DynamicIcon>()
     private var position: Int = 0
     private var type: Int = 1
@@ -19,7 +19,7 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconMacroItemViewHolder {
         return DynamicIconMacroItemViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                DynamicIconMacroItemViewHolder.LAYOUT,
+                if (isRevamp) DynamicIconMacroItemViewHolder.LAYOUT_REVAMP else DynamicIconMacroItemViewHolder.LAYOUT,
                 parent,
                 false
             ),

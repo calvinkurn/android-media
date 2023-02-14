@@ -32,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by Lukas on 1/8/21.
  */
-class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconComponentListener) :
+class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) :
     AbstractViewHolder<DynamicIconComponentDataModel>(itemView), CoroutineScope {
 
     private var binding: HomeComponentDynamicIconBinding? by viewBinding()
@@ -50,8 +50,8 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 8
     }
 
-    private val adapter = DynamicIconAdapter(listener)
-    private val adapterMacro = DynamicIconMacroAdapter(listener)
+    private val adapter = DynamicIconAdapter(listener, isRevamp)
+    private val adapterMacro = DynamicIconMacroAdapter(listener, isRevamp)
     private var iconRecyclerView: RecyclerView? = null
     private val masterJob = SupervisorJob()
 
@@ -140,7 +140,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         }
     }
 
-    internal inner class DynamicIconAdapter(private val listener: DynamicIconComponentListener) :
+    internal inner class DynamicIconAdapter(private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) :
         RecyclerView.Adapter<DynamicIconItemViewHolder>() {
         private val categoryList = mutableListOf<DynamicIconComponent.DynamicIcon>()
         private var position: Int = 0
@@ -153,7 +153,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         ): DynamicIconItemViewHolder {
             return DynamicIconItemViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    DynamicIconItemViewHolder.LAYOUT,
+                    if (isRevamp) DynamicIconItemViewHolder.LAYOUT_REVAMP else DynamicIconItemViewHolder.LAYOUT,
                     parent,
                     false
                 ),
@@ -203,6 +203,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         companion object {
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
+            val LAYOUT_REVAMP = R.layout.home_component_dynamic_icon_revamp_item
             private const val ONE_LINE = 1
             private const val TWO_LINES = 2
         }
