@@ -1787,7 +1787,7 @@ open class HomeRevampFragment :
     }
 
     private fun onPageLoadTimeEnd() {
-//        stickyLoginView?.loadContent()
+        stickyLoginView?.loadContent()
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
