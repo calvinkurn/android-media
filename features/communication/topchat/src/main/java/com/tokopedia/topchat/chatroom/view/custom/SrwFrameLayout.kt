@@ -151,7 +151,7 @@ class SrwFrameLayout : FrameLayout {
             topRightRadius = getTopRightRadius(),
             bottomLeftRadius = R.dimen.dp_topchat_20,
             bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             elevation = getElevationShadow(),
             shadowRadius = getElevationShadow(),
             strokeColor = getStrokeColor(),

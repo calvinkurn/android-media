@@ -32,7 +32,7 @@ class TopchatBannedProductAttachmentViewHolder(
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
@@ -44,11 +44,11 @@ class TopchatBannedProductAttachmentViewHolder(
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN100,
             getStrokeWidthSenderDimenRes()
     )
 

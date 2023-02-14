@@ -29,7 +29,7 @@ class InvoicePreviewViewHolder(
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             R.dimen.dp_topchat_6,
             R.dimen.dp_topchat_6,
             Gravity.CENTER

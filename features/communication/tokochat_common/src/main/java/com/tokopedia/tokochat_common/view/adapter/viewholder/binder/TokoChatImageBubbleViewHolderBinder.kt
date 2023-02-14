@@ -31,7 +31,7 @@ object TokoChatImageBubbleViewHolderBinder {
     fun generateRightBg(view: View?): Drawable? {
         return TokoChatViewUtil.generateBackgroundWithShadow(
             view = view,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
             topLeftRadiusValue = EIGHT_DP,
             topRightRadiusValue = EIGHT_DP,
             bottomLeftRadiusValue = EIGHT_DP,

@@ -68,7 +68,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
@@ -384,7 +384,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     private fun setSellerBackground() {
         val stroke = if (source == BundlingSource.PRODUCT_ATTACHMENT) {
-            com.tokopedia.unifyprinciples.R.color.Unify_G200
+            com.tokopedia.unifyprinciples.R.color.Unify_GN50
         } else {
             null
         }
@@ -395,7 +395,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,

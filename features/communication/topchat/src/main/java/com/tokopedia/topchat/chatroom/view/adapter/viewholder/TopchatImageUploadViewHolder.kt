@@ -57,7 +57,7 @@ class TopchatImageUploadViewHolder(
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
         elevation = R.dimen.dp_topchat_2,
         shadowRadius = R.dimen.dp_topchat_1,
         shadowGravity = Gravity.CENTER,
@@ -66,12 +66,12 @@ class TopchatImageUploadViewHolder(
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
         elevation = R.dimen.dp_topchat_2,
         shadowRadius = R.dimen.dp_topchat_1,
         shadowGravity = Gravity.CENTER,

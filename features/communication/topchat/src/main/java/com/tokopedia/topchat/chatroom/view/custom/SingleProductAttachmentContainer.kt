@@ -78,7 +78,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+          com.tokopedia.unifyprinciples.R.color.Unify_NN600,
           R.dimen.dp_topchat_2,
           R.dimen.dp_topchat_1,
           Gravity.CENTER
@@ -237,7 +237,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBackgroundDrawable(useStrokeSender: Boolean) {
         if (bgSender == null) {
-            val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_G200 else null
+            val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_GN50 else null
             val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
             bgSender = ViewUtil.generateBackgroundWithShadow(
                 this,
@@ -246,7 +246,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                 R.dimen.dp_topchat_2,
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER,
