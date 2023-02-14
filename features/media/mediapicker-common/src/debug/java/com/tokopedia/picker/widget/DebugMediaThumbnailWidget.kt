@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.databinding.WidgetMediaThumbnailDebugBinding
+import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
@@ -50,7 +51,7 @@ class DebugMediaThumbnailWidget @JvmOverloads constructor(
             binding.bgVideoShadow.show()
 
             binding.txtDuration.show()
-            binding.txtDuration.text = file.readableVideoDuration(context)
+            binding.txtDuration.text = element.videoLength.humanize()
         }
     }
 

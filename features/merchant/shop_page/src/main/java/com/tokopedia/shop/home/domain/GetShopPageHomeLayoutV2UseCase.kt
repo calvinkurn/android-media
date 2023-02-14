@@ -163,6 +163,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       totalNotifyWording
                       totalProduct
                       totalProductWording
+                      voucherWording
                       dynamicRule {
                         dynamicRoleData {
                           ruleName
@@ -206,6 +207,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         maximumOrder
                         childIDs
                         parentID
+                        showStockbar
                       }
                       backgroundGradientColor {
                         firstColor

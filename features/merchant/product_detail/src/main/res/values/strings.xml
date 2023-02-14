@@ -112,9 +112,7 @@
     <string name="product_detail_discussion_title">Diskusi Paling Membantu</string>
     <string name="product_detail_discussion_see_all">Lihat Semua (%d)</string>
     <string name="product_detail_discussion_no_answers">Bantu Jawab</string>
-    <string name="product_detail_discussion_empty_subtitle">Punya Pertanyaan?</string>
-    <string name="product_detail_discussion_empty_description">Tanya aja langsung tentang barang ini di Diskusi.</string>
-    <string name="product_detail_discussion_empty_button">Tanya Sekarang</string>
+    <string name="product_detail_discussion_empty_description">Tanya soal produk ini di Diskusi, yuk!</string>
     <string name="product_detail_discussion_total_answers">%d jawaban lainnya</string>
     <string name="product_detail_discussion_seller_label">Penjual</string>
     <string name="product_detail_discussion_local_load_title">Diskusi gagal ditampilkan</string>
@@ -200,5 +198,9 @@
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
     <string name="pdp_general_info_see">Lihat</string>
     <string name="text_info_shop_moderated">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
+
+    <string name="pdp_selly_time_format">&#160;• %s</string>
+    <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
+    <string name="pdp_selly_button_collapse">Jadwal Lainnya</string>
 
 </resources>
