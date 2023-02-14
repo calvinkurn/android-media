@@ -135,7 +135,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
     /*
-        Do not remove this dependency, because we use it in Abstraction
+        Do not remove this dependency, because we use it for MQTT
      */
     implementation project(rootProject.ext.features.tokochat_config_common)
 
