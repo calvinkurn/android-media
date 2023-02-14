@@ -400,6 +400,18 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller mvc list upcoming, should return internal shop mvc list upcoming`() {
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_LIST_UPCOMING
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_LIST_UPCOMING, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller mvc list ongoing, should return internal shop mvc list ongoing`() {
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_LIST_ONGOING, expectedDeepLink)
+    }
+
+    @Test
     fun `check seller mvc create with voucher type param, should return internal shop mvc create with voucher type param`() {
         val mockVoucherType = "shop"
         val appLink = UriUtil.buildUri(

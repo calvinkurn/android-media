@@ -558,6 +558,8 @@ public interface ApplinkConst {
         String SELLER_MVC_LIST = "sellerapp://seller-mvc/list";
         String SELLER_MVC_LIST_ACTIVE = "sellerapp://seller-mvc/list/active";
         String SELLER_MVC_LIST_HISTORY = "sellerapp://seller-mvc/list/history";
+        String SELLER_MVC_LIST_UPCOMING = "sellerapp://seller-mvc/list/upcoming";
+        String SELLER_MVC_LIST_ONGOING = "sellerapp://seller-mvc/list/ongoing";
         //{voucher_type} value -> shop, product
         String SELLER_MVC_CREATE = "sellerapp://seller-mvc/create/{voucher_type}";
         String SELLER_MVC_DETAIL = "sellerapp://seller-mvc/detail/{voucher_id}";
