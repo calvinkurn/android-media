@@ -177,7 +177,6 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess) {
-                        dismiss()
                         setupAfterPofSuccess()
                     } else {
                         showToasterError()

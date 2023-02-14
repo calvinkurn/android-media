@@ -92,7 +92,7 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
         )
     }
 
-    fun mapToEstimateInfoUiModel(estimateInfo: EstimateInfo): EstimateInfoUiModel {
+    private fun mapToEstimateInfoUiModel(estimateInfo: EstimateInfo): EstimateInfoUiModel {
         return EstimateInfoUiModel(estimateInfo.title, estimateInfo.info)
     }
 
