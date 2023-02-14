@@ -82,12 +82,12 @@ object ConstantTransactionAnalytics {
         const val TRACK_SOM = "track seller order management"
         const val INSURANCE_INFO_TOOLTIP = "disclaimer box - insurance page"
 
-        //OCC
+        // OCC
         const val PURCHASE_SETTING = "purchase setting"
         const val PURCHASE_PROTECTION_OCC = "fin - order summary occ"
         const val ORDER_SUMMARY = "order summary"
 
-        //cross_sell
+        // cross_sell
         const val BU_RECHARGE = "recharge"
         const val POSITION = "position"
         const val DIGITAL_PRODUCT_NAME = "digital_product_name"
@@ -188,7 +188,7 @@ object ConstantTransactionAnalytics {
         const val VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS = "validation error alamat pada + address"
         const val VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART = "view information and warning ticker in cart"
 
-        //PHASE 2
+        // PHASE 2
         const val CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain"
         const val CLICK_TOP_DONASI = "click top donasi"
         const val CLICK_CHECKOUT = "click checkout"
@@ -197,7 +197,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_UBAH_KURIR = "click ubah kurir"
         const val VIEW_ERROR_ON_CHECKOUT = "view error when checkout"
 
-        //ROBINHOOD
+        // ROBINHOOD
         const val CLICK_X_PADA_DURASI_PENGIRIMAN = "click x pada durasi pengiriman"
         const val CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN = "click checklist pilih durasi pengiriman"
         const val VIEW_PRESELECTED_COURIER_OPTION = "view preselected courier option"
@@ -207,30 +207,30 @@ object ConstantTransactionAnalytics {
         const val VIEW_DURATION = "view duration"
         const val VIEW_COURIER_OPTION = "view courier option"
 
-        //EMPTY CART
+        // EMPTY CART
         const val CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart"
         const val CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart"
         const val CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
         const val VIEW_PRODUCT = "view product"
 
-        //PURCHASE PROTECTION
+        // PURCHASE PROTECTION
         const val CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click"
         const val IMPRESSION_PELAJARI = "pp - ins section impression"
 
-        //TOKOPEDIA CORNER
+        // TOKOPEDIA CORNER
         const val VIEW_CORNER_ERROR = "view tokopedia corner not available"
         const val VIEW_CORNER_PO_ERROR = "view error pre order tokopedia corner"
         const val CLICK_PLUS_FROM_MULTIPLE = "click + from multiple"
         const val CLICK_BUTTON_SIMPAN = "click button simpan"
         const val CLICK_BUTTON_SIMPAN_FROM_EDIT = "click button simpan from edit"
 
-        //TRADEIN
+        // TRADEIN
         const val VIEW_CHECKOUYT_PAGE_TRADE_IN = "view checkout page trade in"
         const val CLICK_KURIR_TRADE_IN = "click kurir trade in"
         const val CLICK_JEMPUT_TAB = "click - jemput tab"
         const val CLICK_DROP_OFF_TAB = "click - drop off tab"
 
-        //PROMO STACKING
+        // PROMO STACKING
         const val CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker"
         const val CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo"
         const val VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker"
@@ -239,13 +239,13 @@ object ConstantTransactionAnalytics {
         const val VIEW_POP_UP_PRICE_INCREASE = "view pop up price increase"
         const val VIEW_PROMO_LOGISTIC_TICKER_DISABLE = "view promo logistic ticker disable"
 
-        //Promo not eligible bottomsheet
+        // Promo not eligible bottomsheet
         const val CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation"
         const val CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION = "click batal on error promo confirmation"
         const val VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation"
         const val SEARCH_NOT_FOUND = "search result not found"
 
-        //WIDGET_RECOMMENDATION
+        // WIDGET_RECOMMENDATION
         const val IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation"
         const val CLICK_ADD_TO_CART = "click add to cart"
         const val CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "click add wishlist on product recommendation"
@@ -253,12 +253,12 @@ object ConstantTransactionAnalytics {
         const val CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "click remove wishlist on product recommendation"
         const val CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART = "click remove wishlist on product recommendation - empty_cart"
 
-        //Retry Pickup
+        // Retry Pickup
         const val VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver"
         const val VIEW_BUTTON_CARI_DRIVER = "view button cari driver"
         const val CLICK_BUTTON_CARI_DRIVER = "click button cari driver"
 
-        //Wishlist
+        // Wishlist
         const val ADD_WISHLIST_AVAILABLE_SECTION = "add wishlist - available section - login"
         const val ADD_WISHLIST_UNAVAILABLE_SECTION = "add wishlist - unavailable section - login"
         const val REMOVE_WISHLIST_UNAVAILABLE_SECTION = "remove wishlist - unavailable section - login"
@@ -267,20 +267,20 @@ object ConstantTransactionAnalytics {
         const val ADD_WISHLIST_WISHLIST = "add wishlist - wishlist - login"
         const val REMOVE_WISHLIST_WISHLIST = "remove wishlist - wishlist - login"
 
-        //Tobacco
+        // Tobacco
         const val CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO = "click browse button on ticker product contain tobacco"
         const val VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO = "view ticker product contain tobacco"
         const val CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click hapus button on product contain tobacco"
         const val CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click trash icon button on product contain tobacco"
 
-        //Campaign
+        // Campaign
         const val VIEW_POP_UP_MESSAGE_TIMER = "view pop up message payment time expired"
         const val CLICK_BELANJA_LAGI_ON_POP_UP = "click belanja lagi on pop up message payment time expired"
 
         // Promo checkout revamp
         const val VIEW_PROMO_MESSAGE = "view promo message"
 
-        //OCC
+        // OCC
         const val CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode bayar"
         const val EDIT_QUANTITY_INCREASE = "product - click button plus"
         const val EDIT_QUANTITY_DECREASE = "product - click button minus"
@@ -372,6 +372,7 @@ object ConstantTransactionAnalytics {
         // Cart Bundling
         const val CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package"
         const val CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card"
+        const val CLICK_BUNDLING_WIDGET = "click bundling widget"
 
         // Cart Bo Affordability
         const val CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE = "click arrow in BO Ticker to reach shop page"
