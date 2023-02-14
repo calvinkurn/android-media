@@ -84,6 +84,8 @@ class FeedFragment : BaseDaggerFragment() {
 //                    DummyModel("Post 5 - ${feedType.value}"),
 //                )
 //            )
+
+            it.tvTest.text = data?.title ?: ""
         }
     }
 

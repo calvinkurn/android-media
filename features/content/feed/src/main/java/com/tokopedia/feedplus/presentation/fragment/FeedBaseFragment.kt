@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -55,7 +56,11 @@ class FeedBaseFragment : BaseDaggerFragment() {
         feedMainViewModel.feedTabs.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> initView(it.data)
-                is Fail -> Toast.makeText(requireContext(), it.throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+                is Fail -> Toast.makeText(
+                    requireContext(),
+                    it.throwable.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -77,26 +82,24 @@ class FeedBaseFragment : BaseDaggerFragment() {
             adapter = FeedPagerAdapter(requireActivity(), data.data)
 
             it.vpFeedTabItemsContainer.adapter = adapter
-//
-//            it.rvFeedTabItemsContainer.addOnScrollListener(object :
-//                RecyclerView.OnScrollListener() {
-//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                        linearLayoutManager?.let { lm ->
-//                            val position = lm.findFirstVisibleItemPosition()
-//                            onChangeTab(position)
-//                        }
-//                    }
-//                }
-//            })
-//
-//            it.tyFeedForYouTab.setOnClickListener { _ ->
-//                it.rvFeedTabItemsContainer.smoothScrollToPosition(TAB_FOR_YOU_INDEX)
-//            }
-//
-//            it.tyFeedFollowingTab.setOnClickListener { _ ->
-//                it.rvFeedTabItemsContainer.smoothScrollToPosition(TAB_FOLLOWING_INDEX)
-//            }
+            it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    onChangeTab(position)
+                }
+            })
+
+            it.tyFeedForYouTab.setOnClickListener { _ ->
+                it.vpFeedTabItemsContainer.setCurrentItem(TAB_FOR_YOU_INDEX, true)
+            }
+
+            it.tyFeedFollowingTab.setOnClickListener { _ ->
+                it.vpFeedTabItemsContainer.setCurrentItem(TAB_FOLLOWING_INDEX, true)
+            }
 
             it.btnFeedCreatePost.setOnClickListener {
                 onCreatePostClicked()
