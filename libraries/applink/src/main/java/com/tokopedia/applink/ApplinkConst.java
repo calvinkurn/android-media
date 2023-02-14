@@ -59,6 +59,7 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
+    String POST_ATC = "tokopedia://post-atc/{productId}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String PRODUCT_AR = "tokopedia://productar/{product_id}";
@@ -255,6 +256,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
     String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
     String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
+    String PINPOINT_WEBVIEW = "tokopedia://pin-point-picker-result";
     String SHARE_ADDRESS = "tokopedia://share_address";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
@@ -347,6 +349,7 @@ public interface ApplinkConst {
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
     String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
     String PLAY_SHORTS = "tokopedia://play-shorts";
+    String PLAY_RECOM = "tokopedia://play/channel_recom";
 
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
@@ -500,6 +503,7 @@ public interface ApplinkConst {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
+        String TOPADS_ADD_CREDIT = "sellerapp://topads/add-credit";
         String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
         String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
         String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";

@@ -1,0 +1,1398 @@
+{
+  "pdpGetLayout": {
+    "requestID": "cf0cbil0hansm4aquodg",
+    "name": "Default Layout",
+    "pdpSession": "{\"sid\":5537315,\"sd\":\"berrybenka\",\"cat\":{\"id\":3006},\"pid\":1567250566,\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"opr\":249000,\"pr\":106000,\"mo\":1,\"pn\":\"Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Dark Brown,ONE SIZE\",\"purl\":\"https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-dark-brown-one-size\",\"st\":68,\"cn\":\"new\",\"ln\":\"Default Layout\",\"w\":0.2,\"sf\":{},\"nid\":1,\"cr\":1287,\"v\":1,\"vd\":{\"1589853922\":{\"cp\":{\"lr\":{}},\"p\":249000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1589853923\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"s\":68,\"ib\":true,\"p\":106000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1589853924\":{\"cp\":{\"lr\":{}},\"s\":2,\"ib\":true,\"p\":249000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1589853925\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"s\":131,\"ib\":true,\"p\":106000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1905397033\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"s\":309,\"ib\":true,\"p\":106000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1905397034\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"s\":298,\"ib\":true,\"p\":106000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1955697010\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"s\":401,\"ib\":true,\"p\":106000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1955697011\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"s\":513,\"ib\":true,\"p\":106000,\"isc\":true,\"whid\":27627,\"mo\":1},\"1955697012\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true,\"lr\":{}},\"s\":6,\"ib\":true,\"p\":106000,\"isc\":true,\"whid\":27627,\"mo\":1}},\"pi\":1589853923,\"pse\":1,\"ps\":\"ACTIVE\",\"fc\":[\"mini_variant_options\",\"paylater_cicilan\",\"upcoming_deals\",\"shop_voucher\",\"restricted_categories\",\"shipment_v2\",\"fulfillment\",\"palugada_hampers\",\"info_donation\",\"harga_grosir\"],\"cod\":true,\"cui\":{\"oos\":true}}",
+    "basicInfo": {
+      "shopMultilocation": {
+        "isReroute": false,
+        "cityName": "Kota Tangerang Selatan",
+        "eduLink": {
+          "appLink": "tokopedia://product-edu/1"
+        }
+      },
+      "isGiftable": false,
+      "isTokoNow": false,
+      "shopName": "Berrybenka",
+      "productID": "1589853923",
+      "shopID": "5537315",
+      "minOrder": 1,
+      "maxOrder": 68,
+      "weight": 200,
+      "weightUnit": "GRAM",
+      "status": "ACTIVE",
+      "url": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-dark-brown-one-size",
+      "sku": "BESOCLBRON-SU",
+      "needPrescription": false,
+      "catalogID": "0",
+      "isLeasing": false,
+      "isBlacklisted": false,
+      "totalStockFmt": "1.728",
+      "defaultMediaURL": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg.webp",
+      "menu": {
+        "id": "29012774",
+        "name": "Everyday Sale Up To 65",
+        "url": "https://www.tokopedia.com/berrybenka/etalase/everyday-sale-up-to-65"
+      },
+      "category": {
+        "id": "3006",
+        "name": "Celana Panjang Wanita",
+        "title": "Celana Panjang Wanita",
+        "breadcrumbURL": "https://www.tokopedia.com/p/fashion-wanita/bawahan-wanita/celana-panjang-wanita",
+        "isAdult": false,
+        "isKyc": false,
+        "lastUpdateCategory": "09/02/2021 00:25:40",
+        "detail": [
+          {
+            "id": "1758",
+            "name": "Fashion Wanita",
+            "breadcrumbURL": "https://www.tokopedia.com/p/fashion-wanita",
+            "isAdult": false
+          },
+          {
+            "id": "2993",
+            "name": "Bawahan Wanita",
+            "breadcrumbURL": "https://www.tokopedia.com/p/fashion-wanita/bawahan-wanita",
+            "isAdult": false
+          },
+          {
+            "id": "3006",
+            "name": "Celana Panjang Wanita",
+            "breadcrumbURL": "https://www.tokopedia.com/p/fashion-wanita/bawahan-wanita/celana-panjang-wanita",
+            "isAdult": false
+          }
+        ]
+      },
+      "blacklistMessage": {
+        "title": "",
+        "description": "",
+        "button": "",
+        "url": ""
+      },
+      "txStats": {
+        "transactionSuccess": "2051",
+        "transactionReject": "2",
+        "countSold": "2281",
+        "paymentVerified": "2108",
+        "itemSoldFmt": "2.287"
+      },
+      "stats": {
+        "countReview": "1287",
+        "countTalk": "19",
+        "rating": 4.9
+      }
+    },
+    "components": [
+      {
+        "name": "product_snapshot",
+        "type": "product_snapshot",
+        "data": [
+          {
+          }
+        ]
+      },
+      {
+        "name": "product_media",
+        "type": "product_media",
+        "data": [
+          {
+            "media": [
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg",
+                "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg",
+                "description": "",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg.webp"
+              },
+              {
+                "type": "video",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg",
+                "URL300": "",
+                "description": "",
+                "videoURLAndroid": "https://vod.tokopedia.com/view/adaptive.m3u8?id=0e7096a6f94f4315b291a253db7abbdc",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/cc35a468-ef1e-4de4-8dad-0ed98de35adf.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/f014050e-25b5-49c0-b4cb-484aad7ed5dc.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/11/f014050e-25b5-49c0-b4cb-484aad7ed5dc.jpg",
+                "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/11/f014050e-25b5-49c0-b4cb-484aad7ed5dc.jpg",
+                "description": "",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/f014050e-25b5-49c0-b4cb-484aad7ed5dc.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/7a3dafa8-4a79-4ef2-a8bf-5d5d2f231a13.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/11/7a3dafa8-4a79-4ef2-a8bf-5d5d2f231a13.jpg",
+                "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/11/7a3dafa8-4a79-4ef2-a8bf-5d5d2f231a13.jpg",
+                "description": "",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/7a3dafa8-4a79-4ef2-a8bf-5d5d2f231a13.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/9a34ffa3-bfc7-4ba6-8343-a83f223bf2e8.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/11/9a34ffa3-bfc7-4ba6-8343-a83f223bf2e8.jpg",
+                "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/11/9a34ffa3-bfc7-4ba6-8343-a83f223bf2e8.jpg",
+                "description": "",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/9a34ffa3-bfc7-4ba6-8343-a83f223bf2e8.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/0b217f42-0246-477a-bb1d-8ab69703d0b7.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/8/0b217f42-0246-477a-bb1d-8ab69703d0b7.jpg",
+                "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/12/8/0b217f42-0246-477a-bb1d-8ab69703d0b7.jpg",
+                "description": "",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/0b217f42-0246-477a-bb1d-8ab69703d0b7.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/62ee1ed9-5b27-46ad-883f-0a84dcb8ab6f.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/11/62ee1ed9-5b27-46ad-883f-0a84dcb8ab6f.jpg",
+                "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/11/62ee1ed9-5b27-46ad-883f-0a84dcb8ab6f.jpg",
+                "description": "",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/11/62ee1ed9-5b27-46ad-883f-0a84dcb8ab6f.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/1229b3eb-f858-4cde-8530-fb88a8610162.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/8/1229b3eb-f858-4cde-8530-fb88a8610162.jpg",
+                "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/12/8/1229b3eb-f858-4cde-8530-fb88a8610162.jpg",
+                "description": "",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "0",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/8/1229b3eb-f858-4cde-8530-fb88a8610162.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg.webp",
+                "description": "Hitam",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "94748048",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg.webp",
+                "description": "Dark Brown",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "94748049",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg.webp",
+                "description": "Nude",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "94748050",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg.webp",
+                "description": "Dark Grey",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "94748051",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg.webp",
+                "description": "Khaki",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "121012024",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg.webp",
+                "description": "Army",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "121012025",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg.webp",
+                "description": "Cream",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "124966443",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg.webp",
+                "description": "Grey",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "124966444",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg.webp"
+              },
+              {
+                "type": "image",
+                "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg.webp",
+                "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg.webp",
+                "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg.webp",
+                "description": "Light Grey",
+                "videoURLAndroid": "",
+                "isAutoplay": false,
+                "variantOptionID": "124966445",
+                "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg.webp"
+              }
+            ],
+            "videos": [
+            ],
+            "containerType": "square"
+          }
+        ]
+      },
+      {
+        "name": "ticker_info",
+        "type": "ticker_info",
+        "data": [
+        ]
+      },
+      {
+        "name": "button_ar",
+        "type": "button_ar",
+        "data": [
+        ]
+      },
+      {
+        "name": "upcoming_deals",
+        "type": "teaser",
+        "data": [
+        ]
+      },
+      {
+        "name": "product_content",
+        "type": "product_content",
+        "data": [
+          {
+            "name": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Dark Brown,ONE SIZE",
+            "parentName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants",
+            "isCOD": true,
+            "price": {
+              "value": 106000
+            },
+            "campaign": {
+              "campaignID": "-10000",
+              "campaignType": "0",
+              "campaignTypeName": "Diskon Terbatas",
+              "percentageAmount": 57,
+              "originalPrice": 249000,
+              "discountedPrice": 106000,
+              "stock": 68,
+              "stockSoldPercentage": 0,
+              "threshold": 0,
+              "startDate": "2023-01-08 22:15:00",
+              "endDate": "2023-01-24 23:40:00",
+              "endDateUnix": "1674578400",
+              "appLinks": "",
+              "isAppsOnly": false,
+              "isActive": true,
+              "hideGimmick": false,
+              "isCheckImei": false,
+              "isUsingOvo": false,
+              "background": "#D74049,#F56958",
+              "campaignIdentifier": 2,
+              "paymentInfoWording": ""
+            },
+            "thematicCampaign": {
+              "campaignName": "Women in Style",
+              "icon": "",
+              "background": "#C1272D,#DB5660",
+              "additionalInfo": "Diskon hingga 90%"
+            },
+            "stock": {
+              "useStock": true,
+              "value": "68",
+              "stockWording": ""
+            },
+            "variant": {
+              "isVariant": true,
+              "parentID": "1567250566"
+            },
+            "wholesale": [
+            ],
+            "isCashback": {
+              "percentage": 0
+            },
+            "preorder": {
+              "duration": 0,
+              "isActive": false,
+              "preorderInDays": 0
+            },
+            "isTradeIn": false,
+            "isOS": true,
+            "isPowerMerchant": true,
+            "isWishlist": false
+          }
+        ]
+      },
+      {
+        "name": "social_proof_mini",
+        "type": "social_proof_mini",
+        "data": [
+        ]
+      },
+      {
+        "name": "best_seller",
+        "type": "one_liners",
+        "data": [
+        ]
+      },
+      {
+        "name": "mvc",
+        "type": "mvc",
+        "data": [
+        ]
+      },
+      {
+        "name": "mini_variant_options",
+        "type": "variant",
+        "data": [
+          {
+            "errorCode": 0,
+            "parentID": "1567250566",
+            "defaultChild": "1589853923",
+            "sizeChart": "",
+            "maxFinalPrice": 249000,
+            "variants": [
+              {
+                "productVariantID": "28323838",
+                "variantID": "1",
+                "name": "warna",
+                "identifier": "colour",
+                "option": [
+                  {
+                    "productVariantOptionID": "94748049",
+                    "variantUnitValueID": "0",
+                    "value": "Dark Brown",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "94748050",
+                    "variantUnitValueID": "0",
+                    "value": "Nude",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "94748051",
+                    "variantUnitValueID": "0",
+                    "value": "Dark Grey",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "121012024",
+                    "variantUnitValueID": "0",
+                    "value": "Khaki",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "121012025",
+                    "variantUnitValueID": "0",
+                    "value": "Army",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "124966443",
+                    "variantUnitValueID": "0",
+                    "value": "Cream",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "124966444",
+                    "variantUnitValueID": "0",
+                    "value": "Grey",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "124966445",
+                    "variantUnitValueID": "0",
+                    "value": "Light Grey",
+                    "hex": "",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": "94748048",
+                    "variantUnitValueID": "2",
+                    "value": "Hitam",
+                    "hex": "#000000",
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg.webp",
+                      "url100": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg"
+                    }
+                  }
+                ]
+              },
+              {
+                "productVariantID": "28323839",
+                "variantID": "3",
+                "name": "ukuran celana wanita",
+                "identifier": "size",
+                "option": [
+                  {
+                    "productVariantOptionID": "94748052",
+                    "variantUnitValueID": "0",
+                    "value": "ONE SIZE",
+                    "hex": "",
+                    "picture": {
+                      "url": "",
+                      "url100": ""
+                    }
+                  }
+                ]
+              }
+            ],
+            "children": [
+              {
+                "productID": "1589853922",
+                "price": 249000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLBLON-HQ",
+                "optionID": [
+                  94748048,
+                  94748052
+                ],
+                "optionName": [
+                  "Hitam",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Hitam,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-hitam-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/9/afc1c791-3c8d-450d-bbed-e69d65225696.jpg"
+                },
+                "stock": {
+                  "stock": "0",
+                  "isBuyable": false,
+                  "stockWording": "",
+                  "stockWordingHTML": "",
+                  "minimumOrder": "1",
+                  "maximumOrder": "0",
+                  "stockFmt": "",
+                  "stockCopy": "\u003cspan style=color:#ff0000\u003eStok habis.\u003c/span\u003e Klik Ingatkan Saya untuk aktifkan pengingat ketika barang kembali tersedia."
+                },
+                "campaignInfo": {
+                  "campaignID": "0",
+                  "campaignType": "0",
+                  "campaignTypeName": "",
+                  "campaignIdentifier": 5,
+                  "background": "",
+                  "discountPercentage": 0,
+                  "originalPrice": 0,
+                  "discountPrice": 0,
+                  "stock": 0,
+                  "stockSoldPercentage": 0,
+                  "startDate": "",
+                  "endDateUnix": "0",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": false,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 0
+                },
+                "thematicCampaign": {
+                  "campaignName": "Women in Style",
+                  "icon": "https://images.tokopedia.net/img/yLOfon/2023/1/10/d5f26bca-6590-4e67-b142-d02de879f28a.png",
+                  "background": "#C1272D,#DB5660",
+                  "additionalInfo": "Diskon hingga 90%"
+                }
+              },
+              {
+                "productID": "1589853923",
+                "price": 106000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLBRON-SU",
+                "optionID": [
+                  94748049,
+                  94748052
+                ],
+                "optionName": [
+                  "Dark Brown",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Dark Brown,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-dark-brown-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/27/646f88eb-19be-4642-85e2-e25774051d99.jpg"
+                },
+                "stock": {
+                  "stock": "68",
+                  "isBuyable": true,
+                  "stockWording": "",
+                  "stockWordingHTML": "",
+                  "minimumOrder": "1",
+                  "maximumOrder": "68",
+                  "stockFmt": "Stok: 68",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "Diskon Terbatas",
+                  "campaignIdentifier": 2,
+                  "background": "#D74049,#F56958",
+                  "discountPercentage": 57,
+                  "originalPrice": 249000,
+                  "discountPrice": 106000,
+                  "stock": 68,
+                  "stockSoldPercentage": 0,
+                  "startDate": "2023-01-08 22:15:00",
+                  "endDateUnix": "1674578400",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": true,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 1
+                },
+                "thematicCampaign": {
+                  "campaignName": "Women in Style",
+                  "icon": "",
+                  "background": "#C1272D,#DB5660",
+                  "additionalInfo": "Diskon hingga 90%"
+                }
+              },
+              {
+                "productID": "1589853924",
+                "price": 249000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLCRON-FY",
+                "optionID": [
+                  94748050,
+                  94748052
+                ],
+                "optionName": [
+                  "Nude",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Nude,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-nude-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/9/afa10319-08b8-4691-bf0b-a865e2395b39.jpg"
+                },
+                "stock": {
+                  "stock": "0",
+                  "isBuyable": false,
+                  "stockWording": "Stok \u003cb style='color:red'\u003etersisa \u0026lt;5,\u003c/b\u003e beli segera!",
+                  "stockWordingHTML": "Stok \u003cb style='color:red'\u003etersisa \u0026lt;5,\u003c/b\u003e beli segera!",
+                  "minimumOrder": "1",
+                  "maximumOrder": "2",
+                  "stockFmt": "Stok: 2",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "0",
+                  "campaignType": "0",
+                  "campaignTypeName": "",
+                  "campaignIdentifier": 0,
+                  "background": "",
+                  "discountPercentage": 0,
+                  "originalPrice": 0,
+                  "discountPrice": 0,
+                  "stock": 0,
+                  "stockSoldPercentage": 0,
+                  "startDate": "",
+                  "endDateUnix": "0",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": false,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 0
+                },
+                "thematicCampaign": {
+                  "campaignName": "",
+                  "icon": "",
+                  "background": "",
+                  "additionalInfo": ""
+                }
+              },
+              {
+                "productID": "1589853925",
+                "price": 106000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLGRON-NI",
+                "optionID": [
+                  94748051,
+                  94748052
+                ],
+                "optionName": [
+                  "Dark Grey",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Dark Grey,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-dark-grey-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/9/bd92c6d0-7bac-4f5b-a995-38bcc6bd1bb7.jpg"
+                },
+                "stock": {
+                  "stock": "131",
+                  "isBuyable": true,
+                  "stockWording": "",
+                  "stockWordingHTML": "",
+                  "minimumOrder": "1",
+                  "maximumOrder": "131",
+                  "stockFmt": "Stok: 131",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "Diskon Terbatas",
+                  "campaignIdentifier": 2,
+                  "background": "#D74049,#F56958",
+                  "discountPercentage": 57,
+                  "originalPrice": 249000,
+                  "discountPrice": 106000,
+                  "stock": 131,
+                  "stockSoldPercentage": 0,
+                  "startDate": "2023-01-08 22:15:00",
+                  "endDateUnix": "1674578400",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": true,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 1
+                },
+                "thematicCampaign": {
+                  "campaignName": "",
+                  "icon": "",
+                  "background": "",
+                  "additionalInfo": ""
+                }
+              },
+              {
+                "productID": "1905397033",
+                "price": 106000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLWHON-YQ",
+                "optionID": [
+                  121012024,
+                  94748052
+                ],
+                "optionName": [
+                  "Khaki",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Khaki,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-khaki-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/27/0c21d4a0-1d21-47fb-bf7a-3f09fda467ce.jpg"
+                },
+                "stock": {
+                  "stock": "309",
+                  "isBuyable": true,
+                  "stockWording": "",
+                  "stockWordingHTML": "",
+                  "minimumOrder": "1",
+                  "maximumOrder": "309",
+                  "stockFmt": "Stok: 309",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "Diskon Terbatas",
+                  "campaignIdentifier": 2,
+                  "background": "#D74049,#F56958",
+                  "discountPercentage": 57,
+                  "originalPrice": 249000,
+                  "discountPrice": 106000,
+                  "stock": 309,
+                  "stockSoldPercentage": 0,
+                  "startDate": "2023-01-08 22:15:00",
+                  "endDateUnix": "1674578400",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": true,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 1
+                },
+                "thematicCampaign": {
+                  "campaignName": "",
+                  "icon": "",
+                  "background": "",
+                  "additionalInfo": ""
+                }
+              },
+              {
+                "productID": "1905397034",
+                "price": 106000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLGRON-TN",
+                "optionID": [
+                  121012025,
+                  94748052
+                ],
+                "optionName": [
+                  "Army",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Army,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-army-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/27/265092ed-b82e-4abb-a71d-37422529e4b2.jpg"
+                },
+                "stock": {
+                  "stock": "298",
+                  "isBuyable": true,
+                  "stockWording": "",
+                  "stockWordingHTML": "",
+                  "minimumOrder": "1",
+                  "maximumOrder": "298",
+                  "stockFmt": "Stok: 298",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "Diskon Terbatas",
+                  "campaignIdentifier": 2,
+                  "background": "#D74049,#F56958",
+                  "discountPercentage": 57,
+                  "originalPrice": 249000,
+                  "discountPrice": 106000,
+                  "stock": 298,
+                  "stockSoldPercentage": 0,
+                  "startDate": "2023-01-08 22:15:00",
+                  "endDateUnix": "1674578400",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": true,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 1
+                },
+                "thematicCampaign": {
+                  "campaignName": "",
+                  "icon": "",
+                  "background": "",
+                  "additionalInfo": ""
+                }
+              },
+              {
+                "productID": "1955697010",
+                "price": 106000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLCRON-SD",
+                "optionID": [
+                  124966443,
+                  94748052
+                ],
+                "optionName": [
+                  "Cream",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Cream,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-cream-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/27/8ec72bae-2862-42f7-88a9-22782b3cb5db.jpg"
+                },
+                "stock": {
+                  "stock": "401",
+                  "isBuyable": true,
+                  "stockWording": "",
+                  "stockWordingHTML": "",
+                  "minimumOrder": "1",
+                  "maximumOrder": "401",
+                  "stockFmt": "Stok: 401",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "Diskon Terbatas",
+                  "campaignIdentifier": 2,
+                  "background": "#D74049,#F56958",
+                  "discountPercentage": 57,
+                  "originalPrice": 249000,
+                  "discountPrice": 106000,
+                  "stock": 401,
+                  "stockSoldPercentage": 0,
+                  "startDate": "2023-01-08 22:15:00",
+                  "endDateUnix": "1674578400",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": true,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 1
+                },
+                "thematicCampaign": {
+                  "campaignName": "",
+                  "icon": "",
+                  "background": "",
+                  "additionalInfo": ""
+                }
+              },
+              {
+                "productID": "1955697011",
+                "price": 106000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLGRON-2A",
+                "optionID": [
+                  124966444,
+                  94748052
+                ],
+                "optionName": [
+                  "Grey",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Grey,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-grey-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/27/69699c23-9f95-41dc-ba4e-d8f225395782.jpg"
+                },
+                "stock": {
+                  "stock": "513",
+                  "isBuyable": true,
+                  "stockWording": "",
+                  "stockWordingHTML": "",
+                  "minimumOrder": "1",
+                  "maximumOrder": "513",
+                  "stockFmt": "Stok: 513",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "Diskon Terbatas",
+                  "campaignIdentifier": 2,
+                  "background": "#D74049,#F56958",
+                  "discountPercentage": 57,
+                  "originalPrice": 249000,
+                  "discountPrice": 106000,
+                  "stock": 513,
+                  "stockSoldPercentage": 0,
+                  "startDate": "2023-01-08 22:15:00",
+                  "endDateUnix": "1674578400",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": true,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 1
+                },
+                "thematicCampaign": {
+                  "campaignName": "",
+                  "icon": "",
+                  "background": "",
+                  "additionalInfo": ""
+                }
+              },
+              {
+                "productID": "1955697012",
+                "price": 106000,
+                "priceFmt": "Rp 0",
+                "sku": "BESOCLGRON-TV",
+                "optionID": [
+                  124966445,
+                  94748052
+                ],
+                "optionName": [
+                  "Light Grey",
+                  "ONE SIZE"
+                ],
+                "productName": "Berrybenka - Celana Kerja Wanita Sophie Mayya Button Pants - Light Grey,ONE SIZE",
+                "productURL": "https://www.tokopedia.com/berrybenka/berrybenka-celana-kerja-wanita-sophie-mayya-button-pants-light-grey-one-size",
+                "isCOD": true,
+                "isWishlist": false,
+                "picture": {
+                  "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg.webp",
+                  "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/27/11b2e4da-8a45-43dc-b5ea-cbdb1958b000.jpg"
+                },
+                "stock": {
+                  "stock": "6",
+                  "isBuyable": true,
+                  "stockWording": "Stok \u003cb\u003etersisa \u0026lt;10,\u003c/b\u003e beli segera!",
+                  "stockWordingHTML": "Stok \u003cb\u003etersisa \u0026lt;10,\u003c/b\u003e beli segera!",
+                  "minimumOrder": "1",
+                  "maximumOrder": "3",
+                  "stockFmt": "Stok: 6",
+                  "stockCopy": ""
+                },
+                "campaignInfo": {
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "Diskon Terbatas",
+                  "campaignIdentifier": 2,
+                  "background": "#D74049,#F56958",
+                  "discountPercentage": 57,
+                  "originalPrice": 249000,
+                  "discountPrice": 106000,
+                  "stock": 6,
+                  "stockSoldPercentage": 0,
+                  "startDate": "2023-01-08 22:15:00",
+                  "endDateUnix": "1674578400",
+                  "appLinks": "",
+                  "isAppsOnly": false,
+                  "isActive": true,
+                  "hideGimmick": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "minOrder": 1
+                },
+                "thematicCampaign": {
+                  "campaignName": "",
+                  "icon": "",
+                  "background": "",
+                  "additionalInfo": ""
+                }
+              }
+            ],
+            "componentType": "thumbnail"
+          }
+        ]
+      },
+      {
+        "name": "installment_paylater",
+        "type": "info",
+        "data": [
+          {
+            "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+            "title": "Paylater \u0026 Cicilan",
+            "isApplink": true,
+            "applink": "tokopedia://fintech/paylater?category=Celana+Panjang+Wanita\u0026price=106000.000000\u0026productID=1589853923\u0026productURL=https%3A%2F%2Fwww.tokopedia.com%2Fberrybenka%2Fberrybenka-celana-kerja-wanita-sophie-mayya-button-pants-dark-brown-one-size\u0026userID=68462370",
+            "lightIcon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+            "darkIcon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+            "content": [
+            ]
+          }
+        ]
+      },
+      {
+        "name": "product_detail",
+        "type": "product_detail",
+        "data": [
+          {
+            "title": "Detail produk",
+            "content": [
+              {
+                "title": "Kondisi",
+                "subtitle": "Baru",
+                "applink": "",
+                "infoLink": "",
+                "icon": "",
+                "showAtFront": true,
+                "isAnnotation": false,
+                "showAtBottomsheet": true
+              },
+              {
+                "title": "Berat Satuan",
+                "subtitle": "200 g",
+                "applink": "",
+                "infoLink": "",
+                "icon": "",
+                "showAtFront": false,
+                "isAnnotation": false,
+                "showAtBottomsheet": true
+              },
+              {
+                "title": "Min. Pemesanan",
+                "subtitle": "1 Buah",
+                "applink": "",
+                "infoLink": "",
+                "icon": "",
+                "showAtFront": true,
+                "isAnnotation": false,
+                "showAtBottomsheet": true
+              },
+              {
+                "title": "Kategori",
+                "subtitle": "Celana Panjang Wanita",
+                "applink": "tokopedia://category/3006",
+                "infoLink": "",
+                "icon": "",
+                "showAtFront": false,
+                "isAnnotation": false,
+                "showAtBottomsheet": true
+              },
+              {
+                "title": "Etalase",
+                "subtitle": "Everyday Sale Up To 65",
+                "applink": "tokopedia://shop/5537315/etalase/29012774",
+                "infoLink": "",
+                "icon": "",
+                "showAtFront": true,
+                "isAnnotation": false,
+                "showAtBottomsheet": true
+              },
+              {
+                "title": "Deskripsi",
+                "subtitle": "Celana yang simple cocok dipadankan dengan berbagai macam atasan serta sepatu favoritmu!\n\n\nLingkar Pinggang : 64-104 cm\nLingkar Pinggul : 102 cm\nLingkar Paha : 50 cm\nPesak : 27 cm\nPanjang : 90 cm\n\nTinggi Model : 173 cm\nBahan:\nCotton\n\n\n\nPerawatan:\nGunakan detergen yang lembut\nJangan gunakan pemutih\nSetrika suhu rendah\n",
+                "applink": "",
+                "infoLink": "",
+                "icon": "",
+                "showAtFront": true,
+                "isAnnotation": false,
+                "showAtBottomsheet": true
+              }
+            ],
+            "catalogBottomsheet": {
+              "actionTitle": "",
+              "bottomSheetTitle": "",
+              "param": ""
+            },
+            "bottomsheet": {
+              "actionTitle": "Baca Selengkapnya",
+              "bottomSheetTitle": "Detail produk",
+              "param": "{}"
+            }
+          }
+        ]
+      },
+      {
+        "name": "separator",
+        "type": "separator",
+        "data": [
+        ]
+      },
+      {
+        "name": "shop_credibility",
+        "type": "shop_credibility",
+        "data": [
+        ]
+      },
+      {
+        "name": "product_bundling",
+        "type": "product_bundling",
+        "data": [
+        ]
+      },
+      {
+        "name": "shipment",
+        "type": "shipment",
+        "data": [
+        ]
+      },
+      {
+        "name": "palugada",
+        "type": "custom_info",
+        "data": [
+        ]
+      },
+      {
+        "name": "cod",
+        "type": "custom_info",
+        "data": [
+          {
+            "icon": "https://images.tokopedia.net/img/pdp/info/icon/v2/cod.png",
+            "title": "Tersedia COD (Bayar di Tempat)",
+            "isApplink": true,
+            "applink": "https://www.tokopedia.com/help/article/bayar-di-tempat",
+            "separator": "top",
+            "description": "Bayar melalui kurir saat pesanan tiba",
+            "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/v2/cod.png",
+            "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/v2/cod.png",
+            "label": [
+            ]
+          }
+        ]
+      },
+      {
+        "name": "tradein",
+        "type": "info",
+        "data": [
+          {
+            "icon": "https://images.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+            "title": "Beli dengan Tukar Tambah",
+            "isApplink": true,
+            "applink": "",
+            "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/v2/tukar_tambah.png",
+            "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/v2/tukar_tambah.png",
+            "content": [
+            ]
+          }
+        ]
+      },
+      {
+        "name": "wholesale",
+        "type": "info",
+        "data": [
+          {
+            "icon": "",
+            "title": "Harga Grosir",
+            "isApplink": true,
+            "applink": "",
+            "lightIcon": "",
+            "darkIcon": "",
+            "content": [
+            ]
+          }
+        ]
+      },
+      {
+        "name": "order_prio",
+        "type": "info",
+        "data": [
+          {
+            "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+            "title": "Order Prioritas",
+            "isApplink": false,
+            "applink": "",
+            "lightIcon": "https://images.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+            "darkIcon": "https://images.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+            "content": [
+            ]
+          }
+        ]
+      },
+      {
+        "name": "obat_keras",
+        "type": "custom_info",
+        "data": [
+        ]
+      },
+      {
+        "name": "separator",
+        "type": "separator",
+        "data": [
+        ]
+      },
+      {
+        "name": "imei",
+        "type": "custom_info",
+        "data": [
+        ]
+      },
+      {
+        "name": "protection",
+        "type": "info",
+        "data": [
+          {
+            "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+            "title": "Proteksi Gadget",
+            "isApplink": false,
+            "applink": "",
+            "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/v2/protection.png",
+            "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/v2/protection.png",
+            "content": [
+            ]
+          }
+        ]
+      },
+      {
+        "name": "separator",
+        "type": "separator",
+        "data": [
+        ]
+      },
+      {
+        "name": "pdp_1",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "separator",
+        "type": "separator",
+        "data": [
+        ]
+      },
+      {
+        "name": "review",
+        "type": "review",
+        "data": [
+        ]
+      },
+      {
+        "name": "separator",
+        "type": "separator",
+        "data": [
+        ]
+      },
+      {
+        "name": "test_kg",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "pdp_2",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "discussion",
+        "type": "discussion",
+        "data": [
+        ]
+      },
+      {
+        "name": "discussion_faq",
+        "type": "discussion_faq",
+        "data": [
+        ]
+      },
+      {
+        "name": "report",
+        "type": "report",
+        "data": [
+        ]
+      },
+      {
+        "name": "tdn_topads",
+        "type": "banner_ads",
+        "data": [
+        ]
+      },
+      {
+        "name": "pdp_3",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "pdp_4",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "pdp_6",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "pdp_7",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "shopads_carousel",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "pdp_9_tokonow",
+        "type": "product_list",
+        "data": [
+        ]
+      },
+      {
+        "name": "navigation",
+        "type": "navigation",
+        "data": [
+        ]
+      }
+    ]
+  }
+}

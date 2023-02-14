@@ -4,20 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.websocket.domain.param.GetWebSocketLogParam
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.DeleteAllWebSocketLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetSourcesLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetWebSocketLogUseCase
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPlaceHolder
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.*
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLogPagination
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLoggingState
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -30,12 +27,13 @@ class WebSocketLoggingViewModel @Inject constructor(
     private val deleteAllWebSocketLogUseCase: DeleteAllWebSocketLogUseCase,
     private val getSourcesLogUseCase: GetSourcesLogUseCase,
     dispatchers: CoroutineDispatchers,
-): ViewModel() {
+) : ViewModel() {
+
+    private var pageSource = WebSocketLogPageSource.NONE
 
     private val _websocketLogPagination = MutableStateFlow(WebSocketLogPagination())
     private val _loading = MutableStateFlow(false)
     private val _chips = MutableStateFlow(listOf<ChipModel>())
-
     private val _uiEvent = MutableSharedFlow<WebSocketLoggingEvent>()
 
     val uiState: Flow<WebSocketLoggingState> = combine(
@@ -53,8 +51,12 @@ class WebSocketLoggingViewModel @Inject constructor(
     val uiEvent: Flow<WebSocketLoggingEvent>
         get() = _uiEvent
 
+    fun setPageSource(source: WebSocketLogPageSource) {
+        pageSource = source
+    }
+
     fun submitAction(action: WebSocketLoggingAction) {
-        when(action) {
+        when (action) {
             WebSocketLoggingAction.InitPage -> handleSearch("")
             is WebSocketLoggingAction.SearchLogAction -> handleSearch(action.query)
             WebSocketLoggingAction.LoadNextPageAction -> handleLoadNextPage()
@@ -78,7 +80,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleLoadNextPage() {
         viewModelScope.launchCatchError(block = {
-            if(!isLoading() && !isReachMax()) {
+            if (!isLoading() && !isReachMax()) {
                 setLoading(true)
 
                 val pagination = _websocketLogPagination.value
@@ -86,11 +88,14 @@ class WebSocketLoggingViewModel @Inject constructor(
 
                 val webSocketLogNextList = getWebSocketLog(pagination.query, newPage)
 
-                val oldList: List<WebSocketLog> = pagination.webSocketLoggingList.filterIsInstance(WebSocketLogUiModel::class.java)
+                val oldList: List<WebSocketLog> = pagination
+                    .webSocketLoggingList
+                    .filterIsInstance(WebSocketLogUiModel::class.java)
+
                 val newList = (oldList + webSocketLogNextList).toMutableList()
 
                 val isReachMax = webSocketLogNextList.size != PAGINATION_LIMIT
-                if(!isReachMax) {
+                if (!isReachMax) {
                     newList += WebSocketLogPlaceHolder
                 }
 
@@ -109,7 +114,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleDeleteAllLog() {
         viewModelScope.launchCatchError(block = {
-            deleteAllWebSocketLogUseCase.executeOnBackground()
+            deleteAllWebSocketLogUseCase(pageSource)
 
             emitMessage(UiString.Resource(R.string.websocket_log_delete_all_message))
             _uiEvent.emit(WebSocketLoggingEvent.DeleteAllLogEvent)
@@ -154,10 +159,10 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private suspend fun getSourceList() {
-        if(!isLoading()) {
+        if (!isLoading()) {
             setLoading(true)
 
-            val newChips = getSourcesLogUseCase.executeOnBackground()
+            val newChips = getSourcesLogUseCase(pageSource)
             val selectedChip = getSelectedSource()
 
             newChips.forEach { it.selected = it.value == selectedChip }
@@ -168,13 +173,14 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private suspend fun searchData(query: String) {
-        if(!isLoading()) {
+        if (!isLoading()) {
             setLoading(true)
 
             val newPage = 0
-            val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, newPage).toMutableList()
+            val webSocketLogList: MutableList<WebSocketLog> =
+                getWebSocketLog(query, newPage).toMutableList()
 
-            if(webSocketLogList.size == PAGINATION_LIMIT) {
+            if (webSocketLogList.size == PAGINATION_LIMIT) {
                 webSocketLogList += WebSocketLogPlaceHolder
             }
 
@@ -189,10 +195,15 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private suspend fun getWebSocketLog(query: String, page: Int): List<WebSocketLogUiModel> {
-        return getWebSocketLogUseCase.let {
-            it.setParam(query, getSelectedSource(), page, PAGINATION_LIMIT)
-            it.executeOnBackground()
-        }
+        return getWebSocketLogUseCase(
+            GetWebSocketLogParam(
+                pageSource = pageSource,
+                query = query,
+                source = getSelectedSource(),
+                page = page,
+                limit = PAGINATION_LIMIT
+            )
+        )
     }
 
     private fun getSelectedSource(): String {

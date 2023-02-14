@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
@@ -595,6 +596,7 @@ object ShopPageHomeMapper {
                 it.timeCounter,
                 it.totalNotify,
                 it.totalNotifyWording,
+                it.voucherWording,
                 mapToDynamicRule(it.dynamicRule),
                 mapCampaignListBanner(it.listBanner),
                 mapCampaignListProduct(it.statusCampaign, it.listProduct),
@@ -632,9 +634,12 @@ object ShopPageHomeMapper {
     private fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule): ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule {
         return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
             dynamicRule.descriptionHeader,
-            ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
-                dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty()
-            )
+            dynamicRule.dynamicRoleData.map {
+                ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
+                    ruleID = it.ruleID,
+                    isActive = it.isActive
+                )
+            }
         )
     }
 
@@ -653,8 +658,10 @@ object ShopPageHomeMapper {
                 imageUrl300 = ""
                 productUrl = it.urlApps
                 if (statusCampaign.toLowerCase() == StatusCampaign.ONGOING.statusCampaign.toLowerCase()) {
-                    stockLabel = it.stockWording.title
-                    stockSoldPercentage = it.stockSoldPercentage.toInt()
+                    val stockSoldPercentage = it.stockSoldPercentage.toInt()
+                    val showStockBar = it.showStockBar
+                    stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
+                    this.stockSoldPercentage = stockSoldPercentage
                 }
                 hideGimmick = it.hideGimmick
                 labelGroupList =

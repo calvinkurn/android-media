@@ -411,7 +411,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     title = "Category 1",
                     imageUrl = "tokopedia://",
                     appLink = "tokoepdia://",
-                    headerName = "Category Tokonow"
+                    headerName = "Category Tokonow",
+                    color = "#FFFFFF"
                 ),
                 TokoNowCategoryMenuItemSeeAllUiModel(
                     appLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId,
@@ -455,14 +456,16 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     title = "Category 1",
                     imageUrl = "tokopedia://",
                     appLink = "tokoepdia://",
-                    headerName = "Category Tokonow"
+                    headerName = "Category Tokonow",
+                    color = "#FFFFFF"
                 ),
                 TokoNowCategoryMenuItemUiModel(
                     id="3",
                     title="Category 3",
                     imageUrl="tokopedia://",
                     appLink="tokoepdia://",
-                    headerName = "Category Tokonow"
+                    headerName = "Category Tokonow",
+                    color = "#FFFFFF"
                 ),
                 TokoNowCategoryMenuItemSeeAllUiModel(
                     appLink = appLink

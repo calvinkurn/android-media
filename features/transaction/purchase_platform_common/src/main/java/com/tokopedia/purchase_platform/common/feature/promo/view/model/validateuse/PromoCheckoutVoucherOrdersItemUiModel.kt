@@ -24,4 +24,12 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
         var invoiceDescription: String = "",
         var orderId: Int = -1,
         var warehouseId: Int = -1
-) : Parcelable
+) : Parcelable {
+    companion object {
+        private const val TYPE_LOGISTIC = "logistic"
+    }
+
+    fun isTypeLogistic(): Boolean {
+        return type == TYPE_LOGISTIC
+    }
+}

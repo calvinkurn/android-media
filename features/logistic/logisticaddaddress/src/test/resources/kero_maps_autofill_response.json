@@ -1,0 +1,58 @@
+{
+  "kero_maps_autofill": {
+    "data": {
+      "title": "Cilendek Barat",
+      "formatted_address": "Bogor Barat, Kota Bogor, Jawa Barat",
+      "city_id": 168,
+      "province_id": 12,
+      "province_name": "Jawa Barat",
+      "district_id": 2211,
+      "district_name": "Bogor Barat",
+      "city_name": "Kota Bogor",
+      "postal_code": "16112",
+      "latitude": "-6.571004247136069",
+      "longitude": "106.76730046907339",
+      "full_data": [
+        {
+          "long_name": "Jawa Barat",
+          "short_name": "Jawa Barat",
+          "types": [
+            "administrative_area_level_1",
+            "Province",
+            "GOJEK-ID32"
+          ]
+        },
+        {
+          "long_name": "Kota Bogor",
+          "short_name": "Kota Bogor",
+          "types": [
+            "administrative_area_level_2",
+            "City",
+            "GOJEK-ID3271"
+          ]
+        },
+        {
+          "long_name": "Bogor Barat",
+          "short_name": "Bogor Barat",
+          "types": [
+            "administrative_area_level_3",
+            "Subdistrict",
+            "GOJEK-ID3271050"
+          ]
+        },
+        {
+          "long_name": "Cilendek Barat",
+          "short_name": "Cilendek Barat",
+          "types": [
+            "administrative_area_level_4",
+            "Village",
+            "GOJEK-ID3271050008"
+          ]
+        }
+      ]
+    },
+    "status": "OK",
+    "message_error": [],
+    "error_code": 0
+  }
+}

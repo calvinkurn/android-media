@@ -277,6 +277,7 @@
     <string name="play_shorts_next_action_label">Lanjut</string>
     <string name="play_shorts_toolbar_title">Buat video sebagai</string>
     <string name="play_shorts_preparation_coachmark_title">Mau ceritain pengalaman belanjamu?</string>
+    <string name="play_shorts_title_form_hint">Tulis Judul Video</string>
     <string name="play_shorts_preparation_coachmark_description">Bikin judul yang menarik dan tambahkan produk terkait supaya videomu ramai ditonton!</string>
 
     <string name="play_shorts_exit_confirmation_title">Yakin mau keluar?</string>
