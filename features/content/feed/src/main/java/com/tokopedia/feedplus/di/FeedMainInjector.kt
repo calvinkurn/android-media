@@ -11,7 +11,7 @@ object FeedMainInjector {
 
     fun get(context: Context): FeedMainComponent = synchronized(this) {
         if (component == null) {
-            DaggerFeedMainComponent.builder()
+            component = DaggerFeedMainComponent.builder()
                 .baseAppComponent(
                     (context.applicationContext as BaseMainApplication).baseAppComponent
                 )
