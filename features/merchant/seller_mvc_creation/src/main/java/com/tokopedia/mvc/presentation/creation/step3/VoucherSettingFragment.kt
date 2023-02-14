@@ -198,13 +198,36 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
         renderSpendingEstimation(state.spendingEstimation)
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
-        renderPromoTypeChips(state.isDiscountPromoTypeEnabled)
+        renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
     }
 
-    private fun renderPromoTypeChips(shouldEnableDiscountPromoType: Boolean) {
-        if (shouldEnableDiscountPromoType) {
-            promoTypeSectionBinding?.chipDiscount?.setNormal()
-        } else {
+    private fun renderPromoTypeChips(
+        voucherConfiguration: VoucherConfiguration,
+        isDiscountPromoTypeEnabled: Boolean
+    ) {
+        promoTypeSectionBinding?.chipDiscount?.showNewNotification = isDiscountPromoTypeEnabled
+
+        when (voucherConfiguration.promoType) {
+            PromoType.FREE_SHIPPING -> {
+                if (isDiscountPromoTypeEnabled) {
+                    promoTypeSectionBinding?.chipDiscount?.setNormal()
+                }
+
+                setFreeShippingSelected()
+            }
+            PromoType.CASHBACK -> {
+                if (isDiscountPromoTypeEnabled) {
+                    promoTypeSectionBinding?.chipDiscount?.setNormal()
+                }
+
+                setCashbackSelected()
+            }
+            PromoType.DISCOUNT -> {
+                setDiscountSelected()
+            }
+        }
+
+        if (!isDiscountPromoTypeEnabled) {
             promoTypeSectionBinding?.chipDiscount?.disable()
         }
     }
@@ -519,21 +542,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun setupPromoTypeSelection() {
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        val selectedPromoType = currentVoucherConfiguration.promoType
         setPromoType(voucherConfiguration.promoType)
         promoTypeSectionBinding?.run {
-            when (selectedPromoType) {
-                PromoType.FREE_SHIPPING -> {
-                    setFreeShippingSelected()
-                }
-                PromoType.CASHBACK -> {
-                    setCashbackSelected()
-                }
-                PromoType.DISCOUNT -> {
-                    setDiscountSelected()
-                }
-            }
             if (pageMode == PageMode.CREATE) {
                 chipFreeShipping.chip_container.setOnClickListener {
                     setPromoType(PromoType.FREE_SHIPPING)
@@ -942,6 +952,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
 
         promoTypeSectionBinding?.run {
+            chipDiscount?.setSelected()
             chipFreeShipping.setNormal()
             chipCashback.setNormal()
         }
@@ -1369,7 +1380,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun ChipsUnify.disable() {
         chipType = ChipsUnify.TYPE_DISABLE
-        showNewNotification = false
         chip_container.isEnabled = false
         chip_sub_container.isEnabled = false
     }
