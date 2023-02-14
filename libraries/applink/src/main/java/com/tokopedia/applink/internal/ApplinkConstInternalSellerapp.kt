@@ -81,7 +81,15 @@ object ApplinkConstInternalSellerapp {
 
     // Seller MVC Creation Intro - MvcIntroActivity
     const val SELLER_MVC_INTRO = "$INTERNAL_SELLERAPP/seller-mvc/intro"
-    // Seller MVC Creation - MvcListActivity
+    /**
+     * Seller MVC Creation - MvcListActivity
+     * This applink will redirect to voucher list page with following filter status at the suffix
+     * here is the suffix definition:
+     * - active: will display active vouchers, which is upcoming and ongoing vouchers
+     * - history: will display inactive vouchers, which is canceled and ended vouchers
+     * - ongoing: will display ongoing voucher only
+     * - upcoming: will display upcoming voucher only
+     */
     const val SELLER_MVC_LIST = "$INTERNAL_SELLERAPP/seller-mvc/list/{voucher_status}/"
     const val SELLER_MVC_LIST_ACTIVE = "$INTERNAL_SELLERAPP/seller-mvc/list/active/"
     const val SELLER_MVC_LIST_HISTORY = "$INTERNAL_SELLERAPP/seller-mvc/list/history/"
