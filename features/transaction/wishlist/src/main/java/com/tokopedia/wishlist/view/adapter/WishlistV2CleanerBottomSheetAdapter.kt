@@ -24,8 +24,11 @@ class WishlistV2CleanerBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vi
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WishlistV2CleanerOptionItemViewHolder -> {
-                holder.bind(cleanerBottomSheet.options[holder.adapterPosition],
-                    holder.adapterPosition == (cleanerBottomSheet.options.size-1), holder.adapterPosition)
+                holder.bind(
+                    cleanerBottomSheet.options[holder.adapterPosition],
+                    holder.adapterPosition == (cleanerBottomSheet.options.size - 1),
+                    holder.adapterPosition
+                )
             }
         }
     }
@@ -43,12 +46,18 @@ class WishlistV2CleanerBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vi
             binding.wishlistCleanerOptionTitle.text = MethodChecker.fromHtml(optionCleanerItem.name)
             binding.wishlistCleanerOptionDesc.text = MethodChecker.fromHtml(optionCleanerItem.description)
 
-            if (isHideDivider) binding.wishlistCleanerDivider.gone()
-            else binding.wishlistCleanerDivider.visible()
+            if (isHideDivider) {
+                binding.wishlistCleanerDivider.gone()
+            } else {
+                binding.wishlistCleanerDivider.visible()
+            }
 
             if (selectedOption == -1) {
-                if (adapterPosition == 0) binding.wishlistCleanerOptionIconCheck.visible()
-                else binding.wishlistCleanerOptionIconCheck.gone()
+                if (adapterPosition == 0) {
+                    binding.wishlistCleanerOptionIconCheck.visible()
+                } else {
+                    binding.wishlistCleanerOptionIconCheck.gone()
+                }
             } else {
                 binding.wishlistCleanerOptionIconCheck.visibility = if (selectedOption == adapterPosition) View.VISIBLE else View.GONE
             }

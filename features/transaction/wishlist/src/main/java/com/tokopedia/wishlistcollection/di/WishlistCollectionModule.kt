@@ -15,7 +15,6 @@ import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import dagger.Module
 import dagger.Provides
 
-
 @Module
 class WishlistCollectionModule(private val activity: Activity) {
     @ActivityScope
@@ -38,5 +37,5 @@ class WishlistCollectionModule(private val activity: Activity) {
 
     @Provides
     @ActivityScope
-    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface, topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(), topAdsIrisSession.getSessionId())
 }

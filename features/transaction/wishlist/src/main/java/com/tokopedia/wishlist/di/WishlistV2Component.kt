@@ -1,7 +1,6 @@
 package com.tokopedia.wishlist.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.wishlist.view.activity.WishlistV2Activity
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import dagger.Component
 

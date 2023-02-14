@@ -9,7 +9,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
-import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import java.util.HashMap
 
 object WishlistV2Analytics {
@@ -126,8 +125,11 @@ object WishlistV2Analytics {
 
     fun submitSearchFromCariProduk(keyword: String) {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, SUBMIT_SEARCH_FROM_CARI_PRODUK, keyword)
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            SUBMIT_SEARCH_FROM_CARI_PRODUK,
+            keyword
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -136,8 +138,11 @@ object WishlistV2Analytics {
 
     fun clickUrutkanFilterChips() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_URUTKAN_FILTER_CHIPS, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_URUTKAN_FILTER_CHIPS,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -146,8 +151,11 @@ object WishlistV2Analytics {
 
     fun clickOptionOnUrutkanFilterChips(optionChosen: String) {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_OPTION_ON_URUTKAN_FILTER_CHIPS, optionChosen)
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_OPTION_ON_URUTKAN_FILTER_CHIPS,
+            optionChosen
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -156,8 +164,11 @@ object WishlistV2Analytics {
 
     fun clickKategoriFilterChips() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_KATEGORI_FILTER_CHIPS, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_KATEGORI_FILTER_CHIPS,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -166,8 +177,11 @@ object WishlistV2Analytics {
 
     fun clickOptionOnKategoriFilterChips(optionChosen: String) {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_OPTION_ON_KATEGORI_FILTER_CHIPS, optionChosen)
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_OPTION_ON_KATEGORI_FILTER_CHIPS,
+            optionChosen
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -176,8 +190,11 @@ object WishlistV2Analytics {
 
     fun clickPenawaranFilterChips() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_PENAWARAN_FILTER_CHIPS, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_PENAWARAN_FILTER_CHIPS,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -186,8 +203,11 @@ object WishlistV2Analytics {
 
     fun clickSimpanOnPenawaranFilterChips(optionChosen: String) {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_SIMPAN_ON_PENAWARAN_FILTER_CHIPS, optionChosen)
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_SIMPAN_ON_PENAWARAN_FILTER_CHIPS,
+            optionChosen
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -196,8 +216,11 @@ object WishlistV2Analytics {
 
     fun clickStokFilterChips() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_STOK_FILTER_CHIPS, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_STOK_FILTER_CHIPS,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -206,8 +229,11 @@ object WishlistV2Analytics {
 
     fun clickOptionOnStokFilterChips(optionChosen: String) {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_OPTION_ON_STOK_FILTER_CHIPS, optionChosen)
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_OPTION_ON_STOK_FILTER_CHIPS,
+            optionChosen
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -216,8 +242,11 @@ object WishlistV2Analytics {
 
     fun clickXChipsToClearFilter() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_X_CHIPS_TO_CLEAR_FILTER, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_X_CHIPS_TO_CLEAR_FILTER,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -226,8 +255,11 @@ object WishlistV2Analytics {
 
     fun clickLayoutSettings(typeLayout: String) {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_LAYOUT_SETTINGS, typeLayout)
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_LAYOUT_SETTINGS,
+            typeLayout
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -236,8 +268,11 @@ object WishlistV2Analytics {
 
     fun clickAturOnWishlist() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_ATUR_ON_WISHLIST_PAGE, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_ATUR_ON_WISHLIST_PAGE,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -246,8 +281,11 @@ object WishlistV2Analytics {
 
     fun clickHapusOnPopUpMultipleWishlistProduct() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_HAPUS_ON_POP_UP_MULTIPLE_WISHLIST_PRODUCT, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_HAPUS_ON_POP_UP_MULTIPLE_WISHLIST_PRODUCT,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -256,8 +294,11 @@ object WishlistV2Analytics {
 
     fun clickBatalOnPopUpMultipleWishlistProduct() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_BATAL_ON_POP_UP_MULTIPLE_WISHLIST_PRODUCT, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_BATAL_ON_POP_UP_MULTIPLE_WISHLIST_PRODUCT,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -274,7 +315,7 @@ object WishlistV2Analytics {
             putString(INDEX, position.toString())
             putString(ITEM_BRAND, "")
             putString(ITEM_NAME, wishlistItem.name)
-            putString(ITEM_ID,wishlistItem.id)
+            putString(ITEM_ID, wishlistItem.id)
             putString(ITEM_CATEGORY, "")
             putString(PRICE, wishlistItem.price)
             putString(ITEM_VARIANT, "")
@@ -299,22 +340,28 @@ object WishlistV2Analytics {
 
     fun viewProductCard(trackingQueue: TrackingQueue, wishlistItem: WishlistV2UiModel.Item, userId: String, position: String) {
         val map = DataLayer.mapOf(
-                EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, WISHLIST_PAGE,
-                EVENT_ACTION, VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE,
-                EVENT_LABEL, "${wishlistItem.id} - ${if (wishlistItem.available) "available" else "unavailable"}",
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId,
-                WISHLIST_ID, wishlistItem.id,
-                BUSINESS_UNIT, PURCHASE_PLATFORM,
-                ECOMMERCE, DataLayer.mapOf(
-                CURRENCY_CODE, IDR,
-                IMPRESSIONS, convertOrderItemToDataImpressionObject(wishlistItem, position)))
+            EVENT, PRODUCT_VIEW,
+            EVENT_CATEGORY, WISHLIST_PAGE,
+            EVENT_ACTION, VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE,
+            EVENT_LABEL, "${wishlistItem.id} - ${if (wishlistItem.available) "available" else "unavailable"}",
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId,
+            WISHLIST_ID, wishlistItem.id,
+            BUSINESS_UNIT, PURCHASE_PLATFORM,
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                convertOrderItemToDataImpressionObject(wishlistItem, position)
+            )
+        )
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     private fun convertOrderItemToDataImpressionObject(wishlistItem: WishlistV2UiModel.Item, position: String): List<Any> {
-        return listOf(DataLayer.mapOf(
+        return listOf(
+            DataLayer.mapOf(
                 ITEM_NAME, wishlistItem.name,
                 ITEM_ID, wishlistItem.id,
                 PRICE, wishlistItem.price,
@@ -326,7 +373,8 @@ object WishlistV2Analytics {
                 DIMENSION_40, WISHLIST,
                 DIMENSION_79, wishlistItem.shop.id,
                 DIMENSION_83, ""
-        ))
+            )
+        )
     }
 
     fun clickAtcOnWishlist(wishlistItem: WishlistV2UiModel.Item, userId: String, position: Int, cartId: String) {
@@ -368,8 +416,11 @@ object WishlistV2Analytics {
 
     fun clickLihatButtonOnAtcSuccessToaster() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_LIHAT_ON_ATC_SUCCESS_TOASTER, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_LIHAT_ON_ATC_SUCCESS_TOASTER,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -378,8 +429,11 @@ object WishlistV2Analytics {
 
     fun clickLihatBarangSerupaOnProductCard() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_LIHAT_BARANG_SERUPA_ON_PRODUCT_CARD, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_LIHAT_BARANG_SERUPA_ON_PRODUCT_CARD,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -388,8 +442,11 @@ object WishlistV2Analytics {
 
     fun clickThreeDotsOnProductCard() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_THREE_DOTS_ON_PRODUCT_CARD, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_THREE_DOTS_ON_PRODUCT_CARD,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -398,8 +455,11 @@ object WishlistV2Analytics {
 
     fun clickOptionOnThreeDotsMenu(optionChosen: String) {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_OPTION_ON_THREE_DOT_MENU, optionChosen)
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_OPTION_ON_THREE_DOT_MENU,
+            optionChosen
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -408,8 +468,11 @@ object WishlistV2Analytics {
 
     fun clickCariBarangOnEmptyStateNoItems() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_CARI_BARANG_ON_EMPTY_STATE_NO_ITEMS, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_CARI_BARANG_ON_EMPTY_STATE_NO_ITEMS,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -418,8 +481,11 @@ object WishlistV2Analytics {
 
     fun clickCariDiTokopediaOnEmptyStateNoSearchResult() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_CARI_DI_TOKOPEDIA_ON_EMPTY_STATE_NO_SEARCH_RESULT, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_CARI_DI_TOKOPEDIA_ON_EMPTY_STATE_NO_SEARCH_RESULT,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -428,8 +494,11 @@ object WishlistV2Analytics {
 
     fun clickResetFilterOnEmptyStateNoFilterResult() {
         val event = TrackAppUtils.gtmData(
-                CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_RESET_FILTER_ON_EMPTY_STATE_NO_FILTER_RESULT, "")
+            CLICK_WISHLIST,
+            WISHLIST_PAGE,
+            CLICK_RESET_FILTER_ON_EMPTY_STATE_NO_FILTER_RESULT,
+            ""
+        )
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
@@ -438,82 +507,95 @@ object WishlistV2Analytics {
 
     fun impressTopAdsBanner(userId: String, topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
         val map = DataLayer.mapOf(
-                EVENT, PROMO_VIEW,
-                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                EVENT_ACTION, EVENT_ACTION_IMPRESSION_BANNER_ADS,
-                EVENT_LABEL, "",
-                SCREEN_NAME, WISHLIST,
-                BUSINESS_UNIT, PURCHASE_PLATFORM,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId,
-                ECOMMERCE, DataLayer.mapOf(
-                    PROMO_VIEW, DataLayer.mapOf(
-                PROMOTIONS, DataLayer.listOf(
-                            convertBannerTopAdsToDataTrackingObject(
-                                    item = topAdsImageViewModel,
-                                    position = position)
-                        )
-                    )
-                )
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
-    }
-
-    fun clickTopAdsBanner(item: TopAdsImageViewModel, userId: String, position: Int){
-        val map = DataLayer.mapOf(
-                EVENT, PROMO_CLICK,
-                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                EVENT_ACTION, EVENT_ACTION_CLICK_BANNER_ADS,
-                EVENT_LABEL, "",
-                SCREEN_NAME, WISHLIST,
-                BUSINESS_UNIT, PURCHASE_PLATFORM,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId,
-                ECOMMERCE, DataLayer.mapOf(
-                    PROMO_CLICK, DataLayer.mapOf(
-                        PROMOTIONS, DataLayer.listOf(
+            EVENT, PROMO_VIEW,
+            EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+            EVENT_ACTION, EVENT_ACTION_IMPRESSION_BANNER_ADS,
+            EVENT_LABEL, "",
+            SCREEN_NAME, WISHLIST,
+            BUSINESS_UNIT, PURCHASE_PLATFORM,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId,
+            ECOMMERCE,
+            DataLayer.mapOf(
+                PROMO_VIEW,
+                DataLayer.mapOf(
+                    PROMOTIONS,
+                    DataLayer.listOf(
                         convertBannerTopAdsToDataTrackingObject(
-                                item = item,
-                                position = position)
+                            item = topAdsImageViewModel,
+                            position = position
                         )
                     )
                 )
+            )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
     }
 
-    private fun convertBannerTopAdsToDataTrackingObject(item: TopAdsImageViewModel,
-                                                        position: Int): Any {
-        return DataLayer.mapOf(
-                FIELD_PROMOTION_ID, item.bannerId ?: "0",
-                FIELD_PROMOTION_NAME, IMPRESSION_TOPADS_LIST.format((position + 1).toString()),
-                FIELD_PROMOTION_CREATIVE, item.imageUrl,
-                FIELD_PROMOTION_CREATIVE_URL, item.imageUrl,
-                FIELD_PROMOTION_POSITION, "1"
-        )
-    }
-
-    fun impressionEmptyWishlistRecommendation(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int){
+    fun clickTopAdsBanner(item: TopAdsImageViewModel, userId: String, position: Int) {
         val map = DataLayer.mapOf(
-                EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
-                EVENT_LABEL, "",
-                ECOMMERCE, DataLayer.mapOf(
-                    CURRENCY_CODE, IDR,
-                    IMPRESSIONS, DataLayer.listOf(
-                        convertRecommendationItemToDataImpressionObject(
-                                item = item,
-                                list = String.format(if(item.isTopAds) IMPRESSION_EMPTY_LIST_TOPADS else IMPRESSION_EMPTY_LIST, item.recommendationType),
-                                position = position
+            EVENT, PROMO_CLICK,
+            EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+            EVENT_ACTION, EVENT_ACTION_CLICK_BANNER_ADS,
+            EVENT_LABEL, "",
+            SCREEN_NAME, WISHLIST,
+            BUSINESS_UNIT, PURCHASE_PLATFORM,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId,
+            ECOMMERCE,
+            DataLayer.mapOf(
+                PROMO_CLICK,
+                DataLayer.mapOf(
+                    PROMOTIONS,
+                    DataLayer.listOf(
+                        convertBannerTopAdsToDataTrackingObject(
+                            item = item,
+                            position = position
                         )
                     )
                 )
+            )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
+    }
+
+    private fun convertBannerTopAdsToDataTrackingObject(
+        item: TopAdsImageViewModel,
+        position: Int
+    ): Any {
+        return DataLayer.mapOf(
+            FIELD_PROMOTION_ID, item.bannerId ?: "0",
+            FIELD_PROMOTION_NAME, IMPRESSION_TOPADS_LIST.format((position + 1).toString()),
+            FIELD_PROMOTION_CREATIVE, item.imageUrl,
+            FIELD_PROMOTION_CREATIVE_URL, item.imageUrl,
+            FIELD_PROMOTION_POSITION, "1"
+        )
+    }
+
+    fun impressionEmptyWishlistRecommendation(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int) {
+        val map = DataLayer.mapOf(
+            EVENT, PRODUCT_VIEW,
+            EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+            EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
+            EVENT_LABEL, "",
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                DataLayer.listOf(
+                    convertRecommendationItemToDataImpressionObject(
+                        item = item,
+                        list = String.format(if (item.isTopAds) IMPRESSION_EMPTY_LIST_TOPADS else IMPRESSION_EMPTY_LIST, item.recommendationType),
+                        position = position
+                    )
+                )
+            )
         )
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    fun clickRecommendationItem(item: RecommendationItem, position: Int, userId: String){
+    fun clickRecommendationItem(item: RecommendationItem, position: Int, userId: String) {
         var list = RECOMMENDATION_CLICK_ITEM_TRACK
         if (item.isTopAds) list += RECOMMENDATION_CLICK_TOPADS_ITEM_TRACK
 
@@ -545,72 +627,86 @@ object WishlistV2Analytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
-    private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
-                                                                list: String,
-                                                                position: Int): Any {
+    private fun convertRecommendationItemToDataImpressionObject(
+        item: RecommendationItem,
+        list: String,
+        position: Int
+    ): Any {
         return DataLayer.mapOf(
-                FIELD_PRODUCT_NAME, item.name,
-                FIELD_PRODUCT_ID, item.productId.toString(),
-                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
-                FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                FIELD_PRODUCT_LIST, list,
-                FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, getBebasOngkirValue(item)
+            FIELD_PRODUCT_NAME, item.name,
+            FIELD_PRODUCT_ID, item.productId.toString(),
+            FIELD_PRODUCT_PRICE, item.priceInt.toString(),
+            FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+            FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+            FIELD_PRODUCT_LIST, list,
+            FIELD_PRODUCT_POSITION, position,
+            FIELD_DIMENSION_83, getBebasOngkirValue(item)
         )
     }
 
-    private fun getBebasOngkirValue(item: RecommendationItem): String{
+    private fun getBebasOngkirValue(item: RecommendationItem): String {
         val hasFulfillment = item.labelGroupList.hasLabelGroupFulfillment()
-        return if(item.isFreeOngkirActive && hasFulfillment) VALUE_BEBAS_ONGKIR_EXTRA
-        else if(item.isFreeOngkirActive && !hasFulfillment) VALUE_BEBAS_ONGKIR
-        else VALUE_NONE_OTHER
+        return if (item.isFreeOngkirActive && hasFulfillment) {
+            VALUE_BEBAS_ONGKIR_EXTRA
+        } else if (item.isFreeOngkirActive && !hasFulfillment) {
+            VALUE_BEBAS_ONGKIR
+        } else {
+            VALUE_NONE_OTHER
+        }
     }
 
-    private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
-                                                           list: String,
-                                                           position: Int): Any {
+    private fun convertRecommendationItemToDataClickObject(
+        item: RecommendationItem,
+        list: String,
+        position: Int
+    ): Any {
         return DataLayer.mapOf(
-                FIELD_ACTION_FIELD, DataLayer.mapOf(
-                FIELD_PRODUCT_LIST, list
-        ),
-                FIELD_PRODUCTS, DataLayer.listOf(
+            FIELD_ACTION_FIELD,
+            DataLayer.mapOf(
+                FIELD_PRODUCT_LIST,
+                list
+            ),
+            FIELD_PRODUCTS,
+            DataLayer.listOf(
                 DataLayer.mapOf(
-                        FIELD_PRODUCT_NAME, item.name,
-                        FIELD_PRODUCT_ID, item.productId.toString(),
-                        FIELD_PRODUCT_PRICE, item.priceInt.toString(),
-                        FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                        FIELD_PRODUCT_POSITION, position,
-                        FIELD_DIMENSION_83, if (item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                    FIELD_PRODUCT_NAME, item.name,
+                    FIELD_PRODUCT_ID, item.productId.toString(),
+                    FIELD_PRODUCT_PRICE, item.priceInt.toString(),
+                    FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                    FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                    FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                    FIELD_PRODUCT_POSITION, position,
+                    FIELD_DIMENSION_83, if (item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
-        )
+            )
         )
     }
 
-    fun impressionCarouselRecommendationItem(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int){
+    fun impressionCarouselRecommendationItem(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int) {
         val map = DataLayer.mapOf(
-                EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
-                EVENT_LABEL, "",
-                ECOMMERCE, DataLayer.mapOf(
-                    CURRENCY_CODE, IDR,
-                    IMPRESSIONS, DataLayer.listOf(
-                        convertRecommendationItemToDataImpressionObject(
-                                item = item,
-                                list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
-                                position = position
-                        )
+            EVENT, PRODUCT_VIEW,
+            EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+            EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
+            EVENT_LABEL, "",
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                DataLayer.listOf(
+                    convertRecommendationItemToDataImpressionObject(
+                        item = item,
+                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if (item.isTopAds) " - product topads" else ""),
+                        position = position
                     )
                 )
+            )
         )
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    fun clickCarouselRecommendationItem(item: RecommendationItem, position: Int, userId: String){
+    fun clickCarouselRecommendationItem(item: RecommendationItem, position: Int, userId: String) {
         var list = RECOMMENDATION_CLICK_ITEM_TRACK
         if (item.isTopAds) list += RECOMMENDATION_CLICK_TOPADS_ITEM_TRACK
         list += RECOMMENDATION_CLICK_HORIZONTAL_ITEM_TRACK
@@ -643,63 +739,67 @@ object WishlistV2Analytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
-    fun clickShareLinkProduct(wishlistId: String, productId: String, userId: String){
+    fun clickShareLinkProduct(wishlistId: String, productId: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, CLICK_COMMUNICATION,
-                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION, CLICK_SHARE_BUTTON,
-                        EVENT_LABEL, wishlistId,
-                        BUSINESS_UNIT, SHARING_EXPERIENCE,
-                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                        PRODUCT_ID, productId,
-                        USER_ID, userId,
-                        WISHLIST_ID, wishlistId)
+            DataLayer.mapOf(
+                EVENT, CLICK_COMMUNICATION,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, CLICK_SHARE_BUTTON,
+                EVENT_LABEL, wishlistId,
+                BUSINESS_UNIT, SHARING_EXPERIENCE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                PRODUCT_ID, productId,
+                USER_ID, userId,
+                WISHLIST_ID, wishlistId
+            )
         )
     }
 
-    fun clickCloseShareBottomSheet(wishlistId: String, productId: String, userId: String){
+    fun clickCloseShareBottomSheet(wishlistId: String, productId: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, CLICK_COMMUNICATION,
-                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION, CLICK_CLOSE_SHARE_BOTTOM_SHEET,
-                        EVENT_LABEL, wishlistId,
-                        BUSINESS_UNIT, SHARING_EXPERIENCE,
-                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                        PRODUCT_ID, productId,
-                        USER_ID, userId,
-                        WISHLIST_ID, wishlistId)
+            DataLayer.mapOf(
+                EVENT, CLICK_COMMUNICATION,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, CLICK_CLOSE_SHARE_BOTTOM_SHEET,
+                EVENT_LABEL, wishlistId,
+                BUSINESS_UNIT, SHARING_EXPERIENCE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                PRODUCT_ID, productId,
+                USER_ID, userId,
+                WISHLIST_ID, wishlistId
+            )
         )
     }
 
-    fun clickSharingChannel(wishlistId: String, productId: String, userId: String, channel: String){
+    fun clickSharingChannel(wishlistId: String, productId: String, userId: String, channel: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, CLICK_COMMUNICATION,
-                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION, CLICK_SHARING_CHANNEL,
-                        EVENT_LABEL, "$channel - $wishlistId",
-                        BUSINESS_UNIT, SHARING_EXPERIENCE,
-                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                        PRODUCT_ID, productId,
-                        USER_ID, userId,
-                        WISHLIST_ID, wishlistId)
+            DataLayer.mapOf(
+                EVENT, CLICK_COMMUNICATION,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, CLICK_SHARING_CHANNEL,
+                EVENT_LABEL, "$channel - $wishlistId",
+                BUSINESS_UNIT, SHARING_EXPERIENCE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                PRODUCT_ID, productId,
+                USER_ID, userId,
+                WISHLIST_ID, wishlistId
+            )
         )
     }
 
-    fun viewOnSharingChannel(wishlistId: String, productId: String, userId: String){
+    fun viewOnSharingChannel(wishlistId: String, productId: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, VIEW_COMMUNICATION_IRIS,
-                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION, VIEW_ON_SHARING_CHANNEL,
-                        EVENT_LABEL, wishlistId,
-                        BUSINESS_UNIT, SHARING_EXPERIENCE,
-                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                        PRODUCT_ID, productId,
-                        USER_ID, userId,
-                        WISHLIST_ID, wishlistId)
+            DataLayer.mapOf(
+                EVENT, VIEW_COMMUNICATION_IRIS,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, VIEW_ON_SHARING_CHANNEL,
+                EVENT_LABEL, wishlistId,
+                BUSINESS_UNIT, SHARING_EXPERIENCE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                PRODUCT_ID, productId,
+                USER_ID, userId,
+                WISHLIST_ID, wishlistId
+            )
         )
     }
 }

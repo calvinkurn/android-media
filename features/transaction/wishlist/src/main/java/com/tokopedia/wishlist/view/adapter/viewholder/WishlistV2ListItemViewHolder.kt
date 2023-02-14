@@ -8,12 +8,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.productcard.R as RProductCard
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.databinding.WishlistV2ListItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
+import com.tokopedia.productcard.R as RProductCard
 
 class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
@@ -34,7 +34,6 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
 
             if (isShowCheckbox) {
                 renderBulkDelete(item, buttonSecondary, rlPrimaryButton, isAutoSelected, isAddBulkModeFromOthers)
-
             } else {
                 renderRegularWishlist(item, buttonSecondary, rlPrimaryButton)
             }
@@ -77,8 +76,11 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
     private fun setCheckboxClickListener(isAddBulkModeFromOthers: Boolean, isAutoSelected: Boolean, item: WishlistV2UiModel.Item) {
         if (!isAddBulkModeFromOthers) {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.id, binding.wishlistCheckbox.isChecked, position)
-            else actionListener?.onCheckBulkOption(item.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) {
+                actionListener?.onUncheckAutomatedBulkDelete(item.id, binding.wishlistCheckbox.isChecked, position)
+            } else {
+                actionListener?.onCheckBulkOption(item.id, binding.wishlistCheckbox.isChecked, position)
+            }
         } else {
             actionListener?.onValidateCheckBulkOption(item.id, binding.wishlistCheckbox.isChecked, position)
         }
@@ -104,7 +106,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         buttonSeeSimilarProduct.visible()
         binding.pcListItem.setSeeSimilarProductWishlistOnClickListener {
             actionListener?.onCheckSimilarProduct(
-                    item.wishlistItem.buttons.primaryButton.url
+                item.wishlistItem.buttons.primaryButton.url
             )
         }
     }

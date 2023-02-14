@@ -8,7 +8,6 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
-
 class WishlistCollectionItemOffsetDecoration(private val mItemOffset: Int) : ItemDecoration() {
     constructor(
         @NonNull context: Context,
@@ -16,15 +15,16 @@ class WishlistCollectionItemOffsetDecoration(private val mItemOffset: Int) : Ite
     ) : this(context.resources.getDimensionPixelSize(itemOffsetId))
 
     override fun getItemOffsets(
-        outRect: Rect, view: View, parent: RecyclerView,
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
         state: RecyclerView.State
     ) {
         super.getItemOffsets(outRect, view, parent, state)
         val position = parent.getChildAdapterPosition(view)
         if (position % 2 == 0) {
             outRect.set(0, 0, mItemOffset, 0)
-        }
-        else {
+        } else {
             outRect.set(mItemOffset, 0, 0, 0)
         }
     }

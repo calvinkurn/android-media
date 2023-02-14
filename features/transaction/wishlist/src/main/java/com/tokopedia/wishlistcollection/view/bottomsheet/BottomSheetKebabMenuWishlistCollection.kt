@@ -19,7 +19,7 @@ import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollecti
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 
-class BottomSheetKebabMenuWishlistCollection: BottomSheetUnify() {
+class BottomSheetKebabMenuWishlistCollection : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetKebabMenuWishlistCollectionBinding>()
     private var actionListener: ActionListenerBottomSheetMenu? = null
     private val collectionKebabItemAdapter = BottomSheetWishlistCollectionKebabMenuItemAdapter()

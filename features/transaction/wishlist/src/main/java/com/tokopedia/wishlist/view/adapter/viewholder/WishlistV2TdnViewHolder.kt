@@ -2,6 +2,7 @@ package com.tokopedia.wishlist.view.adapter.viewholder
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -10,7 +11,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2TdnItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) :
     RecyclerView.ViewHolder(binding.root) {
@@ -22,7 +22,8 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
     fun bind(
         item: WishlistV2TypeLayoutData,
         adapterPosition: Int,
-        isShowCheckbox: Boolean) {
+        isShowCheckbox: Boolean
+    ) {
         if (isShowCheckbox) {
             binding.root.gone()
             val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
@@ -52,7 +53,6 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                         override fun onTopAdsImageViewImpression(viewUrl: String) {
                             actionListener?.onBannerTopAdsImpression(item.dataObject, adapterPosition)
                         }
-
                     })
                 }
             }

@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetWishlistCollectionSharingDataResponse(
-	@SerializedName("get_wishlist_collection_sharing_data")
-	val getWishlistCollectionSharingData: GetWishlistCollectionSharingData
+    @SerializedName("get_wishlist_collection_sharing_data")
+    val getWishlistCollectionSharingData: GetWishlistCollectionSharingData
 ) {
     data class GetWishlistCollectionSharingData(
 
@@ -56,7 +56,7 @@ data class GetWishlistCollectionSharingDataResponse(
                 val id: Long = 0L,
 
                 @SerializedName("access")
-                val access: Long = 0L,
+                val access: Long = 0L
             ) {
                 data class Owner(
 
