@@ -280,11 +280,13 @@ class ShipmentViewHolder(
             val htmlString = HtmlLinkHelper(context, generateHtml(tips.message, tips.link))
             description = htmlString.spannedString ?: ""
             setOnClickListener {
-                if(tips.action == TICKER_ACTION_APPLINK) listener.goToApplink(tips.link)
-                else listener.goToWebView(tips.link)
+                if (tips.action == TICKER_ACTION_APPLINK) {
+                    listener.goToApplink(tips.link)
+                } else {
+                    listener.goToWebView(tips.link)
+                }
             }
         }
-
     }
 
     private fun loadErrorState() = with(viewError) {
@@ -329,6 +331,7 @@ class ShipmentViewHolder(
             pdpShipmentRatesError.hide()
             pdpShipmentTitleStrike.hide()
             pdpShipmentTicker.hide()
+            pdpShipmentTips.hide()
         }
     }
 
