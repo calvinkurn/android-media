@@ -832,12 +832,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check recently viewed appLink then should return tokopedia internal recently viewed in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/recentlyviewed"
-        assertEqualsDeepLinkMapper(ApplinkConst.RECENT_VIEW, expectedDeepLink)
-    }
-
-    @Test
     fun `check login appLink then should return tokopedia internal login in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/login"
         assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, expectedDeepLink)

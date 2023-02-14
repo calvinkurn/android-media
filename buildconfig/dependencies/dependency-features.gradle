@@ -84,7 +84,6 @@ ext {
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
             homeNav                         : ":features:discovery:home_nav",
-            recentview                      : ":features:discovery:recentview",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
             productCard                     : ":features:discovery:productcard",

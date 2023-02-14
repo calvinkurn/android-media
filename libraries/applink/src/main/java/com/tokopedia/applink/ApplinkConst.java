@@ -124,7 +124,6 @@ public interface ApplinkConst {
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_COLLECTION_DETAIL = "tokopedia://wishlist/collection/{collection_id}";
-    String RECENT_VIEW = "tokopedia://recentlyviewed";
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
     String ADD_PHONE = "tokopedia://add-phone";
