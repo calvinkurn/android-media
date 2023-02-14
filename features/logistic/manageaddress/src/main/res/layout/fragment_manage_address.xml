@@ -16,6 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_manage_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
             <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/search_input_view"
