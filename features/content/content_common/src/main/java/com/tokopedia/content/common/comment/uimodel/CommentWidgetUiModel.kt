@@ -6,6 +6,7 @@ package com.tokopedia.content.common.comment.uimodel
 data class CommentWidgetUiModel(
     val list: List<CommentUiModel>,
     val cursor: String,
+    val commentType: CommentType,
 )
 
 val CommentWidgetUiModel.hasNextPage : Boolean

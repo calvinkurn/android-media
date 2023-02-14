@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.content.common.comment.ContentCommentFactory
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
@@ -18,6 +19,8 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -63,7 +66,7 @@ class ContentCommentBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
-        viewModel.init()
+        observeData()
     }
 
     private fun setupBottomSheet() {
@@ -84,6 +87,14 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
+    }
+
+    private fun observeData() {
+        lifecycleScope.launch {
+            viewModel.comments.collectLatest {
+                commentAdapter.setItemsAndAnimateChanges(it)
+            }
+        }
     }
 
     fun setEntrySource(source: EntrySource?) {

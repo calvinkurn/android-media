@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.comment
 
 import com.tokopedia.content.common.comment.model.Comments
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import java.time.Duration
@@ -11,14 +12,20 @@ import javax.inject.Inject
  * @author by astidhiyaa on 09/02/23
  */
 class CommentUiModelMapper @Inject constructor() {
-    fun mapComments(comments: Comments) = CommentWidgetUiModel(
-        cursor = comments.parent.lastCursor,
-        list = comments.parent.comments.map(::mapComment).ifEmpty {
-            listOf(CommentUiModel.Empty)
-        }
+
+    private val String.convertToCommentType: CommentType
+        get() = if (this == "0") CommentType.Parent else CommentType.Child(this)
+
+    fun mapComments(comments: Comments) = CommentWidgetUiModel(cursor = comments.parent.lastCursor,
+        list = comments.parent.comments.map {
+            mapComment(it, comments.parent.parentId)
+        }.ifEmpty {
+                listOf(CommentUiModel.Empty)
+            },
+        commentType = comments.parent.parentId.convertToCommentType
     )
 
-    fun mapComment(comment: Comments.CommentData): CommentUiModel {
+    fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {
         val username = comment.username.ifBlank { comment.firstName }
         return CommentUiModel.Item(
             id = comment.id,
@@ -28,8 +35,10 @@ class CommentUiModelMapper @Inject constructor() {
             appLink = comment.id,
             content = comment.comment,
             createdTime = convertTime(comment.createdTime),
+            commentType = parentId.convertToCommentType,
         )
     }
+
     private fun convertTime(date: String): String {
         val now = ZonedDateTime.now()
         val convert = ZonedDateTime.parse(date) //add try catch handle if null / empty

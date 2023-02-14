@@ -2,6 +2,7 @@ package com.tokopedia.content.common.comment.usecase
 
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.model.PostComment
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -37,7 +38,7 @@ class PostCommentUseCase @Inject constructor(repo: GraphqlRepository) :
         ) = mapOf(
             PARAM_ID to source.id,
             PARAM_CONTENT_TYPE to source.type,
-            PARAM_COMMENT_PARENT_ID to commentType.value,
+            PARAM_COMMENT_PARENT_ID to commentType.parentId,
             PARAM_COMMENTER_TYPE to commenterType.value,
             PARAM_COMMENT to comment,
         )
@@ -82,10 +83,6 @@ class PostCommentUseCase @Inject constructor(repo: GraphqlRepository) :
             }
         """
     }
-
-    enum class CommentType(val value: String) {
-        PARENT("0"), CHILD("123")
-    } // not necessary to make enum
 
     enum class CommenterType(val value: Int) {
         SHOP(2), BUYER(3)

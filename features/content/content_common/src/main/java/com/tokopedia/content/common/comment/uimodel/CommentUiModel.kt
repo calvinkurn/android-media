@@ -14,8 +14,27 @@ sealed interface CommentUiModel {
         val repliesCount: String,
         val appLink: String,
         val isExpanded: Boolean = false,
+        val commentType: CommentType,
     ) : CommentUiModel
 
     object Empty : CommentUiModel
     object Shimmer : CommentUiModel
 }
+
+sealed class CommentType {
+    open val parentId = "0"
+
+    object Parent : CommentType()
+
+    data class Child(val mParentId: String) : CommentType() {
+        override val parentId: String
+            get() = mParentId
+    }
+}
+
+data class CommentParam (
+    val commentType: CommentType = CommentType.Parent,
+    val lastParentCursor: String = "",
+    val lastChildCursor: String = "",
+    val needToRefresh: Boolean = false,
+)

@@ -3,6 +3,7 @@ package com.tokopedia.content.common.comment.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.comment.CommentUiModelMapper
 import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.usecase.DeleteCommentUseCase
@@ -44,10 +45,10 @@ class ContentCommentRepositoryImpl @Inject constructor(
 
     override suspend fun replyComment(
         source: PageSource,
-        commentType: PostCommentUseCase.CommentType,
+        commentType: CommentType,
         comment: String
     ): CommentUiModel = withContext(dispatchers.io) {
-        return@withContext if(!isCommentAllowed) throw MessageErrorException(ERROR_SPAM_MESSAGE)
+        return@withContext if (!isCommentAllowed) throw MessageErrorException(ERROR_SPAM_MESSAGE)
         else {
             val commenterType =
                 if (userSession.isShopOwner) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
@@ -62,7 +63,10 @@ class ContentCommentRepositoryImpl @Inject constructor(
                 )
             }.executeOnBackground()
             lastRequestTime = System.currentTimeMillis()
-            mapper.mapComment(response.parent.data)
+            mapper.mapComment(
+                response.parent.data,
+                response.parent.data.id
+            ) //change to commentParentId
         }
     }
 
@@ -85,10 +89,14 @@ class ContentCommentRepositoryImpl @Inject constructor(
         return@withContext response
     }
 
-    override suspend fun getComments(source: PageSource, commentId: String, cursor: String): CommentWidgetUiModel =
+    override suspend fun getComments(
+        source: PageSource,
+        commentType: CommentType,
+        cursor: String
+    ): CommentWidgetUiModel =
         withContext(dispatchers.io) {
             val response = getCommentsUseCase.apply {
-                setRequestParams(GetCommentsUseCase.setParam(source, cursor, commentId))
+                setRequestParams(GetCommentsUseCase.setParam(source, cursor, commentType.parentId))
             }.executeOnBackground()
             return@withContext mapper.mapComments(response)
         }

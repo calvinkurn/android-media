@@ -1,9 +1,9 @@
 package com.tokopedia.content.common.comment.repository
 
 import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
-import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
 
 /**
  * @author by astidhiyaa on 08/02/23
@@ -13,7 +13,7 @@ interface ContentCommentRepository {
 
     suspend fun replyComment(
         source: PageSource,
-        commentType: PostCommentUseCase.CommentType,
+        commentType: CommentType,
         comment: String
     ): CommentUiModel
 
@@ -26,7 +26,7 @@ interface ContentCommentRepository {
 
     suspend fun getComments(
         source: PageSource,
-        commentId: String = "0",
+        commentType: CommentType,
         cursor: String,
     ): CommentWidgetUiModel
 }
