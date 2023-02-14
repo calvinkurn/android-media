@@ -17,6 +17,7 @@
 
     <View
         android:layout_width="0dp"
+        android:id="@+id/bg_overlay"
         android:layout_height="0dp"
         android:background="@color/bottomsheetunify_overlay"
         app:layout_constraintBottom_toBottomOf="@id/view_feed_tab_indicator"
