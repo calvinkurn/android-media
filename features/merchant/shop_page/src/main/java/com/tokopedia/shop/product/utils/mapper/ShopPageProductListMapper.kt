@@ -204,12 +204,6 @@ object ShopPageProductListMapper {
         }
     }
 
-    fun mapToMerchantVoucherViewModel(
-        merchantVoucherResponse: List<MerchantVoucherModel>
-    ): List<MerchantVoucherViewModel> {
-        return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
-    }
-
     fun mapToProductCardModel(
         shopProductUiModel: ShopProductUiModel,
         isWideContent: Boolean,

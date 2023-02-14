@@ -460,7 +460,7 @@ class EditorDetailViewModelTest {
     @Test
     fun `should return user shop avatar`() {
         // When
-        every { userSession.shopAvatar } returns shopAvatar
+        every { userSession.shopAvatarOriginal } returns shopAvatar
         val shopAvatarUrl = viewModel.getAvatarShop()
 
         // Then

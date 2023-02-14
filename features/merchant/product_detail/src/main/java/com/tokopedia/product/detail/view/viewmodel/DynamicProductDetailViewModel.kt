@@ -57,6 +57,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
+import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
+import com.tokopedia.product.detail.data.model.ui.OneTimeMethodState
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateTokoNowRequest
@@ -113,12 +115,15 @@ import dagger.Lazy
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
@@ -288,6 +293,9 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()
     val loadViewToView: LiveData<Result<RecommendationWidget>>
         get() = _loadViewToView
+
+    private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
+    val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -1464,4 +1472,25 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
         return variants
     }
+
+    fun changeOneTimeMethod(event: OneTimeMethodEvent) {
+        when (event) {
+            is OneTimeMethodEvent.ImpressRestriction -> {
+                if (_oneTimeMethod.value.impressRestriction) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, impressRestriction = true)
+                }
+            }
+            is OneTimeMethodEvent.HitVariantTracker -> {
+                if (_oneTimeMethod.value.hitVariantTracker) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, hitVariantTracker = true)
+                }
+            }
+            OneTimeMethodEvent.Empty -> {
+                //noop
+            }
+        }
+    }
+
 }
