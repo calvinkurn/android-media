@@ -15,28 +15,25 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
 
     val impressHolder = ImpressHolder()
 
-    companion object {
-        const val TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED = "{{number_of_users}}"
-    }
-
     data class NewProductLaunchCampaignItem(
-        val campaignId: String = "",
-        val name: String = "",
-        val description: String = "",
-        val startDate: String = "",
-        val endDate: String = "",
-        val statusCampaign: String = "",
-        val timeDescription: String = "",
-        val timeCounter: String = "",
-        var totalNotify: Int = 0,
-        val totalNotifyWording: String = "",
-        val dynamicRule: DynamicRule = DynamicRule(),
-        val bannerList: List<BannerItem> = listOf(),
-        val productList: List<ShopHomeProductUiModel> = listOf(),
-        var isRemindMe: Boolean? = null,
-        var rvState: Parcelable? = null,
-        var showRemindMeLoading: Boolean = false,
-        var isHideRemindMeTextAfterXSeconds: Boolean = false
+            val campaignId: String = "",
+            val name: String = "",
+            val description: String = "",
+            val startDate: String = "",
+            val endDate: String = "",
+            val statusCampaign: String = "",
+            val timeDescription: String = "",
+            val timeCounter: String = "",
+            var totalNotify: Int = 0,
+            val totalNotifyWording: String = "",
+            val voucherWording: String = "",
+            val dynamicRule: DynamicRule = DynamicRule(),
+            val bannerList: List<BannerItem> = listOf(),
+            val productList: List<ShopHomeProductUiModel> = listOf(),
+            var isRemindMe: Boolean? = null,
+            var rvState: Parcelable? = null,
+            var showRemindMeLoading : Boolean = false,
+            var isHideRemindMeTextAfterXSeconds: Boolean = false
     ) {
 
         data class BannerItem(
@@ -48,10 +45,11 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
 
         data class DynamicRule(
             val descriptionHeader: String = "",
-            val dynamicRoleData: DynamicRoleData = DynamicRoleData()
+            val listDynamicRoleData: List<DynamicRoleData> = listOf()
         ) {
             data class DynamicRoleData(
-                val ruleID: String = ""
+                    val ruleID: String = "",
+                    val isActive: Boolean = false
             )
         }
     }

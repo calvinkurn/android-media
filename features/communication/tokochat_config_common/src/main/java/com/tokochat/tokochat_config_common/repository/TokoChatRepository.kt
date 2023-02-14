@@ -13,7 +13,7 @@ import retrofit2.Retrofit
 import timber.log.Timber
 import javax.inject.Inject
 
-class TokoChatRepository @Inject constructor(
+open class TokoChatRepository @Inject constructor(
     @TokoChatQualifier private val retrofit: Retrofit,
     @TokoChatQualifier private val context: Context,
     @TokoChatQualifier private val babbleCourier: BabbleCourierClient,

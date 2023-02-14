@@ -485,5 +485,45 @@
     <string name="topads_credit_status_digunakan">Digunakan</string>
     <string name="topads_credit_status_menunggu">Menunggu</string>
     <string name="topads_credit_status_kedaluwarsa">Kedaluwarsa</string>
+
+    <string name="top_ads_auto_top_up_tips_bullet_one">Maks. pengeluaran harian dengan Tambah Kredit Otomatis: </string>
+    <string name="top_ads_auto_top_up_tips_bullet_two">Angka ini adalah estimasi maksimal, karena pengeluaran harianmu akan tergantung pada performa iklan.</string>
+    <string name="top_ads_auto_top_up_tnc_prefix">Otomatis tambah kredit dari Saldo Penghasilan, saat kredit kurang dari </string>
+    <string name="top_ads_auto_top_up_tnc_suffix">agar iklanmu terus aktif.</string>
+    <string name="top_ads_auto_top_up_save_btn">Aktifkan Tambah Kredit Otomatis</string>
+    <string name="topads_dash_auto_topup_bonus"><![CDATA["(<font color='#6D7588'>Bonus</font><font color='#00AA5B'><b> Rp%s </b></font>)]]></string>
+    <string name="topads_dash_auto_topup_frequency"><![CDATA["%s (<font color='#6D7588'>maks. %s kali/hari</font>)]]></string>
+    <string name="topads_dash_top_credit_interrupt_sheet_learn_more">Mau tahu lebih lanjut tentang Tambah Kredit?</string>
+    <string name="topads_dash_top_credit_interrupt_sheet_edu_point_three"><![CDATA[Dapatkan bonus <b>%s%% Kredit TopAds</b> tiap kali kreditmu ditambah otomatis!]]></string>
+
+    <string name="topads_dash_top_credit_interrupt_sheet_description_one">Kamu sudah %sx tambah kredit minggu ini. Coba pakai Tambah Kredit Otomatis yuk</string>
+    <string name="topads_dash_top_credit_interrupt_sheet_description_two">Biar iklanmu terus tampil dan kamu tidak kehilangan potensi penjualan saat Kredit TopAds habis.</string>
+    <string name="topads_edit_auto_top_up">Ubah Pengaturan</string>
+    <string name="topads_frequency_four_text">Jarang</string>
+    <string name="topads_frequency_six_text">Normal</string>
+    <string name="topads_frequency_eight_text">Sering</string>
+    <string name="topads_credit_top_up_url">https://seller.tokopedia.com/edu/cara-top-up-saldo-topads</string>
+    <string name="top_ads_otomatis_tambah_kredit_sebesar">Otomatis tambah kredit sebesar</string>
+    <string name="top_ads_saat_kredit_kurang_dari">Saat kredit kurang dari</string>
+    <string name="top_ads_frekuensi_tambah_kredit">Frekuensi tambah kredit</string>
+    <string name="top_ads_tambah_kredit_manual">Tambah Kredit Manual</string>
+    <string name="top_ads_tambah_kredit_otomatis">Tambah Kredit Otomatis</string>
+    <string name="top_ads_pilih_cara_tambah_kredit">Pilih cara tambah kredit</string>
+    <string name="top_ads_dapatkan_bonus_lebih_besar">Dapatkan bonus lebih besar!</string>
+    <string name="top_ads_sedang_aktif">Sedang Aktif</string>
+    <string name="top_ads_pilih_nominal">Pilih nominal</string>
+    <string name="top_ads_four_times_per_day">Maks. 4 kali/hari</string>
+    <string name="top_ads_six_times_per_day">Maks. 6 kali/hari</string>
+    <string name="top_ads_eight_times_per_day">Maks. 8 kali/hari</string>
+    <string name="top_ads_batal">Batal</string>
+    <string name="top_ads_terapkan">Terapkan</string>
+    <string name="top_ads_interrupt_bottom_sheet_title_one">Lebih praktis dengan \nTambah Kredit Otomatis</string>
+    <string name="top_ads_interrupt_bottom_sheet_title_two">Pakai Tambah Kredit Otomatis yuk!</string>
+    <string name="top_ads_tambah_manual">Tambah Manual</string>
+    <string name="top_ads_pelajari_selengkapnya">Pelajari Selengkapnya</string>
+    <string name="top_ads_tool_tip_auto_description">Fitur yang membantumu untuk tambah kredit secara otomatis, agar iklanmu terus aktif.</string>
+    <string name="top_ads_tool_tip_frequency_description">Seberapa sering tambah kredit dalam sehari untuk menjaga iklanmu terus aktif.</string>
+    <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
+
 </resources>
 

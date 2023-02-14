@@ -67,14 +67,14 @@
         android:id="@+id/form_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N700_68"
+        android:background="@color/play_bro_dms_preparation_overlay"
         android:visibility="gone"/>
 
     <com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
         android:id="@+id/form_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N700_68"
+        android:background="@color/play_bro_dms_preparation_overlay"
         android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.UnifyButton

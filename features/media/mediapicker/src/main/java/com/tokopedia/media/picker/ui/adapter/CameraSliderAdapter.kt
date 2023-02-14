@@ -7,12 +7,12 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemCameraModeSliderBinding
-import com.tokopedia.media.picker.ui.uimodel.CameraSelectionUiModel
+import com.tokopedia.media.picker.ui.fragment.camera.CameraSelectorUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CameraSliderAdapter(
-    private val elements: MutableList<CameraSelectionUiModel>,
+    private val elements: MutableList<CameraSelectorUiModel>,
     private val listener: Listener
 ) : RecyclerView.Adapter<CameraSliderAdapter.CameraSliderViewHolder>() {
 
@@ -33,7 +33,7 @@ class CameraSliderAdapter(
 
         private val binding: ViewItemCameraModeSliderBinding? by viewBinding()
 
-        fun bind(element: CameraSelectionUiModel) {
+        fun bind(element: CameraSelectorUiModel) {
             binding?.btnMode?.text = itemView.context.getString(element.name)
             binding?.btnMode?.setWeight(if(element.isSelected) Typography.BOLD else Typography.REGULAR)
 
