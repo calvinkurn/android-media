@@ -80,7 +80,5 @@ interface HomeTypeFactory {
 
     fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int
 
-    fun type(homeHeaderAtf1DataModel: HomeHeaderAtf1DataModel): Int
-
     fun type(homeHeaderAtf2DataModel: HomeHeaderAtf2DataModel): Int
 }

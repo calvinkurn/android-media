@@ -13,7 +13,6 @@ object RollenceKey {
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
     const val HOME_COMPONENT_ATF = "home_atf"
-    const val HOME_COMPONENT_ATF_1 = "atf1"
     const val HOME_COMPONENT_ATF_2 = "atf2"
 
     // home component rollence section

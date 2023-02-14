@@ -81,7 +81,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     private val userSessionInterface: UserSessionInterface,
     private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
-    private val homeBalanceWidgetAtf1UseCase: HomeBalanceWidgetAtf1UseCase,
     private val homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase
 ) {
 
@@ -90,9 +89,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private var currentHeaderDataModel: HomeHeaderDataModel? = null
     private var previousHeaderDataModel: HomeHeaderDataModel? = null
-
-    private var currentHeaderAtf1DataModel: HomeHeaderAtf1DataModel? = null
-    private var previousHeaderAtf1DataModel: HomeHeaderAtf1DataModel? = null
 
     private var currentHeaderAtf2DataModel: HomeHeaderAtf2DataModel? = null
     private var previousHeaderAtf2DataModel: HomeHeaderAtf2DataModel? = null
@@ -120,20 +116,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
             if (model.needToShowUserWallet) {
                 homeDataModel.updateWidgetModel(
                     visitable = homeHeaderDataModel,
-                    position = index
-                ) {}
-            }
-        }
-    }
-
-    private fun updateHeaderAtf1Data(
-        homeHeaderAtf1DataModel: HomeHeaderAtf1DataModel,
-        homeDataModel: HomeDynamicChannelModel
-    ) {
-        findWidget<HomeHeaderAtf1DataModel>(homeDataModel) { model, index ->
-            if (model.needToShowUserWallet) {
-                homeDataModel.updateWidgetModel(
-                    visitable = homeHeaderAtf1DataModel,
                     position = index
                 ) {}
             }
@@ -224,19 +206,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    if (HomeRollenceController.isUsingAtf1Variant()) {
-                        if (currentHeaderAtf1DataModel == null) {
-                            currentHeaderAtf1DataModel =
-                                homeBalanceWidgetAtf1UseCase.onGetBalanceWidgetData(
-                                    previousHeaderAtf1DataModel
-                                )
-                            previousHeaderAtf1DataModel = currentHeaderAtf1DataModel
-                        }
-                        currentHeaderAtf1DataModel?.let {
-                            updateHeaderAtf1Data(it, dynamicChannelPlainResponse)
-                            emit(dynamicChannelPlainResponse)
-                        }
-                    } else if (HomeRollenceController.isUsingAtf2Variant()) {
+                    if (HomeRollenceController.isUsingAtf2Variant()) {
                         if (currentHeaderAtf2DataModel == null) {
                             currentHeaderAtf2DataModel =
                                 homeBalanceWidgetAtf2UseCase.onGetBalanceWidgetData(
@@ -865,9 +835,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
             var isAtfSuccess = true
-            if (HomeRollenceController.isUsingAtf1Variant()) {
-                currentHeaderAtf1DataModel = null
-            } else if (HomeRollenceController.isUsingAtf2Variant()) {
+            if (HomeRollenceController.isUsingAtf2Variant()) {
                 currentHeaderAtf2DataModel = null
             } else {
                 currentHeaderDataModel = null
@@ -972,11 +940,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                         if (it.banner.slides?.size ?: 0 >= MINIMUM_BANNER_TO_SHOW) {
                                             val channelFromResponse = it.banner
                                             atfData.content = gson.toJson(channelFromResponse)
-                                            if (HomeRollenceController.isUsingAtf1Variant()) {
-                                                atfData.status = AtfKey.STATUS_EMPTY
-                                            } else {
-                                                atfData.status = AtfKey.STATUS_SUCCESS
-                                            }
+                                            atfData.status = AtfKey.STATUS_SUCCESS
                                         } else {
                                             atfData.status = AtfKey.STATUS_EMPTY
                                         }

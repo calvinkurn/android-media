@@ -67,7 +67,6 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggest
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetAtf1UseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetAtf2UseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -142,7 +141,6 @@ class HomeUseCaseModule {
         homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         userSession: UserSessionInterface,
         homeMissionWidgetRepository: HomeMissionWidgetRepository,
-        homeBalanceWidgetAtf1UseCase: HomeBalanceWidgetAtf1UseCase,
         homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase
     ) = HomeDynamicChannelUseCase(
         homeDataMapper = homeDataMapper,
@@ -173,7 +171,6 @@ class HomeUseCaseModule {
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
         userSessionInterface = userSession,
         homeMissionWidgetRepository = homeMissionWidgetRepository,
-        homeBalanceWidgetAtf1UseCase = homeBalanceWidgetAtf1UseCase,
         homeBalanceWidgetAtf2UseCase = homeBalanceWidgetAtf2UseCase
     )
 

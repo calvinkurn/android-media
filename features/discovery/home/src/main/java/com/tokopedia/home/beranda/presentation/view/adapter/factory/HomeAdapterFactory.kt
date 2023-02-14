@@ -401,10 +401,6 @@ class HomeAdapterFactory(
         return Lego4ProductViewHolder.LAYOUT
     }
 
-    override fun type(homeHeaderAtf1DataModel: HomeHeaderAtf1DataModel): Int {
-        return HomeHeaderAtf1ViewHolder.LAYOUT
-    }
-
     override fun type(homeHeaderAtf2DataModel: HomeHeaderAtf2DataModel): Int {
         return HomeHeaderAtf2ViewHolder.LAYOUT
     }
@@ -462,7 +458,6 @@ class HomeAdapterFactory(
         when (type) {
             EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
             HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
-            HomeHeaderAtf1ViewHolder.LAYOUT -> viewHolder = HomeHeaderAtf1ViewHolder(view, listener)
             HomeHeaderAtf2ViewHolder.LAYOUT -> viewHolder = HomeHeaderAtf2ViewHolder(view, listener)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)

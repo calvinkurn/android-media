@@ -53,7 +53,7 @@ class ChooseAddressWidgetCallback(
     }
 
     override fun iconLocation(): Int {
-        return if (HomeRollenceController.isUsingAtf2Variant() || HomeRollenceController.isUsingAtf1Variant()) {
+        return if (HomeRollenceController.isUsingAtf2Variant()) {
             IconUnify.LOCATION_FILLED
         } else {
             super.iconLocation()

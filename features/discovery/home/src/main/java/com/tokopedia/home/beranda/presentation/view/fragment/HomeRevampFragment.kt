@@ -618,7 +618,7 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-//        if (!HomeRollenceController.isUsingAtf2Variant() && !HomeRollenceController.isUsingAtf1Variant()) {
+//        if (!HomeRollenceController.isUsingAtf2Variant()) {
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
 //        }
         root = view.findViewById(R.id.root)
@@ -1787,7 +1787,7 @@ open class HomeRevampFragment :
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView?.loadContent()
+//        stickyLoginView?.loadContent()
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
@@ -2741,8 +2741,8 @@ open class HomeRevampFragment :
     }
 
     override fun refreshBalanceWidget() {
-        if (HomeRollenceController.isUsingAtf1Variant()) {
-            getHomeViewModel().getBalanceWidgetAtf1Data()
+        if (HomeRollenceController.isUsingAtf2Variant()) {
+            getHomeViewModel().getBalanceWidgetAtf2Data()
         } else {
             getHomeViewModel().getBalanceWidgetData()
         }

@@ -21,10 +21,6 @@ object HomeRollenceController {
         return rollenceAtfValue
     }
 
-    fun isUsingAtf1Variant(): Boolean {
-        return getAtfRollenceValue() == RollenceKey.HOME_COMPONENT_ATF_1
-    }
-
     fun isUsingAtf2Variant(): Boolean {
         return getAtfRollenceValue() == RollenceKey.HOME_COMPONENT_ATF_2
     }

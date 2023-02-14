@@ -95,13 +95,7 @@ class HomeVisitableFactoryImpl(
             RollenceKey.HOME_COMPONENT_ATF,
             ""
         )
-        if (HomeRollenceController.isUsingAtf1Variant()) {
-            val homeHeaderAtf1 = HomeHeaderAtf1DataModel(needToShowUserWallet = needToShowUserWallet)
-            val headerViewModel = HeaderDataModel()
-            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
-            homeHeaderAtf1.headerDataModel = headerViewModel
-            visitableList.add(homeHeaderAtf1)
-        } else if (HomeRollenceController.isUsingAtf2Variant()) {
+        if (HomeRollenceController.isUsingAtf2Variant()) {
             val homeHeaderAtf2 = HomeHeaderAtf2DataModel(needToShowUserWallet = needToShowUserWallet)
             val headerViewModel = HeaderDataModel()
             headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
