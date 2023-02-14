@@ -8,19 +8,11 @@ import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.OS
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_ADVANCED
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_EXPERT
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_ULTIMATE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.RM
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.TkpdProducts
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveSelectionUseCase
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsTopUpCreditUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,29 +30,32 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class TopAdsAutoTopUpViewModelTest {
 
     @get:Rule
     val taskrule = InstantTaskExecutorRule()
+
     @get:Rule
     val rule = CoroutineTestRule()
     private lateinit var viewModel: TopAdsAutoTopUpViewModel
     private var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
     private var saveSelectionUseCase: TopAdsSaveSelectionUseCase = mockk(relaxed = true)
     private var useCase: GraphqlUseCase<TkpdProducts> = mockk(relaxed = true)
-    private val  userSession: UserSessionInterface = mockk(relaxed = true)
+    private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
-    private val topAdsTopUpCreditUseCase: TopAdsTopUpCreditUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         viewModel = TopAdsAutoTopUpViewModel(
-            useCase, autoTopUpUSeCase, topAdsTopUpCreditUseCase,
-            saveSelectionUseCase, userSession, whiteListedUserUseCase, rule.dispatchers
+            useCase,
+            autoTopUpUSeCase,
+            saveSelectionUseCase,
+            userSession,
+            whiteListedUserUseCase,
+            rule.dispatchers
         )
         every { userSession.shopId } returns "123"
     }
@@ -98,7 +93,7 @@ class TopAdsAutoTopUpViewModelTest {
         val mockObject = mockk<AutoTopUpData.Response>(relaxed = true)
 
         every { mockObject.response } returns null
-        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
         }
 
@@ -110,7 +105,7 @@ class TopAdsAutoTopUpViewModelTest {
     fun `getAutoTopUpStatus success - response not null and error is empty test, livedata should contain data`() {
         val mockObject = spyk(AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus())))
 
-        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
         }
 
@@ -120,10 +115,9 @@ class TopAdsAutoTopUpViewModelTest {
 
     @Test
     fun `getAutoTopUpStatus response not null and error not empty test, livedata should be fail`() {
-
         val actual = spyk(AutoTopUpData.Response(AutoTopUpData(errors = listOf(Error()))))
 
-        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(actual)
         }
 
@@ -140,11 +134,11 @@ class TopAdsAutoTopUpViewModelTest {
         }
 
         viewModel.getAutoTopUpStatusFull()
-        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Fail).throwable , actual)
+        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Fail).throwable, actual)
     }
 
     @Test
-    fun `saveSelection on success - response not null and error is empty test, livedata should have isSuccess as true`(){
+    fun `saveSelection on success - response not null and error is empty test, livedata should have isSuccess as true`() {
         val mockObject = spyk(AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus())))
 
         every { saveSelectionUseCase.execute(captureLambda(), any()) } answers {
@@ -157,7 +151,7 @@ class TopAdsAutoTopUpViewModelTest {
     }
 
     @Test
-    fun `saveSelection on exception occurred test, livedata should have isSuccess as true`(){
+    fun `saveSelection on exception occurred test, livedata should have isSuccess as true`() {
         val actual = spyk(Throwable("ii"))
 
         every { saveSelectionUseCase.execute(any(), captureLambda()) } answers {
@@ -187,7 +181,6 @@ class TopAdsAutoTopUpViewModelTest {
 
     @Test
     fun `populateCreditList on exception occurred`() {
-
         val actual = spyk(Throwable())
 
         every { useCase.execute(any(), captureLambda()) } answers {
@@ -233,41 +226,6 @@ class TopAdsAutoTopUpViewModelTest {
     }
 
     @Test
-    fun `test success in getManualTopAdsCreditList when result is not empty`() {
-        val actual = TopAdsShopTierShopGradeData(
-            TopAdsShopTierShopGradeData.ShopInfoByID(
-                listOf(
-                    TopAdsShopTierShopGradeData.ShopInfoByID.Result(
-                        TopAdsShopTierShopGradeData.ShopInfoByID.Result.GoldOS(shopGrade = 1)
-                    )
-                )
-            )
-        )
-        every { topAdsTopUpCreditUseCase.execute(captureLambda(), any()) } answers {
-            firstArg<(TopAdsShopTierShopGradeData) -> Unit>().invoke(
-                actual
-            )
-        }
-        viewModel.getManualTopAdsCreditList()
-
-        Assert.assertEquals(
-            (viewModel.topAdsTopUpCreditData.value as Success).data.goldOS,
-            actual.shopInfoByID.result.first().goldOS
-        )
-    }
-
-    @Test
-    fun `test exception in getManualTopAdsCreditList`() {
-
-        every { topAdsTopUpCreditUseCase.execute(captureLambda(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
-        viewModel.getManualTopAdsCreditList()
-
-        Assert.assertEquals(viewModel.topAdsTopUpCreditData.value, null)
-    }
-
-    @Test
     fun `test clicked in getAutoTopUpCreditList when isAutoTopUpActive is true`() {
         val actual = mockk<AutoTopUpStatus>(relaxed = true)
 
@@ -291,98 +249,15 @@ class TopAdsAutoTopUpViewModelTest {
         Assert.assertFalse(list.find { it.clicked }?.clicked == true)
     }
 
-
     @Test
     fun `test bonus in getCreditItemDataList when shopTier is RM`() {
-        val data = TopAdsShopTierShopGradeData.ShopInfoByID.Result(
-            TopAdsShopTierShopGradeData.ShopInfoByID.Result.GoldOS(shopTier = RM)
-        )
         val list = mutableListOf(DataCredit(productPrice = "25.000"))
         mockkObject(Utils)
         every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
         every { Utils.convertToCurrencyString((25000 * 0.0 / 100).toLong()) } returns "0.0"
-        val listResponse = viewModel.getCreditItemDataList(list, data)
+        val listResponse = viewModel.getCreditItemDataList(list, 0.0f)
 
         Assert.assertEquals("Bonus Rp0.0", listResponse.first().bonus)
-    }
-
-    @Test
-    fun `test bonus in getCreditItemDataList when shopTier is PM`() {
-        val data = TopAdsShopTierShopGradeData.ShopInfoByID.Result(
-            TopAdsShopTierShopGradeData.ShopInfoByID.Result.GoldOS(shopTier = PM)
-        )
-        val list = mutableListOf(DataCredit(productPrice = "25.000"))
-        mockkObject(Utils)
-        every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 1.5 / 100).toLong()) } returns "1.250"
-        val listResponse = viewModel.getCreditItemDataList(list, data)
-
-        Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
-    }
-
-    @Test
-    fun `test bonus in getCreditItemDataList when shopTier is OS`() {
-        val data = TopAdsShopTierShopGradeData.ShopInfoByID.Result(
-            TopAdsShopTierShopGradeData.ShopInfoByID.Result.GoldOS(shopTier = OS)
-        )
-        val list = mutableListOf(DataCredit(productPrice = "25.000"))
-        mockkObject(Utils)
-        every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 3.5 / 100).toLong()) } returns "1.250"
-        val listResponse = viewModel.getCreditItemDataList(list, data)
-
-        Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
-    }
-
-    @Test
-    fun `test bonus in getCreditItemDataList when shopTier is PM_PRO_ADVANCED`() {
-        val data = TopAdsShopTierShopGradeData.ShopInfoByID.Result(
-            TopAdsShopTierShopGradeData.ShopInfoByID.Result.GoldOS(
-                shopTier = PM_PRO,
-                shopGrade = PM_PRO_ADVANCED
-            )
-        )
-        val list = mutableListOf(DataCredit(productPrice = "25.000"))
-        mockkObject(Utils)
-        every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 2.0 / 100).toLong()) } returns "1.250"
-        val listResponse = viewModel.getCreditItemDataList(list, data)
-
-        Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
-    }
-
-    @Test
-    fun `test bonus in getCreditItemDataList when shopTier is PM_PRO_EXPERT`() {
-        val data = TopAdsShopTierShopGradeData.ShopInfoByID.Result(
-            TopAdsShopTierShopGradeData.ShopInfoByID.Result.GoldOS(
-                shopTier = PM_PRO,
-                shopGrade = PM_PRO_EXPERT
-            )
-        )
-        val list = mutableListOf(DataCredit(productPrice = "25.000"))
-        mockkObject(Utils)
-        every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 2.5 / 100).toLong()) } returns "1.250"
-        val listResponse = viewModel.getCreditItemDataList(list, data)
-
-        Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
-    }
-
-    @Test
-    fun `test bonus in getCreditItemDataList when shopTier is PM_PRO_ULTIMATE`() {
-        val data = TopAdsShopTierShopGradeData.ShopInfoByID.Result(
-            TopAdsShopTierShopGradeData.ShopInfoByID.Result.GoldOS(
-                shopTier = PM_PRO,
-                shopGrade = PM_PRO_ULTIMATE
-            )
-        )
-        val list = mutableListOf(DataCredit(productPrice = "25.000"))
-        mockkObject(Utils)
-        every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 3.0 / 100).toLong()) } returns "1.250"
-        val listResponse = viewModel.getCreditItemDataList(list, data)
-
-        Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
     }
 
     @Test
@@ -460,15 +335,14 @@ class TopAdsAutoTopUpViewModelTest {
     }
 
     @Test
-    fun `test getUrl`(){
+    fun `test getUrl`() {
         val expected = "productUrl"
         mockkStatic(URLGenerator::class)
-        every { URLGenerator.generateURLSessionLogin(any(),any(), any()) } returns expected
+        every { URLGenerator.generateURLSessionLogin(any(), any(), any()) } returns expected
         mockkStatic(Uri::class)
         every { Uri.encode(any()) } returns ""
         val actual = viewModel.getUrl("url")
 
         Assert.assertEquals(expected, actual)
     }
-
 }
