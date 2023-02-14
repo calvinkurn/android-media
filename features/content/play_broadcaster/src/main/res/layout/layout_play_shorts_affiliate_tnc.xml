@@ -24,8 +24,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_tnc_shorts_affiliate"
-        android:layout_width="300dp"
-        android:layout_height="350dp"
+        android:layout_width="@dimen/play_shorts_tnc_image_width"
+        android:layout_height="@dimen/play_shorts_tnc_image_height"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
