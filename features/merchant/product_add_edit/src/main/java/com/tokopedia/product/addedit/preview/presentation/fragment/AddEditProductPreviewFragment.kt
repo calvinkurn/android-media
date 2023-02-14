@@ -203,7 +203,7 @@ class AddEditProductPreviewFragment :
 
     // product status
     private val editProductStatusLayout by lazy { binding?.editProductStatusLayout }
-    private val productStatusSwitch by lazy { binding?.editProductStatusLayout?.suProductStatus}
+    private val productStatusSwitch by lazy { binding?.editProductStatusLayout?.suProductStatus }
 
     // loading
     private val loadingLayout by lazy { binding?.loadingLayout }
@@ -519,31 +519,26 @@ class AddEditProductPreviewFragment :
         }
 
         addEditProductPhotoButton?.setOnClickListener {
-
-            setupBottomSheetProductLimitation(ProductLimitationModel())
-            productLimitationBottomSheet?.show(childFragmentManager, context)
-
-
-//            // tracking
-//            val buttonTextStart: String = getString(R.string.action_start)
-//            if (isEditing()) {
-//                ProductEditStepperTracking.trackClickChangeProductPic(shopId)
-//                moveToImagePicker()
-//            } else if (addEditProductPhotoButton?.text == buttonTextStart) {
-//                ProductAddStepperTracking.trackStart(shopId)
-//                // validate whether shop has location
-//                isStartButtonClicked = true
-//                if (hasLocation) {
-//                    moveToImagePicker()
-//                } else {
-//                    validateShopLocation()
-//                }
-//            } else {
-//                moveToImagePicker()
-//            }
-//        }
-//        addProductPhotoTipsLayout?.setOnClickListener {
-//            showPhotoTips()
+            // tracking
+            val buttonTextStart: String = getString(R.string.action_start)
+            if (isEditing()) {
+                ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+                moveToImagePicker()
+            } else if (addEditProductPhotoButton?.text == buttonTextStart) {
+                ProductAddStepperTracking.trackStart(shopId)
+                // validate whether shop has location
+                isStartButtonClicked = true
+                if (hasLocation) {
+                    moveToImagePicker()
+                } else {
+                    validateShopLocation()
+                }
+            } else {
+                moveToImagePicker()
+            }
+        }
+        addProductPhotoTipsLayout?.setOnClickListener {
+            showPhotoTips()
         }
     }
 
