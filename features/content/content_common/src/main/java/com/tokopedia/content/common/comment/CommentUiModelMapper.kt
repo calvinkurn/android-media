@@ -17,12 +17,20 @@ class CommentUiModelMapper @Inject constructor() {
     private val String.convertToCommentType: CommentType
         get() = if (this == "0") CommentType.Parent else CommentType.Child(this)
 
-    fun mapComments(comments: Comments) = CommentWidgetUiModel(cursor = comments.parent.lastCursor,
-        list = comments.parent.comments.map {
-            mapComment(it, comments.parent.parentId)
-        }.ifEmpty {
-                listOf(CommentUiModel.Empty)
-            },
+    @OptIn(ExperimentalStdlibApi::class)
+    fun mapComments(comments: Comments) = CommentWidgetUiModel(
+        cursor = comments.parent.lastCursor,
+        list = buildList {
+            comments.parent.comments.forEach {
+                add(mapComment(it, comments.parent.parentId))
+                if (it.hasReplies) add(
+                    CommentUiModel.Expandable(
+                        repliesCount = it.repliesCount,
+                        commentType = comments.parent.parentId.convertToCommentType
+                    )
+                )
+            }
+        },
         commentType = comments.parent.parentId.convertToCommentType,
         state = ResultState.Success,
     )
@@ -33,7 +41,6 @@ class CommentUiModelMapper @Inject constructor() {
             id = comment.id,
             username = username,
             photo = comment.photo,
-            repliesCount = comment.repliesCount,
             appLink = comment.id,
             content = comment.comment,
             createdTime = convertTime(comment.createdTime),

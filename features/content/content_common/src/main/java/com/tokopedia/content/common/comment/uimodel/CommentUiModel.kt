@@ -11,14 +11,18 @@ sealed interface CommentUiModel {
         val content: String,
         val createdTime: String,
         val photo: String,
-        val repliesCount: String,
         val appLink: String,
-        val isExpanded: Boolean = false,
         val commentType: CommentType,
     ) : CommentUiModel
 
     object Empty : CommentUiModel
     object Shimmer : CommentUiModel
+
+    data class Expandable(
+        val commentType: CommentType,
+        val repliesCount: String,
+        val isExpanded: Boolean = false,
+    ) : CommentUiModel
 }
 
 sealed class CommentType {

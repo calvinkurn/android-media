@@ -13,6 +13,7 @@ class CommentAdapter internal constructor(private val commentListener: CommentVi
         delegatesManager.addDelegate(CommentAdapterDelegate.Item(commentListener))
         delegatesManager.addDelegate(CommentAdapterDelegate.Empty())
         delegatesManager.addDelegate(CommentAdapterDelegate.Shimmering())
+        delegatesManager.addDelegate(CommentAdapterDelegate.Expandable())
     }
 
     override fun areItemsTheSame(oldItem: CommentUiModel, newItem: CommentUiModel): Boolean {

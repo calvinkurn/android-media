@@ -8,6 +8,7 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
+import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
 
@@ -77,6 +78,30 @@ class CommentAdapterDelegate {
                 false
             )
             return CommentViewHolder.Shimmering(view)
+        }
+    }
+
+    internal class Expandable :
+        TypedAdapterDelegate<CommentUiModel.Expandable, CommentUiModel, CommentViewHolder.Expandable>(
+            R.layout.item_comment_expandable
+        ) {
+        override fun onBindViewHolder(
+            item: CommentUiModel.Expandable,
+            holder: CommentViewHolder.Expandable
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): CommentViewHolder.Expandable {
+            val view = ItemCommentExpandableBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return CommentViewHolder.Expandable(view)
         }
     }
 }
