@@ -714,6 +714,10 @@
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/branch_sdk_key_sa" />
 
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="false" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
