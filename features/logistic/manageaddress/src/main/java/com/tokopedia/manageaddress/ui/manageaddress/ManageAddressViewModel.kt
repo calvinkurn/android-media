@@ -17,14 +17,19 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHyperlinkText
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.domain.model.TickerModel
+import com.tokopedia.manageaddress.domain.request.shareaddress.GetTargetedTickerParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsReceiverParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsSenderParam
+import com.tokopedia.manageaddress.domain.response.GetTargetedTickerResponse
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsReceiverUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
@@ -34,6 +39,7 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESS
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +56,8 @@ class ManageAddressViewModel @Inject constructor(
     private val chooseAddressMapper: ChooseAddressMapper,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
-    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase
+    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
+    private val getTargetedTicker: GetTargetedTickerUseCase
 ) : ViewModel() {
 
     companion object {
@@ -109,6 +116,10 @@ class ManageAddressViewModel @Inject constructor(
     private val _validateShareAddressState = MutableLiveData<ValidateShareAddressState>()
     val validateShareAddressState: LiveData<ValidateShareAddressState>
         get() = _validateShareAddressState
+
+    private val _tickerState = MutableLiveData<TickerModel>()
+    val tickerState: LiveData<TickerModel>
+        get() = _tickerState
 
     private val compositeSubscription = CompositeSubscription()
 
@@ -212,7 +223,7 @@ class ManageAddressViewModel @Inject constructor(
         setAsStateChosenAddress: Boolean,
         prevState: Int,
         localChosenAddrId: Long,
-        isWhiteListChosenAddress: Boolean,
+        isWhiteListChosenAddress: Boolean
     ) {
         viewModelScope.launchCatchError(
             block = {
@@ -367,6 +378,57 @@ class ManageAddressViewModel @Inject constructor(
             ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
         } else {
             source
+        }
+    }
+
+    fun setupTicker() {
+        viewModelScope.launchCatchError(block = {
+            val param = GetTargetedTickerParam(page = "todo", target = listOf())
+            val response = getTargetedTicker(param)
+            _tickerState.value = response.getTargetedTickerData.toUiModel()
+        }, onError = {})
+    }
+
+    private fun GetTargetedTickerResponse.GetTargetedTickerData.toUiModel(): TickerModel {
+        return TickerModel(
+            item = this@toUiModel.list.sortedBy { it.priority }.map {
+                val url = it.action.getUrl()
+                TickerModel.TickerItem(
+                    type = it.toTickerType(),
+                    title = it.title,
+                    content = it.generateContent(url),
+                    linkUrl = url,
+                    priority = it.priority
+                )
+            }
+        )
+    }
+
+    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.Action.getUrl(): String {
+        return this.appURL.ifEmpty { this.webURL }
+    }
+
+    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.generateContent(actionUrl: String): String {
+        return java.lang.StringBuilder().apply {
+            append(this@generateContent.content)
+            appendHyperlinkText(label = this@generateContent.action.label, url = actionUrl)
+        }.toString()
+    }
+
+    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.toTickerType(): Int {
+        return when (this.type) {
+            "info" -> {
+                Ticker.TYPE_INFORMATION
+            }
+            "warning" -> {
+                Ticker.TYPE_WARNING
+            }
+            "error" -> {
+                Ticker.TYPE_ERROR
+            }
+            else -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
         }
     }
 

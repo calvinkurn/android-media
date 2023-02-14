@@ -14,12 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragment
@@ -30,6 +32,9 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -100,11 +105,42 @@ class ManageAddressFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setupDataFromArgument(arguments)
+        observeTickerState()
+        viewModel.setupTicker()
         if (viewModel.isNeedValidateShareAddress) {
             observerValidateShareAddress()
             viewModel.doValidateShareAddress()
         } else {
             bindView()
+        }
+    }
+
+    private fun observeTickerState() {
+        viewModel.tickerState.observe(viewLifecycleOwner) {
+            if (it.item.isNotEmpty()) {
+                val message = ArrayList<TickerData>()
+                for (item in it.item) {
+                    message.add(TickerData(item.title, item.content, item.type, true, item.linkUrl))
+                }
+                val tickerPageAdapter = TickerPagerAdapter(context, message)
+                tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        val appLink = linkUrl.toString()
+                        if (appLink.startsWith("tokopedia")) {
+                            startActivity(RouteManager.getIntent(context, appLink))
+                        } else {
+                            RouteManager.route(
+                                context,
+                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, appLink)
+                            )
+                        }
+                    }
+                })
+                binding?.tickerManageAddress?.addPagerView(tickerPageAdapter, message)
+                binding?.tickerManageAddress?.visible()
+            } else {
+                binding?.tickerManageAddress?.gone()
+            }
         }
     }
 
@@ -193,19 +229,19 @@ class ManageAddressFragment :
                 }
 
                 vpManageAddress.registerOnPageChangeCallback(object :
-                    ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        if (isFirstLoad) {
-                            isFirstLoad = false
-                        } else {
-                            if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
-                                ShareAddressAnalytics.onClickMainTab()
+                        ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            if (isFirstLoad) {
+                                isFirstLoad = false
                             } else {
-                                ShareAddressAnalytics.onClickFromFriendTab()
+                                if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
+                                    ShareAddressAnalytics.onClickMainTab()
+                                } else {
+                                    ShareAddressAnalytics.onClickFromFriendTab()
+                                }
                             }
                         }
-                    }
-                })
+                    })
 
                 if (viewModel.isReceiveShareAddress) {
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -331,4 +367,3 @@ class ManageAddressFragment :
         }
     }
 }
-
