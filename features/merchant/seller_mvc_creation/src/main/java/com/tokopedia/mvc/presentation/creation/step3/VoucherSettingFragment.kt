@@ -532,7 +532,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun setupPromoTypeSelection() {
-        setPromoType(voucherConfiguration.promoType)
         promoTypeSectionBinding?.run {
             if (pageMode == PageMode.CREATE) {
                 chipFreeShipping.chip_container.setOnClickListener {
