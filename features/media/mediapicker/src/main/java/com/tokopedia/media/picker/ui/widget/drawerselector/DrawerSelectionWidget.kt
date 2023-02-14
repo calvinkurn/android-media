@@ -178,8 +178,8 @@ class DrawerSelectionWidget : FrameLayout {
     }
 
     interface Listener {
-        fun onItemClicked(media: MediaUiModel)
-        fun onDataSetChanged(action: DrawerActionType)
+        fun onDrawerItemClicked(media: MediaUiModel)
+        fun onDrawerDataSetChanged(action: DrawerActionType)
     }
 
     companion object {

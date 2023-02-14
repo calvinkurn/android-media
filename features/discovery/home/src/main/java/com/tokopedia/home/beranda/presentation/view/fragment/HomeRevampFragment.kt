@@ -1389,7 +1389,7 @@ open class HomeRevampFragment :
             homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
             this,
             HomeComponentCallback(this),
-            DynamicLegoBannerComponentCallback(context, this),
+            DynamicLegoBannerComponentCallback(context, this, userId),
             RecommendationListCarouselComponentCallback(this),
             MixLeftComponentCallback(this),
             MixTopComponentCallback(this),
@@ -1398,7 +1398,7 @@ open class HomeRevampFragment :
                 SalamWidgetCallback(context, this, getUserSession())
             ),
             ProductHighlightComponentCallback(this),
-            Lego4AutoBannerComponentCallback(context, this),
+            Lego4AutoBannerComponentCallback(context, this, userId),
             FeaturedShopComponentCallback(context, this),
             playWidgetCoordinator,
             this,
