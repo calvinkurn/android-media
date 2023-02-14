@@ -73,7 +73,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         val bundleParam = GetBundleParamBuilder()
             .setBundleId(data.bundleIds)
             .setWidgetType(WidgetType.TYPE_3)
-            .setPageSource(BundlingPageSource.CART_PAGE)
+            .setPageSource(BundlingPageSource.CART_RECOMMENDATION_PAGE)
             .build()
         if (data.bottomTicker.isNotBlank()) {
             binding?.cardBottomTicker?.apply {
