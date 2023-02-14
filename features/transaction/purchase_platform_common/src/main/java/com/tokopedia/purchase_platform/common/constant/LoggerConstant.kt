@@ -27,5 +27,4 @@ object LoggerConstant {
         const val LOAD_PROMO_CHECKOUT_PAGE_ERROR = "load_promo_checkout_page_error"
         const val APPLY_PROMO_CHECKOUT_ERROR = "apply_promo_checkout_error"
     }
-
 }

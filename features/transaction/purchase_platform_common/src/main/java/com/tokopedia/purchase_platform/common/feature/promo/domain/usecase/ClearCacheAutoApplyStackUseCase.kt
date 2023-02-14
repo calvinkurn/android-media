@@ -28,9 +28,9 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext pr
 
     fun setParams(request: ClearPromoRequest): ClearCacheAutoApplyStackUseCase {
         params = mapOf(
-                PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
-                PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
-                PARAM_PLACEHOLDER_ORDER_DATA to request.orderData,
+            PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
+            PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
+            PARAM_PLACEHOLDER_ORDER_DATA to request.orderData
         )
         return this
     }
@@ -40,11 +40,11 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext pr
         val request = GraphqlRequest(ClearCacheAutoApplyQuery(), ClearCacheAutoApplyStackResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<ClearCacheAutoApplyStackResponse>()
         return ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                        success = response.successData.success,
-                        tickerMessage = response.successData.tickerMessage,
-                        defaultEmptyPromoMessage = response.successData.defaultEmptyPromoMessage,
-                )
+            successDataModel = SuccessDataUiModel(
+                success = response.successData.success,
+                tickerMessage = response.successData.tickerMessage,
+                defaultEmptyPromoMessage = response.successData.defaultEmptyPromoMessage
+            )
         )
     }
 }

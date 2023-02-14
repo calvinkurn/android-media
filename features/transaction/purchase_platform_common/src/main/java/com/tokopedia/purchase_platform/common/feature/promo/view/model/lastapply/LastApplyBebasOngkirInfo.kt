@@ -6,4 +6,4 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class LastApplyBebasOngkirInfo(
     var isBoUnstackEnabled: Boolean = false
-): Parcelable
+) : Parcelable

@@ -8,6 +8,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class PromoCheckoutErrorDefault(
-        var title: String = "",
-        var desc: String = ""
+    var title: String = "",
+    var desc: String = ""
 ) : Parcelable

@@ -35,11 +35,10 @@ class PurchasePlatformNetworkModule {
     @Provides
     fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(
-                NET_READ_TIMEOUT,
-                NET_WRITE_TIMEOUT,
-                NET_CONNECT_TIMEOUT,
-                NET_RETRY
+            NET_READ_TIMEOUT,
+            NET_WRITE_TIMEOUT,
+            NET_CONNECT_TIMEOUT,
+            NET_RETRY
         )
     }
-
 }

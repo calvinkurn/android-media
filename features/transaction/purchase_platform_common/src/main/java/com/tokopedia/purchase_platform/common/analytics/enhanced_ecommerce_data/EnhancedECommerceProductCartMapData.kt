@@ -187,8 +187,11 @@ class EnhancedECommerceProductCartMapData {
     }
 
     fun setDimension118(bundleId: String) {
-        if (bundleId == "0") Product[KEY_DIMENSION118] = ""
-        else Product[KEY_DIMENSION118] = bundleId
+        if (bundleId == "0") {
+            Product[KEY_DIMENSION118] = ""
+        } else {
+            Product[KEY_DIMENSION118] = bundleId
+        }
     }
 
     fun setBoAffordability(boAffordabilityValue: String) {

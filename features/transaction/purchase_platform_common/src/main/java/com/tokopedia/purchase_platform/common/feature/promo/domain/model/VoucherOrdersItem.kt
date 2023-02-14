@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName
 
 data class VoucherOrdersItem(
     @SerializedName("cashback_wallet_amount")
-        val cashbackWalletAmount: Int = 0,
+    val cashbackWalletAmount: Int = 0,
 
     @SerializedName("code")
-        val code: String = "",
+    val code: String = "",
 
     @SerializedName("unique_id")
-        val uniqueId: String = "",
+    val uniqueId: String = "",
 
     @SerializedName("discount_amount")
-        val discountAmount: Int = 0,
+    val discountAmount: Int = 0,
 
     @SerializedName("title_description")
     val titleDescription: String = "",

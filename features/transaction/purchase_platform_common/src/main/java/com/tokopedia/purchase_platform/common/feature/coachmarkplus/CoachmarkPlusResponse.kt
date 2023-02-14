@@ -13,5 +13,5 @@ data class CoachmarkPlusDataResponse(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("content")
-    val content: String = "",
+    val content: String = ""
 )

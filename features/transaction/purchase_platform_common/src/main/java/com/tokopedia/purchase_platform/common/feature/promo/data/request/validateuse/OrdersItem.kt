@@ -44,5 +44,5 @@ data class OrdersItem(
     @Transient
     var poDuration: Int = 0,
     @Transient
-    var warehouseId: Long = 0,
+    var warehouseId: Long = 0
 ) : Parcelable

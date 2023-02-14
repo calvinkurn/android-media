@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MvcShippingBenefitUiModel(
-        @SerializedName("benefit_amount")
-        var benefitAmount: Int = 0,
-        @SerializedName("sp_id")
-        var spId: Long = 0
+    @SerializedName("benefit_amount")
+    var benefitAmount: Int = 0,
+    @SerializedName("sp_id")
+    var spId: Long = 0
 ) : Parcelable
