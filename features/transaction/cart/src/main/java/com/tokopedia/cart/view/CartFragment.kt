@@ -2108,11 +2108,6 @@ class CartFragment :
                 cartShopHolderData.shopId
             )
         }
-        if (cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell) {
-            cartPageAnalytics.eventClickCartShopGroupTickerForBundleCrossSell(
-                cartShopHolderData.cartShopGroupTicker.tickerText
-            )
-        }
     }
 
     override fun onCartShopGroupTickerRefreshClicked(
