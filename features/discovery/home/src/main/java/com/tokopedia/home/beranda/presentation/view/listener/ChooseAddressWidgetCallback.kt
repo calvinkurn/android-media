@@ -53,11 +53,19 @@ class ChooseAddressWidgetCallback(
     }
 
     override fun iconLocation(): Int {
-        return IconUnify.LOCATION_FILLED
+        return if (HomeRollenceController.isUsingAtf2Variant() || HomeRollenceController.isUsingAtf1Variant()) {
+            IconUnify.LOCATION_FILLED
+        } else {
+            super.iconLocation()
+        }
     }
 
     override fun iconLocationImageColor(): Int {
-        return com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        return if (HomeRollenceController.isUsingAtf2Variant()) {
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        } else {
+            super.iconLocationImageColor()
+        }
     }
 
     override fun onTokonowDataRefreshed() {
