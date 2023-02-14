@@ -29,7 +29,7 @@ object ProductItemMapper {
         isWishlistShown = true,
         isSimilarProductShown = true,
         isVariant = product.childs.isNotEmpty(),
-        needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
+        needToShowQuantityEditor = true,
         labelGroupList = product.labelGroupList.map {
             LabelGroup(
                 position = it.position,
