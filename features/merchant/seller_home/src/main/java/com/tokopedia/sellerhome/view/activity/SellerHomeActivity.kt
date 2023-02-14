@@ -157,6 +157,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         setupNavigator()
         setupShadow()
 
+        fetchShopStateInfo()
         observeShopStateInfo(savedInstanceState)
 
         checkAppUpdate()
@@ -544,6 +545,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun observeShopStateInfo(savedInstanceState: Bundle?) {
         observe(homeViewModel.shopStateInfo) {
+
+            val isExistMenu = binding?.sahBottomNav?.getMenuList()?.isNotEmpty() == true
+            if (isExistMenu) return@observe
+
             hideProgressbarContainer()
 
             showStatusBarShadow()
@@ -558,8 +563,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             showShadowLines()
             setupDefaultPage(savedInstanceState)
         }
-
-        fetchShopStateInfo()
     }
 
     private fun hideProgressbarContainer() {

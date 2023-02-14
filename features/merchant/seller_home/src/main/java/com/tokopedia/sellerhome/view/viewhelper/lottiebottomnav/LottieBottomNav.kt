@@ -442,6 +442,8 @@ class LottieBottomNav : LinearLayout {
         }
     }
 
+    fun getMenuList() = this.menu
+
     fun setMenu(menu: List<BottomMenu>) {
         this.menu.clear()
         this.menu.addAll(menu)
