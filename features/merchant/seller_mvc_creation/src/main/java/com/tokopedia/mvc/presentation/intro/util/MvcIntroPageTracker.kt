@@ -37,8 +37,8 @@ class MvcIntroPageTracker @Inject constructor(private val userSession: UserSessi
     }
 
     companion object {
-        private const val CREATE_COUPON = "click create coupon"
-        private const val VIEW_MORE = "click again"
-        private const val EVENT_CATEGORY = "my shop coupons - intro"
+        private const val CREATE_COUPON = "click buat kupon"
+        private const val VIEW_MORE = "click kembali"
+        private const val EVENT_CATEGORY = "kupon toko saya - intro"
     }
 }
