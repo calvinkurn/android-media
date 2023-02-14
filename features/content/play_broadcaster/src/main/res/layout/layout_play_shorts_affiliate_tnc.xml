@@ -50,7 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/cbx_tnc"
         app:layout_constraintTop_toTopOf="@id/cbx_tnc"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="reguler" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
