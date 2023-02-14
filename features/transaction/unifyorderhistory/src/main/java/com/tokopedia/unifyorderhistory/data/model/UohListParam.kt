@@ -1,53 +1,52 @@
 package com.tokopedia.unifyorderhistory.data.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class UohListParam(
-        @SerializedName("UUID")
-        var uUID: String = "",
+    @SerializedName("UUID")
+    var uUID: String = "",
 
-        @SerializedName("VerticalID")
-        var verticalID: String = "",
+    @SerializedName("VerticalID")
+    var verticalID: String = "",
 
-        @SerializedName("VerticalCategory")
-        var verticalCategory: String = "",
+    @SerializedName("VerticalCategory")
+    var verticalCategory: String = "",
 
-        @SerializedName("Status")
-        var status: String = "",
+    @SerializedName("Status")
+    var status: String = "",
 
-        @SerializedName("SearchableText")
-        var searchableText: String = "",
+    @SerializedName("SearchableText")
+    var searchableText: String = "",
 
-        @SerializedName("CreateTime")
-        var createTime: String = "",
+    @SerializedName("CreateTime")
+    var createTime: String = "",
 
-        @SerializedName("CreateTimeStart")
-        var createTimeStart: String = "",
+    @SerializedName("CreateTimeStart")
+    var createTimeStart: String = "",
 
-        @SerializedName("CreateTimeEnd")
-        var createTimeEnd: String = "",
+    @SerializedName("CreateTimeEnd")
+    var createTimeEnd: String = "",
 
-        @SerializedName("Page")
-        var page: Int = 0,
+    @SerializedName("Page")
+    var page: Int = 0,
 
-        @SerializedName("Limit")
-        var limit: Int = 20,
+    @SerializedName("Limit")
+    var limit: Int = 20,
 
-        @SerializedName("SortBy")
-        var sortBy: String = "",
+    @SerializedName("SortBy")
+    var sortBy: String = "",
 
-        @SerializedName("IsSortAsc")
-        var isSortAsc: Boolean = false
-    ) {
+    @SerializedName("IsSortAsc")
+    var isSortAsc: Boolean = false
+) {
 
-        fun hasActiveFilter(): Boolean {
-                return createTime.isNotBlank() ||
-                        createTimeEnd.isNotBlank() ||
-                        createTimeStart.isNotBlank() ||
-                        searchableText.isNotBlank() ||
-                        status.isNotBlank() ||
-                        verticalCategory.isNotBlank() ||
-                        verticalID.isNotBlank()
-        }
+    fun hasActiveFilter(): Boolean {
+        return createTime.isNotBlank() ||
+            createTimeEnd.isNotBlank() ||
+            createTimeStart.isNotBlank() ||
+            searchableText.isNotBlank() ||
+            status.isNotBlank() ||
+            verticalCategory.isNotBlank() ||
+            verticalID.isNotBlank()
+    }
 }

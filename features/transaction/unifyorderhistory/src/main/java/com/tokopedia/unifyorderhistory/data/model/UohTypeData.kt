@@ -3,6 +3,7 @@ package com.tokopedia.unifyorderhistory.data.model
 /**
  * Created by fwidjaja on 2019-10-03.
  */
-data class UohTypeData (
+data class UohTypeData(
     val dataObject: Any = Any(),
-    val typeLayout: String = "")
+    val typeLayout: String = ""
+)

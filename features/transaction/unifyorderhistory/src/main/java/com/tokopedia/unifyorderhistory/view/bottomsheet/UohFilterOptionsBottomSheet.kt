@@ -29,7 +29,8 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
         private const val IS_BUTTON_APPLY_SHOW = "is_button_apply_show"
 
         @JvmStatic
-        fun newInstance(title: String, isButtonApplyShow: Boolean): UohFilterOptionsBottomSheet { return UohFilterOptionsBottomSheet().apply {
+        fun newInstance(title: String, isButtonApplyShow: Boolean): UohFilterOptionsBottomSheet {
+            return UohFilterOptionsBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(TITLE_BOTTOMSHEET, title)
                 bundle.putBoolean(IS_BUTTON_APPLY_SHOW, isButtonApplyShow)
@@ -75,13 +76,13 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
                 setText(UohUtils.calendarToStringFormat(chosenStartDate, DATE_FORMAT_DDMMMYYYY))
                 isFocusable = false
                 isClickable = true
-                setOnClickListener { listener?.showDatePicker(UohConsts.START_DATE)  }
+                setOnClickListener { listener?.showDatePicker(UohConsts.START_DATE) }
             }
             tfEndDate.textFieldInput.run {
                 setText(UohUtils.calendarToStringFormat(chosenEndDate, DATE_FORMAT_DDMMMYYYY))
                 isFocusable = false
                 isClickable = true
-                setOnClickListener { listener?.showDatePicker(UohConsts.END_DATE)  }
+                setOnClickListener { listener?.showDatePicker(UohConsts.END_DATE) }
             }
         }
     }

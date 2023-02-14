@@ -1,11 +1,11 @@
 package com.tokopedia.unifyorderhistory.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
+import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,7 +28,8 @@ class FlightResendEmailUseCase @Inject constructor(@ApplicationContext private v
     private fun generateParam(invoiceId: String, email: String): Map<String, Any?> {
         return mapOf(
             UohConsts.FLIGHT_GQL_PARAM_INVOICE_ID to invoiceId,
-                UohConsts.FLIGHT_GQL_PARAM_EMAIL_ID to email)
+            UohConsts.FLIGHT_GQL_PARAM_EMAIL_ID to email
+        )
     }
 
     companion object {
@@ -40,6 +41,6 @@ class FlightResendEmailUseCase @Inject constructor(@ApplicationContext private v
                 }
               }
             }
-            """.trimIndent()
+        """.trimIndent()
     }
 }

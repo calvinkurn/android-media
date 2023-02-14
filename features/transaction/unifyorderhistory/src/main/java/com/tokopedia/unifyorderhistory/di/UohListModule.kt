@@ -17,7 +17,7 @@ import dagger.Provides
  * Created by fwidjaja on 10/11/20.
  */
 @Module
-class UohListModule (private val activity: Activity) {
+class UohListModule(private val activity: Activity) {
     @UohListScope
     @Provides
     fun provideContext(): Context = activity
@@ -33,7 +33,7 @@ class UohListModule (private val activity: Activity) {
     }
 
     @Provides
-    fun provideTopAdsImageUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
-        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
+    fun provideTopAdsImageUseCase(userSession: UserSessionInterface, topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(), topAdsIrisSession.getSessionId())
     }
 }
