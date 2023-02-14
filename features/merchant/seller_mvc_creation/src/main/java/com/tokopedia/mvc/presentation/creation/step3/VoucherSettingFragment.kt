@@ -229,6 +229,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
         if (!isDiscountPromoTypeEnabled) {
             promoTypeSectionBinding?.chipDiscount?.disable()
+        } else {
+            promoTypeSectionBinding?.chipDiscount?.chip_container?.isEnabled = true
+            promoTypeSectionBinding?.chipDiscount?.chip_sub_container?.isEnabled = true
         }
     }
 
