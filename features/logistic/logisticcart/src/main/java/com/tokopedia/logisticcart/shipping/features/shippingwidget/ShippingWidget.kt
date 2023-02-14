@@ -16,9 +16,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceBinding
-import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.scheduledelivery.view.ShippingScheduleWidget
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
@@ -312,12 +312,12 @@ class ShippingWidget : ConstraintLayout {
     fun setLabelSelectedShippingCourier(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             val courierName = "${selectedCourierItemData.name} (${
-                removeDecimalSuffix(
-                    convertPriceValueToIdrFormat(
-                        selectedCourierItemData.shipperPrice,
-                        false
-                    )
+            removeDecimalSuffix(
+                convertPriceValueToIdrFormat(
+                    selectedCourierItemData.shipperPrice,
+                    false
                 )
+            )
             })"
 
             if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
@@ -489,7 +489,7 @@ class ShippingWidget : ConstraintLayout {
 
     private fun getTitleFromNameAndPrice(
         courierName: String?,
-        shipperPrice: Int,
+        shipperPrice: Int
     ): String {
         val price = removeDecimalSuffix(
             convertPriceValueToIdrFormat(
@@ -546,12 +546,12 @@ class ShippingWidget : ConstraintLayout {
             }
             if (selectedCourierItemData.estimatedTimeDelivery != null) {
                 val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${
-                    removeDecimalSuffix(
-                        convertPriceValueToIdrFormat(
-                            selectedCourierItemData.shipperPrice,
-                            false
-                        )
+                removeDecimalSuffix(
+                    convertPriceValueToIdrFormat(
+                        selectedCourierItemData.shipperPrice,
+                        false
                     )
+                )
                 })"
                 val htmlLinkHelper = HtmlLinkHelper(labelSelectedFreeShipping.context, titleText)
                 labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString
