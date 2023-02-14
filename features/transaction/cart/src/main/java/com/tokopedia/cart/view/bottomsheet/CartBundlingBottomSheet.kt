@@ -14,16 +14,21 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingBinding
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.common.ProductServiceWidgetConstant
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
+import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.GetBundleParamBuilder
 import com.tokopedia.productbundlewidget.model.WidgetType
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class CartBundlingBottomSheet : BottomSheetUnify() {
 
@@ -50,6 +55,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutBottomsheetCartBundlingBinding>()
     private var listener: CartBundlingBottomSheetListener? = null
+    private var data: CartBundlingBottomSheetData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,18 +63,17 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
 
-        val data = arguments?.getParcelable<CartBundlingBottomSheetData>(KEY_DATA)
-        if (data != null) {
-            renderContent(data)
-        } else {
-            dismiss()
-        }
+        data = arguments?.getParcelable(KEY_DATA)
+        data?.let {
+            renderContent(it)
+        } ?: dismiss()
     }
 
     private fun renderContent(data: CartBundlingBottomSheetData) {
         setTitle(data.title)
         context?.let {
             binding?.descriptionLabel?.text = HtmlLinkHelper(it, data.description).spannedString
+            binding?.descriptionLabel?.visible()
         }
         val bundleParam = GetBundleParamBuilder()
             .setBundleId(data.bundleIds)
@@ -102,7 +107,36 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         binding?.productBundleWidget?.startActivityResult { intent, requestCode ->
             startActivityForResult(intent, requestCode)
         }
+        binding?.productBundleWidget?.setListener(object : ProductBundleWidgetListener {
+            override fun onError(it: Throwable) {
+                renderError(it)
+            }
+        })
         binding?.productBundleWidget?.getBundleData(bundleParam)
+        binding?.productBundleWidget?.visible()
+        binding?.layoutGlobalError?.gone()
+    }
+
+    private fun renderError(throwable: Throwable) {
+        setTitle("")
+        binding?.descriptionLabel?.gone()
+        binding?.productBundleWidget?.gone()
+        binding?.cardBottomTicker?.gone()
+        binding?.layoutGlobalError?.setType(getGlobalErrorType(throwable))
+        binding?.layoutGlobalError?.setActionClickListener {
+            data?.let {
+                renderContent(it)
+            } ?: dismiss()
+        }
+        binding?.layoutGlobalError?.visible()
+    }
+
+    private fun getGlobalErrorType(throwable: Throwable): Int {
+        return if (throwable is UnknownHostException || throwable is SocketTimeoutException || throwable is ConnectException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
     }
 
     fun setListener(listener: CartBundlingBottomSheetListener) {
