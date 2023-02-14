@@ -15,14 +15,14 @@ class GetTargetedTickerUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<GetTargetedTickerParam, GetTargetedTickerResponse>(dispatcher.io) {
 
-    override suspend fun execute(params: GetTargetedTickerParam): GetTargetedTickerResponse {
-        return repository.request(GetTargetedTicker(), params)
-    }
-
     @GqlQuery(
         QUERY_GET_TARGETED_TICKER_NAME,
         QUERY_GET_TARGETED_TICKER
     )
+    override suspend fun execute(params: GetTargetedTickerParam): GetTargetedTickerResponse {
+        return repository.request(GetTargetedTicker(), params)
+    }
+
     override fun graphqlQuery(): String {
         return QUERY_GET_TARGETED_TICKER
     }
