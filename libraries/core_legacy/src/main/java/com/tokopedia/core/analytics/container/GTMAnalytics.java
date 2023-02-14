@@ -1209,10 +1209,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     break;
                 case FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS:
                     // https://tokopedia.atlassian.net/browse/AN-36125
-                    if ("Search Results".equals(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))) {
-                        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Related products");
-                        fa.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
-                    }
+                    createBundleGA4BundleViewItemList(fa, bundle);
                     break;
                 case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
                     // https://tokopedia.atlassian.net/browse/AN-36181
@@ -1222,6 +1219,12 @@ public class GTMAnalytics extends ContextAnalytics {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createBundleGA4BundleViewItemList(FirebaseAnalytics fa, Bundle oriBundle) {
+        Bundle ecommerceBundleGA4 = new Bundle();
+        copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
+        fa.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, ecommerceBundleGA4);
     }
 
     private void sendBundleGA4BundleClick(FirebaseAnalytics fa, Bundle oriBundle) {
@@ -1352,12 +1355,8 @@ public class GTMAnalytics extends ContextAnalytics {
                 promotionsGA4.add(bundlePromotion);
             }
             ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
             return ecommerceBundleGA4;
         } else {
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
-            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
             ArrayList item = (ArrayList) oriBundle.get(ITEMS);
             if (item != null) {
                 ecommerceBundleGA4.putParcelableArrayList(ITEMS, item);
