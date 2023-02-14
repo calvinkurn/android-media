@@ -143,6 +143,8 @@
     <string name="shop_follow_error_toaster_action_text">Coba Lagi</string>
     <string name="follow_button_label">Follow</string>
     <string name="follow_button_label_npl">Follow Toko</string>
+    <string name="npl_tnc_content_description">NPL Widget TnC Icon Information</string>
+    <string name="npl_footer_exclusive_for_follower">Eksklusif untuk Follower Toko</string>
 
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>

@@ -438,7 +438,37 @@ open class ShopPageHomeFragment :
         observeLiveData()
         observeShopHomeWidgetContentData()
         observeShopPageMiniCartSharedViewModel()
+        observeLatestShopHomeWidgetLayoutData()
         isLoadInitialData = true
+    }
+
+    private fun observeLatestShopHomeWidgetLayoutData() {
+        viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    getRecyclerView(view)?.visible()
+                    setShopHomeWidgetLayoutData(it.data)
+                }
+                is Fail -> {
+                    onErrorGetLatestShopHomeWidgetLayoutData(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onErrorGetLatestShopHomeWidgetLayoutData(throwable: Throwable) {
+        globalErrorShopPage?.visible()
+        if (throwable is MessageErrorException) {
+            globalErrorShopPage?.setType(GlobalError.SERVER_ERROR)
+        } else {
+            globalErrorShopPage?.setType(GlobalError.NO_CONNECTION)
+        }
+        globalErrorShopPage?.errorSecondaryAction?.show()
+        globalErrorShopPage?.setOnClickListener {
+            globalErrorShopPage?.errorSecondaryAction?.hide()
+            getLatestShopHomeWidgetLayoutData()
+        }
+        getRecyclerView(view)?.hide()
     }
 
     open fun initView() {
@@ -3283,7 +3313,7 @@ open class ShopPageHomeFragment :
             showNplCampaignTncBottomSheet(
                 it.campaignId,
                 it.statusCampaign,
-                it.dynamicRule.dynamicRoleData.ruleID
+                it.dynamicRule.listDynamicRoleData.map { it.ruleID }
             )
         }
     }
@@ -3319,7 +3349,7 @@ open class ShopPageHomeFragment :
     private fun showNplCampaignTncBottomSheet(
         campaignId: String,
         statusCampaign: String,
-        ruleID: String
+        listRuleId: List<String>
     ) {
         val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
             campaignId,
@@ -3327,7 +3357,7 @@ open class ShopPageHomeFragment :
             shopId,
             isOfficialStore,
             isGoldMerchant,
-            ruleID
+            listRuleId
         )
         bottomSheet.show(childFragmentManager, "")
     }
@@ -3499,22 +3529,26 @@ open class ShopPageHomeFragment :
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeWidget(model)
         endlessRecyclerViewScrollListener.resetState()
-        shopHomeAdapter.removeProductList()
-        shopHomeAdapter.showLoading()
-        scrollToTop()
-        listWidgetLayout = initialLayoutData.toMutableList()
-        setWidgetLayoutPlaceholder()
+        getLatestShopHomeWidgetLayoutData()
     }
 
     // flash sale widget
     override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
         shopHomeAdapter.removeWidget(model)
         endlessRecyclerViewScrollListener.resetState()
+        getLatestShopHomeWidgetLayoutData()
+    }
+
+    private fun getLatestShopHomeWidgetLayoutData(){
+        globalErrorShopPage?.hide()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
         scrollToTop()
-        listWidgetLayout = initialLayoutData.toMutableList()
-        setWidgetLayoutPlaceholder()
+        viewModel?.getLatestShopHomeWidgetLayoutData(
+            shopId,
+            extParam,
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+        )
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {

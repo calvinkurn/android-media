@@ -5,6 +5,12 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeFilterAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_FILTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeFilterAnalytics.ACTION.EVENT_ACTION_IMPRESS_APPLY_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeFilterAnalytics.TRACKER_ID.TRACKER_ID_HOME_CLICK_APPLY_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeFilterAnalytics.TRACKER_ID.TRACKER_ID_HOME_IMPRESS_APPLY_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeFilterAnalytics.TRACKER_ID.TRACKER_ID_SEARCH_CLICK_APPLY_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeFilterAnalytics.TRACKER_ID.TRACKER_ID_SEARCH_IMPRESS_APPLY_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH
 import com.tokopedia.tokopedianow.recipelist.base.fragment.BaseTokoNowRecipeListFragment
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_DURATION
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
@@ -13,31 +19,46 @@ import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Compan
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 
+/**
+ * Recipe Search
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3407
+ *
+ * Recipe Home
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3411
+ */
+
 class RecipeFilterAnalytics (
     private val pageName: String
 ) {
-    /**
-     * Recipe Search
-     * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3407
-     *
-     * Recipe Home
-     * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3411
-     */
-
-    object ACTION {
+    private object ACTION {
         const val EVENT_ACTION_CLICK_APPLY_FILTER = "click apply filter"
         const val EVENT_ACTION_IMPRESS_APPLY_FILTER = "impression apply filter"
     }
 
+    private object TRACKER_ID {
+        const val TRACKER_ID_SEARCH_IMPRESS_APPLY_FILTER = "36999"
+        const val TRACKER_ID_SEARCH_CLICK_APPLY_FILTER = "37273"
+
+        const val TRACKER_ID_HOME_IMPRESS_APPLY_FILTER = "37247"
+        const val TRACKER_ID_HOME_CLICK_APPLY_FILTER = "37248"
+    }
+
     private val category: String
-        get() = if (pageName == BaseTokoNowRecipeListFragment.HOME_PAGE_NAME) RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME else RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH
+        get() = getValue(
+            homeValue = EVENT_CATEGORY_RECIPE_HOME,
+            searchValue = EVENT_CATEGORY_RECIPE_SEARCH
+        )
 
     fun impressApplyFilter() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_IMPRESS_APPLY_FILTER,
-                category = category
+                category = category,
+                trackerId = getValue(
+                    homeValue = TRACKER_ID_HOME_IMPRESS_APPLY_FILTER,
+                    searchValue = TRACKER_ID_SEARCH_IMPRESS_APPLY_FILTER
+                )
             )
         )
     }
@@ -59,8 +80,17 @@ class RecipeFilterAnalytics (
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_APPLY_FILTER,
                 category = category,
-                label = map.values.joinToString(" - ")
+                label = map.values.joinToString(" - "),
+                trackerId = getValue(
+                    homeValue = TRACKER_ID_HOME_CLICK_APPLY_FILTER,
+                    searchValue = TRACKER_ID_SEARCH_CLICK_APPLY_FILTER
+                )
             )
         )
     }
+
+    private fun getValue(
+        homeValue: String,
+        searchValue: String
+    ) = if (pageName == BaseTokoNowRecipeListFragment.HOME_PAGE_NAME) homeValue else searchValue
 }

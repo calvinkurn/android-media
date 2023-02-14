@@ -41,6 +41,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -974,7 +975,19 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             reData.action.firstOrNull()?.buttonLink?.let {
                 RouteManager.route(context, it)
             }
+        } else if (reData.restrictionLocationType()) {
+            onRestrictionLocationClicked(reData)
         }
+    }
+
+    private fun onRestrictionLocationClicked(reData : RestrictionData) {
+        ProductTrackingCommon.Restriction.clickLocationRestriction(
+            data = reData,
+            userId = userSessionInterface.userId,
+            shopId = viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopID ?: "",
+            pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        )
+        goToChooseAddress(Int.ZERO)
     }
 
     override fun onTokoCabangClicked(uspImageUrl: String) {

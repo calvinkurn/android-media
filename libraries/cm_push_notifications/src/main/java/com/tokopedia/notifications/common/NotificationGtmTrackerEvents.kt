@@ -1,15 +1,22 @@
 package com.tokopedia.notifications.common
 
+import android.Manifest
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.notifications.common.CMConstant.GtmTrackerEvents
+import com.tokopedia.notifications.settings.NotificationGeneralPromptSharedPreferences
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.concurrent.TimeUnit
 
 class NotificationSettingsGtmEvents constructor(
     private val userSession: UserSessionInterface,
@@ -120,6 +127,55 @@ class NotificationSettingsGtmEvents constructor(
             context,
             pagePath
         )
+        sendAppPushPermissionStatusEvent(context)
+    }
+
+    fun sendAppPushPermissionStatusEvent(context: Context) {
+        try {
+            val dataMap = mutableMapOf<String, Any>()
+            if (GlobalConfig.isSellerApp()) {
+                dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
+                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS;
+            } else {
+                dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
+                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS;
+            }
+            val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
+                ZERO
+            } else {
+                userSession.userId
+            }
+            val repo = NotificationGeneralPromptSharedPreferences(context.applicationContext)
+            val lastShownTimeStamp = repo.getLastShownTimeStamp()
+            val currentTimeStamp = System.currentTimeMillis()
+            val diffTimeInterval = currentTimeStamp - lastShownTimeStamp
+            dataMap[GtmTrackerEvents.KEY_USER_ID_NEW] = userId
+            dataMap[GtmTrackerEvents.KEY_SHOP_ID_NEW] = userSession.shopId
+            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = userSession.adsId
+            dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_NAME] = JOURNEY
+            dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_ID] = ZERO
+            dataMap[GtmTrackerEvents.KEY_EVENT_REFRESH_SOURCE] = HOMEPAGE
+            dataMap[GtmTrackerEvents.KEY_DELAY_HRS_OPEN_HOME_SCR] =
+                if (lastShownTimeStamp > 0) TimeUnit.MILLISECONDS.toHours(diffTimeInterval) else ZERO
+            dataMap[GtmTrackerEvents.KEY_DELAY_DAY_OPEN_HOME_SCR] =
+                if (lastShownTimeStamp > 0) TimeUnit.MILLISECONDS.toDays(diffTimeInterval) else ZERO
+            dataMap[GtmTrackerEvents.KEY_CLIENT_TIMESTAMP] = currentTimeStamp
+            dataMap[GtmTrackerEvents.KEY_DEVICE_MODEL] = Build.MODEL
+            dataMap[GtmTrackerEvents.KEY_OS_VESION] = Build.VERSION.RELEASE
+            dataMap[GtmTrackerEvents.KEY_OS_NAME] = Build.VERSION.CODENAME
+            dataMap[GtmTrackerEvents.KEY_APP_VERSION] = GlobalConfig.VERSION_NAME
+            dataMap[GtmTrackerEvents.KEY_DEVICE_MANUFACTURER] = Build.MANUFACTURER
+            dataMap[GtmTrackerEvents.KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS] =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            else
+                false
+            dataMap[GtmTrackerEvents.KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS] = FALSE
+            IrisAnalytics.getInstance(context).saveEvent(dataMap)
+        } catch (e: Exception) {
+        }
     }
 
     fun sendGeneralPromptClickCtaEvent(context: Context, pagePath: String) {
@@ -181,5 +237,8 @@ class NotificationSettingsGtmEvents constructor(
         const val FREQ_KEY_NATIVE_PROMPT = "frequencyNativePrompt"
         const val FREQ_KEY_GENERAL_PROMPT = "frequencyGeneralPrompt"
         const val ZERO = "0"
+        const val JOURNEY = "Journey"
+        const val HOMEPAGE = "Homepage"
+        const val FALSE = "FALSE"
     }
 }

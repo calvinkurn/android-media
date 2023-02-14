@@ -6,6 +6,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAd
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.ScheduleDeliveryRatesResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 
 object DataProvider {
@@ -39,5 +40,13 @@ object DataProvider {
 
     fun provideRatesV3ApiEnabledBoPromoResponse(): RatesApiGqlResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/rates_v3_api_enabled_bo_promo.json"), RatesApiGqlResponse::class.java)
+    }
+
+    fun provideRatesV3EmptyServicesResponse(): RatesApiGqlResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/rates_v3_empty_services.json"), RatesApiGqlResponse::class.java)
+    }
+
+    fun provideScheduleDeliveryRatesResponse(): ScheduleDeliveryRatesResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/schedule_delivery_rates.json"), ScheduleDeliveryRatesResponse::class.java)
     }
 }

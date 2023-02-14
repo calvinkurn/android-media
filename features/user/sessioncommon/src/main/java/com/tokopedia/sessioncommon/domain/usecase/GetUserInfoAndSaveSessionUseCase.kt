@@ -20,7 +20,7 @@ class GetUserInfoAndSaveSessionUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = """
         query profile() {
-          profile() {
+          profile(skipCache: true) {
             user_id
             full_name
             first_name
