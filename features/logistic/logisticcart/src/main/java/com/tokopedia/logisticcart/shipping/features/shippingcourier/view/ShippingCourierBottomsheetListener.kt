@@ -13,6 +13,4 @@ interface ShippingCourierBottomsheetListener {
                          cartPosition: Int, isCod: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean, shippingCourierList: List<ShippingCourierUiModel>)
 
     fun onCourierShipmentRecommendationCloseClicked()
-
-    fun onRetryReloadCourier(shipmentCartItemModel: ShipmentCartItemModel, cartPosition: Int)
 }
