@@ -25,7 +25,7 @@ class PartialProductItemViewHolder(
     partialProductItemViewStub: View?,
     private val listener: ProductViewListener,
     private val navigator: BuyerOrderDetailNavigator,
-    private var element: ProductListUiModel.ProductUiModel
+    private var element: ProductListUiModel.ProductUiModel,
 ) : View.OnClickListener {
 
     companion object {
@@ -56,7 +56,7 @@ class PartialProductItemViewHolder(
 
     init {
         setupClickListeners()
-        setupCardProductAlpha(element.isPof)
+        setupCardProductAlpha()
         setupProductName(element.productName)
         setupProductQuantityAndPrice(element.quantity, element.priceText)
         setupProductNote(element.productNote)
@@ -89,8 +89,8 @@ class PartialProductItemViewHolder(
         container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
     }
 
-    private fun setupCardProductAlpha(isPof: Boolean) {
-        itemView?.alpha = if (isPof) {
+    private fun setupCardProductAlpha() {
+        container?.alpha = if (element.isPof) {
              CARD_ALPHA_POF
         } else {
             CARD_ALPHA_NON_POF

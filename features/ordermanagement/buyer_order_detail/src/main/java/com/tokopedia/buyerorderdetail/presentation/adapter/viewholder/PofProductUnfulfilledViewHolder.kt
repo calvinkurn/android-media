@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PofProductUnfulfilledUi
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ContainerUnify
 
+
 class PofProductUnfulfilledViewHolder(
     view: View
 ) : CustomPayloadViewHolder<PofProductUnfulfilledUiModel>(view) {
@@ -65,14 +66,18 @@ class PofProductUnfulfilledViewHolder(
     private fun ItemUnfulfilledPartialOrderBinding.setProductRequestStock(item: PofProductUnfulfilledUiModel) {
         val colorHexStr =
             if (item.hasQtyGreenColor()) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_RN500
-        val productRequestStock = itemView.context.getString(
+
+        val productRequestStockStr = itemView.context.getString(
             com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_item_request_stock,
             getColorHexString(itemView.context, colorHexStr),
-            item.productQtyRequest.toString(),
-            item.productQtyCheckout.toString()
+            item.productQtyRequest.toString()
         )
 
-        tvUnfulfilledProductRequestStock.text = MethodChecker.fromHtml(productRequestStock)
+        tvUnfulfilledProductRequestStock.text = MethodChecker.fromHtml(productRequestStockStr)
+        tvUnfulfilledProductCheckoutStock.text = itemView.context.getString(
+            com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_item_checkout_stock,
+            item.productQtyCheckout.toString()
+        )
     }
 
     private fun ItemUnfulfilledPartialOrderBinding.setBackgroundContainer() {
