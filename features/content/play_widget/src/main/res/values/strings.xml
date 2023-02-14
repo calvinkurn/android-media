@@ -11,11 +11,7 @@
 
     <string name="play_widget_delete">Hapus</string>
     <string name="play_widget_delete_confirmation_title">Yakin ingin hapus video?</string>
-    <string name="play_widget_delete_confirmation_desc">
-        Live streaming ini tidak akan
-            jadi video di Halaman Toko
-            jika kamu ingin menghapusnya.
-    </string>
+    <string name="play_widget_delete_confirmation_desc">Video akan hilang selamanya</string>
     <string name="play_widget_delete_cancel">Kembali</string>
 
     <string name="play_widget_delete_loading_text">Menghapus…</string>
