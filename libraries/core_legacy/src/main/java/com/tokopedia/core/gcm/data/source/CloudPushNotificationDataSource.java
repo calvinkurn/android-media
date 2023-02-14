@@ -1,27 +1,24 @@
 package com.tokopedia.core.gcm.data.source;
 
+import static com.tokopedia.core.gcm.Constants.REGISTRATION_MESSAGE_OK;
+import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_OK;
+
 import android.content.Context;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.gcm.data.PushNotificationDataStore;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
-import com.tokopedia.core.gcm.domain.PushNotification;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.gcm.network.PushNotificationService;
+import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 
 import org.json.JSONException;
-
-import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
-
-import static com.tokopedia.core.gcm.Constants.REGISTRATION_MESSAGE_OK;
-import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_OK;
 
 /**
  * @author by alvarisi on 12/8/16.
@@ -88,7 +85,7 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
     public Observable<DeviceRegistrationDataResponse> deviceRegistration(){
         return Observable.just(true)
                 .map(aBoolean -> {
-                    String cloudRegitrationID = FirebaseInstanceId.getInstance().getToken();
+                    String cloudRegitrationID = FirebaseMessagingManagerImpl.Companion.getFcmTokenFromPref(context);
                     DeviceRegistrationDataResponse response = new DeviceRegistrationDataResponse();
                     response.setStatusCode(REGISTRATION_STATUS_OK);
                     response.setDeviceRegistration(cloudRegitrationID);

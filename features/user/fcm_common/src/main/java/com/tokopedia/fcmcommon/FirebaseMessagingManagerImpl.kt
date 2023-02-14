@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -37,31 +37,27 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     }
 
     override fun syncFcmToken(listener: FirebaseMessagingManager.SyncListener) {
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                listener.onError(task.exception)
-                return@addOnCompleteListener
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    if (token != null && token.isNotEmpty()) {
+                        if (!isNewToken(token)) {
+                            listener.onSuccess()
+                            return@addOnCompleteListener
+                        }
+                        if (!userSession.isLoggedIn) {
+                            return@addOnCompleteListener
+                        }
+                        updateTokenOnServer(token, listener)
+                    } else {
+                        val exception = IllegalStateException("Null FCM token")
+                        listener.onError(exception)
+                    }
+                } else {
+                    listener.onError(task.exception)
+                }
             }
-
-            val currentFcmToken = task.result?.token
-
-            if (currentFcmToken == null) {
-                val exception = IllegalStateException("Null FCM token")
-                listener.onError(exception)
-                return@addOnCompleteListener
-            }
-
-            if (!isNewToken(currentFcmToken)) {
-                listener.onSuccess()
-                return@addOnCompleteListener
-            }
-
-            if (!userSession.isLoggedIn) {
-                return@addOnCompleteListener
-            }
-
-            updateTokenOnServer(currentFcmToken, listener)
-        }
     }
 
     override fun currentToken(): String {

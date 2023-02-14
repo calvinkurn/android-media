@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
 
@@ -36,14 +36,10 @@ public class DeleteFirebaseTokenService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.d(TAG, "Service started");
-        try {
-            FirebaseInstanceId.getInstance().deleteInstanceId();
-            Log.d(TAG, "Token deleted");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FirebaseMessaging.getInstance().deleteToken();
+        Log.d(TAG, "Token deleted");
 
-        FirebaseInstanceId.getInstance().getToken();
+        FirebaseMessaging.getInstance().getToken();
         Log.d(TAG, "New Token Requested");
     }
 
