@@ -79,7 +79,7 @@ class PlayExploreWidgetTest {
             state = ResultState.Loading
         ),
         SubSlotUiModel,
-        WidgetItemUiModel(item = PlayWidgetUiMock.getSamplePlayWidget())
+        WidgetItemUiModel(item = PlayWidgetUiMock.getSamplePlayWidget(), id = 1)
     )
 
     init {
