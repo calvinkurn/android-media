@@ -7,6 +7,8 @@ import com.tokopedia.content.common.comment.repository.ContentCommentRepository
 import com.tokopedia.content.common.comment.uimodel.CommentParam
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -23,8 +25,8 @@ class ContentCommentViewModel @AssistedInject constructor(
     private val repo: ContentCommentRepository
 ) : ViewModel() {
 
-    val comments: Flow<List<CommentUiModel>>
-        get() = _comments //add state
+    val comments: Flow<CommentWidgetUiModel>
+        get() = _comments
 
     @AssistedFactory
     interface Factory {
@@ -32,7 +34,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private val _query = MutableStateFlow(CommentParam())
-    private val _comments = MutableStateFlow(emptyList<CommentUiModel>())
+    private val _comments = MutableStateFlow(CommentWidgetUiModel.Empty)
 
     init {
         viewModelScope.launch {
@@ -52,7 +54,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 commentType = param.commentType,
                 cursor = cursor
             )
-            _comments.update { result.list }
+            _comments.update { result }
             _query.update {
                 it.copy(
                     lastChildCursor = if (result.commentType is CommentType.Child) result.cursor else it.lastChildCursor,
@@ -60,8 +62,10 @@ class ContentCommentViewModel @AssistedInject constructor(
                     needToRefresh = false,
                 )
             }
-        }) {
-
+        }) { error ->
+            _comments.update {
+                it.copy(state = ResultState.Fail(error))
+            }
         }
     }
 

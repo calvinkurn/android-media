@@ -32,7 +32,7 @@ sealed class CommentType {
     }
 }
 
-data class CommentParam (
+data class CommentParam(
     val commentType: CommentType = CommentType.Parent,
     val lastParentCursor: String = "",
     val lastChildCursor: String = "",

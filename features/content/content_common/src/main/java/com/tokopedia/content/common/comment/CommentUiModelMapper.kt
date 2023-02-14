@@ -4,6 +4,7 @@ import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
+import com.tokopedia.content.common.types.ResultState
 import java.time.Duration
 import java.time.ZonedDateTime
 import javax.inject.Inject
@@ -22,7 +23,8 @@ class CommentUiModelMapper @Inject constructor() {
         }.ifEmpty {
                 listOf(CommentUiModel.Empty)
             },
-        commentType = comments.parent.parentId.convertToCommentType
+        commentType = comments.parent.parentId.convertToCommentType,
+        state = ResultState.Success,
     )
 
     fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {

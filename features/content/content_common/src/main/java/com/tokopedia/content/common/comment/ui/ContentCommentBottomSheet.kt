@@ -19,6 +19,7 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.types.ResultState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -92,7 +93,13 @@ class ContentCommentBottomSheet @Inject constructor(
     private fun observeData() {
         lifecycleScope.launch {
             viewModel.comments.collectLatest {
-                commentAdapter.setItemsAndAnimateChanges(it)
+                when(it.state){
+                    ResultState.Success -> commentAdapter.setItemsAndAnimateChanges(it.list)
+                    ResultState.Loading -> commentAdapter.setItemsAndAnimateChanges(getCommentShimmering)
+                    is ResultState.Fail -> {
+                        //show global error
+                    }
+                }
             }
         }
     }
@@ -129,6 +136,10 @@ class ContentCommentBottomSheet @Inject constructor(
         super.onDestroyView()
         setEntrySource(null)
         _binding = null
+    }
+
+    private val getCommentShimmering: List<CommentUiModel.Shimmer> = List(6) {
+        CommentUiModel.Shimmer
     }
 
     interface EntrySource {
