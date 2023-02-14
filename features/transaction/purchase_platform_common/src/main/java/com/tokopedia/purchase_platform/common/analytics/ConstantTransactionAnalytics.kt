@@ -372,6 +372,7 @@ object ConstantTransactionAnalytics {
         // Cart Bundling
         const val CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package"
         const val CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card"
+        const val CLICK_BUNDLING_WIDGET = "click bundling widget"
 
         // Cart Bo Affordability
         const val CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE = "click arrow in BO Ticker to reach shop page"

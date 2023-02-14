@@ -919,6 +919,21 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
+    // Cart Shop Group Ticker
+    // TrackerId: 41252
+    fun eventClickCartShopGroupTickerForBundleCrossSell(tickerText: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_BUNDLING_WIDGET,
+            tickerText
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = "41252"
+        sendGeneralEvent(gtmData)
+    }
+
     // Bo Affordability
     // TrackerId: 26977
     fun eventClickArrowInBoTickerToReachShopPage(cartIds: String, shopId: String) {
