@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <gradient android:angle="90"
-        android:startColor="@color/tokochat_dms_image_bubble_overlay_start_color"
-        android:centerColor="@color/tokochat_dms_image_bubble_overlay_mid_color"
+        android:startColor="@color/tokochat_common_dms_image_bubble_overlay_start_color"
+        android:centerColor="@color/tokochat_common_dms_image_bubble_overlay_mid_color"
+        android:endColor="@color/tokochat_common_dms_image_bubble_overlay_end_color"
         android:centerX="10%"
         android:type="linear"/>
     <corners android:radius="8dp"/>
