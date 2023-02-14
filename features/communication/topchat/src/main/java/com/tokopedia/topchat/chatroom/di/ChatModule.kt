@@ -225,9 +225,11 @@ class ChatModule {
     @ChatScope
     @Provides
     fun provideTopChatWebSocket(
+        @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         client: OkHttpClient,
-        irisSession: Session
+        irisSession: Session,
+        webSocketParser: WebSocketParser
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
             .plus(ChatUrl.CONNECT_WEBSOCKET)
@@ -239,11 +241,13 @@ class ChatModule {
                 userSession.userId
             )
         return DefaultTopChatWebSocket(
+            context,
             client,
             webSocketUrl,
             userSession.accessToken,
             PAGE_CHATROOM,
-            irisSession
+            irisSession,
+            webSocketParser
         )
     }
 

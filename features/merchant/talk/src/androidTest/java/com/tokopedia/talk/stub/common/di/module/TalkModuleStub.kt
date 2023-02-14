@@ -2,6 +2,8 @@ package com.tokopedia.talk.stub.common.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.talk.common.di.TalkScope
 import com.tokopedia.talk.stub.common.user.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
@@ -15,5 +17,11 @@ class TalkModuleStub {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSessionStub.getInstance(context)
+    }
+
+    @TalkScope
+    @Provides
+    fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

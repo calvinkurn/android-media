@@ -118,7 +118,7 @@ class GetBoPromoCourierRecommendationSubscriber(
         logisticPromoUiModel: LogisticPromoUiModel
     ): CourierItemData {
         val courierItemData =
-            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel, shippingRecommendationData)
 
         courierItemData.apply {
             logPromoMsg = logisticPromoUiModel.disableText
