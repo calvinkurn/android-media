@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
  */
 data class Comments(
     @SerializedName("feedsCommentGetComments")
-    val parent: Parent = Parent(),
-    ) {
+    val parent: Parent = Parent()
+) {
     data class Parent(
         @SerializedName("comments")
         val comments: List<CommentData> = emptyList(),
@@ -28,8 +28,11 @@ data class Comments(
         @SerializedName("lastCursor")
         val lastCursor: String = "",
 
+        @SerializedName("commentParentID")
+        val parentId: String = "",
+
         @SerializedName("error")
-        val error: String = "",
+        val error: String = ""
     )
 
     data class CommentData(
@@ -85,7 +88,7 @@ data class Comments(
         val repliesCount: String = "",
 
         @SerializedName("repliesCountFmt")
-        val repliesCountFmt: String = "",
+        val repliesCountFmt: String = ""
     )
 
     data class LinkDetail(
@@ -96,6 +99,6 @@ data class Comments(
         val appLink: String = "",
 
         @SerializedName("desktopLink")
-        val desktopLink: String = "",
+        val desktopLink: String = ""
     )
 }

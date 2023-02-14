@@ -86,6 +86,7 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
                     isReplyAsShop
                     totalData
                     lastCursor
+                    commentParentID
                     error
                   }
                 }
