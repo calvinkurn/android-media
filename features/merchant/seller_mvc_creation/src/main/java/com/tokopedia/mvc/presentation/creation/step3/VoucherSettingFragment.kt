@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
@@ -197,6 +198,15 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
         renderSpendingEstimation(state.spendingEstimation)
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
+        renderPromoTypeChips(state.isDiscountPromoTypeEnabled)
+    }
+
+    private fun renderPromoTypeChips(shouldEnableDiscountPromoType: Boolean) {
+        if (shouldEnableDiscountPromoType) {
+            promoTypeSectionBinding?.chipDiscount?.setNormal()
+        } else {
+            promoTypeSectionBinding?.chipDiscount?.disable()
+        }
     }
 
     private fun renderFreeShippingValidation(state: VoucherCreationStepThreeUiState) {
@@ -325,8 +335,15 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             is VoucherCreationStepThreeAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
             is VoucherCreationStepThreeAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
             is VoucherCreationStepThreeAction.ShowCoachmark -> showCoachmark()
-            is VoucherCreationStepThreeAction.ShowError -> TODO()
+            is VoucherCreationStepThreeAction.ShowError -> {}
+            VoucherCreationStepThreeAction.ShowDiscountPromoTypeDisabledToaster -> showDiscountPromoTypeDisabledToaster()
         }
+    }
+
+    private fun showDiscountPromoTypeDisabledToaster() {
+        val ctaText = context?.getString(R.string.smvc_ok).orEmpty()
+        val message = context?.getString(R.string.smvc_voucher_creation_step_discount_toggled_off).orEmpty()
+        binding?.layoutButtonGroup?.showToaster(message, ctaText)
     }
 
     private fun showCoachmark() {
@@ -544,7 +561,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         promoTypeSectionBinding?.run {
             chipFreeShipping.setSelected()
             chipCashback.setNormal()
-            chipDiscount.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.visible()
@@ -683,7 +699,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         promoTypeSectionBinding?.run {
             chipFreeShipping.setNormal()
             chipCashback.setSelected()
-            chipDiscount.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
@@ -925,10 +940,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     // Discount input region
     private fun setDiscountSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+
         promoTypeSectionBinding?.run {
             chipFreeShipping.setNormal()
             chipCashback.setNormal()
-            chipDiscount.setSelected()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
@@ -1350,5 +1365,12 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             chipType = ChipsUnify.TYPE_SELECTED
             colorTintGreen?.let { color -> chip_image_icon.setColorFilter(color) }
         }
+    }
+
+    private fun ChipsUnify.disable() {
+        chipType = ChipsUnify.TYPE_DISABLE
+        showNewNotification = false
+        chip_container.isEnabled = false
+        chip_sub_container.isEnabled = false
     }
 }

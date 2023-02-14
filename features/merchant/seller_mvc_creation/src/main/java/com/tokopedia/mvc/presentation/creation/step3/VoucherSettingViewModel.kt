@@ -94,6 +94,7 @@ class VoucherSettingViewModel @Inject constructor(
                     isVoucherProduct = voucherConfiguration.isVoucherProduct
                 )
                 val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute(metadataParam)
+                val isDiscountPromoTypeActive = false
 
                 _uiState.update {
                     it.copy(
@@ -102,13 +103,16 @@ class VoucherSettingViewModel @Inject constructor(
                         voucherConfiguration = voucherConfiguration.copy(
                             isFinishFilledStepTwo = true
                         ),
-                        shouldEnableDiscountPromoType = voucherCreationMetadata.discountActive
+                        isDiscountPromoTypeEnabled = isDiscountPromoTypeActive
                     )
                 }
-            },
-            onError = { error ->
 
-            }
+                if (!isDiscountPromoTypeActive) {
+                    _uiAction.tryEmit(VoucherCreationStepThreeAction.ShowDiscountPromoTypeDisabledToaster)
+                }
+
+            },
+            onError = {}
         )
 
         handleVoucherInputValidation()
