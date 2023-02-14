@@ -11,9 +11,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
@@ -147,10 +145,6 @@ object ShopUtil {
         mediaTarget: MediaBitmapEmptyTarget<Bitmap>
     ) {
         com.tokopedia.media.loader.loadImageWithEmptyTarget(context, url, properties, mediaTarget)
-    }
-
-    fun isEnableShopDynamicTab(context: Context?): Boolean {
-        return FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.ENABLE_SHOP_DYNAMIC_TAB)
     }
 
     fun String.isUrlPng(): Boolean {

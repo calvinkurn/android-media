@@ -182,6 +182,18 @@ object PromoRequestMapper {
                 }
             }
         }
+        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartShopHolderData.cartString }
+        if (validateOrderRequest != null && validateOrderRequest.spId > 0) {
+            return PromoRequestBoShipmentData(
+                validateOrderRequest.shippingId,
+                validateOrderRequest.spId,
+                validateOrderRequest.boCampaignId.toString(),
+                validateOrderRequest.shippingSubsidy,
+                validateOrderRequest.benefitClass,
+                validateOrderRequest.shippingPrice,
+                validateOrderRequest.etaText
+            )
+        }
         return PromoRequestBoShipmentData()
     }
 

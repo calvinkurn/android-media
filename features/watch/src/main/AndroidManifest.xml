@@ -23,6 +23,10 @@
                     android:scheme="wear" />
                 <data
                     android:host="*"
+                    android:pathPrefix="/get-notification-list"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
                     android:pathPrefix="/get-order-list"
                     android:scheme="wear" />
                 <data

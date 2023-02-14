@@ -10,13 +10,13 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
-import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
 import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import io.mockk.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 213
+        const val SIZE_MAPPER = 215
     }
 
     override fun setup() {
@@ -45,7 +45,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This test is a reminder for developer.
         // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
         // also there developer should also add the corresponding unit test for the deeplink.
-        assert(DeeplinkMapper.getTokopediaSchemeList().size == SIZE_MAPPER)
+        assertEquals(DeeplinkMapper.getTokopediaSchemeList().size, SIZE_MAPPER)
     }
 
     @Test
@@ -451,6 +451,18 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check post atc appLink internal post atc`() {
+        val productId = "123"
+
+        val appLink = UriUtil.buildUri(ApplinkConst.POST_ATC, productId)
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/post-atc/$productId/"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, productId to null)
+    }
+
+    @Test
     fun `check product info appLink with no extras then should return internal product info`() {
         val productId = "890495024"
         val keyLayoutId = "layoutID"
@@ -785,41 +797,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check wishlist appLink then should return tokopedia internal wishlist in customerapp`() {
-        every {
-            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
-        } returns false
-
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
-        assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST, expectedDeepLink)
-    }
-
-    @Test
-    fun `check new wishlist appLink then should return tokopedia internal new wish list in customerapp`() {
-        every {
-            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
-        } returns false
-
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
-        assertEqualsDeepLinkMapper(ApplinkConst.NEW_WISHLIST, expectedDeepLink)
-    }
-
-    @Test
     fun `check wishlist appLink then should return tokopedia internal wishlist collection in customerapp`() {
-        every {
-            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
-        } returns true
-
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist-collection"
         assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST, expectedDeepLink)
     }
 
     @Test
     fun `check new wishlist appLink then should return tokopedia internal wishlist collection in customerapp`() {
-        every {
-            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
-        } returns true
-
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist-collection"
         assertEqualsDeepLinkMapper(ApplinkConst.NEW_WISHLIST, expectedDeepLink)
     }
@@ -2555,6 +2539,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val deepLink = "${ApplinkConst.TOKO_CHAT}?$queryParams"
         val expectedDeepLink = "${ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD}&$queryParams"
         tokochatRollenceEnabler("")
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check topchat settings bubble activation applink`() {
+        val deepLink = ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION
+        val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 }
