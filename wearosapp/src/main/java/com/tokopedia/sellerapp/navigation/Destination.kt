@@ -5,6 +5,7 @@ import SplashScreen
 import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
+import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.tokopedia.sellerapp.presentation.screen.*
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
@@ -113,31 +114,19 @@ fun NavGraphBuilder.notificationDetailComposable(
 }
 
 fun NavGraphBuilder.appNotInstalledScreenComposable(
-    sharedViewModel: SharedViewModel,
+    remoteActivityHelper: RemoteActivityHelper
 ) {
     composable(
         route = ScreenConstant.APP_NOT_INSTALLED_SCREEN
     ) {
-        AppNotInstalledScreen(sharedViewModel)
+        AppNotInstalledScreen(remoteActivityHelper)
     }
 }
 
-fun NavGraphBuilder.connectionFailedScreenComposable(
-    sharedViewModel: SharedViewModel,
-) {
+fun NavGraphBuilder.connectionFailedScreenComposable() {
     composable(
         route = ScreenConstant.CONNECTION_FAILED_SCREEN
-    ) {
-        val message = sharedViewModel.currentState.value.data?.let {
-            it.getState().getMessageBasedOnState()
-        } ?: ""
-
-        ConnectionFailureScreen(
-            mutableStateOf(message),
-            mutableStateOf("Retry"),
-            mutableStateOf({})
-        )
-    }
+    ) { /* nothing to do */ }
 }
 
 fun NavGraphBuilder.acceptOrderScreenComposable(
