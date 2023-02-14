@@ -51,7 +51,7 @@ object MediaLoaderTarget {
 
             return when (properties.data) {
                 is String -> {
-                    val source = Loader.get(properties.data.toString())
+                    val source = properties.data.toString()
 
                     properties.setUrlHasQuality(source)
 

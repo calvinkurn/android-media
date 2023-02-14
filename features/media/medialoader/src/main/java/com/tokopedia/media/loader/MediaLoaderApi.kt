@@ -7,15 +7,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.data.*
 import com.tokopedia.media.loader.factory.BitmapFactory
 import com.tokopedia.media.loader.factory.GifFactory
-import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
-import com.tokopedia.media.loader.data.HEADER_KEY_AUTH
-import com.tokopedia.media.loader.data.HEADER_USER_ID
-import com.tokopedia.media.loader.data.HEADER_X_DEVICE
-import com.tokopedia.media.loader.data.PREFIX_BEARER
-import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.TopRightCrop
 
@@ -55,7 +49,7 @@ internal object MediaLoaderApi {
                 * */
                 is String -> {
                     // url builder
-                    val source = Loader.get(properties.data.toString())
+                    val source = properties.data.toString()
 
                     // get the imageView size
                     properties.setImageSize(

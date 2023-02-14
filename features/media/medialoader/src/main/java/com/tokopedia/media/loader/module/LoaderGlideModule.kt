@@ -14,7 +14,6 @@ import com.tokopedia.config.GlobalConfig
 import okhttp3.OkHttpClient
 import java.io.InputStream
 
-
 @GlideModule
 class LoaderGlideModule: AppGlideModule() {
 
@@ -35,6 +34,7 @@ class LoaderGlideModule: AppGlideModule() {
         }
         val okHttpLoaderFactory = OkHttpUrlLoader.Factory(okHttpClient.build())
         registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
+        registry.append(String::class.java, InputStream::class.java, AdaptiveImageSizeFactory(context))
     }
 
     override fun isManifestParsingEnabled(): Boolean {
