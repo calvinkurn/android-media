@@ -260,6 +260,8 @@
     <string name="goto_kyc_onboard_progressive_tokopedia_care">Bukan KTP kamu? Hubungi Tokopedia Care</string>
     <string name="goto_kyc_onboard_progressive_tokopedia_care_spannable">Hubungi Tokopedia Care</string>
     <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
+    <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
+    <string name="goto_kyc_onboard_benefit_button_verification">Ambil Keuntungannya</string>
     <string name="goto_kyc_bridging_title">Sip, akun Gojek-mu udah kesambung!</string>
     <string name="goto_kyc_bridging_not_done_gopay_subtitle">Kamu tinggal lanjutin proses berikutnya, deh.</string>
     <string name="goto_kyc_bridging_not_done_gopay_item_ktp_title">Ambil foto KTP</string>

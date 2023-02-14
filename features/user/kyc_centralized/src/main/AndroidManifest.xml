@@ -89,6 +89,23 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.gotoKyc.onboardbenefit.GotoKycOnboardBenefitActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_goto_kyc_with_onboard_benefit" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ui.gotoKyc.main.GotoKycMainActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
