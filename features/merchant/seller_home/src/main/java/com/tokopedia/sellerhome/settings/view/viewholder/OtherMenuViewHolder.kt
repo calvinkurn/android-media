@@ -26,10 +26,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -87,7 +85,6 @@ class OtherMenuViewHolder(
     private var headerShopNameTextView: Typography? = null
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
-    private var shopStatusCurvedImage: AppCompatImageView? = null
     private var shopStatusCurvedThematicBackground: ConstraintLayout? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
@@ -252,7 +249,6 @@ class OtherMenuViewHolder(
             headerShopNameTextView = findViewById(R.id.tv_sah_new_other_header_name)
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
-//            shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
             shopStatusCurvedThematicBackground = findViewById(R.id.iv_sah_new_other_curved_header)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
@@ -521,7 +517,6 @@ class OtherMenuViewHolder(
         shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.imgSahOtherRightStar)?.hide()
 
         shopStatusCurvedThematicBackground?.findViewById<ImageUnify>(R.id.imgSahOtherLeftStar)?.hide()
-
 
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
