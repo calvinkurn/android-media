@@ -71,6 +71,7 @@ import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
 import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
@@ -78,9 +79,6 @@ import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHo
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
-import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
-import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
-import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
@@ -96,6 +94,7 @@ import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
@@ -103,9 +102,6 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
-import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.visitable.Lego4ProductDataModel
-import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -500,10 +496,10 @@ class HomeAdapterFactory(
             DynamicLegoBannerViewHolder.LAYOUT ->
                 viewHolder =
                     DynamicLegoBannerViewHolder(
-                            view,
-                            legoListener,
-                            homeComponentListener,
-                            parentRecycledViewPool
+                        view,
+                        legoListener,
+                        homeComponentListener,
+                        parentRecycledViewPool
                     )
             RecommendationListCarouselViewHolder.LAYOUT ->
                 viewHolder =
@@ -629,13 +625,14 @@ class HomeAdapterFactory(
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
-            MixLeftPaddingComponentViewHolder.LAYOUT -> viewHolder =
-                MixLeftPaddingComponentViewHolder(
-                    view,
-                    mixLeftComponentListener,
-                    homeComponentListener,
-                    cardInteraction = true
-                )
+            MixLeftPaddingComponentViewHolder.LAYOUT ->
+                viewHolder =
+                    MixLeftPaddingComponentViewHolder(
+                        view,
+                        mixLeftComponentListener,
+                        homeComponentListener,
+                        cardInteraction = true
+                    )
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
