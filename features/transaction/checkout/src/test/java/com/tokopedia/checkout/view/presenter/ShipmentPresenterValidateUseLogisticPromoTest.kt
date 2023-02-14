@@ -502,7 +502,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseErrorFromScheduleDelivery_ShouldCompletePublisher() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
         val cartString = "123"
         val testSubscriber = TestSubscriber.create<Boolean>()
         val donePublisher = PublishSubject.create<Boolean>()
@@ -524,6 +527,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()
     }
@@ -573,7 +577,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseErrorFromGetShippingRates_ShouldCompletePublisher() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
         val cartString = "123"
         val testSubscriber = TestSubscriber.create<Boolean>()
         val logisticDonePublisher = PublishSubject.create<Boolean>()
@@ -595,6 +602,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()
         promoTestSubscriber.assertCompleted()
