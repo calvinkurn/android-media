@@ -12,6 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.broadcaster.PlayBroadcasterArgument
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.R
@@ -164,7 +167,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     is PlayBroadcastSummaryEvent.PostVideo -> {
                         when (val networkResult = it.networkResult) {
                             is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
-                            is NetworkResult.Success -> openShopPageWithBroadcastStatus()
+                            is NetworkResult.Success -> redirectAfterPostVideo()
                             is NetworkResult.Fail -> {
                                 binding.btnPostVideo.isLoading = false
                                 toaster.showError(
@@ -203,19 +206,43 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun openShopPageWithBroadcastStatus() {
-        if (activity?.callingActivity == null) {
-            val intent = router.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
-                .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, true)
+    private fun redirectAfterPostVideo() {
+        if(GlobalConfig.isSellerApp()) {
+            /** Keep existing flow */
+            if (activity?.callingActivity == null) {
+                val intent = router.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
+                    .putExtraForPostVideoRedirection()
+                startActivity(intent)
+                activity?.finish()
+            } else {
+                activity?.setResult(
+                    Activity.RESULT_OK,
+                    Intent().putExtraForPostVideoRedirection()
+                )
+                activity?.finish()
+            }
+        }
+        else {
+            /** Go to Feed */
+            val intent = router.getIntent(context, ApplinkConst.FEED)
+                .putExtraForPostVideoRedirection()
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             activity?.finish()
-        } else {
-            activity?.setResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, true)
-            )
-            activity?.finish()
         }
+    }
+
+    private fun Intent.putExtraForPostVideoRedirection(): Intent {
+        return this.putExtra(PlayBroadcasterArgument.NEWLY_BROADCAST_CHANNEL_SAVED, true)
+            .putExtra(PlayBroadcasterArgument.EXTRA_SEE_TRANSCODING_CHANNEL_APPLINK, generateSeeTranscodingChannelAppLink())
+    }
+
+    private fun generateSeeTranscodingChannelAppLink(): String {
+        val baseAppLink = if(viewModel.account.isUser) ApplinkConst.PROFILE
+        else if(viewModel.account.isShop) ApplinkConst.SHOP
+        else return ""
+
+        return UriUtil.buildUri(baseAppLink, viewModel.account.id)
     }
 
     private fun openCoverSetupFragment() {
@@ -267,9 +294,5 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             .addTransition(ChangeTransform())
             .addTransition(ChangeBounds())
             .setDuration(450)
-    }
-
-    companion object {
-        private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
     }
 }

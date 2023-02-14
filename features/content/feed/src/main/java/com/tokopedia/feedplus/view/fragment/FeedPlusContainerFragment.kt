@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.navigation.broadcaster.PlayBroadcasterArgument
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
@@ -50,6 +51,7 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -340,6 +342,7 @@ class FeedPlusContainerFragment :
 
     override fun onResume() {
         super.onResume()
+        handleArgument()
         addDataToArgument()
         registerNewFeedReceiver()
         if (hasFeedTabParam()) {
@@ -586,6 +589,27 @@ class FeedPlusContainerFragment :
                     postProgressUpdateView?.setProgress(progress)
                 }
             }
+        }
+    }
+
+    private fun handleArgument() {
+        val isNewlyBroadcastSaved = activity?.intent?.getBooleanExtra(PlayBroadcasterArgument.NEWLY_BROADCAST_CHANNEL_SAVED, false).orFalse()
+        val appLinkSeeTranscodingChannel = activity?.intent?.getStringExtra(PlayBroadcasterArgument.EXTRA_SEE_TRANSCODING_CHANNEL_APPLINK).orEmpty()
+
+        if(isNewlyBroadcastSaved && appLinkSeeTranscodingChannel.isNotEmpty()) {
+            activity?.intent?.removeExtra(PlayBroadcasterArgument.NEWLY_BROADCAST_CHANNEL_SAVED)
+            activity?.intent?.removeExtra(PlayBroadcasterArgument.EXTRA_SEE_TRANSCODING_CHANNEL_APPLINK)
+
+            Toaster.build(
+                view = requireView(),
+                text = getString(R.string.feed_transcoding_livestream_to_vod_message),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_NORMAL,
+                actionText = getString(R.string.feed_transcoding_livestream_to_vod_action),
+                clickListener = {
+                    RouteManager.route(requireContext(), appLinkSeeTranscodingChannel)
+                }
+            ).show()
         }
     }
 
