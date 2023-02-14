@@ -21,6 +21,7 @@
                 android:id="@+id/ticker_manage_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:tickerShapeType="full"
                 android:visibility="gone"/>
 
             <com.tokopedia.unifycomponents.SearchBarUnify
