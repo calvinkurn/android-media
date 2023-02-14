@@ -72,8 +72,11 @@ class ProductListViewModel @Inject constructor(
             is ProductListEvent.AddNewProductToSelection -> handleAddNewProductToSelection(event.newProducts)
             ProductListEvent.TapCtaAddProduct -> handleCtaAddNewProduct()
             ProductListEvent.TapToolbarBackIcon -> handleTapToolbarBackIcon()
+            ProductListEvent.TapBackButton -> handleTapBackButton()
         }
     }
+
+
 
     private fun getProductsAndProductsMetadata(
         pageMode: PageMode,
@@ -421,4 +424,7 @@ class ProductListViewModel @Inject constructor(
         _uiEffect.tryEmit(ProductListEffect.RedirectToPreviousPage(selectedProductCount, uiState.value.originalPageMode))
     }
 
+    private fun handleTapBackButton() {
+        _uiEffect.tryEmit(ProductListEffect.TapBackButton(uiState.value.originalPageMode))
+    }
 }
