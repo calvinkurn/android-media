@@ -593,12 +593,6 @@ class TopAdsChooseCreditBottomSheet :
     }
 
     private fun setObserver() {
-        viewModel?.topAdsTopUpCreditData?.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                onSuccessGetCreditListData(it.data)
-            }
-        }
-
         viewModel?.getAutoTopUpStatus?.observe(viewLifecycleOwner) {
             if (it is Success) {
                 onSuccessGetAutoCreditListData(it.data)
@@ -626,8 +620,8 @@ class TopAdsChooseCreditBottomSheet :
     }
 
     private fun onSuccessCreditInfo(data: CreditResponse) {
-        viewModel?.getManualTopAdsCreditList()
         creditResponse = data
+        onSuccessGetCreditListData()
     }
 
     private fun onSuccessGetAutoCreditListData(data: AutoTopUpStatus) {
@@ -643,8 +637,11 @@ class TopAdsChooseCreditBottomSheet :
         if (isShowEditHistory) enableEditAutoTopUpState()
     }
 
-    private fun onSuccessGetCreditListData(data: TopAdsShopTierShopGradeData.ShopInfoByID.Result) {
-        val list = viewModel?.getCreditItemDataList(creditResponse?.credit, data)
+    private fun onSuccessGetCreditListData() {
+        val list = viewModel?.getCreditItemDataList(
+            creditResponse?.credit,
+            creditResponse?.extraCreditPercent ?: 0.0f
+        )
         manualNominalList.clear()
         list?.let { manualNominalList.addAll(it) }
         if (manualRadioButton?.isChecked == true) addNominalList(manualNominalList)
