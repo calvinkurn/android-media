@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
@@ -24,6 +26,7 @@ import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
 import com.tokopedia.sellerpersona.di.DaggerSellerPersonaComponent
 import com.tokopedia.sellerpersona.di.SellerPersonaComponent
+import com.tokopedia.sellerpersona.view.model.PERSONA_STATUS_NOT_ROLLED_OUT
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -104,6 +107,12 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     }
 
     private fun setNavigationStartDestination(data: PersonaStatusModel) {
+        if (data.status == PERSONA_STATUS_NOT_ROLLED_OUT) {
+            RouteManager.route(this, ApplinkConst.HOME)
+            finish()
+            return
+        }
+
         binding?.errorViewPersona?.gone()
         val navHostFragment: NavHostFragment? = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as? NavHostFragment

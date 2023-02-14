@@ -219,7 +219,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val FEEDBACK_OPTION_4 = 3
         private const val ANNOUNCEMENT_DISMISSAL_KEY = "widget.announcement.%s"
         private const val POST_LIST_DISMISSAL_KEY = "widget.post.%s"
+        private const val STATUS_PERSONA_INACTIVE = 0
         private const val STATUS_PERSONA_ACTIVE = 1
+        private const val STATUS_PERSONA_SHOW_POPUP = 2
         private const val STATUS_PERSONA_NOT_ROLLED_OUT = 3
     }
 
@@ -1462,16 +1464,32 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun handlePersonaStatus(personaStatus: Int) {
         activity?.let {
-            if (personaStatus != STATUS_PERSONA_NOT_ROLLED_OUT) {
-                sharedPref.makePersonaEntryPointVisible(userSession.userId)
-            } else if (personaStatus == STATUS_PERSONA_ACTIVE) {
-                if (!it.isFinishing && sharedPref.shouldShowPersonaHomePopup(userSession.userId)) {
-                    with(SellerPersonaBottomSheet.newInstance()) {
-                        setOnDismissListener {
-                            sharedPref.markPersonaHomePopupShown(userSession.userId)
+            when (personaStatus) {
+                STATUS_PERSONA_NOT_ROLLED_OUT -> {
+                    sharedPref.setPersonaEntryPointVisibility(
+                        userSession.userId,
+                        shouldVisible = false
+                    )
+                }
+                STATUS_PERSONA_ACTIVE -> {
+                    if (!it.isFinishing && sharedPref.shouldShowPersonaHomePopup(userSession.userId)) {
+                        with(SellerPersonaBottomSheet.newInstance()) {
+                            setOnDismissListener {
+                                sharedPref.markPersonaHomePopupShown(userSession.userId)
+                            }
+                            show(childFragmentManager)
                         }
-                        show(childFragmentManager)
                     }
+                    sharedPref.setPersonaEntryPointVisibility(
+                        userSession.userId,
+                        shouldVisible = true
+                    )
+                }
+                STATUS_PERSONA_INACTIVE, STATUS_PERSONA_SHOW_POPUP -> {
+                    sharedPref.setPersonaEntryPointVisibility(
+                        userSession.userId,
+                        shouldVisible = true
+                    )
                 }
             }
         }
