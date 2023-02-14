@@ -612,6 +612,12 @@ object DeeplinkMapper {
                 idList?.lastOrNull() ?: ""
             )
         }),
+        DLP.matchPattern(ApplinkConst.POST_ATC, targetDeeplink = { _, _, _, idList ->
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.POST_ATC,
+                idList?.getOrNull(0) ?: ""
+            )
+        }),
         DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         DLP.startWith(ApplinkConst.TokoFood.GOFOOD) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri) },
