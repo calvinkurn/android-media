@@ -100,6 +100,7 @@ data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : 
 object OpenKebabAction: PlayViewerNewAction()
 object OpenUserReport: PlayViewerNewAction()
 data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
+data class SelectReason(val reasonId: Int) : PlayViewerNewAction()
 
 data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()
 
