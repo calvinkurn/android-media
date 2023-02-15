@@ -1,24 +1,25 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
 
-class GetChatViewModelTest: BaseTopChatViewModelTest() {
+class GetChatViewModelTest : BaseTopChatViewModelTest() {
 
     override fun before() {
         super.before()
-        viewModel.roomMetaData = RoomMetaData()
+        viewModel.setRoomMetaData(RoomMetaData())
     }
 
     @Test
@@ -27,14 +28,14 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.resetChatUseCase()
 
         // Then
-        verify(exactly = 1)  {
+        verify(exactly = 1) {
             getChatUseCase.reset()
         }
     }
 
     @Test
     fun check_setBeforeReplyTime() {
-        //Given
+        // Given
         val exCreateTime = "1234532"
 
         // When
@@ -49,6 +50,10 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun check_isInTheMiddleOfThePage() {
         // When
+        every {
+            getChatUseCase.isInTheMiddleOfThePage()
+        } returns MutableLiveData(true)
+
         viewModel.isInTheMiddleOfThePage()
 
         // Then
@@ -111,7 +116,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun check_room_meta_data() {
-        //Given
+        // Given
         val expectedResponse = GetExistingChatPojo(
             chatReplies = ChatReplies(
                 contacts = arrayListOf(Contact(userId = testUserId))
@@ -124,7 +129,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
 
         // When
         viewModel.getExistingChat(testMessageId)
-        val metaData = viewModel.roomMetaData
+        val metaData = viewModel.roomMetaData.value
 
         // Then
         Assert.assertEquals(

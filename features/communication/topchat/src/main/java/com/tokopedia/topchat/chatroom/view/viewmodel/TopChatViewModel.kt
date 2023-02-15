@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -204,6 +205,7 @@ open class TopChatViewModel @Inject constructor(
 
     init {
         _attachmentsPreview.value = arrayListOf()
+        _roomMetaData.value = RoomMetaData()
     }
 
     fun initUserLocation(userLocation: LocalCacheModel?) {
@@ -729,7 +731,7 @@ open class TopChatViewModel @Inject constructor(
 
     fun isAttachmentPreviewReady(): Boolean {
         val sendable = _attachmentsPreview.value?.firstOrNull() as? DeferredAttachment
-            ?: return _attachmentsPreview.value.isNullOrEmpty()
+            ?: return !_attachmentsPreview.value.isNullOrEmpty()
         return !sendable.isLoading && !sendable.isError
     }
 
@@ -788,6 +790,11 @@ open class TopChatViewModel @Inject constructor(
 
     fun updateMessageId(messageId: String) {
         _roomMetaData.value?.updateMessageId(messageId)
+    }
+
+    @VisibleForTesting
+    fun setRoomMetaData(roomMetaData: RoomMetaData) {
+        _roomMetaData.value = roomMetaData
     }
 
     companion object {

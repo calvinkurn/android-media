@@ -8,26 +8,26 @@ import org.junit.Test
 class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
 
     val resultProduct = arrayListOf(
-            "1"
+        "1"
     )
 
     @Test
     fun should_add_product_attachment_preview_on_initialization_not_empty() {
-        //Given
-        viewModel.roomMetaData.updateMessageId(testMessageId)
+        // Given
+        viewModel.updateMessageId(testMessageId)
 
         // When
         viewModel.loadProductPreview(arrayListOf())
         viewModel.loadProductPreview(resultProduct)
 
         // Then
-        assertEquals(viewModel.getAttachmentsPreview().size, 1)
+        assertEquals(viewModel.attachmentsPreview.value?.size, 1)
     }
 
     @Test
     fun should_map_product_preview_product_id() {
-        //Given
-        viewModel.roomMetaData.updateMessageId(testMessageId)
+        // Given
+        viewModel.updateMessageId(testMessageId)
 
         // When
         viewModel.loadProductPreview(resultProduct)
@@ -39,15 +39,15 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
 
     @Test
     fun should_get_attachment_preview_when_init() {
-        //Given
+        // Given
         val sendablePreview = TopchatProductAttachmentPreviewUiModel.Builder()
-                .build()
+            .build()
 
-        //When
+        // When
         viewModel.addAttachmentPreview(sendablePreview)
         viewModel.initAttachmentPreview()
 
-        //Then
+        // Then
         assertEquals(
             sendablePreview,
             viewModel.showableAttachmentPreviews.value?.firstOrNull()
@@ -56,26 +56,28 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
 
     @Test
     fun should_not_get_product_attachment_when_removed() {
-        //Given
+        // Given
         val testSendAblePreviewOne = TopchatProductAttachmentPreviewUiModel.Builder().build()
         val testSendAblePreviewTwo = TopchatProductAttachmentPreviewUiModel.Builder().build()
 
-        //When
-        //Init attachment
+        // When
+        // Init attachment
         viewModel.addAttachmentPreview(testSendAblePreviewOne)
         viewModel.addAttachmentPreview(testSendAblePreviewTwo)
         viewModel.initAttachmentPreview()
 
-        //Remove attachment
+        // Remove attachment
         viewModel.removeAttachmentPreview(testSendAblePreviewOne)
-        val attachmentList = viewModel.getAttachmentsPreview()
+        val attachmentList = viewModel.attachmentsPreview.value
 
-        //Then
+        // Then
         assertEquals(
-            attachmentList.size, 1
+            attachmentList?.size,
+            1
         )
         assertEquals(
-            attachmentList.first(), testSendAblePreviewTwo
+            attachmentList?.first(),
+            testSendAblePreviewTwo
         )
     }
 }

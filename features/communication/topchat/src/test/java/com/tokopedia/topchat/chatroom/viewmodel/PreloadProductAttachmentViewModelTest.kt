@@ -9,7 +9,7 @@ import io.mockk.coEvery
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
+class PreloadProductAttachmentViewModelTest : BaseTopChatViewModelTest() {
 
     val realChatMapper = ChatAttachmentMapper()
     lateinit var defaultPreAttachResponse: PreAttachPayloadResponse
@@ -17,8 +17,8 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
     override fun before() {
         super.before()
         defaultPreAttachResponse = FileUtil.parse(
-                "/success_pre_attach_payload_response.json",
-                PreAttachPayloadResponse::class.java
+            "/success_pre_attach_payload_response.json",
+            PreAttachPayloadResponse::class.java
         )
     }
 
@@ -28,7 +28,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         val product = defaultPreAttachResponse.chatPreAttachPayload.list[0]
         coEvery { chatPreAttachPayload(any()) } returns defaultPreAttachResponse
         coEvery { chatAttachmentMapper.map(any<PreAttachPayloadResponse>()) } returns realChatMapper.map(defaultPreAttachResponse)
-        viewModel.roomMetaData.updateMessageId(testMessageId)
+        viewModel.updateMessageId(testMessageId)
 
         // When
         viewModel.loadProductPreview(listOf(product.id))
@@ -43,7 +43,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         // Given
         coEvery { chatPreAttachPayload(any()) } returns defaultPreAttachResponse
         coEvery { chatAttachmentMapper.map(any<PreAttachPayloadResponse>()) } returns realChatMapper.map(defaultPreAttachResponse)
-        viewModel.roomMetaData.updateMessageId(testMessageId)
+        viewModel.updateMessageId(testMessageId)
 
         // When
         viewModel.loadProductPreview(listOf("1"))
@@ -76,7 +76,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         coEvery {
             chatAttachmentMapper.map(any<PreAttachPayloadResponse>())
         } returns realChatMapper.map(defaultPreAttachResponse)
-        viewModel.roomMetaData.updateMessageId(testMessageId)
+        viewModel.updateMessageId(testMessageId)
 
         // When
         viewModel.loadProductPreview(listOf("parent product id"))
@@ -85,8 +85,10 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.attachmentPreviewData.size, 1)
         assertEquals(
-            (viewModel.attachmentPreviewData[product.id]?.parsedAttributes as
-                    ProductAttachmentAttributes).productId,
+            (
+                viewModel.attachmentPreviewData[product.id]?.parsedAttributes as
+                    ProductAttachmentAttributes
+                ).productId,
             product.id
         )
     }
@@ -99,7 +101,7 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         coEvery {
             chatAttachmentMapper.map(any<PreAttachPayloadResponse>())
         } returns realChatMapper.map(defaultPreAttachResponse)
-        viewModel.roomMetaData.updateMessageId(testMessageId)
+        viewModel.updateMessageId(testMessageId)
 
         // When fail to pre load
         coEvery {
@@ -116,8 +118,10 @@ class PreloadProductAttachmentViewModelTest: BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.attachmentPreviewData.size, 1)
         assertEquals(
-            (viewModel.attachmentPreviewData[product.id]?.parsedAttributes as
-                    ProductAttachmentAttributes).productId,
+            (
+                viewModel.attachmentPreviewData[product.id]?.parsedAttributes as
+                    ProductAttachmentAttributes
+                ).productId,
             product.id
         )
     }

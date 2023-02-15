@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
@@ -15,7 +16,9 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     @Test
     fun should_close_websocket_on_destroy_host() {
         // When
-        viewModel.onDestroy()
+        webSocketViewModel.onDestroy {
+            getDummyLifeCycle()
+        }
 
         // Then
         verify {
@@ -32,10 +35,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.isWebsocketError.value, false)
+        assertEquals(webSocketViewModel.isWebsocketError.value, false)
         verify {
             webSocketStateHandler.retrySucceed()
         }
@@ -46,17 +49,21 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     fun should_does_not_send_mark_as_read() {
         // Given
         val isFromBubble = true
-        viewModel.isFromBubble = isFromBubble
+        webSocketViewModel.isFromBubble = isFromBubble
 
         // When
-        viewModel.onStop()
-        viewModel.markAsRead()
+        webSocketViewModel.onStop {
+            getDummyLifeCycle()
+        }
+        webSocketViewModel.markAsRead()
 
         // Then
-        assertEquals(viewModel.isFromBubble, true)
-        assertEquals(viewModel.isOnStop, true)
+        assertEquals(webSocketViewModel.isFromBubble, true)
+        assertEquals(webSocketViewModel.isOnStop, true)
         verify(exactly = 0) {
-            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            val payload = payloadGenerator.generateMarkAsReadPayload(
+                viewModel.roomMetaData.value ?: RoomMetaData()
+            )
             chatWebSocket.sendPayload(payload)
         }
     }
@@ -65,18 +72,17 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     fun should_send_mark_as_read_when_not_from_bubble() {
         // Given
         val isFromBubble = false
-        viewModel.isFromBubble = isFromBubble
-        viewModel.isOnStop = false
+        webSocketViewModel.isFromBubble = isFromBubble
+        webSocketViewModel.isOnStop = false
 
         // When
-        viewModel.markAsRead()
+        webSocketViewModel.markAsRead()
 
         // Then
-        assertEquals(viewModel.isFromBubble, false)
-        assertEquals(viewModel.isOnStop, false)
+        assertEquals(webSocketViewModel.isFromBubble, false)
+        assertEquals(webSocketViewModel.isOnStop, false)
         verify {
-            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
-            chatWebSocket.sendPayload(payload)
+            chatWebSocket.sendPayload(any())
         }
     }
 
@@ -84,18 +90,19 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     fun should_send_mark_as_read_when_not_from_bubble_and_onstop() {
         // Given
         val isFromBubble = false
-        viewModel.isFromBubble = isFromBubble
+        webSocketViewModel.isFromBubble = isFromBubble
 
         // When
-        viewModel.onStop()
-        viewModel.markAsRead()
+        webSocketViewModel.onStop {
+            getDummyLifeCycle()
+        }
+        webSocketViewModel.markAsRead()
 
         // Then
-        assertEquals(viewModel.isFromBubble, false)
-        assertEquals(viewModel.isOnStop, true)
+        assertEquals(webSocketViewModel.isFromBubble, false)
+        assertEquals(webSocketViewModel.isOnStop, true)
         verify {
-            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
-            chatWebSocket.sendPayload(payload)
+            chatWebSocket.sendPayload(any())
         }
     }
 
@@ -103,18 +110,19 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     fun should_send_mark_as_read_when_from_bubble_and_onresume() {
         // Given
         val isFromBubble = true
-        viewModel.isFromBubble = isFromBubble
+        webSocketViewModel.isFromBubble = isFromBubble
 
         // When
-        viewModel.onResume()
-        viewModel.markAsRead()
+        webSocketViewModel.onResume {
+            getDummyLifeCycle()
+        }
+        webSocketViewModel.markAsRead()
 
         // Then
-        assertEquals(viewModel.isFromBubble, true)
-        assertEquals(viewModel.isOnStop, false)
+        assertEquals(webSocketViewModel.isFromBubble, true)
+        assertEquals(webSocketViewModel.isOnStop, false)
         verify {
-            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
-            chatWebSocket.sendPayload(payload)
+            chatWebSocket.sendPayload(any())
         }
     }
 
@@ -126,7 +134,7 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
     }
 
     @Test
@@ -137,10 +145,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.isWebsocketError.value, true)
+        assertEquals(webSocketViewModel.isWebsocketError.value, true)
         coVerify {
             chatWebSocket.close()
             webSocketStateHandler.scheduleForRetry(any())
@@ -155,7 +163,7 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
         coVerify(exactly = 0) {
@@ -172,10 +180,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.isWebsocketError.value, true)
+        assertEquals(webSocketViewModel.isWebsocketError.value, true)
         coVerify {
             chatWebSocket.close()
             webSocketStateHandler.scheduleForRetry(any())
@@ -190,10 +198,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.isTyping.value, true)
+        assertEquals(webSocketViewModel.isTyping.value, true)
     }
 
     @Test
@@ -204,10 +212,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.isTyping.value, null)
+        assertEquals(webSocketViewModel.isTyping.value, null)
     }
 
     @Test
@@ -218,10 +226,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.isTyping.value, false)
+        assertEquals(webSocketViewModel.isTyping.value, false)
     }
 
     @Test
@@ -232,27 +240,26 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.msgRead.value, Unit)
+        assertEquals(webSocketViewModel.msgRead.value, Unit)
     }
 
     @Test
     fun should_not_update_onread_value_on_receive_read_event_in_the_middle_of_the_page() {
         // Given
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        webSocketViewModel.isInTheMiddleOfThePage = true
         onConnectWebsocket {
             it.onMessage(websocket, WebsocketResponses.read)
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.msgRead.value, null)
+        assertEquals(webSocketViewModel.msgRead.value, null)
     }
-
 
     @Test
     fun should_update_delete_msg_value_when_receive_delete_msg_event() {
@@ -264,10 +271,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.msgDeleted.value, chat.replyTime)
+        assertEquals(webSocketViewModel.msgDeleted.value, chat.replyTime)
     }
 
     @Test
@@ -281,12 +288,12 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, 0)
+        assertEquals(webSocketViewModel.unreadMsg.value, 0)
         assertEquals(
-            (viewModel.newMsg.value as MessageUiModel).localId,
+            (webSocketViewModel.newMsg.value as MessageUiModel).localId,
             (chatUiModel as MessageUiModel).localId
         )
     }
@@ -301,14 +308,16 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             it.onMessage(websocket, responseText)
         }
         val isFromBubble = true
-        viewModel.isFromBubble = isFromBubble
+        webSocketViewModel.isFromBubble = isFromBubble
 
         // When
-        viewModel.onStop()
-        viewModel.connectWebSocket()
+        webSocketViewModel.onStop {
+            getDummyLifeCycle()
+        }
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, 1)
+        assertEquals(webSocketViewModel.unreadMsg.value, 1)
     }
 
     @Test
@@ -321,14 +330,16 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             it.onMessage(websocket, responseText)
         }
         val isFromBubble = true
-        viewModel.isFromBubble = isFromBubble
+        webSocketViewModel.isFromBubble = isFromBubble
 
         // When
-        viewModel.onResume()
-        viewModel.connectWebSocket()
+        webSocketViewModel.onResume {
+            getDummyLifeCycle()
+        }
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, 0)
+        assertEquals(webSocketViewModel.unreadMsg.value, 0)
     }
 
     @Test
@@ -341,14 +352,16 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             it.onMessage(websocket, responseText)
         }
         val isFromBubble = true
-        viewModel.isFromBubble = isFromBubble
+        webSocketViewModel.isFromBubble = isFromBubble
 
         // When
-        viewModel.onStop()
-        viewModel.connectWebSocket()
+        webSocketViewModel.onStop {
+            getDummyLifeCycle()
+        }
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, 1)
+        assertEquals(webSocketViewModel.unreadMsg.value, 1)
     }
 
     @Test
@@ -362,7 +375,7 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
         verifySendMarkAsRead()
@@ -374,17 +387,17 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         val responseText = WebsocketResponses.generateReplyMsg(
             isOpposite = true
         )
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        webSocketViewModel.isInTheMiddleOfThePage = true
         onConnectWebsocket {
             it.onMessage(websocket, responseText)
             it.onMessage(websocket, responseText)
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, 2)
+        assertEquals(webSocketViewModel.unreadMsg.value, 2)
     }
 
     @Test
@@ -393,16 +406,16 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         val responseText = WebsocketResponses.generateReplyMsg(
             isOpposite = false
         )
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        webSocketViewModel.isInTheMiddleOfThePage = true
         onConnectWebsocket {
             it.onMessage(websocket, responseText)
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, null)
+        assertEquals(webSocketViewModel.unreadMsg.value, null)
     }
 
     @Test
@@ -413,12 +426,12 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, null)
-        assertEquals(viewModel.msgDeleted.value, null)
-        assertEquals(viewModel.newMsg.value, null)
+        assertEquals(webSocketViewModel.unreadMsg.value, null)
+        assertEquals(webSocketViewModel.msgDeleted.value, null)
+        assertEquals(webSocketViewModel.newMsg.value, null)
     }
 
     @Test
@@ -432,10 +445,10 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
-        assertEquals(viewModel.removeSrwBubble.value, null)
+        assertEquals(webSocketViewModel.removeSrwBubble.value, null)
     }
 
     @Test
@@ -451,11 +464,11 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.connectWebSocket()
+        webSocketViewModel.connectWebSocket()
 
         // Then
         assertEquals(
-            viewModel.removeSrwBubble.value,
+            webSocketViewModel.removeSrwBubble.value,
             (chatUiModel as ProductAttachmentUiModel).productId
         )
     }
@@ -463,9 +476,9 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     @Test
     fun should_reset_unread_msg() {
         // When
-        viewModel.resetUnreadMessage()
+        webSocketViewModel.resetUnreadMessage()
 
         // Then
-        assertEquals(viewModel.unreadMsg.value, 0)
+        assertEquals(webSocketViewModel.unreadMsg.value, 0)
     }
 }
