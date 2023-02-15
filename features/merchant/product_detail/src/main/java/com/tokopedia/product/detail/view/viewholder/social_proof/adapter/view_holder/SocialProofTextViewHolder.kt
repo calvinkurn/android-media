@@ -32,7 +32,9 @@ class SocialProofTextViewHolder(
 
     private fun eventClick(appLink: String) {
         if (appLink.isNotBlank()) {
-            listener.goToApplink(appLink)
+            binding.root.setOnClickListener {
+                listener.goToApplink(appLink)
+            }
         }
     }
 

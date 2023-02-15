@@ -26,7 +26,7 @@ data class SocialProofData(
     @Expose
     val icon: String = "",
 
-    @SerializedName("shopAdditional")
+    @SerializedName("eduLink")
     @Expose
     val eduLink: EduLinkData = EduLinkData()
 ) {
