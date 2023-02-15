@@ -187,7 +187,7 @@ class ChooseAddressWidget :
         if (textColor != null) {
             val newColor = ContextCompat.getColor(context, textColor)
             textChosenAddress?.setTextColor(newColor)
-            val iconColorID = chooseAddressWidgetListener?.iconLocationImageColor()
+            val iconColorID = chooseAddressWidgetListener?.iconLocationColor()
             val iconLocation = chooseAddressWidgetListener?.iconLocation()
             if (iconLocation != null && iconColorID != null) {
                 val iconColor = ContextCompat.getColor(
@@ -446,9 +446,9 @@ class ChooseAddressWidget :
         }
 
         /**
-         * To set icon location image color
+         * To set icon location color
          */
-        fun iconLocationImageColor(): Int {
+        fun iconLocationColor(): Int {
             return onChangeTextColor()
         }
     }

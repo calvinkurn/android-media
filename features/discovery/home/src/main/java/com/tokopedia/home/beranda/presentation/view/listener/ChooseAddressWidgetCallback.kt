@@ -60,11 +60,11 @@ class ChooseAddressWidgetCallback(
         }
     }
 
-    override fun iconLocationImageColor(): Int {
+    override fun iconLocationColor(): Int {
         return if (HomeRollenceController.isUsingAtf2Variant()) {
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
         } else {
-            super.iconLocationImageColor()
+            super.iconLocationColor()
         }
     }
 
