@@ -142,7 +142,7 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
             }
         }
         if (isFinishCurrent) {
-            supportFragmentManager.popBackStack()
+            supportFragmentManager.popBackStackImmediate()
         }
         ft.add(
             R.id.frame_content,
@@ -162,13 +162,13 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
                         } else {
-                            ft.hide(prevFragment)
                             try {
                                 ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
                             } catch (ex: Exception) {
                                 ex.printStackTrace()
                             }
                         }
+                        ft.hide(prevFragment)
                     }
                     i--
                 }
