@@ -9,7 +9,8 @@ import com.tokopedia.mvc.util.StringHandler
 sealed class MoreMenuUiModel(
     open val title: StringHandler? = null,
     @DrawableRes
-    open val icon: Int? = null
+    open val icon: Int? = null,
+    open val enabled: Boolean = true
 ) : Visitable<MenuAdapterFactory> {
 
     override fun type(typeFactory: MenuAdapterFactory): Int {
@@ -70,12 +71,12 @@ sealed class MoreMenuUiModel(
         override val icon: Int = IconUnify.CLEAR
     ) : MoreMenuUiModel(title, icon)
 
-    data class Copy(
+    data class DuplicateVoucher(
         override val title: StringHandler?,
         @DrawableRes
-        override val icon: Int = IconUnify.COPY
+        override val icon: Int = IconUnify.COPY,
+        override val enabled: Boolean
     ) : MoreMenuUiModel(title, icon)
-
     data class TermsAndConditions(
         override val title: StringHandler?,
         @DrawableRes

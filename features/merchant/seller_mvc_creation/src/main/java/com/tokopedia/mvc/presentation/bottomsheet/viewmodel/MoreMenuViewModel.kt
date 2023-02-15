@@ -206,24 +206,15 @@ class MoreMenuViewModel @Inject constructor(
     }
 
     private fun getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled: Boolean): List<MoreMenuUiModel> {
-        val menu = if (isDiscountPromoTypeEnabled) {
-            listOf(
-                MoreMenuUiModel.Copy(
-                    StringHandler.ResourceString(R.string.voucher_bs_duplikat)
-                ),
-                MoreMenuUiModel.Clipboard(
-                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
-                )
+        return listOf(
+            MoreMenuUiModel.DuplicateVoucher(
+                title = StringHandler.ResourceString(R.string.voucher_bs_duplikat),
+                enabled = isDiscountPromoTypeEnabled
+            ),
+            MoreMenuUiModel.Clipboard(
+                StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
             )
-        } else {
-            listOf(
-                MoreMenuUiModel.Clipboard(
-                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
-                )
-            )
-        }
-
-        return menu
+        )
     }
 
     private fun getVoucherDetailUpcomingOptionsListMenu(): List<MoreMenuUiModel> {
@@ -304,24 +295,15 @@ class MoreMenuViewModel @Inject constructor(
     }
 
     private fun getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled: Boolean): List<MoreMenuUiModel> {
-        val menu = if (isDiscountPromoTypeEnabled) {
-            listOf(
-                MoreMenuUiModel.Copy(
-                    StringHandler.ResourceString(R.string.voucher_bs_duplikat)
-                ),
-                MoreMenuUiModel.Clipboard(
-                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
-                )
+        return listOf(
+            MoreMenuUiModel.DuplicateVoucher(
+                title = StringHandler.ResourceString(R.string.voucher_bs_duplikat),
+                enabled = isDiscountPromoTypeEnabled
+            ),
+            MoreMenuUiModel.Clipboard(
+                StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
             )
-        } else {
-            listOf(
-                MoreMenuUiModel.Clipboard(
-                    StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
-                )
-            )
-        }
-
-        return menu
+        )
     }
 
     // Can be used from bottomsheet recurring period
