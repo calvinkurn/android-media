@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_title_strike"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_title_strike"
@@ -32,6 +33,7 @@
         android:layout_marginEnd="2dp"
         android:textColor="@color/Unify_NN400"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
+        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_icon"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
         app:typographyType="display_3"
@@ -183,12 +185,12 @@
         android:layout_marginEnd="12dp"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
-        tools:descriptionText="Maaf, pengiriman terjadwal belum tersedia untuk beberapa produk pada kategori ini."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_2"
         app:tickerShapeType="loose"
         app:tickerType="announcement"
+        tools:descriptionText="Maaf, pengiriman terjadwal belum tersedia untuk beberapa produk pada kategori ini."
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.TipsUnify
