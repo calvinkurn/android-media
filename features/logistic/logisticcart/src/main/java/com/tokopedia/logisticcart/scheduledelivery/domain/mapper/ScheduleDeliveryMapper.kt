@@ -25,7 +25,9 @@ class ScheduleDeliveryMapper @Inject constructor() {
             isFulfillment = ratesParam.is_fulfillment,
             shopTier = ratesParam.shop_tier,
             orderValue = ratesParam.order_value.toLongOrZero(),
-            cartData = ratesParam.cart_data
+            cartData = ratesParam.cart_data,
+            insurance = ratesParam.insurance,
+            productInsurance = ratesParam.product_insurance
         )
     }
 }

@@ -45,6 +45,10 @@ data class ScheduleDeliveryParam(
     val orderValue: Long = 0,
     @SerializedName("cart_data")
     val cartData: String = "",
+    @SerializedName("insurance")
+    val insurance: String = "",
+    @SerializedName("product_insurance")
+    val productInsurance: String = "",
 ) {
 
     fun toMap() = mapOf(
