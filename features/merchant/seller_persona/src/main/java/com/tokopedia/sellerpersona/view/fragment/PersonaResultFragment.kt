@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
@@ -25,7 +28,6 @@ import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
-import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaResultViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,9 +55,17 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     private val viewModel: PersonaResultViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PersonaResultViewModel::class.java)
     }
+    private val args: PersonaResultFragmentArgs by navArgs()
+    private val backPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                this@PersonaResultFragment.handleOnBackPressed()
+            }
+        }
+    }
+
     private var isPersonaActive = false
     private var personaData: PersonaDataUiModel? = null
-    private var shouldShowDefaultApplyButton = false
     private val impressHolder by lazy { ImpressHolder() }
 
     override fun bind(
@@ -64,30 +74,49 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         return FragmentPersonaResultBinding.inflate(layoutInflater, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        fetchPersonaList(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fetchPersonaData()
+
         setupView()
-        observeNavigationResult()
         observePersonaData()
         observePersonaToggleStatus()
+        setupOnBackPressed()
     }
 
     override fun inject() {
         daggerComponent?.inject(this)
     }
 
-    private fun observeNavigationResult() {
-        findNavController().currentBackStackEntry?.savedStateHandle
-            ?.getLiveData<PersonaUiModel>(PersonaSelectTypeFragment.KEY_SELECTED_PERSONA)
-            ?.observe(viewLifecycleOwner) {
-                shouldShowDefaultApplyButton = true
-                viewModel.setPersona(it)
+    private fun setupOnBackPressed() {
+        val paramPersona = args.paramPersona
+        if (paramPersona.isNotBlank()) {
+            activity?.onBackPressedDispatcher?.addCallback(
+                viewLifecycleOwner, backPressedCallback
+            )
+        }
+    }
+
+    private fun handleOnBackPressed() {
+        context?.let {
+            val dialog = DialogUnify(
+                it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
+            )
+            with(dialog) {
+                setTitle(it.getString(R.string.sp_poup_exit_title))
+                setDescription(it.getString(R.string.sp_popup_exit_result_description))
+                setPrimaryCTAText(it.getString(R.string.sp_popup_exit_result_primary_cta))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
+                setSecondaryCTAClickListener {
+                    findNavController().navigateUp()
+                    dismiss()
+                }
+                show()
             }
+        }
     }
 
     private fun observePersonaToggleStatus() {
@@ -145,7 +174,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             when (it) {
                 is Success -> {
                     this.personaData = it.data
-                    showPersonaData(it.data)
+                    showPersonaData()
                 }
                 is Fail -> handleError()
             }
@@ -163,13 +192,14 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         }
     }
 
-    private fun showPersonaData(data: PersonaDataUiModel) {
+    private fun showPersonaData() {
+        val data = personaData ?: return
         binding?.run {
             errorViewPersonaResult.gone()
             groupSpResultComponents.visible()
             isPersonaActive = data.personaStatus == PersonaStatus.ACTIVE
 
-            setTextPersonaActiveStatus(isPersonaActive)
+            setTextPersonaActiveStatus(true)
             setTipsVisibility(data.persona)
             setupSwitcher()
             setupApplyButton()
@@ -189,13 +219,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             )
 
             btnSpApplyPersona.setOnClickListener {
-                val status = if (switchSpActivatePersona.isChecked) {
-                    PersonaStatus.ACTIVE
-                } else {
-                    PersonaStatus.INACTIVE
-                }
-                btnSpApplyPersona.isLoading = true
-                viewModel.toggleUserPersona(status)
+                toggleSellerPersona()
                 SellerPersonaTracking.sendClickSellerPersonaResultSavePersonaEvent(
                     persona.value,
                     switchSpActivatePersona.isChecked
@@ -204,9 +228,21 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         }
     }
 
+    private fun toggleSellerPersona() {
+        binding?.run {
+            val status = if (switchSpActivatePersona.isChecked) {
+                PersonaStatus.ACTIVE
+            } else {
+                PersonaStatus.INACTIVE
+            }
+            viewModel.toggleUserPersona(status)
+            btnSpApplyPersona.isLoading = true
+        }
+    }
+
     private fun setupApplyButton() {
         binding?.run {
-            if (shouldShowDefaultApplyButton) {
+            if (args.paramPersona.isNotBlank()) {
                 btnSpApplyPersona.visible()
                 btnSpApplyPersona.text = root.context.getString(R.string.sp_apply)
             } else {
@@ -217,11 +253,12 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     private fun setupSwitcher() {
         binding?.run {
-            switchSpActivatePersona.isChecked = isPersonaActive
+            if (args.paramPersona.isBlank()) {
+                switchSpActivatePersona.isChecked = isPersonaActive
+            }
             switchSpActivatePersona.setOnCheckedChangeListener { _, isChecked ->
-                val shouldBtnVisible = isPersonaActive != isChecked
-                if (!shouldShowDefaultApplyButton) {
-                    if (shouldBtnVisible) {
+                if (args.paramPersona.isBlank()) {
+                    if (isPersonaActive != isChecked) {
                         btnSpApplyPersona.visible()
                         btnSpApplyPersona.text = root.context.getString(R.string.sp_apply_changes)
                     } else {
@@ -259,11 +296,9 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         }
     }
 
-    private fun fetchPersonaList(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            showLoadingState()
-            viewModel.fetchPersonaData()
-        }
+    private fun fetchPersonaData() {
+        showLoadingState()
+        viewModel.fetchPersonaData()
     }
 
     private fun showLoadingState() {

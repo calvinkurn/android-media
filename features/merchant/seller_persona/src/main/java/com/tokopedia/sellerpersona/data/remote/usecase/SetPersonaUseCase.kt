@@ -4,9 +4,9 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireAnswerParam
 import com.tokopedia.sellerpersona.data.remote.model.SetPersonaResponse
-import com.tokopedia.sellerpersona.data.remote.model.SetUserPersonaDataModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -28,10 +28,18 @@ class SetPersonaUseCase @Inject constructor(
         shopId: String,
         persona: String,
         answers: List<QuestionnaireAnswerParam>
-    ): SetUserPersonaDataModel {
-        val param = createParam(shopId, persona, answers).parameters
-        setRequestParams(param)
-        return executeOnBackground().setUserPersonaData
+    ): String {
+        try {
+            val param = createParam(shopId, persona, answers).parameters
+            setRequestParams(param)
+            val result = executeOnBackground().setUserPersonaData
+            if (result.isError) {
+                throw MessageErrorException(result.errorMsg)
+            }
+            return result.persona
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     private fun createParam(

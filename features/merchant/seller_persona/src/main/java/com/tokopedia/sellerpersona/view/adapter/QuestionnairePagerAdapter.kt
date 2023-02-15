@@ -19,6 +19,7 @@ import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
 class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHolder>() {
 
     private val pages: MutableList<QuestionnairePagerUiModel> = mutableListOf()
+    private var onOptionItemSelected: (() -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -43,6 +44,10 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
         notifyItemRangeChanged(Int.ZERO, pages.size.minus(Int.ONE))
     }
 
+    fun onOptionItemSelectedListener(onOptionItemSelected: () -> Unit) {
+        this.onOptionItemSelected = onOptionItemSelected
+    }
+
     inner class PagerViewHolder(
         private val binding: ItemQuestionnairePagerBinding
     ) : ViewHolder(binding.root), BaseOptionViewHolder.Listener {
@@ -60,6 +65,7 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
                     handleMultipleOptionSelected(option)
                 }
             }
+            onOptionItemSelected?.invoke()
         }
 
         fun bind() {

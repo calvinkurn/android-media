@@ -6,18 +6,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
-import com.tokopedia.sellerpersona.data.remote.model.TogglePersonaModel
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
-import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -60,16 +57,5 @@ class PersonaResultViewModel @Inject constructor(
         }, onError = {
             _togglePersonaStatus.postValue(Fail(it))
         })
-    }
-
-    fun setPersona(persona: PersonaUiModel) {
-        launch(context = dispatchers.io) {
-            val personaData = PersonaDataUiModel(
-                persona = persona.value,
-                personaStatus = PersonaStatus.ACTIVE,
-                personaData = persona
-            )
-            _personaData.postValue(Success(personaData))
-        }
     }
 }

@@ -5,7 +5,6 @@ import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
-import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -135,20 +134,6 @@ class PersonaResultViewModelTest {
             }
 
             viewModel.togglePersonaStatus.verifyErrorEquals(Fail(throwable))
-        }
-    }
-
-    @Test
-    fun `when set persona value should update the live data`() {
-        coroutineTestRule.runBlockingTest {
-            val persona = PersonaUiModel()
-            val personaData = PersonaDataUiModel(
-                persona = persona.value,
-                personaStatus = PersonaStatus.ACTIVE,
-                personaData = persona
-            )
-            viewModel.setPersona(persona)
-            viewModel.personaData.verifySuccessEquals(Success(personaData))
         }
     }
 }

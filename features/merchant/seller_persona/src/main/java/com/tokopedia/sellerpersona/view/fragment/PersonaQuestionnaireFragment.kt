@@ -23,7 +23,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireAnswerParam
-import com.tokopedia.sellerpersona.data.remote.model.SetUserPersonaDataModel
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaQuestionnaireBinding
 import com.tokopedia.sellerpersona.view.adapter.QuestionnairePagerAdapter
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
@@ -121,6 +120,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
 
     private fun setupViewPager() {
         binding?.vpSpQuestionnaire?.run {
+            currentItem
             adapter = pagerAdapter
             isUserInputEnabled = false
 
@@ -131,8 +131,19 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                     setPreviousButtonVisibility(position)
                     updateProgressBar(position)
                     lastPosition = position
+                    setOnOptionItemSelected()
                 }
             })
+
+            pagerAdapter.onOptionItemSelectedListener(::setOnOptionItemSelected)
+        }
+    }
+
+    private fun setOnOptionItemSelected() {
+        binding?.run {
+            val isAlreadySelecting = pagerAdapter.getPages()
+                .getOrNull(vpSpQuestionnaire.currentItem)?.options?.any { it.isSelected }.orFalse()
+            btnSpNext.isEnabled = isAlreadySelecting
         }
     }
 
@@ -172,6 +183,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
 
     private fun setupView() {
         binding?.run {
+            btnSpNext.isEnabled = false
             btnSpNext.setOnClickListener {
                 val currentPosition = binding?.vpSpQuestionnaire?.currentItem.orZero()
                 val isAlreadySelecting = pagerAdapter.getPages()
@@ -223,7 +235,11 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
             viewModel.submitAnswer(answers)
             viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
                 when (it) {
-                    is Success -> onSuccessPersonaResult(it.data)
+                    is Success -> {
+                        val action = PersonaQuestionnaireFragmentDirections
+                            .actionQuestionnaireToResult(paramPersona = it.data)
+                        findNavController().navigate(action)
+                    }
                     is Fail -> {
                         dismissSubmitQuizLoadingState()
                         showErrorToaster()
@@ -259,10 +275,10 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
 
     private fun showErrorToaster() {
         view?.run {
-            val dp64 = context.resources.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+            val dp48 = context.resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl6
             )
-            Toaster.toasterCustomBottomHeight = dp64
+            Toaster.toasterCustomBottomHeight = dp48
             Toaster.build(
                 rootView,
                 context.getString(R.string.sp_toaster_error_message),
@@ -270,15 +286,6 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 Toaster.TYPE_ERROR,
                 context.getString(R.string.sp_oke)
             ).show()
-        }
-    }
-
-    private fun onSuccessPersonaResult(data: SetUserPersonaDataModel) {
-        if (!data.isError) {
-            findNavController().navigate(R.id.actionQuestionnaireToResult)
-        } else {
-            dismissSubmitQuizLoadingState()
-            showErrorToaster()
         }
     }
 

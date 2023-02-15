@@ -30,13 +30,17 @@
             android:id="@+id/actionResultFragmentToSelectTypeFragment"
             app:destination="@id/selectTypeFragment"
             app:enterAnim="@anim/nav_default_enter_anim" />
+        <argument
+            android:name="param_persona"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/questionnaireFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment"
         android:label="@string/sp_opening_page_type"
-        tools:layout="@layout/fragment_persona_questionnaire" >
+        tools:layout="@layout/fragment_persona_questionnaire">
         <action
             android:id="@+id/actionQuestionnaireToResult"
             app:destination="@id/resultFragment"
@@ -48,10 +52,16 @@
         android:id="@+id/selectTypeFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaSelectTypeFragment"
         android:label="@string/sp_select_seller_type"
-        tools:layout="@layout/fragment_persona_select_type" >
+        tools:layout="@layout/fragment_persona_select_type">
         <argument
-            android:name="persona"
+            android:name="param_persona"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/actionSelectTypeToResult"
+            app:destination="@id/resultFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/selectTypeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

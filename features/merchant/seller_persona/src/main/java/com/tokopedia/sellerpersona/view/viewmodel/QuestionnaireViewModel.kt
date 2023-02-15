@@ -31,11 +31,11 @@ class QuestionnaireViewModel @Inject constructor(
 
     val questionnaire: LiveData<Result<List<QuestionnairePagerUiModel>>>
         get() = _questionnaire
-    val setPersonaResult: LiveData<Result<SetUserPersonaDataModel>>
+    val setPersonaResult: LiveData<Result<String>>
         get() = _setPersonaResult
 
     private val _questionnaire = MutableLiveData<Result<List<QuestionnairePagerUiModel>>>()
-    private val _setPersonaResult = MutableLiveData<Result<SetUserPersonaDataModel>>()
+    private val _setPersonaResult = MutableLiveData<Result<String>>()
 
     fun fetchQuestionnaire() {
         launchCatchError(block = {
@@ -49,8 +49,8 @@ class QuestionnaireViewModel @Inject constructor(
     fun submitAnswer(answers: List<QuestionnaireAnswerParam>) {
         launchCatchError(block = {
             val shopId = userSession.get().shopId
-            val response = setPersonaUseCase.get().execute(shopId, String.EMPTY, answers)
-            _setPersonaResult.postValue(Success(response))
+            val persona = setPersonaUseCase.get().execute(shopId, String.EMPTY, answers)
+            _setPersonaResult.postValue(Success(persona))
         }, onError = {
             _setPersonaResult.postValue(Fail(it))
         })

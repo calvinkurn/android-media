@@ -30,7 +30,9 @@
     <string name="sp_oke">Oke</string>
     <string name="sp_poup_exit_title">Yakin mau keluar?</string>
     <string name="sp_popup_exit_description">Jawaban kuismu tidak akan tersimpan jika kamu keluar sekarang.</string>
+    <string name="sp_popup_exit_result_description">Personalisasi tidak akan diterapkan di Halaman Home jika kamu keluar sekarang, lho. </string>
     <string name="sp_popup_exit_primary_cta">Lanjutkan Kuis</string>
+    <string name="sp_popup_exit_result_primary_cta">Tidak</string>
     <string name="sp_popup_exit_secondary_cta">Ya, Keluar</string>
     <string name="sp_toaster_error_message">Oops, perubahan gagal disimpan. Coba lagi, ya.</string>
     <string name="sp_common_global_error_title">Oops, informasi gagal ditampilkan</string>
