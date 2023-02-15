@@ -68,14 +68,14 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetInitiateVoucherPageResponse>()
-        return mapper.map(data).copy(discountActive = false)
+        return mapper.map(data)
     }
 
     suspend fun execute(): VoucherCreationMetadata {
         val request = buildRequest()
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetInitiateVoucherPageResponse>()
-        return mapper.map(data).copy(discountActive = false)
+        return mapper.map(data)
     }
 
     private fun buildRequest(): GraphqlRequest {
