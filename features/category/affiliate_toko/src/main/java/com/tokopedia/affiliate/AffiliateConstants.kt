@@ -180,7 +180,6 @@ const val PAGE_ANNOUNCEMENT_HOME = 1
 const val PAGE_ANNOUNCEMENT_PROMOSIKAN = 2
 const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
 
-const val AFFILIATE_SHOP_ADP = "aff_shop_adp"
 const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
 
 const val PAGE_TYPE_PDP = "pdp"

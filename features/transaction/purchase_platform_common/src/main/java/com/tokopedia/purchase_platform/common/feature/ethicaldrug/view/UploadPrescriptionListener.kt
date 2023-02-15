@@ -4,6 +4,9 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.U
 
 interface UploadPrescriptionListener {
 
-    fun uploadPrescriptionAction(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
-
+    fun uploadPrescriptionAction(
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+        buttonText: String,
+        buttonNotes: String
+    )
 }
