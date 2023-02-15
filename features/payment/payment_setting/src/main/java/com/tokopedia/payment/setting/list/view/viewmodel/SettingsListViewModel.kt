@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 class SettingsListViewModel @Inject constructor(
         private val getCreditCardListUseCase: GetCreditCardListUseCase,
+        private val getSettingBannerUseCase: GetCreditCardListUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {

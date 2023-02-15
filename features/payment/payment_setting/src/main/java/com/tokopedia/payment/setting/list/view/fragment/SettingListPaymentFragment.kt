@@ -25,6 +25,7 @@ import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivi
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
 import com.tokopedia.payment.setting.list.model.PaymentSignature
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
+import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
@@ -73,7 +74,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                 settingsListViewModel.checkVerificationPhone()
             }
         }
-        updateViewCounter(adapter.dataSize)
         observeViewModel()
     }
 
@@ -83,7 +83,11 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             when (it) {
                 is Success -> {
                     onPaymentSignature(it.data.paymentSignature)
-                    renderList(ArrayList(it.data.creditCard.cards ?: arrayListOf()))
+                    val list = mutableListOf<SettingListPaymentModel>()
+                    val cards = it.data.creditCard.cards
+                    list.add(SettingListCardCounterModel(cards?.size ?: 0))
+                    list.addAll(cards ?: arrayListOf())
+                    renderList(list)
                 }
                 is Fail -> showGetListError(it.throwable)
             }
@@ -97,10 +101,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                 onNeedVerifPhone()
             }
         })
-    }
-
-    private fun updateViewCounter(size: Int) {
-        view?.counterCreditCard?.text = getString(R.string.payment_label_saved_card, size)
     }
 
     override fun getAdapterTypeFactory(): SettingListPaymentAdapterTypeFactory {
@@ -142,7 +142,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
-        updateViewCounter(list.size)
         if (list.size in CARD_LIST_RANGE_FOR_ADD_MORE_CARD) {
             list.add(SettingListAddCardModel())
         }
@@ -195,13 +194,11 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     private fun hideAuthPaymentView() {
-        counterCreditCard?.visibility = View.GONE
         dividerListPayment?.visibility = View.GONE
         authenticateCreditCard?.visibility = View.GONE
     }
 
     private fun showAuthPaymentView() {
-        counterCreditCard?.visibility = View.VISIBLE
         dividerListPayment?.visibility = View.VISIBLE
         authenticateCreditCard?.visibility = View.VISIBLE
     }

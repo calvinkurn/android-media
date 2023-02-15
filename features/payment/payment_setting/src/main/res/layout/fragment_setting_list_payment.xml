@@ -7,14 +7,6 @@
     android:background="@color/Unify_Background"
     android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/counterCreditCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/unify_space_16"
-        app:typographyType="body_2"
-        tools:text="@string/payment_label_saved_card" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

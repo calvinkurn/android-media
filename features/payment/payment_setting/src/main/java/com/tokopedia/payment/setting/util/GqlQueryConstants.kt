@@ -63,3 +63,17 @@ PaymentQuery{
     }
    }
 }"""
+
+const val GQL_GET_SETTING_BANNER = """
+    query cc_cobrand_getccsettingbanner(${'$'}params: String!) {
+        cc_cobrand_getccsettingbanner(request: ${'$'}params) {
+            id
+            code
+            title
+            title_body_message
+            assets
+            button_name
+            button_redirect_url
+        }
+    }
+"""
