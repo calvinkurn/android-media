@@ -725,7 +725,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE)}, DF_BASE_SELLER_APP, R.string.title_tokopedia_flash_sale))
             add(DFP({ it.startsWith(SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_tokopedia_flash_sale_campaign_detail))
             add(DFP({ it.startsWith(SELLER_MVC_INTRO)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_intro))
-            add(DFP({ it.startsWith(SELLER_MVC_LIST)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_list))
+            add(DFP({ it.startsWithPattern(SELLER_MVC_LIST)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_list))
             add(DFP({ it.startsWithPattern(SELLER_MVC_CREATE)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWithPattern(SELLER_MVC_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_detail))
 

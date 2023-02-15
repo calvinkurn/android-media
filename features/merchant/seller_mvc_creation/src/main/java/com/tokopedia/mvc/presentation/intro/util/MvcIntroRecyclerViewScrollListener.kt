@@ -8,11 +8,15 @@ abstract class MvcIntroRecyclerViewScrollListener(
 ) : RecyclerView.OnScrollListener() {
 
     abstract fun changeBackground(position: Int)
+    abstract fun hideViewMoreButton()
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         val totalItem = layoutManager?.itemCount ?: return
 
         val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
         changeBackground(firstVisiblePosition)
+        if (dy > 0) {
+            hideViewMoreButton()
+        }
     }
 }

@@ -30,6 +30,7 @@ import com.tokopedia.mvc.presentation.product.list.ProductListFragment
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.presentation.quota.fragment.QuotaInfoFragment
+import com.tokopedia.mvc.presentation.redirection.MvcRedirectionPageFragment
 import com.tokopedia.mvc.presentation.summary.fragment.SummaryFragment
 import dagger.Component
 
@@ -75,4 +76,6 @@ interface MerchantVoucherCreationComponent {
     fun inject(fragment: MvcIntroFragment)
 
     fun inject(fragment: QuotaInfoFragment)
+
+    fun inject(fragment: MvcRedirectionPageFragment)
 }

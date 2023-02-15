@@ -370,6 +370,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller mvc redirection page, should return internal shop mvc redirection page`() {
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_REDIRECTION_PAGE, expectedDeepLink)
+    }
+
+    @Test
     fun `check seller mvc intro, should return internal shop mvc intro`() {
         val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_INTRO, expectedDeepLink)
