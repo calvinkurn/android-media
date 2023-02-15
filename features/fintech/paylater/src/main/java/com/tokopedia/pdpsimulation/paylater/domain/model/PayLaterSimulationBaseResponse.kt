@@ -63,6 +63,7 @@ data class Detail(
     @SerializedName("recommended") val recommendationDetail: RecommendationDetail?,
     @SerializedName("benefits") val benefits: List<String>?,
     @SerializedName("disable") val paylaterDisableDetail: DisableDetail?,
+    @SerializedName("ticker") val ticker: Ticker = Ticker(),
     @SerializedName("cta") val cta: Cta,
     @SerializedName("installment_details") val installementDetails: InstallmentDetails?,
     @SerializedName("user_state") val userState: String?,
@@ -87,7 +88,13 @@ data class RecommendationDetail(
 data class DisableDetail(
 
     @SerializedName("status") val status: Boolean?,
-    @SerializedName("header") val header: String?
+) : Parcelable
+
+@Parcelize
+data class Ticker(
+    @SerializedName("is_shown") val isShown: Boolean = false,
+    @SerializedName("type") val type: String = "",
+    @SerializedName("content") val content: String = "",
 ) : Parcelable
 
 @Parcelize

@@ -41,6 +41,11 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               status
               header
             }
+            ticker {
+              is_shown
+              type
+              content
+            }
             cta {
               name
               android_url

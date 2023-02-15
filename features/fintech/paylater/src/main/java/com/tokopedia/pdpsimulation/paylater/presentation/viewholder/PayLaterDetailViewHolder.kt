@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
@@ -16,6 +17,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteracti
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
@@ -26,6 +28,9 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     companion object {
         val LAYOUT = R.layout.paylater_partner_card_item
         const val TYPE_FILLED = "filled"
+        private const val TICKER_TYPE_WARNING = "warning"
+        private const val TICKER_TYPE_DANGER = "danger"
+        private const val TICKER_TYPE_INFO = "info"
     }
 
     private val context: Context = itemView.context
@@ -35,6 +40,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         setUpRecommendation(element)
         setPayLaterImage(element)
         setUpFooter(element)
+        setUpTicker(element)
         setUpCta(element)
     }
 
@@ -83,14 +89,23 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         if (element.paylaterDisableDetail?.status == true) {
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
-            itemView.payLaterStatusTicker.visible()
             itemView.disableTitleDetail()
-            itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.header.orEmpty())
         } else {
             itemView.payLaterActionCta.visible()
-            itemView.payLaterStatusTicker.gone()
             itemView.enableTitleDetail()
             setPayLaterBenefits(element)
+        }
+    }
+
+    private fun setUpTicker(element: Detail) {
+        itemView.payLaterStatusTicker.shouldShowWithAction(element.ticker.isShown) {
+            itemView.payLaterStatusTicker.setHtmlDescription(element.ticker.content)
+            itemView.payLaterStatusTicker.tickerType = when(element.ticker.type) {
+                TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
+                TICKER_TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
+                TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+                else -> Ticker.TYPE_INFORMATION
+            }
         }
     }
 
