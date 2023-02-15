@@ -1472,17 +1472,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     )
                 }
                 STATUS_PERSONA_ACTIVE -> {
-                    if (!it.isFinishing && sharedPref.shouldShowPersonaHomePopup(userSession.userId)) {
-                        with(SellerPersonaBottomSheet.newInstance()) {
-                            setOnDismissListener {
+                    val btmSheet = SellerPersonaBottomSheet.newInstance()
+                    val shouldShowBottomSheet =
+                        !it.isFinishing && !btmSheet.isAdded && sharedPref.shouldShowPersonaHomePopup(
+                            userSession.userId
+                        )
+                    if (shouldShowBottomSheet) {
+                        runCatching {
+                            btmSheet.setOnDismissListener {
                                 sharedPref.markPersonaHomePopupShown(userSession.userId)
                             }
-                            show(childFragmentManager)
+                            btmSheet.show(childFragmentManager)
                         }
                     }
                     sharedPref.setPersonaEntryPointVisibility(
-                        userSession.userId,
-                        shouldVisible = true
+                        userSession.userId, shouldVisible = true
                     )
                 }
                 STATUS_PERSONA_INACTIVE, STATUS_PERSONA_SHOW_POPUP -> {
