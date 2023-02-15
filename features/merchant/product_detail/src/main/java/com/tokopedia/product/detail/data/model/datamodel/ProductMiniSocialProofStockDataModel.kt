@@ -26,6 +26,7 @@ data class ProductMiniSocialProofStockDataModel(
         const val WISHLIST = "wishlist"
         const val VIEW_COUNT = "viewCount"
         const val BUYER_PHOTOS = "buyerPhotos"
+        const val TALK = "talk"
         const val STOCK = "stock"
         private const val MAX_SOCIAL_PROOF_ITEM = 4
     }

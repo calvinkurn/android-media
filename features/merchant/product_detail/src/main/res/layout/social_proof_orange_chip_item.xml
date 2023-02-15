@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pdp_social_proof_orange_chip"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="7dp"
+    tools:ignore="UselessParent">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/socialProofChipIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="4dp"
+        android:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/socialProofChipTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_YN500"
+        app:typographyType="display_2"
+        tools:text="Produk Terbaru" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/socialProofChipSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_YN500"
+        android:visibility="gone"
+        app:typographyType="display_2"
+        tools:text="" />
+
+</LinearLayout>

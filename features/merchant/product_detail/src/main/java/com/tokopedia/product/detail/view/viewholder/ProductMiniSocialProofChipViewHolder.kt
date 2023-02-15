@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemType
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifyprinciples.Typography
 
@@ -23,10 +23,10 @@ class ProductMiniSocialProofChipViewHolder(
         if (socialProof.type != ProductMiniSocialProofItemType.ProductMiniSocialProofChip) return
 
         when (socialProof.key) {
-            ProductMiniSocialProofDataModel.RATING -> {
+            ProductMiniSocialProofStockDataModel.RATING -> {
                 renderChipRating(socialProof)
             }
-            ProductMiniSocialProofDataModel.TALK -> {
+            ProductMiniSocialProofStockDataModel.TALK -> {
                 renderChipTalk(socialProof, componentTrackDataModel)
             }
             else -> {

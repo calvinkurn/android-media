@@ -65,7 +65,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMerchantVoucherSummaryViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniShopWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofViewHolder
+import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder

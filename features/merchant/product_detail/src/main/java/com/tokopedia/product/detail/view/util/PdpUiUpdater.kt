@@ -222,15 +222,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF, loadInitialData) {
-                miniSocialProofMap?.run {
-                    rating = it.basic.stats.rating
-                    ratingCount = it.basic.stats.countReview.toIntOrZero()
-                    talkCount = it.basic.stats.countTalk.toIntOrZero()
-                    itemSoldFmt = it.basic.txStats.itemSoldFmt
-                }
-            }
-
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK, loadInitialData) {
                 miniSocialProofStockMap?.run {
                     rating = it.basic.stats.rating
@@ -453,13 +444,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF) {
-                miniSocialProofMap?.run {
-                    wishlistCount = it.wishlistCount.toIntOrZero()
-                    viewCount = it.productView.toIntOrZero()
-                    shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReview.buyerMediaCount
-                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
-                    setSocialProofData()
+                if (it.socialProof.isEmpty()) {
+                    removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
+                } else {
+                    miniSocialProofMap?.run {
+                        items = it.socialProof
+                        shouldRender = true
+                    }
                 }
             }
 
