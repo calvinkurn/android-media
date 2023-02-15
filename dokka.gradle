@@ -1,0 +1,26 @@
+
+def sampleModuleWhitelist = [
+        "medialoader",
+        "mediauploader"
+]
+
+def dirName = "tkpd-docs"
+
+subprojects {
+    def projectName = it.name
+
+    if (sampleModuleWhitelist.contains(projectName)) {
+        apply plugin: 'org.jetbrains.dokka'
+    }
+
+    project.afterEvaluate {
+        if (project.tasks.findByName("dokkaHtml") != null) {
+            tasks.named("dokkaHtml") {
+
+                dokkaHtmlPartial {
+                    outputDirectory.set(file(dirName))
+                }
+            }
+        }
+    }
+}

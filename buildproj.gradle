@@ -49,13 +49,7 @@ allprojects {
     }
 }
 
-task cleanDokkaModuleDocs() {
-    subprojects {
-        delete file("$rootProject.name-$project.name-dokka")
-    }
-}
-
-task clean(type: Delete, dependsOn: cleanDokkaModuleDocs) {
+task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
@@ -173,11 +167,6 @@ subprojects {
             }
         }catch(Exception ignored) {
 
-        }
-        if (project.tasks.findByName("dokkaHtml") != null) {
-            tasks.named("dokkaHtml") {
-                outputDirectory.set(file("$rootProject.name-$project.name-dokka"))
-            }
         }
     }
 }

@@ -65,7 +65,7 @@ if (hasProperty('buildScan')) {
 }
 
 apply from: 'buildproj.gradle'
-
+apply from: 'dokka.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
 
 //Installing Git Hooks
