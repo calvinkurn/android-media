@@ -127,7 +127,7 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         if (applink == ApplinkConst.SALDO) {
             onGoToSaldoDetail()
         } else {
-            RouteManager.route(context, "https://www.tokopedia.com/help")
+            RouteManager.route(context, applink)
         }
     }
 
