@@ -652,6 +652,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.arInfo = arInfo
             p2UiData.obatKeras = responseData.obatKeras
             p2UiData.customInfoTitle = responseData.customInfoTitle
+            p2UiData.socialProof = responseData.socialProof
         }
         return p2UiData
     }
