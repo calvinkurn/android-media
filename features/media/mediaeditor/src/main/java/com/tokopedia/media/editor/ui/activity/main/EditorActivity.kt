@@ -131,8 +131,10 @@ class EditorActivity : BaseEditorActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE && permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            saveImageToGallery()
+        if (permissions.isNotEmpty()) {
+            if (requestCode == PERMISSION_REQUEST_CODE && permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+                saveImageToGallery()
+            }
         }
     }
 
