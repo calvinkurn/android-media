@@ -110,11 +110,6 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
-    override fun onDestroy() {
-        viewModel.cleanImageCache()
-        super.onDestroy()
-    }
-
     override fun onHeaderActionClick() {
         if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             ActivityCompat.requestPermissions(
@@ -152,6 +147,8 @@ class EditorActivity : BaseEditorActivity() {
             )
 
             editorHomeAnalytics.clickUpload()
+
+            viewModel.cleanImageCache()
 
             val intent = Intent()
             intent.putExtra(RESULT_INTENT_EDITOR, result)
