@@ -113,14 +113,12 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOU
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
-import com.tokopedia.chatbot.websocket.ChatbotWebSocket
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
+import com.tokopedia.chatbot.websocket.*
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -252,6 +250,7 @@ class ChatbotPresenter @Inject constructor(
             }
             is ChatbotWebSocketAction.Failure -> {
                 handleSocketFailure(messageId)
+                handleSocketFailure(socketResponse.exception)
             }
             is ChatbotWebSocketAction.Closed -> {
                 handleSocketClosed(socketResponse.code, messageId)
@@ -277,6 +276,11 @@ class ChatbotPresenter @Inject constructor(
     private fun handleSocketFailure(messageId: String) {
         view.showErrorWebSocket(true)
         retryConnectToWebSocket(messageId)
+    }
+
+
+    private fun handleSocketFailure(exception : ChatbotWebSocketException){
+        view.showErrorLayout(exception)
     }
 
     private fun handleSocketClosed(code: Int, messageId: String) {
@@ -1002,6 +1006,7 @@ class ChatbotPresenter @Inject constructor(
     private fun getTopBotNewSessionFailure(throwable: Throwable, messageId: String) {
         view.loadChatHistory()
         view.enableTyping()
+        view.showErrorLayout(throwable)
         ChatbotNewRelicLogger.logNewRelic(
             false,
             messageId,
@@ -1011,8 +1016,8 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun getTopBotNewSessionSuccess(topBotNewSessionResponse: TopBotNewSessionResponse) {
-        val isNewSession = topBotNewSessionResponse.topBotGetNewSession.isNewSession
-        val isTypingBlocked = topBotNewSessionResponse.topBotGetNewSession.isTypingBlocked
+        val isNewSession = topBotNewSessionResponse.topBotGetNewSession?.isNewSession.orFalse()
+        val isTypingBlocked = topBotNewSessionResponse.topBotGetNewSession?.isTypingBlocked.orTrue()
         handleNewSession(isNewSession)
         handleReplyBox(isTypingBlocked)
     }
@@ -1177,6 +1182,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onFailureVideoUploadEligibility(throwable: Throwable) {
+        view.showErrorLayout(throwable)
         // Add new Relic Here
     }
 

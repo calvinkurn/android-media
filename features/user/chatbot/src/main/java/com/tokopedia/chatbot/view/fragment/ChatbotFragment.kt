@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -34,13 +36,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
-import com.tokopedia.chat_common.data.ImageUploadUiModel
-import com.tokopedia.chat_common.data.MessageUiModel
-import com.tokopedia.chat_common.data.SendableUiModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.Attachment
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
@@ -111,32 +107,16 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
-import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
-import com.tokopedia.chatbot.util.SmoothScroller
-import com.tokopedia.chatbot.util.VideoUploadData
-import com.tokopedia.chatbot.util.VideoUtil
-import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.chatbot.util.*
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
-import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
-import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
-import com.tokopedia.chatbot.view.activity.ChatbotActivity
+import com.tokopedia.chatbot.view.activity.*
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
-import com.tokopedia.chatbot.view.activity.ChatbotOnboardingActivity
-import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.ReplyBubbleBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.util.RecyclerViewScrollListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatOptionListListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
@@ -153,14 +133,10 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
+import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -593,6 +569,7 @@ class ChatbotFragment :
 
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
+        showTopLoading()
         presenter.checkForSession(messageId)
         presenter.checkUploadVideoEligibility(messageId)
         showTicker()
@@ -779,7 +756,7 @@ class ChatbotFragment :
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage) {
             hideSnackBarRetry()
-            presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+            presenter.getExistingChat(messageId, onShowErrorPage(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
         } else {
@@ -798,7 +775,7 @@ class ChatbotFragment :
     override fun loadInitialData() {
         getViewState()?.clearChatOnLoadChatHistory()
         showTopLoading()
-        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+        presenter.getExistingChat(messageId, onShowErrorPage(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
@@ -938,6 +915,81 @@ class ChatbotFragment :
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR
                 )
+            }
+        }
+    }
+
+    private fun onShowErrorPage(): (Throwable) -> Unit {
+        return {
+            if (view != null) {
+                setShowingErrorLayout(it)
+            }
+        }
+    }
+
+    private fun setErrorLayoutForServer() {
+        getBindingView().layoutErrorGlobal.run {
+            visible()
+            getBindingView().homeGlobalError.run {
+                errorAction.text = "Kembali ke Tokopedia Care"
+                setActionClickListener {
+                    val intent = RouteManager.getIntent(requireView().context, "tokopedia://contactus")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    private fun setErrorLayoutForNetwork() {
+        getBindingView().layoutErrorGlobal.run {
+            visible()
+            getBindingView().homeGlobalError.run {
+                setType(NO_CONNECTION)
+                errorAction.text = "Coba lagi"
+                errorSecondaryAction.show()
+                errorSecondaryAction.text = "Ke Pengaturan"
+                setSecondaryActionClickListener {
+                    goToSettingConnection()
+                }
+                setActionClickListener {
+                    loadInitialData()
+                    hideErrorLayoutForNetwork()
+                }
+            }
+        }
+    }
+
+    private fun goToSettingConnection(){
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startActivity(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY))
+            } else {
+                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                startActivity(intent)
+            }
+        }catch (e : Exception){ }
+    }
+
+    private fun hideErrorLayoutForNetwork() {
+        getBindingView().layoutErrorGlobal.gone()
+        getBindingView().layoutChatRoom.show()
+    }
+
+    private fun setShowingErrorLayout(throwable: Throwable){
+        throwable.printStackTrace()
+        when(throwable){
+            is MessageErrorException -> {
+                setErrorLayoutForServer()
+            }
+
+            else -> {
+                if(chatbotAdapter.data.isEmpty()){
+                    setErrorLayoutForNetwork()
+                } else {
+                    hideErrorLayoutForNetwork()
+                }
             }
         }
     }
@@ -1203,6 +1255,10 @@ class ChatbotFragment :
         smallReplyBox?.hide()
     }
 
+    override fun showErrorLayout(throwable: Throwable) {
+        setShowingErrorLayout(throwable)
+    }
+
     private fun sendAnalyticsForVideoUpload(videoFilePath: String) {
         val videoFile = File(videoFilePath)
         val extension = VideoUtil.findVideoExtension(videoFile)
@@ -1327,7 +1383,7 @@ class ChatbotFragment :
             if (rvScrollListener?.hasNextAfterPage == true) {
                 resetData()
                 showTopLoading()
-                presenter.getExistingChat(messageId, onError(), onSuccessResetChatToFirstPage(), onGetChatRatingListMessageError)
+                presenter.getExistingChat(messageId, onShowErrorPage(), onSuccessResetChatToFirstPage(), onGetChatRatingListMessageError)
             } else {
                 getViewState()?.onSendingMessage(
                     messageId,
@@ -1946,7 +2002,7 @@ class ChatbotFragment :
             } else {
                 presenter.getExistingChat(
                     messageId,
-                    onError(),
+                    onShowErrorPage(),
                     onSuccessGetExistingChatFirstTime(),
                     onGetChatRatingListMessageError
                 )

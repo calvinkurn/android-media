@@ -9,192 +9,224 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/footer"
+    <RelativeLayout
+        android:id="@+id/layout_chat_room"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
-            android:id="@+id/floating_invoice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/Unify_N50"
-            android:visibility="gone"
-            tools:visibility="visible"/>
-
         <LinearLayout
-            android:id="@+id/add_comment_area"
+            android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
 
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_quick_reply"
+            <com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
+                android:id="@+id/floating_invoice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_chatbot_3"
-                android:background="@color/chatbot_dms_quick_reply_bg"
-                android:paddingLeft="16dp"
-                android:paddingTop="8dp"
+                android:background="@color/Unify_N50"
                 android:visibility="gone"
-                tools:itemCount="1"
-                tools:listitem="@layout/chatbot_item_quick_reply"
-                tools:visibility="visible" />
-
-            <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/small_reply_box"
-                android:visibility="visible"
                 tools:visibility="visible"/>
 
-            <com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
-                android:id="@+id/big_reply_box"
+            <LinearLayout
+                android:id="@+id/add_comment_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
-                tools:visibility="visible"/>
-
-            <FrameLayout
-                android:id="@+id/rv_attachment_menu_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="8dp"
-                    android:layout_gravity="top"
-                    android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
 
-                <com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
-                    android:id="@+id/rv_attachment_menu"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list_quick_reply"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:paddingTop="24dp"
-                    android:paddingBottom="24dp"
-                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    tools:spanCount="2" />
-            </FrameLayout>
+                    android:layout_marginRight="@dimen/dp_chatbot_3"
+                    android:background="@color/chatbot_dms_quick_reply_bg"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/chatbot_item_quick_reply"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/small_reply_box"
+                    android:visibility="visible"
+                    tools:visibility="visible"/>
+
+                <com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
+                    android:id="@+id/big_reply_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    tools:visibility="visible"/>
+
+                <FrameLayout
+                    android:id="@+id/rv_attachment_menu_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_gravity="top"
+                        android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
+
+                    <com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+                        android:id="@+id/rv_attachment_menu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never"
+                        android:paddingTop="24dp"
+                        android:paddingBottom="24dp"
+                        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        tools:spanCount="2" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <include
+                android:id="@+id/chatbot_view_help_rate"
+                layout="@layout/chatbot_layout_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/spacing_lvl3"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+
         </LinearLayout>
 
-        <include
-            android:id="@+id/chatbot_view_help_rate"
-            layout="@layout/chatbot_layout_rating"
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/chatbot_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/spacing_lvl3"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            app:enableAutoSlide="true"
+            app:tickerShapeType="full" />
 
-
-    </LinearLayout>
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/chatbot_ticker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:enableAutoSlide="true"
-        app:tickerShapeType="full" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/dateIndicatorContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/chatbot_ticker"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
-        android:visibility="gone"
-        app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="@color/chatbot_dms_date_indicator_bg"
-        tools:visibility="visible">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/dateIndicator"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dateIndicatorContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/chatbot_dms_date_indicator_text"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:paddingTop="@dimen/spacing_lvl1"
-            android:paddingBottom="@dimen/spacing_lvl1"
-            android:paddingLeft="@dimen/unify_space_12"
-            android:paddingRight="@dimen/unify_space_12"
-            app:typographyType="body_3"
-            tools:text="1 Jan"/>
+            android:layout_below="@id/chatbot_ticker"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="@color/chatbot_dms_date_indicator_bg"
+            tools:visibility="visible">
 
-    </androidx.cardview.widget.CardView>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/dateIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/chatbot_dms_date_indicator_text"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:paddingTop="@dimen/spacing_lvl1"
+                android:paddingBottom="@dimen/spacing_lvl1"
+                android:paddingLeft="@dimen/unify_space_12"
+                android:paddingRight="@dimen/unify_space_12"
+                app:typographyType="body_3"
+                tools:text="1 Jan"/>
 
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/footer"
-        android:layout_below="@id/chatbot_ticker"
-        android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/unify_space_8">
+        </androidx.cardview.widget.CardView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:descendantFocusability="beforeDescendants"
-            android:scrollbars="vertical" />
+            android:layout_above="@+id/footer"
+            android:layout_below="@id/chatbot_ticker"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/unify_space_8">
 
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:descendantFocusability="beforeDescendants"
+                android:scrollbars="vertical" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/header_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/swipe_refresh_layout"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/bg_yellow_border_yelow"
-        android:gravity="center_horizontal"
-        android:padding="5dp"
-        android:singleLine="true"
-        android:visibility="gone"
-        app:typographyType="body_3" />
-
-    <LinearLayout
-        android:id="@+id/notifier"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Unify_N700"
-        android:gravity="center_vertical"
-        android:minHeight="56dp"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:visibility="gone"
-        tools:visibility="visible">
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title"
-            android:layout_width="0dp"
+            android:id="@+id/header_date"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/Unify_N0"
-            tools:text="JJJJ"
-            app:typographyType="body_2" />
+            android:layout_alignTop="@+id/swipe_refresh_layout"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_yellow_border_yelow"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:visibility="gone"
+            app:typographyType="body_3" />
 
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/action"
-            app:loader_type="circular"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:layout_gravity="center" />
+        <LinearLayout
+            android:id="@+id/notifier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_N700"
+            android:gravity="center_vertical"
+            android:minHeight="56dp"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-    </LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/Unify_N0"
+                app:typographyType="body_2"
+                tools:text="JJJJ" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/action"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:layout_gravity="center"
+                app:loader_type="circular" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_error_global"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="40dp"
+        android:background="@color/Unify_Background"
+        android:visibility="gone">
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/home_global_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="36dp"
+            android:gravity="center"
+            app:globalerrors_type="SERVER_ERROR"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>
 
