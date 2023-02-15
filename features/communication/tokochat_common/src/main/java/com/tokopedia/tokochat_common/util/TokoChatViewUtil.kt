@@ -23,10 +23,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CENSOR_TEXT
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_PERCENTAGE
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
+import kotlin.math.roundToInt
 
 object TokoChatViewUtil {
 
@@ -89,7 +93,11 @@ object TokoChatViewUtil {
         val backgroundPaint = Paint()
         backgroundPaint.style = Paint.Style.FILL
         backgroundPaint.setShadowLayer(
-            shadowRadiusValue.toPx().toFloat(), 0f, 0f, 0)
+            shadowRadiusValue.toPx().toFloat(),
+            0f,
+            0f,
+            0
+        )
 
         val shadowDrawableRect = Rect()
         shadowDrawableRect.left = elevationValue
@@ -113,7 +121,7 @@ object TokoChatViewUtil {
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
             else -> {
-                shadowDrawableRect.top = shadowTop?: elevationValue
+                shadowDrawableRect.top = shadowTop ?: elevationValue
                 shadowDrawableRect.bottom = elevationValue * 2
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
@@ -138,7 +146,11 @@ object TokoChatViewUtil {
             setPadding(shadowDrawableRect)
             paint.color = backgroundColorValue
             paint.setShadowLayer(
-                shadowRadiusValue.toPx().toFloat(), 0f, DY, shadowColorValue)
+                shadowRadiusValue.toPx().toFloat(),
+                0f,
+                DY,
+                shadowColorValue
+            )
             shape = RoundRectShape(outerRadius, null, null)
         }
         drawableLayer.add(shadowDrawable)
@@ -160,11 +172,21 @@ object TokoChatViewUtil {
 
         val drawable = LayerDrawable(drawableLayer.toTypedArray())
         if (isInsetElevation) {
-            drawable.setLayerInset(0,
-                elevationValue, elevationValue, elevationValue, elevationValue)
+            drawable.setLayerInset(
+                0,
+                elevationValue,
+                elevationValue,
+                elevationValue,
+                elevationValue
+            )
         } else {
-            drawable.setLayerInset(0,
-                elevationValue, elevationValue, elevationValue, shadowDrawableRect.bottom)
+            drawable.setLayerInset(
+                0,
+                elevationValue,
+                elevationValue,
+                elevationValue,
+                shadowDrawableRect.bottom
+            )
         }
 
         if (strokeColor != null && strokeWidthValue != null && drawableLayer.size > 1) {
@@ -174,7 +196,8 @@ object TokoChatViewUtil {
 
         if (pressedDrawable != null) {
             stateDrawable.addState(
-                intArrayOf(android.R.attr.state_pressed), pressedDrawable
+                intArrayOf(android.R.attr.state_pressed),
+                pressedDrawable
             )
         }
         stateDrawable.addState(StateSet.WILD_CARD, drawable)
@@ -186,11 +209,13 @@ object TokoChatViewUtil {
         if (context == null) return false
         val duration: Float = Settings.Global.getFloat(
             context.contentResolver,
-            Settings.Global.ANIMATOR_DURATION_SCALE, 0f
+            Settings.Global.ANIMATOR_DURATION_SCALE,
+            0f
         )
         val transition: Float = Settings.Global.getFloat(
             context.contentResolver,
-            Settings.Global.TRANSITION_ANIMATION_SCALE, 0f
+            Settings.Global.TRANSITION_ANIMATION_SCALE,
+            0f
         )
         return duration != 0f && transition != 0f
     }
@@ -203,7 +228,7 @@ object TokoChatViewUtil {
         var resultText = text
         if (text.length > maxChar) {
             resultText = resultText.substring(0, maxChar)
-            //Remove if last char is whitespace
+            // Remove if last char is whitespace
             val lastCharIndex = maxChar - 1
             if (lastCharIndex > 0 && resultText[lastCharIndex].toString() == " ") {
                 resultText = resultText.substring(0, lastCharIndex)
@@ -252,5 +277,19 @@ object TokoChatViewUtil {
             .load(gifUrl)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .into(imageUnify)
+    }
+
+    fun censorPlatNumber(platNumber: String, percentageCensor: Int): String {
+        try {
+            // If percentage higher than 100, return original value
+            if (percentageCensor > MAX_PERCENTAGE) return platNumber
+            val censorCount = platNumber.length * (percentageCensor / MAX_PERCENTAGE.toDouble())
+            val censorCountRounded = censorCount.roundToInt()
+            val censoredStar = CENSOR_TEXT.repeat(censorCountRounded)
+            return platNumber.replaceRange(Int.ZERO, censorCountRounded, censoredStar)
+        } catch (throwable: Throwable) {
+            // If error, return the original value
+            return platNumber
+        }
     }
 }
