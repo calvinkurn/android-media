@@ -811,13 +811,17 @@ open class TopChatRoomFragment :
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
-    private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
-        val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
-        if (!isFromAnotherChat) {
-            initProductPreview(savedInstanceState)
-            initInvoicePreview(savedInstanceState)
-        }
-        viewModel.initAttachmentPreview()
+    fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
+        try {
+            if (::viewModel.isInitialized) {
+                val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
+                if (!isFromAnotherChat) {
+                    initProductPreview(savedInstanceState)
+                    initInvoicePreview(savedInstanceState)
+                }
+                viewModel.initAttachmentPreview()
+            }
+        } catch (ignored: Throwable) {}
     }
 
     private fun onSuccessGetMessageId(messageId: String) {

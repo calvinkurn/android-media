@@ -10,8 +10,8 @@ import com.tokopedia.home_component.model.ChannelModel
 /**
  * @author by yoasfs on 09/06/20
  */
-class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
-    : MixLeftComponentListener {
+class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener) :
+    MixLeftComponentListener {
 
     override fun onMixLeftImpressed(channel: ChannelModel, parentPos: Int) {
         if (parentPos != RecyclerView.NO_POSITION) {
@@ -20,19 +20,20 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
+        // because we have empty value at beginning of list, we need to reduce pos by 1
         val itemPos = position - 1
         if (adapterPosition != RecyclerView.NO_POSITION) {
-            //GA
+            // GA
             homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixLeftComponentTracking.getMixLeftProductView(
                     channel,
                     channelGrid,
                     itemPos,
-                    adapterPosition
+                    adapterPosition,
+                    homeCategoryListener.userId
                 ) as HashMap<String, Any>
             )
-            //iris
+            // iris
             homeCategoryListener.putEEToIris(
                 MixLeftComponentTracking.getMixLeftIrisProductView(
                     channel,
@@ -45,10 +46,10 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
+        // because we have empty value at beginning of list, we need to reduce pos by 1
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
         if (adapterPosition != RecyclerView.NO_POSITION) {
-            MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1, adapterPosition)
+            MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1, adapterPosition, homeCategoryListener.userId)
         }
     }
 

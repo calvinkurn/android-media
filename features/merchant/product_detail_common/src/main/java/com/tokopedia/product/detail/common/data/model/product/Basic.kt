@@ -129,3 +129,9 @@ data class TxStatsDynamicPdp(
         @Expose
         val itemSoldFmt: String = ""
 )
+
+data class PostAtcLayout(
+    @SerializedName("layoutID")
+    @Expose
+    val layoutId: String = ""
+)

@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
@@ -49,7 +49,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     DrawerSelectionWidget.Listener {
 
     @Inject
-    lateinit var param: ParamCacheManager
+    lateinit var param: PickerCacheManager
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -143,7 +143,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         }
     }
 
-    override fun onItemClicked(media: MediaUiModel) {
+    override fun onDrawerItemClicked(media: MediaUiModel) {
         val previousIndex = drawerIndexSelected
         drawerIndexSelected = pickerPager.moveToOf(media)
 
@@ -152,7 +152,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         previewAnalytics.clickDrawerThumbnail()
     }
 
-    override fun onDataSetChanged(action: DrawerActionType) {
+    override fun onDrawerDataSetChanged(action: DrawerActionType) {
         when (action) {
             is DrawerActionType.Remove -> {
                 val removedIndex = pickerPager.removeData(action.mediaToRemove)

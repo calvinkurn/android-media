@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -61,6 +62,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     true
                 )
             }
+            masterProductCardListView?.setAddToCartOnClickListener {
+                handleATC(
+                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
+                    masterProductCardItemViewModel.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+                )
+            }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -73,8 +80,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 openVariantSheet()
             }
             masterProductCardGridView?.setAddToCartNonVariantClickListener(this)
+            masterProductCardGridView?.setAddToCartOnClickListener {
+                handleATC(
+                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
+                    masterProductCardItemViewModel.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+                )
+            }
         }
-
         productCardView.setOnClickListener {
             handleUIClick(it)
         }
