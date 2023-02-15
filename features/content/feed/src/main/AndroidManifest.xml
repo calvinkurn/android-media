@@ -6,21 +6,6 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name=".presentation.activity.FeedActivity"
-            android:exported="false"
-            android:theme="@style/Theme.WhiteUnify">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="feed-new"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".oldFeed.view.activity.FeedPlusDetailActivity"
             android:exported="false"
             android:label="@string/title_detail_feed"
