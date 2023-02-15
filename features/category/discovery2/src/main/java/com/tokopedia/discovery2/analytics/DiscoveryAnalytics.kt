@@ -1011,14 +1011,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 }
                 val map = HashMap<String, Any>()
                 data[0].let {
-                    map[KEY_ID] = it.id.toString()
-                    map[KEY_CREATIVE_URL] = if (coupon.properties?.columns?.equals(DOUBLE_COLUMNS) == true)
-                        it.smallImageUrlMobile
-                                ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER
+                    map[KEY_ID] = "${it.id.toString()} - ${it.promoId.toString()}"
                     map[KEY_POSITION] = componentsItems.indexOf(coupon) + 1
-                    map[KEY_PROMO_ID] = it.promoId.toString()
-                    map[KEY_PROMO_CODE] = it.slug.toString()
-                    map[KEY_NAME] = CLAIM_COUPON_ITEM_NAME
+                    map[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(coupon) + 1} - ${coupon.data?.firstOrNull()?.title} - ${coupon.title} - ${coupon.sectionId} - ${coupon.name}"
+                    map[KEY_CREATIVE] = "${it.creativeName ?: EMPTY_STRING} - ${it.slug}"
                 }
                 list.add(map)
             }
@@ -1028,8 +1024,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                             KEY_PROMOTIONS to list))
             val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = CLAIM_COUPON_IMPRESSION)
             map[PAGE_TYPE] = pageType
+            map[TRACKER_ID] = CLAIM_COUPON_TRACKER_ID
+            map[BUSINESS_UNIT] = HOME_BROWSE
+            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+            map[PAGE_DESTINATION] = sourceIdentifier
             map[PAGE_PATH] = removedDashPageIdentifier
             map[KEY_E_COMMERCE] = eCommerce
+            map[USER_ID] = userSession.userId
             trackingQueue.putEETracking(map as HashMap<String, Any>)
         }
     }
