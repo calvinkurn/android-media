@@ -190,7 +190,7 @@ class SummaryViewModel @Inject constructor(
             tracker.sendClickSimpanEvent(voucherConfiguration.voucherId.toString())
         } else {
             addCoupon(voucherConfiguration)
-            tracker.sendClickBuatKuponEvent(voucherConfiguration.voucherId.toString())
+            tracker.sendClickBuatKuponEvent()
         }
     }
 
