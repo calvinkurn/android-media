@@ -16,10 +16,13 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
 import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.util.constant.NumberConstant
+import com.tokopedia.mvc.util.constant.TickerConstant
+import com.tokopedia.mvc.util.extension.firstTickerMessage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +38,7 @@ class VoucherDetailViewModel @Inject constructor(
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
     private val cancelVoucherUseCase: CancelVoucherUseCase,
     private val shopBasicDataUseCase: ShopBasicDataUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -73,10 +77,20 @@ class VoucherDetailViewModel @Inject constructor(
                 val voucherDetailParam = MerchantPromotionGetMVDataByIDUseCase.Param(voucherId)
                 val voucherDetailDeferred = async { merchantPromotionGetMVDataByIDUseCase.execute(voucherDetailParam) }
 
+                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_INTRO_PAGE)
+                val tickerWordingDeferred = async { getTargetedTickerUseCase.execute(tickerWordingParam) }
+
                 val voucherCreationMetadata = voucherCreationMetadataDeferred.await()
                 val voucherDetail = voucherDetailDeferred.await()
+                val tickerWordings = tickerWordingDeferred.await()
+                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
 
-                val data = VoucherDetailWithVoucherCreationMetadata(voucherDetail, voucherCreationMetadata)
+
+                val data = VoucherDetailWithVoucherCreationMetadata(
+                    voucherDetail,
+                    voucherCreationMetadata,
+                    tickerWording
+                )
 
                 _voucherDetail.postValue(Success(data))
             },

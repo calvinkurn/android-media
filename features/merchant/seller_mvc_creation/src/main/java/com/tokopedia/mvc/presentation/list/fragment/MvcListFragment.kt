@@ -619,7 +619,7 @@ class MvcListFragment :
         viewModel.voucherCreationMetadata.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    displayTicker(result.data.discountActive, "Wording")
+                    displayTicker(result.data.creationMetadata.discountActive, result.data.tickerWording)
                 }
                 is Fail -> {
                     binding?.root?.showToasterError(result.throwable)

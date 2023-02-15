@@ -265,7 +265,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         displayTicker(
             data.voucherDetail.voucherStatus,
             data.creationMetadata.discountActive,
-            "Wording"
+            data.tickerWording
         )
     }
 

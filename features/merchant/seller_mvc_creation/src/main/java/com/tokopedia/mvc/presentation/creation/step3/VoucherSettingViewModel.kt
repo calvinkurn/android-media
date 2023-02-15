@@ -17,11 +17,14 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
 import com.tokopedia.mvc.util.constant.CommonConstant
+import com.tokopedia.mvc.util.constant.TickerConstant
+import com.tokopedia.mvc.util.extension.firstTickerMessage
 import com.tokopedia.mvc.util.extension.isCashback
 import com.tokopedia.mvc.util.extension.isDiscount
 import com.tokopedia.mvc.util.extension.isFreeShipping
@@ -30,6 +33,7 @@ import com.tokopedia.mvc.util.extension.isProductVoucher
 import com.tokopedia.mvc.util.extension.isPublic
 import com.tokopedia.mvc.util.extension.isShopVoucher
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -41,6 +45,7 @@ class VoucherSettingViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
@@ -88,13 +93,22 @@ class VoucherSettingViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val action = if (pageMode == PageMode.CREATE) VoucherAction.CREATE else VoucherAction.UPDATE
-                val metadataParam = GetInitiateVoucherPageUseCase.Param(
+                val voucherCreationMetadataParam = GetInitiateVoucherPageUseCase.Param(
                     action = action,
                     promoType = voucherConfiguration.promoType,
                     isVoucherProduct = voucherConfiguration.isVoucherProduct
                 )
-                val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute(metadataParam)
+
+                val voucherCreationMetadataDeferred = async { getInitiateVoucherPageUseCase.execute(voucherCreationMetadataParam) }
+
+                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
+                val tickerWordingDeferred = async { getTargetedTickerUseCase.execute(tickerWordingParam) }
+
+                val voucherCreationMetadata = voucherCreationMetadataDeferred.await()
+
                 val isDiscountPromoTypeEnabled = voucherCreationMetadata.discountActive
+                val tickerWordings = tickerWordingDeferred.await()
+                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
 
                 _uiState.update {
                     it.copy(
@@ -103,7 +117,8 @@ class VoucherSettingViewModel @Inject constructor(
                         voucherConfiguration = voucherConfiguration.copy(
                             isFinishFilledStepTwo = true
                         ),
-                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled
+                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled,
+                        discountPromoTypeDisabledReason = tickerWording
                     )
                 }
 

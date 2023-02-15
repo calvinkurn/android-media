@@ -205,7 +205,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderSpendingEstimation(state.spendingEstimation)
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
         renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
-        renderTicker(state.isDiscountPromoTypeEnabled, "Wording")
+        renderTicker(state.isDiscountPromoTypeEnabled, state.discountPromoTypeDisabledReason)
     }
 
     private fun renderPromoTypeChips(
