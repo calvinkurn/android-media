@@ -19,7 +19,8 @@ fun createCategoryResponse(): CategoryResponse {
                 name = "Category 1",
                 url = "www.testing.com",
                 appLinks = "tokopedia://testing",
-                isAdult = 0
+                isAdult = 0,
+                color = "#FFFFFF"
         )
 }
 
@@ -29,6 +30,7 @@ fun createAdultCategoryResponse(): CategoryResponse {
                 name = "Category 2",
                 url = "www.testing.com",
                 appLinks = "tokopedia://testing",
-                isAdult = 1
+                isAdult = 1,
+                color = "#FFFFFF"
         )
 }

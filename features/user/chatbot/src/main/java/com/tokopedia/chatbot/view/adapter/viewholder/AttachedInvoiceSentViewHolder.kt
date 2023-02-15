@@ -17,6 +17,8 @@ import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.Label
 
 /**
@@ -60,7 +62,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     }
 
     private fun bindViewWithModel(invoice: AttachInvoiceSentUiModel) {
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, invoice.imageUrl, radiusInvoice)
+        thumbnail?.loadImageRounded(invoice.imageUrl, radiusInvoice)
         setStatus(invoice)
         invoiceName?.text = invoice.message
         invoiceDesc?.text = invoice.description

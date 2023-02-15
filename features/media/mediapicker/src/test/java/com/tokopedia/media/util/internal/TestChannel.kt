@@ -64,6 +64,11 @@ class TestChannel<T>(
         job?.cancelAndJoin()
     }
 
+    override suspend fun cancelAndIgnoreRemainingEvents() {
+        cancel()
+        ignoreRemainingEvents = true
+    }
+
     override fun close(cause: Throwable?) {
         if (!channel.isClosedForSend) {
             ignoreTerminalEvents = true
