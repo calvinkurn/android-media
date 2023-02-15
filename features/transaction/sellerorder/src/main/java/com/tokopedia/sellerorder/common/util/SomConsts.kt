@@ -59,6 +59,7 @@ object SomConsts {
     const val KEY_PRINT_AWB = "print"
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
     const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
+    const val KEY_SEARCH_NEW_DRIVER = "search_new_driver"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"

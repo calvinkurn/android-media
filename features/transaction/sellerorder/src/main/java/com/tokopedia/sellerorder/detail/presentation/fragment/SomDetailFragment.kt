@@ -78,6 +78,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESCHEDULE_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SEARCH_NEW_DRIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
@@ -821,6 +822,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                         key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
                         key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(this, orderId)
+                        key.equals(KEY_SEARCH_NEW_DRIVER, true) -> SomNavigator.goToFindNewDriver(this, orderId, detailResponse?.invoice)
                     }
                 }
             }
@@ -1040,6 +1042,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
             handleChangeCourierAndConfirmShippingResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_RESCHEDULE_PICKUP) {
             handleReschedulePickupResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_FIND_NEW_DRIVER) {
+            handleFindNewDriverResult(resultCode, data)
         }
     }
 
@@ -1185,6 +1189,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 setResult(Activity.RESULT_OK, Intent())
                 finish()
             }
+        }
+    }
+
+    protected open fun handleFindNewDriverResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            loadDetail()
         }
     }
 

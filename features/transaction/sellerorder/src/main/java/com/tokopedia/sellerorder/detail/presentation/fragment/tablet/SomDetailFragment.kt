@@ -82,6 +82,13 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
+    override fun handleFindNewDriverResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            shouldRefreshOrderList = true
+            loadDetail()
+        }
+    }
+
     override fun onGoToOrderDetailButtonClicked() {
         shouldRefreshOrderList = true
         super.onGoToOrderDetailButtonClicked()
