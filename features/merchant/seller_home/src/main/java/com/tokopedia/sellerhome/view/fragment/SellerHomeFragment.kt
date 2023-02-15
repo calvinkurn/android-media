@@ -2827,7 +2827,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @SuppressLint("DeprecatedMethod")
     private fun showSellerHomeToaster() {
         binding?.run {
-            root.post {
+            recyclerView.post {
                 val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     arguments?.getParcelable(
                         KEY_SELLER_HOME_DATA, SellerHomeDataUiModel::class.java
