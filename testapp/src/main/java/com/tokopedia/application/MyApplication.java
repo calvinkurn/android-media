@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
-import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
@@ -147,7 +146,6 @@ public class MyApplication extends BaseMainApplication
         FirebaseApp.initializeApp(this);
 
         new DevOptNotificationManager(this).start();
-        TokoChatConnection.init(this, false);
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
