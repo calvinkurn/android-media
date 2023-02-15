@@ -102,9 +102,12 @@ import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketAction
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketImpl
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -1068,6 +1071,10 @@ class ChatbotViewModel @Inject constructor(
                     return
                 }
 
+                if (attachmentType == TYPE_HELPFULL_QUESTION || attachmentType == TYPE_CSAT_OPTIONS) {
+                    sendNewRelicLogRelatedToCsat(pojo, messageId)
+                }
+
                 updateLiveDataOnMainThread(ChatbotSocketReceiveEvent.ReplyMessageEvent(mapToVisitable(pojo)))
                 sendReadEventWebSocket(messageId)
             }
@@ -1476,6 +1483,35 @@ class ChatbotViewModel @Inject constructor(
         interceptors.add(tkpdAuthInterceptor)
         interceptors.add(fingerprintInterceptor)
         chatbotWebSocket.send(json, interceptors)
+    }
+
+    private fun sendNewRelicLogRelatedToCsat(pojo: ChatSocketPojo, messageId: String) {
+        val attachmentType = chatResponse?.attachment?.type
+        if (attachmentType == TYPE_HELPFULL_QUESTION) {
+            val helpFullQuestionPojo = GsonBuilder().create()
+                .fromJson<HelpFullQuestionPojo>(
+                    pojo.attachment?.attributes,
+                    HelpFullQuestionPojo::class.java
+                )
+            com.tokopedia.chatbot.util.ChatbotNewRelicLogger.logNewRelicForCSAT(
+                messageId,
+                TYPE_HELPFULL_QUESTION,
+                helpFullQuestionPojo.helpfulQuestion?.caseId.toBlankOrString(),
+                helpFullQuestionPojo.helpfulQuestion?.caseChatId.toBlankOrString()
+            )
+        } else if (attachmentType == TYPE_CSAT_OPTIONS) {
+            val csatAttributesPojo = GsonBuilder().create()
+                .fromJson<CsatAttributesPojo>(
+                    pojo.attachment?.attributes,
+                    CsatAttributesPojo::class.java
+                )
+            com.tokopedia.chatbot.util.ChatbotNewRelicLogger.logNewRelicForCSAT(
+                messageId,
+                TYPE_CSAT_OPTIONS,
+                csatAttributesPojo.csat?.caseId.toBlankOrString(),
+                csatAttributesPojo.csat?.caseChatId.toBlankOrString()
+            )
+        }
     }
 
     override fun onCleared() {

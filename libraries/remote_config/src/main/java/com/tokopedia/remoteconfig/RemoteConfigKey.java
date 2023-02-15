@@ -317,4 +317,6 @@ public class RemoteConfigKey {
     public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
 
     public static final String ENABLE_CHATBOT_CSAT_NEW_FLOW = "android_chatbot_csat_experiment";
+
+    public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
 }

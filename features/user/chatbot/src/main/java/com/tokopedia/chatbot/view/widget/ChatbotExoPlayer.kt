@@ -2,6 +2,9 @@ package com.tokopedia.chatbot.view.widget
 
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -9,7 +12,9 @@ import com.google.android.exoplayer2.LoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.analytics.AnalyticsListener
+import com.google.android.exoplayer2.source.DefaultMediaSourceEventListener
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.MediaSourceEventListener
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -17,13 +22,11 @@ import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.chatbot.view.adapter.viewholder.VideoDimensionsListener
 import java.io.IOException
 
-
-class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
+class ChatbotExoPlayer(val context: Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener {
 
     private var loadControl: LoadControl = DefaultLoadControl.Builder()
         .createDefaultLoadControl()
@@ -53,7 +56,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
                     (playWhenReady && playbackState != Player.STATE_READY) || (!playWhenReady && playbackState != Player.STATE_READY)
 
                 when {
-                    isPlaying  -> {
+                    isPlaying -> {
                         videoStateListener?.onVideoReadyToPlay()
                     }
                     playbackState == Player.STATE_ENDED -> {
@@ -81,6 +84,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
+                Log.d("FATAL", "onPlayerError: $error")
                 videoStateListener?.onVideoPlayerError(error)
             }
         })
@@ -106,9 +110,10 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         })
     }
 
-    fun start(videoUrl : String) {
-        if(videoUrl.isBlank())
+    fun start(videoUrl: String) {
+        if (videoUrl.isBlank()) {
             return
+        }
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
@@ -133,13 +138,28 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
 
     fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDataSourceFactory =
+        val dataSourceFactory =
             DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
 
-        val dataSourceFactory = CacheDataSourceFactory(
-            MediaPlayerCache.getInstance(context),
-            mDataSourceFactory
-        )
+//        val dataSourceFactory = CacheDataSourceFactory(
+//            MediaPlayerCache.getInstance(context),
+//            mDataSourceFactory
+//        )
+
+        val hlsMediaSourceInputStream = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+        val listener = object : DefaultMediaSourceEventListener() {
+            override fun onLoadCompleted(
+                windowIndex: Int,
+                mediaPeriodId: MediaSource.MediaPeriodId?,
+                loadEventInfo: MediaSourceEventListener.LoadEventInfo?,
+                mediaLoadData: MediaSourceEventListener.MediaLoadData?
+            ) {
+                Log.d("FATAL", "onLoadCompleted: $mediaPeriodId")
+                Log.d("FATAL", "onLoadCompleted: $loadEventInfo")
+                Log.d("FATAL", "onLoadCompleted: $mediaLoadData")
+            }
+        }
+        hlsMediaSourceInputStream.addEventListener(Handler(Looper.getMainLooper()), listener)
 
         val mediaSource = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
@@ -149,6 +169,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
             C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
+
         return mediaSource.createMediaSource(uri)
     }
 
@@ -185,19 +206,18 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         const val RETRY_DELAY = 1000L
         const val RETRY_COUNT = 5
         const val BLACK_LIST_SECONDS = 4000L
-
     }
 
     override fun onCenterPlayButtonClicked() {
         resume()
-        if (isEnded){
+        if (isEnded) {
             exoPlayer.seekTo(VIDEO_AT_FIRST_POSITION)
             isEnded = false
         }
     }
 
     override fun onCenterPauseButtonClicked() {
-       pause()
+        pause()
     }
 
     override fun onScrubStart() {
@@ -215,8 +235,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
     interface ChatbotVideoStateListener {
         fun onInitialStateLoading()
         fun onVideoReadyToPlay()
-        fun onVideoStateChange(stopDuration : Long, videoDuration : Long)
-        fun onVideoPlayerError(e : ExoPlaybackException)
+        fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
+        fun onVideoPlayerError(e: ExoPlaybackException)
     }
 }
-

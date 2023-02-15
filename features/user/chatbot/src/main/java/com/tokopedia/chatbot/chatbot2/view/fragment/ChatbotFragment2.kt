@@ -84,6 +84,7 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_ITEM_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_VIDEO_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.RemoteConfigHelper
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
@@ -298,6 +299,7 @@ class ChatbotFragment2 :
     lateinit var videoUploadOnBoarding: VideoUploadOnBoarding
     private var recyclerView: RecyclerView? = null
     private var isArticleDataSent: Boolean = false
+    private var csatRemoteConfig: Boolean = false
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
@@ -645,6 +647,7 @@ class ChatbotFragment2 :
         viewState?.initView()
 
         startObservingViewModels()
+        remoteConfigForCsatExperiment()
 
         viewModel.checkForSession(messageId)
         viewModel.checkUploadVideoEligibility(messageId)
@@ -2455,5 +2458,9 @@ class ChatbotFragment2 :
             getUserNameForReplyBubble.getUserName(messageUiModel)
         )
         replyBubbleBottomSheet?.dismiss()
+    }
+
+    private fun remoteConfigForCsatExperiment() {
+        csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) } ?: false
     }
 }
