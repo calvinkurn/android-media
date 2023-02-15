@@ -50,6 +50,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
@@ -235,7 +236,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupView(data: VoucherDetailData) {
+    private fun setupView(data: VoucherDetailWithVoucherCreationMetadata) {
         binding?.run {
             layoutHeader.setOnInflateListener { _, view ->
                 headerBinding = SmvcVoucherDetailHeaderSectionBinding.bind(view)
@@ -253,13 +254,18 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 voucherProductBinding = SmvcVoucherDetailProductSectionBinding.bind(view)
             }
         }
-        setupHeaderSection(data)
-        setupVoucherTypeSection(data)
-        setupVoucherInfoSection(data)
-        setupVoucherSettingSection(data)
-        setupProductListSection(data)
-        setupSpendingEstimationSection(data)
-        setupButtonSection(data)
+        setupHeaderSection(data.voucherDetail)
+        setupVoucherTypeSection(data.voucherDetail)
+        setupVoucherInfoSection(data.voucherDetail)
+        setupVoucherSettingSection(data.voucherDetail)
+        setupProductListSection(data.voucherDetail)
+        setupSpendingEstimationSection(data.voucherDetail)
+        setupButtonSection(data.voucherDetail)
+        displayTicker(
+            data.voucherDetail.voucherStatus,
+            data.creationMetadata.discountActive,
+            "Wording"
+        )
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
@@ -1090,5 +1096,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
             )
         )
+    }
+
+    private fun displayTicker(voucherStatus: VoucherStatus, isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
+        val isVoucherEndedOrStopped = voucherStatus == VoucherStatus.ENDED || voucherStatus == VoucherStatus.STOPPED
+        val showTicker = !isDiscountPromoTypeEnabled && isVoucherEndedOrStopped
+
+        if (showTicker) {
+            headerBinding?.ticker?.visible()
+            headerBinding?.ticker?.setTextDescription(remoteTickerMessage)
+        }
     }
 }

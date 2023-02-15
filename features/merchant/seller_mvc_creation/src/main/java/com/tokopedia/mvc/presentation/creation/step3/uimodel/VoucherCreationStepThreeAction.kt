@@ -6,7 +6,5 @@ sealed class VoucherCreationStepThreeAction {
     data class BackToPreviousStep(val voucherConfiguration: VoucherConfiguration) : VoucherCreationStepThreeAction()
     data class ContinueToNextStep(val voucherConfiguration: VoucherConfiguration) : VoucherCreationStepThreeAction()
     object ShowCoachmark : VoucherCreationStepThreeAction()
-
-    object ShowDiscountPromoTypeDisabledToaster : VoucherCreationStepThreeAction()
     data class ShowError(val error: Throwable) : VoucherCreationStepThreeAction()
 }

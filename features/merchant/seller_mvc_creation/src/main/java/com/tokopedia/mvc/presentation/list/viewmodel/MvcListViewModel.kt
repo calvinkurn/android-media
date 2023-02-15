@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
 import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
@@ -63,6 +64,9 @@ class MvcListViewModel @Inject constructor(
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    private val _voucherCreationMetadata = MutableLiveData<Result<VoucherCreationMetadata>>()
+    val voucherCreationMetadata: LiveData<Result<VoucherCreationMetadata>> get() = _voucherCreationMetadata
 
     private val _generateShareComponentMetaData =
         MutableLiveData<Result<ShareComponentMetaData>>()
@@ -255,6 +259,19 @@ class MvcListViewModel @Inject constructor(
             },
             onError = { error ->
                 _generateShareComponentMetaData.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun getVoucherCreationMetadata() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute()
+                _voucherCreationMetadata.postValue(Success(voucherCreationMetadata))
+            },
+            onError = { error ->
+                _voucherCreationMetadata.postValue(Fail(error))
             }
         )
     }

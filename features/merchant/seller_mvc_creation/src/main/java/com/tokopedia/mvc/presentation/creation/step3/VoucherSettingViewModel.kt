@@ -141,11 +141,6 @@ class VoucherSettingViewModel @Inject constructor(
                 availableTargetBuyer = availableTargetBuyer
             )
         }
-
-        val isDiscountPromoTypeEnabled = currentState.isDiscountPromoTypeEnabled
-        if (promoType == PromoType.DISCOUNT && !isDiscountPromoTypeEnabled) {
-            _uiAction.tryEmit(VoucherCreationStepThreeAction.ShowDiscountPromoTypeDisabledToaster)
-        }
     }
 
     private fun handleBenefitTypeSelection(benefitType: BenefitType) {

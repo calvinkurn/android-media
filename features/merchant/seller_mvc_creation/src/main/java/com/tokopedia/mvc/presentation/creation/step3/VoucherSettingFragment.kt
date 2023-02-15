@@ -12,10 +12,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
-import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeButtonSectionBinding
@@ -46,8 +50,10 @@ import com.tokopedia.mvc.util.tracker.VoucherSettingTracker
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
-import java.util.ArrayList
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @FlowPreview
@@ -199,6 +205,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderSpendingEstimation(state.spendingEstimation)
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
         renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
+        renderTicker(state.isDiscountPromoTypeEnabled, "Wording")
     }
 
     private fun renderPromoTypeChips(
@@ -349,14 +356,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             is VoucherCreationStepThreeAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
             is VoucherCreationStepThreeAction.ShowCoachmark -> showCoachmark()
             is VoucherCreationStepThreeAction.ShowError -> {}
-            VoucherCreationStepThreeAction.ShowDiscountPromoTypeDisabledToaster -> showDiscountPromoTypeDisabledToaster()
         }
-    }
-
-    private fun showDiscountPromoTypeDisabledToaster() {
-        val ctaText = context?.getString(R.string.smvc_ok).orEmpty()
-        val message = context?.getString(R.string.smvc_voucher_creation_step_discount_toggled_off).orEmpty()
-        binding?.layoutButtonGroup?.showToaster(message, ctaText)
     }
 
     private fun showCoachmark() {
@@ -1380,4 +1380,12 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         chipType = ChipsUnify.TYPE_DISABLE
         chip_image_icon.setColorFilter(color)
     }
+
+    private fun renderTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
+        if (!isDiscountPromoTypeEnabled) {
+            binding?.ticker?.visible()
+            binding?.ticker?.setTextDescription(remoteTickerMessage)
+        }
+    }
+
 }
