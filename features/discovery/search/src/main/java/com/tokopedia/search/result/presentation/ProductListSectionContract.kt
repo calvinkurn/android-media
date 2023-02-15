@@ -24,7 +24,6 @@ interface ProductListSectionContract {
     interface View : CustomerView {
         fun addProductList(list: List<Visitable<*>>)
         fun setProductList(list: List<Visitable<*>>)
-        fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(throwable: Throwable?)
         val queryKey: String
         fun backToTop()

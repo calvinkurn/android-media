@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
@@ -11,10 +12,11 @@ import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliatePromoViewModel  @Inject constructor(
+class AffiliatePromoViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateSearchUseCase: AffiliateSearchUseCase,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
@@ -25,37 +27,48 @@ class AffiliatePromoViewModel  @Inject constructor(
     private var errorMessage = MutableLiveData<String>()
     private var validateUserState = MutableLiveData<String>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
+    fun isAffiliateSSAShopEnabled() =
+        RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            AFFILIATE_SSA_SHOP,
+            ""
+        ) == AFFILIATE_SSA_SHOP
 
-    fun getSearch(productLink : String) {
-        progressBar.value =  true
-        launchCatchError(block = {
-            affiliateSearchData.value =
+    fun getSearch(productLink: String) {
+        progressBar.value = true
+        launchCatchError(
+            block = {
+                affiliateSearchData.value =
                     affiliateSearchUseCase.affiliateSearchWithLink(arrayListOf(productLink))
-            progressBar.value = false
-        }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-            errorMessage.value = it.localizedMessage
-        })
+                progressBar.value = false
+            },
+            onError = {
+                progressBar.value = false
+                it.printStackTrace()
+                errorMessage.value = it.localizedMessage
+            }
+        )
     }
+
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
             validateUserdata.value =
                 affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
             progressBar.value = false
         }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-        })
+                progressBar.value = false
+                it.printStackTrace()
+            })
     }
 
     fun getAnnouncementInformation() {
         launchCatchError(block = {
             affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_PROMOSIKAN)
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+                    PAGE_ANNOUNCEMENT_PROMOSIKAN
+                )
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun setValidateUserType(onRegistered: String) {
@@ -69,6 +82,4 @@ class AffiliatePromoViewModel  @Inject constructor(
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getValidateUserType(): LiveData<String> = validateUserState
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
-
-
 }

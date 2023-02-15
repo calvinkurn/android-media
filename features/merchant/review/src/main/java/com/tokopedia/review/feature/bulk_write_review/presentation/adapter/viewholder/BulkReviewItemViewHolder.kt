@@ -1,10 +1,8 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.view.GestureDetectorCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.review.R
@@ -232,24 +230,20 @@ class BulkReviewItemViewHolder(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupGestureListener(uiState: BulkReviewItemUiState) {
-        val gestureListener = BulkReviewItemGestureListener(uiState)
-        val gestureDetector = GestureDetectorCompat(binding.root.context, gestureListener)
         binding.viewBulkReviewOverlay.setOnTouchListener { _, e ->
-            gestureDetector.onTouchEvent(e)
-            val dimmed = uiState is BulkReviewItemUiState.Dimmed
-            val focused = uiState is BulkReviewItemUiState.Focused
-            val touchedAboveTextArea = e.isAboveTextArea()
-            val touchedAboveRating = e.isAboveRating()
-            dimmed || (focused && !touchedAboveTextArea && !touchedAboveRating)
+            if (
+                e.action == MotionEvent.ACTION_DOWN &&
+                !e.isAboveTextArea() &&
+                (uiState is BulkReviewItemUiState.Dimmed || uiState is BulkReviewItemUiState.Focused)
+            ) {
+                listener.onSingleTapToDismissKeyboard()
+            }
+            false
         }
     }
 
     private fun MotionEvent.isAboveTextArea(): Boolean {
         return intersectWith(binding.widgetBulkReviewTextArea, 0L)
-    }
-
-    private fun MotionEvent.isAboveRating(): Boolean {
-        return intersectWith(binding.widgetBulkWriteReviewFormRating, 0L)
     }
 
     interface Listener {
@@ -267,16 +261,5 @@ class BulkReviewItemViewHolder(
         fun onRemoveMediaClicked(inboxID: String, media: CreateReviewMediaUiModel)
         fun onRetryUploadClicked(inboxID: String)
         fun onReviewItemImpressed(inboxID: String)
-    }
-
-    private inner class BulkReviewItemGestureListener(
-        private val uiState: BulkReviewItemUiState
-    ) : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            if (uiState is BulkReviewItemUiState.Dimmed || uiState is BulkReviewItemUiState.Focused) {
-                listener.onSingleTapToDismissKeyboard()
-            }
-            return false
-        }
     }
 }

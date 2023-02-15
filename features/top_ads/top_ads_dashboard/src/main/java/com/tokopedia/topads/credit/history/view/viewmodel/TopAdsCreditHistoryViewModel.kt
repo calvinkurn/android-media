@@ -7,9 +7,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY
+import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpTypeUseCase
 import com.tokopedia.topads.domain.usecase.TopadsCreditHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,12 +33,15 @@ class TopAdsCreditHistoryViewModel @Inject constructor(
     private val creditHistoryUseCase: TopadsCreditHistoryUseCase,
     @Named("Main") val dispatcher: CoroutineDispatcher,
     private val pendingRewardUseCase: TopadsGetFreeDepositUseCase,
+    private val topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase
 ) : BaseViewModel(dispatcher) {
 
     private val _creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
     val creditsHistory : LiveData<Result<TopAdsCreditHistory>> = _creditsHistory
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
     val creditAmount = MutableLiveData<String>()
+    private val _getAutoTopUpDefaultSate = MutableLiveData<Result<GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData>>()
+    val getAutoTopUpDefaultSate:LiveData<Result<GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData>> = _getAutoTopUpDefaultSate
 
     private val _expiryDateHiddenTrial: MutableLiveData<String?> = MutableLiveData()
     val expiryDateHiddenTrial: LiveData<String?> = _expiryDateHiddenTrial
@@ -76,6 +83,19 @@ class TopAdsCreditHistoryViewModel @Inject constructor(
                 , {
             Timber.e(it, "P1#TOPADS_CREDIT_HISTORY_VIEW_MODEL_DEPOSIT#%s", it.localizedMessage)
 
+        })
+    }
+
+    fun getSelectedTopUpType() {
+        topAdsGetSelectedTopUpTypeUseCase.execute({
+            val data = it.getPersonalisedCopy.getPersonalisedCopyData
+            data.isAutoTopUpSelected = data.creditPerformance.equals(
+                TOP_UP_FREQUENTLY,
+                true
+            ) || data.creditPerformance.equals(INSUFFICIENT_CREDIT, true)
+            _getAutoTopUpDefaultSate.value = Success(it.getPersonalisedCopy.getPersonalisedCopyData)
+        }, {
+            _getAutoTopUpDefaultSate.value = Fail(it)
         })
     }
 

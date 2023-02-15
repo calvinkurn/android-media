@@ -15,6 +15,7 @@ import com.tokopedia.usercomponents.common.utils.waitOnView
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 
 fun userConsentRobot(action: UserConsentRobot.() -> Unit): UserConsentRobot {
     return UserConsentRobot().apply(action)
@@ -129,5 +130,13 @@ class UserConsentResult {
 
     fun shouldButtonActionEnable() {
         onView(allOf(withId(R.id.buttonAction), isDisplayed()))
+    }
+
+    fun shouldConsentHide() {
+        onView(allOf(withId(R.id.sampleUserConsent), not(isDisplayed())))
+    }
+
+    fun shouldButtonHide() {
+        onView(allOf(withId(R.id.buttonAction), not(isDisplayed())))
     }
 }
