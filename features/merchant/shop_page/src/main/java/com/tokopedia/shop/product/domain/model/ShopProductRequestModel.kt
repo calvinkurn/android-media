@@ -11,7 +11,6 @@ import java.util.*
 class ShopProductRequestModel(
     val shopId: String, // Additional param for query attribute
     val isShopClosed: Boolean,
-    val isOfficialStore: Boolean,
     val page: Int,
     var isUseAce: Boolean,
     val perPage: Int
@@ -20,18 +19,6 @@ class ShopProductRequestModel(
     private var etalaseId = ""
     var orderBy = 0
     var wholesale = 0
-
-    fun getEtalaseId(): String {
-        return etalaseId
-    }
-
-    fun setEtalaseId(etalaseId: String?) {
-        if (etalaseId == null) {
-            this.etalaseId = ""
-        } else {
-            this.etalaseId = etalaseId
-        }
-    }
 
     val hashMap: HashMap<String, String?>
         get() {

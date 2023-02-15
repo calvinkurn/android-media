@@ -55,7 +55,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
@@ -927,22 +926,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
-        view?.let { v ->
-            MapsAvailabilityHelper.onMapsAvailableState(v) {
-                address?.let {
-                    val locationPass = LocationPass()
-                    locationPass.cityName = it.cityName
-                    locationPass.districtName = it.districtName
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                    val bundle = Bundle()
-                    bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                    intent.putExtras(bundle)
-                    startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
-                    if (shouldUpdatePinpointFlag) {
-                        viewModel.changePinpoint()
-                    }
-                }
+        address?.let {
+            val locationPass = LocationPass()
+            locationPass.cityName = it.cityName
+            locationPass.districtName = it.districtName
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+            val bundle = Bundle()
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            if (shouldUpdatePinpointFlag) {
+                viewModel.changePinpoint()
             }
         }
     }
@@ -1648,10 +1643,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun getUploadPrescriptionListener(): UploadPrescriptionListener {
         return object : UploadPrescriptionListener {
-            override fun uploadPrescriptionAction(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-                uploadPrescriptionUiModel.checkoutId?.let {
-                    ePharmacyAnalytics.sendPrescriptionWidgetClick(it)
-                }
+            override fun uploadPrescriptionAction(
+                uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+                buttonText: String,
+                buttonNotes: String
+            ) {
+                ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.checkoutId)
                 val uploadPrescriptionIntent = RouteManager.getIntent(
                     context,
                     UploadPrescriptionViewHolder.EPharmacyAppLink
@@ -1705,6 +1702,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
             override fun onPayClicked() {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
+            }
+
+            override fun onRefreshPaymentClicked() {
+                viewModel.calculateTotal()
             }
         }
     }

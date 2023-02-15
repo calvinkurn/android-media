@@ -7,6 +7,13 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
             status
             error_message
             data {
+              coachmark {
+                Plus {
+                    is_shown
+                    title
+                    content
+                }
+              }
               errors
               error_code
               kero_token
@@ -25,6 +32,8 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 right_icon_url
                 checkout_id
                 front_end_validation
+                consultation_flow
+                rejected_wording
               }
               open_prerequisite_site
               eligible_new_shipping_experience
@@ -188,6 +197,10 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       badge
                       badge_svg
                       title
+                    }
+                    enabler_data {
+                      label_name
+                      show_label
                     }
                   }
                   shop_shipments {

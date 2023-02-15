@@ -15,6 +15,7 @@ import com.tokopedia.pdpCheckout.testing.atc_common.interceptor.AtcInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccCartTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccCheckoutTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccLogisticTestInterceptor
+import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccPaymentTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccPromoTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.robot.orderSummaryPage
 import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailIntentRule
@@ -38,7 +39,7 @@ class PdpOccJourneyTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
 
     private val productDetailInterceptor = ProductDetailInterceptor()
     private var idlingResource: IdlingResource? = null
@@ -49,9 +50,17 @@ class PdpOccJourneyTest {
         productDetailInterceptor.customP1ResponsePath = RESPONSE_P1_PATH
         productDetailInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_PATH
         GraphqlClient.reInitRetrofitWithInterceptors(
-                listOf(OccCartTestInterceptor(), OccLogisticTestInterceptor(), OccPromoTestInterceptor(),
-                        OccCheckoutTestInterceptor(), AtcInterceptor(context), productDetailInterceptor),
-                context)
+            listOf(
+                OccCartTestInterceptor(),
+                OccLogisticTestInterceptor(),
+                OccPromoTestInterceptor(),
+                OccPaymentTestInterceptor(),
+                OccCheckoutTestInterceptor(),
+                AtcInterceptor(context),
+                productDetailInterceptor
+            ),
+            context
+        )
 
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
@@ -68,7 +77,8 @@ class PdpOccJourneyTest {
 
         orderSummaryPage {
             Thread.sleep(5_000)
-            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+            Intents.intending(IntentMatchers.anyIntent())
+                .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
             pay()
         }
 

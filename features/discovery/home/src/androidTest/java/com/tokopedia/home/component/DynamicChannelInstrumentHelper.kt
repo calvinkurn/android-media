@@ -175,6 +175,11 @@ fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
 }
 
+fun clickOnMixLeftPaddingSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product_mix_left_padding, 0)
+}
+
 fun clickOnMixTopSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)

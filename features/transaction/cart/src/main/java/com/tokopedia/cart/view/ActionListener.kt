@@ -69,7 +69,7 @@ interface ActionListener {
 
     fun onButtonAddToCartClicked(productModel: Any)
 
-    fun onDeleteAllDisabledProduct();
+    fun onDeleteAllDisabledProduct()
 
     fun onSeeErrorProductsClicked()
 
@@ -96,6 +96,12 @@ interface ActionListener {
     fun onLocalizingAddressUpdatedFromWidget()
 
     fun onClickAddOnCart(productId: String, addOnId: String)
+
+    fun onClickEpharmacyInfoCart(
+        enablerLabel: String,
+        shopId: String,
+        productUiModelList: MutableList<CartItemHolderData>
+    )
 
     fun addOnImpression(productId: String)
 

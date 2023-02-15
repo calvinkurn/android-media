@@ -34,19 +34,24 @@
             android:paddingEnd="10dp"
             tools:visibility="gone" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/cb_select_shop"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="center_vertical">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/image_shop_badge"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_marginEnd="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_shop_name"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription"
                 tools:src="@drawable/ic_badge_shop_official"
                 tools:visibility="visible" />
@@ -56,20 +61,43 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:lines="1"
                 android:textColor="@color/Unify_N700_96"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/label_epharmacy"
+                app:layout_constraintStart_toEndOf="@id/image_shop_badge"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="wrap"
                 app:typographyType="heading_6"
                 tools:text="Loaa Store df" />
 
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/label_epharmacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"
+                app:labelType="highlight_light_grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/icon_pin"
+                app:layout_constraintStart_toEndOf="@id/tv_shop_name"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:labelTitle="halodoc" />
+
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icon_pin"
-                android:layout_width="@dimen/unify_space_16"
-                android:layout_height="@dimen/unify_space_16"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/unify_space_12"
+                android:layout_marginEnd="12dp"
                 app:icon_color_light_enable="@color/Unify_N700_96"
-                app:icon_name="PUSH_PIN" />
+                app:icon_name="PUSH_PIN"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/rl_product_policies_layout"
@@ -181,8 +209,8 @@
         </com.google.android.flexbox.FlexboxLayout>
 
         <include
-            android:id="@+id/gifting_widget_layout"
-            layout="@layout/item_cart_gifting"
+            android:id="@+id/addon_info_widget_layout"
+            layout="@layout/item_cart_addon_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_product_policies_layout"

@@ -115,6 +115,8 @@ interface ICartListPresenter {
 
     fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest)
 
+    fun doClearRedPromosBeforeGoToPromo(clearPromoRequest: ClearPromoRequest)
+
     fun setLastValidateUseRequest(validateUsePromoRequest: ValidateUsePromoRequest)
 
     fun getLastValidateUseRequest(): ValidateUsePromoRequest?

@@ -31,12 +31,30 @@ public class DataLogConfig {
     @Expose
     private List<Integer> queryLimits = new ArrayList<>(Arrays.asList(50, 50));
 
+    @SerializedName("keys")
+    @Expose
+    private List<String> keys = new ArrayList<>();
+
+    @SerializedName("tables")
+    @Expose
+    private List<String> tables = new ArrayList<>();
+
     public long getAppVersionMin() {
         return appVersionMin;
     }
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Nullable
+    public List<String> getTables() {
+        return tables;
+    }
+
+    @Nullable
+    public List<String> getKeys() {
+        return keys;
     }
 
     @Nullable

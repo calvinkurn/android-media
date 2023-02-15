@@ -27,6 +27,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -43,7 +45,8 @@ class CartShopViewHolder(
     private val binding: ItemShopBinding,
     private val actionListener: ActionListener,
     private val cartItemAdapterListener: CartItemAdapter.ActionListener,
-    private val compositeSubscription: CompositeSubscription
+    private val compositeSubscription: CompositeSubscription,
+    private var plusCoachmark: CoachMark2?,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
@@ -51,6 +54,10 @@ class CartShopViewHolder(
 
     private val localCacheHandler: LocalCacheHandler by lazy {
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
+    }
+
+    private val plusCoachmarkPrefs: PlusCoachmarkPrefs by lazy {
+        PlusCoachmarkPrefs(itemView.context)
     }
 
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
@@ -67,6 +74,7 @@ class CartShopViewHolder(
         renderShopName(cartShopHolderData)
         renderShopBadge(cartShopHolderData)
         renderIconPin(cartShopHolderData)
+        renderShopEnabler(cartShopHolderData)
         renderCartItems(cartShopHolderData)
         renderAccordion(cartShopHolderData)
         renderCheckBox(cartShopHolderData)
@@ -77,7 +85,7 @@ class CartShopViewHolder(
         renderEstimatedTimeArrival(cartShopHolderData)
         renderMaximumWeight(cartShopHolderData)
         renderCartShopGroupTicker(cartShopHolderData)
-        renderGiftingAddOn(cartShopHolderData)
+        renderAddOnInfo(cartShopHolderData)
         cartString = cartShopHolderData.cartString
     }
 
@@ -111,6 +119,15 @@ class CartShopViewHolder(
                 putBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, true)
                 applyEditor()
             }
+        }
+    }
+
+    private fun renderShopEnabler(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.enablerLabel.isNotBlank()) {
+            binding.labelEpharmacy.text = cartShopHolderData.enablerLabel
+            binding.labelEpharmacy.visible()
+        } else {
+            binding.labelEpharmacy.gone()
         }
     }
 
@@ -372,6 +389,19 @@ class CartShopViewHolder(
                     cartShopHolderData.hasSeenFreeShippingBadge = true
                     actionListener.onViewFreeShippingPlusBadge()
                 }
+                if (cartShopHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
+                    val coachMarkItem = ArrayList<CoachMark2Item>()
+                    coachMarkItem.add(
+                        CoachMark2Item(
+                            imgFreeShipping,
+                            cartShopHolderData.coachmarkPlus.title,
+                            cartShopHolderData.coachmarkPlus.content,
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                    )
+                    plusCoachmark?.showCoachMark(coachMarkItem)
+                    plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
+                }
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()
@@ -413,17 +443,28 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderGiftingAddOn(cartShopHolderData: CartShopHolderData) {
+    private fun renderAddOnInfo(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.addOnText.isNotEmpty()) {
-            binding.giftingWidgetLayout.root.visible()
-            binding.giftingWidgetLayout.descGifting.text = cartShopHolderData.addOnText
-            ImageHandler.loadImageWithoutPlaceholder(binding.giftingWidgetLayout.ivAddonLeft, cartShopHolderData.addOnImgUrl)
-            binding.giftingWidgetLayout.root.setOnClickListener {
-                actionListener.onClickAddOnCart(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "", cartShopHolderData.addOnId)
+            binding.addonInfoWidgetLayout.root.visible()
+            binding.addonInfoWidgetLayout.descAddonInfo.text = cartShopHolderData.addOnText
+            binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartShopHolderData.addOnImgUrl)
+            binding.addonInfoWidgetLayout.root.setOnClickListener {
+                if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+                    actionListener.onClickAddOnCart(
+                        cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "",
+                        cartShopHolderData.addOnId
+                    )
+                } else if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_EPHARMACY) {
+                    actionListener.onClickEpharmacyInfoCart(cartShopHolderData.enablerLabel, cartShopHolderData.shopId, cartShopHolderData.productUiModelList)
+                }
             }
-            actionListener.addOnImpression(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "")
+            if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+                actionListener.addOnImpression(
+                    cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: ""
+                )
+            }
         } else {
-            binding.giftingWidgetLayout.root.gone()
+            binding.addonInfoWidgetLayout.root.gone()
         }
     }
 
@@ -457,7 +498,7 @@ class CartShopViewHolder(
 
     private fun renderCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError &&
-            cartShopHolderData.cartShopGroupTicker.enableTicker &&
+            cartShopHolderData.cartShopGroupTicker.enableCartAggregator &&
             !cartShopHolderData.isOverweight
         ) {
             binding.apply {
