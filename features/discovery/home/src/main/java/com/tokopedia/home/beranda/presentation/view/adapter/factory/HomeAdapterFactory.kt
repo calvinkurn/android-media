@@ -390,10 +390,6 @@ class HomeAdapterFactory(
         return MixLeftPaddingComponentViewHolder.LAYOUT
     }
 
-    override fun type(dynamicIconRevampDataModel: DynamicIconRevampDataModel): Int {
-        return 1
-    }
-
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
