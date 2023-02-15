@@ -20,6 +20,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -88,6 +89,7 @@ import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -193,7 +195,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
+        initRefreshProfileWorker();
         initSeamlessLoginWorker();
+        connectTokoChat(false);
         return true;
     }
 
@@ -207,6 +211,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initDataStoreMigration() {
         if (userSession.isLoggedIn()) {
             DataStoreMigrationWorker.Companion.scheduleWorker(this);
+        }
+    }
+
+    private void initRefreshProfileWorker() {
+        if (userSession.isLoggedIn()) {
+            RefreshProfileWorker.scheduleWorker(this);
         }
     }
 
@@ -302,6 +312,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void forceLogout() {
         TrackApp.getInstance().getMoEngage().logoutEvent();
         userSession.logoutSession();
+        disconnectTokoChat();
     }
 
     @Override
@@ -617,5 +628,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 new FcmTokenUtils(new FcmCacheHandler(context)),
                 new FcmCacheHandler(context)
         );
+    }
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        TokoChatConnection.init(getApplicationContext(), isFromLoginFlow);
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+        TokoChatConnection.disconnect();
     }
 }

@@ -5,7 +5,7 @@
     <dimen name="picker_page_margin_bottom">46dp</dimen>
     <dimen name="picker_page_margin_top">48dp</dimen>
 
-    <dimen name="picker_thumbnail_size">60dp</dimen>
+    <dimen name="picker_thumbnail_size">48dp</dimen>
     <dimen name="picker_thumbnail_rounded">4dp</dimen>
     <dimen name="picker_thumbnail_border">3dp</dimen>
     <dimen name="picker_thumbnail_selected_padding">2dp</dimen>

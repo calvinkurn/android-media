@@ -44,10 +44,13 @@ data class CartShopHolderData(
     var addOnText: String = "",
     var addOnImgUrl: String = "",
     var addOnId: String = "",
+    var addOnType: Int = 0,
     var warehouseId: Long = 0,
     var isPo: Boolean = false,
     var poDuration: String = "",
     var boCode: String = "",
+    var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
+    var enablerLabel: String = ""
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -106,6 +109,9 @@ data class CartShopHolderData(
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+
+        const val ADD_ON_GIFTING = 1
+        const val ADD_ON_EPHARMACY = 2
     }
 }
 
@@ -118,6 +124,12 @@ class CartShopBoAffordabilityData(
     // list of cartIds for tracker
     var cartIds: String = "",
     var hasSeenTicker: Boolean = false,
+)
+
+class CartShopCoachmarkPlusData(
+    val isShown: Boolean = false,
+    val title: String = "",
+    val content: String = "",
 )
 
 enum class CartShopBoAffordabilityState {

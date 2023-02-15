@@ -66,11 +66,9 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.io.File
@@ -103,7 +101,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val PACKAGE_NAME_TELEGRAM = "org.telegram.messenger"
         private const val PACKAGE_NAME_GMAIL = "com.google.android.gm"
 
-        //remote config Social media ordering keys
+        // remote config Social media ordering keys
         private const val KEY_IG_FEED = "IG_Feed"
         private const val KEY_IG_STORY = "IG_Story"
         private const val KEY_IG_DM = "IG_DM"
@@ -114,7 +112,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val KEY_TWITTER = "Twitter"
         private const val KEY_TELEGRAM = "Telegram"
 
-        //add remote config handling
+        // add remote config handling
         private const val GLOBAL_CUSTOM_SHARING_FEATURE_FLAG = "android_enable_custom_sharing"
         private const val GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG = "android_enable_screenshot_sharing"
         private const val GLOBAL_AFFILIATE_FEATURE_FLAG = "android_enable_affiliate_universal_sharing"
@@ -122,7 +120,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         private var featureFlagRemoteConfigKey: String = ""
         private const val SOCIAL_MEDIA_ORDERING = "android_universal_sharing_order"
 
-        //Optons Flag
+        // Optons Flag
         private var isImageOnlySharing: Boolean = false
         private var screenShotImagePath: String = ""
 
@@ -136,17 +134,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
         const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
 
-        //for affiliate and general user distinction
+        // for affiliate and general user distinction
         private const val KEY_GENERAL_USER = "general"
         private const val KEY_AFFILIATE_USER = "affiliate"
         private var isAffiliateUser: String = KEY_GENERAL_USER
 
-        //Image Type
+        // Image Type
         const val KEY_NO_IMAGE = "no_image"
         const val KEY_IMAGE_DEFAULT = "default"
         const val KEY_CONTEXTUAL_IMAGE = "contextual_image"
-        const val KEY_PRODUCT_ID = "productId";
-
+        const val KEY_PRODUCT_ID = "productId"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -166,11 +163,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             screenShotImagePath = imgPath
         }
 
-        fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener,
-                                             fragment: Fragment,
-                                             remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
-                                             addFragmentLifecycleObserver: Boolean = false,
-                                             permissionListener: PermissionListener? = null): ScreenshotDetector? {
+        fun createAndStartScreenShotDetector(
+            context: Context,
+            screenShotListener: ScreenShotListener,
+            fragment: Fragment,
+            remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
+            addFragmentLifecycleObserver: Boolean = false,
+            permissionListener: PermissionListener? = null
+        ): ScreenshotDetector? {
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
@@ -205,8 +205,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             })
         }
 
-        //Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
-        //This method can be used to get the bottomsheet type after show() method is called to send required GTM events based on bottomsheet type
+        // Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
+        // This method can be used to get the bottomsheet type after show() method is called to send required GTM events based on bottomsheet type
         fun getShareBottomSheetType(): Int {
             var shareSheetType = CUSTOM_SHARE_SHEET
             if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
@@ -236,7 +236,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
         private fun removeFile(filePath: String) {
             if (!TextUtils.isEmpty(filePath) &&
-                !filePath.contains(ScreenshotDetector.screenShotRegex, true)) {
+                !filePath.contains(ScreenshotDetector.screenShotRegex, true)
+            ) {
                 File(filePath).apply {
                     if (exists()) {
                         delete()
@@ -269,17 +270,17 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private var affiliateRegisterContainer: CardUnify? = null
     private var rvTicker: RecyclerView? = null
 
-    //Fixed sharing options
+    // Fixed sharing options
     private var copyLinkImage: ImageView? = null
     private var smsImage: ImageView? = null
     private var smsTxtv: Typography? = null
     private var emailImage: ImageView? = null
     private var otherOptionsImage: ImageView? = null
 
-    //loader view
+    // loader view
     private var loaderUnify: LoaderUnify? = null
 
-    //affiliate commission view
+    // affiliate commission view
     private var affiliateCommissionTextView: Typography? = null
     private var layoutCommisionExtra: View? = null
 
@@ -303,24 +304,24 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private var handler: Handler? = null
     private var gqlCallJob: Job? = null
 
-    //observer flag
+    // observer flag
     private var preserveImage: Boolean = false
 
-    //parent fragment
+    // parent fragment
     private var parentFragmentContainer: Fragment? = null
 
-    //Image generator page source ID
+    // Image generator page source ID
     private lateinit var sourceId: String
 
-    //Array to contain image generator API data
+    // Array to contain image generator API data
     private var imageGeneratorDataArray: ArrayList<ImageGeneratorRequestData>? = null
     private var gqlJob: Job? = null
 
-    //Flag to control Image generator option
+    // Flag to control Image generator option
     private var getImageFromMedia = false
     private lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
-    //Dynamic Social Media ordering from Remote Config
+    // Dynamic Social Media ordering from Remote Config
     private var socialMediaOrderHashMap: HashMap<String, Int>? = null
 
     private val tracker: UniversalSharebottomSheetTracker by lazy {
@@ -333,7 +334,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var onViewReadyAction: (() -> Unit)? = null
 
-    private var  imageGeneratorParam: ImageGeneratorParamModel? = null
+    private var imageGeneratorParam: ImageGeneratorParamModel? = null
+
+    private var imageThumbnailListener: ((imageUrl: String) -> Unit)? = null
+
+    private var isInitialClickThumbnail = true
 
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
@@ -359,7 +364,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         inject()
     }
     private var affiliateListener: ((userType: String) -> Unit)? = null
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -387,13 +391,17 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun show(fragmentManager: FragmentManager?, fragment: Fragment, screenshotDetector: ScreenshotDetector? = null) {
         try {
-            screenshotDetector?.detectScreenshots(fragment,
+            screenshotDetector?.detectScreenshots(
+                fragment,
                 {
                     fragmentManager?.let {
                         show(it, TAG)
                         setFragmentLifecycleObserverUniversalSharing(fragment)
                     }
-                }, true, fragment.requireView())
+                },
+                true,
+                fragment.requireView()
+            )
                 ?: fragmentManager?.let {
                     show(it, TAG)
                     setFragmentLifecycleObserverUniversalSharing(fragment)
@@ -470,10 +478,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 }
             }
         }, onError = {
-            clearLoader()
-            removeHandlerTimeout()
-            it.printStackTrace()
-        })
+                clearLoader()
+                removeHandlerTimeout()
+                it.printStackTrace()
+            })
         handler = Handler(Looper.getMainLooper())
         handler?.postDelayed({
             clearLoader()
@@ -515,23 +523,27 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
-        return generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
-            && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
-            && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true
+        return generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true &&
+            generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true &&
+            generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true
     }
 
     private fun isShowAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
-        return (generateAffiliateLinkEligibility.banner != null
-            && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false) && userSession.isLoggedIn
-            && userSession.shopId != affiliateQueryData?.shop?.shopID
+        return (
+            generateAffiliateLinkEligibility.banner != null &&
+                generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
+            ) && userSession.isLoggedIn &&
+            userSession.shopId != affiliateQueryData?.shop?.shopID
     }
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
         val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
         if (!TextUtils.isEmpty(commissionMessage)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
-                    Html.FROM_HTML_MODE_LEGACY)
+                affiliateCommissionTextView?.text = Html.fromHtml(
+                    commissionMessage,
+                    Html.FROM_HTML_MODE_LEGACY
+                )
             } else {
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
@@ -573,7 +585,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 affiliateRegisterTitle?.text = Html.fromHtml(banner.title, Html.FROM_HTML_MODE_LEGACY)
                 affiliateRegisterMsg?.text = Html.fromHtml(banner.message, Html.FROM_HTML_MODE_LEGACY)
-
             } else {
                 affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
                 affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
@@ -608,7 +619,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
 
-            //setting click listeners for fixed options
+            // setting click listeners for fixed options
             copyLinkImage = findViewById(R.id.copy_link_img)
             copyLinkImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
             otherOptionsImage = findViewById(R.id.others_img)
@@ -666,6 +677,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                     revImageOptionsContainer?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     Handler(Looper.getMainLooper()).postDelayed({
                         revImageOptionsContainer?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+                        isInitialClickThumbnail = false
                     }, DELAY_TIME_MILLISECOND)
                 }
             })
@@ -699,130 +711,148 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun generateSocialMediaList(context: Context?): List<ShareModel> {
         val socialMediaList: MutableList<ShareModel> = mutableListOf()
-        socialMediaList.add(ShareModel.Whatsapp().apply {
-            packageName = PACKAGE_NAME_WHATSAPP
-            socialMediaName = context?.resources?.getString(R.string.label_whatsapp)
-            feature = channelStr
-            campaign = campaignStr
-            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_WHATSAPP)
-            channel = SharingUtil.labelWhatsapp
-            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.WHATSAPP
-            shareOnlyLink = isImageOnlySharing
-            appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_whatsapp) }
-        })
-        socialMediaList.add(ShareModel.Facebook().apply {
-            packageName = PACKAGE_NAME_FACEBOOK
-            socialMediaName = context?.resources?.getString(R.string.label_facebook)
-            feature = channelStr
-            campaign = campaignStr
-            channel = SharingUtil.labelFbfeed
-            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_FEED
-            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_FEED)
-            shareOnlyLink = isImageOnlySharing
-            if (isImageOnlySharing) {
+        socialMediaList.add(
+            ShareModel.Whatsapp().apply {
+                packageName = PACKAGE_NAME_WHATSAPP
+                socialMediaName = context?.resources?.getString(R.string.label_whatsapp)
+                feature = channelStr
+                campaign = campaignStr
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_WHATSAPP)
+                channel = SharingUtil.labelWhatsapp
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.WHATSAPP
+                shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            } else {
-                appIntent = getAppIntent(MimeType.TEXT, packageName)
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_whatsapp) }
             }
-            appIntent?.component = ComponentName(
-                PACKAGE_NAME_FACEBOOK,
-                FACEBOOK_FEED_ACTIVITY
-            )
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook) }
-        })
-        if (!TextUtils.isEmpty(savedImagePath)) {
-            socialMediaList.add(ShareModel.Facebook().apply {
+        )
+        socialMediaList.add(
+            ShareModel.Facebook().apply {
                 packageName = PACKAGE_NAME_FACEBOOK
-                //facebook story can share only the images
-                socialMediaName = context?.resources?.getString(R.string.label_facebook_story)
+                socialMediaName = context?.resources?.getString(R.string.label_facebook)
                 feature = channelStr
                 campaign = campaignStr
-                channel = SharingUtil.labelFbstory
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_STORY)
-                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_STORY
-                shareOnlyLink = true
-                appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook_story) }
-            })
-            socialMediaList.add(ShareModel.Instagram().apply {
-                packageName = PACKAGE_NAME_INSTAGRAM
-                socialMediaName = context?.resources?.getString(R.string.label_instagram_feed)
-                feature = channelStr
-                campaign = campaignStr
-                channel = SharingUtil.labelIgfeed
-                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_FEED)
-                shareOnlyLink = true
-                appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram) }
-            })
-            socialMediaList.add(ShareModel.Instagram().apply {
-                packageName = PACKAGE_NAME_INSTAGRAM
-                socialMediaName = context?.resources?.getString(R.string.label_instagram_story)
-                feature = channelStr
-                campaign = campaignStr
-                channel = SharingUtil.labelIgstory
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_STORY)
-                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_STORY
-                shareOnlyLink = true
-                appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_story) }
-            })
-        } else {
-            socialMediaList.add(ShareModel.Instagram().apply {
-                packageName = PACKAGE_NAME_INSTAGRAM
-                socialMediaName = context?.resources?.getString(R.string.label_instagram_dm)
-                feature = channelStr
-                campaign = campaignStr
-                channel = SharingUtil.labelIgMessage
-                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
-                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_DM)
-                shareOnlyLink = false
-                appIntent = getAppIntent(MimeType.TEXT, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_dm) }
-            })
-        }
-        socialMediaList.add(ShareModel.Line().apply {
-            packageName = PACKAGE_NAME_LINE
-            socialMediaName = context?.resources?.getString(R.string.label_line)
-            feature = channelStr
-            campaign = campaignStr
-            channel = SharingUtil.labelLine
-            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.LINE
-            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_LINE)
-            shareOnlyLink = isImageOnlySharing
-            if (isImageOnlySharing) {
-                appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            } else {
-                appIntent = getAppIntent(MimeType.TEXT, packageName)
+                channel = SharingUtil.labelFbfeed
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_FEED
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_FEED)
+                shareOnlyLink = isImageOnlySharing
+                if (isImageOnlySharing) {
+                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
+                } else {
+                    appIntent = getAppIntent(MimeType.TEXT, packageName)
+                }
+                appIntent?.component = ComponentName(
+                    PACKAGE_NAME_FACEBOOK,
+                    FACEBOOK_FEED_ACTIVITY
+                )
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook) }
             }
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_line) }
-        })
-        socialMediaList.add(ShareModel.Twitter().apply {
-            packageName = PACKAGE_NAME_TWITTER
-            socialMediaName = context?.resources?.getString(R.string.label_twitter)
-            feature = channelStr
-            campaign = campaignStr
-            channel = SharingUtil.labelTwitter
-            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TWITTER
-            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TWITTER)
-            shareOnlyLink = isImageOnlySharing
-            appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_twitter) }
-        })
-        socialMediaList.add(ShareModel.Telegram().apply {
-            packageName = PACKAGE_NAME_TELEGRAM
-            socialMediaName = context?.resources?.getString(R.string.label_telegram)
-            feature = channelStr
-            campaign = campaignStr
-            channel = SharingUtil.labelTelegram
-            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TELEGRAM
-            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TELEGRAM)
-            shareOnlyLink = isImageOnlySharing
-            appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_telegram) }
-        })
+        )
+        if (!TextUtils.isEmpty(savedImagePath)) {
+            socialMediaList.add(
+                ShareModel.Facebook().apply {
+                    packageName = PACKAGE_NAME_FACEBOOK
+                    // facebook story can share only the images
+                    socialMediaName = context?.resources?.getString(R.string.label_facebook_story)
+                    feature = channelStr
+                    campaign = campaignStr
+                    channel = SharingUtil.labelFbstory
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_STORY)
+                    platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_STORY
+                    shareOnlyLink = true
+                    appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook_story) }
+                }
+            )
+            socialMediaList.add(
+                ShareModel.Instagram().apply {
+                    packageName = PACKAGE_NAME_INSTAGRAM
+                    socialMediaName = context?.resources?.getString(R.string.label_instagram_feed)
+                    feature = channelStr
+                    campaign = campaignStr
+                    channel = SharingUtil.labelIgfeed
+                    platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_FEED)
+                    shareOnlyLink = true
+                    appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram) }
+                }
+            )
+            socialMediaList.add(
+                ShareModel.Instagram().apply {
+                    packageName = PACKAGE_NAME_INSTAGRAM
+                    socialMediaName = context?.resources?.getString(R.string.label_instagram_story)
+                    feature = channelStr
+                    campaign = campaignStr
+                    channel = SharingUtil.labelIgstory
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_STORY)
+                    platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_STORY
+                    shareOnlyLink = true
+                    appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_story) }
+                }
+            )
+        } else {
+            socialMediaList.add(
+                ShareModel.Instagram().apply {
+                    packageName = PACKAGE_NAME_INSTAGRAM
+                    socialMediaName = context?.resources?.getString(R.string.label_instagram_dm)
+                    feature = channelStr
+                    campaign = campaignStr
+                    channel = SharingUtil.labelIgMessage
+                    platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
+                    socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_DM)
+                    shareOnlyLink = false
+                    appIntent = getAppIntent(MimeType.TEXT, packageName)
+                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_dm) }
+                }
+            )
+        }
+        socialMediaList.add(
+            ShareModel.Line().apply {
+                packageName = PACKAGE_NAME_LINE
+                socialMediaName = context?.resources?.getString(R.string.label_line)
+                feature = channelStr
+                campaign = campaignStr
+                channel = SharingUtil.labelLine
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.LINE
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_LINE)
+                shareOnlyLink = isImageOnlySharing
+                if (isImageOnlySharing) {
+                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
+                } else {
+                    appIntent = getAppIntent(MimeType.TEXT, packageName)
+                }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_line) }
+            }
+        )
+        socialMediaList.add(
+            ShareModel.Twitter().apply {
+                packageName = PACKAGE_NAME_TWITTER
+                socialMediaName = context?.resources?.getString(R.string.label_twitter)
+                feature = channelStr
+                campaign = campaignStr
+                channel = SharingUtil.labelTwitter
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TWITTER
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TWITTER)
+                shareOnlyLink = isImageOnlySharing
+                appIntent = getAppIntent(MimeType.IMAGE, packageName)
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_twitter) }
+            }
+        )
+        socialMediaList.add(
+            ShareModel.Telegram().apply {
+                packageName = PACKAGE_NAME_TELEGRAM
+                socialMediaName = context?.resources?.getString(R.string.label_telegram)
+                feature = channelStr
+                campaign = campaignStr
+                channel = SharingUtil.labelTelegram
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TELEGRAM
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TELEGRAM)
+                shareOnlyLink = isImageOnlySharing
+                appIntent = getAppIntent(MimeType.IMAGE, packageName)
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_telegram) }
+            }
+        )
         socialMediaList.sortBy { it.socialMediaOrderingScore }
         return socialMediaList.filterNot {
             (it.packageName!!.isNotEmpty() && it.appIntent != null && getResolvedActivity(context, it.appIntent) == null)
@@ -856,7 +886,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             smsImage?.visibility = View.VISIBLE
             smsTxtv?.visibility = View.VISIBLE
             val smsShareModel = ShareModel.SMS().apply {
-                packageName = Telephony.Sms.getDefaultSmsPackage(context);
+                packageName = Telephony.Sms.getDefaultSmsPackage(context)
                 socialMediaName = context?.resources?.getString(R.string.label_chat)
                 feature = channelStr
                 campaign = campaignStr
@@ -885,11 +915,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun setMetaData(tnTitle: String, tnImage: String,
-                    previewImgUrl: String = "",
-                    imageList: ArrayList<String>? = null,
-                    takeSS: ((view: View, imageSaved: ((String) -> Unit)) -> Unit)? = null) {
-
+    fun setMetaData(
+        tnTitle: String,
+        tnImage: String,
+        previewImgUrl: String = "",
+        imageList: ArrayList<String>? = null,
+        takeSS: ((view: View, imageSaved: ((String) -> Unit)) -> Unit)? = null
+    ) {
         if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
             previewImageUrl = screenShotImagePath
             savedImagePath = screenShotImagePath
@@ -988,8 +1020,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun updateThumbnailImage(imgUrl: String) {
+        if (!isInitialClickThumbnail) {
+            imageThumbnailListener?.invoke(imgUrl)
+        }
         thumbNailImage?.setImageUrl(imgUrl)
         ogImageUrl = imgUrl
+    }
+
+    fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
+        imageThumbnailListener = listener
     }
 
     fun setUtmCampaignData(pageName: String, userId: String, pageId: String, feature: String) {
@@ -1025,7 +1064,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         val pageIdCombined = TextUtils.join("-", pageIdConstituents)
         setUtmCampaignData(pageName, userId, pageIdCombined, feature)
     }
-
 
     fun setOgImageUrl(imgUrl: String) {
         ogImageUrl = imgUrl
@@ -1075,9 +1113,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
-        }, onError =  {
-            executeSharingFlow(shareModel)
-        })
+        }, onError = {
+                executeSharingFlow(shareModel)
+            })
     }
 
     private fun executeShopContextualImage(shareModel: ShareModel) {
@@ -1090,9 +1128,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
-        }, onError =  {
-            executeSharingFlow(shareModel)
-        })
+        }, onError = {
+                executeSharingFlow(shareModel)
+            })
     }
 
     private fun executeWishlistCollectionContextualImage(shareModel: ShareModel) {
@@ -1105,8 +1143,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
-            executeSharingFlow(shareModel)
-        })
+                executeSharingFlow(shareModel)
+            })
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
@@ -1131,7 +1169,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun setIfAffiliate(shareModel: ShareModel) {
         if (affiliateQueryData != null &&
-            affiliateCommissionTextView?.visibility == View.VISIBLE) {
+            affiliateCommissionTextView?.visibility == View.VISIBLE
+        ) {
             shareModel.isAffiliate = true
         }
     }
@@ -1141,8 +1180,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             val ogImageTransformationEnabled = remoteConfig.getBoolean(GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
             if (ogImageTransformationEnabled && !TextUtils.isEmpty(imageURL) && imageURL.endsWith(".webp")) {
-                if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp")
-                    || imageURL.endsWith(".jpeg.webp")
+                if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp") ||
+                    imageURL.endsWith(".jpeg.webp")
                 ) {
                     return imageURL.replace(".webp", "")
                 }
@@ -1161,10 +1200,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             customBottomSheetEnabled = remoteConfig.getBoolean(featureFlagRemoteConfigKey)
         }
-        if (customBottomSheetEnabled) {//enabled
+        if (customBottomSheetEnabled) { // enabled
             super.show(manager, tag)
         } else {
-            //call the native bottom sheet share
+            // call the native bottom sheet share
             bottomSheetListener?.onShareOptionClicked(getNaviteShareIntent())
         }
     }
@@ -1192,6 +1231,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         try {
             onViewReadyAction = null
             affiliateListener = null
+            imageThumbnailListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
@@ -1210,6 +1250,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         try {
             onViewReadyAction = null
             affiliateListener = null
+            imageThumbnailListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
@@ -1238,8 +1279,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
     }
 
-    private fun executeImageGeneratorUseCase(args: ArrayList<ImageGeneratorRequestData>,
-                                             shareModel: ShareModel) {
+    private fun executeImageGeneratorUseCase(
+        args: ArrayList<ImageGeneratorRequestData>,
+        shareModel: ShareModel
+    ) {
         loaderUnify?.visibility = View.VISIBLE
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
@@ -1259,9 +1302,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 }
             }
         }, onError = {
-            it.printStackTrace()
-            executeSharingFlow(shareModel)
-        })
+                it.printStackTrace()
+                executeSharingFlow(shareModel)
+            })
     }
 
     /***
@@ -1287,14 +1330,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         sourceId = pageSourceId
     }
 
-    fun setBroadcastChannel(context: Context, type: BroadcastChannelType, id: String) {
+    fun setBroadcastChannel(context: Context, type: BroadcastChannelType, id: String, callback: () -> Unit = {}) {
         isShowTickerList = true
         tickerListAdapter.addItem(
             BroadcastChannelModel(
-            id = id, type = type,
-            title = context.getString(com.tokopedia.universal_sharing.R.string.title_broadcast),
-            description = context.getString(com.tokopedia.universal_sharing.R.string.description_broadcast),
-            imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast
+                id = id,
+                type = type,
+                title = context.getString(com.tokopedia.universal_sharing.R.string.title_broadcast),
+                description = context.getString(com.tokopedia.universal_sharing.R.string.description_broadcast),
+                imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast,
+                callback = callback
             )
         )
     }

@@ -78,6 +78,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESCHEDULE_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RETURN_TO_SHIPPER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
@@ -144,7 +145,8 @@ import javax.inject.Inject
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
-open class SomDetailFragment : BaseDaggerFragment(),
+open class SomDetailFragment :
+    BaseDaggerFragment(),
     RefreshHandler.OnRefreshHandlerListener,
     SomBottomSheetRejectOrderAdapter.ActionListener,
     SomDetailAdapterFactoryImpl.ActionListener,
@@ -190,7 +192,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
     protected val bottomSheetManager by lazy {
-        view?.let { if (it is ViewGroup) BottomSheetManager(it) else null }
+        view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
     }
 
     private fun createChatIcon(context: Context): IconUnify {
@@ -199,8 +201,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 doClickChat()
             }
             layoutParams = LinearLayout.LayoutParams(
-                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt(),
-                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt()).apply {
+                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt(),
+                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt()
+            ).apply {
                 setMargins(0, 0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
             }
             val outValue = TypedValue()
@@ -247,8 +250,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
         val intent = RouteManager.getIntent(
             activity,
             ApplinkConst.TOPCHAT_ASKBUYER,
-            detailResponse?.customer?.id.orEmpty(), "",
-            PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image
+            detailResponse?.customer?.id.orEmpty(),
+            "",
+            PARAM_SOURCE_ASK_BUYER,
+            detailResponse?.customer?.name,
+            detailResponse?.customer?.image
         ).apply {
             putExtra(ApplinkConst.Chat.INVOICE_ID, orderId) // it's actually require the id of the order
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse?.invoice)
@@ -499,7 +505,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         } else {
                             onUserNotAllowedToViewSOM()
                         }
-
                     }
                 }
                 is Fail -> {
@@ -565,7 +570,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         somDetail: SomDetailOrder.Data.GetSomDetail?,
         somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?,
         resolutionTicketStatusResponse: GetResolutionTicketStatusResponse
-                                            .ResolutionGetTicketStatus.ResolutionData?
+        .ResolutionGetTicketStatus.ResolutionData?
     ) {
         showSuccessState()
         renderButtons()
@@ -574,7 +579,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
         somDetailAdapter.setElements(
             SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
-                somDetail, somDynamicPriceResponse, resolutionTicketStatusResponse
+                somDetail,
+                somDynamicPriceResponse,
+                resolutionTicketStatusResponse
             )
         )
     }
@@ -611,6 +618,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                             buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                             buttonResp.key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
+                            buttonResp.key.equals(
+                                KEY_RETURN_TO_SHIPPER,
+                                true
+                            ) -> SomNavigator.goToReturnToShipper(this@SomDetailFragment, orderId)
                         }
                     }
                 }
@@ -629,7 +640,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
             } else {
                 binding?.btnSecondary?.visibility = View.GONE
             }
-
         } else {
             binding?.containerBtnDetail?.visibility = View.GONE
         }
@@ -821,6 +831,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                         key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
                         key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(this, orderId)
+                        key.equals(
+                            KEY_RETURN_TO_SHIPPER,
+                            true
+                        ) -> SomNavigator.goToReturnToShipper(this@SomDetailFragment, orderId)
                     }
                 }
             }
@@ -1016,12 +1030,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {
-        startActivity(Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
-            val logisticInfo = LogisticInfoAllWrapper(ArrayList(logisticInfoList))
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            cacheManager?.put(SomDetailLogisticInfoFragment.KEY_SOM_LOGISTIC_INFO_ALL, logisticInfo)
-            putExtra(KEY_ID_CACHE_MANAGER_INFO_ALL, cacheManager?.id)
-        })
+        startActivity(
+            Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
+                val logisticInfo = LogisticInfoAllWrapper(ArrayList(logisticInfoList))
+                val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+                cacheManager?.put(SomDetailLogisticInfoFragment.KEY_SOM_LOGISTIC_INFO_ALL, logisticInfo)
+                putExtra(KEY_ID_CACHE_MANAGER_INFO_ALL, cacheManager?.id)
+            }
+        )
     }
 
     override fun onShowBookingCode(bookingCode: String, bookingType: String) {
@@ -1040,6 +1056,27 @@ open class SomDetailFragment : BaseDaggerFragment(),
             handleChangeCourierAndConfirmShippingResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_RESCHEDULE_PICKUP) {
             handleReschedulePickupResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_RETURN_TO_SHIPPER) {
+            handleReturnToShipperResult(resultCode, data)
+        }
+    }
+
+    protected open fun handleReturnToShipperResult(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                finishAndRefreshSomList()
+            }
+            Activity.RESULT_FIRST_USER -> {
+                loadDetail()
+            }
+        }
+    }
+
+    private fun finishAndRefreshSomList() {
+        activity?.run {
+            val result = Intent().putExtra(SomConsts.RESULT_REFRESH_ORDER, true)
+            setResult(Activity.RESULT_OK, result)
+            finish()
         }
     }
 
@@ -1162,9 +1199,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected open fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
             val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
-            activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
-            })
+            activity?.setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
+                }
+            )
             activity?.finish()
         }
     }
@@ -1172,9 +1212,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected open fun handleChangeCourierAndConfirmShippingResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
             val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
-            activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
-            })
+            activity?.setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
+                }
+            )
             activity?.finish()
         }
     }
@@ -1289,7 +1332,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
             context?.let { context ->
                 binding?.btnPrimary?.isLoading = false
                 val somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
-                        ?: SomOrderHasRequestCancellationDialog(context)
+                    ?: SomOrderHasRequestCancellationDialog(context)
                 this.somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
                 somOrderHasCancellationRequestDialog.apply {
                     setupActionButton(pendingAction.actionName, pendingAction.action)
@@ -1315,9 +1358,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     protected open fun onSuccessAcceptOrder() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(RESULT_ACCEPT_ORDER, this@SomDetailFragment.acceptOrderResponse)
-        })
+        activity?.setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(RESULT_ACCEPT_ORDER, this@SomDetailFragment.acceptOrderResponse)
+            }
+        )
         activity?.finish()
     }
 
@@ -1333,9 +1379,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected open fun onSuccessRejectOrder(rejectOrderData: SomRejectOrderResponse.Data.RejectOrder) {
         if (rejectOrderData.success == 1) {
             // if success = 1 : finishActivity, then show toaster
-            activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(RESULT_REJECT_ORDER, rejectOrderData)
-            })
+            activity?.setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(RESULT_REJECT_ORDER, rejectOrderData)
+                }
+            )
             activity?.finish()
         } else {
             showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, TYPE_ERROR)
@@ -1344,13 +1393,16 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected open fun onSuccessSetDelivered(deliveredData: SetDelivered) {
         if (deliveredData.success == SomConsts.SOM_SET_DELIVERED_SUCCESS_CODE) {
-            activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(RESULT_SET_DELIVERED, getString(R.string.message_set_delivered_success))
-            })
+            activity?.setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(RESULT_SET_DELIVERED, getString(R.string.message_set_delivered_success))
+                }
+            )
             activity?.finish()
         } else {
             val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() }
-                    ?: getString(R.string.global_error)
+                ?: getString(R.string.global_error)
             showToaster(message, view, TYPE_ERROR, "")
             bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
         }

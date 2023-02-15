@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.network.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class EPharmacyPrescriptionUploadResponse(
@@ -9,7 +8,7 @@ data class EPharmacyPrescriptionUploadResponse(
     @SerializedName("error")
     val error: String?,
     @SerializedName("header")
-    val header: Header?
+    val header: EPharmacyHeader?
 ) {
     data class EPharmacyPrescriptionData(
         @SerializedName("error_msg")
@@ -18,12 +17,5 @@ data class EPharmacyPrescriptionUploadResponse(
         val id: Long?,
         @SerializedName("prescription_id")
         val prescriptionId: Long?
-    )
-
-    data class Header(
-        @SerializedName("code")
-        val code: Int?,
-        @SerializedName("server_prosess_time")
-        val serverProsessTime: String?
     )
 }

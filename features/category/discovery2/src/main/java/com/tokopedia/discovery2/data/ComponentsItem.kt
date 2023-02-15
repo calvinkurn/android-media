@@ -90,6 +90,7 @@ data class ComponentsItem(
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1,
         var tabName: String? = "",
+        var tabPosition: Int? = null,
         var parentSectionId: String? = "",
         var parentSectionCompID: String? = "",
         var isSticky : Boolean = false,

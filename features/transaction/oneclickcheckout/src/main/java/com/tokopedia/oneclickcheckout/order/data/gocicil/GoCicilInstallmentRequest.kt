@@ -24,7 +24,7 @@ class GoCicilInstallmentRequest(
     private val destinationAddress
         get() = JsonObject().apply {
             addProperty(ORDER_METADATA_DEST_ADDRESS_ADDRESS, address.addressStreet)
-            addProperty(ORDER_METADATA_DEST_ADDRESS_STATE, address.addressStreet)
+            addProperty(ORDER_METADATA_DEST_ADDRESS_STATE, address.provinceName)
             addProperty(ORDER_METADATA_DEST_ADDRESS_CITY, address.cityName)
             addProperty(ORDER_METADATA_DEST_ADDRESS_COUNTRY, address.country)
             addProperty(ORDER_METADATA_DEST_ADDRESS_POSTAL_CODE, address.postalCode)

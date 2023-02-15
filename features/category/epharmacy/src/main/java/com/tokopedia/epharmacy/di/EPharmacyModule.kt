@@ -2,7 +2,6 @@ package com.tokopedia.epharmacy.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
@@ -47,8 +46,10 @@ class EPharmacyModule {
     }
 
     @Provides
-    fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository {
+    fun provideRestRepository(
+        interceptors: MutableList<Interceptor>,
+        @ApplicationContext context: Context
+    ): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }

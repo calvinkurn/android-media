@@ -35,6 +35,7 @@
 
     <string name="path_atc_variant" translatable="false">/atc-variant/.*\\/.*\\/</string>
     <string name="path_product_educational" translatable="false">/product-edu/.*\\/</string>
+    <string name="path_post_atc" translatable="false">/post-atc/.*\\/</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
@@ -45,6 +46,7 @@
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*</string>
     <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
+    <string name="path_bulk_create_review" translatable="false">/product-review/bulk-create/</string>
     <string name="path_edit_review" translatable="false">/product-review/edit/.*\\/.*\\/</string>
     <string name="path_review_credibility" translatable="false">/review/credibility/.*\\/.*\\/</string>
     <string name="path_review_media_gallery" translatable="false">/review/media-gallery</string>
