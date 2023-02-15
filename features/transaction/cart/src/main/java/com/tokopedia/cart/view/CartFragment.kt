@@ -120,6 +120,7 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -1229,7 +1230,7 @@ class CartFragment :
                                         shopId = availableGroup.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0"
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1269,7 +1270,7 @@ class CartFragment :
                                         shopId = availableGroup.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0"
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1312,7 +1313,7 @@ class CartFragment :
                                         shopId = availableGroup.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0"
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1327,7 +1328,6 @@ class CartFragment :
         }
         return Triple(hasRedStatePromo, redStateGlobalPromo, clearOrders)
     }
-
 
     override fun onSuccessClearRedPromosThenGoToCheckout() {
         goToCheckoutPage()
@@ -1540,6 +1540,48 @@ class CartFragment :
 
     override fun onNewBundleProductAddedToCart() {
         refreshCartWithSwipeToRefresh()
+    }
+
+    override fun onMultipleBundleActionButtonClicked(
+        selectedBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventClickCartBundlingBottomSheetBundleWidgetAction(
+            userSession.userId,
+            selectedBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE
+        )
+    }
+
+    override fun onSingleBundleActionButtonClicked(
+        selectedBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventClickCartBundlingBottomSheetBundleWidgetAction(
+            userSession.userId,
+            selectedBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE
+        )
+    }
+
+    override fun impressionMultipleBundle(
+        selectedMultipleBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
+            userSession.userId,
+            selectedMultipleBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE,
+            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedMultipleBundle)
+        )
+    }
+
+    override fun impressionSingleBundle(
+        selectedBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
+            userSession.userId,
+            selectedBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE,
+            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedBundle)
+        )
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
@@ -2177,6 +2219,9 @@ class CartFragment :
             }
             CartShopGroupTickerData.ACTION_OPEN_BOTTOM_SHEET_BUNDLING -> {
                 showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData)
+                cartPageAnalytics.eventClickCartShopGroupTickerForBundleCrossSell(
+                    cartShopHolderData.cartShopGroupTicker.tickerText
+                )
             }
             else -> {
                 // no-op
@@ -2186,11 +2231,6 @@ class CartFragment :
             cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
                 cartShopHolderData.cartShopGroupTicker.cartIds,
                 cartShopHolderData.shopId
-            )
-        }
-        if (cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell) {
-            cartPageAnalytics.eventClickCartShopGroupTickerForBundleCrossSell(
-                cartShopHolderData.cartShopGroupTicker.tickerText
             )
         }
     }

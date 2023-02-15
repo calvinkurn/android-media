@@ -61,6 +61,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
@@ -1157,6 +1158,20 @@ class CartListPresenter @Inject constructor(
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
         }
         return enhancedECommerceCartMapData.cartMap
+    }
+
+    override fun generateCartBundlingPromotionsAnalyticsData(
+        bundleDetail: BundleDetailUiModel
+    ): List<Map<String, Any>> {
+        return bundleDetail.products.map {
+            hashMapOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.DIMENSION40 to ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
+                ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
+            )
+        }
     }
 
     private fun getProductRecentViewImpressionMapData(
