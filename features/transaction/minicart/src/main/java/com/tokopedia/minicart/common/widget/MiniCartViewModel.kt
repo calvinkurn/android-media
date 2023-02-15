@@ -161,7 +161,10 @@ class MiniCartViewModel @Inject constructor(
     }
 
     fun getLatestMiniCartData(): MiniCartSimplifiedData {
-        return miniCartListUiModelMapper.reverseMapUiModel(miniCartListBottomSheetUiModel.value, tmpHiddenUnavailableItems)
+        return miniCartListUiModelMapper.reverseMapUiModel(
+            miniCartListBottomSheetUiModel.value,
+            tmpHiddenUnavailableItems
+        )
     }
 
     fun resetTemporaryHiddenUnavailableItems() {
@@ -253,7 +256,11 @@ class MiniCartViewModel @Inject constructor(
                 excludeBundleIds = miniCartListUiModel.availableBundleIds
             )
 
-            showProductBundleRecom(miniCartListUiModel, response.tokonowBundleWidget.data.widgetData, response)
+            showProductBundleRecom(
+                miniCartListUiModel,
+                response.tokonowBundleWidget.data.widgetData,
+                response
+            )
         }, onError = {
                 hideProductBundleRecomShimmering(miniCartListUiModel)
             })
@@ -264,7 +271,11 @@ class MiniCartViewModel @Inject constructor(
         updateVisitablesBackgroundState(miniCartListUiModel.visitables)
     }
 
-    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>, response: ProductBundleRecomResponse) {
+    private fun showProductBundleRecom(
+        miniCartListUiModel: MiniCartListUiModel,
+        widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>,
+        response: ProductBundleRecomResponse
+    ) {
         if (widgetData.isNotEmpty()) {
             val productBundleRecom = miniCartListUiModelMapper.mapToProductBundleUiModel(response)
             miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
@@ -314,12 +325,13 @@ class MiniCartViewModel @Inject constructor(
         productQuantity: Int
     ) {
         launchCatchError(context = executorDispatchers.io, block = {
-            val productDetailsParam = miniCartListUiModelMapper.mapToAddToCartBundleProductDetailParam(
-                productDetails = productDetails,
-                quantity = productQuantity,
-                shopId = shopId,
-                userId = userSession.userId
-            )
+            val productDetailsParam =
+                miniCartListUiModelMapper.mapToAddToCartBundleProductDetailParam(
+                    productDetails = productDetails,
+                    quantity = productQuantity,
+                    shopId = shopId,
+                    userId = userSession.userId
+                )
 
             val atcBundleParams = AddToCartBundleRequestParams(
                 shopId = shopId,
@@ -451,7 +463,10 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    fun deleteMultipleCartItems(products: List<MiniCartProductUiModel>, isFromEditBundle: Boolean = false) {
+    fun deleteMultipleCartItems(
+        products: List<MiniCartProductUiModel>,
+        isFromEditBundle: Boolean = false
+    ) {
         deleteCartUseCase.setParams(products.map { it.cartId })
         deleteCartUseCase.execute(
             onSuccess = {
@@ -463,7 +478,10 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessDeleteSingleCartItem(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData) {
+    private fun onSuccessDeleteSingleCartItem(
+        product: MiniCartProductUiModel,
+        removeFromCartData: RemoveFromCartData
+    ) {
         val visitables = getVisitables()
         val tmpVisitables = getVisitables()
         loop@ for ((index, visitable) in visitables.withIndex()) {
@@ -485,7 +503,11 @@ class MiniCartViewModel @Inject constructor(
 
                 _globalEvent.value = GlobalEvent(
                     state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-                    data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = false)
+                    data = RemoveFromCartDomainModel(
+                        removeFromCartData = removeFromCartData,
+                        isLastItem = isLastItem,
+                        isBulkDelete = false
+                    )
                 )
                 break@loop
             }
@@ -499,7 +521,11 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessDeleteMultipleCartItems(products: List<MiniCartProductUiModel>, removeFromCartData: RemoveFromCartData, isFromEditBundle: Boolean) {
+    private fun onSuccessDeleteMultipleCartItems(
+        products: List<MiniCartProductUiModel>,
+        removeFromCartData: RemoveFromCartData,
+        isFromEditBundle: Boolean
+    ) {
         val visitables = getVisitables()
         val tmpVisitables = getVisitables().toMutableList()
         val deletedItems = arrayListOf<MiniCartProductUiModel>()
@@ -516,7 +542,12 @@ class MiniCartViewModel @Inject constructor(
             lastDeletedProductItems = deletedItems
             _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-                data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem && !isFromEditBundle, isBulkDelete = false, isFromEditBundle = isFromEditBundle)
+                data = RemoveFromCartDomainModel(
+                    removeFromCartData = removeFromCartData,
+                    isLastItem = isLastItem && !isFromEditBundle,
+                    isBulkDelete = false,
+                    isFromEditBundle = isFromEditBundle
+                )
             )
         }
     }
@@ -562,7 +593,10 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessBulkDeleteUnavailableCartItems(removeFromCartData: RemoveFromCartData, isLastItem: Boolean) {
+    private fun onSuccessBulkDeleteUnavailableCartItems(
+        removeFromCartData: RemoveFromCartData,
+        isLastItem: Boolean
+    ) {
         if (isLastItem) {
             // manual delete items when delete last item to directly update widget
             val visitables = getVisitables()
@@ -577,7 +611,11 @@ class MiniCartViewModel @Inject constructor(
         }
         _globalEvent.value = GlobalEvent(
             state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-            data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = true)
+            data = RemoveFromCartDomainModel(
+                removeFromCartData = removeFromCartData,
+                isLastItem = isLastItem,
+                isBulkDelete = true
+            )
         )
     }
 
@@ -602,7 +640,10 @@ class MiniCartViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessUndoDeleteCartItem(undoDeleteCartDataResponse: UndoDeleteCartDataResponse, isLastItem: Boolean) {
+    private fun onSuccessUndoDeleteCartItem(
+        undoDeleteCartDataResponse: UndoDeleteCartDataResponse,
+        isLastItem: Boolean
+    ) {
         lastDeletedProductItems = null
         _globalEvent.value = GlobalEvent(
             state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
@@ -818,7 +859,10 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessAddToCartForCheckout(addToCartOccMultiDataModel: AddToCartOccMultiDataModel, observer: Int) {
+    private fun onSuccessAddToCartForCheckout(
+        addToCartOccMultiDataModel: AddToCartOccMultiDataModel,
+        observer: Int
+    ) {
         if (!addToCartOccMultiDataModel.isStatusError()) {
             _globalEvent.value = GlobalEvent(
                 observer = observer,
@@ -858,7 +902,8 @@ class MiniCartViewModel @Inject constructor(
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
                 val updateNonBundle = !isBundling && visitable.productId == productId
-                val updateBundle = isBundling && visitable.bundleId == bundleId && visitable.bundleGroupId == bundleGroupId
+                val updateBundle =
+                    isBundling && visitable.bundleId == bundleId && visitable.bundleGroupId == bundleGroupId
                 if (updateNonBundle) {
                     visitable.setQuantity(newQty)
                     break@loop
@@ -881,18 +926,25 @@ class MiniCartViewModel @Inject constructor(
                 }
             }
         } else {
-            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundleGroup(bundleGroupId)?.apply {
-                if (!isError) {
-                    bundleQuantity = newQty
-                    products.forEach {
-                        it.value.quantity = newQty * bundleMultiplier
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundleGroup(bundleGroupId)
+                ?.apply {
+                    if (!isError) {
+                        bundleQuantity = newQty
+                        products.forEach {
+                            it.value.quantity = newQty * bundleMultiplier
+                        }
                     }
                 }
-            }
         }
     }
 
-    fun updateProductNotes(productId: String, isBundlingItem: Boolean, bundleId: String, bundleGroupId: String, newNotes: String) {
+    fun updateProductNotes(
+        productId: String,
+        isBundlingItem: Boolean,
+        bundleId: String,
+        bundleGroupId: String,
+        newNotes: String
+    ) {
         val visitables = getVisitables()
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
@@ -908,11 +960,12 @@ class MiniCartViewModel @Inject constructor(
                 }
             }
         } else {
-            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundleGroup(bundleGroupId)?.apply {
-                if (!isError) {
-                    products[MiniCartItemKey(productId)]?.notes = newNotes
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundleGroup(bundleGroupId)
+                ?.apply {
+                    if (!isError) {
+                        products[MiniCartItemKey(productId)]?.notes = newNotes
+                    }
                 }
-            }
         }
     }
 
@@ -937,7 +990,11 @@ class MiniCartViewModel @Inject constructor(
         }
     }
 
-    private fun collapseUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
+    private fun collapseUnavailableItems(
+        visitables: MutableList<Visitable<*>>,
+        accordionUiModel: MiniCartAccordionUiModel,
+        indexAccordionUiModel: Int
+    ) {
         val tmpUnavailableProducts = mutableListOf<Visitable<*>>()
         visitables.forEach { visitable ->
             if (visitable is MiniCartUnavailableReasonUiModel || (visitable is MiniCartProductUiModel && visitable.isProductDisabled)) {
@@ -961,7 +1018,11 @@ class MiniCartViewModel @Inject constructor(
         }
     }
 
-    private fun expandUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
+    private fun expandUnavailableItems(
+        visitables: MutableList<Visitable<*>>,
+        accordionUiModel: MiniCartAccordionUiModel,
+        indexAccordionUiModel: Int
+    ) {
         val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
             isCollapsed = false
         }
@@ -1028,11 +1089,15 @@ class MiniCartViewModel @Inject constructor(
                 val productPrice = visitable.getPrice()
                 val productOriginalPrice = visitable.getOriginalPrice()
 
-                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) visitable.parentId = "0"
+                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) {
+                    visitable.parentId =
+                        "0"
+                }
                 val price = when {
                     visitable.productWholeSalePrice > 0 && !visitable.isBundlingItem -> {
                         visitable.productWholeSalePrice
                     }
+
                     else -> productPrice
                 }
                 totalPrice += productQty * price
@@ -1042,6 +1107,7 @@ class MiniCartViewModel @Inject constructor(
                     visitable.productWholeSalePrice > 0 && !visitable.isBundlingItem -> {
                         visitable.productWholeSalePrice
                     }
+
                     else -> productPrice
                 }
                 totalValue += productQty * originalPrice
@@ -1115,7 +1181,10 @@ class MiniCartViewModel @Inject constructor(
 
         val updatedProductIndex = mutableListOf<Int>()
         visitables.forEachIndexed { index, visitable ->
-            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && updatedProductForWholesalePriceItemsProductId.contains(visitable.productId)) {
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && updatedProductForWholesalePriceItemsProductId.contains(
+                    visitable.productId
+                )
+            ) {
                 updatedProductIndex.add(index)
             }
         }
@@ -1145,7 +1214,10 @@ class MiniCartViewModel @Inject constructor(
                 val warningWording = miniCartListUiModel.maximumShippingWeightErrorMessage
                 val overWeight = (totalWeight - maxWeight) / DEFAULT_WEIGHT
                 if (tickerWarning == null) {
-                    tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
+                    tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(
+                        overWeight,
+                        warningWording
+                    )
                     tickerWarning.let {
                         val firstItem = visitables.firstOrNull()
                         if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
@@ -1156,8 +1228,12 @@ class MiniCartViewModel @Inject constructor(
                     }
                 } else {
                     val updatedTickerWarning = tickerWarning.deepCopy()
-                    val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
-                    updatedTickerWarning.warningMessage = warningWording.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
+                    val formattedOverWeight =
+                        NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
+                    updatedTickerWarning.warningMessage = warningWording.replace(
+                        MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE,
+                        "$formattedOverWeight "
+                    )
                     visitables[tickerWarningIndex] = updatedTickerWarning
                 }
             } else {

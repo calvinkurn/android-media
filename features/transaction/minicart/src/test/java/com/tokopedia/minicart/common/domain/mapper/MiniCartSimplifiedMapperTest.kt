@@ -1,7 +1,16 @@
 package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.minicart.common.data.response.minicartlist.*
+import com.tokopedia.minicart.common.data.response.minicartlist.AvailableGroup
+import com.tokopedia.minicart.common.data.response.minicartlist.AvailableSection
+import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
+import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
+import com.tokopedia.minicart.common.data.response.minicartlist.Data
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.Product
+import com.tokopedia.minicart.common.data.response.minicartlist.Section
+import com.tokopedia.minicart.common.data.response.minicartlist.SectionDetail
+import com.tokopedia.minicart.common.data.response.minicartlist.SimplifiedShoppingSummary
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType

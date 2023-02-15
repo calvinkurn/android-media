@@ -5,7 +5,13 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.minicart.R
-import com.tokopedia.minicart.cartlist.viewholder.*
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartAccordionViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartProductViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartSeparatorViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartTickerErrorViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartTickerWarningViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartUnavailableHeaderViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartUnavailableReasonViewHolder
 import javax.inject.Inject
 
 class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration() {

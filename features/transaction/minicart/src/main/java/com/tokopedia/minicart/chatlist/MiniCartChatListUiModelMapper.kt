@@ -2,11 +2,12 @@ package com.tokopedia.minicart.chatlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
-import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
-import com.tokopedia.minicart.common.data.response.minicartlist.*
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
 
@@ -22,12 +23,17 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
 
         return MiniCartListUiModel().apply {
             title = miniCartData.data.headerTitle
-            miniCartWidgetUiModel = mapMiniCartWidgetData(miniCartData, totalProductAvailable, totalProductUnavailable)
-            miniCartSummaryTransactionUiModel = mapMiniCartSummaryTransactionUiModel(miniCartData, totalProductAvailable)
-            chatVisitables = mapVisitables(miniCartData, totalProductAvailable, totalProductUnavailable)
+            miniCartWidgetUiModel =
+                mapMiniCartWidgetData(miniCartData, totalProductAvailable, totalProductUnavailable)
+            miniCartSummaryTransactionUiModel =
+                mapMiniCartSummaryTransactionUiModel(miniCartData, totalProductAvailable)
+            chatVisitables =
+                mapVisitables(miniCartData, totalProductAvailable, totalProductUnavailable)
             if (miniCartData.data.availableSection.availableGroup.isNotEmpty()) {
-                maximumShippingWeight = miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
-                maximumShippingWeightErrorMessage = miniCartData.data.availableSection.availableGroup[0].shop.maximumWeightWording
+                maximumShippingWeight =
+                    miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
+                maximumShippingWeightErrorMessage =
+                    miniCartData.data.availableSection.availableGroup[0].shop.maximumWeightWording
             }
         }
     }
@@ -46,7 +52,11 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         return count
     }
 
-    private fun mapMiniCartWidgetData(miniCartData: MiniCartData, totalProductAvailable: Int, totalProductUnavailable: Int): MiniCartWidgetData {
+    private fun mapMiniCartWidgetData(
+        miniCartData: MiniCartData,
+        totalProductAvailable: Int,
+        totalProductUnavailable: Int
+    ): MiniCartWidgetData {
         return MiniCartWidgetData().apply {
             totalProductCount = totalProductAvailable
             totalProductPrice = miniCartData.data.totalProductPrice
@@ -54,7 +64,10 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapMiniCartSummaryTransactionUiModel(miniCartData: MiniCartData, totalProductAvailable: Int): MiniCartSummaryTransactionUiModel {
+    private fun mapMiniCartSummaryTransactionUiModel(
+        miniCartData: MiniCartData,
+        totalProductAvailable: Int
+    ): MiniCartSummaryTransactionUiModel {
         return MiniCartSummaryTransactionUiModel().apply {
             qty = totalProductAvailable
             totalWording = miniCartData.data.shoppingSummary.totalWording
@@ -68,8 +81,13 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapVisitables(miniCartData: MiniCartData, totalProductAvailable: Int, totalProductUnavailable: Int): MutableList<Visitable<*>> {
-        val miniCartAvailableSectionUiModels: MutableList<MiniCartChatProductUiModel> = mutableListOf()
+    private fun mapVisitables(
+        miniCartData: MiniCartData,
+        totalProductAvailable: Int,
+        totalProductUnavailable: Int
+    ): MutableList<Visitable<*>> {
+        val miniCartAvailableSectionUiModels: MutableList<MiniCartChatProductUiModel> =
+            mutableListOf()
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
 
         var weightTotal = 0
@@ -118,14 +136,20 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         )
     }
 
-    private fun constructChatVisitableOrder(miniCartAvailableSectionUiModels: MutableList<MiniCartChatProductUiModel>, miniCartUnavailableSectionUiModels: MutableList<Visitable<*>>): MutableList<Visitable<*>> {
+    private fun constructChatVisitableOrder(
+        miniCartAvailableSectionUiModels: MutableList<MiniCartChatProductUiModel>,
+        miniCartUnavailableSectionUiModels: MutableList<Visitable<*>>
+    ): MutableList<Visitable<*>> {
         val visitables = mutableListOf<Visitable<*>>()
         visitables.addAll(miniCartAvailableSectionUiModels)
         visitables.addAll(miniCartUnavailableSectionUiModels)
         return visitables
     }
 
-    private fun mapChatProductUiModel(product: Product, isDisabled: Boolean = false): MiniCartChatProductUiModel {
+    private fun mapChatProductUiModel(
+        product: Product,
+        isDisabled: Boolean = false
+    ): MiniCartChatProductUiModel {
         return MiniCartChatProductUiModel().apply {
             productId = product.productId
             productImageUrl = product.productImage.imageSrc100Square

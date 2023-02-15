@@ -1,7 +1,14 @@
 package com.tokopedia.minicart.cartlist.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
 
 class MiniCartListDiffUtilCallback(
     private val oldList: List<Any>,

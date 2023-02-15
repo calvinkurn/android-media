@@ -19,7 +19,11 @@ import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -270,7 +274,10 @@ class GetMiniCartListTest {
         viewModel.getCartList(isFirstLoad = true)
 
         // then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.getAvailableProduct()?.firstOrNull()?.isProductDisabled == false)
+        assert(
+            viewModel.miniCartListBottomSheetUiModel.value?.getAvailableProduct()
+                ?.firstOrNull()?.isProductDisabled == false
+        )
     }
 
     @Test
@@ -309,7 +316,8 @@ class GetMiniCartListTest {
     @Test
     fun `WHEN first load mini cart list success with multiple available items in one cart THEN total product count should more than one`() {
         // given
-        val mockResponse = DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
+        val mockResponse =
+            DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
@@ -325,7 +333,8 @@ class GetMiniCartListTest {
     @Test
     fun `WHEN first load mini cart list success with multiple unavailable items in one cart THEN total product error should more than one`() {
         // given
-        val mockResponse = DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
+        val mockResponse =
+            DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
