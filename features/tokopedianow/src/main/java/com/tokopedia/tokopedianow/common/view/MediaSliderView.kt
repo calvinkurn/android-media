@@ -162,6 +162,7 @@ class MediaSliderView @JvmOverloads constructor(
 
         playBtn.setOnClickListener {
             openMediaGallery(position, mediaList)
+            analytics?.trackClickVideo(position)
         }
 
         btnBg?.show()

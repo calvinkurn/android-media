@@ -115,4 +115,7 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveId: String,
         interactiveTitle: String
     )
+
+    fun onImpressedProductCarousel()
+
 }

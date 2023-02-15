@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -42,6 +43,9 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                                 }
                                 else -> {
                                     groupPayment.gone()
+                                    loaderBtnPay.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentLabel.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentValue.type = LoaderUnify.TYPE_RECT
                                     groupLoaderPayment.visible()
                                 }
                             }
@@ -71,6 +75,9 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                                 else -> {
                                     setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                                     groupPayment.gone()
+                                    loaderBtnPay.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentLabel.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentValue.type = LoaderUnify.TYPE_RECT
                                     groupLoaderPayment.visible()
                                 }
                             }

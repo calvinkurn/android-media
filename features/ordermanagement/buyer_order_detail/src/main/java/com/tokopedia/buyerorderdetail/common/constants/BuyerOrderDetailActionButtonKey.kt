@@ -4,6 +4,7 @@ object BuyerOrderDetailActionButtonKey {
     const val ASK_SELLER = "ask_seller"
     const val BACK = "back"
     const val BUY_AGAIN = "buy_again"
+    const val REORDER = "retry_order"
     const val FINISH_ORDER = "finish_order"
     const val GIVE_REVIEW = "give_review"
     const val HELP = "help"

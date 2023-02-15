@@ -3,7 +3,6 @@ package com.tokopedia.contactus.inboxticket.model.replyticket;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketImageAttachment;
 import com.tokopedia.core.session.model.UserReputation;
 
 import java.util.ArrayList;
