@@ -79,12 +79,24 @@ object ApplinkConstInternalSellerapp {
     // Seller Tokopedia Flash Sale - CampaignDetailActivity
     const val SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/campaign-detail/{campaign_id}/"
 
+    // Seller MVC Creation Redirection Page - MvcRedirectionPageActivity
+    const val SELLER_MVC_REDIRECTION_PAGE = "$INTERNAL_SELLERAPP/seller-mvc/redirection-page"
     // Seller MVC Creation Intro - MvcIntroActivity
     const val SELLER_MVC_INTRO = "$INTERNAL_SELLERAPP/seller-mvc/intro"
-    // Seller MVC Creation - MvcListActivity
-    const val SELLER_MVC_LIST = "$INTERNAL_SELLERAPP/seller-mvc/list"
-    const val SELLER_MVC_LIST_ACTIVE = "$INTERNAL_SELLERAPP/seller-mvc/list/active"
-    const val SELLER_MVC_LIST_HISTORY = "$INTERNAL_SELLERAPP/seller-mvc/list/history"
+    /**
+     * Seller MVC Creation - MvcListActivity
+     * This applink will redirect to voucher list page with following filter status at the suffix
+     * here is the suffix definition:
+     * - active: will display active vouchers, which is upcoming and ongoing vouchers
+     * - history: will display inactive vouchers, which is canceled and ended vouchers
+     * - ongoing: will display ongoing voucher only
+     * - upcoming: will display upcoming voucher only
+     */
+    const val SELLER_MVC_LIST = "$INTERNAL_SELLERAPP/seller-mvc/list/{voucher_status}/"
+    const val SELLER_MVC_LIST_ACTIVE = "$INTERNAL_SELLERAPP/seller-mvc/list/active/"
+    const val SELLER_MVC_LIST_HISTORY = "$INTERNAL_SELLERAPP/seller-mvc/list/history/"
+    const val SELLER_MVC_LIST_ONGOING = "$INTERNAL_SELLERAPP/seller-mvc/list/ongoing/"
+    const val SELLER_MVC_LIST_UPCOMING = "$INTERNAL_SELLERAPP/seller-mvc/list/upcoming/"
     //{voucher_type} value -> shop, product
     const val SELLER_MVC_CREATE = "$INTERNAL_SELLERAPP/seller-mvc/create/{voucher_type}/"
 

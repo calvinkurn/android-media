@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentIntroBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -99,6 +100,10 @@ class MvcIntroFragment :
             override fun changeBackground(position: Int) {
                 changeBackgroundWithPosition(position)
             }
+
+            override fun hideViewMoreButton() {
+                binding?.btnViewMore?.hide()
+            }
         }.also {
             recyclerView.addOnScrollListener(it)
         }
@@ -118,6 +123,7 @@ class MvcIntroFragment :
     private fun HeaderUnify.setupHeader() {
         title = context.getString(R.string.smvc_intro_voucher_toolbar_text)
         setNavigationOnClickListener {
+            mvcIntroPageTracker.sendMvcIntroPageArrowButton()
             activity?.finish()
         }
         setGreenBackgroundForToolbar()
@@ -251,7 +257,6 @@ class MvcIntroFragment :
 
     // When user clicks on the Arrow Button
     override fun onClickButton() {
-        mvcIntroPageTracker.sendMvcIntroPageArrowButton()
         mvcLayoutManager?.scrollToPositionWithOffset(FIRST_INDEX, ZEROTH_INDEX)
         setWhiteBackgroundForToolbar()
     }
