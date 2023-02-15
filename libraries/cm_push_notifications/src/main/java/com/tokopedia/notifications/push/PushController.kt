@@ -72,7 +72,7 @@ class PushController(val context: Context) : CoroutineScope {
 
     fun handleProcessedPushPayload(aidlApiBundle : Bundle?,
                                    baseNotificationModel: BaseNotificationModel,
-                                   advanceTargetingData: AdvanceTargetingData) {
+                                   advanceTargetingData: AdvanceTargetingData){
         postEventForLiveNotification(baseNotificationModel)
         NotificationAdvanceTargetingHandler().checkForValidityAndAdvanceTargeting(
             context.applicationContext,
@@ -99,9 +99,8 @@ class PushController(val context: Context) : CoroutineScope {
         launchCatchError(
                 block = {
                     if(model.isAmplification){
-                        if(!isAmpNotificationValid(model.notificationId)){
+                        if(!isAmpNotificationValid(model.notificationId))
                             return@launchCatchError
-                        }
                     }
                     if (model.notificationMode == NotificationMode.OFFLINE) {
                         if (isOfflinePushEnabled)
@@ -110,11 +109,11 @@ class PushController(val context: Context) : CoroutineScope {
                         onLivePushPayloadReceived(model)
                     }
                 }, onError = {
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                        mapOf("type" to "exception",
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
                             "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
                             "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-            })
+        })
     }
 
     private suspend fun isAmpNotificationValid(notificationID: Int): Boolean {
