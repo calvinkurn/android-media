@@ -465,7 +465,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.exploreWidgetConfig.autoPlay
         )
         router.route(context, item.appLink)
-        activity?.finish()
     }
 
     override fun onImpressChannelCard(
