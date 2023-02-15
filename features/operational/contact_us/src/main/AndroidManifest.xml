@@ -106,7 +106,6 @@
             android:name="com.tokopedia.contactus.inboxticket2.view.activity.ContactUsProvideRatingActivity"
             android:exported="true"
             android:label="@string/survey_layanan"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent" />
         <activity
             android:name="com.tokopedia.contactus.inboxtickets.view.activity.ContactUsProvideRatingActivity"

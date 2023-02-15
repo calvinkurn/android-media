@@ -63,6 +63,7 @@ class GetWhiteListNewUseCase @Inject constructor(
                   link
                   badge
                   type
+                  has_accept_tnc
                   post {
                     enable
                     has_username

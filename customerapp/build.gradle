@@ -208,6 +208,7 @@ android {
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            multiDexKeepProguard file('multidex-config.pro')
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
@@ -420,7 +421,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestImplementation rootProject.ext.testDependencies.retrofitMock
-    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebserver
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.miscDependencies.gson
