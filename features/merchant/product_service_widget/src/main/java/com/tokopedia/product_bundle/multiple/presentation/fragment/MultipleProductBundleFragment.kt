@@ -173,8 +173,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     // set selected bundle master to live data to render details
                     viewModel.setSelectedProductBundleMaster(this)
                     // render header info
-                    renderPreOrderInfo(binding, preOrderStatus, processDay.toInt(), processTypeNum)
                     renderTotalSoldInfo(binding, totalSold)
+                    renderPreOrderInfo(binding, preOrderStatus, processDay.toInt(), processTypeNum)
                     // update totalView atc button text
                     updateProductBundleOverViewButtonText(preOrderStatus, true)
                 }
@@ -375,6 +375,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             val timeUnitWording = viewModel.getPreOrderTimeUnitWording(processTypeNum)
             binding?.shopInfoHeaderLayout?.labelPreorder?.setLabel(getString(R.string.preorder_prefix, "$processDay $timeUnitWording"))
             binding?.shopInfoHeaderLayout?.labelPreorder?.visible()
+            // hide divider if there is only one shop info
+            if (binding?.shopInfoHeaderLayout?.tpgTotalSold?.isVisible == false) {
+                binding.shopInfoHeaderLayout.iuPoDivider.gone()
+            }
         }
         else {
             binding?.shopInfoHeaderLayout?.run {
@@ -389,6 +393,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             context?.run {
                 binding?.shopInfoHeaderLayout?.shopInfoDetailLayout?.show()
                 Typography.isFontTypeOpenSauceOne = true
+                binding?.shopInfoHeaderLayout?.tpgTotalSold?.show()
                 val totalSoldTxt = this.getString(R.string.product_bundle_total_sold, totalSold.thousandFormatted())
                 binding?.shopInfoHeaderLayout?.tpgTotalSold?.text = totalSoldTxt
             }

@@ -416,6 +416,7 @@ class SingleProductBundleFragment(
                     R.string.product_bundle_total_sold,
                     totalSold.thousandFormatted()
                 )
+                binding?.shopInfoHeaderLayout?.tpgTotalSold?.show()
                 binding?.shopInfoHeaderLayout?.tpgTotalSold?.text = totalSoldTxt
             }
         }
@@ -429,6 +430,10 @@ class SingleProductBundleFragment(
                 this.shopInfoDetailLayout.show()
                 this.iuPoDivider.show()
                 this.labelPreorder.show()
+                // hide divider if there is only one shop info
+                if(!this.tpgTotalSold.isVisible) {
+                    this.iuPoDivider.hide()
+                }
             } else {
                 this.iuPoDivider.hide()
                 this.labelPreorder.hide()
