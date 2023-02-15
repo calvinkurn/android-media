@@ -152,7 +152,7 @@ class NotificationSettingsGtmEvents constructor(
             val diffTimeInterval = currentTimeStamp - lastShownTimeStamp
             dataMap[GtmTrackerEvents.KEY_USER_ID_NEW] = userId
             dataMap[GtmTrackerEvents.KEY_SHOP_ID_NEW] = userSession.shopId
-            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = userSession.adsId
+            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = DeviceInfo.getAdsId(context)
             dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_NAME] = JOURNEY
             dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_ID] = ZERO
             dataMap[GtmTrackerEvents.KEY_EVENT_REFRESH_SOURCE] = HOMEPAGE
