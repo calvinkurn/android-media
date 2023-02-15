@@ -228,7 +228,7 @@ class PrivacyCenterFragment :
             val backIcon = getIconBackWithColor(getWhite = isExpand)
 
             window.statusBarColor = if (!isCollapsed) {
-                getResColor(R.color.dms_privacy_center_static_color_toolbar)
+                getResColor(R.color.privacycenter_dms_green_toolbar)
             } else {
                 getDynamicColorStatusBar()
             }
