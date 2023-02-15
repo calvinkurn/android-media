@@ -464,7 +464,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.selectedChips,
             viewModel.exploreWidgetConfig.autoPlay
         )
-        router.route(requireContext(), item.appLink)
+        router.route(context, item.appLink)
         activity?.finish()
     }
 
