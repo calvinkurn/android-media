@@ -1,5 +1,5 @@
 
-package com.tokopedia.contactus.inboxticket.model.inboxticketdetail;
+package com.tokopedia.contactus.inboxticket.model.replyticket;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
