@@ -250,31 +250,40 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         menuSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    //menuSettingAdapter?.showSuccessAccessMenus(result.data)
+                    binding?.recyclerView?.post {
+                        menuSettingAdapter?.showSuccessAccessMenus(result.data)
+                    }
+                    menuSettingViewModel.checkShopSettingAccess()
                 }
                 is Fail -> {
-                    menuSettingAdapter?.removeLoading()
+                    binding?.recyclerView?.post {
+                        menuSettingAdapter?.removeLoading()
+                    }
                     showToasterError(result.throwable.message.orEmpty())
                 }
             }
         }
     }
     private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
-        when (isEligibleMultiloc) {
-            is Success -> {
-                //menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
-
+        if (isEligibleMultiloc is Success) {
+            binding?.recyclerView?.post {
+                menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
             }
         }
     }
 
     private fun setupView() {
-        binding?.recyclerView?.layoutManager = LinearLayoutManager(context)
-        menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
-        if (!userSession.isShopOwner) {
+        binding?.recyclerView?.run {
+            layoutManager = LinearLayoutManager(context)
+            post {
+                menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
+            }
+        }
+        if (userSession.isShopOwner) {
+            menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
+        } else {
             menuSettingViewModel.checkShopSettingAccess()
         }
-        menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
         observe(menuSettingViewModel.shopLocEligible, ::setupLocationSettings)
 
         setupLogoutView()
