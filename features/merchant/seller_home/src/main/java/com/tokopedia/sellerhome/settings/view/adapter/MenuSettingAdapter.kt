@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.adapter
 
 import android.content.Context
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -9,6 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.*
@@ -100,14 +102,10 @@ class MenuSettingAdapter(
         DividerUiModel(DividerType.THIN_INDENTED)
     )
 
-    fun populateInitialMenus(isShopOwner: Boolean,  isMultiLocation: Boolean = false) {
+    fun populateInitialMenus(isShopOwner: Boolean) {
         val menuList = mutableListOf<SettingUiModel>()
         if (isShopOwner) {
-            val shopSettingList = if (isMultiLocation) {
-                getShopMultiLocationSettingList()
-            } else {
-                getShopSingleLocationSettingList()
-            }
+            val shopSettingList = getSettingList()
             menuList.addAll(shopSettingList)
         } else {
             menuList.add(SettingLoadingUiModel)
@@ -140,109 +138,31 @@ class MenuSettingAdapter(
         }
     }
 
-    fun showSuccessAccessMenus(settingAccess: MenuSettingAccess, isMultiLocation: Boolean = false) {
+    fun showSuccessAccessMenus(settingAccess: MenuSettingAccess) {
         menuSetingAccess = settingAccess
-        val settingList = if (isMultiLocation) {
-            getShopMultiLocationSettingList()
-        } else {
-            getShopSingleLocationSettingList()
-        }
+        val settingList = getSettingList()
         removeLoading()
         visitables.addAll(0, settingList)
         notifyItemRangeChanged(0, settingList.size - 1)
     }
 
-    fun showShopSetting(isMultiLocation: Boolean = false){
-        val settingList = if (isMultiLocation) {
-            getShopMultiLocationSettingList()
+    fun showShopSetting(isMultiLocation: Boolean){
+        if (isMultiLocation) {
+            if (getCurrentMultiLocMenuIndex() == null) {
+                getExpectedMultiLocMenuIndex()?.let { index ->
+                    visitables.add(index, getMultiLocationUiModel())
+                    notifyItemInserted(index)
+                }
+            }
         } else {
-            getShopSingleLocationSettingList()
+            getCurrentMultiLocMenuIndex()?.let { currentIndex ->
+                visitables.removeAt(currentIndex)
+                notifyItemRemoved(currentIndex)
+            }
         }
-        visitables.addAll(0, settingList)
-        notifyItemRangeChanged(0, settingList.size - 1)
     }
 
-    private fun getShopMultiLocationSettingList() =
-        listOf(
-            SettingTitleMenuUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_setting)
-                    .orEmpty(), IconUnify.SHOP_SETTING
-            ),
-            IndentedSettingTitleUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile)
-                    .orEmpty()
-            ),
-            MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info)
-                    .orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                clickAction = {
-                    goToApplinkWhenAccessAuthorized(
-                        menuSetingAccess.isInfoAccessAuthorized,
-                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO
-                    )
-                }),
-            MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes)
-                    .orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                clickAction = {
-                    goToApplinkWhenAccessAuthorized(
-                        menuSetingAccess.isNotesAccessAuthorized,
-                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES
-                    )
-                }),
-            MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours)
-                    .orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                clickAction = {
-                    goToApplinkWhenAccessAuthorized(
-                        menuSetingAccess.isInfoAccessAuthorized,
-                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
-                    )
-                }),
-            DividerUiModel(DividerType.THIN_INDENTED),
-            IndentedSettingTitleUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)
-                    .orEmpty()
-            ),
-            MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location)
-                    .orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                clickAction = {
-                    goToApplinkWhenAccessAuthorized(
-                        menuSetingAccess.isAddressAccessAuthorized,
-                        ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS
-                    )
-                }),
-            MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)
-                    .orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                trackingAlias = SHIPPING_SERVICE_ALIAS,
-                clickAction = {
-                    goToApplinkWhenAccessAuthorized(
-                        menuSetingAccess.isShipmentAccessAuthorized,
-                        ApplinkConst.SELLER_SHIPPING_EDITOR
-                    )
-                }),
-            DividerUiModel(DividerType.THIN_INDENTED),
-            MenuItemUiModel(
-                context?.getString(R.string.setting_menu_set_activation_page_cod).orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING,
-                clickAction = {
-                    goToApplinkWhenAccessAuthorized(
-                        menuSetingAccess.isShipmentAccessAuthorized,
-                        ApplinkConst.SELLER_COD_ACTIVATION
-                    )
-
-                }),
-            DividerUiModel(DividerType.THICK)
-        )
-
-    private fun getShopSingleLocationSettingList() =
+    private fun getSettingList() =
         listOf(
             SettingTitleMenuUiModel(
                 context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_setting)
@@ -330,6 +250,33 @@ class MenuSettingAdapter(
         } else {
             SellerHomeConst.EMPTY_STRING
         }
+    }
+
+    private fun getExpectedMultiLocMenuIndex(): Int? {
+        return visitables.indexOfFirst {
+            it is IndentedSettingTitleUiModel && it.settingTitle == context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)
+                .orEmpty()
+        }.takeIf { it != RecyclerView.NO_POSITION }?.plus(Int.ONE)
+    }
+
+    private fun getCurrentMultiLocMenuIndex(): Int? {
+        return visitables.indexOfFirst {
+            it is MenuItemUiModel && it.title == context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location)
+                .orEmpty()
+        }.takeIf { it != RecyclerView.NO_POSITION }?.plus(Int.ONE)
+    }
+
+    private fun getMultiLocationUiModel(): MenuItemUiModel {
+        return MenuItemUiModel(
+            context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location)
+                .orEmpty(),
+            settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+            clickAction = {
+                goToApplinkWhenAccessAuthorized(
+                    menuSetingAccess.isAddressAccessAuthorized,
+                    ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS
+                )
+            })
     }
 
     interface Listener {
