@@ -105,7 +105,7 @@ class ShopHomeFlashSaleViewHolder(
         timerDescriptionView?.setTextColor(defaultSubTitleColor)
         ctaSeeAllView?.setTextColor(defaultCtaColor)
         tncInfoIconView?.setColorFilter(defaultInformationIconColor)
-        timerView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+        timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         val flashSaleItem = element.data?.firstOrNull()
         setupFlashSaleBackgroundView(
             productList = flashSaleItem?.productList.orEmpty(),

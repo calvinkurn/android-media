@@ -16,7 +16,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
@@ -29,10 +28,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.model.BannerType
-import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -108,6 +104,44 @@ class ShopHomeNplCampaignViewHolder(
         setWidgetImpressionListener(model)
         setFollowersOnlyView(model)
         setVoucherPromoOffer(model)
+        checkFestivity(model)
+    }
+
+    private fun checkFestivity(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        if (model.isFestivity) {
+            configFestivity()
+        } else {
+            configNonFestivity()
+        }
+    }
+
+    private fun configFestivity() {
+        val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_text_color)
+        textTitle?.setTextColor(festivityTextColor)
+        textTimeDescription?.setTextColor(festivityTextColor)
+        textSeeAll?.setTextColor(festivityTextColor)
+        imageTnc?.setColorFilter(festivityTextColor)
+        timerUnify?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+        timerMoreThanOneDay?.apply {
+            background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_white_rect)
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_timer_text_color))
+        }
+    }
+
+    private fun configNonFestivity() {
+        val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        textTitle?.setTextColor(defaultTitleColor)
+        textTimeDescription?.setTextColor(defaultSubTitleColor)
+        textSeeAll?.setTextColor(defaultCtaColor)
+        imageTnc?.setColorFilter(defaultInformationIconColor)
+        timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        timerMoreThanOneDay?.apply {
+            background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        }
     }
 
     private fun setVoucherPromoOffer(model: ShopHomeNewProductLaunchCampaignUiModel) {
