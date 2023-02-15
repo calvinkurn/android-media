@@ -15,6 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.navigation.broadcaster.PlayBroadcasterArgument
+import com.tokopedia.content.common.navigation.people.UserProfileNavigation
+import com.tokopedia.content.common.navigation.people.UserProfileParam
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.R
@@ -238,11 +240,13 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun generateSeeTranscodingChannelAppLink(): String {
-        val baseAppLink = if(viewModel.account.isUser) ApplinkConst.PROFILE
-        else if(viewModel.account.isShop) ApplinkConst.SHOP
-        else return ""
-
-        return UriUtil.buildUri(baseAppLink, viewModel.account.id)
+        return if(viewModel.account.isUser)
+            UserProfileNavigation.generateAppLink(viewModel.account.id) {
+                setSelectedTab(UserProfileParam.SelectedTab.Video)
+            }
+        else if(viewModel.account.isShop)
+            UriUtil.buildUri(ApplinkConst.SHOP, viewModel.account.id)
+        else ""
     }
 
     private fun openCoverSetupFragment() {
