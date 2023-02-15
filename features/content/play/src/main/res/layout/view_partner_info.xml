@@ -52,7 +52,6 @@
         android:id="@+id/btn_follow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constrainedWidth="true"
         android:minWidth="@dimen/play_follow_button_width"
         android:text="@string/play_follow"
         app:layout_constraintBottom_toBottomOf="parent"
