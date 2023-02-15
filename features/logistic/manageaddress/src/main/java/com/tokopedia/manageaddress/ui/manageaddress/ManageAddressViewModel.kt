@@ -62,6 +62,9 @@ class ManageAddressViewModel @Inject constructor(
 
     companion object {
         const val STATUS_SUCCESS = 1
+        const val TICKER_INFO_TYPE = "info"
+        const val TICKER_WARNING_TYPE = "warning"
+        const val TICKER_ERROR_TYPE = "danger"
     }
 
     var token: Token? = null
@@ -393,8 +396,9 @@ class ManageAddressViewModel @Inject constructor(
 
     private fun GetTargetedTickerResponse.GetTargetedTickerData.toUiModel(): TickerModel {
         return TickerModel(
-            item = this@toUiModel.list.sortedBy { it.priority }.map {
+            item = this.list.sortedBy { it.priority }.map {
                 TickerModel.TickerItem(
+                    id = it.id,
                     type = it.toTickerType(),
                     title = it.title,
                     content = it.generateContent(),
@@ -420,14 +424,14 @@ class ManageAddressViewModel @Inject constructor(
     }
 
     private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.toTickerType(): Int {
-        return when (this.type) {
-            "info" -> {
+        return when (this.type.lowercase()) {
+            TICKER_INFO_TYPE -> {
                 Ticker.TYPE_INFORMATION
             }
-            "warning" -> {
+            TICKER_WARNING_TYPE -> {
                 Ticker.TYPE_WARNING
             }
-            "error" -> {
+            TICKER_ERROR_TYPE -> {
                 Ticker.TYPE_ERROR
             }
             else -> {

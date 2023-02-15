@@ -24,6 +24,7 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
+import com.tokopedia.manageaddress.domain.model.TickerModel
 import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragment
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
@@ -121,35 +122,39 @@ class ManageAddressFragment :
         viewModel.tickerState.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (it.data.item.isNotEmpty()) {
-                        val message = ArrayList<TickerData>()
-                        for (item in it.data.item) {
-                            message.add(TickerData(item.title, item.content, item.type, true, item.linkUrl))
-                        }
-                        val tickerPageAdapter = TickerPagerAdapter(context, message)
-                        tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                                val appLink = linkUrl.toString()
-                                if (appLink.startsWith("tokopedia")) {
-                                    startActivity(RouteManager.getIntent(context, appLink))
-                                } else {
-                                    RouteManager.route(
-                                        context,
-                                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, appLink)
-                                    )
-                                }
-                            }
-                        })
-                        binding?.tickerManageAddress?.addPagerView(tickerPageAdapter, message)
-                        binding?.tickerManageAddress?.visible()
-                    } else {
-                        binding?.tickerManageAddress?.gone()
-                    }
+                    showTicker(it.data.item)
                 }
                 is Fail -> {
                     binding?.tickerManageAddress?.gone()
                 }
             }
+        }
+    }
+
+    private fun showTicker(tickerItem: List<TickerModel.TickerItem>) {
+        if (tickerItem.isNotEmpty()) {
+            val message = ArrayList<TickerData>()
+            for (item in tickerItem) {
+                message.add(TickerData(item.title, item.content, item.type, true, item.linkUrl))
+            }
+            val tickerPageAdapter = TickerPagerAdapter(context, message)
+            tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    val appLink = linkUrl.toString()
+                    if (appLink.startsWith("tokopedia")) {
+                        startActivity(RouteManager.getIntent(context, appLink))
+                    } else {
+                        RouteManager.route(
+                            context,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, appLink)
+                        )
+                    }
+                }
+            })
+            binding?.tickerManageAddress?.addPagerView(tickerPageAdapter, message)
+            binding?.tickerManageAddress?.visible()
+        } else {
+            binding?.tickerManageAddress?.gone()
         }
     }
 
