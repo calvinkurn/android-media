@@ -12,9 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentIntroBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -27,11 +25,8 @@ import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroPageTracker
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroRecyclerViewScrollListener
-import com.tokopedia.mvc.presentation.intro.viewmodel.MvcIntroViewModel
 import com.tokopedia.mvc.util.constant.FIRST_INDEX
 import com.tokopedia.mvc.util.constant.ZEROTH_INDEX
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -50,9 +45,6 @@ class MvcIntroFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: MvcIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, viewModelFactory).get(MvcIntroViewModel::class.java)
-    }
     @Inject
     lateinit var mvcIntroPageTracker: MvcIntroPageTracker
 
@@ -69,9 +61,6 @@ class MvcIntroFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeVoucherCreationMetadata()
-
-        viewModel.getVoucherCreationMetadata()
 
         binding?.apply {
             header.setupHeader()
@@ -82,25 +71,12 @@ class MvcIntroFragment :
             mvcIntroPageTracker.sendMvcIntroPageCreateVoucherEvent()
             RouteManager.route(context, CREATE_VOUCHER_SHOP_APPLINK)
         }
+
+        setupRecyclerView()
     }
 
-    private fun observeVoucherCreationMetadata() {
-        viewModel.voucherCreationMetadata.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    binding?.loader?.gone()
-                    setupRecyclerView(result.data.discountActive)
-                }
-                is Fail -> {
-                    binding?.loader?.gone()
-                    binding?.root?.showToasterError(result.throwable)
-                }
-            }
-        }
-    }
-
-    private fun setupRecyclerView(isDiscountPromoTypeEnabled: Boolean) {
-        val contentList = getContentList(isDiscountPromoTypeEnabled)
+    private fun setupRecyclerView() {
+        val contentList = getContentList()
         mvcAdapter = MvcIntroAdapter()
 
         mvcLayoutManager = LinearLayoutManager(
@@ -147,12 +123,12 @@ class MvcIntroFragment :
         setGreenBackgroundForToolbar()
     }
 
-    private fun getContentList(isDiscountPromoTypeEnabled: Boolean): List<Visitable<*>> {
+    private fun getContentList(): List<Visitable<*>> {
         return context?.resources?.let {
             listOf(
                 it.getIntroVoucher(),
                 it.getIntroTypeData(),
-                it.getIntroCarouselData(isDiscountPromoTypeEnabled),
+                it.getIntroCarouselData(),
                 it.getChoiceOfVoucherData()
             )
         } ?: emptyList()
@@ -200,17 +176,8 @@ class MvcIntroFragment :
         )
     }
 
-    private fun Resources.getIntroCarouselData(isDiscountPromoTypeEnabled: Boolean): VoucherIntroCarouselUiModel {
-        val tabs = if(isDiscountPromoTypeEnabled) allTabs() else cashbackAndFreeShippingTabsOnly()
-
-        return VoucherIntroCarouselUiModel(
-            headerTitle = getString(R.string.smvc_intro_voucher_view_pager_header),
-            tabsList = tabs
-        )
-    }
-
-    private fun allTabs(): List<VoucherIntroCarouselUiModel.VoucherIntroTabsData> {
-        return listOf(
+    private fun Resources.getIntroCarouselData(): VoucherIntroCarouselUiModel {
+        val tabs = listOf(
             VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                 getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
                 getString(R.string.smvc_intro_voucher_view_pager_tab_1_description),
@@ -236,26 +203,10 @@ class MvcIntroFragment :
                 )
             )
         )
-    }
 
-    private fun cashbackAndFreeShippingTabsOnly(): List<VoucherIntroCarouselUiModel.VoucherIntroTabsData> {
-        return listOf(
-            VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
-                getString(R.string.smvc_intro_voucher_view_pager_tab_1_description),
-                listOf(
-                    getString(R.string.smvc_intro_voucher_carousel_cashback_1),
-                    getString(R.string.smvc_intro_voucher_carousel_cashback_2)
-                )
-            ),
-            VoucherIntroCarouselUiModel.VoucherIntroTabsData(
-                getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
-                getString(R.string.smvc_intro_voucher_view_pager_tab_2_description),
-                listOf(
-                    getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
-                    getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
-                )
-            )
+        return VoucherIntroCarouselUiModel(
+            headerTitle = getString(R.string.smvc_intro_voucher_view_pager_header),
+            tabsList = tabs
         )
     }
 
