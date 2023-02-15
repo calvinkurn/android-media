@@ -145,4 +145,8 @@
     <string name="content_comment_empty_desc">Mulai percakapan dengan berikan komentar</string>
     <string name="content_comment_expand_hide">Sembunyikan</string>
     <string name="content_comment_expand_visible">Lihat %s Balasan</string>
+
+    <!--Report Bottom Sheet -->
+    <string name="feed_common_reason_type_fraud" translatable="false">fraud</string>
+
 </resources>
