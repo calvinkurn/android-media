@@ -72,8 +72,7 @@ class PushController(val context: Context) : CoroutineScope {
 
     fun handleProcessedPushPayload(aidlApiBundle : Bundle?,
                                    baseNotificationModel: BaseNotificationModel,
-                                   advanceTargetingData: AdvanceTargetingData
-    ) {
+                                   advanceTargetingData: AdvanceTargetingData) {
         postEventForLiveNotification(baseNotificationModel)
         NotificationAdvanceTargetingHandler().checkForValidityAndAdvanceTargeting(
             context.applicationContext,
@@ -98,23 +97,23 @@ class PushController(val context: Context) : CoroutineScope {
 
     private fun handleNotificationBundle(model: BaseNotificationModel) {
         launchCatchError(
-            block = {
-                if(model.isAmplification){
-                    if(!isAmpNotificationValid(model.notificationId)){
-                        return@launchCatchError
+                block = {
+                    if(model.isAmplification){
+                        if(!isAmpNotificationValid(model.notificationId)){
+                            return@launchCatchError
+                        }
                     }
-                }
-                if (model.notificationMode == NotificationMode.OFFLINE) {
-                    if (isOfflinePushEnabled)
-                        onOfflinePushPayloadReceived(model)
-                } else {
-                    onLivePushPayloadReceived(model)
-                }
-            }, onError = {
-                ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "exception",
-                        "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
-                        "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                    if (model.notificationMode == NotificationMode.OFFLINE) {
+                        if (isOfflinePushEnabled)
+                            onOfflinePushPayloadReceived(model)
+                    } else {
+                        onLivePushPayloadReceived(model)
+                    }
+                }, onError = {
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                        mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
             })
     }
 
@@ -139,7 +138,7 @@ class PushController(val context: Context) : CoroutineScope {
             baseNotificationModel.status = NotificationStatus.COMPLETED
             createAndPostNotification(baseNotificationModel)
         } else if (baseNotificationModel.startTime == 0L
-            || baseNotificationModel.endTime > System.currentTimeMillis()) {
+                || baseNotificationModel.endTime > System.currentTimeMillis()) {
 
             updatedBaseNotificationModel = ImageDownloadManager.downloadImages(context, baseNotificationModel)
             updatedBaseNotificationModel?.let {
@@ -291,8 +290,8 @@ class PushController(val context: Context) : CoroutineScope {
 
     private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel){
         when (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
-                baseNotificationModel.channelName
-            )) {
+            baseNotificationModel.channelName
+        )) {
             NotificationSettingsUtils.NotificationMode.ENABLED -> {
                 IrisAnalyticsEvents.sendPushEvent(
                     context,
