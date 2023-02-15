@@ -47,6 +47,7 @@ import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailab
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
@@ -625,7 +626,10 @@ open class TokoChatFragment :
                 findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
 
             userTitle.text = headerUiModel.title
-            subTitle.text = TokoChatViewUtil.censorPlatNumber(headerUiModel.subTitle, CENSOR_PERCENTAGE)
+            subTitle.text = TokoChatViewUtil.censorPlatNumber(
+                platNumber = headerUiModel.subTitle,
+                percentageCensor = DEFAULT_CENSOR_PERCENTAGE
+            )
             imageUrl.setImageUrl(headerUiModel.imageUrl)
             imageUrl.show()
 
@@ -1085,7 +1089,6 @@ open class TokoChatFragment :
 
     companion object {
         private const val TAG = "TokoChatFragment"
-        private const val CENSOR_PERCENTAGE = 40
 
         fun getFragment(
             fragmentManager: FragmentManager,
