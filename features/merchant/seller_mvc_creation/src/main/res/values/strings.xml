@@ -107,6 +107,7 @@
     <string name="smvc_bottomsheet_filter_voucher_notstarted">Mendatang</string>
     <string name="smvc_bottomsheet_filter_voucher_ongoing">Berlangsung</string>
     <string name="smvc_bottomsheet_filter_voucher_finished">Selesai</string>
+    <string name="smvc_bottomsheet_filter_voucher_active">Kupon Aktif</string>
     <string name="smvc_bottomsheet_edu_center_title">Pusat Edukasi</string>
     <string name="smvc_bottomsheet_select_repeat_period_month_format">%1d Bulan</string>
     <string name="smvc_bottomsheet_select_repeat_period_title">Ulangi Selama</string>
