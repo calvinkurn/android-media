@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.databinding.EstimateRefundInfoBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class PofEstimateRefundInfoBottomSheet: BottomSheetUnify() {
@@ -46,7 +47,8 @@ class PofEstimateRefundInfoBottomSheet: BottomSheetUnify() {
 
     private fun setupInfoList() {
         binding?.run {
-            tvPofEstimateRefundInfoBottomSheetDesc.text = MethodChecker.fromHtml(infoList)
+            val infoListHtml = HtmlLinkHelper(root.context, infoList)
+            tvPofEstimateRefundInfoBottomSheetDesc.text = infoListHtml.spannedString
         }
     }
 

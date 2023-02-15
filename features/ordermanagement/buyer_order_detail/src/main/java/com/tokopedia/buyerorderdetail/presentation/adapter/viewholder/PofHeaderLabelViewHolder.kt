@@ -85,10 +85,14 @@ class PofHeaderLabelViewHolder(view: View?) :
 
         tvPovHeaderLabel.text = MethodChecker.fromHtml(headerLabelText)
 
-        if (item.isUnfulfilled) {
-            tvPovHeaderTotalItemsLabel.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
-        }
         tvPovHeaderTotalItemsLabel.text = MethodChecker.fromHtml(headerTotalItemsLabel)
+        tvPovHeaderTotalItemsLabel.setWeight(
+            if (item.isUnfulfilled) {
+                com.tokopedia.unifyprinciples.Typography.BOLD
+            } else {
+                com.tokopedia.unifyprinciples.Typography.REGULAR
+            }
+        )
     }
 
     private fun ItemPartialOrderFulfillmentHeaderBinding.setPofHeaderIcon(isUnfulfilledProducts: Boolean) {
