@@ -35,6 +35,8 @@ import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -117,29 +119,36 @@ class ManageAddressFragment :
 
     private fun observeTickerState() {
         viewModel.tickerState.observe(viewLifecycleOwner) {
-            if (it.item.isNotEmpty()) {
-                val message = ArrayList<TickerData>()
-                for (item in it.item) {
-                    message.add(TickerData(item.title, item.content, item.type, true, item.linkUrl))
-                }
-                val tickerPageAdapter = TickerPagerAdapter(context, message)
-                tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        val appLink = linkUrl.toString()
-                        if (appLink.startsWith("tokopedia")) {
-                            startActivity(RouteManager.getIntent(context, appLink))
-                        } else {
-                            RouteManager.route(
-                                context,
-                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, appLink)
-                            )
+            when (it) {
+                is Success -> {
+                    if (it.data.item.isNotEmpty()) {
+                        val message = ArrayList<TickerData>()
+                        for (item in it.data.item) {
+                            message.add(TickerData(item.title, item.content, item.type, true, item.linkUrl))
                         }
+                        val tickerPageAdapter = TickerPagerAdapter(context, message)
+                        tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                                val appLink = linkUrl.toString()
+                                if (appLink.startsWith("tokopedia")) {
+                                    startActivity(RouteManager.getIntent(context, appLink))
+                                } else {
+                                    RouteManager.route(
+                                        context,
+                                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, appLink)
+                                    )
+                                }
+                            }
+                        })
+                        binding?.tickerManageAddress?.addPagerView(tickerPageAdapter, message)
+                        binding?.tickerManageAddress?.visible()
+                    } else {
+                        binding?.tickerManageAddress?.gone()
                     }
-                })
-                binding?.tickerManageAddress?.addPagerView(tickerPageAdapter, message)
-                binding?.tickerManageAddress?.visible()
-            } else {
-                binding?.tickerManageAddress?.gone()
+                }
+                is Fail -> {
+                    binding?.tickerManageAddress?.gone()
+                }
             }
         }
     }

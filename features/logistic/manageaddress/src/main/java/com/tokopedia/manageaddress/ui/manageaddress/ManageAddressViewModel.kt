@@ -117,8 +117,8 @@ class ManageAddressViewModel @Inject constructor(
     val validateShareAddressState: LiveData<ValidateShareAddressState>
         get() = _validateShareAddressState
 
-    private val _tickerState = MutableLiveData<TickerModel>()
-    val tickerState: LiveData<TickerModel>
+    private val _tickerState = MutableLiveData<Result<TickerModel>>()
+    val tickerState: LiveData<Result<TickerModel>>
         get() = _tickerState
 
     private val compositeSubscription = CompositeSubscription()
@@ -385,8 +385,10 @@ class ManageAddressViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val param = GetTargetedTickerParam(page = "todo", target = listOf())
             val response = getTargetedTicker(param)
-            _tickerState.value = response.getTargetedTickerData.toUiModel()
-        }, onError = {})
+            _tickerState.value = Success(response.getTargetedTickerData.toUiModel())
+        }, onError = {
+                _tickerState.value = Fail(it)
+            })
     }
 
     private fun GetTargetedTickerResponse.GetTargetedTickerData.toUiModel(): TickerModel {
