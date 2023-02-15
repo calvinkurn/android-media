@@ -124,14 +124,17 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val remoteConfig : RemoteConfig by lazy(NONE) {
         FirebaseRemoteConfigImpl(context)
     }
-    private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
+    private val productCardFooterLayoutContainer: FrameLayout? by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
     }
-    private val labelRepositionBackground: ImageView by lazy(NONE) {
+    private val labelRepositionBackground: ImageView? by lazy(NONE) {
         findViewById(R.id.labelRepositionBackground)
     }
-    private val labelReposition: Typography by lazy(NONE) {
+    private val labelReposition: Typography? by lazy(NONE) {
         findViewById(R.id.labelReposition)
+    }
+    private val buttonSeeOtherProduct: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonSeeOtherProduct)
     }
     private var isUsingViewStub = false
 
@@ -153,7 +156,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         val footerView = View.inflate(context, R.layout.product_card_footer_layout, null)
         footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 
-        productCardFooterLayoutContainer.addView(footerView)
+        productCardFooterLayoutContainer?.addView(footerView)
     }
 
     private fun initWithAttrs(attrs: AttributeSet?) {
@@ -175,7 +178,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
         footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 
-        productCardFooterLayoutContainer.addView(footerView)
+        productCardFooterLayoutContainer?.addView(footerView)
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
@@ -286,6 +289,10 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
     fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
         buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
+    }
+
+    fun setSeeOtherProductOnClickListener(seeOtherProductOnClickListener: (View) -> Unit) {
+        buttonSeeOtherProduct?.setOnClickListener(seeOtherProductOnClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
