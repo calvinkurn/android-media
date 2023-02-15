@@ -749,7 +749,7 @@ class UserProfileFragment @Inject constructor(
 
         val idx = tabs.indexOfFirst { it.key == selectedTab.key }
         if(idx != -1) {
-            mainBinding.profileTabs.viewPager.currentItem = idx
+            mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
         }
     }
 
