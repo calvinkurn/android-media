@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.people.UserProfileParam
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
@@ -739,6 +740,17 @@ class UserProfileFragment @Inject constructor(
 
         pagerAdapter.insertFragment(value.tabs)
         mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
+
+        setupAutoSelectTabIfAny(value.tabs)
+    }
+
+    private fun setupAutoSelectTabIfAny(tabs: List<ProfileTabUiModel.Tab>) {
+        val selectedTab = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true)
+
+        val idx = tabs.indexOfFirst { it.key == selectedTab.key }
+        if(idx != -1) {
+            mainBinding.profileTabs.viewPager.currentItem = idx
+        }
     }
 
     private fun createLiveFab(): FloatingButtonItem {

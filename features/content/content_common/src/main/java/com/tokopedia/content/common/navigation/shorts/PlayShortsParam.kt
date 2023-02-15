@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.navigation.shorts
 
+import com.tokopedia.content.common.navigation.util.appendQuery
 import com.tokopedia.content.common.types.ContentCommonUserType
 
 /**
@@ -21,20 +22,8 @@ class PlayShortsParam {
         }
     }
 
-    private fun StringBuilder.appendQuery(key: String, value: Any) {
-        append("$key=$value")
-    }
-
-    private fun StringBuilder.appendDivider() {
-        append(DIVIDER)
-    }
-
     enum class AuthorType(val value: String) {
         Shop(ContentCommonUserType.TYPE_SHOP),
         User(ContentCommonUserType.TYPE_USER)
-    }
-
-    companion object {
-        private const val DIVIDER = "&"
     }
 }
