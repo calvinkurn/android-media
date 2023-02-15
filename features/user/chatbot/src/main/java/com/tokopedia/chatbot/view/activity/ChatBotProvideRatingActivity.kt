@@ -35,7 +35,7 @@ class ChatBotProvideRatingActivity : BaseProvideRatingActivity() {
             webSocketCsatattribute?.reasons?.let {
                 for (message in it) {
                     val badCsatReasonListItem = BadCsatReasonListItem()
-                    badCsatReasonListItem.id = id
+                    badCsatReasonListItem.id = id.toLong()
                     badCsatReasonListItem.message = message
                     list.add(badCsatReasonListItem)
                     id++

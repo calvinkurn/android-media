@@ -35,5 +35,5 @@
     <dimen name="header_button_shop_note_height">24dp</dimen>
     <dimen name="header_button_margin_top">12dp</dimen>
     <dimen name="header_button_margin_left">4dp</dimen>
-    <dimen name="shop_carousel_height">@dimen/wrap_content</dimen>
+    <dimen name="shop_carousel_height">0dp</dimen>
 </resources>

@@ -1,5 +1,6 @@
 package com.tokopedia.csat_rating.data
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -13,6 +14,8 @@ class BadCsatReasonListItem() : Parcelable {
 
     @SerializedName("message")
     var message: String? = null
+
+    fun getMessageCsatReason() = message.orEmpty()
 
     constructor(parcel: Parcel) : this() {
         messageEn = parcel.readString()

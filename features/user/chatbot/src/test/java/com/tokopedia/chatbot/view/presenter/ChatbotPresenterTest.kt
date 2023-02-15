@@ -1008,8 +1008,8 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `handleAttachment When receiving attachment type 13 to open csat`() {
-        val fullResponse = SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
+    fun `handleAttachment When receiving attachment type 13 to open csat with new flow(2 screens)`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(

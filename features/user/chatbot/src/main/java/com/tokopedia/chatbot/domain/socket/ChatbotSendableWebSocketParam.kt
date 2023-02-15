@@ -187,6 +187,7 @@ object ChatbotSendableWebSocketParam {
             addProperty("title", invoiceLinkPojo.attributes.title)
             addProperty("total_amount", invoiceLinkPojo.attributes.totalAmount)
             addProperty("used_by", usedBy)
+            addProperty("color", invoiceLinkPojo.attributes.color)
         }
 
         payload.addProperty("type", "Undefined")
@@ -357,7 +358,8 @@ object ChatbotSendableWebSocketParam {
         data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", "Uploaded Video")
         data.addProperty(
-            "attachment_type", (
+            "attachment_type",
+            (
                 ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
                 ).toIntOrZero()
         )
@@ -367,8 +369,5 @@ object ChatbotSendableWebSocketParam {
 
         json.add("data", data)
         return json
-
     }
-
-
 }

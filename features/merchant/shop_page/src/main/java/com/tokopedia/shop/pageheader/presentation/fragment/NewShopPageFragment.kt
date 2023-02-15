@@ -262,7 +262,6 @@ class NewShopPageFragment :
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
-        const val TAB_POSITION_FEED = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
@@ -1294,33 +1293,18 @@ class NewShopPageFragment :
 
     private fun getShopPageP1Data() {
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
-        if (ShopUtil.isEnableShopDynamicTab(context)) {
-            shopViewModel?.getNewShopPageTabData(
-                shopId,
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopUtil.getProductPerPage(context),
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh,
-                localCacheModel ?: LocalCacheModel(),
-                extParam
-            )
-        } else {
-            shopViewModel?.getShopPageTabData(
-                shopId,
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopUtil.getProductPerPage(context),
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh,
-                localCacheModel ?: LocalCacheModel(),
-                extParam
-            )
-        }
+        shopViewModel?.getNewShopPageTabData(
+            shopId = shopId,
+            shopDomain = shopDomain.orEmpty(),
+            page = START_PAGE,
+            itemPerPage = ShopUtil.getProductPerPage(context),
+            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            isRefresh = isRefresh,
+            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
+            extParam = extParam
+        )
     }
 
     private fun setDataFromAppLinkQueryParam() {
@@ -1392,12 +1376,6 @@ class NewShopPageFragment :
         }
         textYourShop?.show()
         searchBarLayout?.hide()
-    }
-
-    private fun displayToolbarBuyer() {
-        textYourShop?.hide()
-        searchBarLayout?.show()
-        initSearchInputView()
     }
 
     private fun initSearchInputView() {
@@ -1746,11 +1724,7 @@ class NewShopPageFragment :
 
     fun getSelectedTabName(): String {
         return listShopPageTabModel.getOrNull(
-            if (ShopUtil.isEnableShopDynamicTab(context)) {
-                getSelectedDynamicTabPosition()
-            } else {
-                getSelectedTabPosition()
-            }
+            getSelectedDynamicTabPosition()
         )?.tabTitle.orEmpty()
     }
 
@@ -1766,18 +1740,10 @@ class NewShopPageFragment :
     }
 
     private fun setupTabs() {
-        listShopPageTabModel = if (ShopUtil.isEnableShopDynamicTab(context)) {
-            (createListShopPageDynamicTabModel() as? List<ShopPageTabModel>) ?: listOf()
-        } else {
-            (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
-        }
+        listShopPageTabModel = (createListShopPageDynamicTabModel() as? List<ShopPageTabModel>) ?: listOf()
         configureTab(listShopPageTabModel.size)
         viewPagerAdapter?.setTabData(listShopPageTabModel)
-        selectedPosition = if (ShopUtil.isEnableShopDynamicTab(context)) {
-            getSelectedDynamicTabPosition()
-        } else {
-            getSelectedTabPosition()
-        }
+        selectedPosition = getSelectedDynamicTabPosition()
         tabLayout?.removeAllTabs()
         listShopPageTabModel.forEach {
             tabLayout?.newTab()?.apply {
@@ -1839,11 +1805,7 @@ class NewShopPageFragment :
     }
 
     private fun getTabView(index: Int): View? {
-        return if (ShopUtil.isEnableShopDynamicTab(context)) {
-            viewPagerAdapter?.getDynamicTabView(index, selectedPosition)
-        } else {
-            viewPagerAdapter?.getTabView(index, selectedPosition)
-        }
+        return viewPagerAdapter?.getDynamicTabView(index, selectedPosition)
     }
 
     private fun sendShopPageClickTabTracker(position: Int) {
@@ -1868,72 +1830,6 @@ class NewShopPageFragment :
     private fun hideTabbing() {
         tabLayout?.hide()
         viewOneTabSeparator?.show()
-    }
-
-    private fun checkIfShouldShowOrHideScrollToTopButton(position: Int) {
-        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
-        if (selectedFragment is InterfaceShopPageClickScrollToTop) {
-            if (selectedFragment.isShowScrollToTopButton()) {
-                showScrollToTopButton()
-            } else {
-                hideScrollToTopButton()
-            }
-        } else {
-            hideScrollToTopButton()
-        }
-    }
-
-    private fun checkIfShouldShowOrHideShopPageFab(position: Int) {
-        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
-        if (selectedFragment is InterfaceShopPageFab) {
-            val config = selectedFragment.getShopPageFabConfig()
-            if (selectedFragment.shouldShowShopPageFab() && config != null) {
-                setupShopPageFab(config)
-                showShopPageFab()
-            } else {
-                hideShopPageFab()
-            }
-        } else {
-            hideShopPageFab()
-        }
-    }
-
-    private fun getSelectedTabPosition(): Int {
-        var selectedPosition = viewPager?.currentItem.orZero()
-        if (tabLayout?.tabCount == 0) {
-            if (shouldOverrideTabToHome) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
-                } else {
-                    selectedPosition
-                }
-            }
-            if (shouldOverrideTabToProduct) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageProductListFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ShopPageProductListFragment::class.java).orZero()
-                } else {
-                    selectedPosition
-                }
-            }
-            if (shouldOverrideTabToFeed) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(feedShopFragmentClassName) == true) {
-                    viewPagerAdapter?.getFragmentPosition(feedShopFragmentClassName).orZero()
-                } else {
-                    selectedPosition
-                }
-            }
-            if (shouldOverrideTabToReview) {
-                val reviewTabFragmentClassName = getReviewTabFragmentClassName()
-                reviewTabFragmentClassName?.let { reviewTabClass ->
-                    selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(reviewTabClass) == true) {
-                        viewPagerAdapter?.getFragmentPosition(reviewTabClass).orZero()
-                    } else {
-                        selectedPosition
-                    }
-                }
-            }
-        }
-        return selectedPosition
     }
 
     private fun getSelectedDynamicTabPosition(): Int {
@@ -3001,13 +2897,9 @@ class NewShopPageFragment :
     }
 
     fun isShopWidgetAlreadyShown(): Boolean {
-        return if (ShopUtil.isEnableShopDynamicTab(context)) {
-            shopPageHeaderDataModel?.listDynamicTabData?.any {
-                it.name == ShopPageTabName.HOME || it.name == ShopPageTabName.CAMPAIGN
-            } ?: false
-        } else {
-            shopPageHeaderDataModel?.shopHomeType == ShopHomeType.NATIVE
-        }
+        return shopPageHeaderDataModel?.listDynamicTabData?.any {
+            it.name == ShopPageTabName.HOME || it.name == ShopPageTabName.CAMPAIGN
+        } ?: false
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
