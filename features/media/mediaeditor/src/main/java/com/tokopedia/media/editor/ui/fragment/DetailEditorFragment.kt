@@ -48,6 +48,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
+import com.tokopedia.media.editor.utils.getRunnable
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -261,7 +262,7 @@ class DetailEditorFragment @Inject constructor(
                             if (removeBackgroundRetryLimit == 0) {
                                 removeBgClosePage()
                             } else {
-                                Handler().postDelayed({
+                                Handler().postDelayed(getRunnable{
                                     onRemoveBackgroundClicked(removeBackgroundType)
                                 }, DELAY_REMOVE_BG_TOASTER)
                             }
@@ -341,7 +342,7 @@ class DetailEditorFragment @Inject constructor(
             }
 
             // waiting for crop & rotate state implementation process for AddLogo overlay size
-            it.postDelayed({
+            it.postDelayed(getRunnable{
                 setOverlaySize(
                     Pair(
                         it.overlayView.cropViewRect.width(),
@@ -609,7 +610,7 @@ class DetailEditorFragment @Inject constructor(
 
             // if crop state is not produce from auto crop on beginning of landing page
             if (!cropRotateData.isAutoCrop) {
-                cropView.postDelayed({
+                cropView.postDelayed(getRunnable{
                     val cropImageMatrix = cropView.imageMatrix.values()
                     val deltaX = (cropImageMatrix[2] * -1) + cropRotateData.translateX
                     val deltaY = (cropImageMatrix[5] * -1) + cropRotateData.translateY
@@ -652,7 +653,7 @@ class DetailEditorFragment @Inject constructor(
 
             cropView.setImageToWrapCropBounds(false)
 
-            cropView.postDelayed({
+            cropView.postDelayed(getRunnable{
                 implementPreviousStateCrop(cropRotateData)
             }, DELAY_EXECUTION_PREVIOUS_ROTATE)
         }
