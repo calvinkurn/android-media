@@ -16,8 +16,8 @@ import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatSeparatorViewHolde
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatUnavailableReasonViewHolder
 import com.tokopedia.minicart.databinding.*
 
-class MiniCartChatListAdapterTypeFactory(private val listener: MiniCartChatProductViewHolder.ChatProductListener? = null)
-    : BaseAdapterTypeFactory(), MiniCartChatListTypeFactory {
+class MiniCartChatListAdapterTypeFactory(private val listener: MiniCartChatProductViewHolder.ChatProductListener? = null) :
+    BaseAdapterTypeFactory(), MiniCartChatListTypeFactory {
 
     override fun type(uiModel: LoadingModel): Int {
         return MiniCartChatLoadingViewHolder.LAYOUT
@@ -55,6 +55,5 @@ class MiniCartChatListAdapterTypeFactory(private val listener: MiniCartChatProdu
             }
             else -> super.createViewHolder(parent, viewType)
         }
-
     }
 }

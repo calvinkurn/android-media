@@ -112,6 +112,5 @@ class MiniCartListAdapterTypeFactory(
             }
             else -> super.createViewHolder(view, viewType)
         }
-
     }
 }

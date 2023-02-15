@@ -32,7 +32,6 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         }
     }
 
-
     private fun getTotalProductAvailable(miniCartData: MiniCartData): Int {
         return miniCartData.data.availableSection.availableGroup.sumBy { availableGroup -> availableGroup.cartDetails.size }
     }

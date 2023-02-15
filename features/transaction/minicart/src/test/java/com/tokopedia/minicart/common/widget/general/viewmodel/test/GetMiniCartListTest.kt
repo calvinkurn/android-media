@@ -31,77 +31,81 @@ class GetMiniCartListTest {
     @Before
     fun setUp() {
         viewModel =
-            MiniCartGeneralViewModel(dispatchers, getMiniCartListSimplifiedUseCase,
-                getMiniCartListUseCase, miniCartChatListUiModelMapper)
+            MiniCartGeneralViewModel(
+                dispatchers,
+                getMiniCartListSimplifiedUseCase,
+                getMiniCartListUseCase,
+                miniCartChatListUiModelMapper
+            )
     }
 
     @Test
     fun `WHEN first load mini cart list success THEN flag isFirstLoad should be true`() {
-        //given
+        // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.getCartList(isFirstLoad = true)
 
-        //then
+        // then
         assert(viewModel.getMiniCartChatListBottomSheetUiModel().value?.isFirstLoad == true)
     }
 
     @Test
     fun `WHEN reload mini cart list success THEN flag isFirstLoad should be false`() {
-        //given
+        // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.getCartList()
 
-        //then
+        // then
         assert(viewModel.getMiniCartChatListBottomSheetUiModel().value?.isFirstLoad == false)
     }
 
     @Test
     fun `WHEN reload mini cart list error THEN global state should not be updated`() {
-        //given
+        // given
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(ResponseErrorException())
         }
         viewModel.initializeGlobalState()
 
-        //when
+        // when
         viewModel.getCartList()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN first load mini cart list success but get out of service THEN global event should be updated accordingly`() {
-        //given
+        // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessOutOfService()
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.getCartList(isFirstLoad = true)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
     }
 
     @Test
     fun `WHEN first load mini cart list error THEN global event should be updated accordingly`() {
-        //given
+        // given
         val errorMessage = "Error Message"
         val exception = ResponseErrorException(errorMessage)
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
@@ -109,10 +113,10 @@ class GetMiniCartListTest {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }
 
-        //when
+        // when
         viewModel.getCartList(isFirstLoad = true)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
     }
 }

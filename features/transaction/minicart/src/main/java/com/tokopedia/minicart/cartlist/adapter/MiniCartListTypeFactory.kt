@@ -27,5 +27,4 @@ interface MiniCartListTypeFactory {
     fun type(uiModel: MiniCartProductBundleRecomShimmeringUiModel): Int
 
     fun createViewHolder(parent: View, viewType: Int): AbstractViewHolder<*>
-
 }

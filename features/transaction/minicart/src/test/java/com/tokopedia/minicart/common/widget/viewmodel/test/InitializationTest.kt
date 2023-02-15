@@ -63,63 +63,62 @@ class InitializationTest {
 
     @Test
     fun `WHEN initialize current page THEN current page value should be updated accordingly`() {
-        //given
+        // given
         val page = MiniCartAnalytics.Page.HOME_PAGE
 
-        //when
+        // when
         viewModel.initializeCurrentPage(page)
 
-        //then
+        // then
         assert(viewModel.currentPage.value?.equals(page) == true)
     }
 
     @Test
     fun `WHEN initialize shop id THEN current shop id value should be updated accordingly`() {
-        //given
+        // given
         val shopId = listOf("123")
 
-        //when
+        // when
         viewModel.initializeShopIds(shopId)
 
-        //then
+        // then
         assert(viewModel.currentShopIds.value?.equals(shopId) == true)
     }
 
     @Test
     fun `WHEN initialize global state THEN global state should be on default state`() {
-        //given
+        // given
 
-        //when
+        // when
         viewModel.initializeGlobalState()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN update mini cart simplified data THEN mini cart simplified data should not be null`() {
-        //given
+        // given
         val miniCartListUiModels = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
 
-        //when
+        // when
         viewModel.updateMiniCartSimplifiedData(miniCartListUiModels)
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value != null)
     }
 
     @Test
     fun `WHEN reset temporary hidden unavailable items THEN temporary hidden unavailable items should be emty`() {
-        //given
+        // given
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
-        //when
+        // when
         viewModel.toggleUnavailableItemsAccordion()
         viewModel.resetTemporaryHiddenUnavailableItems()
 
-        //then
+        // then
         assert(viewModel.tmpHiddenUnavailableItems.size == 0)
     }
-
 }

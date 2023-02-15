@@ -60,9 +60,10 @@ class UpdateCartTest {
             userSession
         )
     }
+
     @Test
     fun `WHEN update cart for save state success THEN global event state should not be updated`() {
-        //given
+        // given
         viewModel.initializeGlobalState()
 
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
@@ -74,16 +75,16 @@ class UpdateCartTest {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.updateCart()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN update cart for save state error THEN global event state should not be changed`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.initializeGlobalState()
@@ -95,16 +96,16 @@ class UpdateCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.updateCart()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN update bundle cart for save state success THEN global event state should not be updated`() {
-        //given
+        // given
         viewModel.initializeGlobalState()
 
         val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAvailableAndUnavailable()
@@ -116,10 +117,10 @@ class UpdateCartTest {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.updateCart()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 }

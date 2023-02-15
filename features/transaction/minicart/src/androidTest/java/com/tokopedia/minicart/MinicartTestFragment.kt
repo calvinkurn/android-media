@@ -32,11 +32,11 @@ class MinicartTestFragment : Fragment(), MiniCartWidgetListener {
     override fun onResume() {
         super.onResume()
         miniCartWidget?.initialize(
-                shopIds = shopIds,
-                fragment = this,
-                listener = this,
-                pageName = MiniCartAnalytics.Page.HOME_PAGE,
-                source = MiniCartSource.TokonowHome
+            shopIds = shopIds,
+            fragment = this,
+            listener = this,
+            pageName = MiniCartAnalytics.Page.HOME_PAGE,
+            source = MiniCartSource.TokonowHome
         )
     }
 

@@ -66,12 +66,12 @@ class UndoDeleteCartTest {
 
     @Test
     fun `WHEN undo delete cart item success THEN global event state should be updated accordingly`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
-                ?: MiniCartProductUiModel()
+            ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
@@ -80,21 +80,21 @@ class UndoDeleteCartTest {
             firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.undoDeleteCartItem(false)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM)
     }
 
     @Test
     fun `WHEN undo delete cart item success THEN temporary stored last deleted item should be null`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
-                ?: MiniCartProductUiModel()
+            ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
@@ -103,21 +103,21 @@ class UndoDeleteCartTest {
             firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.undoDeleteCartItem(false)
 
-        //then
+        // then
         assert(viewModel.lastDeletedProductItems == null)
     }
 
     @Test
     fun `WHEN undo delete last cart item success THEN global event data flag should be last item`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
-                ?: MiniCartProductUiModel()
+            ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
@@ -126,22 +126,22 @@ class UndoDeleteCartTest {
             firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.undoDeleteCartItem(true)
 
-        //then
+        // then
         val data = viewModel.globalEvent.value?.data as? UndoDeleteCartDomainModel
         assert(data?.isLastItem == true)
     }
 
     @Test
     fun `WHEN undo delete cart item error THEN global event state should be updated accordingly`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
-                ?: MiniCartProductUiModel()
+            ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val errorMessage = "Error Message"
@@ -151,16 +151,16 @@ class UndoDeleteCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.undoDeleteCartItem(false)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM)
     }
 
     @Test
     fun `WHEN undo delete but temporary deleted item is null THEN global event state should not be updated`() {
-        //given
+        // given
         viewModel.initializeGlobalState()
 
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
@@ -172,11 +172,10 @@ class UndoDeleteCartTest {
             firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.undoDeleteCartItem(false)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
-
 }

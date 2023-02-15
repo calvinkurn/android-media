@@ -3,8 +3,10 @@ package com.tokopedia.minicart.cartlist.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.minicart.cartlist.uimodel.*
 
-class MiniCartListDiffUtilCallback(private val oldList: List<Any>,
-                                   private val newList: List<Any>) : DiffUtil.Callback() {
+class MiniCartListDiffUtilCallback(
+    private val oldList: List<Any>,
+    private val newList: List<Any>
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldList.size
@@ -43,5 +45,4 @@ class MiniCartListDiffUtilCallback(private val oldList: List<Any>,
             else -> false
         }
     }
-
 }

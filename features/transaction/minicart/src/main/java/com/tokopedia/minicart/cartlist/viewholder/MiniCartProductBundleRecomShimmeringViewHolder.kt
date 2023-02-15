@@ -14,5 +14,4 @@ class MiniCartProductBundleRecomShimmeringViewHolder(
     }
 
     override fun bind(element: MiniCartProductBundleRecomShimmeringUiModel?) { /* nothing to do */ }
-
 }
