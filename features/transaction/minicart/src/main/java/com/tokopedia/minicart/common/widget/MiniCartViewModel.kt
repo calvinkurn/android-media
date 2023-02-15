@@ -262,8 +262,8 @@ class MiniCartViewModel @Inject constructor(
                 response
             )
         }, onError = {
-                hideProductBundleRecomShimmering(miniCartListUiModel)
-            })
+            hideProductBundleRecomShimmering(miniCartListUiModel)
+        })
     }
 
     private fun showProductBundleRecomShimmering(miniCartListUiModel: MiniCartListUiModel) {
