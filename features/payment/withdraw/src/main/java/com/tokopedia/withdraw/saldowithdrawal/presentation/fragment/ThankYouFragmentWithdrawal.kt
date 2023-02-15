@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
@@ -108,30 +109,25 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun openApplink(applink: String) {
         if (applink.isEmpty()) return
 
-        val eventLabel = when {
-            withdrawalRequest.isJoinRekeningPremium -> {
-                withdrawalResponse.joinPromptMessageResponse?.let {
-                    String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-                        it.title,it.description)
-                }
-            }
-            withdrawalRequest.showJoinRekeningWidget -> {
-                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-                    getString(R.string.swd_come_on_join_rp),
-                    getString(R.string.swd_come_on_join_rp_description))
-            }
-            else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
-        }
+//        val eventLabel = when {
+//            withdrawalRequest.isJoinRekeningPremium -> {
+//                withdrawalResponse.joinPromptMessageResponse?.let {
+//                    String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
+//                        it.title,it.description)
+//                }
+//            }
+//            withdrawalRequest.showJoinRekeningWidget -> {
+//                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
+//                    getString(R.string.swd_come_on_join_rp),
+//                    getString(R.string.swd_come_on_join_rp_description))
+//            }
+//            else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
+//        }
 
-        activity?.let { activity ->
-            val intent = RouteManager.getIntent(context, applink)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            activity.setResult(Activity.RESULT_OK, intent)
-            eventLabel?.let {
-                analytics.get().eventClickBackToSaldoPage(eventLabel)
-            }
-            startActivity(intent)
-            activity.finish()
+        if (applink == ApplinkConst.SALDO) {
+            onGoToSaldoDetail()
+        } else {
+            RouteManager.route(context, "https://www.tokopedia.com/help")
         }
     }
 
