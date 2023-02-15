@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -260,7 +261,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         setupVoucherSettingSection(data.voucherDetail)
         setupProductListSection(data.voucherDetail)
         setupSpendingEstimationSection(data.voucherDetail)
-        setupButtonSection(data.voucherDetail)
+        setupButtonSection(data.voucherDetail, data.creationMetadata.discountActive)
         displayTicker(
             data.voucherDetail.voucherStatus,
             data.creationMetadata.discountActive,
@@ -638,7 +639,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupButtonSection(data: VoucherDetailData) {
+    private fun setupButtonSection(data: VoucherDetailData, isDiscountPromoTypeEnabled: Boolean) {
         binding?.run {
             when (data.voucherStatus) {
                 VoucherStatus.NOT_STARTED -> {
@@ -672,6 +673,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         R.layout.smvc_voucher_detail_button_section_state_3
                     if (layoutButton.parent != null) {
                         layoutButton.inflate()
+                    }
+
+                    if (!isDiscountPromoTypeEnabled) {
+                        stateButtonDuplicateBinding?.btnDuplicate?.disable()
                     }
                 }
             }
