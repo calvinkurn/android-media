@@ -8,9 +8,6 @@ apply plugin: 'kotlin-kapt'
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
-    flatDir {
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
 }
 
 buildscript {

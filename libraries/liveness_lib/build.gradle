@@ -2,12 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
-
 buildscript {
     repositories {
         google()
@@ -34,8 +28,8 @@ android {
 }
 
 dependencies {
-    api(name: 'guardian_core_v2.8', ext: 'aar')
-    api(name: 'liveness_lib_v1.3.4', ext: 'aar')
+    api 'ai.advance.liveness:guardian_core:2.8@aar'
+    api 'ai.advance.liveness:liveness_lib:1.3.4@aar'
 }
 
 project.ext {

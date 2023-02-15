@@ -3,10 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
 
 repositories{
-    flatDir {
-        dirs 'libs'
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
     google()
     mavenCentral()
     mavenLocal()
