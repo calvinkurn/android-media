@@ -315,6 +315,7 @@ class PushController(val context: Context) : CoroutineScope {
     private fun trackTokoChatPushNotification(baseNotificationModel: BaseNotificationModel) {
         launch {
             try {
+                if (baseNotificationModel.customValues.isNullOrEmpty())  return@launch
                 val tokochatPNId = JSONObject(baseNotificationModel.customValues ?: "")
                     .optString(CMConstant.CustomValuesKeys.TOKOCHAT_PN_ID)
                 if (!tokochatPNId.isNullOrEmpty()) {
