@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
+import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import dagger.Component
 
 /**
@@ -16,4 +17,5 @@ import dagger.Component
 )
 interface FeedMainComponent {
     fun inject(feedBaseFragment: FeedBaseFragment)
+    fun inject(feedBaseFragment: FeedFragment)
 }
