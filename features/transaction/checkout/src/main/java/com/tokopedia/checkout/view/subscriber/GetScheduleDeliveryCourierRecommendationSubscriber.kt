@@ -48,6 +48,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
         val boPromoCode = getBoPromoCode()
+        var errorReason = "rates invalid data"
         if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
@@ -98,6 +99,8 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                 }
                             }
                         }
+                    } else {
+                        errorReason = "promo not matched"
                     }
                 } else {
                     for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
@@ -191,9 +194,11 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                         }
                     }
                 }
+            } else {
+                errorReason = "rates empty data"
             }
             view.renderCourierStateFailed(itemPosition, false, false)
-            view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition, boPromoCode)
+            view.logOnErrorLoadCourier(MessageErrorException(errorReason), itemPosition, boPromoCode)
         } else {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
