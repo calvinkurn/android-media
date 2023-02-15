@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -67,16 +68,22 @@ class ProductMiniSocialProofViewHolder(
     private fun initRecyclerView() = with(binding.miniSocialProofRecyclerView) {
         adapter = this@ProductMiniSocialProofViewHolder.adapter
         layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
-        setRecycledViewPool(listener.getParentRecyclerViewPool())
-        addItemDecoration(object : ItemDecoration() {
-            override fun getItemOffsets(
-                outRect: Rect,
-                view: View,
-                parent: RecyclerView,
-                state: RecyclerView.State
-            ) {
-                outRect.set(Int.ZERO, Int.ZERO, SPACE_BETWEEN_ITEM, Int.ZERO)
+        addItemDecoration(createSpaceBetweenItem())
+    }
+
+    private fun createSpaceBetweenItem() = object : ItemDecoration() {
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            val marginEnd = if (parent.getChildAdapterPosition(view) < state.itemCount - Int.ONE) {
+                SPACE_BETWEEN_ITEM
+            } else {
+                Int.ZERO
             }
-        })
+            outRect.set(Int.ZERO, Int.ZERO, marginEnd, Int.ZERO)
+        }
     }
 }
