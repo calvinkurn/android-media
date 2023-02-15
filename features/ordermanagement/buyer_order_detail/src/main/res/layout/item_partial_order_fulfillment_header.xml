@@ -21,7 +21,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPovHeaderLabel"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:textColor="@color/Unify_NN950"
@@ -30,6 +30,18 @@
         app:layout_constraintTop_toTopOf="@id/icPofHeader"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        tools:text="Produk tersedia (9 barang)" />
+        tools:text="Produk tersedia" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPovHeaderTotalItemsLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/icPofHeader"
+        app:layout_constraintStart_toEndOf="@id/tvPovHeaderLabel"
+        app:layout_constraintTop_toTopOf="@id/icPofHeader"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text=" (9 barang)" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

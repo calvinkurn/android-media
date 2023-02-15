@@ -43,31 +43,52 @@ class PofHeaderLabelViewHolder(view: View?) :
     private fun ItemPartialOrderFulfillmentHeaderBinding.setPofHeaderTitle(
         item: ProductListUiModel.ProductPofHeaderLabelUiModel
     ) {
-        tvPovHeaderLabel.text = if (item.isUnfulfilled) {
-            MethodChecker.fromHtml(
+        val (headerLabelText, headerTotalItemsLabel) = if (item.isUnfulfilled) {
+            Pair(
                 root.context.getString(
                     com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_header_label,
-                    item.title,
                     getColorHexString(
                         root.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     ),
-                    item.quantity
+                    item.title,
+                ),
+                root.context.getString(
+                    com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_header_total_items,
+                    getColorHexString(
+                        root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    ),
+                    item.quantity,
                 )
             )
         } else {
-            MethodChecker.fromHtml(
-                root.context.getString(
-                    com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_header_label,
-                    item.title,
-                    getColorHexString(
-                        root.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                Pair(
+                    root.context.getString(
+                        com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_header_label,
+                        getColorHexString(
+                            root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                        ),
+                        item.title,
                     ),
-                    item.quantity
+                    root.context.getString(
+                        com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_header_total_items,
+                        getColorHexString(
+                            root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        ),
+                        item.quantity,
+                    )
                 )
-            )
         }
+
+        tvPovHeaderLabel.text = MethodChecker.fromHtml(headerLabelText)
+
+        if (item.isUnfulfilled) {
+            tvPovHeaderTotalItemsLabel.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
+        }
+        tvPovHeaderTotalItemsLabel.text = MethodChecker.fromHtml(headerTotalItemsLabel)
     }
 
     private fun ItemPartialOrderFulfillmentHeaderBinding.setPofHeaderIcon(isUnfulfilledProducts: Boolean) {
