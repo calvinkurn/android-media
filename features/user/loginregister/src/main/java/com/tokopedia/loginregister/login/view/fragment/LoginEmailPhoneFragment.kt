@@ -680,13 +680,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun prepareView() {
         viewBinding?.loginInputView?.showForgotPassword()
-        socmedBottomSheet = SocmedBottomSheet(object : SocmedBottomSheetListener {
-            override fun onItemClick(provider: ProviderData) {
-                if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
-                    onLoginGoogleClick()
+        socmedBottomSheet = SocmedBottomSheet().apply {
+            listener = object : SocmedBottomSheetListener {
+                override fun onItemClick(provider: ProviderData) {
+                    if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
+                        onLoginGoogleClick()
+                    }
                 }
             }
-        })
+        }
 
         socmedBottomSheet?.setCloseClickListener {
             analytics.eventClickCloseSocmedButton()

@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
@@ -39,6 +40,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
             setupOrderResolutionSection(context, uiState.orderResolutionUiState)
             setupProductListSection(context, uiState.productListUiState.data)
             setupOrderInsuranceSection(context, uiState.orderInsuranceUiState)
+            setupEpharmacyInfoSection(context, uiState.epharmacyInfoUiState.data)
             setupShipmentInfoSection(context, uiState.shipmentInfoUiState.data)
             setupPaymentInfoSection(context, uiState.paymentInfoUiState.data)
             setUpPhysicalRecommendationSection(uiState.pgRecommendationWidgetUiState.data)
@@ -87,6 +89,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
+        addProductListToggleSection(productListUiModel.productListToggleUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderInsuranceSection(
@@ -100,6 +103,15 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         }
     }
 
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupEpharmacyInfoSection(
+        context: Context?,
+        epharmacyInfoUiModel: EpharmacyInfoUiModel
+    ) {
+        if (epharmacyInfoUiModel.shouldShow(context)) {
+            addThinDividerSection()
+            add(epharmacyInfoUiModel)
+        }
+    }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupShipmentInfoSection(
         context: Context?,
@@ -214,6 +226,14 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     ) {
         if (addonsListUiModel != null && addonsListUiModel.addonsItemList.isNotEmpty()) {
             add(addonsListUiModel)
+        }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListToggleSection(
+        productListToggleUiModel: ProductListUiModel.ProductListToggleUiModel?
+    ) {
+        if (productListToggleUiModel != null) {
+            add(productListToggleUiModel)
         }
     }
 

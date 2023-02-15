@@ -25,7 +25,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
@@ -36,6 +38,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
@@ -57,7 +60,8 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener
+    private var listener: Listener,
+    private val isNewSeller: Boolean
 ) : LifecycleObserver {
 
     companion object {
@@ -445,24 +449,44 @@ class OtherMenuViewHolder(
     }
 
     private fun setShopStatus() {
-        val imageResource: Int
+        val imageResourceUrl: String
         val headerBackgroundResource: Int
         when {
             userSession.isShopOfficialStore -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_os
+                imageResourceUrl = SellerHomeConst.Images.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_OS
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_os
             }
             userSession.isGoldMerchant -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_pm
+                imageResourceUrl = SellerHomeConst.Images.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_PM
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_pm
             }
             else -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_rm
+                imageResourceUrl = SellerHomeConst.Images.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_RM
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
             }
         }
-        shopStatusCurvedImage?.setImageResource(imageResource)
+        shopStatusCurvedImage?.loadImage(imageResourceUrl) {
+            listener(onSuccess = { _, _ ->
+                shopStatusCurvedImage?.visible()
+            })
+        }
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
+    }
+
+    private fun setShopStatusNewSellerBackground() {
+
+        val imageResourceId: Int = when {
+            userSession.isShopOfficialStore -> {
+                R.drawable.bg_sah_new_other_curved_header_os
+            }
+            userSession.isGoldMerchant -> {
+                R.drawable.bg_sah_new_other_curved_header_pm
+            }
+            else -> {
+                R.drawable.bg_sah_new_other_curved_header_rm
+            }
+        }
+        shopStatusCurvedImage?.setImageResource(imageResourceId)
     }
 
     fun setInitialValues() {
@@ -474,7 +498,11 @@ class OtherMenuViewHolder(
     private fun setHeaderValues() {
         setShopAvatar()
         setShopName()
-        setShopStatus()
+        if (isNewSeller) {
+            setShopStatusNewSellerBackground()
+        } else {
+            setShopStatus()
+        }
     }
 
     private fun setInitialBalanceInfoLoading() {
