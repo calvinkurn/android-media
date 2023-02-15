@@ -250,15 +250,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         menuSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    binding?.recyclerView?.post {
-                        menuSettingAdapter?.showSuccessAccessMenus(result.data)
-                    }
+                    menuSettingAdapter?.showSuccessAccessMenus(result.data)
                     menuSettingViewModel.checkShopSettingAccess()
                 }
                 is Fail -> {
-                    binding?.recyclerView?.post {
-                        menuSettingAdapter?.removeLoading()
-                    }
+                    menuSettingAdapter?.removeLoading()
                     showToasterError(result.throwable.message.orEmpty())
                 }
             }
@@ -266,19 +262,13 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
     private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
         if (isEligibleMultiloc is Success) {
-            binding?.recyclerView?.post {
-                menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
-            }
+            menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
         }
     }
 
     private fun setupView() {
-        binding?.recyclerView?.run {
-            layoutManager = LinearLayoutManager(context)
-            post {
-                menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
-            }
-        }
+        binding?.recyclerView?.layoutManager = LinearLayoutManager(context)
+        menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
         if (userSession.isShopOwner) {
             menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
         } else {
