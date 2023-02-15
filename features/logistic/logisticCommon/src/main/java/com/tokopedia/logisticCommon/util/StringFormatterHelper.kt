@@ -23,4 +23,7 @@ object StringFormatterHelper {
             append(String.format(HTML_HYPERLINK_FORMAT, url, label))
         }
     }
+    fun StringBuilder.appendEmptySpace() {
+        append(" ")
+    }
 }

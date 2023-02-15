@@ -608,7 +608,7 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-        assert(tickerUiModel?.type == Ticker.TYPE_INFORMATION)
+        assert(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
     }
 
     @Test
@@ -656,14 +656,14 @@ class ManageAddressViewModelTest {
         // then
         val result = manageAddressViewModel.tickerState.value as Success
         val tickerUiModel = result.data.item.find { it.id == tickerItemInfoId }
-        assert(tickerUiModel?.type == Ticker.TYPE_ANNOUNCEMENT)
+        assert(tickerUiModel?.type == Ticker.TYPE_INFORMATION)
     }
 
     @Test
     fun `WHEN setupTicker with action THEN return TickerModel content with hyperlink text`() {
         val response = TickerDataProvider.provideDummy()
         val tickerItemWithAction = response.getTargetedTickerData.list.first()
-        val expected = "${tickerItemWithAction.content}<a href=\"${tickerItemWithAction.action.appURL}\">${tickerItemWithAction.action.label}</a>"
+        val expected = "${tickerItemWithAction.content} <a href=\"${tickerItemWithAction.action.appURL}\">${tickerItemWithAction.action.label}</a>"
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when

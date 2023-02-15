@@ -17,6 +17,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendEmptySpace
 import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHyperlinkText
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
@@ -418,6 +419,7 @@ class ManageAddressViewModel @Inject constructor(
             append(this@generateContent.content)
             this@generateContent.action.takeIf { it.label.isNotEmpty() }?.let {
                     action ->
+                appendEmptySpace()
                 appendHyperlinkText(label = action.label, url = action.getUrl())
             }
         }.toString()
@@ -426,7 +428,7 @@ class ManageAddressViewModel @Inject constructor(
     private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.toTickerType(): Int {
         return when (this.type.lowercase()) {
             TICKER_INFO_TYPE -> {
-                Ticker.TYPE_INFORMATION
+                Ticker.TYPE_ANNOUNCEMENT
             }
             TICKER_WARNING_TYPE -> {
                 Ticker.TYPE_WARNING
@@ -435,7 +437,7 @@ class ManageAddressViewModel @Inject constructor(
                 Ticker.TYPE_ERROR
             }
             else -> {
-                Ticker.TYPE_ANNOUNCEMENT
+                Ticker.TYPE_INFORMATION
             }
         }
     }
