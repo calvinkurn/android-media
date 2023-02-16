@@ -106,7 +106,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         }
         binding?.productBundleWidget?.setListener(object : ProductBundleWidgetListener {
             override fun onError(it: Throwable) {
-                renderError(it)
+                renderError()
             }
         })
         binding?.productBundleWidget?.getBundleData(bundleParam)
@@ -114,8 +114,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         binding?.layoutGlobalError?.gone()
     }
 
-    private fun renderError(throwable: Throwable) {
-        setTitle("")
+    private fun renderError() {
         binding?.descriptionLabel?.gone()
         binding?.productBundleWidget?.gone()
         binding?.cardBottomTicker?.gone()
