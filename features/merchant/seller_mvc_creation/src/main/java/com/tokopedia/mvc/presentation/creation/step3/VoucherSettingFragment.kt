@@ -64,7 +64,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
-                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
                         ArrayList(selectedProducts)
                     )
                 }
@@ -102,7 +103,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             ?: VoucherConfiguration()
     }
     private val selectedProducts by lazy {
-        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS)
+            .orEmpty()
+    }
 
     // color
     private val colorTintBlack by lazy {
@@ -522,17 +525,14 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 chipFreeShipping.chip_container.setOnClickListener {
                     setPromoType(PromoType.FREE_SHIPPING)
                     setFreeShippingSelected()
-//                    viewModel.processEvent(VoucherCreationStepThreeEvent.ResetInput)
                 }
                 chipCashback.chip_container.setOnClickListener {
                     setPromoType(PromoType.CASHBACK)
                     setCashbackSelected()
-//                    viewModel.processEvent(VoucherCreationStepThreeEvent.ResetInput)
                 }
                 chipDiscount.chip_container.setOnClickListener {
                     setPromoType(PromoType.DISCOUNT)
                     setDiscountSelected()
-//                    viewModel.processEvent(VoucherCreationStepThreeEvent.ResetInput)
                 }
             }
         }
@@ -577,7 +577,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
@@ -606,7 +608,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
@@ -631,7 +635,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
@@ -739,7 +745,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 visible()
@@ -774,7 +782,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 visible()
@@ -806,7 +816,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
@@ -831,7 +843,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
@@ -856,7 +870,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
@@ -984,7 +1000,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 visible()
@@ -1016,7 +1034,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 visible()
@@ -1048,7 +1068,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
@@ -1073,7 +1095,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
@@ -1098,7 +1122,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString().digitsOnly())
+                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
+                            editText.text.toString().digitsOnly()
+                        )
                     )
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
@@ -1180,9 +1206,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun setupTargetBuyerSelection() {
         buyerTargetSectionBinding?.run {
-            val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
             rgBuyerTarget.apply {
                 setOnCheckedChangeListener { _, radioButtonId ->
+                    val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
                     val target = if (radioButtonId == radioAllBuyer.id) {
                         VoucherTargetBuyer.ALL_BUYER
                     } else {
@@ -1195,13 +1221,14 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
             }
-            setTargetBuyerRadioButton(currentVoucherConfiguration)
+            setTargetBuyerRadioButton()
         }
     }
 
-    private fun setTargetBuyerRadioButton(voucherConfiguration: VoucherConfiguration) {
+    private fun setTargetBuyerRadioButton() {
+        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         buyerTargetSectionBinding?.run {
-            if (voucherConfiguration.targetBuyer == VoucherTargetBuyer.ALL_BUYER) {
+            if (currentVoucherConfiguration.targetBuyer == VoucherTargetBuyer.ALL_BUYER) {
                 radioAllBuyer.isChecked = true
             } else {
                 radioNewFollower.isChecked = true
@@ -1220,8 +1247,15 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 for (id in availableTargetBuyer) {
                     rgBuyerTarget.getChildAt(id.id).enable()
                 }
+                if (availableTargetBuyer.size <= Int.ONE) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.ChooseTargetBuyer(
+                            VoucherTargetBuyer.ALL_BUYER
+                        )
+                    )
+                }
             }
-            setTargetBuyerRadioButton(voucherConfiguration)
+            setTargetBuyerRadioButton()
         }
     }
 
