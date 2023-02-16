@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
@@ -38,6 +39,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherDetailBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
@@ -57,7 +59,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
-import com.tokopedia.mvc.presentation.list.MvcListActivity
 import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
@@ -146,6 +147,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var tracker: ShareBottomSheetTracker
+
+    @Inject
+    lateinit var sharedPreferencesUtil: SharedPreferencesUtil
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
@@ -1082,8 +1086,29 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToVoucherListPage() {
-        context?.let { ctx -> MvcListActivity.start(ctx) }
+        val voucherDetailData = viewModel.getCurrentVoucherDetailData()
+        context?.let { ctx ->
+            voucherDetailData?.let { getStringSuccessStopVoucher(it.voucherStatus, it.voucherName) }
+                ?.let { message ->
+                    sharedPreferencesUtil.setUploadResult(
+                        ctx,
+                        message
+                    )
+                }
+        }
+        RouteManager.route(context, SELLER_MVC_LIST_HISTORY)
         activity?.finish()
+    }
+
+    private fun getStringSuccessStopVoucher(
+        voucherStatus: VoucherStatus,
+        voucherName: String
+    ): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_success_to_deleted_voucher, voucherName)
+        } else {
+            getString(R.string.smvc_success_to_cancel_voucher, voucherName)
+        }
     }
 
     private fun goToTokopediaCare() {

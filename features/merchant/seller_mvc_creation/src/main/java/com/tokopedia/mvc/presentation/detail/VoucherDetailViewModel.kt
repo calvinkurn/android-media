@@ -92,6 +92,10 @@ class VoucherDetailViewModel @Inject constructor(
         )
     }
 
+    fun getCurrentVoucherDetailData(): VoucherDetailData? {
+        return voucherDetail.value?.unwrapOrNull()
+    }
+
     fun getSpendingEstimation(data: VoucherDetailData): String {
         val voucherDiscount = data.voucherDiscountAmount
         val voucherQuota = data.voucherQuota
