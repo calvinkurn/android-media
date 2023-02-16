@@ -1,10 +1,11 @@
 package com.tokopedia.content.common.comment.ui
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.content.common.comment.ContentCommentFactory
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R
+import com.tokopedia.content.common.comment.CommentAction
 import com.tokopedia.content.common.comment.ContentCommentViewModel
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
@@ -29,7 +31,7 @@ import javax.inject.Inject
  */
 class ContentCommentBottomSheet @Inject constructor(
     factory: ContentCommentFactory.Creator,
-) : BottomSheetUnify(), CommentViewHolder.Item.Listener {
+) : BottomSheetUnify(), CommentViewHolder.Item.Listener, CommentViewHolder.Expandable.Listener {
 
     private var _binding: FragmentContentCommentBottomSheetBinding? = null
     private val binding: FragmentContentCommentBottomSheetBinding
@@ -41,12 +43,12 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private var mSource: EntrySource? = null
 
-    private val viewModel: ContentCommentViewModel by activityViewModels {
+    private val viewModel: ContentCommentViewModel by viewModels {
         factory.create(this, mSource?.getPageSource() ?: PageSource.Unknown)
     }
 
     private val commentAdapter by lazyThreadSafetyNone {
-        CommentAdapter(this)
+        CommentAdapter(this, this)
     }
 
     private val scrollListener by lazyThreadSafetyNone {
@@ -111,6 +113,7 @@ class ContentCommentBottomSheet @Inject constructor(
     fun show(fragmentManager: FragmentManager) {
         if (isAdded) return
         showNow(fragmentManager, TAG)
+        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     override fun onReplyClicked(item: CommentUiModel) {
@@ -121,9 +124,19 @@ class ContentCommentBottomSheet @Inject constructor(
         //TODO("Not yet implemented")
     }
 
+    override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
+        viewModel.submitAction(CommentAction.ExpandComment(item))
+    }
+
     override fun dismiss() {
         if (!isAdded) return
+        viewModel.submitAction(CommentAction.DismissComment)
         super.dismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        viewModel.submitAction(CommentAction.DismissComment)
+        super.onCancel(dialog)
     }
 
     override fun onResume() {

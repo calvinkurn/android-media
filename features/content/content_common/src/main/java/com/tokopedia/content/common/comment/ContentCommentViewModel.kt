@@ -38,44 +38,118 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            _query.distinctUntilChanged { old, new -> old != new && new.needToRefresh }
-                .collectLatest {
-                    getComment(it)
-                }
+            _query.distinctUntilChanged { old, new ->
+                old == new
+            }.collectLatest {
+                if (it.needToRefresh) getComment(it)
+            }
         }
     }
 
     private fun getComment(param: CommentParam) {
-        viewModelScope.launchCatchError(block = {
-            val cursor =
-                if (param.commentType is CommentType.Parent) param.lastParentCursor else param.lastChildCursor
-            val result = repo.getComments(
-                PageSource.Play(source.id),
-                commentType = param.commentType,
-                cursor = cursor
-            )
-            _comments.update { result }
-            _query.update {
-                it.copy(
-                    lastChildCursor = if (result.commentType is CommentType.Child) result.cursor else it.lastChildCursor,
-                    lastParentCursor = if (result.commentType is CommentType.Parent) result.cursor else it.lastParentCursor,
-                    needToRefresh = false,
+        fun handleParent() {
+            viewModelScope.launchCatchError(block = {
+                val result = repo.getComments(
+                    PageSource.Play(source.id),
+                    commentType = param.commentType,
+                    cursor = param.lastParentCursor,
                 )
+                _comments.update {
+                    it.copy(
+                        cursor = result.cursor,
+                        state = result.state,
+                        list = if (it.list.isEmpty()) result.list else it.list + result.list
+                    )
+                }
+                _query.update {
+                    it.copy(
+                        lastParentCursor = result.cursor,
+                        needToRefresh = false,
+                    )
+                }
+            }) { error ->
+                _comments.update {
+                    it.copy(state = ResultState.Fail(error))
+                }
             }
-        }) { error ->
-            _comments.update {
-                it.copy(state = ResultState.Fail(error))
+        }
+
+        fun handleChild() {
+            viewModelScope.launchCatchError(block = {
+                val result = repo.getComments(
+                    PageSource.Play(source.id),
+                    commentType = param.commentType,
+                    cursor = param.lastChildCursor,
+                )
+                _comments.getAndUpdate {
+                    val selected = it.list
+                        .indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
+                    val newChild = mutableListOf<CommentUiModel>().apply {
+                        addAll(it.list.mapIndexed { index, model ->
+                            if (index == selected && model is CommentUiModel.Expandable) model.copy(
+                                isExpanded = !model.isExpanded
+                            )
+                            else model
+                        })
+                    }
+                    newChild.addAll(selected, result.list)
+                    it.copy(
+                        cursor = result.cursor, list = newChild
+                    )
+                }
+                _query.update {
+                    it.copy(
+                        lastChildCursor = result.cursor,
+                        needToRefresh = false,
+                    )
+                }
+            }) { error ->
+                _comments.update {
+                    it.copy(state = ResultState.Fail(error))
+                }
             }
+        }
+
+        if (param.commentType is CommentType.Parent) handleParent()
+        else handleChild()
+    }
+
+    fun submitAction(action: CommentAction) {
+        when (action) {
+            is CommentAction.ExpandComment -> handleExpand(action.comment)
+            is CommentAction.LoadNextPage -> updateQuery(action.commentType)
+            CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
+            CommentAction.DismissComment -> resetQuery(needToRefresh = false)
         }
     }
 
-    //from action - LoadNextPage(commenterType)
-    private fun updateQuery(commentType: CommentType, cursor: String, needToRefresh: Boolean) {
+    private fun handleExpand(comment: CommentUiModel.Expandable) {
+        fun dropChild() {
+            _comments.getAndUpdate {
+                val newList = it.list.dropWhile { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
+                it.copy(list = newList)
+            }
+        }
+
+        if (!comment.isExpanded) {
+            updateQuery(comment.commentType)
+        } else {
+            dropChild()
+        }
+    }
+
+    private fun updateQuery(commentType: CommentType) {
         _query.update {
             it.copy(
-                needToRefresh = needToRefresh,
+                needToRefresh = true,
                 commentType = commentType,
             )
+        }
+    }
+
+    private fun resetQuery(needToRefresh: Boolean) {
+        _query.update {
+            CommentParam(needToRefresh = needToRefresh)
         }
     }
 }

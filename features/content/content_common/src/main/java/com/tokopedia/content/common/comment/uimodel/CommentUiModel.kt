@@ -40,5 +40,5 @@ data class CommentParam(
     val commentType: CommentType = CommentType.Parent,
     val lastParentCursor: String = "",
     val lastChildCursor: String = "",
-    val needToRefresh: Boolean = false,
+    val needToRefresh: Boolean = true,
 )

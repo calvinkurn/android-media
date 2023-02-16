@@ -26,7 +26,7 @@ class CommentUiModelMapper @Inject constructor() {
                 if (it.hasReplies) add(
                     CommentUiModel.Expandable(
                         repliesCount = it.repliesCount,
-                        commentType = comments.parent.parentId.convertToCommentType
+                        commentType = it.id.convertToCommentType
                     )
                 )
             }

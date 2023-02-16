@@ -3,7 +3,6 @@ package com.tokopedia.content.common.comment.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.R
@@ -17,7 +16,7 @@ import com.tokopedia.content.common.databinding.ItemContentCommentBinding
  */
 class CommentAdapterDelegate {
     internal class Item(private val listener: CommentViewHolder.Item.Listener) :
-        BaseAdapterDelegate<CommentUiModel.Item, CommentUiModel, CommentViewHolder.Item>(R.layout.item_content_comment) {
+        TypedAdapterDelegate<CommentUiModel.Item, CommentUiModel, CommentViewHolder.Item>(R.layout.item_content_comment) {
         override fun onBindViewHolder(item: CommentUiModel.Item, holder: CommentViewHolder.Item) {
             holder.bind(item)
         }
@@ -33,12 +32,6 @@ class CommentAdapterDelegate {
             )
             return CommentViewHolder.Item(view, listener)
         }
-
-        override fun isForViewType(
-            itemList: List<CommentUiModel>,
-            position: Int,
-            isFlexibleType: Boolean
-        ): Boolean = itemList.any { it is CommentUiModel.Item }
     }
 
     internal class Empty :
@@ -81,7 +74,7 @@ class CommentAdapterDelegate {
         }
     }
 
-    internal class Expandable :
+    internal class Expandable(private val listener: CommentViewHolder.Expandable.Listener) :
         TypedAdapterDelegate<CommentUiModel.Expandable, CommentUiModel, CommentViewHolder.Expandable>(
             R.layout.item_comment_expandable
         ) {
@@ -101,7 +94,7 @@ class CommentAdapterDelegate {
                 parent,
                 false
             )
-            return CommentViewHolder.Expandable(view)
+            return CommentViewHolder.Expandable(view, listener)
         }
     }
 }

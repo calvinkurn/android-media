@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.comment.adapter
 
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
@@ -23,6 +24,8 @@ class CommentViewHolder {
 
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
+                if (item.commentType is CommentType.Child) root.setPadding(root.paddingLeft + 40, root.paddingTop,  root.paddingTop, root.paddingBottom)
+
                 ivCommentPhoto.loadImage(item.photo)
                 tvCommentContent.text = buildSpannedString {
                     bold { append(item.username) }
@@ -58,15 +61,26 @@ class CommentViewHolder {
 
     internal class Expandable(
         private val binding: ItemCommentExpandableBinding,
+        private val listener: Listener,
     ) : BaseViewHolder(binding.root) {
         fun bind(item: CommentUiModel.Expandable) {
             if (item.isExpanded) {
                 binding.ivChevron.setImage(newIconId = IconUnify.CHEVRON_UP)
-                binding.tvCommentExpandable.text = getString(contentR.string.content_comment_expand_hide)
+                binding.tvCommentExpandable.text =
+                    getString(contentR.string.content_comment_expand_hide)
             } else {
                 binding.ivChevron.setImage(newIconId = IconUnify.CHEVRON_DOWN)
-                binding.tvCommentExpandable.text = getString(contentR.string.content_comment_expand_visible, item.repliesCount)
+                binding.tvCommentExpandable.text =
+                    getString(contentR.string.content_comment_expand_visible, item.repliesCount)
             }
+
+            binding.root.setOnClickListener {
+                listener.onClicked(item, absoluteAdapterPosition)
+            }
+        }
+
+        interface Listener {
+            fun onClicked(item: CommentUiModel.Expandable, position: Int)
         }
     }
 }
