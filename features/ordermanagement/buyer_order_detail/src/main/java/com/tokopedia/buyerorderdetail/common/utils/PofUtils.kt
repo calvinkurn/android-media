@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofProductUnfulfilledViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -33,7 +32,7 @@ object PofUtils {
             val colorToHexString = Integer.toHexString(colorHexInt).uppercase().substring(
                 STRING_COLOR_INDEX
             )
-            return "#$colorToHexString"
+            "#$colorToHexString"
         } catch (e: Exception) {
             e.printStackTrace()
             ""
