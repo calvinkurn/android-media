@@ -22,8 +22,10 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify2
@@ -178,9 +180,13 @@ class AddLogoToolUiComponent constructor(
             shopAvatarUrl,
             {},
             MediaBitmapEmptyTarget(
-                onReady = {
+                onReady = { loadedBitmap ->
+                    val finalBitmap =
+                        cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)?.first
+                            ?: loadedBitmap
+
                     shopAvatar.setImageBitmap(
-                        roundedBitmap(it, isCircular = true)
+                        roundedBitmap(finalBitmap, isCircular = true)
                     )
                     isShopAvatarReady = true
                     isLogoChosen(shopAvatarUrl)

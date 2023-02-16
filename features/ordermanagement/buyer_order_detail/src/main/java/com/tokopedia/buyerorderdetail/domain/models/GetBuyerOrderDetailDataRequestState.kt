@@ -5,8 +5,8 @@ sealed interface GetBuyerOrderDetailDataRequestState {
     val getP1DataRequestState: GetP1DataRequestState
 
     data class Requesting(
-        override val getP0DataRequestState: GetP0DataRequestState,
-        override val getP1DataRequestState: GetP1DataRequestState,
+        override val getP0DataRequestState: GetP0DataRequestState = GetP0DataRequestState.Requesting(),
+        override val getP1DataRequestState: GetP1DataRequestState = GetP1DataRequestState.Requesting()
     ) : GetBuyerOrderDetailDataRequestState
 
     data class Complete(
@@ -38,4 +38,3 @@ sealed interface GetBuyerOrderDetailDataRequestState {
         }
     }
 }
-

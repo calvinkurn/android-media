@@ -201,8 +201,7 @@ data class BulkReviewItemUiModel(
     }
 
     private fun isOverlayVisibilityChanged(other: BulkReviewItemUiModel): Boolean {
-        return (uiState is BulkReviewItemUiState.Dimmed && other.uiState !is BulkReviewItemUiState.Dimmed) ||
-            (uiState !is BulkReviewItemUiState.Dimmed && other.uiState is BulkReviewItemUiState.Dimmed)
+        return uiState::class.java != other.uiState::class.java
     }
 
     sealed interface ChangePayload {

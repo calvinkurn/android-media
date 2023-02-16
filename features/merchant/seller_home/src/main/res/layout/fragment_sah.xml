@@ -11,11 +11,15 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/sah_dimen_280dp"
         android:focusable="true"
+        android:visibility="invisible"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relTicker"
-        app:unify_image_corner_radius="0" />
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSahNewSellerLeft"

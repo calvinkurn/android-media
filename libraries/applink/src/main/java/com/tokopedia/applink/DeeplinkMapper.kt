@@ -612,6 +612,12 @@ object DeeplinkMapper {
                 idList?.lastOrNull() ?: ""
             )
         }),
+        DLP.matchPattern(ApplinkConst.POST_ATC, targetDeeplink = { _, _, _, idList ->
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.POST_ATC,
+                idList?.getOrNull(0) ?: ""
+            )
+        }),
         DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         DLP.startWith(ApplinkConst.TokoFood.GOFOOD) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
         DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri) },
@@ -708,6 +714,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SHOP_DISCOUNT -> ApplinkConstInternalSellerapp.SHOP_DISCOUNT
             ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
+            ApplinkConst.SellerApp.TOPADS_ADD_CREDIT -> ApplinkConstInternalTopAds.TOP_ADS_ADD_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE
             ApplinkConst.SellerApp.TOPADS_CREATE_ADS -> ApplinkConstInternalTopAds.TOPADS_CREATE_ADS
             ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING -> ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD
