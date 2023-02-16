@@ -196,26 +196,15 @@
         />
 
     <include
-        android:id="@+id/view_pip_control"
-        layout="@layout/view_pip_control"
+        android:id="@+id/view_explore_widget"
+        layout="@layout/view_explore_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/play_offset_12"
-        android:visibility="gone"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/view_partner_info"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
+        app:layout_constraintTop_toTopOf="@+id/view_partner_info"
         tools:visibility="visible" />
-
-    <androidx.mediarouter.app.MediaRouteButton
-        android:id="@+id/btn_play_cast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/view_pip_control"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl2"
-        app:mediaRouteButtonTint="@color/Unify_Static_White"
-        />
 
     <include
         android:id="@+id/view_end_live_info"
@@ -249,7 +238,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_offset_12"
         android:layout_marginEnd="@dimen/spacing_lvl5"
-        app:layout_constraintEnd_toStartOf="@id/btn_play_cast"
+        app:layout_constraintEnd_toStartOf="@id/view_explore_widget"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_toolbar_room"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"

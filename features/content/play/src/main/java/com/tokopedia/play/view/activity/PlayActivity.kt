@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.PlayInjector
@@ -42,7 +43,7 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
- * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL], [com.tokopedia.play.PLAY_APP_LINK]
+ * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL], [com.tokopedia.play.PLAY_APP_LINK], [com.tokopedia.play.PLAY_RECOMMENDATION_APP_LINK]
  * Query parameters:
  * - source_type: String
  * - source_id: String
@@ -114,7 +115,10 @@ class PlayActivity :
      * Applink
      */
     private val startChannelId: String
-        get() = intent?.data?.lastPathSegment.orEmpty()
+        get() {
+            val lastSegment = intent?.data?.lastPathSegment.orEmpty()
+            return if (lastSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else lastSegment
+        }
 
     val activeFragment: PlayFragment?
         get() = try { swipeContainerView.getActiveFragment() as? PlayFragment } catch (e: Throwable) { null }
@@ -163,7 +167,7 @@ class PlayActivity :
         super.onNewIntent(intent)
         val newBundle = intent.extras ?: Bundle()
 
-        newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
+        newBundle.putString(PLAY_KEY_CHANNEL_ID, startChannelId)
         viewModel.setNewChannelParams(newBundle)
     }
 

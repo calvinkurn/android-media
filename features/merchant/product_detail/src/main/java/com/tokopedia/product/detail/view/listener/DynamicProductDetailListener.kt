@@ -363,13 +363,19 @@ interface DynamicProductDetailListener {
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     fun clickShippingComponentError(
         errorCode: Int,
         title: String,
         componentTrackDataModel: ComponentTrackDataModel?
+    )
+
+    fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     /**
