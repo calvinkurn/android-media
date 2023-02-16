@@ -113,13 +113,13 @@ class BuyerOrderDetailNavigator(
             val productListUiModel = uiState.productListUiState.data
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
             val payload: Map<String, Any?> = mapOf(
-                    BuyerRequestCancellationIntentParamKey.SHOP_NAME to productListUiModel.productListHeaderUiModel.shopName,
-                    BuyerRequestCancellationIntentParamKey.INVOICE to orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
-                    BuyerOrderDetailCommonIntentParamKey.ORDER_ID to orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                    BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
-                    BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
-                    BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
-                    BuyerRequestCancellationIntentParamKey.SHOP_ID to productListUiModel.productListHeaderUiModel.shopId
+                BuyerRequestCancellationIntentParamKey.SHOP_NAME to productListUiModel.productListHeaderUiModel.shopName,
+                BuyerRequestCancellationIntentParamKey.INVOICE to orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
+                BuyerOrderDetailCommonIntentParamKey.ORDER_ID to orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
+                BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
+                BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
+                BuyerRequestCancellationIntentParamKey.SHOP_ID to productListUiModel.productListHeaderUiModel.shopId
             )
             val cacheId = cacheManager.generateUniqueRandomNumber()
             cacheManager.put(cacheId, payload)
@@ -142,13 +142,13 @@ class BuyerOrderDetailNavigator(
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderStatusUiModel.orderStatusHeaderUiModel.orderId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
         val productName =
-            productListUiModel.productList.firstOrNull()?.productName ?:
-            productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
+            productListUiModel.productList.firstOrNull()?.productName
+                ?: productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
         intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, orderStatusUiModel.orderStatusInfoUiModel.purchaseDate)
         val productThumbnail =
-            productListUiModel.productList.firstOrNull()?.productThumbnailUrl ?:
-            productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
+            productListUiModel.productList.firstOrNull()?.productThumbnailUrl
+                ?: productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
         intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, productThumbnail.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, orderStatusUiModel.orderStatusInfoUiModel.invoice.url)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
@@ -196,7 +196,6 @@ class BuyerOrderDetailNavigator(
         )
         val intent = RouteManager.getIntent(fragment.context, appLink)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT)
-        applyTransition()
     }
 
     fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean): Boolean {
@@ -205,11 +204,15 @@ class BuyerOrderDetailNavigator(
             if (appLink.startsWith(PREFIX_HTTP)) {
                 openWebView(appLink, shouldRefreshWhenBack)
                 true
-            } else false
+            } else {
+                false
+            }
         } else {
             val requestCode = if (shouldRefreshWhenBack) {
                 BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
-            } else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            } else {
+                BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            }
             fragment.startActivityForResult(intent, requestCode)
             applyTransition()
             true
@@ -220,8 +223,11 @@ class BuyerOrderDetailNavigator(
         val intent: Intent =
             RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         val requestCode =
-            if (shouldRefreshWhenBack) BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
-            else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            if (shouldRefreshWhenBack) {
+                BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
+            } else {
+                BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            }
         fragment.startActivityForResult(intent, requestCode)
         applyTransition()
     }
