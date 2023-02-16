@@ -63,7 +63,7 @@ class SummaryViewModel @Inject constructor(
     val enableCouponTypeChange = Transformations.map(configuration) {
         it.voucherId == ADDING_VOUCHER_ID
     }
-    val submitButtonText = Transformations.map(_configuration) {
+    val submitButtonText = Transformations.map(configuration) {
         if (it.voucherId == ADDING_VOUCHER_ID) {
             R.string.smvc_summary_page_submit_text
         } else {
@@ -190,7 +190,7 @@ class SummaryViewModel @Inject constructor(
             tracker.sendClickSimpanEvent(voucherConfiguration.voucherId.toString())
         } else {
             addCoupon(voucherConfiguration)
-            tracker.sendClickBuatKuponEvent(voucherConfiguration.voucherId.toString())
+            tracker.sendClickBuatKuponEvent()
         }
     }
 
