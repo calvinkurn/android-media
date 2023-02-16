@@ -25,6 +25,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -296,7 +297,11 @@ class HomeVisitableFactoryImpl(
                                     }
                                 },
                                 onSuccess = {
-                                    addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
+                                    if (HomeRollenceController.isUsingAtf2Variant()) {
+                                        addHomePageBannerAtf2Data(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
+                                    } else {
+                                        addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
+                                    }
                                 }
                             )
                             channelPosition++
@@ -383,6 +388,48 @@ class HomeVisitableFactoryImpl(
                 )
                 visitableList.add(
                     BannerDataModel(
+                        channelModel = channelModel,
+                        isCache = isCache,
+                        dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                        dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                        cardInteraction = true,
+                        enableDotsAndInfiniteScroll = HomeComponentRollenceController.isHPBUsingDotsAndInfiniteScroll(),
+                        scrollTransitionDuration = HomeComponentRollenceController.getHPBDuration()
+                    )
+                )
+            }
+        }
+    }
+
+    private fun addHomePageBannerAtf2Data(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?, index: Int) {
+        if (!isCache) {
+            bannerDataModel?.let {
+                val channelModel = ChannelModel(
+                    channelGrids = it.slides?.map {
+                        ChannelGrid(
+                            applink = it.applink,
+                            campaignCode = it.campaignCode,
+                            id = it.id.toString(),
+                            imageUrl = it.imageUrl,
+                            attribution = it.creativeName,
+                            persona = it.persona,
+                            categoryPersona = it.categoryPersona,
+                            brandId = it.brandId,
+                            categoryId = it.categoryId
+                        )
+                    } ?: listOf(),
+                    groupId = "",
+                    id = "",
+                    trackingAttributionModel = TrackingAttributionModel(
+                        promoName = String.format(
+                            PROMO_NAME_BANNER_CAROUSEL,
+                            (index + 1).toString(),
+                            VALUE_BANNER_DEFAULT
+                        )
+                    )
+                )
+                visitableList.add(
+                    BannerRevampDataModel(
                         channelModel = channelModel,
                         isCache = isCache,
                         dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
