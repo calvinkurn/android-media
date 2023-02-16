@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
+import com.tokopedia.product.detail.data.model.review_list.ReviewListData
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
@@ -167,7 +168,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("socialProof")
     @Expose
-    val socialProof: List<SocialProofData> = emptyList()
+    val socialProof: List<SocialProofData> = emptyList(),
+
+    @SerializedName("reviewList")
+    @Expose
+    val reviewList: ReviewListData = ReviewListData()
 ) {
     data class Response(
         @SerializedName("pdpGetData")

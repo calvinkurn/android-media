@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.model.review_list.ReviewListData
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
@@ -67,7 +68,8 @@ data class ProductInfoP2UiData(
     var arInfo: ProductArInfo = ProductArInfo(),
     var obatKeras: ObatKeras = ObatKeras(),
     var customInfoTitle: List<CustomInfoTitle> = emptyList(),
-    var socialProof: List<SocialProofData> = emptyList()
+    var socialProof: List<SocialProofData> = emptyList(),
+    var reviewList: ReviewListData = ReviewListData()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
