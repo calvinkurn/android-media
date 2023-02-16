@@ -165,10 +165,10 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
                         val shouldPopBackStackImmediately = getShouldPopBackStackImmediately()
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
+                        } else {
                             if (!shouldPopBackStackImmediately) {
                                 ft.hide(prevFragment)
                             }
-                        } else {
                             try {
                                 ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
                             } catch (ex: Exception) {
