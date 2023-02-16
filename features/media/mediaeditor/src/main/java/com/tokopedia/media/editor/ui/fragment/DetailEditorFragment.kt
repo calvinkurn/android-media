@@ -262,7 +262,7 @@ class DetailEditorFragment @Inject constructor(
                             if (removeBackgroundRetryLimit == 0) {
                                 removeBgClosePage()
                             } else {
-                                Handler().postDelayed(getRunnable{
+                                Handler().postDelayed(getRunnable {
                                     onRemoveBackgroundClicked(removeBackgroundType)
                                 }, DELAY_REMOVE_BG_TOASTER)
                             }
@@ -342,14 +342,14 @@ class DetailEditorFragment @Inject constructor(
             }
 
             // waiting for crop & rotate state implementation process for AddLogo overlay size
-            it.postDelayed(getRunnable{
+            it.postDelayed(getRunnable {
                 setOverlaySize(
                     Pair(
                         it.overlayView.cropViewRect.width(),
                         it.overlayView.cropViewRect.height()
                     )
                 )
-            },DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE)
+            }, DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE)
         }
     }
 
@@ -610,7 +610,7 @@ class DetailEditorFragment @Inject constructor(
 
             // if crop state is not produce from auto crop on beginning of landing page
             if (!cropRotateData.isAutoCrop) {
-                cropView.postDelayed(getRunnable{
+                cropView.postDelayed(getRunnable {
                     val cropImageMatrix = cropView.imageMatrix.values()
                     val deltaX = (cropImageMatrix[2] * -1) + cropRotateData.translateX
                     val deltaY = (cropImageMatrix[5] * -1) + cropRotateData.translateY
@@ -653,7 +653,7 @@ class DetailEditorFragment @Inject constructor(
 
             cropView.setImageToWrapCropBounds(false)
 
-            cropView.postDelayed(getRunnable{
+            cropView.postDelayed(getRunnable {
                 implementPreviousStateCrop(cropRotateData)
             }, DELAY_EXECUTION_PREVIOUS_ROTATE)
         }
@@ -962,7 +962,12 @@ class DetailEditorFragment @Inject constructor(
                     } else {
                         implementedBaseBitmap = bitmap
                         viewBinding?.imgViewPreview?.post {
-                            setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, bitmap))
+                            setOverlaySize(
+                                getDisplayedImageSize(
+                                    viewBinding?.imgViewPreview,
+                                    bitmap
+                                )
+                            )
                         }
                     }
 
