@@ -126,7 +126,13 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun handleExpand(comment: CommentUiModel.Expandable) {
         fun dropChild() {
             _comments.getAndUpdate {
-                val newList = it.list.dropWhile { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
+                val newList = it.list.map { item ->
+                    if (item is CommentUiModel.Expandable && item == comment) item
+                        .copy(isExpanded = !item.isExpanded) else item
+                }
+                    .toMutableList().apply {
+                        removeIf { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
+                    }
                 it.copy(list = newList)
             }
         }
