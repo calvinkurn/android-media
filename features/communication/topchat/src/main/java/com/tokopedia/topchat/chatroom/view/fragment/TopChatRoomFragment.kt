@@ -2675,7 +2675,7 @@ open class TopChatRoomFragment :
         } else {
             rvSrw?.getStateInfo()
         }
-        val previews2 = viewModel.attachmentsPreview.value ?: arrayListOf()
+        val previews2 = viewModel.attachmentsPreview.value?.toList() ?: arrayListOf()
         adapter.addSrwBubbleUiModel(srwState, previews2)
     }
 
