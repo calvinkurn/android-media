@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.databinding.ItemPersonaTypeBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
@@ -36,6 +37,7 @@ class PersonaTypeViewHolder(
             tvSpSellerTypeStatus.text = String.format(SUB_TITLE_FORMAT, element.headerSubTitle)
             radioSpPersonaType.isChecked = element.isSelected
             imgSpSellerTypeAvatar.loadImage(element.avatarImage)
+            containerSpItemPersonaType.setBackgroundResource(R.drawable.sp_bg_seller_type)
 
             showList(element)
             showBackground(element)
@@ -65,12 +67,6 @@ class PersonaTypeViewHolder(
     }
 
     private fun showBackground(element: PersonaUiModel) {
-        val drawableRes = if (element.isSelected) {
-            R.drawable.sp_bg_seller_type_active
-        } else {
-            R.drawable.sp_bg_seller_type_inactive
-        }
-
         with(binding) {
             val sectionTextColor = if (element.isSelected) {
                 root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
@@ -86,7 +82,15 @@ class PersonaTypeViewHolder(
             }
             tvSpSellerTypeStatus.setTextColor(subTitleTextColor)
 
-            containerSpItemPersonaType.setBackgroundResource(drawableRes)
+            runCatching {
+                if (element.isSelected) {
+                    imgSpItemPersonaType.loadImage(Constants.IMG_PERSONA_TYPE_ACTIVE) {
+                        setPlaceHolder(R.drawable.sp_bg_seller_type_inactive)
+                    }
+                } else {
+                    imgSpItemPersonaType.loadImage(R.drawable.sp_bg_seller_type_inactive)
+                }
+            }
             optionAdapter.isSelected = element.isSelected
             optionAdapter.notifyAdapter()
         }

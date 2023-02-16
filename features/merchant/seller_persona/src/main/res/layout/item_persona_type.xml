@@ -6,8 +6,19 @@
     android:layout_width="300dp"
     android:layout_height="match_parent"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    tools:background="@drawable/sp_bg_seller_type_active">
+    android:layout_marginEnd="8dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSpItemPersonaType"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="0.9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="16"
+        app:unify_image_disable_shimmering_placeholder="true" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineSpBegin"
