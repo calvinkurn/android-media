@@ -1382,7 +1382,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun renderTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
-        if (!isDiscountPromoTypeEnabled) {
+        if (!isDiscountPromoTypeEnabled && remoteTickerMessage.isNotEmpty()) {
             binding?.ticker?.visible()
             binding?.ticker?.setTextDescription(remoteTickerMessage)
         }

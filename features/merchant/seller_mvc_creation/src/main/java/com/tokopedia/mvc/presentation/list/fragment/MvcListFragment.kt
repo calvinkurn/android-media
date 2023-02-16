@@ -625,13 +625,8 @@ class MvcListFragment :
 
     private fun observeVoucherCreationMetadata() {
         viewModel.voucherCreationMetadata.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    displayTicker(result.data.creationMetadata.discountActive, result.data.tickerWording)
-                }
-                is Fail -> {
-                    binding?.root?.showToasterError(result.throwable)
-                }
+            if (result is Success) {
+                displayTicker(result.data.creationMetadata.discountActive, result.data.tickerWording)
             }
         }
     }
@@ -1064,7 +1059,7 @@ class MvcListFragment :
     }
 
     private fun displayTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
-        if (!isDiscountPromoTypeEnabled) {
+        if (!isDiscountPromoTypeEnabled && remoteTickerMessage.isNotEmpty()) {
             binding?.ticker?.visible()
             binding?.ticker?.setTextDescription(remoteTickerMessage)
         }
