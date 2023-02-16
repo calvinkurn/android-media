@@ -33,7 +33,6 @@ import com.tokopedia.mvc.util.extension.isProductVoucher
 import com.tokopedia.mvc.util.extension.isPublic
 import com.tokopedia.mvc.util.extension.isShopVoucher
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -99,16 +98,8 @@ class VoucherSettingViewModel @Inject constructor(
                     isVoucherProduct = voucherConfiguration.isVoucherProduct
                 )
 
-                val voucherCreationMetadataDeferred = async { getInitiateVoucherPageUseCase.execute(voucherCreationMetadataParam) }
-
-                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
-                val tickerWordingDeferred = async { getTargetedTickerUseCase.execute(tickerWordingParam) }
-
-                val voucherCreationMetadata = voucherCreationMetadataDeferred.await()
-
+                val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute(voucherCreationMetadataParam)
                 val isDiscountPromoTypeEnabled = voucherCreationMetadata.discountActive
-                val tickerWordings = tickerWordingDeferred.await()
-                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
 
                 _uiState.update {
                     it.copy(
@@ -117,13 +108,28 @@ class VoucherSettingViewModel @Inject constructor(
                         voucherConfiguration = voucherConfiguration.copy(
                             isFinishFilledStepTwo = true
                         ),
-                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled,
-                        discountPromoTypeDisabledReason = tickerWording
+                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled
                     )
                 }
 
+                getTickerWording()
                 handleVoucherInputValidation()
+            },
+            onError = {}
+        )
+    }
 
+    private fun getTickerWording() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
+                val tickerWordings = getTargetedTickerUseCase.execute(tickerWordingParam)
+                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
+
+                _uiState.update {
+                    it.copy(discountPromoTypeDisabledReason = tickerWording)
+                }
             },
             onError = {}
         )
