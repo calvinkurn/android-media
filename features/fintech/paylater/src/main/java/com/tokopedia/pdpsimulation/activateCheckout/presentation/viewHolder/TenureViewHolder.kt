@@ -35,7 +35,10 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                     individualTenureItemContainer.isClickable = false
                     radioSelector.isClickable = false
                 }
-                radioSelector.skipAnimation()
+                try {
+                    radioSelector.skipAnimation()
+                } catch (e: Exception) {}
+
             }
         }?:run{
             itemView.gone()
