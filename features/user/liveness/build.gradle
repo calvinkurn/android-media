@@ -15,7 +15,7 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
-        }
+    }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.miscDependencies.androidjunit5
@@ -36,7 +36,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
-    implementation projectOrAar(rootProject.ext.libraries.liveness_lib)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -82,6 +81,9 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+
+    api 'ai.advance.mobile-sdk.android:liveness-detection:1.4.0@aar'
+    api 'ai.advance.mobile-sdk.android:core:3.5@aar'
 }
 
 project.ext {
