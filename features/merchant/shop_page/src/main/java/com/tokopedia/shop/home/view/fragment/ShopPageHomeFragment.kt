@@ -3791,24 +3791,12 @@ open class ShopPageHomeFragment :
     }
 
     fun setHomeTabBackgroundPatternImage(backgroundPatternImage: String) {
-//        this.homeTabBackgroundPatternImage = backgroundPatternImage
-//        non tablet
-//        this.homeTabBackgroundPatternImage = "https://lh5.googleusercontent.com/asDRxKClmQFn3HdBLxkZ2Q6LW8bn8biZulsgv-AIRsoJe85gb7Xi90sLr4qkX_CsU3s=w2400"
-        //tablet
-//        this.homeTabBackgroundPatternImage = "https://lh6.googleusercontent.com/-r1OyDvBasFkOclJ08PK3ILNyqDrQWti7bt2P8riTOAlAmd-Wwp10yYsLgYMSJsgkyk=w2400"
-        //tablet new extended
-//        this.homeTabBackgroundPatternImage = "https://lh4.googleusercontent.com/ftRRHuKUj5kOm-bu3Ls9tRmAKLJ7XFyDf5F33DHvEcMCTQevg2udXn2mF7LoofUOJis=w2400"
-        //repeatable
-//        this.homeTabBackgroundPatternImage = "https://lh4.googleusercontent.com/g4JzjDSTAkkE2udW7WFbhymtAqP4GDnK3XVxpQJnxnViJsF2_PWt6pBAYioHNEaJHaQ=w2400"
-        //repeatable full non transparent
-        this.homeTabBackgroundPatternImage = "https://lh3.googleusercontent.com/G0o_oK3BinP9tqT03KINY3mFwlTAZLWFYYEdRo3DgSd9ebxl5cdniQnFRzeOR4knvPQ=w2400"
+        this.homeTabBackgroundPatternImage = backgroundPatternImage
     }
 
     fun setHomeTabLottieUrl(lottieUrl: String){
-//        this.homeTabLottieUrl = lottieUrl
-        this.homeTabLottieUrl = "https://lottie.host/4f90b6ee-99d3-4ebc-bffa-77743ef1c969/qct14qmgfM.json"
+        this.homeTabLottieUrl = lottieUrl
     }
-
 
     private fun setHomeTabBackgroundGradient() {
         if (listHomeTabBackgroundColor.isNotEmpty()) {
