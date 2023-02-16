@@ -3,10 +3,14 @@ package com.tokopedia.usercomponents.userconsent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
+import com.tokopedia.usercomponents.userconsent.common.CollectionPointDataModel
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetCollectionPointWithConsentUseCase
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.SubmitConsentUseCase
@@ -28,7 +32,9 @@ class UserConsentViewModelTest {
     private var viewModel: UserConsentViewModel? = null
 
     private var getConsentCollectionUseCase = mockk<GetConsentCollectionUseCase>(relaxed = true)
+    private var getCollectionPointWithConsentUseCase = mockk<GetCollectionPointWithConsentUseCase>(relaxed = true)
     private var submitConsentUseCase = mockk<SubmitConsentUseCase>(relaxed = true)
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private var observerUserConsentCollection = mockk<Observer<UserComponentsStateResult<UserConsentCollectionDataModel>>>(relaxed = true)
 
     private var mockCollectionParam = ConsentCollectionParam(
@@ -40,7 +46,13 @@ class UserConsentViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = UserConsentViewModel(getConsentCollectionUseCase, submitConsentUseCase, dispatcherProviderTest)
+        viewModel = UserConsentViewModel(
+            getConsentCollectionUseCase,
+            getCollectionPointWithConsentUseCase,
+            submitConsentUseCase,
+            userSession,
+            dispatcherProviderTest
+        )
         viewModel?.consentCollection?.observeForever(observerUserConsentCollection)
     }
 
@@ -52,11 +64,12 @@ class UserConsentViewModelTest {
     @Test
     fun `Get Consent Collection - Success`() {
         val mockCollectionPoints = mutableListOf(
-            UserConsentCollectionDataModel.CollectionPointDataModel(
+            CollectionPointDataModel(
                 id = "id",
                 consentType = "type"
             )
         )
+        val hideWhenAlreadyHaveConsent = false
 
         val mockResponse = ConsentCollectionResponse(
             UserConsentCollectionDataModel(
@@ -65,11 +78,12 @@ class UserConsentViewModelTest {
             )
         )
 
+        coEvery { userSession.isLoggedIn } returns true
         coEvery {
             getConsentCollectionUseCase(mockCollectionParam)
         } returns mockResponse
 
-        viewModel?.getConsentCollection(mockCollectionParam)
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
 
         coVerify {
             observerUserConsentCollection.onChanged(
@@ -96,12 +110,14 @@ class UserConsentViewModelTest {
                 )
             )
         )
+        val hideWhenAlreadyHaveConsent = false
 
+        coEvery { userSession.isLoggedIn } returns true
         coEvery {
             getConsentCollectionUseCase(mockCollectionParam)
         } returns mockResponse
 
-        viewModel?.getConsentCollection(mockCollectionParam)
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
 
         val result = viewModel?.consentCollection?.value
         assert(result is UserComponentsStateResult.Fail)
@@ -115,12 +131,14 @@ class UserConsentViewModelTest {
                 errorMessages = listOf()
             )
         )
+        val hideWhenAlreadyHaveConsent = false
 
+        coEvery { userSession.isLoggedIn } returns true
         coEvery {
             getConsentCollectionUseCase(mockCollectionParam)
         } returns mockResponse
 
-        viewModel?.getConsentCollection(mockCollectionParam)
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
 
         val result = viewModel?.consentCollection?.value
         assert(result is UserComponentsStateResult.Fail)
@@ -132,8 +150,126 @@ class UserConsentViewModelTest {
         coEvery {
             getConsentCollectionUseCase(mockCollectionParam)
         } throws mockThrowable
+        val hideWhenAlreadyHaveConsent = false
 
-        viewModel?.getConsentCollection(mockCollectionParam)
+        coEvery { userSession.isLoggedIn } returns true
+
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
+
+        val result = viewModel?.consentCollection?.value
+        assert(result is UserComponentsStateResult.Fail)
+    }
+
+    @Test
+    fun `Get Consent Collection - Throw error - Not Login`() {
+        coEvery {
+            getConsentCollectionUseCase(mockCollectionParam)
+        } throws mockThrowable
+        val hideWhenAlreadyHaveConsent = false
+
+        coEvery { userSession.isLoggedIn } returns false
+
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
+
+        val result = viewModel?.consentCollection?.value
+        assert(result is UserComponentsStateResult.Fail)
+    }
+
+    @Test
+    fun `Get Consent Collection With Consent - Success`() {
+        val mockCollectionPoints = mutableListOf(
+            CollectionPointDataModel(
+                id = "id",
+                consentType = "type",
+                needConsent = true
+            )
+        )
+        val hideWhenAlreadyHaveConsent = true
+
+        val mockResponse = ConsentCollectionResponse(
+            UserConsentCollectionDataModel(
+                success = true,
+                collectionPoints = mockCollectionPoints
+            )
+        )
+
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery {
+            getCollectionPointWithConsentUseCase(mockCollectionParam)
+        } returns mockResponse
+
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
+
+        coVerify {
+            observerUserConsentCollection.onChanged(
+                UserComponentsStateResult.Success(mockResponse.data)
+            )
+        }
+
+        val result = viewModel?.consentCollection?.getOrAwaitValue()
+        assert(result is UserComponentsStateResult.Success)
+
+        (result as UserComponentsStateResult.Success).apply {
+            assert(result.data?.success == true)
+            assert(result.data?.collectionPoints?.isNotEmpty() == true)
+        }
+    }
+
+    @Test
+    fun `Get Consent Collection With Consent - Failed with message`() {
+        val mockResponse = ConsentCollectionResponse(
+            UserConsentCollectionDataModel(
+                success = false,
+                errorMessages = listOf(
+                    mockErrorMessage
+                )
+            )
+        )
+        val hideWhenAlreadyHaveConsent = true
+
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery {
+            getCollectionPointWithConsentUseCase(mockCollectionParam)
+        } returns mockResponse
+
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
+
+        val result = viewModel?.consentCollection?.value
+        assert(result is UserComponentsStateResult.Fail)
+    }
+
+    @Test
+    fun `Get Consent Collection With Consent - General Error`() {
+        val mockResponse = ConsentCollectionResponse(
+            UserConsentCollectionDataModel(
+                success = false,
+                errorMessages = listOf()
+            )
+        )
+        val hideWhenAlreadyHaveConsent = true
+
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery {
+            getCollectionPointWithConsentUseCase(mockCollectionParam)
+        } returns mockResponse
+
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
+
+        val result = viewModel?.consentCollection?.value
+        assert(result is UserComponentsStateResult.Fail)
+        assert((result as UserComponentsStateResult.Fail).error.message?.contains(UserConsentViewModel.GENERAL_ERROR) == true)
+    }
+
+    @Test
+    fun `Get Consent Collection With Consent - Throw error`() {
+        coEvery {
+            getConsentCollectionUseCase(mockCollectionParam)
+        } throws mockThrowable
+        val hideWhenAlreadyHaveConsent = true
+
+        coEvery { userSession.isLoggedIn } returns true
+
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
 
         val result = viewModel?.consentCollection?.value
         assert(result is UserComponentsStateResult.Fail)

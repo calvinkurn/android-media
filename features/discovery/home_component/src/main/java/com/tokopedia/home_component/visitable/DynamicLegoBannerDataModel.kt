@@ -5,17 +5,22 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
 data class DynamicLegoBannerDataModel(
-        val channelModel: ChannelModel,
-        val isCache: Boolean = false
-): HomeComponentVisitable {
+    val channelModel: ChannelModel,
+    val isCache: Boolean = false,
+    val cardInteraction: Boolean = false
+) : HomeComponentVisitable {
     override fun visitableId(): String? {
         return channelModel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
         return if (b is DynamicLegoBannerDataModel) {
-            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
-        } else false
+            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis &&
+                channelModel.channelConfig.borderStyle == b.channelModel.channelConfig.borderStyle &&
+                isCache == b.isCache
+        } else {
+            false
+        }
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

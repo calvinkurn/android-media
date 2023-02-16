@@ -1,15 +1,15 @@
 package com.tokopedia.media.picker.analytics.gallery
 
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.analytics.*
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GalleryAnalyticsImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val cacheManager: ParamCacheManager
+    private val cacheManager: PickerCacheManager
 ) : GalleryAnalytics {
 
     private val userId: String

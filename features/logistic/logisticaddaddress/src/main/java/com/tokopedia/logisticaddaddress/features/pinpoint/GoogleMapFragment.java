@@ -208,7 +208,9 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        mapView.onStart();
+        if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            mapView.onStart();
+        }
     }
 
     @Override
@@ -225,7 +227,9 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            mapView.onPause();
+        }
     }
 
     @Override

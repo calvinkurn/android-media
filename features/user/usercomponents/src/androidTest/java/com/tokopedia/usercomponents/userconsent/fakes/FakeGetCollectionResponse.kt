@@ -1,8 +1,8 @@
 package com.tokopedia.usercomponents.userconsent.fakes
 
 import com.google.gson.Gson
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
-import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
 
 object FakeGetCollectionResponse {
 
@@ -13,6 +13,17 @@ object FakeGetCollectionResponse {
     fun collectionTnCSingleMandatory(): ConsentCollectionResponse {
         val gson = getDefaultResponse()
         with(gson.data.collectionPoints.first()) {
+            attributes.policyNoticeType = UserConsentConst.TERM_CONDITION
+            attributes.collectionPointPurposeRequirement = UserConsentConst.MANDATORY
+            attributes.collectionPointStatementOnlyFlag = UserConsentConst.CHECKLIST
+        }
+        return gson
+    }
+
+    fun collectionTnCSingleMandatoryNotNeedConsent(): ConsentCollectionResponse {
+        val gson = getDefaultResponse()
+        with(gson.data.collectionPoints.first()) {
+            needConsent = false
             attributes.policyNoticeType = UserConsentConst.TERM_CONDITION
             attributes.collectionPointPurposeRequirement = UserConsentConst.MANDATORY
             attributes.collectionPointStatementOnlyFlag = UserConsentConst.CHECKLIST
@@ -135,7 +146,30 @@ const val GET_COLLECTION_JSON = """
               "collectionPointStatementOnlyFlag": "checklist",
               "policyNoticeType": "termconditionpolicy",
               "PolicyNoticeTnCPageID": "a-0209",
-              "PolicyNoticePolicyPageID": "a-0209"
+              "PolicyNoticePolicyPageID": "a-0209",
+              "statementWording": {
+                "template": "Saya menyetujui #tnc dan #privacy untuk sambungkan #purpose.",
+                "attributes": [
+                  {
+                    "key": "#tnc",
+                    "type": "hyperlink",
+                    "text": "Syarat & Ketentuan",
+                    "link": "https://www.tokopedia.com/consent?id=a-3408&type=2&tab=tnc"
+                  },
+                  {
+                    "key": "#privacy",
+                    "type": "hyperlink",
+                    "text": "Kebijakan Privasi",
+                    "link": "https://www.tokopedia.com/consent?id=a-3408&type=2&tab=privacy"
+                  },
+                  {
+                    "key": "#purpose",
+                    "type": "plain",
+                    "text": "Purpose A, Purpose B, dan Purpose C",
+                    "link": ""
+                  }
+                ]
+              }
             }
           }
         ]

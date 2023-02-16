@@ -1,15 +1,15 @@
 package com.tokopedia.tokopedianow.data
 
 import com.tokopedia.abstraction.common.data.model.response.Header
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 
 fun createCategoryList(
         categoryList: List<CategoryResponse> = listOf(createCategoryResponse(), createAdultCategoryResponse())
 ): CategoryListResponse {
     return CategoryListResponse(
-            header = Header(),
-            data = categoryList
+        header = Header(),
+        data = categoryList
     )
 }
 
@@ -19,7 +19,8 @@ fun createCategoryResponse(): CategoryResponse {
                 name = "Category 1",
                 url = "www.testing.com",
                 appLinks = "tokopedia://testing",
-                isAdult = 0
+                isAdult = 0,
+                color = "#FFFFFF"
         )
 }
 
@@ -29,6 +30,7 @@ fun createAdultCategoryResponse(): CategoryResponse {
                 name = "Category 2",
                 url = "www.testing.com",
                 appLinks = "tokopedia://testing",
-                isAdult = 1
+                isAdult = 1,
+                color = "#FFFFFF"
         )
 }

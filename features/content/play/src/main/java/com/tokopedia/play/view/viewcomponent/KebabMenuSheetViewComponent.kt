@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.R
 import com.tokopedia.play.view.adapter.PlayMoreActionAdapter
-import com.tokopedia.play.view.type.PlayMoreActionType
 import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -26,14 +25,6 @@ class KebabMenuSheetViewComponent(
     private val rvActionList: RecyclerView = findViewById(R.id.rv_action_list)
     private val moreActionAdapter = PlayMoreActionAdapter()
 
-    private val reportAction = PlayMoreActionUiModel(
-        type = PlayMoreActionType.Report,
-        iconRes = 0,
-        isIconAvailable = false,
-        subtitleRes = R.string.play_kebab_report_title,
-        onClick = { listener.onReportClick(this@KebabMenuSheetViewComponent) }
-    )
-
     init {
         findViewById<ImageView>(commonR.id.iv_sheet_close)
             .setOnClickListener {
@@ -48,19 +39,11 @@ class KebabMenuSheetViewComponent(
         }
     }
 
-    fun showView() {
-        /** Need to improve if there's watch mode - need to put it under observer*/
+    fun show(actions: List<PlayMoreActionUiModel>) {
+        if (actions.isEmpty()) return
+        val finalList = actions.sortedBy { it.priority }
+        moreActionAdapter.setItemsAndAnimateChanges(finalList)
         show()
-        setActionList()
-    }
-
-    private fun setActionList(){
-        val actionList = mutableListOf<PlayMoreActionUiModel>().apply {
-            add(reportAction)
-        }
-        if (actionList.isNotEmpty()) {
-            moreActionAdapter.setItemsAndAnimateChanges(actionList)
-        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -69,7 +52,6 @@ class KebabMenuSheetViewComponent(
     }
 
     interface Listener {
-        fun onReportClick(view: KebabMenuSheetViewComponent)
         fun onCloseButtonClicked(view: KebabMenuSheetViewComponent)
     }
 }

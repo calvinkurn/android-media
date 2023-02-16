@@ -16,7 +16,7 @@ object CartLogger {
             val errorMessage = throwable.message
                     ?: if (throwable is ResponseErrorException) "response is null or response is error but empty message" else "unknown exception"
             val mapData = mapOf(
-                    LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CART_PAGE_ERROR,
+                    LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.LOAD_CART_PAGE_ERROR,
                     LoggerConstant.Key.MESSAGE to errorMessage,
                     LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
             )
@@ -36,7 +36,7 @@ object CartLogger {
             }
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                    LoggerConstant.Key.TYPE to LoggerConstant.Type.UPDATE_CART_FOR_CHECKOUT_ERROR,
+                    LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.UPDATE_CART_FOR_CHECKOUT_ERROR,
                     LoggerConstant.Key.MESSAGE to errorMessage,
                     LoggerConstant.Key.PRODUCT_ID_LIST to productIdList.joinToString(","),
                     LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()

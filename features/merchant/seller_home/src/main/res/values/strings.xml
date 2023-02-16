@@ -241,9 +241,12 @@
     <string name="sah_i_understang">Saya Mengerti</string>
 
     <!-- Wear Os -->
-    <string name="wearos_install_popup_title">Install Wear App</string>
+    <string name="wearos_install_popup_title">Install App Untuk Wear OS</string>
+    <string name="wearos_install_popup_description">Sekarang tersedia aplikasi Wear OS untuk seller, klik install untuk mencoba</string>
     <string name="wearos_install_popup_install">Install</string>
-    <string name="wearos_install_popup_later">Not Now</string>
+    <string name="wearos_install_popup_later">Nanti</string>
+    <string name="wearos_toast_install">Kunjungi Playstore via Wear OS untuk download Tokopedia Seller</string>
+    <string name="sah_toaster_download_message">File lagi di-download dan akan tersimpan di HP kamu.</string>
     <string name="sah_seller_persona_bottom_sheet_sub_title">Kamu bisa cek tipe Seller-mu di menu Pengaturan Akun</string>
     <string name="sah_seller_persona_bottom_sheet_description">Jawaban kuismu dipakai untuk menyesuaikan tampilan Home Tokopedia Seller kamu.</string>
     <string name="sah_persona_bottom_sheet_title">Akses profil di pengaturan</string>

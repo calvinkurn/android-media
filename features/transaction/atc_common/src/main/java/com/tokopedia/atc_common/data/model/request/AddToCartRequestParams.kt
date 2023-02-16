@@ -7,15 +7,15 @@ import com.tokopedia.atc_common.AtcFromExternalSource
  */
 
 data class AddToCartRequestParams(
-        var productId: String = "",
-        var shopId: String = "",
+        var productId: String = "0",
+        var shopId: String = "0",
         var quantity: Int = 0,
         var notes: String = "",
         var lang: String = "",
         var attribution: String = "",
         var listTracker: String = "",
         var ucParams: String = "",
-        var warehouseId: String = "",
+        var warehouseId: String = "0",
         var atcFromExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
         var isSCP: Boolean = false,
         // analytics data

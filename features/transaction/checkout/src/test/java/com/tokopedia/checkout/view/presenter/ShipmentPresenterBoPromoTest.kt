@@ -13,9 +13,11 @@ import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
@@ -84,6 +86,9 @@ class ShipmentPresenterBoPromoTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -113,6 +118,9 @@ class ShipmentPresenterBoPromoTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
@@ -133,13 +141,30 @@ class ShipmentPresenterBoPromoTest {
         ratesStatesConverter = RatesResponseStateConverter()
         shippingCourierConverter = ShippingCourierConverter()
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
         )
         presenter.attachView(view)
         presenter = spyk(presenter)
@@ -151,7 +176,8 @@ class ShipmentPresenterBoPromoTest {
     fun `WHEN initialize presenter THEN cart data should be filled`() {
         // Given
         val response = DataProvider.provideShipmentAddressFormResponse()
-        val cartShipmentAddressFormData = shipmentMapper.convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
+        val cartShipmentAddressFormData = shipmentMapper
+            .convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
 
         // When
         presenter.initializePresenterData(cartShipmentAddressFormData)
@@ -183,7 +209,11 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify {
-            presenter.processBoPromoCourierRecommendation(itemAdapterPosition, voucherOrder, shipmentCartItemModel)
+            presenter.processBoPromoCourierRecommendation(
+                itemAdapterPosition,
+                voucherOrder,
+                shipmentCartItemModel
+            )
         }
     }
 
@@ -209,7 +239,11 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify {
-            presenter.processBoPromoCourierRecommendation(itemAdapterPosition, voucherOrder, shipmentCartItemModel)
+            presenter.processBoPromoCourierRecommendation(
+                itemAdapterPosition,
+                voucherOrder,
+                shipmentCartItemModel
+            )
         }
     }
 
@@ -412,7 +446,7 @@ class ShipmentPresenterBoPromoTest {
     // Test ShipmentPresenter.validateClearAllBoPromo()
 
     @Test
-    fun `WHEN clear BO promo while user has active BO promo in checkout page and user success to clear used BO promo THEN call unapply BO promo`() {
+    fun `WHEN clear BO promo while user has active BO promoin checkout page and user success to clear used BO promo THEN call unapply BO promo`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel().apply {
@@ -1269,8 +1303,8 @@ class ShipmentPresenterBoPromoTest {
         // Given
         presenter.initializePresenterData(
             CartShipmentAddressFormData(
-            cod = CodModel(counterCod = 1)
-        )
+                cod = CodModel(counterCod = 1)
+            )
         )
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
@@ -1303,7 +1337,11 @@ class ShipmentPresenterBoPromoTest {
         presenter.recipientAddressModel = RecipientAddressModel()
 
         // When
-        presenter.processBoPromoCourierRecommendation(itemPosition, voucherOrdersItemUiModel, shipmentCartItemModel)
+        presenter.processBoPromoCourierRecommendation(
+            itemPosition,
+            voucherOrdersItemUiModel,
+            shipmentCartItemModel
+        )
 
         // Then
         verifyOrder {
@@ -1317,7 +1355,9 @@ class ShipmentPresenterBoPromoTest {
         // Given
         val response = DataProvider.provideRatesV3ApiEnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        every { getRatesApiUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
 
         every { presenter.getProductForRatesRequest(any()) } returns listOf()
         val isTradeInByDropOff = true
@@ -1345,7 +1385,11 @@ class ShipmentPresenterBoPromoTest {
         presenter.recipientAddressModel = RecipientAddressModel()
 
         // When
-        presenter.processBoPromoCourierRecommendation(itemPosition, voucherOrdersItemUiModel, shipmentCartItemModel)
+        presenter.processBoPromoCourierRecommendation(
+            itemPosition,
+            voucherOrdersItemUiModel,
+            shipmentCartItemModel
+        )
 
         // Then
         verifyOrder {
@@ -1378,7 +1422,12 @@ class ShipmentPresenterBoPromoTest {
         )
         val recipientAddressModel = RecipientAddressModel()
         presenter.recipientAddressModel = recipientAddressModel
-        every { view.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel) } returns ShipmentDetailData(
+        every {
+            view.getShipmentDetailData(
+                shipmentCartItemModel,
+                recipientAddressModel
+            )
+        } returns ShipmentDetailData(
             shipmentCartData = ShipmentCartData(
                 originDistrictId = "1",
                 originPostalCode = "1",
@@ -1390,7 +1439,11 @@ class ShipmentPresenterBoPromoTest {
         )
 
         // When
-        presenter.processBoPromoCourierRecommendation(itemPosition, voucherOrdersItemUiModel, shipmentCartItemModel)
+        presenter.processBoPromoCourierRecommendation(
+            itemPosition,
+            voucherOrdersItemUiModel,
+            shipmentCartItemModel
+        )
 
         // Then
         verifyOrder {

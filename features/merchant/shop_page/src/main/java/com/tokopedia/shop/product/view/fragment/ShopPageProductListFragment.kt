@@ -135,7 +135,6 @@ class ShopPageProductListFragment :
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
         private const val REQUEST_CODE_ADD_PRODUCT = 3697
-        private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
@@ -244,40 +243,6 @@ class ShopPageProductListFragment :
         }
     }
 
-    private fun onErrorAddWishList(errorMessage: String?) {
-        onErrorAddToWishList(MessageErrorException(errorMessage))
-    }
-
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaAction = {
-                goToWishlist()
-            }
-        )
-        shopProductAdapter.updateWishListStatus(productId, true)
-    }
-
-    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaAction = null
-        )
-        shopProductAdapter.updateWishListStatus(productId, false)
-    }
-
-    private fun showToastSuccess(message: String) {
-        activity?.run {
-            view?.let { Toaster.make(it, message) }
-        }
-    }
-
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
             view?.let {
@@ -299,10 +264,6 @@ class ShopPageProductListFragment :
                 ).show()
             }
         }
-    }
-
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun loadNewProductData() {
@@ -845,6 +806,12 @@ class ShopPageProductListFragment :
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
             }
+        }
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            shopProductAdapter.updateWishListStatus(
+                productId = productCardOptionsModel.productId,
+                wishList = false
+            )
         }
     }
 

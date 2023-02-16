@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -359,11 +360,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
-    override fun onResume() {
-        super.onResume()
-        startWidgetSse()
-    }
-
     override fun onPause() {
         super.onPause()
         stopWidgetSse()
@@ -401,6 +397,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (!isFirstLoad) {
                 getShopStateInfoIfEligible()
             }
+            startWidgetSse()
         }
     }
 
@@ -734,8 +731,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementImpressionEvent(element)
     }
 
-    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
-        SellerHomeTracking.sendAnnouncementClickEvent(element)
+    override fun setOnAnnouncementWidgetCtaClicked(element: AnnouncementWidgetUiModel) {
+        context?.let {
+            val appLink = element.data?.appLink.orEmpty()
+            val isRouting = RouteManager.route(it, appLink)
+            if (isRouting) {
+                showDownloadToaster(appLink)
+                SellerHomeTracking.sendAnnouncementClickEvent(element)
+            }
+        }
     }
 
     override fun sendUnificationImpressionEvent(element: UnificationWidgetUiModel) {
@@ -1138,7 +1142,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
-        setViewBackground()
+
+        isNewSellerState = (activity as? SellerHomeActivity)?.isNewSeller == true
+        setViewBackground(isNewSellerState)
     }
 
     private fun setupEmptyState() {
@@ -1929,7 +1935,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 imgSahNewSellerLeft.gone()
                 imgSahNewSellerRight.gone()
-                setViewBackground()
+                setViewBackground(isNewSellerState)
             }
             setSectionWidgetTextColor()
         }
@@ -1961,29 +1967,62 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() = binding?.run {
+    private fun setViewBackground(isNewSeller: Boolean) = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
+                if (isNewSeller) {
+                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_official_store)
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
+                }
             }
             isPowerMerchant -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
+                if (isNewSeller) {
+                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_power_merchant)
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
+                }
             }
             else -> {
-                viewBgShopStatus.gone()
+                if (isNewSeller) {
+                    viewBgShopStatus.gone()
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
+                }
             }
         }
     }
 
-    private fun showRegularHomeBackground(backgroundResource: Int) {
+    private fun showRegularHomeBackground(imageUrl: String) {
         binding?.run {
-            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-            viewBgShopStatus.layoutParams.height = height
-            viewBgShopStatus.visible()
-            viewBgShopStatus.setImageResource(backgroundResource)
-            viewBgShopStatus.requestLayout()
+            try {
+                val height =
+                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+                viewBgShopStatus.layoutParams.height = height
+                viewBgShopStatus.loadImage(imageUrl) {
+                    listener(onSuccess = { _, _ ->
+                        viewBgShopStatus.visible()
+                        viewBgShopStatus.requestLayout()
+                    })
+                }
+            } catch (e: Exception) {
+                viewBgShopStatus.hide()
+            }
+        }
+    }
+
+    private fun showRegularHomeBackgroundNewSeller(imageResourceId: Int) {
+        binding?.run {
+            try {
+                val height =
+                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+                viewBgShopStatus.layoutParams.height = height
+                viewBgShopStatus.setImageResource(imageResourceId)
+            } catch (e: Exception) {
+                viewBgShopStatus.hide()
+            }
         }
     }
 
@@ -2802,13 +2841,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showNewSellerDialog() {
         recyclerView?.post {
-            newSellerJourneyHelper.showNewSellerDialog(
-                requireActivity(),
-                sectionWidgetAnchor = getSectionView(),
-                notificationAnchor = getNotificationView(),
-                navigationAnchor = navigationView,
-                otherMenuAnchor = otherMenuView
-            )
+            activity?.let {
+                if (!it.isFinishing) {
+                    newSellerJourneyHelper.showNewSellerDialog(
+                        it,
+                        sectionWidgetAnchor = getSectionView(),
+                        notificationAnchor = getNotificationView(),
+                        navigationAnchor = navigationView,
+                        otherMenuAnchor = otherMenuView
+                    )
+                }
+            }
         }
     }
 
@@ -2822,6 +2865,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getNotificationView(): View? {
         return menu?.findItem(NOTIFICATION_MENU_ID)?.actionView
+    }
+
+    private fun showDownloadToaster(appLink: String) {
+        activity?.let {
+            val isDownloadAppLink = appLink.startsWith(ApplinkConst.WEBVIEW_DOWNLOAD, true)
+            if (isDownloadAppLink) {
+                view?.run {
+                    post {
+                        val message = it.getString(R.string.sah_toaster_download_message)
+                        Toaster.build(this, message).show()
+                    }
+                }
+            }
+        }
     }
 
     @SuppressLint("DeprecatedMethod")

@@ -93,6 +93,28 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.0.4"
     }
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+        }
+    }
 }
 dependencies {
     implementation rootProject.ext.playServicesDependencies.base
@@ -101,7 +123,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9"
     implementation 'androidx.wear:wear:1.2.0'
-    implementation 'com.google.android.gms:play-services-wearable:17.1.0'
+    implementation 'com.google.android.gms:play-services-wearable:18.0.0'
 
     def lifeCycleVersion = "2.5.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifeCycleVersion"
@@ -141,4 +163,16 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+
+    // Unit test
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
+
+apply from: 'jacoco_wearos_task.gradle'
+apply from: '../sonar_config.gradle'
