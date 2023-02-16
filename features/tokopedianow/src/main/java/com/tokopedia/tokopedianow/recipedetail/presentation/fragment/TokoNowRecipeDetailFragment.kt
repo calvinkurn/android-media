@@ -526,7 +526,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onFailedAddBookmark() {
-        val message = getString(R.string.tokopedianow_recipe_toaster_failed_adding_bookmark)
+        val message = getString(R.string.tokopedianow_recipe_toaster_description_failed_adding_bookmark)
         val actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again)
         showToaster(message = message, type = Toaster.TYPE_ERROR, actionText = actionText) {
             viewModel.addRecipeBookmark()
@@ -543,7 +543,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onFailedRemoveBookmark() {
-        val message = getString(R.string.tokopedianow_recipe_toaster_failed_removing_bookmark)
+        val message = getString(R.string.tokopedianow_recipe_toaster_description_failed_removing_bookmark)
         val actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again)
         showToaster(message = message, type = Toaster.TYPE_ERROR, actionText = actionText) {
             viewModel.removeRecipeBookmark()
