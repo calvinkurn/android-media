@@ -256,7 +256,6 @@ class ChatbotPresenter @Inject constructor(
             }
             is ChatbotWebSocketAction.Failure -> {
                 handleSocketFailure(messageId)
-                handleSocketFailure(socketResponse.exception)
             }
             is ChatbotWebSocketAction.Closed -> {
                 handleSocketClosed(socketResponse.code, messageId)
@@ -282,11 +281,6 @@ class ChatbotPresenter @Inject constructor(
     private fun handleSocketFailure(messageId: String) {
         view.showErrorWebSocket(true)
         retryConnectToWebSocket(messageId)
-    }
-
-
-    private fun handleSocketFailure(exception : ChatbotWebSocketException){
-        view.showErrorLayout(exception)
     }
 
     private fun handleSocketClosed(code: Int, messageId: String) {

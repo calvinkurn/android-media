@@ -163,7 +163,6 @@ import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.chatbot.view.util.showToaster
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketException
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -1043,7 +1042,7 @@ class ChatbotFragment :
 
     private fun setShowingErrorLayout(throwable: Throwable){
         when(throwable){
-            is InterruptedIOException, is ChatbotWebSocketException -> {
+            is InterruptedIOException -> {
                 if(chatbotAdapter.data.isEmpty()){
                     setErrorLayoutForNetwork()
                 } else {
@@ -1447,7 +1446,7 @@ class ChatbotFragment :
             if (rvScrollListener?.hasNextAfterPage == true) {
                 resetData()
                 showTopLoading()
-                presenter.getExistingChat(messageId, onShowErrorPage(), onSuccessResetChatToFirstPage(), onGetChatRatingListMessageError)
+                presenter.getExistingChat(messageId, onError(), onSuccessResetChatToFirstPage(), onGetChatRatingListMessageError)
             } else {
                 getViewState()?.onSendingMessage(
                     messageId,
@@ -2085,7 +2084,7 @@ class ChatbotFragment :
             } else {
                 presenter.getExistingChat(
                     messageId,
-                    onShowErrorPage(),
+                    onError(),
                     onSuccessGetExistingChatFirstTime(),
                     onGetChatRatingListMessageError
                 )

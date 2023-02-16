@@ -77,7 +77,6 @@
     <string name="chatbot_csat_opsional"> (Opsional)</string>
     <string name="chatbot_bottomsheet_copy">Salin</string>
     <string name="chatbot_bottomsheet_copy_success_toaster">Pesan berhasil disalin</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="chatbot_back_to_tokopedia_care">Kembali ke Tokopedia Care</string>
     <string name="chatbot_retry_get_data">Coba lagi</string>
     <string name="chatbot_to_wifi_setting">Ke Pengaturan</string>
