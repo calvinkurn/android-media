@@ -191,6 +191,26 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     }
 
     @Test
+    fun should_do_nothing_when_reconnect_websocket_but_failed() {
+        // Given
+        onConnectWebsocket {
+            it.onFailure(websocket, IllegalStateException(), websocketResponse)
+        }
+        coEvery {
+            webSocketStateHandler.scheduleForRetry(any())
+        } throws IllegalStateException()
+
+        // When
+        webSocketViewModel.connectWebSocket()
+
+        // Then
+        coVerify {
+            chatWebSocket.close()
+            webSocketStateHandler.scheduleForRetry(any())
+        }
+    }
+
+    @Test
     fun should_update_typing_value_on_receive_typing_event() {
         // Given
         onConnectWebsocket {
@@ -480,5 +500,17 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(webSocketViewModel.unreadMsg.value, 0)
+    }
+
+    @Test
+    fun when_reset_all_live_data_should_give_null() {
+        // Given
+        webSocketViewModel.resetUnreadMessage()
+
+        // When
+        webSocketViewModel.resetMessageLiveData()
+
+        // Then
+        assertEquals(null, webSocketViewModel.unreadMsg.value)
     }
 }
