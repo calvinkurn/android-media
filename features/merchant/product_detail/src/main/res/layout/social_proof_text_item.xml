@@ -5,8 +5,8 @@
     android:id="@+id/socialProofTitle"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingVertical="7dp"
+    android:gravity="center"
+    android:paddingVertical="8dp"
     android:textColor="@color/Unify_NN950"
     app:typographyType="display_3"
-    tools:ignore="RtlSymmetry"
     tools:text="Dilihat 200" />

@@ -30,7 +30,7 @@ class ProductMiniSocialProofViewHolder(
     companion object {
         val LAYOUT = R.layout.item_dynamic_social_proof
 
-        private val SPACE_BETWEEN_ITEM = 12.toPx()
+        private val SPACE_BETWEEN_ITEM = 8.toPx()
     }
 
     private val binding by lazyThreadSafetyNone {
