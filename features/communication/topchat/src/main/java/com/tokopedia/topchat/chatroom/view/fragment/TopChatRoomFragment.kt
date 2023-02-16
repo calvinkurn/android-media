@@ -255,7 +255,7 @@ open class TopChatRoomFragment :
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
 
-    private val webSocketViewModel: TopChatRoomWebSocketViewModel by activityViewModels()
+    val webSocketViewModel: TopChatRoomWebSocketViewModel by activityViewModels()
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var customMessage: String
