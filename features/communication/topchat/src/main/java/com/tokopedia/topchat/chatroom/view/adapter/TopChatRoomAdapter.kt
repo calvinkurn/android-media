@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusActive
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusWarehouse
+import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
@@ -36,10 +36,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewH
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 
 /**
@@ -131,7 +131,12 @@ class TopChatRoomAdapter constructor(
         viewType: Int
     ): AbstractViewHolder<out Visitable<*>> {
         return adapterTypeFactory.createViewHolder(
-            parent, viewType, this, this, this)
+            parent,
+            viewType,
+            this,
+            this,
+            this
+        )
     }
 
     override fun saveProductCarouselState(position: Int, state: Parcelable?) {
@@ -386,8 +391,8 @@ class TopChatRoomAdapter constructor(
         if (visitables.isEmpty()) return false
         val latestMessage = visitables.first()
         return (latestMessage is MessageUiModel && latestMessage.isFromBroadCast()) ||
-                latestMessage is BroadcastSpamHandlerUiModel ||
-                latestMessage is BroadCastUiModel
+            latestMessage is BroadcastSpamHandlerUiModel ||
+            latestMessage is BroadCastUiModel
     }
 
     fun addBroadcastSpamHandler(): Int {
@@ -409,8 +414,8 @@ class TopChatRoomAdapter constructor(
 
     private fun isFromBroadcast(latestMessage: Visitable<*>?): Boolean {
         return latestMessage is MessageUiModel &&
-                latestMessage.isFromBroadCast() &&
-                !latestMessage.isSender
+            latestMessage.isFromBroadCast() &&
+            !latestMessage.isSender
     }
 
     fun removeBroadcastHandler(element: BroadcastSpamHandlerUiModel) {
@@ -443,7 +448,8 @@ class TopChatRoomAdapter constructor(
 
     fun removeViewHolder(element: Visitable<*>, position: Int) {
         val itemPair = getUpToDateUiModelPosition(
-            position, element
+            position,
+            element
         )
         val latestPosition = itemPair.first
         if (latestPosition != RecyclerView.NO_POSITION) {
@@ -464,14 +470,18 @@ class TopChatRoomAdapter constructor(
     }
 
     fun updateProductStock(
-        updateProductResult: UpdateProductStockResult, stockCount: Int, status: String
+        updateProductResult: UpdateProductStockResult,
+        stockCount: Int,
+        status: String
     ) {
         val itemPair = getUpToDateUiModelPosition(
-            updateProductResult.lastKnownPosition, updateProductResult.product
+            updateProductResult.lastKnownPosition,
+            updateProductResult.product
         )
         val parentPair: Pair<Int, Visitable<*>?>? = updateProductResult.parentMetaData?.let {
             getUpToDateUiModelPosition(
-                it.lastKnownPosition, it.uiModel
+                it.lastKnownPosition,
+                it.uiModel
             )
         }
         val position = if (parentPair != null && parentPair.first != RecyclerView.NO_POSITION) {
@@ -496,8 +506,10 @@ class TopChatRoomAdapter constructor(
     }
 
     private fun postUpdateReviewState(
-        lastKnownPosition: Int, review: ReviewUiModel,
-        state: Int, reviewClickAt: Int
+        lastKnownPosition: Int,
+        review: ReviewUiModel,
+        state: Int,
+        reviewClickAt: Int
     ) {
         val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
         val position = itemPair.first
@@ -686,7 +698,8 @@ class TopChatRoomAdapter constructor(
      * the second T? is the ui model at the up-to-date position
      */
     private inline fun <reified T : Visitable<*>> getUpToDateUiModelPosition(
-        lastKnownPosition: Int, element: T
+        lastKnownPosition: Int,
+        element: T
     ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)
         if (item == element) {
