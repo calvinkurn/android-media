@@ -57,52 +57,52 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
-    private val _isWebsocketError = MutableLiveData<Boolean>()
-    val isWebsocketError: LiveData<Boolean>
+    private val _isWebsocketError = MutableLiveData<Boolean?>()
+    val isWebsocketError: LiveData<Boolean?>
         get() = _isWebsocketError
 
-    private val _unreadMsg = MutableLiveData<Int>()
-    val unreadMsg: LiveData<Int>
+    private val _unreadMsg = MutableLiveData<Int?>()
+    val unreadMsg: LiveData<Int?>
         get() = _unreadMsg
 
-    private val _isTyping = MutableLiveData<Boolean>()
-    val isTyping: LiveData<Boolean>
+    private val _isTyping = MutableLiveData<Boolean?>()
+    val isTyping: LiveData<Boolean?>
         get() = _isTyping
 
-    private val _msgRead = MutableLiveData<Unit>()
-    val msgRead: LiveData<Unit>
+    private val _msgRead = MutableLiveData<Unit?>()
+    val msgRead: LiveData<Unit?>
         get() = _msgRead
 
-    private val _newMsg = MutableLiveData<Visitable<*>>()
-    val newMsg: LiveData<Visitable<*>>
+    private val _newMsg = MutableLiveData<Visitable<*>?>()
+    val newMsg: LiveData<Visitable<*>?>
         get() = _newMsg
 
-    private val _msgDeleted = MutableLiveData<String>()
-    val msgDeleted: LiveData<String>
+    private val _msgDeleted = MutableLiveData<String?>()
+    val msgDeleted: LiveData<String?>
         get() = _msgDeleted
 
     private val _removeSrwBubble = MutableLiveData<String?>()
     val removeSrwBubble: LiveData<String?>
         get() = _removeSrwBubble
 
-    private val _errorSnackbar = MutableLiveData<Throwable>()
-    val errorSnackbar: LiveData<Throwable>
+    private val _errorSnackbar = MutableLiveData<Throwable?>()
+    val errorSnackbar: LiveData<Throwable?>
         get() = _errorSnackbar
 
-    private val _uploadImageService = MutableLiveData<ImageUploadServiceModel>()
-    val uploadImageService: LiveData<ImageUploadServiceModel>
+    private val _uploadImageService = MutableLiveData<ImageUploadServiceModel?>()
+    val uploadImageService: LiveData<ImageUploadServiceModel?>
         get() = _uploadImageService
 
-    private val _previewMsg = MutableLiveData<SendableUiModel>()
-    val previewMsg: LiveData<SendableUiModel>
+    private val _previewMsg = MutableLiveData<SendableUiModel?>()
+    val previewMsg: LiveData<SendableUiModel?>
         get() = _previewMsg
 
-    private val _failUploadImage = MutableLiveData<ImageUploadUiModel>()
-    val failUploadImage: LiveData<ImageUploadUiModel>
+    private val _failUploadImage = MutableLiveData<ImageUploadUiModel?>()
+    val failUploadImage: LiveData<ImageUploadUiModel?>
         get() = _failUploadImage
 
-    private val _attachmentSent = MutableLiveData<SendablePreview>()
-    val attachmentSent: LiveData<SendablePreview>
+    private val _attachmentSent = MutableLiveData<SendablePreview?>()
+    val attachmentSent: LiveData<SendablePreview?>
         get() = _attachmentSent
 
     private var autoRetryJob: Job? = null
