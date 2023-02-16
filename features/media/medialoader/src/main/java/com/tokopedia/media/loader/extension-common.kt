@@ -125,10 +125,3 @@ inline fun ImageView.loadIcon(
         .isIcon(true)
     )
 }
-
-inline fun ImageView.loadBitmapWithoutPlaceHolder(
-    bitmap: Bitmap?,
-    crossinline properties: Properties.() -> Unit = {}
-) = call(bitmap, Properties()
-    .apply(properties)
-    .setPlaceHolder(-1))
