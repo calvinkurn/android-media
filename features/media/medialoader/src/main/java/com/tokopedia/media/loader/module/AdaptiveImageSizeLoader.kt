@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.media.loader.internal.NetworkManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import timber.log.Timber
 import java.io.InputStream
 
 class AdaptiveImageSizeLoader constructor(
@@ -32,18 +33,21 @@ class AdaptiveImageSizeLoader constructor(
     }
 
     override fun handles(model: String): Boolean {
-        return model.startsWith("https://") || model.startsWith("http://")
+        Timber.d("medialoader: [Url-handles] ${model.startsWith("https://images.tokopedia.net/") && isAdaptive}")
+        return model.startsWith("https://images.tokopedia.net/") && isAdaptive
     }
 
     override fun getUrl(model: String, width: Int, height: Int, options: Options?): String {
         val setting = preferences?.qualitySettings()?: 0
-        val networkState = NetworkManager.state(context)
 
-        return getOrSetEctParam(
-            networkState = networkState,
+        val url = getOrSetEctParam(
             qualitySettings = setting,
             url = model
         )
+
+        Timber.d("medialoader: [Url] $url")
+
+        return url
     }
 
     companion object {
@@ -51,14 +55,13 @@ class AdaptiveImageSizeLoader constructor(
     }
 
     private fun getOrSetEctParam(
-        networkState: String,
         qualitySettings: Int,
         url: String
     ): String {
         val connectionType = when(qualitySettings) {
             LOW_QUALITY_SETTINGS -> LOW_QUALITY // (2g / 3g)
             HIGH_QUALITY_SETTINGS -> HIGH_QUALITY // (4g / wifi)
-            else -> networkState // adaptive
+            else -> NetworkManager.state(context) // adaptive
         }
 
         if (connectionType != LOW_QUALITY) return url

@@ -33,8 +33,8 @@ class LoaderGlideModule: AppGlideModule() {
             okHttpClient.addInterceptor(ChuckerInterceptor(context))
         }
         val okHttpLoaderFactory = OkHttpUrlLoader.Factory(okHttpClient.build())
-        registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
-        registry.append(String::class.java, InputStream::class.java, AdaptiveImageSizeFactory(context))
+        registry.replace(String::class.java, InputStream::class.java, AdaptiveImageSizeFactory(context))
+        registry.append(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
     }
 
     override fun isManifestParsingEnabled(): Boolean {
