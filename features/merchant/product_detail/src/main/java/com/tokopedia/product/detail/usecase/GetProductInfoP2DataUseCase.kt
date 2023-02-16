@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.review_list.asUiModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -663,7 +664,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.obatKeras = responseData.obatKeras
             p2UiData.customInfoTitle = responseData.customInfoTitle
             p2UiData.socialProof = responseData.socialProof
-            p2UiData.reviewList = responseData.reviewList
+            p2UiData.reviewList = responseData.reviewList.asUiModel()
         }
         return p2UiData
     }

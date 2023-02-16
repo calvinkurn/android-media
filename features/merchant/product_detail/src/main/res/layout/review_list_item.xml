@@ -14,7 +14,7 @@
         android:paddingVertical="12dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imageUnify"
+            android:id="@+id/reviewListImage"
             android:layout_width="32dp"
             android:layout_height="32dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
             app:unify_image_type="circle" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/reviewListTitle"
+            android:id="@+id/reviewListName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -30,8 +30,8 @@
             android:maxWidth="160dp"
             android:maxLength="35"
             android:maxLines="1"
-            app:layout_constraintStart_toEndOf="@+id/imageUnify"
-            app:layout_constraintTop_toTopOf="@+id/imageUnify"
+            app:layout_constraintStart_toEndOf="@+id/reviewListImage"
+            app:layout_constraintTop_toTopOf="@+id/reviewListImage"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Karina" />
@@ -43,8 +43,8 @@
             android:layout_marginStart="2dp"
             android:text="@string/product_detail_discussion_dot"
             android:textColor="@color/Unify_NN500"
-            app:layout_constraintStart_toEndOf="@+id/reviewListTitle"
-            app:layout_constraintTop_toTopOf="@+id/reviewListTitle"
+            app:layout_constraintStart_toEndOf="@+id/reviewListName"
+            app:layout_constraintTop_toTopOf="@+id/reviewListName"
             app:typographyType="display_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -57,7 +57,7 @@
             android:textColor="@color/Unify_TN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/reviewListTitleDot"
-            app:layout_constraintTop_toTopOf="@+id/reviewListTitle"
+            app:layout_constraintTop_toTopOf="@+id/reviewListName"
             app:typographyType="display_3"
             tools:text="Juara Ulasan Laptop &amp; Gadasdf asdf asdf asdf asdf asdf" />
 
@@ -70,8 +70,8 @@
             android:maxLines="1"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageUnify"
-            app:layout_constraintTop_toBottomOf="@id/reviewListTitle"
+            app:layout_constraintStart_toEndOf="@+id/reviewListImage"
+            app:layout_constraintTop_toBottomOf="@id/reviewListName"
             app:typographyType="display_3"
             tools:text="6 ulasan lengkap • 6 terbantu" />
 
