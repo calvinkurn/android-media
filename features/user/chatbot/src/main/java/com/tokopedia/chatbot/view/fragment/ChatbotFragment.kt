@@ -112,6 +112,7 @@ import com.tokopedia.chatbot.util.*
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.*
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
+import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.PAGE_SOURCE
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
@@ -139,7 +140,6 @@ import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -574,6 +574,7 @@ class ChatbotFragment :
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         showTopLoading()
+        val pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
         presenter.checkUploadVideoEligibility(messageId)

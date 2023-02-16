@@ -35,13 +35,9 @@ import java.util.*
  */
 abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), ImageAnnouncementListener, ChatLinkHandlerListener, ImageUploadListener, ProductAttachmentListener, TypingListener, BaseChatContract.View, BaseChatActivityListener, AttachmentMenu.AttachmentMenuListener {
 
-    companion object {
-        private const val PAGE_SOURCE = "page_source"
-    }
     open var viewState: BaseChatViewState? = null
 
     protected var messageId: String = ""
-    protected var pageSource: String = ""
     protected var opponentId = ""
     protected var opponentName = ""
     protected var opponentRole = ""
@@ -81,7 +77,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     private fun setupViewData(arguments: Bundle?, savedInstanceState: Bundle?) {
         messageId = getParamString(ApplinkConst.Chat.MESSAGE_ID, arguments, savedInstanceState)
-        pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
         opponentId = getParamString(ApplinkConst.Chat.OPPONENT_ID, arguments, savedInstanceState)
         opponentName = getParamString(ApplinkConst.Chat.OPPONENT_NAME, arguments, savedInstanceState)
         opponentRole = getParamString(ApplinkConst.Chat.OPPONENT_ROLE, arguments, savedInstanceState)
