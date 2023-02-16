@@ -23,9 +23,16 @@ data class CountComment(
     )
 
     data class Data(
+        @SerializedName("contentID")
         val contentId: String = "",
+
+        @SerializedName("countComments")
         val count: String = "",
+
+        @SerializedName("countCommentsFmt")
         val countFmt: String = "",
+
+        @SerializedName("isShowComments")
         val shouldShow: Boolean = false,
     )
 }

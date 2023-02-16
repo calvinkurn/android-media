@@ -1082,8 +1082,8 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
-        sendInitialLog()
         updateCommentConfig()
+        sendInitialLog()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
