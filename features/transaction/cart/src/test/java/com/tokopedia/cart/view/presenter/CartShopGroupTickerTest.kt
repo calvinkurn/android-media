@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorData
+import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorGqlResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorTicker
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
@@ -175,11 +176,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 0L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = tickerText
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 0L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = tickerText
+                    )
                 )
             )
         )
@@ -270,11 +273,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 0L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = tickerText
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 0L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = tickerText
+                    )
                 )
             )
         )
@@ -313,11 +318,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 1_000L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = tickerText
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 1_000L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = tickerText
+                    )
                 )
             )
         )
@@ -352,11 +359,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 0L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = tickerText
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 0L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = tickerText
+                    )
                 )
             )
         )
@@ -391,11 +400,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 0L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = tickerText
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 0L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = tickerText
+                    )
                 )
             )
         )
@@ -456,11 +467,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 1_000L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 1_000L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = ticker
+                    )
                 )
             )
         )
@@ -489,11 +502,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 1_000L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 1_000L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = ticker
+                    )
                 )
             )
         )
@@ -524,11 +539,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val slotParam = slot<CartShopGroupTickerAggregatorParam>()
         coEvery {
             cartShopGroupTickerAggregatorUseCase(capture(slotParam))
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 1_000L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 1_000L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = ticker
+                    )
                 )
             )
         )
@@ -560,11 +577,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val slotParam = slot<CartShopGroupTickerAggregatorParam>()
         coEvery {
             cartShopGroupTickerAggregatorUseCase(capture(slotParam))
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 1_000L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 1_000L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = ticker
+                    )
                 )
             )
         )
@@ -649,11 +668,13 @@ class CartShopGroupTickerTest : BaseCartTest() {
         val expectedCartShopHolderData = cartShopHolderData.copy()
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
-        } returns CartShopGroupTickerAggregatorResponse(
-            CartShopGroupTickerAggregatorData(
-                minTransaction = 0L,
-                ticker = CartShopGroupTickerAggregatorTicker(
-                    text = tickerText
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 0L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = tickerText
+                    )
                 )
             )
         )
