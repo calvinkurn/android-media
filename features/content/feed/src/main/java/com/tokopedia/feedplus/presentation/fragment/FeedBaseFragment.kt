@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -27,18 +28,12 @@ class FeedBaseFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var feedMainViewModel: FeedMainViewModel
+    private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
 
     private var adapter: FeedPagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        activity?.run {
-            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-            feedMainViewModel = viewModelProvider[FeedMainViewModel::class.java]
-            feedMainViewModel.fetchFeedTabs()
-        }
     }
 
     override fun onCreateView(
@@ -53,14 +48,13 @@ class FeedBaseFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        feedMainViewModel.fetchFeedTabs()
         feedMainViewModel.feedTabs.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> initView(it.data)
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
+                is Fail -> {
+
+                }
             }
         })
     }
