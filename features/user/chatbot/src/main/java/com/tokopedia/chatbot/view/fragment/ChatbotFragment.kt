@@ -6,11 +6,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -163,7 +161,6 @@ import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.chatbot.view.util.showToaster
-import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
@@ -180,7 +177,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
-import java.io.InterruptedIOException
+import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 
@@ -627,8 +624,8 @@ class ChatbotFragment :
 
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
-        showTopLoading()
         val pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        handlingForMessageIdValidity(messageId)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
         presenter.checkUploadVideoEligibility(messageId)
@@ -817,7 +814,7 @@ class ChatbotFragment :
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage) {
             hideSnackBarRetry()
-            presenter.getExistingChat(messageId, onShowErrorPage(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+            presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
         } else {
@@ -836,7 +833,7 @@ class ChatbotFragment :
     override fun loadInitialData() {
         getViewState()?.clearChatOnLoadChatHistory()
         showTopLoading()
-        presenter.getExistingChat(messageId, onShowErrorPage(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
@@ -980,14 +977,6 @@ class ChatbotFragment :
         }
     }
 
-    private fun onShowErrorPage(): (Throwable) -> Unit {
-        return {
-            if (view != null) {
-                setShowingErrorLayout(it)
-            }
-        }
-    }
-
     private fun setErrorLayoutForServer() {
         getBindingView().layoutErrorGlobal.run {
             visible()
@@ -1005,54 +994,11 @@ class ChatbotFragment :
         }
     }
 
-    private fun setErrorLayoutForNetwork() {
-        getBindingView().layoutErrorGlobal.run {
-            visible()
-            getBindingView().homeGlobalError.run {
-                setType(NO_CONNECTION)
-                errorAction.text = context.getString(R.string.chatbot_retry_get_data)
-                errorSecondaryAction.show()
-                errorSecondaryAction.text = context.getString(R.string.chatbot_to_wifi_setting)
-                setSecondaryActionClickListener {
-                    goToSettingConnection()
-                }
-                setActionClickListener {
-                    loadInitialData()
-                    hideErrorLayoutForNetwork()
-                }
-            }
-        }
-    }
-
-    private fun goToSettingConnection(){
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startActivity(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY))
-            } else {
-                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
-                startActivity(intent)
-            }
-        }catch (e : Exception){ }
-    }
-
-    private fun hideErrorLayoutForNetwork() {
-        getBindingView().layoutErrorGlobal.gone()
-        getBindingView().layoutChatRoom.show()
-    }
-
-    private fun setShowingErrorLayout(throwable: Throwable){
-        when(throwable){
-            is InterruptedIOException -> {
-                if(chatbotAdapter.data.isEmpty()){
-                    setErrorLayoutForNetwork()
-                } else {
-                    hideErrorLayoutForNetwork()
-                }
-            }
-
-            else -> {
-                setErrorLayoutForServer()
-            }
+    private fun handlingForMessageIdValidity(messageId : String){
+        try{
+            messageId.toLong()
+        } catch (e: NumberFormatException) {
+            setErrorLayoutForServer()
         }
     }
 
@@ -1316,10 +1262,6 @@ class ChatbotFragment :
     override fun hideReplyBox() {
         bigReplyBox?.hide()
         smallReplyBox?.hide()
-    }
-
-    override fun showErrorLayout(throwable: Throwable) {
-        setShowingErrorLayout(throwable)
     }
 
     private fun sendAnalyticsForVideoUpload(videoFilePath: String) {

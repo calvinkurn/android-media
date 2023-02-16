@@ -82,8 +82,6 @@ interface ChatbotContract {
 
         fun hideReplyBox()
 
-        fun showErrorLayout(throwable: Throwable)
-
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

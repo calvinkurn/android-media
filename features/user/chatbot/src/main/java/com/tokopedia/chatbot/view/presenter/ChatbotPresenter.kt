@@ -121,8 +121,6 @@ import com.tokopedia.chatbot.websocket.*
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -1022,7 +1020,6 @@ class ChatbotPresenter @Inject constructor(
     private fun getTopBotNewSessionFailure(throwable: Throwable, messageId: String) {
         view.loadChatHistory()
         view.enableTyping()
-        view.showErrorLayout(throwable)
         ChatbotNewRelicLogger.logNewRelic(
             false,
             messageId,
