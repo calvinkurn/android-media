@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
  * @author by nisie on 8/23/17.
  */
 class UserDataDomain constructor(
-    @SerializedName("userIdStr") @Expose val userId: String = "",
+    @SerializedName("userID") @Expose val userId: String = "",
     @SerializedName("fullName") @Expose val fullName: String = ""
 )

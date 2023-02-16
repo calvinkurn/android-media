@@ -7,10 +7,8 @@ import com.google.gson.annotations.SerializedName
  * @author by nisie on 8/23/17.
  */
 class ProductDataDomain constructor(
-    @SerializedName("productIdStr") @Expose val productId: String,
-    @SerializedName("name") @Expose val productName: String,
-    @SerializedName("imageUrl") @Expose val productImageUrl: String,
-    @SerializedName("url") @Expose val productPageUrl: String,
-    @SerializedName("shopIdStr") @Expose val shopId: String,
-    @SerializedName("status") @Expose val productStatus: Int
+    @SerializedName("productID") @Expose val productId: String,
+    @SerializedName("productName") @Expose val productName: String,
+    @SerializedName("productImageURL") @Expose val productImageUrl: String,
+    @SerializedName("productStatus") @Expose val productStatus: Int
 )
