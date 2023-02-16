@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.list.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -36,6 +37,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.mvc.R
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -108,6 +110,17 @@ class MvcListViewModel @Inject constructor(
                     it == type
                 }
             }
+        }
+    }
+
+    @StringRes
+    fun getSelectedStatusText(): Int {
+        return when (filter.status.sortedBy { it.id }) {
+            listOf(VoucherStatus.NOT_STARTED) -> R.string.smvc_bottomsheet_filter_voucher_notstarted
+            listOf(VoucherStatus.ONGOING) -> R.string.smvc_bottomsheet_filter_voucher_ongoing
+            listOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING) -> R.string.smvc_bottomsheet_filter_voucher_active
+            listOf(VoucherStatus.ENDED, VoucherStatus.STOPPED) -> R.string.smvc_bottomsheet_filter_voucher_finished
+            else -> R.string.smvc_bottomsheet_filter_voucher_all
         }
     }
 

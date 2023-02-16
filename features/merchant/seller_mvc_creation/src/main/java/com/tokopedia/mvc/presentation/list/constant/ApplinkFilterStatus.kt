@@ -10,9 +10,11 @@ enum class ApplinkFilterStatus(val id: String, val statuses: List<VoucherStatus>
     ONGOING("ongoing",
         listOf(VoucherStatus.ONGOING)),
     UPCOMING("upcoming",
-        listOf(VoucherStatus.NOT_STARTED));
+        listOf(VoucherStatus.NOT_STARTED)),
+    ALL("all",
+        listOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.ENDED, VoucherStatus.STOPPED));
 
     companion object {
-        fun getById(id: String) = values().firstOrNull { it.id == id }?.statuses ?: ACTIVE.statuses
+        fun getById(id: String) = values().firstOrNull { it.id == id }?.statuses ?: ALL.statuses
     }
 }
