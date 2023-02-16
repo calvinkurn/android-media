@@ -5,7 +5,7 @@ package com.tokopedia.applink
  * Central const for Fragment name in apps use for instantiate Fragment using Route Manager,
  */
 object FragmentConst {
-    const val FEED_PLUS_CONTAINER_FRAGMENT = "com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment"
+    const val FEED_PLUS_CONTAINER_FRAGMENT = "com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment"
     const val DF_INSTALLER_FRAGMENT_CLASS_PATH = "com.tokopedia.dynamicfeatures.DFInstallerFragment"
     const val UOH_LIST_FRAGMENT = "com.tokopedia.unifyorderhistory.view.fragment.UohListFragment"
     const val WISHLIST_V2_FRAGMENT = "com.tokopedia.wishlist.view.fragment.WishlistV2Fragment"
