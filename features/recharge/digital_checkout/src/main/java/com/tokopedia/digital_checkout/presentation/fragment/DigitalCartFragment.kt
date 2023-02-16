@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -376,6 +375,12 @@ class DigitalCartFragment :
             )
         }
 
+        val subscriptionProduct = cartInfo.attributes.fintechProduct.firstOrNull {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }
+        subscriptionProduct?.let {
+            renderConsentWidget(it)
+        }
         renderMyBillsLayout(cartInfo)
 
         binding?.let {
@@ -661,6 +666,11 @@ class DigitalCartFragment :
         myBillsAdapter.setItems(subscriptions, fintechProducts)
     }
 
+    private fun renderConsentWidget(fintechProduct: FintechProduct) {
+        val collectionPointData = getCollectionPointData(fintechProduct)
+        setCrossSellConsent(collectionPointData)
+    }
+
     override fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
         digitalAnalytics.eventClickSubscription(
             isChecked,
@@ -669,16 +679,16 @@ class DigitalCartFragment :
             userSession.userId
         )
         binding?.run {
-
             if (isChecked) {
-                val collectionPointData = getCollectionPointData(fintechProduct)
-                setCrossSellConsent(collectionPointData)
+                binding?.checkoutBottomViewWidget?.showCrossSellConsent()
             } else {
                 binding?.checkoutBottomViewWidget?.hideCrossSellConsent()
             }
             val consentPayload = if (checkoutBottomViewWidget.isCrossSellConsentVisible()) {
                 checkoutBottomViewWidget.getCrossSellConsentPayload()
-            } else ""
+            } else {
+                ""
+            }
 
             viewModel.onSubscriptionChecked(fintechProduct, isChecked, consentPayload)
         }
@@ -689,7 +699,7 @@ class DigitalCartFragment :
             var map: Map<String, Any> = hashMapOf()
             map = Gson().fromJson(fintechProduct.crossSellMetadata, map.javaClass)
 
-            val metadataKey = map.get("metadata")
+            val metadataKey = map[KEY_METADATA]
             if (metadataKey != null && metadataKey.toString().length > Int.ZERO) {
                 val metadata = Gson().fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
                 if (metadata.collectionPointId.isNotEmpty() && metadata.collectionPointVersion.isNotEmpty()) {
@@ -1008,6 +1018,8 @@ class DigitalCartFragment :
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER =
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
+
+        private const val KEY_METADATA = "metadata"
 
         private const val REQUEST_VERIFY_PHONE_NUMBER = 1012
         private const val REQUEST_CODE_LOGIN = 1013

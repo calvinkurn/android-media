@@ -2,7 +2,6 @@ package com.tokopedia.digital_checkout.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -27,12 +26,14 @@ import com.tokopedia.unifyprinciples.R as UnifyPrinciplesRes
 
 class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
     @NotNull context: Context,
-    attrs: AttributeSet? = null, defStyleAttr: Int = Int.ZERO
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = Int.ZERO
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val binding = LayoutDigitalCheckoutBottomViewBinding.inflate(
         LayoutInflater.from(context),
-        this, true
+        this,
+        true
     )
 
     var isGoToPlusCheckout: Boolean = false
@@ -106,7 +107,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
     fun setUserConsentWidget(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
-        consentCollectionParam: ConsentCollectionParam,
+        consentCollectionParam: ConsentCollectionParam
     ) {
         with(binding.viewUserConsentWidget) {
             setOnCheckedChangeListener { isChecked ->
@@ -119,7 +120,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                 isCheckoutButtonEnabled = !isNeedConsent
             }
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
-            showCrossSellConsent()
         }
     }
 
@@ -160,7 +160,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
     }
 
     private fun setLinkMovement() {
-
         fun redirectToConsentUrl(url: String) = "tokopedia://webview?url=$url"
 
         binding.viewConsentGotoPlus.setOnClickUrl(

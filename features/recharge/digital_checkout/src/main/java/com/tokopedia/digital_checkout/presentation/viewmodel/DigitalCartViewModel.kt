@@ -2,7 +2,6 @@ package com.tokopedia.digital_checkout.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -62,8 +61,6 @@ class DigitalCartViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
-
-    val gson = Gson()
 
     private val _cartDigitalInfoData = MutableLiveData<CartDigitalInfoData>()
     val cartDigitalInfoData: LiveData<CartDigitalInfoData>
@@ -339,7 +336,7 @@ class DigitalCartViewModel @Inject constructor(
         isChecked: Boolean,
         inputPrice: Double?
     ) {
-        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, false,"")
+        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, false, "")
         updateRequestCheckoutParamWithCrossSellData(digitalCrossSellData, isChecked)
         updateTotalPriceWithFintechProduct(inputPrice)
         updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
