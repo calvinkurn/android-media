@@ -45,7 +45,6 @@
     <string name="tokopedianow_add_feedback_success_text">Saran produk kamu berhasil dikirim. Terima kasih untuk sarannya!</string>
     <string name="tokopedianow_add_feedback_failure_text">Maaf, saran gagal dikirim karena terjadi kendala. Coba kirim ulang, ya.</string>
 
-
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
     <string name="tokopedianow_empty_product_filter_title">Oops, product nggak ditemukan</string>
@@ -203,8 +202,6 @@
     <string name="tokopedianow_recipe_bookmark_toaster_cta_try_again">Coba Lagi</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_cancel">Batalkan</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_see">Lihat</string>
-    <string name="tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe">\"%s\" sudah dihapus dari Buku Resep.</string>
-    <string name="tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe">\"%s\" berhasil ditambahkan ke Buku Resep.</string>
 
     <!-- Recipe Search -->
     <string name="tokopedianow_recipe_search_ingredient_title_bottomsheet">Cari berdasarkan bahan</string>
@@ -222,9 +219,10 @@
     <string name="tokopedianow_recipe_learn_more">Apa itu Tokopedia NOW! <![CDATA[<font color=#00AA5B><b>Pelajari</b>]]></string>
     <string name="tokopedianow_percentage_format">%1$s %%</string>
 
-    <string name="tokopedianow_recipe_success_add_bookmark">“%s” berhasil ditambahkan ke Buku Resep.</string>
-    <string name="tokopedianow_recipe_failed_add_bookmark">Wah belum bisa disimpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
-    <string name="tokopedianow_recipe_failed_remove_bookmark">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
+    <string name="tokopedianow_recipe_toaster_description_success_removing_recipe">\"%s\" berhasil dihapus dari Buku Resep.</string>
+    <string name="tokopedianow_recipe_toaster_description_success_adding_recipe">\"%s\" berhasil ditambahkan ke Buku Resep.</string>
+    <string name="tokopedianow_recipe_toaster_failed_adding_bookmark">Wah belum bisa disimpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
+    <string name="tokopedianow_recipe_toaster_failed_removing_bookmark">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
     <string name="tokopedianow_recipe_search_hint">Cari resep</string>
     <string name="tokopedianow_recipe_list_header_text">Pilihan resep spesial\nTokopedia NOW!</string>
     <string name="tokopedianow_recipe_list_count">%1$d resep</string>

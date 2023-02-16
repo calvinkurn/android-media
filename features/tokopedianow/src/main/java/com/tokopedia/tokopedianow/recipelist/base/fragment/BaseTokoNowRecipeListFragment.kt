@@ -295,7 +295,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         data?.model?.apply {
             if (data.isRemoving) {
                 showToaster(
-                    message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe, title),
+                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_recipe, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                     clickListener = {
@@ -306,7 +306,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 analytics.impressUnBookmarkToaster()
             } else {
                 showToaster(
-                    message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe, title),
+                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_adding_recipe, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_see),
                     clickListener = {
@@ -323,7 +323,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         data?.model?.apply {
             if (data.isRemoving) {
                 showToaster(
-                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_remove_bookmark) },
+                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_toaster_failed_removing_bookmark) },
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                     clickListener = {
@@ -338,7 +338,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 analytics.impressFailedUnBookmarkToaster()
             } else {
                 showToaster(
-                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_add_bookmark) },
+                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_toaster_failed_adding_bookmark) },
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                     clickListener = {
