@@ -11,9 +11,7 @@ import javax.inject.Named
 @InboxScope
 @Component(
     modules = [InboxModule::class, ContactUsViewModelModule::class],
-    dependencies = arrayOf(
-        BaseAppComponent::class
-    )
+    dependencies = [BaseAppComponent::class]
 )
 interface InboxComponent {
     @Named("InboxListPresenter")

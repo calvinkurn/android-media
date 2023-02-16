@@ -6,9 +6,10 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
+import com.tokopedia.usercomponents.userconsent.common.CollectionPointDataModel
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetCollectionPointWithConsentUseCase
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
@@ -63,7 +64,7 @@ class UserConsentViewModelTest {
     @Test
     fun `Get Consent Collection - Success`() {
         val mockCollectionPoints = mutableListOf(
-            UserConsentCollectionDataModel.CollectionPointDataModel(
+            CollectionPointDataModel(
                 id = "id",
                 consentType = "type"
             )
@@ -177,7 +178,7 @@ class UserConsentViewModelTest {
     @Test
     fun `Get Consent Collection With Consent - Success`() {
         val mockCollectionPoints = mutableListOf(
-            UserConsentCollectionDataModel.CollectionPointDataModel(
+            CollectionPointDataModel(
                 id = "id",
                 consentType = "type",
                 needConsent = true
