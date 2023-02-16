@@ -24,7 +24,12 @@ class CommentViewHolder {
 
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
-                if (item.commentType is CommentType.Child) root.setPadding(root.paddingLeft + 40, root.paddingTop,  root.paddingTop, root.paddingBottom)
+                root.setPadding(
+                    if (item.commentType is CommentType.Child) 40 else 8,
+                    root.paddingTop,
+                    root.paddingTop,
+                    root.paddingBottom
+                )
 
                 ivCommentPhoto.loadImage(item.photo)
                 tvCommentContent.text = buildSpannedString {
