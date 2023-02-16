@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.picker.analytics.LogType
+import com.tokopedia.media.picker.analytics.Logger
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.di.PickerInjector
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
@@ -26,6 +28,7 @@ import com.tokopedia.media.picker.ui.component.PagerContainerUiComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.ui.publisher.observe
+import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.isOppoManufacturer
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
@@ -64,6 +67,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     lateinit var eventBus: PickerEventBus
 
     protected val medias = arrayListOf<MediaUiModel>()
+
+    private val startTimeInMillis = System.currentTimeMillis()
+    private var loaderDialog: LoaderDialogWidget? = null
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -252,6 +258,19 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             startActivityForResult(intent, REQUEST_EDITOR_PAGE)
         }
 
+        viewModel.isLoading.observe(this) {
+            if (it) {
+                loaderDialog = LoaderDialogWidget(this)
+                loaderDialog?.show()
+            } else {
+                loaderDialog?.dismiss()
+                Logger.send(
+                    startTime = startTimeInMillis,
+                    endTime = System.currentTimeMillis()
+                )
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.observe(
                 onChanged = {
@@ -281,16 +300,19 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         viewModel.includeMedias.observe(this) { files ->
             if (files.isEmpty()) return@observe
 
-            val fileToUiModel = files.mapNotNull {
+            val fileAsUiModelList = files.mapNotNull {
                 val mPickerFile = it?.asPickerFile()
                 mPickerFile?.toUiModel()
             }
 
-            eventBus.notifyDataOnChangedEvent(fileToUiModel)
+            fileAsUiModelList.forEach {
+                eventBus.addMediaEvent(it)
+            }
         }
 
         viewModel.connectionIssue.observe(this) { message ->
             onShowToaster(message, Toaster.TYPE_ERROR)
+            Logger.send(LogType.NoInternetConnection)
 
             Handler(Looper.getMainLooper()).postDelayed({
                 finish()

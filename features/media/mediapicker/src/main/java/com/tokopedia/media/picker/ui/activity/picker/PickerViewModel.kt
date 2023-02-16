@@ -10,6 +10,7 @@ import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
 import com.tokopedia.media.picker.ui.publisher.EventState
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.utils.flattenFilter
 import com.tokopedia.media.picker.utils.internal.NetworkStateManager
 import com.tokopedia.media.picker.utils.internal.ResourceManager
 import com.tokopedia.picker.common.EditorParam
@@ -20,7 +21,6 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isUrl
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PickerViewModel @Inject constructor(
@@ -37,6 +37,9 @@ class PickerViewModel @Inject constructor(
 
     private var _medias = MutableLiveData<List<MediaUiModel>>()
     val medias: LiveData<List<MediaUiModel>> get() = _medias
+
+    private var _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private var _isMediaEmpty = MutableLiveData<Boolean>()
     val isMediaEmpty: LiveData<Boolean> get() = _isMediaEmpty
@@ -98,20 +101,16 @@ class PickerViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch(dispatchers.io) {
-            val mediaUrl = mIncludeMedias
-                .map { file ->
-                    if (file.isUrl()) {
-                        return@map bitmapConverter.convert(file)
-                    } else {
-                        file
-                    }
-                }
+        val result = mIncludeMedias.flattenFilter { it.isUrl() }
 
-            withContext(dispatchers.main) {
-                _includeMedias.value = mediaUrl
+        bitmapConverter.convert(result.first)
+            .flowOn(dispatchers.io)
+            .onStart { _isLoading.value = true }
+            .onCompletion { _isLoading.value = false }
+            .map {
+                _includeMedias.value = it + result.second
             }
-        }
+            .launchIn(viewModelScope)
     }
 
     fun loadMedia(bucketId: Long, start: Int = 0) {

@@ -7,19 +7,31 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.picker.utils.internal.retryOperator
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.utils.image.ImageProcessingUtil
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.io.File
 import javax.inject.Inject
 
 interface BitmapConverterRepository {
     suspend fun convert(url: String): String?
+    fun convert(urls: List<String>): Flow<List<String?>>
 }
 
 class BitmapConverterRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : BitmapConverterRepository {
 
+    override fun convert(urls: List<String>): Flow<List<String?>> {
+        return flow {
+            val convertedUrl = urls.map {
+                convert(it)
+            }
+
+            emit(convertedUrl)
+        }
+    }
+
     override suspend fun convert(url: String): String? {
-        // 1. convert image to bitmap
         var bitmap: Bitmap? = null
 
         retryOperator(retries = 3) {
@@ -34,7 +46,6 @@ class BitmapConverterRepositoryImpl @Inject constructor(
             }
         }
 
-        // 2. bitmap to file
         val file = bitmap?.let {
             ImageProcessingUtil.writeImageToTkpdPath(
                 it,
@@ -53,7 +64,6 @@ class BitmapConverterRepositoryImpl @Inject constructor(
             return newFile.path
         }
 
-        // 4. only if cache file is missing (failed to save bitmap #2)
         return null
     }
 
