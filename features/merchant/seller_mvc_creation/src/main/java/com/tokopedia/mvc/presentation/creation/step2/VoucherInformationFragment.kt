@@ -277,7 +277,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 action.pageMode,
                 action.voucherConfiguration
             )
-            is VoucherCreationStepTwoAction.ShowError -> TODO()
+            is VoucherCreationStepTwoAction.ShowError -> {}
             is VoucherCreationStepTwoAction.ShowCoachmark -> showCoachmark()
         }
     }
