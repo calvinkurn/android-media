@@ -13,7 +13,6 @@ import java.io.File
 import javax.inject.Inject
 
 interface BitmapConverterRepository {
-    suspend fun convert(url: String): String?
     fun convert(urls: List<String>): Flow<List<String?>>
 }
 
@@ -31,7 +30,7 @@ class BitmapConverterRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun convert(url: String): String? {
+    private suspend fun convert(url: String): String? {
         var bitmap: Bitmap? = null
 
         retryOperator(retries = 3) {
