@@ -19,6 +19,10 @@ abstract class BaseMultiFragment : BaseDaggerFragment(), IBaseMultiFragment {
         (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
 
+    override fun getShouldPopBackStackImmediate(): Boolean {
+        return (activity as? BaseMultiFragActivity)?.getShouldPopBackStackImmediately() ?: false
+    }
+
     override fun onResume() {
         super.onResume()
         val actvt = activity

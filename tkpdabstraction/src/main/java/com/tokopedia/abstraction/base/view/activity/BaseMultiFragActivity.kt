@@ -68,6 +68,10 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
         return supportFragmentManager.fragments.count()
     }
 
+    fun getShouldPopBackStackImmediately(): Boolean {
+        return true
+    }
+
     override fun getLayoutRes(): Int {
         return R.layout.activity_multifrag
     }
@@ -293,10 +297,6 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
     private fun getIsNavigatingToSameFragment(destinationFragmentName: String): Boolean {
         val currentFragmentName = supportFragmentManager.fragments.lastOrNull()?.javaClass?.name
         return currentFragmentName == destinationFragmentName
-    }
-
-    private fun getShouldPopBackStackImmediately(): Boolean {
-        return true
     }
 
     private fun Fragment.getFragmentLaunchMode(): BaseMultiFragmentLaunchMode {
