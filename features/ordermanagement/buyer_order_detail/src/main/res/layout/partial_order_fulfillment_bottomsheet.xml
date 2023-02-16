@@ -9,6 +9,8 @@
         android:id="@+id/rvPartialOrderFulfillment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        tools:itemCount="50"
+        app:layout_constrainedHeight="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/viewPofShadow"
         app:layout_constraintStart_toStartOf="parent"
