@@ -110,11 +110,6 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
-    override fun onDestroy() {
-        viewModel.cleanImageCache()
-        super.onDestroy()
-    }
-
     override fun onHeaderActionClick() {
         if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             ActivityCompat.requestPermissions(
@@ -136,8 +131,13 @@ class EditorActivity : BaseEditorActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE && permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            saveImageToGallery()
+        if (permissions.isNotEmpty() && grantResults.isNotEmpty()) {
+            if (
+                requestCode == PERMISSION_REQUEST_CODE &&
+                permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE &&
+                grantResults.first() != -1) {
+                saveImageToGallery()
+            }
         }
     }
 
@@ -152,6 +152,8 @@ class EditorActivity : BaseEditorActivity() {
             )
 
             editorHomeAnalytics.clickUpload()
+
+            viewModel.cleanImageCache()
 
             val intent = Intent()
             intent.putExtra(RESULT_INTENT_EDITOR, result)
