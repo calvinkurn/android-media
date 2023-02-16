@@ -5,8 +5,9 @@ import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.types.ResultState
-import java.time.Duration
-import java.time.ZonedDateTime
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -49,19 +50,26 @@ class CommentUiModelMapper @Inject constructor() {
     }
 
     private fun convertTime(date: String): String {
-        val now = ZonedDateTime.now()
-        val convert = ZonedDateTime.parse(date) //add try catch handle if null / empty
-        val diff = Duration.between(now, convert)
-        val minute = diff.toMinutes()
-        val hour = diff.toHours()
-        val day = diff.toDays()
+        val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+        val diff = DateUtil.getCurrentCalendar().time.time - convert.time
+        val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
+        val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
 
-        return if (minute < 1) "Beberapa detik yang lalu"
-        else if (hour < 1) "23 menit"
-        else if (hour < 24) "2 jam"
-        else if (day in 1..5) "2 hari"
-        else if (day > 5) "28 Agu"
-        else if (day > 90) "Sep 2020"
-        else ""
+        return if (hour < 1) {
+            LESS_THAN_1HOUR
+        } else if (hour < 24) LESS_THAN_1DAY
+        else if (day in 1..5) LESS_THAN_1DAY_5DAY
+        else if (day in 6..89) MORE_THAN_5DAY
+        else if (day > 90) MORE_THAN_90DAY
+        else LESS_THAN_1MIN
+    }
+
+    companion object {
+        private const val LESS_THAN_1MIN = "Beberapa detik yang lalu"
+        private const val LESS_THAN_1HOUR = "23 menit"
+        private const val LESS_THAN_1DAY = "2 jam"
+        private const val LESS_THAN_1DAY_5DAY = "2 hari"
+        private const val MORE_THAN_5DAY = "28 Agu"
+        private const val MORE_THAN_90DAY = "Sep 2020"
     }
 }
