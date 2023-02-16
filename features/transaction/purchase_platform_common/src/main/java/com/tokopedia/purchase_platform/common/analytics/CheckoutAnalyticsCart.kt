@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.analytics
 
 import android.content.Context
+import android.os.Bundle
 import androidx.core.os.bundleOf
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
@@ -936,10 +937,10 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         userId: String,
         bundleId: String,
         bundleType: String,
-        promotions: List<Map<String, Any>>
+        promotions: List<Bundle>
     ) {
         val bundle = bundleOf(
-            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.PROMO_VIEW,
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.VIEW_ITEM,
             ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
             ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.IMPRESSION_BUNDLING_COMPONENT,
             ExtraKey.EVENT_LABEL to "$bundleId - $bundleType",
@@ -949,7 +950,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.PROMOTIONS to promotions,
             ExtraKey.USER_ID to userId
         )
-        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.PROMO_VIEW, bundle)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
     }
 
     // TrackerId: 41254
@@ -959,7 +960,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         bundleType: String
     ) {
         val bundle = bundleOf(
-            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.PROMO_CLICK,
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
             ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
             ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.CLICK_PRODUCT_BUNDLING,
             ExtraKey.EVENT_LABEL to "$bundleId - $bundleType",
@@ -968,7 +969,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_CART_BUNDLING_BOTTOM_SHEET_BUNDLE_WIDGET_ACTION,
             ExtraKey.USER_ID to userId
         )
-        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.PROMO_CLICK, bundle)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.SELECT_CONTENT, bundle)
     }
 
     // Cart Shop Group Ticker

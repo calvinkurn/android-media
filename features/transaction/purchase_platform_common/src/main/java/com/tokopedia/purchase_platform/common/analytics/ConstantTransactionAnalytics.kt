@@ -73,6 +73,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_PP = "clickPP"
         const val VIEW_PP_IRIS = "viewPPIris"
         const val CLICK_CX = "clickCX"
+        const val SELECT_CONTENT = "select_content"
     }
 
     object EventCategory {

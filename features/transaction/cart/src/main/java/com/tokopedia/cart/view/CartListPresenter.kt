@@ -1,5 +1,7 @@
 package com.tokopedia.cart.view
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -1162,12 +1164,13 @@ class CartListPresenter @Inject constructor(
 
     override fun generateCartBundlingPromotionsAnalyticsData(
         bundleDetail: BundleDetailUiModel
-    ): List<Map<String, Any>> {
+    ): List<Bundle> {
         return bundleDetail.products.map {
-            hashMapOf(
+            bundleOf(
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
-                ConstantTransactionAnalytics.Key.DIMENSION40 to ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
+                ConstantTransactionAnalytics.Key.DIMENSION40 to
+                    ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
                 ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
