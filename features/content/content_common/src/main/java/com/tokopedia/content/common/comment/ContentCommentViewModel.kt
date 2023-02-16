@@ -41,12 +41,14 @@ class ContentCommentViewModel @AssistedInject constructor(
             _query.distinctUntilChanged { old, new ->
                 old == new
             }.collectLatest {
-                if (it.needToRefresh) getComment(it)
+                getComment(it)
             }
         }
     }
 
     private fun getComment(param: CommentParam) {
+        if (!param.needToRefresh) return
+
         fun handleParent() {
             viewModelScope.launchCatchError(block = {
                 val result = repo.getComments(
