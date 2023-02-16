@@ -10,4 +10,5 @@ interface IBaseMultiFragment {
 
     fun navigateToNewFragment(fragment: Fragment)
     fun onResume()
+    fun getShouldPopBackStackImmediate(): Boolean
 }
