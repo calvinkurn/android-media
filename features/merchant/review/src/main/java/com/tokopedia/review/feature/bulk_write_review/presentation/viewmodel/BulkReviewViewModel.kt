@@ -292,6 +292,9 @@ class BulkReviewViewModel @Inject constructor(
     private val _expandedTextAreaToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
     val expandedTextAreaToasterQueue: Flow<CreateReviewToasterUiModel<Any>>
         get() = _expandedTextAreaToasterQueue
+    private val _badRatingCategoryBottomSheetToasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
+    val badRatingCategoryBottomSheetToasterQueue: Flow<CreateReviewToasterUiModel<Any>>
+        get() = _badRatingCategoryBottomSheetToasterQueue
     val bulkReviewPageUiState = combine(
         shouldCancelBulkReview,
         shouldSubmitReview,
@@ -760,6 +763,15 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onToasterCtaClicked(data: CreateReviewToasterUiModel<Any>) {
         bulkReviewToasterCtaKeyEvents.tryEmit(data)
+    }
+
+    fun onDismissBadRatingCategoryBottomSheet() {
+        val uiState = _badRatingCategoryBottomSheetUiState.value
+        if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
+            if (uiState.badRatingCategories.none { it.selected }) {
+                enqueueToasterErrorNoBadRatingCategoryReasonSelected()
+            }
+        }
     }
 
     private fun mapMediaItems(
@@ -1248,6 +1260,18 @@ class BulkReviewViewModel @Inject constructor(
         _bulkReviewPageToasterQueue.tryEmit(
             CreateReviewToasterUiModel(
                 message = ResourceProvider.getMessageReviewItemPartiallySubmitted(),
+                actionText = ResourceProvider.getCtaOke(),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
+            )
+        )
+    }
+
+    private fun enqueueToasterErrorNoBadRatingCategoryReasonSelected() {
+        _badRatingCategoryBottomSheetToasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = ResourceProvider.getMessageBadRatingReasonReasonMustBeSelected(),
                 actionText = ResourceProvider.getCtaOke(),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR,
