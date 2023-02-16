@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingBinding
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.common.ProductServiceWidgetConstant
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
@@ -53,6 +54,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutBottomsheetCartBundlingBinding>()
     private var listener: CartBundlingBottomSheetListener? = null
+    private var data: CartBundlingBottomSheetData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,18 +62,17 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
 
-        val data = arguments?.getParcelable<CartBundlingBottomSheetData>(KEY_DATA)
-        if (data != null) {
-            renderContent(data)
-        } else {
-            dismiss()
-        }
+        data = arguments?.getParcelable(KEY_DATA)
+        data?.let {
+            renderContent(it)
+        } ?: dismiss()
     }
 
     private fun renderContent(data: CartBundlingBottomSheetData) {
         setTitle(data.title)
         context?.let {
             binding?.descriptionLabel?.text = HtmlLinkHelper(it, data.description).spannedString
+            binding?.descriptionLabel?.visible()
         }
         val bundleParam = GetBundleParamBuilder()
             .setBundleId(data.bundleIds)
@@ -138,8 +139,27 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
                 super.impressionSingleBundle(selectedBundle, selectedProduct, bundleName)
                 listener?.impressionSingleBundle(selectedBundle)
             }
+
+            override fun onError(it: Throwable) {
+                renderError()
+            }
         })
         binding?.productBundleWidget?.getBundleData(bundleParam)
+        binding?.productBundleWidget?.visible()
+        binding?.layoutGlobalError?.gone()
+    }
+
+    private fun renderError() {
+        binding?.descriptionLabel?.gone()
+        binding?.productBundleWidget?.gone()
+        binding?.cardBottomTicker?.gone()
+        binding?.layoutGlobalError?.setType(GlobalError.SERVER_ERROR)
+        binding?.layoutGlobalError?.setActionClickListener {
+            data?.let {
+                renderContent(it)
+            } ?: dismiss()
+        }
+        binding?.layoutGlobalError?.visible()
     }
 
     fun setListener(listener: CartBundlingBottomSheetListener) {
