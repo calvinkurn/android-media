@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.fragment.app.FragmentFactory
@@ -285,6 +287,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             }
 
             eventBus.notifyDataOnChangedEvent(fileToUiModel)
+        }
+
+        viewModel.connectionIssue.observe(this) { message ->
+            onShowToaster(message, Toaster.TYPE_ERROR)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                finish()
+            }, TOAST_DELAYED)
         }
     }
 
@@ -568,6 +578,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
 
         private const val BYTES_TO_MB = 1000000
+        private const val TOAST_DELAYED = 3000L
         private const val MILLIS_TO_SEC = 1000
     }
 

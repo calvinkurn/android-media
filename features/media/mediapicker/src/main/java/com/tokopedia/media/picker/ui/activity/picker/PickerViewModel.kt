@@ -2,17 +2,20 @@ package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.media.R
 import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
+import com.tokopedia.media.picker.ui.publisher.EventState
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.utils.internal.NetworkStateManager
+import com.tokopedia.media.picker.utils.internal.ResourceManager
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
-import com.tokopedia.media.picker.ui.publisher.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isUrl
 import kotlinx.coroutines.flow.*
@@ -26,6 +29,8 @@ class PickerViewModel @Inject constructor(
     private val bitmapConverter: BitmapConverterRepository,
     private val param: PickerCacheManager,
     private val featureToggle: FeatureToggleManager,
+    private val networkState: NetworkStateManager,
+    private val resources: ResourceManager,
     private val dispatchers: CoroutineDispatchers,
     private val eventBus: PickerEventBus
 ) : ViewModel() {
@@ -47,6 +52,9 @@ class PickerViewModel @Inject constructor(
 
     private var _editorParam = MutableLiveData<Pair<PickerResult, EditorParam>>()
     val editorParam: LiveData<Pair<PickerResult, EditorParam>> get() = _editorParam
+
+    private var _connectionIssue = MediatorLiveData<String>()
+    val connectionIssue: LiveData<String> get() = _connectionIssue
 
     val uiEvent: Flow<EventState>
         get() {
@@ -82,17 +90,26 @@ class PickerViewModel @Inject constructor(
         val mIncludeMedias = param.includeMedias()
         if (mIncludeMedias.isEmpty()) return
 
+        if (networkState.isNetworkConnected().not()) {
+            _connectionIssue.value = resources.string(
+                R.string.picker_include_medias_connection_error
+            )
+
+            return
+        }
+
         viewModelScope.launch(dispatchers.io) {
-            val mappedMedias = mIncludeMedias.map {
-                if (it.isUrl()) {
-                    return@map bitmapConverter.convert(it)
+            val mediaUrl = mIncludeMedias
+                .map { file ->
+                    if (file.isUrl()) {
+                        return@map bitmapConverter.convert(file)
+                    } else {
+                        file
+                    }
                 }
 
-                it
-            }
-
             withContext(dispatchers.main) {
-                _includeMedias.value = mappedMedias
+                _includeMedias.value = mediaUrl
             }
         }
     }

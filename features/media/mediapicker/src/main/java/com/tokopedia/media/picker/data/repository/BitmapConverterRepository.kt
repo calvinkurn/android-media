@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.media.picker.utils.internal.retryOperator
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
@@ -19,13 +20,27 @@ class BitmapConverterRepositoryImpl @Inject constructor(
 
     override suspend fun convert(url: String): String? {
         // 1. convert image to bitmap
-        val bitmap = urlToBitmap(url)?: return null
+        var bitmap: Bitmap? = null
+
+        retryOperator(retries = 3) {
+            try {
+                val result = urlToBitmap(url)
+
+                if (result != null) {
+                    bitmap = result
+                }
+            } catch (ignored: Throwable) {
+                operationFailed()
+            }
+        }
 
         // 2. bitmap to file
-        val file = ImageProcessingUtil.writeImageToTkpdPath(
-            bitmap,
-            Bitmap.CompressFormat.JPEG
-        )
+        val file = bitmap?.let {
+            ImageProcessingUtil.writeImageToTkpdPath(
+                it,
+                Bitmap.CompressFormat.JPEG
+            )
+        }
 
         file?.let {
             val fileName = getFileName(it.path)
