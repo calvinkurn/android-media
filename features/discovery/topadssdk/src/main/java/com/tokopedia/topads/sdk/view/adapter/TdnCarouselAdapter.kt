@@ -25,12 +25,13 @@ import timber.log.Timber
 class TdnCarouselAdapter(
     private val onTdnBannerClicked: (applink: String) -> Unit,
     private val cornerRadius: Int,
+    private val isUsingInfiniteScroll: Boolean,
     private val onLoadFailed: () -> Unit,
     private val onTdnBannerImpressed: () -> Unit
 ) : RecyclerView.Adapter<TdnCarouselAdapter.TdnCarouselViewHolder>() {
 
     private val shopAdsProductItemList = arrayListOf<TopAdsImageViewModel>()
-    private var recyclerView:RecyclerView?= null
+    private var recyclerView: RecyclerView? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -44,18 +45,17 @@ class TdnCarouselAdapter(
     }
 
     override fun onBindViewHolder(holder: TdnCarouselViewHolder, position: Int) {
-        holder.bind(shopAdsProductItemList[position])
+        if (shopAdsProductItemList.isNotEmpty()) holder.bind(shopAdsProductItemList[position % shopAdsProductItemList.size])
     }
 
     override fun getItemCount(): Int {
-        return shopAdsProductItemList.count()
+        return if (isUsingInfiniteScroll && shopAdsProductItemList.size > Int.ONE) Integer.MAX_VALUE else shopAdsProductItemList.size
     }
 
     fun setList(list: List<TopAdsImageViewModel>) {
         shopAdsProductItemList.clear()
         shopAdsProductItemList.addAll(list)
         notifyDataSetChanged()
-
     }
 
     inner class TdnCarouselViewHolder(
@@ -117,8 +117,11 @@ class TdnCarouselAdapter(
         ) {
             if (!imageData.imageUrl.isNullOrEmpty()) {
                 val width = itemView.context.resources.displayMetrics.widthPixels
-                val calculatedWidth = if (imageData.layoutType == TYPE_VERTICAL_CAROUSEL)
-                    widthVerticalCarousel(width) else widthHorizontalCarousel(width)
+                val calculatedWidth = if (imageData.layoutType == TYPE_VERTICAL_CAROUSEL) {
+                    widthVerticalCarousel(width)
+                } else {
+                    widthHorizontalCarousel(width)
+                }
                 getRequestBuilder(imageData.imageUrl, cornerRadius).override(
                     calculatedWidth,
                     getHeight(imageData.imageWidth, imageData.imageHeight, calculatedWidth)
@@ -144,7 +147,7 @@ class TdnCarouselAdapter(
                             isFirstResource: Boolean
                         ): Boolean {
                             recordImpression(imageData, onTdnBannerImpressed)
-                            recyclerView?.smoothScrollBy(Int.ONE,Int.ONE)
+                            if (!isUsingInfiniteScroll) recyclerView?.smoothScrollBy(Int.ONE, Int.ONE)
                             Timber.d("TDN Banner is loaded successfully")
 
                             tdnShimmer.hide()
@@ -158,7 +161,6 @@ class TdnCarouselAdapter(
             } else {
                 tdnBanner.hide()
             }
-
         }
 
         private fun widthHorizontalCarousel(width: Int): Int {
@@ -209,7 +211,6 @@ class TdnCarouselAdapter(
                 Glide.with(itemView.context)
                     .load(imageUrl)
                     .fitCenter()
-
             }
         }
 
@@ -218,11 +219,9 @@ class TdnCarouselAdapter(
             val widthRatio = deviceWidth / width.toFloat()
             return (widthRatio * height).toInt()
         }
-
     }
 
     private fun widthVerticalCarousel(width: Int): Int {
-        return (width/2.8).toInt()
+        return (width / 2.8).toInt()
     }
-
 }
