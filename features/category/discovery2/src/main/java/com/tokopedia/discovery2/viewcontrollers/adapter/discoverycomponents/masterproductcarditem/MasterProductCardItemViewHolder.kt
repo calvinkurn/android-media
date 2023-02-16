@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
+import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -154,12 +155,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun populateData(productCardModel: ProductCardModel) {
         if (productCardName == ComponentNames.ProductCardCarouselItem.componentName
-                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
-            productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
+                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
+            || productCardName == ComponentNames.ProductCardCarouselItemList.componentName) {
             masterProductCardGridView?.let {
+                productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
                 it.applyCarousel()
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            masterProductCardListView?.let {
+                it.applyCarousel()
+                productCardView.layoutParams?.width = Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_70)
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
         } else {
             setProductViewDimens()
