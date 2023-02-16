@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.analytics;
 import static com.tokopedia.kyc_centralized.common.KYCConstant.CO_BRAND_PROJECT_ID;
 import static com.tokopedia.kyc_centralized.common.KYCConstant.GO_CICIL_PROJECT_ID;
 import static com.tokopedia.kyc_centralized.common.KYCConstant.HOME_CREDIT_PROJECT_ID;
+import static com.tokopedia.kyc_centralized.common.KYCConstant.OFFICIAL_STORE_PROJECT_ID;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -550,7 +551,8 @@ public class UserIdentificationCommonAnalytics {
         if (
             projectID.equals(HOME_CREDIT_PROJECT_ID) ||
             projectID.equals(CO_BRAND_PROJECT_ID) ||
-            projectID.equals(GO_CICIL_PROJECT_ID)
+            projectID.equals(GO_CICIL_PROJECT_ID) ||
+            projectID.equals(OFFICIAL_STORE_PROJECT_ID)
         ) {
             return TYPE_ALA_CARTE;
         } else {

@@ -94,6 +94,4 @@
     <string name="whitelabel_onboarding_title_coachmark">Pilih tipe kurir yang kamu inginkan</string>
     <string name="whitelabel_onboarding_description_coachmark">Saat memilih kurir, kamu bisa lihat detail informasi untuk mengecek tipe kurir apa saja yang tersedia.</string>
     <string name="img_courier_content_description">placeholder courier logo</string>
-
-    <string name="maps_preview_unavailable_ticker_desc">Yaah, perangkat kamu belum bisa pinpoint. Tenang, kamu bisa atur di perangkat lain, pakai alamat lain yang sudah pinpoint, atau lanjutkan transaksi dengan kurir selain instan/same day.</string>
 </resources>

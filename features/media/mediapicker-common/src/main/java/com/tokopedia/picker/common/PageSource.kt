@@ -23,5 +23,15 @@ enum class PageSource(val value: String) {
     FlightCancellationReason("Flight Cancellation Reason"),
     Epharmacy("Epharmacy"),
     PlayShorts("Play Shorts"),
-    Unknown("")
+    AddLogo("Add Logo"),
+    WebView("WebView"),
+    Unknown("");
+
+    companion object {
+        private val map = values().associateBy(PageSource::value)
+
+        fun fromString(value: String): PageSource {
+            return map[value] ?: Unknown
+        }
+    }
 }

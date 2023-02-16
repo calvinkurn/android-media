@@ -1,30 +1,40 @@
 package com.tokopedia.topchat.common.websocket
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.Session
 import com.tokopedia.network.authentication.AuthHelper.Companion.getUserAgent
 import com.tokopedia.url.TokopediaUrl
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
+import okhttp3.*
 import javax.inject.Inject
 
 class DefaultTopChatWebSocket @Inject constructor(
+    @ApplicationContext context: Context,
     private val okHttpClient: OkHttpClient,
     private val webSocketUrl: String,
     private val token: String,
     private val page: String,
-    private val irisSession: Session
+    private val irisSession: Session,
+    webSocketParser: WebSocketParser
 ) : TopchatWebSocket {
 
     var webSocket: WebSocket? = null
     private var isDestroyed = false
 
+    private val webSocketListener = DebugWebSocketLogListener(
+        context,
+        webSocketParser,
+        page
+    )
+
     override fun connectWebSocket(listener: WebSocketListener) {
         if (isDestroyed) return
-        val request = generateWsRequest()
-        webSocket = okHttpClient.newWebSocket(request, listener)
+
+        webSocket = okHttpClient.newWebSocket(
+            generateWsRequest(),
+            webSocketListener.build(listener)
+        )
     }
 
     override fun close() {

@@ -12,7 +12,8 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
 class PlatformFeeInfoViewHolder(
-    itemView: View?, private val navigator: BuyerOrderDetailNavigator
+    itemView: View?,
+    private val navigator: BuyerOrderDetailNavigator
 ) : AbstractViewHolder<PlatformFeeInfoUiModel>(itemView) {
 
     companion object {
@@ -34,7 +35,8 @@ class PlatformFeeInfoViewHolder(
     private fun ItemBuyerOrderDetailPlatformFeeInfoBinding.bindPlatformFeeInfoText(text: StringRes) {
         tvBuyerOrderDetailPlatformFeeInfo.movementMethod = LinkMovementMethod.getInstance()
         tvBuyerOrderDetailPlatformFeeInfo.text = HtmlLinkHelper(
-            root.context, text.getString(root.context)
+            context = root.context,
+            htmlString = text.getStringValue(root.context)
         ).attachLinkClickListener().spannedString
     }
 

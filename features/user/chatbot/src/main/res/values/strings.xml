@@ -57,7 +57,7 @@
     <string name="chatbot_text_for_no_transaction_found">Transaksi yang berkendala tidak ada di daftar pilihan.</string>
     <string name="chatbot_action_text_for_no_transaction_found">transaction_not_listed</string>
     <string name="chatbot_float_invoice_input_length_zero">"Ketik pesan dulu sebelum kirim chat, ya."</string>
-    <string name="reply_bs_balas">Balas</string>
+    <string name="chatbot_bottomsheet_reply">Balas</string>
     <string name="chatbot_reply_bubble_onboarding_title">Sekarang bisa langsung balas chat</string>
     <string name="chatbot_reply_bubble_onboarding_description">Tinggal tekan dan tahan chat yang mau kamu balas, lalu pilih Balas. Selamat mencoba!</string>
     <string name="chatbot_reply_bubble_bottomsheet_title">Pengaturan pesan</string>
@@ -75,7 +75,8 @@
     <string name="chatbot_video_upload_onboarding_description">Klik ikon (+) dan pilih 1 atau lebih video kamu. Pastikan ukurannya &#60;800MB per video, ya.</string>
     <string name="chatbot_csat_ok">Kirim</string>
     <string name="chatbot_csat_opsional"> (Opsional)</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="chatbot_bottomsheet_copy">Salin</string>
+    <string name="chatbot_bottomsheet_copy_success_toaster">Pesan berhasil disalin</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="chatbot_back_to_tokopedia_care">Kembali ke Tokopedia Care</string>
     <string name="chatbot_retry_get_data">Coba lagi</string>

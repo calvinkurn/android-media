@@ -41,18 +41,19 @@
                 tools:visibility="visible">
 
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_quick_reply"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_chatbot_3"
-                    android:background="@color/chatbot_dms_quick_reply_bg"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="8dp"
-                    android:visibility="gone"
-                    tools:itemCount="1"
-                    tools:listitem="@layout/chatbot_item_quick_reply"
-                    tools:visibility="visible" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_quick_reply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:background="@color/chatbot_dms_quick_reply_bg"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:visibility="gone"
+                tools:itemCount="1"
+                android:paddingBottom="8dp"
+                tools:listitem="@layout/chatbot_item_quick_reply"
+                tools:visibility="visible" />
 
                 <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
                     android:layout_width="match_parent"
@@ -151,13 +152,14 @@
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/unify_space_8">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:descendantFocusability="beforeDescendants"
-                android:scrollbars="vertical" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"
+            android:descendantFocusability="beforeDescendants"
+            android:scrollbars="vertical" />
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

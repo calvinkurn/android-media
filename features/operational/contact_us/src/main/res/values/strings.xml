@@ -90,7 +90,7 @@
     <string name="helped_with_this_answer">Terbantu dengan jawaban ini?</string>
     <string name="balas">Balas</string>
     <string name="service_priorities_officialstore_desc">Kami akan utamakan &amp; selesaikan kendala terkait Official Store dengan lebih cepat. \n<b>Pelajari Selengkapnya</b></string>
-    <string name="tv_service_priorities_officialstore" >Layanan Prioritas Official Store</string>
+    <string name="tv_service_priorities_officialstore">Layanan Prioritas Official Store</string>
     <string name="learn_more_link">https://www.tokopedia.com/help/article/a-0827?refid=st-1109</string>
     <string name="layanan_prioritas">Layanan Prioritas</string>
     <string name="contact_us_minimum_length_error_text">Pesan terlalu pendek, minimum 15 karakter</string>
@@ -171,5 +171,8 @@
     <string name="contact_us_priority_image">priority </string>
     <string name="contact_us_post_item">post item</string>
     <string name="contact_us_reply_button_gradient">gradient</string>
+
+    <string name="contact_us_ok">OK</string>
+    <string name="contact_us_failed">Terimakasih telah berusaha memberitahu kami, silahkan mencoba kembali</string>
 
 </resources>
