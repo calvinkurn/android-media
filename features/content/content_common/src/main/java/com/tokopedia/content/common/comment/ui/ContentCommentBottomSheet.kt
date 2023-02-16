@@ -20,6 +20,7 @@ import com.tokopedia.content.common.comment.ContentCommentViewModel
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.types.ResultState
 import kotlinx.coroutines.flow.collectLatest
@@ -54,7 +55,7 @@ class ContentCommentBottomSheet @Inject constructor(
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvComment.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                //TODO("Not yet implemented")
+                viewModel.submitAction(CommentAction.LoadNextPage(CommentType.Parent))
             }
         }
     }
