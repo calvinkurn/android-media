@@ -560,15 +560,25 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             }
             socialProof {
                 socialProofType
+                socialProofID
                 title
                 subtitle
                 icon
-                eduLink {
+                applink {
                     appLink
-                    webLink {
-                        action
-                        query
-                    }
+                }
+            }
+            reviewList {
+                title
+                applink
+                applinkTitle
+                data {
+                    userImage
+                    userName
+                    userTitle
+                    userSubtitle
+                    reviewText 
+                    applink
                 }
             }
           }
