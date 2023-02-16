@@ -422,7 +422,6 @@ class NewShopPageFragment :
     private val isLogin: Boolean
         get() = shopViewModel?.isUserSessionActive ?: false
 
-    private val feedShopFragmentClassName = Class.forName(FEED_SHOP_FRAGMENT)
     private var isConfettiAlreadyShown = false
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -602,7 +601,7 @@ class NewShopPageFragment :
                 val intent = SellerMigrationActivity.createIntent(
                     context = requireContext(),
                     featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                    screenName = feedShopFragmentClassName.simpleName.orEmpty(),
+                    screenName = getFeedTabFragmentClassName()?.simpleName.orEmpty(),
                     appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed)
                 )
                 startActivity(intent)
@@ -1775,15 +1774,17 @@ class NewShopPageFragment :
                     sendShopPageTabImpressionTracker()
                 }
                 if (isSellerMigrationEnabled(context)) {
-                    if (isMyShop && viewPagerAdapter?.isFragmentObjectExists(feedShopFragmentClassName) == true) {
-                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(feedShopFragmentClassName)
-                        if (position == tabFeedPosition) {
-                            showBottomSheetSellerMigration()
+                    getFeedTabFragmentClassName()?.let {
+                        if (isMyShop && viewPagerAdapter?.isFragmentObjectExists(it) == true) {
+                            val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(it)
+                            if (position == tabFeedPosition) {
+                                showBottomSheetSellerMigration()
+                            } else {
+                                hideBottomSheetSellerMigration()
+                            }
                         } else {
                             hideBottomSheetSellerMigration()
                         }
-                    } else {
-                        hideBottomSheetSellerMigration()
                     }
                 }
                 hideScrollToTopButton()
@@ -1828,27 +1829,25 @@ class NewShopPageFragment :
     private fun getSelectedDynamicTabPosition(): Int {
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount.isZero()) {
-            if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed) {
-                when {
+            if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed || shouldOverrideTabToReview) {
+                val overrideTabName = when {
                     shouldOverrideTabToHome -> {
-                        ShopPageHomeFragment::class.java
+                        ShopPageTabName.HOME
                     }
                     shouldOverrideTabToProduct -> {
-                        ShopPageProductListFragment::class.java
+                        ShopPageTabName.PRODUCT
                     }
                     shouldOverrideTabToFeed -> {
-                        feedShopFragmentClassName
+                        ShopPageTabName.FEED
+                    }
+                    shouldOverrideTabToReview -> {
+                        ShopPageTabName.REVIEW
                     }
                     else -> {
-                        null
-                    }
-                }?.let {
-                    selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(it) == true) {
-                        viewPagerAdapter?.getFragmentPosition(it).orZero()
-                    } else {
-                        selectedPosition
+                        ""
                     }
                 }
+                selectedPosition = getTabPositionBasedOnTabName(overrideTabName)
             } else {
                 val selectedTabData = listShopPageTabModel.firstOrNull {
                     it.isFocus
@@ -1863,6 +1862,14 @@ class NewShopPageFragment :
             }
         }
         return selectedPosition
+    }
+
+    private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
+        return listShopPageTabModel.indexOfFirst {
+            it.tabTitle == overrideTabName
+        }.takeIf {
+            it >= Int.ZERO
+        } ?: Int.ZERO
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
@@ -2102,9 +2109,9 @@ class NewShopPageFragment :
         }
     }
 
-    private fun getReviewTabFragmentClassName(): Class<*>? {
+    private fun getFeedTabFragmentClassName(): Class<*>? {
         return try {
-            Class.forName(SHOP_REVIEW_FRAGMENT)
+            Class.forName(FEED_SHOP_FRAGMENT)
         } catch (e: Exception) {
             null
         }
