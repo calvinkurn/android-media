@@ -21,5 +21,8 @@ data class UserLocationRequest(
         val latlon: String = "",
         @SerializedName("cityID")
         @Expose
-        val cityId: String = ""
+        val cityId: String = "",
+        @SerializedName("addressName")
+        @Expose
+        val addressName: String = ""
 )
