@@ -191,7 +191,7 @@ class MvcListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
-        viewModel.setFilterStatus(ApplinkFilterStatus.getById(statusFilter))
+        setupInitialFilter()
         binding?.setupView()
         setEduCenterBottomSheet()
         setupStopConfirmationDialog()
@@ -573,6 +573,14 @@ class MvcListFragment :
         showMoreMenuBottomSheet(voucher, title, pageSource = OtherPeriodBottomSheet::class.java.simpleName)
     }
 
+    private fun setupInitialFilter() {
+        viewModel.setFilterStatus(ApplinkFilterStatus.getById(statusFilter))
+        context?.getString(viewModel.getSelectedStatusText())?.let {
+            filterItemStatus.selectedItem = arrayListOf(it)
+            filterItemStatus.title = it
+        }
+    }
+
     private fun setupObservables() {
         viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
             val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
@@ -739,7 +747,6 @@ class MvcListFragment :
         filterList.addAll(quickFilterItems)
         addItem(filterList)
         parentListener = {
-            filterItemStatus.selectedItem = arrayListOf()
             val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")

@@ -9,7 +9,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SummaryPageTracker @Inject constructor(private val userSession: UserSessionInterface) {
-    
+
     companion object {
         private const val EC_CREATION_SUCCESS = "kupon toko saya - creation success"
         private const val EC_CREATION_PROCESS = "kupon toko saya - creation"
@@ -77,12 +77,12 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
 
-    fun sendClickBuatKuponEvent(voucherId: String) {
+    fun sendClickBuatKuponEvent() {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click buat kupon")
             .setEventCategory(EC_CREATION_PROCESS)
-            .setEventLabel(getEventLavel(voucherId, ""))
+            .setEventLabel(getEventLavel("", ""))
             .setCustomProperty(TRACKER_ID, "39423")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
