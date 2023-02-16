@@ -26,9 +26,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 class CartBundlingBottomSheet : BottomSheetUnify() {
 
@@ -122,21 +119,13 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         binding?.descriptionLabel?.gone()
         binding?.productBundleWidget?.gone()
         binding?.cardBottomTicker?.gone()
-        binding?.layoutGlobalError?.setType(getGlobalErrorType(throwable))
+        binding?.layoutGlobalError?.setType(GlobalError.SERVER_ERROR)
         binding?.layoutGlobalError?.setActionClickListener {
             data?.let {
                 renderContent(it)
             } ?: dismiss()
         }
         binding?.layoutGlobalError?.visible()
-    }
-
-    private fun getGlobalErrorType(throwable: Throwable): Int {
-        return if (throwable is UnknownHostException || throwable is SocketTimeoutException || throwable is ConnectException) {
-            GlobalError.NO_CONNECTION
-        } else {
-            GlobalError.SERVER_ERROR
-        }
     }
 
     fun setListener(listener: CartBundlingBottomSheetListener) {
