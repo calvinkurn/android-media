@@ -177,4 +177,9 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             listener?.onNewBundleProductAddedToCart()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listener = null
+    }
 }
