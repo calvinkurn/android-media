@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/searchTopBar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
     android:gravity="center_vertical"
+    android:minHeight="?attr/actionBarSize"
     android:orientation="horizontal"
     android:paddingTop="4dp"
-    android:paddingBottom="4dp">
+    android:paddingBottom="4dp"
+    tools:layout_height="56dp"
+    tools:ignore="RtlHardcoded">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/autocompleteActionUpButton"
@@ -24,7 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <com.tokopedia.autocompletecomponent.widget.SearchBarEditText
         android:id="@+id/searchTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -88,7 +91,7 @@
         app:icon_enable_state="true"
         app:icon_name="MICROPHONE"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
-        app:layout_constraintRight_toRightOf="@id/searchTextView"
+        app:layout_constraintRight_toLeftOf="@+id/autocompleteAddButtonBarrier"
         app:layout_constraintTop_toTopOf="@id/searchTextView"
         tools:visibility="visible" />
 
@@ -111,8 +114,8 @@
         android:id="@+id/autocompleteButtonDivider"
         android:layout_width="1dp"
         android:layout_height="20dp"
-        android:background="@color/Unify_NN300"
         android:layout_marginRight="2dp"
+        android:background="@color/Unify_NN300"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
         app:layout_constraintRight_toLeftOf="@id/autocompleteAddButton"
@@ -126,10 +129,10 @@
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_N500"
         app:icon_enable_state="true"
-        app:srcCompat="@drawable/autocomplete_ic_add_animated"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
         app:layout_constraintRight_toRightOf="@id/searchTextView"
-        app:layout_constraintTop_toTopOf="@id/searchTextView"/>
+        app:layout_constraintTop_toTopOf="@id/searchTextView"
+        app:srcCompat="@drawable/autocomplete_ic_add_animated" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/actionCancelButton"

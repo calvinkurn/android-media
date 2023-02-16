@@ -20,6 +20,7 @@ object InitialStateRequestUtils {
     const val INITIAL_STATE_QUERY = """
         query universe_initial_state(${'$'}params: String!){
           universe_initial_state(param: ${'$'}params) {
+            is_mps
             data{
               id
               header
@@ -59,18 +60,17 @@ object InitialStateRequestUtils {
         val userId = userSession.userId
         val uniqueId = getUniqueId(userId, registrationId)
 
-        val params = RequestParams.create()
-        params.putAll(searchParameter)
+        return RequestParams.create().apply {
+            putAll(searchParameter)
 
-        params.putString(DEVICE, DEFAULT_VALUE_OF_PARAMETER_DEVICE)
-        params.putString(SOURCE, SEARCHBAR)
-        params.putString(KEY_COUNT, DEFAULT_COUNT)
-        params.putString(USER_ID, userId)
-        params.putString(UNIQUE_ID, uniqueId)
-        params.putString(DEVICE_ID, registrationId)
-        params.putChooseAddressParams(chooseAddressData)
-
-        return params
+            putString(DEVICE, DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+            putString(SOURCE, SEARCHBAR)
+            putString(KEY_COUNT, DEFAULT_COUNT)
+            putString(USER_ID, userId)
+            putString(UNIQUE_ID, uniqueId)
+            putString(DEVICE_ID, registrationId)
+            putChooseAddressParams(chooseAddressData)
+        }
     }
 
     private fun getUniqueId(userId: String, registrationId: String) =

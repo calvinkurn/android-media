@@ -15,6 +15,7 @@ import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialSt
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.convertToDynamicInitialStateSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.convertToPopularSearchDataView
@@ -115,7 +116,9 @@ class InitialStatePresenter @Inject constructor(
 
         listVisitable = getInitialStateResult(initialStateDataView.list)
 
-        view?.showInitialStateResult(listVisitable)
+        val view = view ?: return
+        view.showInitialStateResult(listVisitable)
+        if (initialStateUniverse.isMps) view.enableMps() else view.disableMps()
     }
 
     private fun <E: Any, T: Collection<E>> T.withNotEmpty(func: T.() -> Unit): Unit {
@@ -268,6 +271,15 @@ class InitialStatePresenter @Inject constructor(
                 }
                 InitialStateData.INITIAL_STATE_SEARCHBAR_EDUCATION -> {
                     initialStateData.convertToSearchBarEducationDataView(
+                        getDimension90(),
+                        keyword,
+                    )?.let {
+                        data.add(it)
+                    }
+                }
+                InitialStateData.INITIAL_STATE_MPS -> {
+                    MpsDataView.create(
+                        initialStateData,
                         getDimension90(),
                         keyword,
                     )?.let {

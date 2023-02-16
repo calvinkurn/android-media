@@ -1,28 +1,44 @@
 package com.tokopedia.autocompletecomponent
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.text.Editable
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking
+import com.tokopedia.autocompletecomponent.di.AutoCompleteComponent
+import com.tokopedia.autocompletecomponent.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateFragment
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateFragment.Companion.INITIAL_STATE_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateFragment.InitialStateViewUpdateListener
 import com.tokopedia.autocompletecomponent.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateViewListenerModule
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordAdapter
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordItemDecoration
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordListener
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarMpsState
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarView
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Companion.SUGGESTION_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener
@@ -34,6 +50,8 @@ import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.removeKeys
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
@@ -44,13 +62,18 @@ import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import javax.inject.Inject
 
 open class BaseAutoCompleteActivity: BaseActivity(),
     SearchBarView.OnQueryTextListener,
     SuggestionViewUpdateListener,
-    InitialStateViewUpdateListener {
+    InitialStateViewUpdateListener,
+    SearchBarKeywordListener,
+    SearchBarView.SearchBarViewListener {
 
     private val searchBarView by lazy {
         findViewById<SearchBarView?>(R.id.autocompleteSearchBar)
@@ -61,41 +84,90 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private val initialStateContainer by lazy {
         findViewById<ViewGroup?>(R.id.search_initial_state_container)
     }
+    private val rvSearchBarKeyword by lazy {
+        findViewById<RecyclerView>(R.id.rv_keyword_chips)
+    }
+    private val container by lazy {
+        findViewById<View>(R.id.activity_container)
+    }
+
+    var viewModelFactory: ViewModelProvider.Factory? = null
+        @Inject set
+
+    private val viewModel: SearchBarViewModel? by lazy {
+        viewModelFactory?.let {
+            ViewModelProvider(this, it).get()
+        }
+    }
+
+    protected val autoCompleteComponent: AutoCompleteComponent by lazy {
+        createAutoCompleteComponent()
+    }
 
     private lateinit var searchParameter: SearchParameter
     private lateinit var autoCompleteTracking: AutoCompleteTracking
 
+    private var searchBarKeywordAdapter: SearchBarKeywordAdapter? = null
+
+    private var coachMark: CoachMark2? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(0, 0)
+        initInjector()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auto_complete)
 
-        init()
+        init(savedInstanceState)
 
         sendTracking()
     }
 
-    private fun init() {
-        initSearchParameter()
+    private fun init(savedInstanceState: Bundle?) {
+        initSearchParameter(savedInstanceState)
         initTracking()
         initViews()
+        initObservers()
     }
 
-    private fun initSearchParameter() {
-        this.searchParameter = getSearchParameterFromIntent()
+    private fun initSearchParameter(savedInstanceState: Bundle?) {
+        this.searchParameter = getSearchParameterFromIntent(savedInstanceState)
+        if(savedInstanceState != null) {
+            restoreViewModelSavedInstanceState(savedInstanceState)
+        }
     }
 
-    private fun getSearchParameterFromIntent(): SearchParameter {
+    private fun restoreViewModelSavedInstanceState(savedInstanceState: Bundle) {
+        val searchBarKeyword = getSearchBarKeyword(savedInstanceState)
+        viewModel?.restoreSearchParameter(searchParameter, searchBarKeyword)
+        val isIconPlusCoachMarkAlreadyDisplayed = savedInstanceState.getBoolean(KEY_ICON_PLUS_COACH_MARK_DISPLAYED, false)
+        if(isIconPlusCoachMarkAlreadyDisplayed) viewModel?.markCoachMarkIconPlusAlreadyDisplayed()
+        val isKeywordAddedCoachMarkAlreadyDisplayed = savedInstanceState.getBoolean(KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED, false)
+        if(isKeywordAddedCoachMarkAlreadyDisplayed) viewModel?.markCoachMarkKeywordAddedAlreadyDisplayed()
+    }
+
+    private fun getSearchParameterFromIntent(savedInstanceState: Bundle?): SearchParameter {
         val uri = intent?.data
 
-        val searchParameter = if (uri == null) SearchParameter()
-        else SearchParameter(uri.toString())
+        val searchParameter = when {
+            savedInstanceState != null -> savedInstanceState.getParcelable(
+                KEY_SEARCH_PARAMETER
+            ) as? SearchParameter ?: SearchParameter()
+            uri == null -> SearchParameter()
+            else -> SearchParameter(uri.toString())
+        }
 
         searchParameter.cleanUpNullValuesInMap()
         searchParameter.modifyBaseSRPApplink(ApplinkConst.DISCOVERY_SEARCH)
 
         return searchParameter
+    }
+
+    private fun getSearchBarKeyword(savedInstanceState: Bundle) : SearchBarKeyword {
+        return SearchBarKeyword(
+            savedInstanceState.getInt(KEY_ACTIVE_KEYWORD_POSITION, 0),
+            savedInstanceState.getString(KEY_ACTIVE_KEYWORD, ""),
+        )
     }
 
     private fun SearchParameter.modifyBaseSRPApplink(defaultApplink: String) {
@@ -116,6 +188,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         setStatusBarColor()
 
         initSearchBarView()
+        initRecyclerView()
         initFragments()
     }
 
@@ -138,6 +211,24 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         searchBarView.setActivity(this)
         searchBarView.setOnQueryTextListener(this)
+        searchBarView.setViewListener(this)
+    }
+
+    private fun initRecyclerView() {
+        searchBarKeywordAdapter = SearchBarKeywordAdapter(this)
+        rvSearchBarKeyword?.apply {
+            layoutManager = getLinearLayoutManager(context)
+            adapter = searchBarKeywordAdapter
+            addItemDecoration(SearchBarKeywordItemDecoration(context))
+        }
+    }
+
+    private fun getLinearLayoutManager(context: Context) : LayoutManager {
+        return LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false,
+        )
     }
 
     private fun initFragments() {
@@ -150,12 +241,50 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         commitFragments(initialStateFragment, suggestionFragment)
     }
 
+    private fun initObservers() {
+        viewModel?.let {
+            it.activeKeywordLiveData.observe(this) { keyword ->
+                searchBarView.setActiveKeyword(keyword)
+            }
+            it.searchBarKeywords.observe(this) { searchBarKeywords ->
+                renderSearchBarKeywords(searchBarKeywords)
+            }
+            it.mpsStateLiveData.observe(this) { mpsState ->
+                renderMpsState(mpsState)
+            }
+            it.searchParameterLiveData.observe(this) { searchParameter ->
+                onSearchParameterChange(searchParameter)
+            }
+        }
+    }
+
+    private fun renderSearchBarKeywords(searchBarKeywords: List<SearchBarKeyword>) {
+        searchBarKeywordAdapter?.submitList(searchBarKeywords)
+        if (searchBarKeywords.isNotEmpty()) {
+            rvSearchBarKeyword.visible()
+            searchBarView.preventKeyboardDismiss()
+        } else {
+            rvSearchBarKeyword.hide()
+            searchBarView.allowKeyboardDismiss()
+        }
+    }
+
     protected open fun getBaseAppComponent(): BaseAppComponent? =
         (this.application as? BaseMainApplication)?.baseAppComponent
+
+    private fun initInjector() {
+        autoCompleteComponent.inject(this)
+    }
+
+    protected open fun createAutoCompleteComponent(): AutoCompleteComponent =
+        DaggerAutoCompleteComponent.builder()
+            .baseAppComponent(getBaseAppComponent())
+            .build()
 
     protected open fun createInitialStateComponent(): InitialStateComponent =
         DaggerInitialStateComponent.builder()
             .baseAppComponent(getBaseAppComponent())
+            .autoCompleteComponent(autoCompleteComponent)
             .initialStateViewListenerModule(getInitialStateViewListenerModule())
             .build()
 
@@ -165,6 +294,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     protected open fun createSuggestionComponent(): SuggestionComponent =
         DaggerSuggestionComponent.builder()
             .baseAppComponent(getBaseAppComponent())
+            .autoCompleteComponent(autoCompleteComponent)
             .suggestionViewListenerModule(getSuggestionViewListenerModule())
             .build()
 
@@ -215,7 +345,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     override fun onStart() {
         super.onStart()
 
-        searchBarView?.showSearch(searchParameter)
+        viewModel?.showSearch(searchParameter)
     }
 
     override fun isAllowShake(): Boolean = false
@@ -226,8 +356,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         overridePendingTransition(0, 0)
     }
 
-    override fun onQueryTextSubmit(searchParameter: SearchParameter): Boolean {
-        val searchParameterCopy = SearchParameter(searchParameter)
+    override fun onQueryTextSubmit(): Boolean {
+        val searchParameterCopy = viewModel?.getSubmitSearchParameter() ?: return false
 
         if (getQueryOrHint(searchParameterCopy).isEmpty()) return true
 
@@ -306,13 +436,67 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         finish()
     }
 
-    override fun onQueryTextChange(searchParameter: SearchParameter) {
+    private fun onSearchParameterChange(searchParameter: SearchParameter) {
         this.searchParameter = SearchParameter(searchParameter)
 
-        if (searchParameter.getSearchQuery().isEmpty())
+        val shouldDisplayInitialState = searchParameter.getSearchQuery().isEmpty()
+            || viewModel?.activeKeyword?.keyword.isNullOrBlank()
+
+        if (shouldDisplayInitialState) {
             getInitialStateFragment()?.show(searchParameter.getSearchParameterHashMap())
-        else
-            getSuggestionFragment()?.getSuggestion(searchParameter.getSearchParameterHashMap())
+        } else {
+            val activeKeyword = viewModel?.activeKeyword ?: return
+            val suggestionSearchParameter = if(searchParameter.isMps()) {
+                SearchParameter(searchParameter).apply {
+                    setMpsQuery(activeKeyword.keyword)
+                }
+            } else {
+                searchParameter
+            }
+            getSuggestionFragment()?.getSuggestion(suggestionSearchParameter.getSearchParameterHashMap())
+        }
+    }
+
+    override fun onQueryTextChanged(query: String) {
+        viewModel?.onQueryUpdated(query)
+    }
+
+    override fun onKeywordRemoved(searchBarKeyword: SearchBarKeyword) {
+        viewModel?.onKeywordRemoved(searchBarKeyword)
+    }
+
+    override fun onKeywordSelected(searchBarKeyword: SearchBarKeyword) {
+        viewModel?.onKeywordSelected(searchBarKeyword)
+    }
+
+    override fun showAddedKeywordCoachMark(view: View) {
+        if(coachMark != null || viewModel?.isCoachMarkKeywordAddedAlreadyDisplayed == true) return
+
+        buildCoachMark2 {
+            viewModel?.markCoachMarkKeywordAddedAlreadyDisplayed()
+        }
+
+        val coachMarkList = createAddedKeywordCoachMarkList(view)
+
+        coachMark?.showCoachMark(coachMarkList, null, 0)
+    }
+
+    private fun showPlusIconCoachMark() {
+        if(coachMark != null || viewModel?.isCoachMarkIconPlusAlreadyDisplayed == true) return
+
+        buildCoachMark2 {
+            viewModel?.markCoachMarkIconPlusAlreadyDisplayed()
+        }
+
+        val coachMarkList = createPlusIconCoachMark()
+
+        if(coachMarkList.isEmpty()) return
+
+        coachMark?.let {
+            it.simpleMarginRight = 0
+            it.simpleMarginLeft = 0
+            it.showCoachMark(coachMarkList, null, 0)
+        }
     }
 
     private fun getInitialStateFragment(): InitialStateFragment? =
@@ -326,6 +510,33 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     override fun showInitialStateView() {
         suggestionContainer?.hide()
         initialStateContainer?.show()
+    }
+
+    private fun renderMpsState(mpsState: SearchBarMpsState) {
+        if (mpsState.isMpsEnabled) showMps() else hideMps()
+        if (mpsState.isMpsAnimationEnabled) enableMpsIconAnimation() else disableMpsIconAnimation()
+        if (mpsState.shouldShowCoachMark) {
+            showPlusIconCoachMark()
+        }
+    }
+
+    private fun showMps() {
+        searchBarView.setMPSEnabled(true)
+        searchBarView.showAddButton()
+    }
+
+    private fun hideMps() {
+        searchBarView.setMPSEnabled(false)
+        searchBarView.hideAddButton()
+    }
+
+    private fun enableMpsIconAnimation() {
+        searchBarView.setMPSAnimationEnabled(true)
+        searchBarView.startMpsAnimation()
+    }
+    private fun disableMpsIconAnimation() {
+        searchBarView.stopMpsAnimation()
+        searchBarView.setMPSAnimationEnabled(false)
     }
 
     override fun showSuggestionView() {
@@ -373,5 +584,81 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
 
         autoCompleteTracking.eventCancelSearch(query, pageSource)
+    }
+
+    override fun onUpButtonClicked(view: View) {
+        KeyboardHandler.DropKeyboard(this, view)
+        onBackPressed()
+    }
+
+    override fun onAddButtonClicked(editable: Editable?) {
+        val keyword = editable?.toString()
+        if (viewModel?.isMpsEnabled == true && keyword.isNullOrBlank()) {
+            Toaster.build(
+                container,
+                getString(R.string.searchbar_empty_keyword_error_message),
+            )
+                .show()
+        } else {
+            viewModel?.onKeywordAdded(keyword)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(KEY_SEARCH_PARAMETER, searchParameter)
+        val activeKeyword = viewModel?.activeKeyword
+        outState.putString(KEY_ACTIVE_KEYWORD, activeKeyword?.keyword)
+        outState.putInt(KEY_ACTIVE_KEYWORD_POSITION, activeKeyword?.position ?: 0)
+        outState.putBoolean(KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED, viewModel?.isCoachMarkKeywordAddedAlreadyDisplayed ?: false)
+        outState.putBoolean(KEY_ICON_PLUS_COACH_MARK_DISPLAYED, viewModel?.isCoachMarkIconPlusAlreadyDisplayed ?: false)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun buildCoachMark2(action: () -> Unit) {
+        coachMark = CoachMark2(this).apply {
+            setOnDismissListener {
+                coachMark = null
+            }
+            onDismissListener = {
+                action()
+            }
+        }
+    }
+
+    private fun createAddedKeywordCoachMarkList(
+        view: View
+    ) : ArrayList<CoachMark2Item> {
+        return arrayListOf(
+            createAddedKeywordCoachMark(view)
+        )
+    }
+
+    private fun createAddedKeywordCoachMark(view: View): CoachMark2Item {
+        return CoachMark2Item(
+            view,
+            getString(R.string.searchbar_added_keyword_coach_mark_title),
+            getString(R.string.searchbar_added_keyword_coach_mark_message),
+            CoachMark2.POSITION_BOTTOM
+        )
+    }
+
+    private fun createPlusIconCoachMark(): ArrayList<CoachMark2Item> {
+        val addButton = searchBarView?.addButton ?: return arrayListOf()
+        return arrayListOf(
+            CoachMark2Item(
+                addButton,
+                getString(R.string.searchbar_plus_icon_coach_mark_title),
+                getString(R.string.searchbar_plus_icon_coach_mark_message),
+                CoachMark2.POSITION_BOTTOM
+            )
+        )
+    }
+
+    companion object {
+        private const val KEY_SEARCH_PARAMETER = "KEY_SEARCH_PARAMETER"
+        private const val KEY_ACTIVE_KEYWORD = "KEY_ACTIVE_KEYWORD"
+        private const val KEY_ACTIVE_KEYWORD_POSITION = "KEY_ACTIVE_KEYWORD_POSITION"
+        private const val KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED = "KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED"
+        private const val KEY_ICON_PLUS_COACH_MARK_DISPLAYED = "KEY_ICON_PLUS_COACH_MARK_DISPLAYED"
     }
 }
