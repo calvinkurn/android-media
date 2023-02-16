@@ -72,7 +72,7 @@ class SellerHomeTrackerValidationTest {
             8, "tracker/seller_home/seller_home_card_widget_impression.json"
         )
         val descriptionWidget = Pair(
-            2, "tracker/seller_home/seller_home_description_widget_impression.json"
+            1, "tracker/seller_home/seller_home_description_widget_impression.json"
         )
         val lineGraphWidget = Pair(
             1, "tracker/seller_home/seller_home_line_graph_widget_impression.json"
