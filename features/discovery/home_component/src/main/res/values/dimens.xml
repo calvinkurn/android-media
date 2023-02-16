@@ -50,4 +50,6 @@
     <dimen name="home_dynamic_icon_padding_bottom">8dp</dimen>
     <dimen name="home_dynamic_icon_image_size">32dp</dimen>
     <dimen name="home_dynamic_icon_margin_top_title">12dp</dimen>
+
+    <dimen name="home_dynamic_icon_image_size_revamp">56dp</dimen>
 </resources>
