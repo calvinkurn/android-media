@@ -295,7 +295,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         data?.model?.apply {
             if (data.isRemoving) {
                 showToaster(
-                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_recipe, title),
+                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_bookmark, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                     clickListener = {
@@ -306,7 +306,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 analytics.impressUnBookmarkToaster()
             } else {
                 showToaster(
-                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_adding_recipe, title),
+                    message = getString(R.string.tokopedianow_recipe_toaster_description_success_adding_bookmark, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_see),
                     clickListener = {

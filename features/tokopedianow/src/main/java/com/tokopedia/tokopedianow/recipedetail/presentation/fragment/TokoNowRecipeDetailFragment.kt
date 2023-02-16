@@ -515,7 +515,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     private fun onSuccessAddBookmark(data: BookmarkUiModel) {
         showToaster(
             message = getString(
-                R.string.tokopedianow_recipe_toaster_description_success_adding_recipe,
+                R.string.tokopedianow_recipe_toaster_description_success_adding_bookmark,
                 data.recipeTitle
             ),
             actionText = getString(R.string.tokopedianow_toaster_see),
@@ -535,7 +535,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     private fun onSuccessRemoveBookmark(data: BookmarkUiModel) {
         showToaster(
-            message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_recipe, data.recipeTitle),
+            message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_bookmark, data.recipeTitle),
             actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel)
         ) {
             viewModel.addRecipeBookmark()
