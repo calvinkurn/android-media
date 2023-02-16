@@ -34,8 +34,7 @@
         android:textColor="@color/Unify_NN400"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintEnd_toStartOf="@id/pdp_shipment_icon"
-        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
-        app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
+        app:layout_constraintStart_toEndOf="@id/pdp_shipment_title"
         app:typographyType="display_3"
         tools:text="Rp30.000" />
 

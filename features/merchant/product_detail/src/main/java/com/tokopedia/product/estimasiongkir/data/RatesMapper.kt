@@ -51,7 +51,8 @@ object RatesMapper {
         return productServiceData
     }
 
-    fun mapToVisitable(scheduledDeliveryRatesModel: ScheduledDeliveryRatesModel): List<ProductShippingVisitable> {
+    fun mapToVisitable(scheduledDeliveryRatesModel: ScheduledDeliveryRatesModel?): List<ProductShippingVisitable> {
+        if (scheduledDeliveryRatesModel == null) return emptyList()
         val services =
             scheduledDeliveryRatesModel.deliveryServices.filter { !it.isHidden }.map { service ->
                 val products = service.deliveryProducts.filter { !it.isHidden }.map { product ->

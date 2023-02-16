@@ -3697,7 +3697,8 @@ open class DynamicProductDetailFragment :
                     orderValue = it.data.price.value.roundToIntOrZero(),
                     boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: "",
                     productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: "",
-                    categoryId = it.basic.category.id
+                    categoryId = it.basic.category.id,
+                    isScheduled = isScheduled
                 )
             )
             shouldRefreshShippingBottomSheet = false

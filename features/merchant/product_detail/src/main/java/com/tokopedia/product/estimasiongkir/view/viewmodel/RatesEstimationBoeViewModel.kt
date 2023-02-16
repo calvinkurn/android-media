@@ -47,22 +47,24 @@ class RatesEstimationBoeViewModel @Inject constructor(
             val scheduledDeliveryDataModel = RatesMapper.mapToVisitable(scheduledDeliveryData)
             result.postValue((ratesDataModel + scheduledDeliveryDataModel).asSuccess())
         }) {
+            result.postValue(it.asFail())
             ProductDetailShippingLogger.logRateEstimate(
                 throwable = it,
                 rateRequest = _ratesRequest.value,
                 deviceId = userSession.deviceId
             )
-            result.postValue(it.asFail())
         }
         result
     }
 
-    private suspend fun getScheduledDeliveryRates(request: RatesEstimateRequest): ScheduledDeliveryRatesModel {
-        return scheduledDeliveryRatesUseCase.execute(
-            request,
-            generateUniqueId(request),
-            true
-        )
+    private suspend fun getScheduledDeliveryRates(request: RatesEstimateRequest): ScheduledDeliveryRatesModel? {
+        return if (request.isScheduled) {
+            scheduledDeliveryRatesUseCase.execute(
+                request,
+                generateUniqueId(request),
+                true
+            )
+        } else null
     }
 
     private suspend fun getRatesEstimate(request: RatesEstimateRequest): RatesEstimationModel {
