@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.usecase
 
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
+import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,7 +11,7 @@ import javax.inject.Inject
 
 @GqlQuery(FeedComplaintSubmitReportUseCase.QUERY_NAME, FeedComplaintSubmitReportUseCase.QUERY)
 class FeedComplaintSubmitReportUseCase @Inject constructor(
-        graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<FeedComplaintSubmitReportResponse>(graphqlRepository) {
 
     init {
@@ -49,16 +50,13 @@ class FeedComplaintSubmitReportUseCase @Inject constructor(
         """
 
         fun createParam(
-            reportType: String,
-            contentId: String,
-            reason: String,
-            reasonDetails: String,
+            feedReportRequestParamModel: FeedReportRequestParamModel
         ): Map<String, Any> {
             return mapOf(
-                PARAM_REPORT_TYPE to reportType,
-                PARAM_CONTENT_ID to contentId,
-                PARAM_REASON to reason,
-                PARAM_REASON_DETAILS to reasonDetails
+                PARAM_REPORT_TYPE to feedReportRequestParamModel.reportType,
+                PARAM_CONTENT_ID to feedReportRequestParamModel.contentId,
+                PARAM_REASON to feedReportRequestParamModel.reason,
+                PARAM_REASON_DETAILS to feedReportRequestParamModel.reasonDetails
             )
         }
     }
