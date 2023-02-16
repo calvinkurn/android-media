@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.activity
 
+import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.feedplus.databinding.ActivityFeedBinding
@@ -23,6 +24,9 @@ class FeedActivity : BaseActivity() {
                 .replace(it.containerFeed.id, FeedBaseFragment())
                 .commit()
         }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }

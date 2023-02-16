@@ -17,5 +17,5 @@ import dagger.Component
 )
 interface FeedMainComponent {
     fun inject(feedBaseFragment: FeedBaseFragment)
-    fun inject(feedBaseFragment: FeedFragment)
+    fun inject(feedFragment: FeedFragment)
 }

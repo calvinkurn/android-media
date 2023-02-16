@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +50,10 @@ class FeedBaseFragment : BaseDaggerFragment() {
     ): View? {
         binding = FragmentFeedBaseBinding.inflate(inflater, container, false)
         return binding?.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -159,5 +165,9 @@ class FeedBaseFragment : BaseDaggerFragment() {
     companion object {
         const val TAB_FOR_YOU_INDEX = 0
         const val TAB_FOLLOWING_INDEX = 1
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
