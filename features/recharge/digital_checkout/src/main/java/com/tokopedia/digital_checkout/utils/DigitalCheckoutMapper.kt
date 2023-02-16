@@ -237,15 +237,15 @@ object DigitalCheckoutMapper {
         attributes.subscribe = checkoutData.isSubscriptionChecked
 
         val fintechProductsCheckout = mutableListOf<RequestBodyCheckout.FintechProductCheckout>()
-        checkoutData.fintechProducts.values.forEach { fintech ->
+        checkoutData.crossSellProducts.values.forEach { crossSell ->
             fintechProductsCheckout.add(
                 RequestBodyCheckout.FintechProductCheckout(
-                    transactionType = fintech.transactionType,
-                    tierId = fintech.tierId.toIntSafely(),
+                    transactionType = crossSell.product.transactionType,
+                    tierId = crossSell.product.tierId.toIntSafely(),
                     userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
-                    fintechAmount = fintech.fintechAmount.toLong(),
-                    fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),
-                    productName = fintech.info.title
+                    fintechAmount = crossSell.product.fintechAmount.toLong(),
+                    fintechPartnerAmount = crossSell.product.fintechPartnerAmount.toLong(),
+                    productName = crossSell.product.info.title
                 )
             )
         }

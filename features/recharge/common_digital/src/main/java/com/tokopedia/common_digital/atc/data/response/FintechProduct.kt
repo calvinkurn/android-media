@@ -45,7 +45,10 @@ data class FintechProduct(
 
     @SerializedName("operator_name")
     @Expose
-    var operatorName: String = ""
+    var operatorName: String = "",
+    
+    @SerializedName("cross_sell_metadata")
+    var crossSellMetadata: String = "",
 ) : Parcelable {
 
     @Parcelize

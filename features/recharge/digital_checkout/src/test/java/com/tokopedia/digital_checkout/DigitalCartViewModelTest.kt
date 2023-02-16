@@ -872,7 +872,7 @@ class DigitalCartViewModelTest {
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
-            fintechProducts = hashMapOf(
+            crossSellProducts = hashMapOf(
                 "First" to FintechProduct(
                     info = FintechProduct.FintechProductInfo(
                         iconUrl = "dummy icon url"
@@ -973,7 +973,7 @@ class DigitalCartViewModelTest {
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = true,
-            fintechProducts = hashMapOf(
+            crossSellProducts = hashMapOf(
                 "First" to FintechProduct(
                     info = FintechProduct.FintechProductInfo(
                         iconUrl = "dummy icon url"
@@ -1003,7 +1003,7 @@ class DigitalCartViewModelTest {
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
-            fintechProducts = hashMapOf(
+            crossSellProducts = hashMapOf(
                 "First" to FintechProduct(
                     info = FintechProduct.FintechProductInfo(
                         iconUrl = "dummy icon url"
@@ -1034,7 +1034,7 @@ class DigitalCartViewModelTest {
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
-            fintechProducts = hashMapOf(
+            crossSellProducts = hashMapOf(
                 "First" to FintechProduct(
                     info = FintechProduct.FintechProductInfo(
                         iconUrl = "dummy icon url"
@@ -1068,7 +1068,7 @@ class DigitalCartViewModelTest {
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
-            fintechProducts = hashMapOf(
+            crossSellProducts = hashMapOf(
                 "First" to FintechProduct(
                     info = FintechProduct.FintechProductInfo(
                         iconUrl = "dummy icon url"
@@ -1104,7 +1104,7 @@ class DigitalCartViewModelTest {
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
-            fintechProducts = hashMapOf(
+            crossSellProducts = hashMapOf(
                 "First" to FintechProduct(
                     info = FintechProduct.FintechProductInfo(
                         iconUrl = "dummy icon url"
@@ -1342,10 +1342,10 @@ class DigitalCartViewModelTest {
 
         // then
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.fintechAmount
                 ?: 0.0
         val fintechName =
-            digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.transactionType
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.transactionType
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
             it.title == fintechName
         }
@@ -1371,7 +1371,7 @@ class DigitalCartViewModelTest {
         }
 
         assertNull(summary)
-        assert(digitalCartViewModel.requestCheckoutParam.fintechProducts.isEmpty())
+        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.isEmpty())
     }
 
     @Test
@@ -1405,7 +1405,7 @@ class DigitalCartViewModelTest {
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
             ?: 0.0
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.fintechAmount
                 ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
@@ -1422,7 +1422,7 @@ class DigitalCartViewModelTest {
         // then
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
             ?: 0.0
-        assert(digitalCartViewModel.requestCheckoutParam.fintechProducts.isEmpty())
+        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.isEmpty())
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + getDummyGetCartResponse().adminFee)
     }
 
@@ -1439,7 +1439,7 @@ class DigitalCartViewModelTest {
         // then
         // if fintech product checked, update total price
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.fintechAmount
                 ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == userInputPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }

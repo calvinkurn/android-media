@@ -2,18 +2,25 @@ package com.tokopedia.digital_checkout.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStoreOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.databinding.LayoutDigitalCheckoutBottomViewBinding
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import org.jetbrains.annotations.NotNull
 import com.tokopedia.promocheckout.common.R as PromoCommonRes
 import com.tokopedia.unifyprinciples.R as UnifyPrinciplesRes
@@ -96,6 +103,26 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
 
     private var onClickConsentListener: ((String) -> Unit)? = null
 
+    fun setUserConsentWidget(
+        lifecycleOwner: LifecycleOwner,
+        viewModelStoreOwner: ViewModelStoreOwner,
+        consentCollectionParam: ConsentCollectionParam,
+    ) {
+        with(binding.viewUserConsentWidget) {
+            setOnCheckedChangeListener { isChecked ->
+                isCheckoutButtonEnabled = isChecked
+            }
+            setOnFailedGetCollectionListener {
+                isCheckoutButtonEnabled = false
+            }
+            setOnNeedConsentListener { isNeedConsent ->
+                isCheckoutButtonEnabled = !isNeedConsent
+            }
+            load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
+            showCrossSellConsent()
+        }
+    }
+
     fun setDigitalPromoButtonListener(listener: () -> Unit) {
         binding.digitalPromoBtnView.setOnClickListener { listener.invoke() }
     }
@@ -144,6 +171,21 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                 onClickConsentListener?.invoke(redirectToConsentUrl(PRIVACY_POLICY_URL))
             })
         )
+    }
+
+    fun getCrossSellConsentPayload(): String =
+        binding.viewUserConsentWidget.generatePayloadData()
+
+    fun showCrossSellConsent() {
+        binding.viewUserConsentWidget.show()
+    }
+
+    fun hideCrossSellConsent() {
+        binding.viewUserConsentWidget.hide()
+    }
+
+    fun isCrossSellConsentVisible(): Boolean {
+        return binding.viewUserConsentWidget.isVisible
     }
 
     override fun onDetachedFromWindow() {

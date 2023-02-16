@@ -12,6 +12,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -40,6 +43,7 @@ import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_C
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_PROMO_DIGITAL_MODEL
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
+import com.tokopedia.digital_checkout.data.model.CollectionPointMetadata
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.databinding.FragmentDigitalCheckoutPageBinding
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
@@ -83,6 +87,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.resources.common.R as CommonRes
@@ -399,7 +404,15 @@ class DigitalCartFragment :
 
             // render fintechProduct & subscription
             if (param.isSubscriptionChecked) myBillsAdapter.setActiveSubscriptions()
-            if (param.fintechProducts.isNotEmpty()) myBillsAdapter.setActiveFintechProducts(param.fintechProducts)
+            if (param.crossSellProducts.isNotEmpty()) {
+                val fintechProducts = hashMapOf<String, FintechProduct>()
+                param.crossSellProducts.forEach {
+                    if (!it.value.isSubscription) {
+                        fintechProducts[it.key] = it.value.product
+                    }
+                }
+                myBillsAdapter.setActiveFintechProducts(fintechProducts)
+            }
         }
     }
 
@@ -655,7 +668,55 @@ class DigitalCartFragment :
             getOperatorName(),
             userSession.userId
         )
-        viewModel.onSubscriptionChecked(isChecked)
+        binding?.run {
+
+            if (isChecked) {
+                val collectionPointData = getCollectionPointData(fintechProduct)
+                setCrossSellConsent(collectionPointData)
+            } else {
+                binding?.checkoutBottomViewWidget?.hideCrossSellConsent()
+            }
+            val consentPayload = if (checkoutBottomViewWidget.isCrossSellConsentVisible()) {
+                checkoutBottomViewWidget.getCrossSellConsentPayload()
+            } else ""
+
+            viewModel.onSubscriptionChecked(fintechProduct, isChecked, consentPayload)
+        }
+    }
+
+    private fun getCollectionPointData(fintechProduct: FintechProduct): CollectionPointMetadata {
+        try {
+            var map: Map<String, Any> = hashMapOf()
+            map = Gson().fromJson(fintechProduct.crossSellMetadata, map.javaClass)
+
+            val metadataKey = map.get("metadata")
+            if (metadataKey != null && metadataKey.toString().length > Int.ZERO) {
+                val metadata = Gson().fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
+                if (metadata.collectionPointId.isNotEmpty() && metadata.collectionPointVersion.isNotEmpty()) {
+                    return metadata
+                }
+            }
+        } catch (e: JsonSyntaxException) {
+            // do nothing
+        }
+
+        return CollectionPointMetadata()
+    }
+
+    private fun setCrossSellConsent(collectionPointData: CollectionPointMetadata) {
+        binding?.run {
+            if (collectionPointData.collectionPointId.isNotEmpty()) {
+                val consentParam = ConsentCollectionParam(
+                    collectionPointData.collectionPointId,
+                    collectionPointData.collectionPointVersion
+                )
+                checkoutBottomViewWidget.setUserConsentWidget(
+                    viewLifecycleOwner,
+                    this@DigitalCartFragment,
+                    consentParam
+                )
+            }
+        }
     }
 
     override fun onSubscriptionImpression(fintechProduct: FintechProduct) {

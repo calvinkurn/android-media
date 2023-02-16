@@ -1,6 +1,9 @@
 package com.tokopedia.digital_checkout.usecase
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
@@ -36,7 +39,7 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         requestCheckoutParams: DigitalCheckoutDataParameter,
         digitalIdentifierParams: RequestBodyIdentifier
     ) {
-        val gson = Gson()
+        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
 
         val requestParams = RechargeCheckoutRequest(
             voucherCode = requestCheckoutParams.voucherCode,
@@ -50,10 +53,25 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
             cartType = DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_CHECKOUT_TYPE,
             cartId = requestCheckoutParams.cartId,
             createSubscription = requestCheckoutParams.isSubscriptionChecked,
-            fintechProducts = requestCheckoutParams.fintechProducts.map {
+            fintechProducts = requestCheckoutParams.crossSellProducts.map {
+                var checkoutMetadata = gson.toJson(it.value.product)
+                val checkoutType = object: TypeToken<HashMap<String, Any>>(){}.type
+                val checkoutMetadataJson = gson.fromJson<HashMap<String, Any>>(checkoutMetadata, checkoutType)
+
+                if (it.value.isSubscription) {
+                    val additionalMetadata = gson.toJson(it.value.additionalMetadata)
+                    val additionalType = object: TypeToken<JsonElement>(){}.type
+                    val additionalMetadataJson = gson.fromJson<JsonElement>(additionalMetadata, additionalType)
+
+                    val jsonObject = gson.fromJson(additionalMetadataJson.asJsonPrimitive.asString, JsonObject::class.java)
+                    jsonObject.keySet().forEach { key ->
+                        checkoutMetadataJson[key] = jsonObject.get(key)
+                    }
+                }
+                checkoutMetadata = gson.toJson(checkoutMetadataJson)
                 RechargeCheckoutFintechProduct(
-                    transactionType = it.value.transactionType,
-                    checkoutMetadata = gson.toJson(it.value)
+                    transactionType = it.value.product.transactionType,
+                    checkoutMetadata = checkoutMetadata
                 )
             }.toList(),
             instant = requestCheckoutParams.isInstantCheckout,
