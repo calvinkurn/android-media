@@ -146,7 +146,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             }
         }
         if (templateType == LIST) {
-            maxHeightProductCard.value = productCardModelArray.getMaxHeightForListView(application.applicationContext, Dispatchers.Default)
+            maxHeightProductCard.value = productCardModelArray.getMaxHeightForListView(application.applicationContext, Dispatchers.Default) ?: 0
         } else {
             val mixLeftPadding = if (isMixLeftBannerPresent()) application.applicationContext.resources.getDimensionPixelSize(R.dimen.dp_10) else 0
             val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
