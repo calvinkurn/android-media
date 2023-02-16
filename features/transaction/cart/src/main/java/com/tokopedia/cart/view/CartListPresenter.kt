@@ -1,5 +1,7 @@
 package com.tokopedia.cart.view
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -61,6 +63,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
@@ -147,10 +150,10 @@ class CartListPresenter @Inject constructor(
     private var hasPerformChecklistChange: Boolean = false
 
     // Store last validate use response from promo page
-    var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
+    private var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
 
     // Store last validate use response from cart page
-    var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
+    private var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
     var isLastApplyResponseStillValid = true
 
     // Store last validate use request
@@ -163,13 +166,13 @@ class CartListPresenter @Inject constructor(
     private var showChoosePromoWidget: Boolean = false
 
     // Store LCA data for bo affordability
-    var lca: LocalCacheModel? = null
+    private var lca: LocalCacheModel? = null
 
     // Store last cart shop group ticker cart string for debounce handling
-    var lastCartShopGroupTickerCartString: String = ""
+    private var lastCartShopGroupTickerCartString: String = ""
 
     // Cart shop ticker debounce job
-    var cartShopGroupTickerJob: Job? = null
+    private var cartShopGroupTickerJob: Job? = null
 
     companion object {
         private const val PERCENTAGE = 100.0f
@@ -1157,6 +1160,21 @@ class CartListPresenter @Inject constructor(
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
         }
         return enhancedECommerceCartMapData.cartMap
+    }
+
+    override fun generateCartBundlingPromotionsAnalyticsData(
+        bundleDetail: BundleDetailUiModel
+    ): List<Bundle> {
+        return bundleDetail.products.map {
+            bundleOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.DIMENSION40 to
+                    ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
+                ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
+            )
+        }
     }
 
     private fun getProductRecentViewImpressionMapData(

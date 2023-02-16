@@ -20,6 +20,8 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productbundlewidget.model.GetBundleParamBuilder
 import com.tokopedia.productbundlewidget.model.WidgetType
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -105,6 +107,39 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             startActivityForResult(intent, requestCode)
         }
         binding?.productBundleWidget?.setListener(object : ProductBundleWidgetListener {
+            override fun onMultipleBundleActionButtonClicked(
+                selectedBundle: BundleDetailUiModel,
+                productDetails: List<BundleProductUiModel>
+            ) {
+                super.onMultipleBundleActionButtonClicked(selectedBundle, productDetails)
+                listener?.onMultipleBundleActionButtonClicked(selectedBundle)
+            }
+
+            override fun onSingleBundleActionButtonClicked(
+                selectedBundle: BundleDetailUiModel,
+                bundleProducts: BundleProductUiModel
+            ) {
+                super.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts)
+                listener?.onSingleBundleActionButtonClicked(selectedBundle)
+            }
+
+            override fun impressionMultipleBundle(
+                selectedMultipleBundle: BundleDetailUiModel,
+                bundlePosition: Int
+            ) {
+                super.impressionMultipleBundle(selectedMultipleBundle, bundlePosition)
+                listener?.impressionMultipleBundle(selectedMultipleBundle)
+            }
+
+            override fun impressionSingleBundle(
+                selectedBundle: BundleDetailUiModel,
+                selectedProduct: BundleProductUiModel,
+                bundleName: String
+            ) {
+                super.impressionSingleBundle(selectedBundle, selectedProduct, bundleName)
+                listener?.impressionSingleBundle(selectedBundle)
+            }
+
             override fun onError(it: Throwable) {
                 renderError()
             }
