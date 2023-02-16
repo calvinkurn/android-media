@@ -381,6 +381,9 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 tickers {
                   title
                   message
+                  color
+                  action
+                  link
                 }
                 isScheduled
               }
