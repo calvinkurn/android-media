@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TopBotNewSessionResponse(
     @SerializedName("topbotGetNewSession")
-    val topBotGetNewSession: TopBotGetNewSession?
+    val topBotGetNewSession: TopBotGetNewSession
 ) {
     data class TopBotGetNewSession(
         @SerializedName("isNewSession")

@@ -124,7 +124,7 @@
     <string name="btn_send">Kirim</string>
     <string name="title_email">Email</string>
     <string name="contact_us_tool_tip_text">Chat Sekarang</string>
-    <string name="contactus_chat_bot_applink">tokopedia://chatbot/%s</string>
+    <string name="contactus_chat_bot_applink">tokopedia://chatbot/%s?is_chat_bot=true&amp;page_source=contact_us</string>
     <string name="contact_us_step_two_response_failure_message">Maaf, permintaan Anda tidak dapat diproses. Silahkan coba beberapa saat lagi.</string>
     <string name="contact_us_sent_error_message">Pesanmu gagal dikirim, coba kirim ulang</string>
     <string name="contact_us_selesai_button">Selesai</string>

@@ -1544,11 +1544,11 @@ class ChatbotPresenterTest {
         }
 
         every {
-            response.topBotGetNewSession?.isNewSession
+            response.topBotGetNewSession.isNewSession
         } returns isNewSession
 
         every {
-            response.topBotGetNewSession?.isTypingBlocked
+            response.topBotGetNewSession.isTypingBlocked
         } returns isTypingBlock
 
         presenter.checkForSession("123456")
@@ -1574,11 +1574,11 @@ class ChatbotPresenterTest {
         }
 
         every {
-            response.topBotGetNewSession?.isNewSession
+            response.topBotGetNewSession.isNewSession
         } returns isNewSession
 
         every {
-            response.topBotGetNewSession?.isTypingBlocked
+            response.topBotGetNewSession.isTypingBlocked
         } returns isTypingBlock
 
         presenter.checkForSession("123456")

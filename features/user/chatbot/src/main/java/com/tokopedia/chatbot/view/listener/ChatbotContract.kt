@@ -88,6 +88,8 @@ interface ChatbotContract {
 
     interface Presenter : BaseChatContract.Presenter<View> {
 
+        fun setPageSource(pageSource: String)
+
         fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String, isArticleEntry: Boolean, usedBy: String)
 
         fun sendQuickReply(messageId: String, quickReply: QuickReplyUiModel, startTime: String, opponentId: String)

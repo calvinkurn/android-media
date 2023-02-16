@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -133,7 +134,9 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketException
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -150,6 +153,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
+import java.io.InterruptedIOException
 import java.util.*
 import javax.inject.Inject
 
@@ -570,6 +574,7 @@ class ChatbotFragment :
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         showTopLoading()
+        presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
         presenter.checkUploadVideoEligibility(messageId)
         showTicker()
@@ -931,9 +936,11 @@ class ChatbotFragment :
         getBindingView().layoutErrorGlobal.run {
             visible()
             getBindingView().homeGlobalError.run {
-                errorAction.text = "Kembali ke Tokopedia Care"
+                setType(SERVER_ERROR)
+                errorAction.text = context.getString(R.string.chatbot_back_to_tokopedia_care)
+                errorSecondaryAction.hide()
                 setActionClickListener {
-                    val intent = RouteManager.getIntent(requireView().context, "tokopedia://contactus")
+                    val intent = RouteManager.getIntent(requireView().context, CONTACT_US_NATIVE)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
@@ -947,9 +954,9 @@ class ChatbotFragment :
             visible()
             getBindingView().homeGlobalError.run {
                 setType(NO_CONNECTION)
-                errorAction.text = "Coba lagi"
+                errorAction.text = context.getString(R.string.chatbot_retry_get_data)
                 errorSecondaryAction.show()
-                errorSecondaryAction.text = "Ke Pengaturan"
+                errorSecondaryAction.text = context.getString(R.string.chatbot_to_wifi_setting)
                 setSecondaryActionClickListener {
                     goToSettingConnection()
                 }
@@ -978,18 +985,17 @@ class ChatbotFragment :
     }
 
     private fun setShowingErrorLayout(throwable: Throwable){
-        throwable.printStackTrace()
         when(throwable){
-            is MessageErrorException -> {
-                setErrorLayoutForServer()
-            }
-
-            else -> {
+            is InterruptedIOException, is ChatbotWebSocketException -> {
                 if(chatbotAdapter.data.isEmpty()){
                     setErrorLayoutForNetwork()
                 } else {
                     hideErrorLayoutForNetwork()
                 }
+            }
+
+            else -> {
+                setErrorLayoutForServer()
             }
         }
     }
