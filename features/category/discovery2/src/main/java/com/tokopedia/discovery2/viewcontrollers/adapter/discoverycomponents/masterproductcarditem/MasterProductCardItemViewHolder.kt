@@ -238,7 +238,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         when (view) {
             productCardView -> {
                 masterProductCardItemViewModel.sendTopAdsClick()
-                masterProductCardItemViewModel.navigate(fragment.context, dataItem?.applinks)
+                var applink = dataItem?.applinks ?: ""
+                if ((fragment as DiscoveryFragment).isAffiliateInitialized)
+                    applink =
+                        fragment.createAffiliateLink(applink)
+                masterProductCardItemViewModel.navigate(fragment.context, applink)
                 sendClickEvent()
             }
         }
@@ -285,7 +289,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 productItem.productId?.let { productId ->
-                    if (productId.isNotEmpty())
+                    if (productId.isNotEmpty()) {
                         (fragment as DiscoveryFragment).addOrUpdateItemCart(
                             DiscoATCRequestParams(
                                 parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
@@ -297,6 +301,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                 requestingComponent = masterProductCardItemViewModel.components
                             )
                         )
+                    }
                 }
             }
         } else {
