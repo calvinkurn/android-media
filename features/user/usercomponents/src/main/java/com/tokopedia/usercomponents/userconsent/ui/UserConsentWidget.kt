@@ -62,7 +62,7 @@ class UserConsentWidget : FrameLayout,
     private var lifecycleOwner: LifecycleOwner? = null
     private var consentCollectionParam: ConsentCollectionParam? = null
     private var submissionParam = ConsentSubmissionParam()
-    private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
+    private var collection: CollectionPointDataModel? = null
     private var isErrorGetConsent = false
     private var needConsent: Boolean? = null
 
@@ -283,16 +283,8 @@ class UserConsentWidget : FrameLayout,
                 iconMandatoryInfo.hide()
             }
 
-            if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
-                descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
-                    collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
-                    purposeText
-                )
-            } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
-                descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
-                    collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
-                    purposeText
-                )
+            collection?.attributes?.statementWording?.apply {
+                descriptionPurposes.text = userConsentDescription?.generateDescriptionSpannableText(this)
             }
 
             descriptionPurposes.movementMethod = LinkMovementMethod.getInstance()
@@ -302,10 +294,8 @@ class UserConsentWidget : FrameLayout,
     private fun renderMultiplePurpose() {
         if (collection?.purposes?.size.orZero() > NUMBER_ONE) {
             viewBinding?.multipleConsent?.apply {
-                if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
-                    textMainDescription.text = userConsentDescription?.generateTermConditionMultipleOptionalPurposeText()
-                } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
-                    textMainDescription.text = userConsentDescription?.generateTermConditionPolicyMultipleOptionalPurposeText()
+                collection?.attributes?.statementWording?.apply {
+                    textMainDescription.text = userConsentDescription?.generateDescriptionSpannableText(this)
                 }
 
                 textMainDescription.movementMethod = LinkMovementMethod.getInstance()
@@ -394,7 +384,7 @@ class UserConsentWidget : FrameLayout,
 
     override fun onCheckedChange(
         isChecked: Boolean,
-        purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel,
+        purposeDataModel: PurposeDataModel,
     ) {
         onCheckedChangeListener.invoke(isChecked)
         userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
@@ -443,26 +433,9 @@ class UserConsentWidget : FrameLayout,
     override val unifyG500: Int
         get() = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
-    override fun openConsentPageDetail(pageId: String, type: String, tab: String) {
-        val urlPage = String.format(UserConsentConst.URL_CONSENT_DETAIL, pageId, type, tab)
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, urlPage)
-        context.startActivity(intent)
-    }
-
-    override fun openDefaultConsentPageDetail(url: String) {
+    override fun openWebview(url: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url)
         context.startActivity(intent)
-    }
-
-    override fun openPrivacyPolicyPage() {
-        RouteManager.route(
-            context,
-            String.format(
-                STRING_FORMAT,
-                ApplinkConst.WEBVIEW,
-                "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
-            )
-        )
     }
 
     fun load(
@@ -507,8 +480,6 @@ class UserConsentWidget : FrameLayout,
     }
 
     companion object {
-        private const val STRING_FORMAT = "%s?url=%s"
-        private const val PRIVACY_POLICY_PATH = "privacy?lang=id"
         private const val NUMBER_ONE = 1
         private const val NUMBER_TWO = 2
     }

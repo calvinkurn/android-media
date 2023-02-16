@@ -2,14 +2,13 @@ package com.tokopedia.common_sdk_affiliate_toko.model
 
 import com.google.gson.annotations.SerializedName
 
-
 data class CheckAffiliateCookieRequest(
     @SerializedName("AdditionalParams")
     var additionalParams: List<AdditionalParam?>?,
     @SerializedName("PageDetail")
     var pageDetail: PageDetail?,
     @SerializedName("Header")
-    var header: Header?,
+    var header: Header?
 ) {
     data class AdditionalParam(
         @SerializedName("Key")
@@ -28,6 +27,8 @@ data class CheckAffiliateCookieRequest(
         var pageID: String?,
         @SerializedName("PageType")
         var pageType: String?,
+        @SerializedName("PageName")
+        var pageName: String? = "",
         @SerializedName("SiteID")
         var siteID: String?,
         @SerializedName("VerticalID")
@@ -35,5 +36,4 @@ data class CheckAffiliateCookieRequest(
         @SerializedName("AffiliateUUID")
         var affiliateUUID: String?
     )
-
 }

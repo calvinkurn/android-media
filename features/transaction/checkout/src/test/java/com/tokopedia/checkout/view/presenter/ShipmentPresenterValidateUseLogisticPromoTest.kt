@@ -245,6 +245,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, true)
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == "voucher order not found" }, shipmentCartItemModel, promoCode)
             view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
@@ -295,6 +296,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == errorMessage }, shipmentCartItemModel, promoCode)
             view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
@@ -357,8 +359,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseError_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
+        val throwable = Throwable(errorMessage)
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
-            Throwable(errorMessage)
+            throwable
         )
 
         // When
@@ -372,6 +375,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
     }
 
@@ -379,8 +383,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
         // Given
         val errorMessage = "error"
+        val akamaiErrorException = AkamaiErrorException(errorMessage)
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
-            AkamaiErrorException(errorMessage)
+            akamaiErrorException
         )
 
         // When
@@ -396,6 +401,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.resetAllCourier()
             view.cancelAllCourierPromo()
             view.doResetButtonPromoCheckout()
+            view.logOnErrorApplyBo(akamaiErrorException, cartPosition, "")
         }
     }
 
@@ -496,7 +502,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseErrorFromScheduleDelivery_ShouldCompletePublisher() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
         val cartString = "123"
         val testSubscriber = TestSubscriber.create<Boolean>()
         val donePublisher = PublishSubject.create<Boolean>()
@@ -518,6 +527,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()
     }
@@ -567,7 +577,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseErrorFromGetShippingRates_ShouldCompletePublisher() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
         val cartString = "123"
         val testSubscriber = TestSubscriber.create<Boolean>()
         val logisticDonePublisher = PublishSubject.create<Boolean>()
@@ -589,6 +602,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(any())
             view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
         testSubscriber.assertCompleted()
         promoTestSubscriber.assertCompleted()
