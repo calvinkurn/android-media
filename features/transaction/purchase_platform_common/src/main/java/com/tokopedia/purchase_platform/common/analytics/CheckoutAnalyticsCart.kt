@@ -950,7 +950,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.PROMOTIONS to promotions,
             ExtraKey.USER_ID to userId
         )
-        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.PROMO_VIEW, bundle)
     }
 
     // TrackerId: 41254
@@ -969,7 +969,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_CART_BUNDLING_BOTTOM_SHEET_BUNDLE_WIDGET_ACTION,
             ExtraKey.USER_ID to userId
         )
-        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.SELECT_CONTENT, bundle)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.PROMO_CLICK, bundle)
     }
 
     // Cart Shop Group Ticker
