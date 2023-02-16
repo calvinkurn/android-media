@@ -23,8 +23,12 @@ import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -96,14 +100,40 @@ class ContentCommentBottomSheet @Inject constructor(
     private fun observeData() {
         lifecycleScope.launch {
             viewModel.comments.collectLatest {
-                when(it.state){
-                    ResultState.Success -> commentAdapter.setItemsAndAnimateChanges(it.list)
-                    ResultState.Loading -> commentAdapter.setItemsAndAnimateChanges(getCommentShimmering)
+                when (it.state) {
+                    ResultState.Success -> {
+                        showError(false)
+                        commentAdapter.setItemsAndAnimateChanges(it.list)
+                    }
+                    ResultState.Loading -> {
+                        showError(false)
+                        commentAdapter.setItemsAndAnimateChanges(getCommentShimmering)
+                    }
                     is ResultState.Fail -> {
-                        //show global error
+                        binding.commentGlobalError.setType(
+                            if (it.state.error is UnknownHostException) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
+                        )
+                        binding.commentGlobalError.setActionClickListener {
+                            viewModel.submitAction(CommentAction.RefreshComment)
+                        }
+                        showError(true)
                     }
                 }
             }
+        }
+    }
+
+    private fun showError(isShown: Boolean) {
+        if (isShown) {
+            binding.commentGlobalError.show()
+            binding.rvComment.hide()
+            binding.commentHeader.hide()
+            binding.viewCommentSend.hide()
+        } else {
+            binding.commentGlobalError.hide()
+            binding.rvComment.show()
+            binding.commentHeader.show()
+            binding.viewCommentSend.show()
         }
     }
 
