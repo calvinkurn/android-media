@@ -1200,7 +1200,6 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onFailureVideoUploadEligibility(throwable: Throwable) {
-        view.showErrorLayout(throwable)
         // Add new Relic Here
     }
 
