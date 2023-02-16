@@ -58,6 +58,7 @@ import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductReviewListDataModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -176,6 +177,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val otherOffers: ProductCustomInfoTitleDataModel?
         get() = mapOfData[ProductDetailConstant.OTHER_OFFERS] as? ProductCustomInfoTitleDataModel
+
+    val reviewList: ProductReviewListDataModel?
+        get() = mapOfData[ProductDetailConstant.REVIEW_LIST] as? ProductReviewListDataModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -444,14 +448,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF) {
-                if (it.socialProof.isEmpty()) {
-                    removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
-                } else {
-                    miniSocialProofMap?.run {
-                        items = it.socialProof
-                        shouldRender = true
-                    }
-                }
+                updateMiniSocialProof(it)
             }
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK) {
@@ -545,6 +542,28 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.OTHER_OFFERS) {
                 updateCustomInfoTitleP2(p2 = it)
             }
+
+            updateData(ProductDetailConstant.REVIEW_LIST) {
+                updateReviewList(it)
+            }
+        }
+    }
+
+    private fun updateMiniSocialProof(p2Data: ProductInfoP2UiData) {
+        if (p2Data.socialProof.isEmpty()) {
+            removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
+        } else {
+            miniSocialProofMap?.run {
+                items = p2Data.socialProof
+                shouldRender = true
+            }
+        }
+    }
+
+    private fun updateReviewList(p2Data: ProductInfoP2UiData) {
+        reviewList?.apply {
+            shouldRender = true
+            data = p2Data.reviewList
         }
     }
 

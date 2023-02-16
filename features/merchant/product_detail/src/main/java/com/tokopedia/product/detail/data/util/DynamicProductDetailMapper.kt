@@ -69,6 +69,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductReviewListDataModel
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
@@ -281,6 +282,11 @@ object DynamicProductDetailMapper {
                     if (customInfoTitle != null) {
                         listOfComponent.add(customInfoTitle)
                     }
+                }
+                ProductDetailConstant.REVIEW_LIST -> {
+                    listOfComponent.add(
+                        ProductReviewListDataModel(type = component.type, name = component.componentName)
+                    )
                 }
             }
         }
