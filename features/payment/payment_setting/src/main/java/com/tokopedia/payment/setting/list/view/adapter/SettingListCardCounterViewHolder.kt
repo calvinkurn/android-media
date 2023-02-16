@@ -17,5 +17,4 @@ class SettingListCardCounterViewHolder(itemView : View?)
         itemView.settingListCardCounter.text =
             itemView.context.getString(R.string.payment_label_saved_card, data.size)
     }
-
 }

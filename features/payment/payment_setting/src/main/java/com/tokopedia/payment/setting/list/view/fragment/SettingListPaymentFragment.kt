@@ -23,10 +23,7 @@ import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
-import com.tokopedia.payment.setting.list.model.PaymentSignature
-import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
-import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
-import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
+import com.tokopedia.payment.setting.list.model.*
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
 import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
@@ -79,19 +76,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
 
     private fun observeViewModel() {
-        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onPaymentSignature(it.data.paymentSignature)
-                    val list = mutableListOf<SettingListPaymentModel>()
-                    val cards = it.data.creditCard.cards
-                    list.add(SettingListCardCounterModel(cards?.size ?: 0))
-                    list.addAll(cards ?: arrayListOf())
-                    renderList(list)
-                }
-                is Fail -> showGetListError(it.throwable)
-            }
-        })
         settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer {
             if (it) {
                 hideLoadingDialog()
@@ -101,15 +85,48 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                 onNeedVerifPhone()
             }
         })
+
+        settingsListViewModel.bannerAndCardListResultLiveData.observe(viewLifecycleOwner) {
+            val cardListResult = it.first
+            val bannerResult = it.second
+
+            if (cardListResult != null && bannerResult != null) {
+                val list = mutableListOf<SettingListPaymentModel>()
+
+                when (cardListResult) {
+                    is Success -> {
+                        onPaymentSignature(cardListResult.data.paymentSignature)
+                        val cards = cardListResult.data.creditCard.cards
+                        list.add(SettingListCardCounterModel(cards?.size ?: 0))
+                        list.addAll(cards ?: arrayListOf())
+                    }
+                    is Fail -> showGetListError(cardListResult.throwable)
+                }
+
+                if (bannerResult is Success) {
+                    list.add(0, bannerResult.data)
+                }
+
+                renderList(list)
+            }
+        }
     }
 
     override fun getAdapterTypeFactory(): SettingListPaymentAdapterTypeFactory {
         return SettingListPaymentAdapterTypeFactory(this)
     }
 
-    override fun onItemClicked(t: SettingListPaymentModel?) {
-        activity?.run {
-            this@SettingListPaymentFragment.startActivityForResult(DetailCreditCardActivity.createIntent(this, t), REQUEST_CODE_DETAIL_CREDIT_CARD)
+    override fun onItemClicked(data: SettingListPaymentModel?) {
+        when (data) {
+            is SettingBannerModel -> {
+                RouteManager.route(this.context, data.buttonRedirectUrl)
+            }
+            is SettingListCardCounterModel -> {}
+            else -> {
+                activity?.run {
+                    this@SettingListPaymentFragment.startActivityForResult(DetailCreditCardActivity.createIntent(this, data), REQUEST_CODE_DETAIL_CREDIT_CARD)
+                }
+            }
         }
     }
 
@@ -142,6 +159,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
+        adapter.clearAllElements()
         if (list.size in CARD_LIST_RANGE_FOR_ADD_MORE_CARD) {
             list.add(SettingListAddCardModel())
         }
@@ -190,6 +208,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun loadData(page: Int) {
         settingsListViewModel.getCreditCardList()
+        settingsListViewModel.getSettingBanner()
         hideAuthPaymentView()
     }
 

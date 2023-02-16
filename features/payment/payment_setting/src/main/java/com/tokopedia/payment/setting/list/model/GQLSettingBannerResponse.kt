@@ -39,7 +39,7 @@ data class SettingBannerModel(
     @SerializedName("button_redirect_url")
     @Expose
     var buttonRedirectUrl: String = "",
-) : Visitable<SettingListPaymentAdapterTypeFactory> {
+) : SettingListPaymentModel() {
 
     override fun type(typeFactory: SettingListPaymentAdapterTypeFactory?): Int {
 

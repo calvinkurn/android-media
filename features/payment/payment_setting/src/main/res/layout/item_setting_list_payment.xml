@@ -6,9 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/cardLogo"
+        android:id="@+id/cardImage"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -20,10 +21,9 @@
         tools:text="BCA"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        app:layout_constraintTop_toTopOf="@id/cardLogo"
-        app:layout_constraintStart_toEndOf="@id/cardLogo"
-        app:layout_constraintBottom_toTopOf="@id/cardNumber"
-        app:layout_constraintHorizontal_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="@id/cardImage"
+        app:layout_constraintStart_toEndOf="@id/cardImage"
+        app:layout_constraintBottom_toTopOf="@id/cardNumber" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cardNumber"
@@ -33,19 +33,21 @@
         android:textColor="@color/Unify_NN600"
         tools:text="@string/payment_label_card_info_setting"
         app:typographyType="paragraph_3"
-        app:layout_constraintBottom_toBottomOf="@id/cardLogo"
-        app:layout_constraintStart_toEndOf="@id/cardLogo"
+        app:layout_constraintBottom_toBottomOf="@id/cardImage"
+        app:layout_constraintStart_toEndOf="@id/cardImage"
         app:layout_constraintTop_toBottomOf="@id/cardBankName"/>
 
     <com.tokopedia.iconunify.IconUnify
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:id="@+id/cardChevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
         app:icon_name="CHEVRON_RIGHT"
         app:icon_color_light_enable="@color/Unify_NN900"
         app:icon_color_night_enable="@color/Unify_NN900"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/cardLogo"
-        app:layout_constraintBottom_toBottomOf="@id/cardLogo"
+        app:layout_constraintTop_toTopOf="@id/cardImage"
+        app:layout_constraintBottom_toBottomOf="@id/cardImage"
         />
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -54,6 +56,6 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@id/cardBankName"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardLogo" />
+        app:layout_constraintTop_toBottomOf="@id/cardImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,12 +11,18 @@ import kotlinx.android.synthetic.main.item_setting_list_payment.view.*
 class SettingListPaymentViewHolder(itemView : View?) : AbstractViewHolder<SettingListPaymentModel>(itemView) {
 
     override fun bind(element: SettingListPaymentModel?) {
-        ImageHandler.LoadImage(itemView.imageCCBackground, element?.smallBackgroundImage)
+        if (element == null) return
 
-        itemView.cardNumber.text = element?.maskedNumber?.getSpacedTextPayment()
+        ImageHandler.LoadImage(itemView.cardImage, element.cardTypeImage)
+        itemView.cardBankName.text = element.bank
+        itemView.cardNumber.text = itemView.context.getString(
+            R.string.payment_label_card_info_setting,
+            element.maskedNumber?.takeLast(CARD_NUMBER_SHOWN_DIGIT),
+        )
     }
 
     companion object {
         val LAYOUT = R.layout.item_setting_list_payment
+        private const val CARD_NUMBER_SHOWN_DIGIT = 4
     }
 }

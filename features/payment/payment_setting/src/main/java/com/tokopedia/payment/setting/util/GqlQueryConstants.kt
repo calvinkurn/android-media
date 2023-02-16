@@ -65,15 +65,15 @@ PaymentQuery{
 }"""
 
 const val GQL_GET_SETTING_BANNER = """
-    query cc_cobrand_getccsettingbanner(${'$'}params: String!) {
-        cc_cobrand_getccsettingbanner(request: ${'$'}params) {
-            id
-            code
-            title
-            title_body_message
-            assets
-            button_name
-            button_redirect_url
-        }
+    query cc_cobrand_getccsettingbanner(${'$'}req: CobrandGetCCSettingBannerRequest!) {
+      cc_cobrand_getccsettingbanner(request: ${'$'}req) {
+        id
+        code
+        title
+        title_body_message
+        assets
+        button_name
+        button_redirect_url
+      }
     }
 """
