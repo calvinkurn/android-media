@@ -47,9 +47,9 @@ class AddPhoneViewModel @Inject constructor(
                     _addPhoneResponse.value = Success(AddPhoneResult(response, msisdn))
                 }
                 errorMessage.isNotEmpty() && errorMessage[0].isNotEmpty() -> {
-                    _addPhoneResponse.postValue(Fail(MessageErrorException(errorMessage[0])))
+                    _addPhoneResponse.value = Fail(MessageErrorException(errorMessage[0]))
                 }
-                else -> _addPhoneResponse.postValue(Fail(RuntimeException()))
+                else -> _addPhoneResponse.value = Fail(RuntimeException())
             }
         }, onError = {
             _addPhoneResponse.value = Fail(it)
@@ -65,13 +65,12 @@ class AddPhoneViewModel @Inject constructor(
 
             when {
                 isValid -> _userValidateResponse.value = Success(response)
-                errorMessage.isNotEmpty() -> _userValidateResponse.postValue(
+                errorMessage.isNotEmpty() -> _userValidateResponse.value =
                     Fail(MessageErrorException(errorMessage))
-                )
-                else -> _userValidateResponse.postValue(Fail(RuntimeException()))
+                else -> _userValidateResponse.value = Fail(RuntimeException())
             }
         }, onError = {
-            _userValidateResponse.postValue(Fail(it))
+            _userValidateResponse.value = Fail(it)
         })
     }
 }
