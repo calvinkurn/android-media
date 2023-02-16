@@ -212,6 +212,7 @@ class TopAdsChooseCreditBottomSheet :
         }
         setCloseClickListener {
             sendClickClosePopupKreditOtomatisEvent()
+            dismiss()
         }
     }
 
