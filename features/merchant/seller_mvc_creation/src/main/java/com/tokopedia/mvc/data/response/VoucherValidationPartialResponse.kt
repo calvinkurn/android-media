@@ -1,8 +1,6 @@
 package com.tokopedia.mvc.data.response
 
-
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 
 data class VoucherValidationPartialResponse(
     @SerializedName("VoucherValidationPartial")
@@ -15,8 +13,6 @@ data class VoucherValidationPartialResponse(
         val header: Header = Header()
     ) {
         data class Data(
-            @SerializedName("available_month")
-            val availableMonth: List<VoucherValidationResult.AvailableMonth> = listOf(),
             @SerializedName("total_available_quota")
             val totalAvailableQuota: Int = 0,
             @SerializedName("validation_date")
@@ -113,7 +109,7 @@ data class VoucherValidationPartialResponse(
                 @SerializedName("not_available_reason")
                 val notAvailableReason: String = "",
                 @SerializedName("type")
-                val type: Int = 0,
+                val type: Int = 0
             )
         }
 

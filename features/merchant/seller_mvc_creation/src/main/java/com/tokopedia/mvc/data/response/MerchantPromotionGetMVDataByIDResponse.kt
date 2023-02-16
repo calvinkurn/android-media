@@ -62,6 +62,8 @@ data class MerchantPromotionGetMVDataByIDResponse(
             val updateBy: Int = 0,
             @SerializedName("is_public")
             val isPublic: Int = 0,
+            @SerializedName("is_child")
+            val isChild: Int = 0,
             @SerializedName("is_quota_avaiable")
             val isQuotaAvailable: Int = 0,
             @SerializedName("voucher_type_formatted")
@@ -126,7 +128,7 @@ data class MerchantPromotionGetMVDataByIDResponse(
                 val parentProductId: Long = 0,
                 @SuppressLint("Invalid Data Type")
                 @SerializedName("child_product_id")
-                val chilProductId: List<Long>? = listOf(),
+                val chilProductId: List<Long>? = listOf()
             )
         }
 

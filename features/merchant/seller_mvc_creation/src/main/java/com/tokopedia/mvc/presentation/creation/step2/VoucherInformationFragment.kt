@@ -38,8 +38,7 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.UnavailableRecurringDateErrorType.NEW_FOLLOWER_VOUCHER_ALREADY_EXIST
-import com.tokopedia.mvc.domain.entity.enums.UnavailableRecurringDateErrorType.SAME_DATE_VOUCHER_ALREADY_EXIST
+import com.tokopedia.mvc.domain.entity.enums.UnavailableRecurringDateErrorType
 import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ForbiddenWordsBottomSheet
@@ -51,7 +50,6 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
-import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -87,8 +85,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
-                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
-                        ArrayList(selectedProducts))
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                        ArrayList(selectedProducts)
+                    )
                 }
             }
         }
@@ -118,7 +118,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             ?: VoucherConfiguration()
     }
     private val selectedProducts by lazy {
-        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
+    }
     private var startCalendar: GregorianCalendar? = null
     private var endCalendar: GregorianCalendar? = null
     private var minCalendar: GregorianCalendar? = null
@@ -345,6 +346,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
             voucherPeriodSectionBinding?.run {
                 cbRepeatPeriod.disable()
+                tfRepeat.disable()
+                iconChevronDown.disable()
             }
         }
         voucherPeriodSectionBinding?.run {
@@ -358,6 +361,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                     DATE_TIME_MINUTE_PRECISION
                 )
             )
+            cbRepeatPeriod.isChecked = voucherConfiguration.isPeriod
         }
     }
 
@@ -640,8 +644,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun onClickListenerForEndDate() {
         context?.run {
-            minCalendar?.let { minDate ->
-                DateTimeUtils.getMaxDate(minCalendar)?.let { maxDate ->
+            startCalendar?.let { minDate ->
+                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             decideCalendarPeriodEndDate(minCalendar, maxCalendar),
@@ -757,35 +761,49 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun renderAvailableRecurringPeriod(
         validationDate: List<VoucherValidationResult.ValidationDate>
     ) {
-        voucherPeriodSectionBinding?.run {
-            val availableDate = validationDate.filter { it.available }
-            val unAvailableDate = validationDate.filter { !it.available }
-            if (availableDate.isNotEmpty()) {
-                recurringPeriodView.run {
-                    type = RecurringDateScheduleCustomView.TYPE_NORMAL
-                    title = getString(R.string.smvc_voucher_active_label)
-                    isVisible = tfRepeat.isVisible
+        val availableDate = validationDate.filter { it.available }
+        val unAvailableDate = validationDate.filter { !it.available }
+        if (availableDate.isNotEmpty()) {
+            setupAvailableRecurringPeriod(availableDate)
+        }
 
-                    val firstPeriodStartDate = DateUtil.formatDate(
+        if (unAvailableDate.isNotEmpty()) {
+            setupUnAvailableRecurringPeriod(unAvailableDate)
+        }
+    }
+
+    private fun setupAvailableRecurringPeriod(availableDate: List<VoucherValidationResult.ValidationDate>) {
+        voucherPeriodSectionBinding?.apply {
+            recurringPeriodView.run {
+                type = RecurringDateScheduleCustomView.TYPE_NORMAL
+                title = getString(R.string.smvc_voucher_active_label)
+                isVisible = tfRepeat.isVisible
+
+                val firstPeriodStartDate = availableDate.firstOrNull()?.dateStart?.let { startDate ->
+                    DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
                         DATE_YEAR_PRECISION,
-                        availableDate.first().dateStart
+                        startDate
                     )
-                    val firstPeriodStartHour = availableDate.first().hourStart
-                    val firstPeriodEndDate = DateUtil.formatDate(
+                }
+                val firstPeriodStartHour = availableDate.firstOrNull()?.hourStart
+                val firstPeriodEndDate = availableDate.firstOrNull()?.dateEnd?.let { endDate ->
+                    DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
                         DATE_YEAR_PRECISION,
-                        availableDate.first().dateEnd
+                        endDate
                     )
-                    val firstPeriodEndHour = availableDate.first().hourEnd
-                    firstSchedule = getString(
-                        R.string.smvc_recurring_date_palceholder_value,
-                        firstPeriodStartDate,
-                        firstPeriodStartHour,
-                        firstPeriodEndDate,
-                        firstPeriodEndHour
-                    )
+                }
+                val firstPeriodEndHour = availableDate.firstOrNull()?.hourEnd
+                firstSchedule = getString(
+                    R.string.smvc_recurring_date_palceholder_value,
+                    firstPeriodStartDate,
+                    firstPeriodStartHour,
+                    firstPeriodEndDate,
+                    firstPeriodEndHour
+                )
 
+                try {
                     val secondPeriodStartDate = DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
                         DATE_YEAR_PRECISION,
@@ -798,6 +816,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         availableDate[Int.ONE].dateEnd
                     )
                     val secondPeriodEndHour = availableDate[Int.ONE].hourEnd
+                    tpgSecondSchedule?.visible()
                     secondSchedule = getString(
                         R.string.smvc_recurring_date_palceholder_value,
                         secondPeriodStartDate,
@@ -805,53 +824,63 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         secondPeriodEndDate,
                         secondPeriodEndHour
                     )
+                } catch (_: Throwable) {
+                    tpgSecondSchedule?.gone()
+                }
 
-                    isShowOtherScheduleButton =
-                        availableDate.size > minimumActivePeriodCountToShowFullSchedule
+                isShowOtherScheduleButton =
+                    availableDate.size > minimumActivePeriodCountToShowFullSchedule
 
-                    btnSeeOtherSchedule?.setOnClickListener {
-                        onClickSeeOtherRecurringPeriod(
-                            getString(R.string.smvc_voucher_active_label),
-                            availableDate
-                        )
-                    }
+                btnSeeOtherSchedule?.setOnClickListener {
+                    onClickSeeOtherRecurringPeriod(
+                        getString(R.string.smvc_voucher_active_label),
+                        availableDate
+                    )
                 }
             }
+        }
+    }
 
-            if (unAvailableDate.isNotEmpty()) {
-                unavailableRecurringPeriodView.run {
-                    type = RecurringDateScheduleCustomView.TYPE_ERROR
-                    title = when (unAvailableDate.first().type) {
-                        SAME_DATE_VOUCHER_ALREADY_EXIST.type -> getString(
-                            R.string.smvc_recurring_date_error_type_1_title
-                        )
-                        NEW_FOLLOWER_VOUCHER_ALREADY_EXIST.type -> getString(
-                            R.string.smvc_recurring_date_error_type_2_title
-                        )
-                        else -> getString(R.string.smvc_recurring_date_error_type_3_title)
-                    }
-                    isVisible = tfRepeat.isVisible
+    private fun setupUnAvailableRecurringPeriod(unAvailableDate: List<VoucherValidationResult.ValidationDate>) {
+        voucherPeriodSectionBinding?.apply {
+            unavailableRecurringPeriodView.run {
+                type = RecurringDateScheduleCustomView.TYPE_ERROR
+                title = when (unAvailableDate.firstOrNull()?.type) {
+                    UnavailableRecurringDateErrorType.SAME_DATE_VOUCHER_ALREADY_EXIST.type -> getString(
+                        R.string.smvc_recurring_date_error_type_1_title
+                    )
+                    UnavailableRecurringDateErrorType.NEW_FOLLOWER_VOUCHER_ALREADY_EXIST.type -> getString(
+                        R.string.smvc_recurring_date_error_type_2_title
+                    )
+                    else -> getString(R.string.smvc_recurring_date_error_type_3_title)
+                }
+                isVisible = tfRepeat.isVisible
 
-                    val firstPeriodStartDate = DateUtil.formatDate(
+                val firstPeriodStartDate = unAvailableDate.firstOrNull()?.dateStart?.let { startDate ->
+                    DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
                         DATE_YEAR_PRECISION,
-                        unAvailableDate.first().dateStart
+                        startDate
                     )
-                    val firstPeriodStartHour = unAvailableDate.first().hourStart
-                    val firstPeriodEndDate = DateUtil.formatDate(
+                }
+                val firstPeriodStartHour = unAvailableDate.firstOrNull()?.hourStart
+                val firstPeriodEndDate = unAvailableDate.firstOrNull()?.dateEnd?.let { endDate ->
+                    DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
                         DATE_YEAR_PRECISION,
-                        unAvailableDate.first().dateEnd
+                        endDate
                     )
-                    val firstPeriodEndHour = unAvailableDate.first().hourEnd
-                    firstSchedule = getString(
-                        R.string.smvc_recurring_date_palceholder_value,
-                        firstPeriodStartDate,
-                        firstPeriodStartHour,
-                        firstPeriodEndDate,
-                        firstPeriodEndHour
-                    )
+                }
+                val firstPeriodEndHour = unAvailableDate.firstOrNull()?.hourEnd
+                firstSchedule = getString(
+                    R.string.smvc_recurring_date_palceholder_value,
+                    firstPeriodStartDate,
+                    firstPeriodStartHour,
+                    firstPeriodEndDate,
+                    firstPeriodEndHour
+                )
 
+                try {
                     val secondPeriodStartDate = DateUtil.formatDate(
                         DateConstant.DATE_MONTH_YEAR_BASIC,
                         DATE_YEAR_PRECISION,
@@ -864,6 +893,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         unAvailableDate[Int.ONE].dateEnd
                     )
                     val secondPeriodEndHour = unAvailableDate[Int.ONE].hourEnd
+                    tpgSecondSchedule?.visible()
                     secondSchedule = getString(
                         R.string.smvc_recurring_date_palceholder_value,
                         secondPeriodStartDate,
@@ -871,16 +901,18 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         secondPeriodEndDate,
                         secondPeriodEndHour
                     )
+                } catch (_: Throwable) {
+                    tpgSecondSchedule?.gone()
+                }
 
-                    isShowOtherScheduleButton =
-                        unAvailableDate.size > minimumActivePeriodCountToShowFullSchedule
+                isShowOtherScheduleButton =
+                    unAvailableDate.size > minimumActivePeriodCountToShowFullSchedule
 
-                    btnSeeOtherSchedule?.setOnClickListener {
-                        onClickSeeOtherRecurringPeriod(
-                            getString(R.string.smvc_voucher_unavailable_label),
-                            unAvailableDate
-                        )
-                    }
+                btnSeeOtherSchedule?.setOnClickListener {
+                    onClickSeeOtherRecurringPeriod(
+                        getString(R.string.smvc_voucher_unavailable_label),
+                        unAvailableDate
+                    )
                 }
             }
         }
@@ -934,12 +966,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun backToPreviousStep(currentVoucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
             if (voucherConfiguration.isFinishedFillAllStep()) {
-                navigateToVoucherSummaryPage(currentVoucherConfiguration)
+                navigateToVoucherSummaryPage(voucherConfiguration)
             } else {
                 navigateToVoucherTypePage(currentVoucherConfiguration)
             }
         } else {
-            navigateToVoucherSummaryPage(currentVoucherConfiguration)
+            navigateToVoucherSummaryPage(voucherConfiguration)
         }
     }
 
@@ -1049,10 +1081,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             btnContinue.apply {
                 val unAvailableDate = validationDate.filter { !it.available }
                 this.isEnabled = isEnabled
-                if (unAvailableDate.isNotEmpty()) {
-                    showCreateVoucherConfirmationDialog(voucherConfiguration)
-                } else {
-                    setOnClickListener {
+                setOnClickListener {
+                    if (unAvailableDate.isNotEmpty()) {
+                        showCreateVoucherConfirmationDialog(voucherConfiguration)
+                    } else {
                         viewModel.processEvent(
                             VoucherCreationStepTwoEvent.NavigateToNextStep(
                                 voucherConfiguration

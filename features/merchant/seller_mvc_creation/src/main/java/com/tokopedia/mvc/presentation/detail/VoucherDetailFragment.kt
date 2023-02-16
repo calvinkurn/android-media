@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
@@ -38,6 +39,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherDetailBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
@@ -146,6 +148,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var tracker: ShareBottomSheetTracker
 
+    @Inject
+    lateinit var sharedPreferencesUtil: SharedPreferencesUtil
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
 
@@ -199,8 +204,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             hideLoading()
             when (result) {
                 is Success -> {
-                    binding?.layoutButtonGroup.showToaster(result.data.message)
-                    getVoucherDetailData(voucherId)
+                    redirectToVoucherListPage()
                 }
                 is Fail -> {
                     binding?.layoutButtonGroup.showToasterError(result.throwable)
@@ -399,11 +403,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            if (data.isVps == TRUE || data.isSubsidy == TRUE) {
+            if (data.isVps == TRUE || data.isSubsidy == TRUE || data.isChild == TRUE) {
                 btnUbahKupon.invisible()
             }
             btnUbahKupon.setOnClickListener {
-                val intent = SummaryActivity.buildEditModeIntent(requireContext(), data.voucherId)
+                val intent = SummaryActivity.buildEditModeIntent(context, data.voucherId)
                 startActivity(intent)
                 voucherDetailTracker.sendClickEditEvent(data)
             }
@@ -1079,6 +1083,32 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             intent,
             NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION
         )
+    }
+
+    private fun redirectToVoucherListPage() {
+        val voucherDetailData = viewModel.getCurrentVoucherDetailData()
+        context?.let { ctx ->
+            voucherDetailData?.let { getStringSuccessStopVoucher(it.voucherStatus, it.voucherName) }
+                ?.let { message ->
+                    sharedPreferencesUtil.setUploadResult(
+                        ctx,
+                        message
+                    )
+                }
+        }
+        RouteManager.route(context, SELLER_MVC_LIST_HISTORY)
+        activity?.finish()
+    }
+
+    private fun getStringSuccessStopVoucher(
+        voucherStatus: VoucherStatus,
+        voucherName: String
+    ): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_success_to_deleted_voucher, voucherName)
+        } else {
+            getString(R.string.smvc_success_to_cancel_voucher, voucherName)
+        }
     }
 
     private fun goToTokopediaCare() {
