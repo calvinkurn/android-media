@@ -892,7 +892,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
 
         override fun onClickOutsideBottomSheet() {
-            viewModel.onDismissBadRatingCategoryBottomSheet()
+            viewModel.onCancelBadRatingCategoryBottomSheet()
         }
     }
 

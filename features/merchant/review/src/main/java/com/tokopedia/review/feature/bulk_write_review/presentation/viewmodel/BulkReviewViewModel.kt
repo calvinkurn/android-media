@@ -765,7 +765,7 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewToasterCtaKeyEvents.tryEmit(data)
     }
 
-    fun onDismissBadRatingCategoryBottomSheet() {
+    fun onCancelBadRatingCategoryBottomSheet() {
         val uiState = _badRatingCategoryBottomSheetUiState.value
         if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
             if (uiState.badRatingCategories.none { it.selected }) {
