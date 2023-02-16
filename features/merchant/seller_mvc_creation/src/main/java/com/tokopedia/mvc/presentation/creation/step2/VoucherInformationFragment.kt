@@ -359,6 +359,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                     DATE_TIME_MINUTE_PRECISION
                 )
             )
+            cbRepeatPeriod.isChecked = voucherConfiguration.isPeriod
         }
     }
 
