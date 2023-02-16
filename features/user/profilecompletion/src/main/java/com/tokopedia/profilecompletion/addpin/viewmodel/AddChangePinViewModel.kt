@@ -5,11 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.verification.data.OtpConstant
-import com.tokopedia.profilecompletion.addpin.data.*
+import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
+import com.tokopedia.profilecompletion.addpin.data.CheckPinData
+import com.tokopedia.profilecompletion.addpin.data.CreatePinV2Param
+import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
+import com.tokopedia.profilecompletion.addpin.data.StatusPinData
+import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
 import com.tokopedia.profilecompletion.addpin.data.usecase.CreatePinV2UseCase
 import com.tokopedia.profilecompletion.changepin.data.model.MutatePinV2Data
 import com.tokopedia.profilecompletion.common.PinPreference
@@ -17,6 +21,11 @@ import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.profilecompletion.domain.CheckPinUseCase
+import com.tokopedia.profilecompletion.domain.CreatePinUseCase
+import com.tokopedia.profilecompletion.domain.SkipOtpPinUseCase
+import com.tokopedia.profilecompletion.domain.StatusPinUseCase
+import com.tokopedia.profilecompletion.domain.ValidatePinUseCase
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -31,14 +40,13 @@ import javax.inject.Inject
  */
 
 class AddChangePinViewModel @Inject constructor(
-    private val addPinUseCase: GraphqlUseCase<AddPinPojo>,
+    private val createPinUseCase: CreatePinUseCase,
     private val createPinV2UseCase: CreatePinV2UseCase,
-    private val checkPinUseCase: GraphqlUseCase<CheckPinPojo>,
+    private val checkPinUseCase: CheckPinUseCase,
     private val checkPinV2UseCase: CheckPinV2UseCase,
-    private val getStatusPinUseCase: GraphqlUseCase<StatusPinPojo>,
-    private val validatePinUseCase: GraphqlUseCase<ValidatePinPojo>,
-    private val skipOtpPinUseCase: GraphqlUseCase<SkipOtpPinPojo>,
-    private val rawQueries: Map<String, String>,
+    private val statusPinUseCase: StatusPinUseCase,
+    private val validatePinUseCase: ValidatePinUseCase,
+    private val skipOtpPinUseCase: SkipOtpPinUseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val pinPreference: PinPreference,
     dispatcher: CoroutineDispatchers
@@ -77,17 +85,21 @@ class AddChangePinViewModel @Inject constructor(
     val loadingState = MutableLiveData<Boolean>()
 
     fun addPin(token: String) {
-        rawQueries[ProfileCompletionQueryConstant.MUTATION_CREATE_PIN]?.let { query ->
-            val params = mapOf(ProfileCompletionQueryConstant.PARAM_TOKEN to token)
+        val params = mapOf(ProfileCompletionQueryConstant.PARAM_TOKEN to token)
 
-            addPinUseCase.setTypeClass(AddPinPojo::class.java)
-            addPinUseCase.setRequestParams(params)
-            addPinUseCase.setGraphqlQuery(query)
-            addPinUseCase.execute(
-                onSuccessAddPin(),
-                onErrorAddPin()
-            )
-        }
+        launchCatchError(block = {
+            val response = createPinUseCase(params)
+
+            when {
+                response.data.success -> mutableAddPinResponse.value = Success(response.data)
+                response.data.errorAddChangePinData.isNotEmpty() && response.data.errorAddChangePinData[0].message.isNotEmpty() ->
+                    mutableAddPinResponse.value =
+                        Fail(MessageErrorException(response.data.errorAddChangePinData[0].message))
+                else -> mutableAddPinResponse.value = Fail(RuntimeException())
+            }
+        }, onError = {
+            mutableAddPinResponse.value = Fail(it)
+        })
     }
 
     fun addPinV2(validateToken: String) {
@@ -111,37 +123,21 @@ class AddChangePinViewModel @Inject constructor(
         })
     }
 
-    private fun onErrorAddPin(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutableAddPinResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessAddPin(): (AddPinPojo) -> Unit {
-        return {
-            when {
-                it.data.success -> mutableAddPinResponse.value = Success(it.data)
-                it.data.errorAddChangePinData.isNotEmpty() && it.data.errorAddChangePinData[0].message.isNotEmpty() ->
-                    mutableAddPinResponse.value =
-                        Fail(MessageErrorException(it.data.errorAddChangePinData[0].message))
-                else -> mutableAddPinResponse.value = Fail(RuntimeException())
-            }
-        }
-    }
-
     fun checkPin(pin: String) {
-        rawQueries[ProfileCompletionQueryConstant.QUERY_CHECK_PIN]?.let { query ->
-            val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
+        val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
 
-            checkPinUseCase.setTypeClass(CheckPinPojo::class.java)
-            checkPinUseCase.setRequestParams(params)
-            checkPinUseCase.setGraphqlQuery(query)
-            checkPinUseCase.execute(
-                onSuccessCheckPin(),
-                onErrorCheckPin()
-            )
-        }
+        launchCatchError(block = {
+            val response = checkPinUseCase(params)
+
+            when {
+                response.data.valid -> mutableCheckPinResponse.value = Success(response.data)
+                response.data.errorMessage.isNotEmpty() ->
+                    mutableCheckPinResponse.value = Success(response.data)
+                else -> mutableCheckPinResponse.value = Fail(RuntimeException())
+            }
+        }, onError = {
+            mutableCheckPinResponse.value = Fail(it)
+        })
     }
 
     fun checkPinV2(pin: String) {
@@ -169,121 +165,60 @@ class AddChangePinViewModel @Inject constructor(
         })
     }
 
-    private fun onErrorCheckPin(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutableCheckPinResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessCheckPin(): (CheckPinPojo) -> Unit {
-        return {
-            when {
-                it.data.valid -> mutableCheckPinResponse.value = Success(it.data)
-                it.data.errorMessage.isNotEmpty() ->
-                    mutableCheckPinResponse.value = Success(it.data)
-                else -> mutableCheckPinResponse.value = Fail(RuntimeException())
-            }
-        }
-    }
-
     fun getStatusPin() {
-        loadingState.postValue(true)
-        rawQueries[ProfileCompletionQueryConstant.QUERY_GET_STATUS_PIN]?.let { query ->
-            getStatusPinUseCase.setTypeClass(StatusPinPojo::class.java)
-            getStatusPinUseCase.setGraphqlQuery(query)
-            getStatusPinUseCase.execute(
-                onSuccessGetStatusPin(),
-                onErrorGetStatusPin()
-            )
-        }
-    }
+        loadingState.value = true
 
-    private fun onErrorGetStatusPin(): (Throwable) -> Unit {
-        loadingState.postValue(false)
-        return {
-            it.printStackTrace()
-            mutableGetStatusPinResponse.value = Fail(it)
-        }
-    }
+        launchCatchError(block = {
+            val response = statusPinUseCase(Unit)
 
-    private fun onSuccessGetStatusPin(): (StatusPinPojo) -> Unit {
-        loadingState.postValue(false)
-        return {
-            if (it.data.errorMessage.isNotEmpty()) {
+            loadingState.value = false
+            if (response.data.errorMessage.isNotEmpty()) {
                 mutableGetStatusPinResponse.value =
-                    Fail(MessageErrorException(it.data.errorMessage))
+                    Fail(MessageErrorException(response.data.errorMessage))
             } else {
-                mutableGetStatusPinResponse.value = Success(it.data)
+                mutableGetStatusPinResponse.value = Success(response.data)
             }
-        }
+        }, onError = {
+            loadingState.value = false
+            mutableGetStatusPinResponse.value = Fail(it)
+        })
     }
 
     fun validatePin(pin: String) {
-        rawQueries[ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN]?.let { query ->
-            val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
+        val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
 
-            validatePinUseCase.setTypeClass(ValidatePinPojo::class.java)
-            validatePinUseCase.setRequestParams(params)
-            validatePinUseCase.setGraphqlQuery(query)
-            validatePinUseCase.execute(
-                onSuccessValidatePin(),
-                onErrorValidatePin()
-            )
-        }
-    }
+        launchCatchError(block = {
+            val response = validatePinUseCase(params)
 
-    private fun onErrorValidatePin(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutableValidatePinResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessValidatePin(): (ValidatePinPojo) -> Unit {
-        return {
             when {
-                it.data.valid -> mutableValidatePinResponse.value = Success(it.data)
-                it.data.errorMessage.isNotEmpty() ->
-                    mutableValidatePinResponse.value = Success(it.data)
+                response.data.valid -> mutableValidatePinResponse.value = Success(response.data)
+                response.data.errorMessage.isNotEmpty() ->
+                    mutableValidatePinResponse.value = Success(response.data)
                 else -> mutableValidatePinResponse.value = Fail(RuntimeException())
             }
-        }
+        }, onError = {
+            mutableValidatePinResponse.value = Fail(it)
+        })
     }
 
     fun checkSkipOtpPin(validateToken: String) {
-        rawQueries[ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN]?.let { query ->
-            val params = mapOf(
-                ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION,
-                ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN_SKIP_OTP to validateToken
-            )
+        val params = mapOf(
+            ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION,
+            ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN_SKIP_OTP to validateToken
+        )
 
-            skipOtpPinUseCase.setTypeClass(SkipOtpPinPojo::class.java)
-            skipOtpPinUseCase.setRequestParams(params)
-            skipOtpPinUseCase.setGraphqlQuery(query)
-            skipOtpPinUseCase.execute(
-                onSuccessCheckSkipOtpPin(),
-                onErrorCheckSkipOtpPin()
-            )
-        }
-    }
+        launchCatchError(block = {
+            val response = skipOtpPinUseCase(params)
 
-    private fun onErrorCheckSkipOtpPin(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutableSkipOtpPinResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessCheckSkipOtpPin(): (SkipOtpPinPojo) -> Unit {
-        return {
             when {
-                it.data.errorMessage.isNotEmpty() ->
+                response.data.errorMessage.isNotEmpty() ->
                     mutableSkipOtpPinResponse.value =
-                        Fail(MessageErrorException(it.data.errorMessage))
-                else -> mutableSkipOtpPinResponse.value = Success(it.data)
+                        Fail(MessageErrorException(response.data.errorMessage))
+                else -> mutableSkipOtpPinResponse.value = Success(response.data)
             }
-        }
+        }, onError = {
+            mutableSkipOtpPinResponse.value = Fail(it)
+        })
     }
 
     suspend fun getPublicKey(): KeyData {

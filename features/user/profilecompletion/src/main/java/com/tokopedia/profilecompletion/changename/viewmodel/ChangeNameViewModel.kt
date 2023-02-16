@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_NAME
+import com.tokopedia.profilecompletion.domain.ChangeNameUseCase
+import com.tokopedia.profilecompletion.domain.UserProfileRuleUseCase
 import com.tokopedia.profilecompletion.profilecompletion.data.ProfileRoleData
 import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileRoleData
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,9 +24,8 @@ import javax.inject.Inject
  * created by rival 23/10/19
  */
 class ChangeNameViewModel @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<ChangeNamePojo>,
-    private val userProfileRoleUseCase: GraphqlUseCase<UserProfileRoleData>,
-    private val rawQueries: Map<String, String>,
+    private val changeNameUseCase: ChangeNameUseCase,
+    private val userProfileRuleUseCase: UserProfileRuleUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -36,49 +38,29 @@ class ChangeNameViewModel @Inject constructor(
 	get() = mutableUserProfileRole
 
     fun changePublicName(publicName: String) {
-	rawQueries[ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME]?.let { query ->
-	    val params = mapOf(PARAM_NAME to publicName)
+        val params = mapOf(PARAM_NAME to publicName)
 
-	    graphqlUseCase.setTypeClass(ChangeNamePojo::class.java)
-	    graphqlUseCase.setRequestParams(params)
-	    graphqlUseCase.setGraphqlQuery(query)
+        launchCatchError(block = {
+            val response = changeNameUseCase(params)
 
-	    graphqlUseCase.execute(
-		onSuccessMutateChangeName(publicName),
-		onErrorMutateChangeName()
-	    )
-	}
-    }
-
-    private fun onErrorMutateChangeName(): (Throwable) -> Unit {
-	return {
-	    it.printStackTrace()
-	    mutableChangeNameResponse.postValue(Fail(it))
-	}
-    }
-
-    private fun onSuccessMutateChangeName(fullname: String): (ChangeNamePojo) -> Unit {
-	return {
-	    val errorMessage = it.data.errors
-	    val isSuccess = it.data.isSuccess
-	    if (errorMessage.size == 0 && isSuccess == 1) {
-		mutableChangeNameResponse.postValue(Success(ChangeNameResult(it.data, fullname)))
-	    } else if (errorMessage.isNotEmpty()) {
-		mutableChangeNameResponse.postValue(Fail(MessageErrorException(errorMessage[0])))
-	    }
-	}
+            val errorMessage = response.data.errors
+            val isSuccess = response.data.isSuccess
+            if (errorMessage.size == 0 && isSuccess == 1) {
+                mutableChangeNameResponse.value = Success(ChangeNameResult(response.data, publicName))
+            } else if (errorMessage.isNotEmpty()) {
+                mutableChangeNameResponse.value = Fail(MessageErrorException(errorMessage[0]))
+            }
+        }, onError = {
+            mutableChangeNameResponse.value = Fail(it)
+        })
     }
 
     fun getUserProfileRole() {
-	rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]?.let { query ->
-	    userProfileRoleUseCase.run {
-		setGraphqlQuery(query)
-		execute(onSuccess = {
-		    mutableUserProfileRole.postValue(Success(it.profileRoleData))
-		}, onError = {
-		    mutableUserProfileRole.postValue(Fail(it))
-		})
-	    }
-	}
+        launchCatchError(block = {
+            val response = userProfileRuleUseCase(Unit)
+            mutableUserProfileRole.value = Success(response.profileRoleData)
+        }, onError = {
+            mutableUserProfileRole.value = Fail(it)
+        })
     }
 }

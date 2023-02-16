@@ -76,7 +76,7 @@ class ProfileCompletionGenderFragment : BaseDaggerFragment() {
 		if (it == -1) {
 		    profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_gender))
 		} else {
-		    context?.let { ctx -> viewModel.mutateChangeGender(ctx, it) }
+		    viewModel.mutateChangeGender(it)
 		}
 	    }
 	}

@@ -117,7 +117,7 @@ class AddBodFragment : BaseDaggerFragment() {
 	    if (selectedDate.isNotBlank()) {
 		showLoading()
 		tracker.trackOnBtnSimpanChangeBirthdayClick()
-		addBodViewModel.editBodUserProfile(requireContext(), selectedDate)
+		addBodViewModel.editBodUserProfile(selectedDate)
 	    }
 	}
 

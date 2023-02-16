@@ -1,16 +1,13 @@
 package com.tokopedia.profilecompletion.changegender.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_GENDER
+import com.tokopedia.profilecompletion.domain.ChangeGenderUseCase
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,54 +15,35 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ChangeGenderViewModel @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<ChangeGenderPojo>,
+    private val changeGenderUseCase: ChangeGenderUseCase,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     val mutateChangeGenderResponse = MutableLiveData<Result<ChangeGenderResult>>()
 
-    fun mutateChangeGender(context: Context, gender: Int) {
+    fun mutateChangeGender(gender: Int) {
+        val params = mapOf(PARAM_GENDER to gender)
 
-	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_gender)?.let { query ->
+        launchCatchError(block = {
+            val response = changeGenderUseCase(params)
 
-	    val params = mapOf(PARAM_GENDER to gender)
+            val errorMessage = response.data.errorMessage
+            val isSuccess = response.data.isSuccess
 
-	    graphqlUseCase.setTypeClass(ChangeGenderPojo::class.java)
-	    graphqlUseCase.setRequestParams(params)
-	    graphqlUseCase.setGraphqlQuery(query)
-
-	    graphqlUseCase.execute(
-		onSuccessMutateChangeGender(gender),
-		onErrorMutateChangeGender()
-	    )
-	}
-    }
-
-    private fun onErrorMutateChangeGender(): (Throwable) -> Unit {
-	return {
-	    it.printStackTrace()
-	    mutateChangeGenderResponse.value = Fail(it)
-	}
-    }
-
-    private fun onSuccessMutateChangeGender(gender: Int): (ChangeGenderPojo) -> Unit {
-	return {
-
-	    val errorMessage = it.data.errorMessage
-	    val isSuccess = it.data.isSuccess
-
-	    if (errorMessage.isBlank() && isSuccess) {
-		mutateChangeGenderResponse.value = Success(ChangeGenderResult(it.data, gender))
-	    } else if (!errorMessage.isBlank()) {
-		mutateChangeGenderResponse.value = Fail(
-		    MessageErrorException(
-			errorMessage,
-			ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
-		    )
-		)
-	    } else {
-		mutateChangeGenderResponse.value = Fail(RuntimeException())
-	    }
-	}
+            if (errorMessage.isBlank() && isSuccess) {
+                mutateChangeGenderResponse.value = Success(ChangeGenderResult(response.data, gender))
+            } else if (errorMessage.isNotBlank()) {
+                mutateChangeGenderResponse.value = Fail(
+                    MessageErrorException(
+                        errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
+                    )
+                )
+            } else {
+                mutateChangeGenderResponse.value = Fail(RuntimeException())
+            }
+        }, onError = {
+            mutateChangeGenderResponse.value = Fail(it)
+        })
     }
 }

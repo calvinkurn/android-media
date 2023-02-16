@@ -8,9 +8,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.domain.UserProfileCompletionUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
 import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase.Companion.PARAM_UPLOAD_ID
 import com.tokopedia.profilecompletion.profilecompletion.data.ProfileCompletionData
@@ -31,7 +33,7 @@ import javax.inject.Inject
  */
 
 class ProfileInfoViewModel @Inject constructor(
-    private val userProfileInfoUseCase: GraphqlUseCase<UserProfileInfoData>,
+    private val userProfileInfoUseCase: UserProfileCompletionUseCase,
     private val uploader: UploaderUseCase,
     private val saveProfilePictureUseCase: SaveProfilePictureUseCase,
     private val userSession: UserSessionInterface,
@@ -44,23 +46,17 @@ class ProfileInfoViewModel @Inject constructor(
     private val _saveImageProfileResponse = MutableLiveData<Result<String>>()
     val saveImageProfileResponse: LiveData<Result<String>> = _saveImageProfileResponse
 
-    fun getUserProfileInfo(context: Context) {
-	GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
-	    ?.let { query ->
-		userProfileInfoUseCase.run {
-		    setGraphqlQuery(query)
-		    execute(
-			{
-			    it.profileCompletionData.apply {
-				this.profilePicture = userSession.profilePicture
-				userProfileInfo.value = Success(this)
-			    }
-			}, {
-			    userProfileInfo.value = Fail(it)
-			}
-		    )
-		}
-	    }
+    fun getUserProfileInfo() {
+        launchCatchError(block = {
+            val response = userProfileInfoUseCase(Unit)
+
+            response.profileCompletionData.apply {
+                this.profilePicture = userSession.profilePicture
+                userProfileInfo.value = Success(this)
+            }
+        }, onError = {
+            userProfileInfo.value = Fail(it)
+        })
     }
 
     /* Use media uploader */

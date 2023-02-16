@@ -4,23 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_PHONE
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN
+import com.tokopedia.profilecompletion.addphone.domain.UserProfileUpdateUseCase
+import com.tokopedia.profilecompletion.addphone.domain.UserProfileValidateUseCase
+import com.tokopedia.profilecompletion.addphone.domain.param.UserProfileUpdateParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class AddPhoneViewModel @Inject constructor(
-    private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
-    private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
-    private val rawQueries: Map<String, String>,
+    private val userProfileUpdateUseCase: UserProfileUpdateUseCase,
+    private val userProfileValidateUseCase: UserProfileValidateUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -33,79 +31,47 @@ class AddPhoneViewModel @Inject constructor(
         get() = _userValidateResponse
 
     fun mutateAddPhone(msisdn: String, validateToken: String) {
-        rawQueries[ProfileCompletionQueryConstant.MUTATION_ADD_PHONE]?.let { query ->
-            val params = mapOf(
-                PARAM_PHONE to msisdn,
-                PARAM_VALIDATE_TOKEN to validateToken
-            )
+        val params = UserProfileUpdateParam(
+            phone = msisdn,
+            currentValidateToken = validateToken
+        )
 
-            addPhoneGraphQlUseCase.setTypeClass(AddPhonePojo::class.java)
-            addPhoneGraphQlUseCase.setRequestParams(params)
-            addPhoneGraphQlUseCase.setGraphqlQuery(query)
+        launchCatchError(block = {
+            val response = userProfileUpdateUseCase(params)
 
-            addPhoneGraphQlUseCase.execute(
-                onSuccessMutateAddPhone(msisdn),
-                onErrorMutateAddPhone()
-            )
-        }
-    }
-
-    private fun onErrorMutateAddPhone(): (Throwable) -> Unit {
-        return {
-            _addPhoneResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessMutateAddPhone(msisdn: String): (AddPhonePojo) -> Unit {
-        return {
-            val errorMessage = it.data.errors
-            val isSuccess = it.data.isSuccess
+            val errorMessage = response.data.errors
+            val isSuccess = response.data.isSuccess
 
             when {
                 isSuccess == 1 -> {
-                    _addPhoneResponse.value = Success(AddPhoneResult(it, msisdn))
+                    _addPhoneResponse.value = Success(AddPhoneResult(response, msisdn))
                 }
                 errorMessage.isNotEmpty() && errorMessage[0].isNotEmpty() -> {
                     _addPhoneResponse.postValue(Fail(MessageErrorException(errorMessage[0])))
                 }
                 else -> _addPhoneResponse.postValue(Fail(RuntimeException()))
             }
-        }
+        }, onError = {
+            _addPhoneResponse.value = Fail(it)
+        })
     }
 
     fun userProfileValidate(msisdn: String) {
-        rawQueries[ProfileCompletionQueryConstant.MUTATION_USER_VALIDATE]?.let { query ->
-            val params = mapOf(PARAM_PHONE to msisdn)
+        launchCatchError(block = {
+            val response = userProfileValidateUseCase(msisdn)
 
-            userValidateGraphQlUseCase.setTypeClass(UserValidatePojo::class.java)
-            userValidateGraphQlUseCase.setRequestParams(params)
-            userValidateGraphQlUseCase.setGraphqlQuery(query)
-
-            userValidateGraphQlUseCase.execute(
-                onSuccessUserValidatePojo(),
-                onErrorUserValidatePojo()
-            )
-        }
-    }
-
-    private fun onErrorUserValidatePojo(): (Throwable) -> Unit {
-        return {
-            _userValidateResponse.postValue(Fail(it))
-        }
-    }
-
-    private fun onSuccessUserValidatePojo(): (UserValidatePojo) -> Unit {
-        return {
-            val errorMessage = it.userProfileValidate.message
-            val isValid = it.userProfileValidate.isValid
+            val errorMessage = response.userProfileValidate.message
+            val isValid = response.userProfileValidate.isValid
 
             when {
-                isValid -> _userValidateResponse.value = Success(it)
+                isValid -> _userValidateResponse.value = Success(response)
                 errorMessage.isNotEmpty() -> _userValidateResponse.postValue(
                     Fail(MessageErrorException(errorMessage))
                 )
                 else -> _userValidateResponse.postValue(Fail(RuntimeException()))
             }
-        }
+        }, onError = {
+            _userValidateResponse.postValue(Fail(it))
+        })
     }
 }

@@ -1,30 +1,31 @@
-package com.tokopedia.profilecompletion.addphone.domain
+package com.tokopedia.profilecompletion.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
-import com.tokopedia.profilecompletion.addphone.domain.param.UserProfileUpdateParam
+import com.tokopedia.profilecompletion.addpin.data.StatusPinPojo
+import com.tokopedia.profilecompletion.addpin.data.ValidatePinPojo
 import javax.inject.Inject
 
-class UserProfileUpdateUseCase @Inject constructor(
+class ValidatePinUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<UserProfileUpdateParam, AddPhonePojo>(dispatchers.io) {
+) : CoroutineUseCase<Map<String, String>, ValidatePinPojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-          mutation userProfileUpdate(${'$'}phone: String!, ${'$'}currValidateToken: String!) {
-            userProfileUpdate(phone: ${'$'}phone, currValidateToken: ${'$'}currValidateToken) {
-              isSuccess
-              errors
+          query validatePin(${'$'}pin: String!) {
+            validate_pin(pin: ${'$'}pin) {
+              valid
+              error_message
+              pin_attempted
+              max_pin_attempt
             }
           }
         """.trimIndent()
 
-    override suspend fun execute(params: UserProfileUpdateParam): AddPhonePojo {
+    override suspend fun execute(params: Map<String, String>): ValidatePinPojo {
         return repository.request(graphqlQuery(), params)
     }
-
 }

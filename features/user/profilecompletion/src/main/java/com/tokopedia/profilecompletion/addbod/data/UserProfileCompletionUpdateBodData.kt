@@ -7,6 +7,15 @@ import com.google.gson.annotations.SerializedName
  * ade.hadian@tokopedia.com
  */
 
+data class AddBodData(
+    @SerializedName("isSuccess")
+    var isSuccess: Boolean = false,
+    @SerializedName("birthDateMessage")
+    var birthDateMessage: String = "",
+    @SerializedName("completionScore")
+    var completionScore: Int = 0
+)
+
 data class UserProfileCompletionUpdateBodData(
     @SerializedName("userProfileCompletionUpdate")
     var addBodData: AddBodData = AddBodData()

@@ -108,7 +108,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.wrong_email_format), isButtonEnabled = true)
             } else {
                 showLoading()
-                context?.run { viewModel.checkEmail(this, email) }
+                context?.run { viewModel.checkEmail(email) }
             }
         }
     }
@@ -222,7 +222,7 @@ class AddEmailFragment : BaseDaggerFragment() {
             val validateToken = getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
             if (otpCode.isNotBlank()) {
                 val email = et_email.editText.text.toString().trim()
-                viewModel.mutateAddEmail(requireContext(), email, otpCode, validateToken)
+                viewModel.mutateAddEmail(email, otpCode, validateToken)
             } else {
                 onErrorAddEmail(
                     MessageErrorException(
