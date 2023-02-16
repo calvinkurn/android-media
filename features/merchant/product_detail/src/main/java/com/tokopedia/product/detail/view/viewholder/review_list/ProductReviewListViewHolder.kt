@@ -54,13 +54,13 @@ class ProductReviewListViewHolder(
     }
 
     private fun showLoading() {
-
     }
 
     private fun ItemDynamicReviewListBinding.renderUI(element: ProductReviewListDataModel) {
         renderHeader(uiModel = element.data)
         renderItems(uiModel = element.data, trackDataModel = getComponentTrackData(element))
-        impression(element = element)
+        setEventClick(uiModel = element.data)
+        setImpression(element = element)
     }
 
     private fun ItemDynamicReviewListBinding.renderHeader(uiModel: ProductReviewListUiModel) {
@@ -72,7 +72,15 @@ class ProductReviewListViewHolder(
         adapter.submitList(uiModel.reviews, trackDataModel = trackDataModel)
     }
 
-    private fun ItemDynamicReviewListBinding.impression(element: ProductReviewListDataModel) {
+    private fun ItemDynamicReviewListBinding.setEventClick(uiModel: ProductReviewListUiModel) {
+        if (uiModel.appLink.isNotBlank()) {
+            reviewListSeeMore.setOnClickListener {
+                listener.goToApplink(url = uiModel.appLink)
+            }
+        }
+    }
+
+    private fun ItemDynamicReviewListBinding.setImpression(element: ProductReviewListDataModel) {
         root.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
