@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.R
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 
@@ -142,7 +141,11 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
             }
         }
         if (isFinishCurrent) {
-            supportFragmentManager.popBackStackImmediate()
+            if (getShouldPopBackStackImmediately()) {
+                supportFragmentManager.popBackStackImmediate()
+            } else {
+                supportFragmentManager.popBackStack()
+            }
         }
         ft.add(
             R.id.frame_content,
@@ -159,8 +162,12 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
                 while (i >= 0) {
                     prevFragment = supportFragmentManager.fragments.getOrNull(i)
                     if (prevFragment?.isHidden == false && prevFragment.isAdded) {
+                        val shouldPopBackStackImmediately = getShouldPopBackStackImmediately()
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
+                            if (!shouldPopBackStackImmediately) {
+                                ft.hide(prevFragment)
+                            }
                         } else {
                             try {
                                 ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
@@ -168,7 +175,9 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
                                 ex.printStackTrace()
                             }
                         }
-                        ft.hide(prevFragment)
+                        if (shouldPopBackStackImmediately) {
+                            ft.hide(prevFragment)
+                        }
                     }
                     i--
                 }
@@ -284,6 +293,10 @@ abstract class BaseMultiFragActivity : BaseToolbarActivity() {
     private fun getIsNavigatingToSameFragment(destinationFragmentName: String): Boolean {
         val currentFragmentName = supportFragmentManager.fragments.lastOrNull()?.javaClass?.name
         return currentFragmentName == destinationFragmentName
+    }
+
+    private fun getShouldPopBackStackImmediately(): Boolean {
+        return true
     }
 
     private fun Fragment.getFragmentLaunchMode(): BaseMultiFragmentLaunchMode {
