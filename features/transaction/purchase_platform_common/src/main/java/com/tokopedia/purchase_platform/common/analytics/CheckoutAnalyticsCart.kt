@@ -948,7 +948,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.IMPRESSION_CART_BUNDLING_BOTTOM_SHEET_BUNDLE,
             ExtraKey.USER_ID to userId
         )
-        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.SELECT_CONTENT, bundle)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
     }
 
     // TrackerId: 41254
