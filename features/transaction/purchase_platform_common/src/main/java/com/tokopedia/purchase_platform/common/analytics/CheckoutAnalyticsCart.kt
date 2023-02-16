@@ -936,8 +936,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     fun eventViewCartBundlingBottomSheetBundle(
         userId: String,
         bundleId: String,
-        bundleType: String,
-        promotions: List<Bundle>
+        bundleType: String
     ) {
         val bundle = bundleOf(
             ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.VIEW_ITEM,
@@ -947,17 +946,17 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
             ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
             ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.IMPRESSION_CART_BUNDLING_BOTTOM_SHEET_BUNDLE,
-            ExtraKey.PROMOTIONS to promotions,
             ExtraKey.USER_ID to userId
         )
-        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.SELECT_CONTENT, bundle)
     }
 
     // TrackerId: 41254
     fun eventClickCartBundlingBottomSheetBundleWidgetAction(
         userId: String,
         bundleId: String,
-        bundleType: String
+        bundleType: String,
+        promotions: List<Bundle>
     ) {
         val bundle = bundleOf(
             ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
@@ -967,6 +966,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
             ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
             ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_CART_BUNDLING_BOTTOM_SHEET_BUNDLE_WIDGET_ACTION,
+            ExtraKey.PROMOTIONS to promotions,
             ExtraKey.USER_ID to userId
         )
         sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.SELECT_CONTENT, bundle)

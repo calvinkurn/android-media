@@ -1548,7 +1548,8 @@ class CartFragment :
         cartPageAnalytics.eventClickCartBundlingBottomSheetBundleWidgetAction(
             userSession.userId,
             selectedBundle.bundleId,
-            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE,
+            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedBundle)
         )
     }
 
@@ -1558,7 +1559,8 @@ class CartFragment :
         cartPageAnalytics.eventClickCartBundlingBottomSheetBundleWidgetAction(
             userSession.userId,
             selectedBundle.bundleId,
-            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE,
+            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedBundle)
         )
     }
 
@@ -1568,8 +1570,7 @@ class CartFragment :
         cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
             userSession.userId,
             selectedMultipleBundle.bundleId,
-            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE,
-            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedMultipleBundle)
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE
         )
     }
 
@@ -1579,8 +1580,7 @@ class CartFragment :
         cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
             userSession.userId,
             selectedBundle.bundleId,
-            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE,
-            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedBundle)
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE
         )
     }
 
