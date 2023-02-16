@@ -50,68 +50,6 @@ class MenuSettingAdapter(
 
     var menuSetingAccess = MenuSettingAccess()
 
-    private val otherSettingList = listOf(
-        SettingTitleMenuUiModel(
-            context?.getString(R.string.setting_menu_account_setting).orEmpty(),
-            IconUnify.USER
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_self_profile).orEmpty(),
-            clickApplink = ApplinkConst.SETTING_PROFILE,
-            settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_bank_account).orEmpty(),
-            clickApplink = ApplinkConstInternalGlobal.SETTING_BANK,
-            settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_password).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
-            trackingAlias = PASSWORD_ALIAS
-        ) { listener.onAddOrChangePassword() },
-        DividerUiModel(DividerType.THICK),
-        SettingTitleMenuUiModel(
-            context?.getString(R.string.setting_menu_app_setting).orEmpty(),
-            IconUnify.PHONE_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_chat_and_notification).orEmpty(),
-            clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_notification_troubleshooter).orEmpty(),
-            clickApplink = ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER,
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ),
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_share_app).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ) { listener.onShareApplication() },
-        MenuItemUiModel(
-            context?.getString(R.string.setting_menu_review_app).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ) { listener.onReviewApplication() },
-        MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING
-        ) { listener.onGiveFeedback() },
-        DividerUiModel(DividerType.THIN_INDENTED),
-        MenuItemUiModel(
-            title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
-            settingTypeInfix = SettingTrackingConstant.APP_SETTING,
-            tag = getSocialTag()
-        ) {
-            listener.onOpenSocialMediaLinks()
-        }.apply {
-            clickSendTracker = {
-                SocialMediaLinksTracker.sendClickEvent()
-            }
-        },
-        DividerUiModel(DividerType.THIN_INDENTED)
-    )
-
     fun populateInitialMenus(isShopOwner: Boolean) {
         val menuList = mutableListOf<SettingUiModel>()
         if (isShopOwner) {
@@ -120,7 +58,7 @@ class MenuSettingAdapter(
         } else {
             menuList.add(SettingLoadingUiModel)
         }
-        menuList.addAll(otherSettingList)
+        menuList.addAll(getOtherSettingList())
         if (isShowScreenRecorder)
             menuList.add(
                 menuList.size - SCREEN_RECORDER_INDEX_FROM_LAST, MenuItemUiModel(
@@ -297,6 +235,92 @@ class MenuSettingAdapter(
                     ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS
                 )
             })
+    }
+
+    private fun getOtherSettingList(): List<SettingUiModel> {
+        val menuList = mutableListOf<SettingUiModel>()
+        menuList.add(
+            SettingTitleMenuUiModel(
+                context?.getString(R.string.setting_menu_account_setting).orEmpty(),
+                IconUnify.USER
+            )
+        )
+        context?.let {
+            val sellerHomeSharedPref = SellerHomeSharedPref(it)
+            val userSession: UserSessionInterface = UserSession(it)
+            if (sellerHomeSharedPref.shouldShowPersonaEntryPoint(userSession.userId)) {
+                menuList.add(
+                    MenuItemUiModel(
+                        it.getString(R.string.setting_seller_persona),
+                        tag = getPersonaTag(),
+                        clickAction = {
+                            SettingSellerPersonaTracking.sendSettingsClickSellerPersonaEvent()
+                            RouteManager.route(it, ApplinkConstInternalSellerapp.SELLER_PERSONA)
+                        }
+                    )
+                )
+            }
+        }
+        menuList.addAll(
+            listOf(
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_self_profile).orEmpty(),
+                    clickApplink = ApplinkConst.SETTING_PROFILE,
+                    settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_bank_account).orEmpty(),
+                    clickApplink = ApplinkConstInternalGlobal.SETTING_BANK,
+                    settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_password).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
+                    trackingAlias = PASSWORD_ALIAS
+                ) { listener.onAddOrChangePassword() },
+                DividerUiModel(DividerType.THICK),
+                SettingTitleMenuUiModel(
+                    context?.getString(R.string.setting_menu_app_setting).orEmpty(),
+                    IconUnify.PHONE_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_chat_and_notification).orEmpty(),
+                    clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_notification_troubleshooter).orEmpty(),
+                    clickApplink = ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ),
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_share_app).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ) { listener.onShareApplication() },
+                MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_review_app).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ) { listener.onReviewApplication() },
+                MenuItemUiModel(
+                    title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING
+                ) { listener.onGiveFeedback() },
+                DividerUiModel(DividerType.THIN_INDENTED),
+                MenuItemUiModel(
+                    title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING,
+                    tag = getSocialTag()
+                ) {
+                    listener.onOpenSocialMediaLinks()
+                }.apply {
+                    clickSendTracker = {
+                        SocialMediaLinksTracker.sendClickEvent()
+                    }
+                },
+                DividerUiModel(DividerType.THIN_INDENTED)
+            )
+        )
+        return menuList
     }
 
     interface Listener {
