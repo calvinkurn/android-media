@@ -262,11 +262,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         setupProductListSection(data.voucherDetail)
         setupSpendingEstimationSection(data.voucherDetail)
         setupButtonSection(data.voucherDetail, data.creationMetadata.discountActive)
-        displayTicker(
-            data.voucherDetail.voucherStatus,
-            data.creationMetadata.discountActive,
-            data.tickerWording
-        )
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
@@ -1101,15 +1096,5 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
             )
         )
-    }
-
-    private fun displayTicker(voucherStatus: VoucherStatus, isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
-        val isVoucherEndedOrStopped = voucherStatus == VoucherStatus.ENDED || voucherStatus == VoucherStatus.STOPPED
-        val showTicker = !isDiscountPromoTypeEnabled && isVoucherEndedOrStopped
-
-        if (showTicker) {
-            headerBinding?.ticker?.visible()
-            headerBinding?.ticker?.setTextDescription(remoteTickerMessage)
-        }
     }
 }
