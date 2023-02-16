@@ -14,6 +14,10 @@ data class SocialProofData(
     @Expose
     val socialProofType: String = "",
 
+    @SerializedName("socialProofID")
+    @Expose
+    val socialProofId: String = "",
+
     @SerializedName("title")
     @Expose
     val title: String = "",
@@ -26,14 +30,20 @@ data class SocialProofData(
     @Expose
     val icon: String = "",
 
-    @SerializedName("eduLink")
+    @SerializedName("applink")
     @Expose
-    val eduLink: EduLinkData = EduLinkData()
+    val appLink: EduLinkData = EduLinkData()
 ) {
 
     companion object {
         const val CHIP = "chip"
         const val TEXT = "text"
         const val ORANGE_CHIP = "orange_chip"
+
+        const val TALK_ID = "talk"
+        const val RATING_ID = "rating"
+        const val MEDIA_ID = "media"
+        const val SHOP_RATING_ID = "shop_rating"
+        const val NEW_PRODUCT_ID = "new_product"
     }
 }

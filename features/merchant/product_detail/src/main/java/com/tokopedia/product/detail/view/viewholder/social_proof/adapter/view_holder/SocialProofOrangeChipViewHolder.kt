@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
  * Project name: android-tokopedia-core
  **/
 
-
 class SocialProofOrangeChipViewHolder(
     private val binding: SocialProofOrangeChipItemBinding,
     private val listener: DynamicProductDetailListener
@@ -22,7 +21,7 @@ class SocialProofOrangeChipViewHolder(
 
     override fun bind(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) = with(binding) {
         renderUI(socialProof = socialProof)
-        eventClick(appLink = socialProof.eduLink.appLink)
+        eventClick(appLink = socialProof.appLink.appLink)
     }
 
     private fun SocialProofOrangeChipItemBinding.renderUI(socialProof: SocialProofData) {

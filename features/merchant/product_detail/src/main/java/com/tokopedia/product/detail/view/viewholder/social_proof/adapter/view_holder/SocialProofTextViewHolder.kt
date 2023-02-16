@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
  * Project name: android-tokopedia-core
  **/
 
-
 class SocialProofTextViewHolder(
     private val binding: SocialProofTextItemBinding,
     private val listener: DynamicProductDetailListener
@@ -21,7 +20,7 @@ class SocialProofTextViewHolder(
 
     override fun bind(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) = with(binding) {
         renderTitle(title = socialProof.title)
-        eventClick(appLink = socialProof.eduLink.appLink)
+        eventClick(appLink = socialProof.appLink.appLink)
     }
 
     private fun SocialProofTextItemBinding.renderTitle(title: String) {

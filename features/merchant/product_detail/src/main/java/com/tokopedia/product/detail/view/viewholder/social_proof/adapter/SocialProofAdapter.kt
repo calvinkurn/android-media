@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 
 class SocialProofAdapter(
-    private val delegate: SocialProofAdapterDelegate,
+    private val delegate: SocialProofAdapterDelegate
 ) : ListAdapter<SocialProofData, SocialProofTypeViewHolder>(DIFF_ITEM) {
 
     companion object {
@@ -25,7 +25,8 @@ class SocialProofAdapter(
                 oldItem.title == newItem.title &&
                 oldItem.subtitle == newItem.subtitle &&
                 oldItem.icon == newItem.icon &&
-                oldItem.eduLink == newItem.eduLink
+                oldItem.appLink == newItem.appLink &&
+                oldItem.socialProofId == newItem.socialProofId
         }
     }
 
@@ -41,7 +42,8 @@ class SocialProofAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return delegate.getItemViewType(currentList[position].socialProofType)
+        val type = currentList.getOrNull(position)?.socialProofType.orEmpty()
+        return delegate.getItemViewType(type)
     }
 
     override fun onBindViewHolder(holder: SocialProofTypeViewHolder, position: Int) {
