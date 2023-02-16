@@ -80,11 +80,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         } else if (homeChannelData?.dynamicHomeChannel?.channels?.isNotEmpty() == true) {
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
-        dynamicChannelList.add(DynamicHomeChannel.Channels(
-            id = "1",
-            name = "dg_bills",
-            layout = "dg_bills"
-        ))
         dynamicChannelList.forEachIndexed { index, channel ->
             val position = index + startPosition
             setDynamicChannelPromoName(position, channel)
