@@ -407,7 +407,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 btnUbahKupon.invisible()
             }
             btnUbahKupon.setOnClickListener {
-                val intent = SummaryActivity.buildEditModeIntent(requireContext(), data.voucherId)
+                val intent = SummaryActivity.buildEditModeIntent(context, data.voucherId)
                 startActivity(intent)
                 voucherDetailTracker.sendClickEditEvent(data)
             }

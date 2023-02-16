@@ -346,6 +346,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
             voucherPeriodSectionBinding?.run {
                 cbRepeatPeriod.disable()
+                tfRepeat.disable()
+                iconChevronDown.disable()
             }
         }
         voucherPeriodSectionBinding?.run {
@@ -777,18 +779,22 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 title = getString(R.string.smvc_voucher_active_label)
                 isVisible = tfRepeat.isVisible
 
-                val firstPeriodStartDate = DateUtil.formatDate(
-                    DateConstant.DATE_MONTH_YEAR_BASIC,
-                    DATE_YEAR_PRECISION,
-                    availableDate.first().dateStart
-                )
-                val firstPeriodStartHour = availableDate.first().hourStart
-                val firstPeriodEndDate = DateUtil.formatDate(
-                    DateConstant.DATE_MONTH_YEAR_BASIC,
-                    DATE_YEAR_PRECISION,
-                    availableDate.first().dateEnd
-                )
-                val firstPeriodEndHour = availableDate.first().hourEnd
+                val firstPeriodStartDate = availableDate.firstOrNull()?.dateStart?.let { startDate ->
+                    DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        startDate
+                    )
+                }
+                val firstPeriodStartHour = availableDate.firstOrNull()?.hourStart
+                val firstPeriodEndDate = availableDate.firstOrNull()?.dateEnd?.let { endDate ->
+                    DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        endDate
+                    )
+                }
+                val firstPeriodEndHour = availableDate.firstOrNull()?.hourEnd
                 firstSchedule = getString(
                     R.string.smvc_recurring_date_palceholder_value,
                     firstPeriodStartDate,
@@ -839,7 +845,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherPeriodSectionBinding?.apply {
             unavailableRecurringPeriodView.run {
                 type = RecurringDateScheduleCustomView.TYPE_ERROR
-                title = when (unAvailableDate.first().type) {
+                title = when (unAvailableDate.firstOrNull()?.type) {
                     UnavailableRecurringDateErrorType.SAME_DATE_VOUCHER_ALREADY_EXIST.type -> getString(
                         R.string.smvc_recurring_date_error_type_1_title
                     )
@@ -850,18 +856,22 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 }
                 isVisible = tfRepeat.isVisible
 
-                val firstPeriodStartDate = DateUtil.formatDate(
-                    DateConstant.DATE_MONTH_YEAR_BASIC,
-                    DATE_YEAR_PRECISION,
-                    unAvailableDate.first().dateStart
-                )
-                val firstPeriodStartHour = unAvailableDate.first().hourStart
-                val firstPeriodEndDate = DateUtil.formatDate(
-                    DateConstant.DATE_MONTH_YEAR_BASIC,
-                    DATE_YEAR_PRECISION,
-                    unAvailableDate.first().dateEnd
-                )
-                val firstPeriodEndHour = unAvailableDate.first().hourEnd
+                val firstPeriodStartDate = unAvailableDate.firstOrNull()?.dateStart?.let { startDate ->
+                    DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        startDate
+                    )
+                }
+                val firstPeriodStartHour = unAvailableDate.firstOrNull()?.hourStart
+                val firstPeriodEndDate = unAvailableDate.firstOrNull()?.dateEnd?.let { endDate ->
+                    DateUtil.formatDate(
+                        DateConstant.DATE_MONTH_YEAR_BASIC,
+                        DATE_YEAR_PRECISION,
+                        endDate
+                    )
+                }
+                val firstPeriodEndHour = unAvailableDate.firstOrNull()?.hourEnd
                 firstSchedule = getString(
                     R.string.smvc_recurring_date_palceholder_value,
                     firstPeriodStartDate,
