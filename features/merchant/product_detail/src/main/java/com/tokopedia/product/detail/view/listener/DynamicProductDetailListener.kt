@@ -356,6 +356,11 @@ interface DynamicProductDetailListener {
      */
     fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
 
+    fun onSocialProofItemClickTracking(
+        socialProofId: String,
+        trackData: ComponentTrackDataModel?
+    )
+
     /**
      * ProductShippingViewHolder
      */

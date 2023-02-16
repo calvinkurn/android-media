@@ -21,7 +21,7 @@ class SocialProofChipViewHolder(
 
     override fun bind(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) = with(binding) {
         renderUI(socialProof = socialProof)
-        eventClick(appLink = socialProof.appLink.appLink)
+        eventClick(socialProof = socialProof, trackData = trackData)
     }
 
     private fun SocialProofChipItemBinding.renderUI(socialProof: SocialProofData) {
@@ -48,10 +48,14 @@ class SocialProofChipViewHolder(
         }
     }
 
-    private fun eventClick(appLink: String) {
+    private fun eventClick(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) {
+        val appLink = socialProof.appLink.appLink
+        val id = socialProof.socialProofId
+
         if (appLink.isNotBlank()) {
             binding.root.setOnClickListener {
                 listener.goToApplink(appLink)
+                listener.onSocialProofItemClickTracking(socialProofId = id, trackData = trackData)
             }
         }
     }

@@ -20,7 +20,7 @@ class SocialProofTextViewHolder(
 
     override fun bind(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) = with(binding) {
         renderTitle(title = socialProof.title)
-        eventClick(appLink = socialProof.appLink.appLink)
+        eventClick(socialProof = socialProof, trackData = trackData)
     }
 
     private fun SocialProofTextItemBinding.renderTitle(title: String) {
@@ -29,10 +29,14 @@ class SocialProofTextViewHolder(
         }
     }
 
-    private fun eventClick(appLink: String) {
+    private fun eventClick(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) {
+        val appLink = socialProof.appLink.appLink
+        val id = socialProof.socialProofId
+
         if (appLink.isNotBlank()) {
             binding.root.setOnClickListener {
                 listener.goToApplink(appLink)
+                listener.onSocialProofItemClickTracking(socialProofId = id, trackData = trackData)
             }
         }
     }
