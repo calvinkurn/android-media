@@ -321,7 +321,7 @@ open class ShopPageHomeFragment :
     private val widgetWatchDialogContainer by lazy { PlayWidgetWatchDialogContainer() }
 
     lateinit var playWidgetCoordinator: PlayWidgetCoordinator
-    private lateinit var playWidgetActionMenuBottomSheet: PlayWidgetActionMenuBottomSheet
+    private var playWidgetActionMenuBottomSheet: PlayWidgetActionMenuBottomSheet? = null
 
     private val viewJob = SupervisorJob()
 
@@ -3933,16 +3933,17 @@ open class ShopPageHomeFragment :
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {
         shopPlayWidgetAnalytic.onImpressMoreActionChannel(channelUiModel)
-        getPlayWidgetActionBottomSheet(channelUiModel).show(childFragmentManager)
+        getPlayWidgetActionBottomSheet(channelUiModel)?.show(childFragmentManager)
     }
 
-    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetActionMenuBottomSheet {
-        if (!::playWidgetActionMenuBottomSheet.isInitialized) {
+    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetActionMenuBottomSheet? {
+
+        if (playWidgetActionMenuBottomSheet == null) {
             playWidgetActionMenuBottomSheet = PlayWidgetActionMenuBottomSheet()
         }
 
-        playWidgetActionMenuBottomSheet.setChannel(channelUiModel)
-        playWidgetActionMenuBottomSheet.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
+        playWidgetActionMenuBottomSheet?.setChannel(channelUiModel)
+        playWidgetActionMenuBottomSheet?.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
             override fun onClickShare(channel: PlayWidgetChannelUiModel) {
                 shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
                 copyToClipboard(channelUiModel.share.fullShareContent)
