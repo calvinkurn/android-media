@@ -527,7 +527,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
                             fragmentShipingMainLayout?.getChildAt(normalServiceIndex)
 
                         val coachMarkItems =
-                            generateOnBoardingCoachMark(normalServiceView, whitelabelView)
+                            generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
                         whitelabelCoachmark = CoachMark2(it).apply {
                             setOnBoardingListener(coachMarkItems)
                             setStateAfterOnBoardingShown(coachMarkItems, sharedPref)
@@ -540,6 +540,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private fun generateOnBoardingCoachMark(
+        context: Context,
         normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
@@ -548,8 +549,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_onboarding_title_coachmark),
-                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
@@ -559,8 +560,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_instan_title_coachmark),
-                    getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_instan_title_coachmark),
+                    context.getString(R.string.whitelabel_instan_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )

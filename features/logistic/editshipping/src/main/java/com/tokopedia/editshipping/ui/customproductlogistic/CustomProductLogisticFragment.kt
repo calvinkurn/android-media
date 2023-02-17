@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.ui.customproductlogistic
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -139,7 +140,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             context?.let {
                 val normalServiceView = getNormalServiceView()
 
-                val coachMarkItems = generateOnBoardingCoachMark(normalServiceView, whitelabelView)
+                val coachMarkItems = generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
                 whitelabelCoachmark = CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems, data)
                     setStateAfterOnBoardingShown()
@@ -150,6 +151,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun generateOnBoardingCoachMark(
+        context: Context,
         normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
@@ -158,8 +160,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         coachMarkItems.add(
             CoachMark2Item(
                 binding.tvAntarCpl,
-                getString(R.string.whitelabel_instan_title_coachmark),
-                getString(R.string.whitelabel_instan_description_coachmark)
+                context.getString(R.string.whitelabel_instan_title_coachmark),
+                context.getString(R.string.whitelabel_instan_description_coachmark)
             )
         )
 
@@ -167,8 +169,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_onboarding_title_coachmark),
-                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
@@ -178,8 +180,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_instan_title_coachmark),
-                    getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_instan_title_coachmark),
+                    context.getString(R.string.whitelabel_instan_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
