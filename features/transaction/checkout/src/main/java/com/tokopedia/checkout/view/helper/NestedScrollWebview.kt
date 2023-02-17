@@ -2,22 +2,33 @@ package com.tokopedia.checkout.view.helper
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.*
-import androidx.core.view.*
+import android.view.MotionEvent
+import android.view.VelocityTracker
+import android.view.View
+import android.view.ViewConfiguration
+import android.view.ViewParent
+import androidx.core.view.MotionEventCompat
+import androidx.core.view.NestedScrollingChild
+import androidx.core.view.NestedScrollingChildHelper
+import androidx.core.view.VelocityTrackerCompat
+import androidx.core.view.ViewCompat
 import androidx.core.widget.ScrollerCompat
 import com.tokopedia.webview.TkpdWebView
 
 class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
+
+    companion object {
+        /**
+         * Sentinel value for no current active pointer.
+         * Used by [.mActivePointerId].
+         */
+        const val INVALID_POINTER = -1
+    }
+
     var mLastY = 0
     val mScrollOffset = IntArray(2)
     val mScrollConsumed = IntArray(2)
     var mNestedOffsetY = 0
-
-    /**
-     * Sentinel value for no current active pointer.
-     * Used by [.mActivePointerId].
-     */
-    val INVALID_POINTER = -1
 
     var mChildHelper: NestedScrollingChildHelper? = null
 

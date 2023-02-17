@@ -2,11 +2,20 @@ package com.tokopedia.checkout.domain.mapper
 
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
 
 object ShipmentAddOnMapper {
-    private const val qty = "{{qty}}"
+    private const val QTY = "{{qty}}"
 
     fun mapAddOnBottomSheetParam(
         addOnsDataModel: AddOnsDataModel,
@@ -105,14 +114,14 @@ object ShipmentAddOnMapper {
     fun mapAvailableBottomSheetProductLevelData(addOnWordingModel: AddOnWordingModel, cartItemModel: CartItemModel): AvailableBottomSheetData {
         val addOnWordingData = AddOnWordingData()
         var onlyGreetingCard: String = addOnWordingModel.onlyGreetingCard
-        if (onlyGreetingCard.contains(qty)) {
-            onlyGreetingCard = onlyGreetingCard.replace(qty, cartItemModel.quantity.toString())
+        if (onlyGreetingCard.contains(QTY)) {
+            onlyGreetingCard = onlyGreetingCard.replace(QTY, cartItemModel.quantity.toString())
         }
         addOnWordingData.onlyGreetingCard = onlyGreetingCard
 
         var packageAndGreetingCard: String = addOnWordingModel.packagingAndGreetingCard
-        if (packageAndGreetingCard.contains(qty)) {
-            packageAndGreetingCard = packageAndGreetingCard.replace(qty, cartItemModel.quantity.toString())
+        if (packageAndGreetingCard.contains(QTY)) {
+            packageAndGreetingCard = packageAndGreetingCard.replace(QTY, cartItemModel.quantity.toString())
         }
 
         addOnWordingData.packagingAndGreetingCard = packageAndGreetingCard

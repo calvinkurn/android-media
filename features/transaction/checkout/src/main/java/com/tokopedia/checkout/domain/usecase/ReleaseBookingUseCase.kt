@@ -19,7 +19,7 @@ class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase)
                 )
             )
         )
-        val gqlRequest = GraphqlRequest(query, ReleaseBookingResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(QUERY, ReleaseBookingResponse::class.java, param)
 
         gql.clearCache()
         gql.addRequest(gqlRequest)
@@ -38,7 +38,7 @@ class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase)
     }
 }
 
-private val query = """
+private val QUERY = """
     mutation release_booking_stock_ocs(${'$'}params:[OCSReleaseBookingStockParam]){
         release_booking_stock_ocs(params:${'$'}params){
             status
