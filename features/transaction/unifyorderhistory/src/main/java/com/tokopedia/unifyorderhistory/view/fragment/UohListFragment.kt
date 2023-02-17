@@ -2077,8 +2077,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 val linkUrl = dotMenu.appURL
                                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                             }
-                            dotMenu.actionType.equals(GQL_MP_POF, true) -> {
+                            dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
                                 goToOrderExtension(order, index)
+                            }
+                            dotMenu.actionType.equals(GQL_MP_POF, true) -> {
+                                goToPartialOrderFulfillment(order, index)
                             }
                         }
                     }
