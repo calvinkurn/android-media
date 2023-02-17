@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageStockAvailableBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.product.manage.common.R
 
 class StockAvailableBottomSheet(
     private val fm: FragmentManager? = null
@@ -55,10 +54,10 @@ class StockAvailableBottomSheet(
     }
 
     private fun setupView() {
-        val title = context?.getString(R.string.product_manage_stock_available).orEmpty()
+        val title = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_available).orEmpty()
         setTitle(title)
 
-        val description = context?.getString(R.string.product_manage_stock_description_information_stock_available)
+        val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock_available)
             .orEmpty()
         val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
 

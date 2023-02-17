@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import javax.inject.Inject
-import com.tokopedia.product.manage.common.R
 
 class ResourceProvider @Inject constructor(@ApplicationContext private val context: Context?) {
     private fun getString(@StringRes id: Int, vararg args: Any): String? {
@@ -16,17 +15,17 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
     }
 
     fun getTickerMultiLocationTitle(): String {
-        return getString(R.string.product_manage_closable_stock_ticker_title).orEmpty()
+        return getString(com.tokopedia.product.manage.common.R.string.product_manage_closable_stock_ticker_title).orEmpty()
     }
 
     fun getTickerMultiLocationDescription(): String {
-        return getString(R.string.product_manage_closable_stock_ticker_description).orEmpty()
+        return getString(com.tokopedia.product.manage.common.R.string.product_manage_closable_stock_ticker_description).orEmpty()
     }
 
     fun getTickerDescriptionFormat(content: String, link: String, textLink: String): String {
         return if (link.isNotEmpty()) {
             getString(
-                R.string.product_manage_ticker_description_format,
+                com.tokopedia.product.manage.common.R.string.product_manage_ticker_description_format,
                 content,
                 link,
                 textLink
