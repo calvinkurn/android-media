@@ -25,18 +25,18 @@ class SettingsListViewModel @Inject constructor(
     private val _paymentQueryResultLiveData = MutableLiveData<Result<PaymentQueryResponse>>()
     private val _phoneVerificationStatusLiveData = MutableLiveData<Boolean>()
     private val _settingBannerResultLiveData = MutableLiveData<Result<SettingBannerModel>>()
-    val paymentQueryResultLiveData: LiveData<Result<PaymentQueryResponse>> = _paymentQueryResultLiveData
-    val phoneVerificationStatusLiveData: LiveData<Boolean> = _phoneVerificationStatusLiveData
-    val settingBannerResultLiveData: LiveData<Result<SettingBannerModel>> = _settingBannerResultLiveData
-    val bannerAndCardListResultLiveData =
+    private val _bannerAndCardListResultLiveData =
         MediatorLiveData<Pair<Result<PaymentQueryResponse>?, Result<SettingBannerModel>?>>().apply {
-            addSource(paymentQueryResultLiveData) {
-                value = Pair(paymentQueryResultLiveData.value, settingBannerResultLiveData.value)
+            addSource(_paymentQueryResultLiveData) {
+                value = Pair(_paymentQueryResultLiveData.value, _settingBannerResultLiveData.value)
             }
-            addSource(settingBannerResultLiveData) {
-                value = Pair(paymentQueryResultLiveData.value, settingBannerResultLiveData.value)
+            addSource(_settingBannerResultLiveData) {
+                value = Pair(_paymentQueryResultLiveData.value, _settingBannerResultLiveData.value)
             }
     }
+    val phoneVerificationStatusLiveData: LiveData<Boolean> = _phoneVerificationStatusLiveData
+    val bannerAndCardListResultLiveData: LiveData<Pair<Result<PaymentQueryResponse>?, Result<SettingBannerModel>?>> =
+        _bannerAndCardListResultLiveData
 
     fun getCreditCardList() {
         getCreditCardListUseCase.cancelJobs()
@@ -47,6 +47,7 @@ class SettingsListViewModel @Inject constructor(
     }
 
     fun getSettingBanner() {
+        getSettingBannerUseCase.cancelJobs()
         getSettingBannerUseCase.getSettingBanner(
             ::onGetSettingBannerSuccess,
             ::onGetSettingBannerError,
@@ -75,5 +76,6 @@ class SettingsListViewModel @Inject constructor(
 
      override fun onCleared() {
          getCreditCardListUseCase.cancelJobs()
+         getSettingBannerUseCase.cancelJobs()
      }
 }

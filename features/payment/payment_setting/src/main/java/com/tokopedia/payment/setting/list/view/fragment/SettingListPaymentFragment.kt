@@ -14,16 +14,18 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
-import com.tokopedia.payment.setting.list.model.*
+import com.tokopedia.payment.setting.list.model.PaymentSignature
+import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
+import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
+import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
+import com.tokopedia.payment.setting.list.model.SettingBannerModel
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
 import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
@@ -223,6 +225,16 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeObservers()
+    }
+
+    private fun removeObservers() {
+        settingsListViewModel.phoneVerificationStatusLiveData.removeObservers(this)
+        settingsListViewModel.bannerAndCardListResultLiveData.removeObservers(this)
+    }
 
     companion object {
         val CARD_LIST_RANGE_FOR_ADD_MORE_CARD = 1..3
