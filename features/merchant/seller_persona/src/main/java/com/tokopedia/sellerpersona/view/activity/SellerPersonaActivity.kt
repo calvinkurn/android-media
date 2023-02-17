@@ -84,7 +84,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
 
     private fun fetchPersonaData() {
         showLoadingState()
-        viewModel.fetchPersonaData()
+        viewModel.fetchPersonaStatus()
     }
 
     private fun showLoadingState() {
@@ -154,7 +154,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     private fun handleError() {
         binding?.errorViewPersona?.visible()
         binding?.errorViewPersona?.setOnActionClicked {
-            viewModel.fetchPersonaData()
+            viewModel.fetchPersonaStatus()
         }
     }
 }

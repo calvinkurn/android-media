@@ -1,23 +1,18 @@
 package com.tokopedia.sellerpersona.view.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 
@@ -26,13 +21,7 @@ import org.mockito.ArgumentMatchers.anyString
  */
 
 @ExperimentalCoroutinesApi
-class PersonaResultViewModelTest {
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+class PersonaResultViewModelTest : BaseViewModelTest() {
 
     @RelaxedMockK
     lateinit var getPersonaDataUseCase: GetPersonaDataUseCase
@@ -45,10 +34,7 @@ class PersonaResultViewModelTest {
 
     private lateinit var viewModel: PersonaResultViewModel
 
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
-
+    override fun initVariables() {
         viewModel = PersonaResultViewModel(
             { getPersonaDataUseCase },
             { togglePersonaUseCase },
@@ -56,7 +42,6 @@ class PersonaResultViewModelTest {
             coroutineTestRule.dispatchers
         )
     }
-
 
     @Test
     fun `when get persona data should return success result`() {

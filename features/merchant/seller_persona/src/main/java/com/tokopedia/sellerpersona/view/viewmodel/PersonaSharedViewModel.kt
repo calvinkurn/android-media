@@ -29,7 +29,7 @@ class PersonaSharedViewModel @Inject constructor(
         get() = _personaStatus
     private val _personaStatus = MutableLiveData<Result<PersonaStatusModel>>()
 
-    fun fetchPersonaData() {
+    fun fetchPersonaStatus() {
         launchCatchError(block = {
             val data = getPersonaStatus.get()
                 .execute(userSession.get().shopId, Constants.PERSONA_PAGE_PARAM)
