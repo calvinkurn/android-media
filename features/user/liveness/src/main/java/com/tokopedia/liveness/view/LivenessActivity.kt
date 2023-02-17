@@ -5,12 +5,15 @@ import ai.advance.core.PermissionActivity
 import ai.advance.enums.DeviceType
 import ai.advance.liveness.lib.Detector
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,6 +25,7 @@ import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
 import com.tokopedia.liveness.utils.LivenessConstants.REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 
@@ -42,9 +46,19 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
         component.inject(this)
 
+        setupStatusBar()
+        initLivenessSDK()
+        setContentView(com.tokopedia.liveness.R.layout.activity_revamp_liveness)
+        ScreenUtil.init(this)
+
+        if (!allPermissionsGranted() && livenessSdk.isSDKHandleCameraPermission()) {
+            requestPermissions()
+        }
+    }
+
+    private fun initLivenessSDK() {
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
@@ -54,13 +68,19 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
         )
+    }
 
-        setContentView(com.tokopedia.liveness.R.layout.activity_revamp_liveness)
-        ScreenUtil.init(this)
-
-        if (!allPermissionsGranted() && livenessSdk.isSDKHandleCameraPermission()) {
-            requestPermissions()
+    @SuppressLint("DeprecatedMethod")
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!this.isDarkMode()) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
         }
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor =
+            ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
 
     override fun onBackPressed() {
