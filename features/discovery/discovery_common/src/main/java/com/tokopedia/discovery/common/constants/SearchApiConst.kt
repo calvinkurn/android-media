@@ -56,6 +56,7 @@ class SearchApiConst {
         const val ACTIVE_TAB = "st"
         const val ACTIVE_TAB_DEFAULT = ""
         const val ACTIVE_TAB_MPS = "mps"
+        const val ACTIVE_TAB_PRODUCT = "product"
         const val ORIGIN_FILTER = "origin_filter" // which page filter params come from
         const val TOKEN = "token"
         const val SEARCH_REF = "search_ref"

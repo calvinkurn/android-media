@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.initialstate.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.autocompletecomponent.di.AutoCompleteComponent
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateFragment
 import com.tokopedia.autocompletecomponent.initialstate.analytics.InitialStateTrackingModule
 import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCaseModule
@@ -16,7 +17,10 @@ import dagger.Component
     InitialStateTrackingModule::class,
     InitialStatePresenterModule::class,
     InitialStateViewListenerModule::class,
-], dependencies = [BaseAppComponent::class])
+], dependencies = [
+    BaseAppComponent::class,
+    AutoCompleteComponent::class,
+])
 interface InitialStateComponent {
 
     fun inject(fragment: InitialStateFragment)

@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.producttag.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.autocompletecomponent.di.AutoCompleteComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionPresenterModule
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionScope
@@ -22,6 +23,9 @@ import dagger.Component
         FeedSuggestionTrackingModule::class,
         SuggestionViewListenerModule::class
     ],
-    dependencies = [BaseAppComponent::class]
+    dependencies = [
+        BaseAppComponent::class,
+        AutoCompleteComponent::class,
+    ]
 )
 interface FeedSuggestionComponent : SuggestionComponent

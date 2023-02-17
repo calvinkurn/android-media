@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.suggestion.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.autocompletecomponent.di.AutoCompleteComponent
 import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTrackingModule
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment
 import com.tokopedia.autocompletecomponent.suggestion.domain.getsuggestion.SuggestionUseCaseModule
@@ -14,7 +15,10 @@ import dagger.Component
     SuggestionPresenterModule::class,
     SuggestionTrackingModule::class,
     SuggestionViewListenerModule::class
-], dependencies = [BaseAppComponent::class])
+], dependencies = [
+    BaseAppComponent::class,
+    AutoCompleteComponent::class,
+])
 interface SuggestionComponent {
 
     fun inject(fragment: SuggestionFragment)

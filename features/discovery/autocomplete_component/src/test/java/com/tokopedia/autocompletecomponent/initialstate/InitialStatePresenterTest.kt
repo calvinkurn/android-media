@@ -29,6 +29,7 @@ import rx.Subscriber
 private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 private const val initialStateWithSearchBarEducation = "autocomplete/initialstate/with-searchbar-education.json"
 private const val initialStateRecentSearchEmptyHeaderResponse = "autocomplete/initialstate/recent-search-empty-header-response.json"
+private const val initialStateMpsEnabledResponse = "autocomplete/initialstate/mps-enabled.json"
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
@@ -328,5 +329,21 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         actualData: List<Visitable<*>>,
     ) {
         actualData.none { it is RecentSearchTitleDataView } shouldBe true
+    }
+
+    @Test
+    fun `Test mps enabled initial search`() {
+        val initialStateData = initialStateMpsEnabledResponse.jsonToObject<InitialStateUniverse>()
+        `Test Initial State Data`(initialStateData)
+
+        `Then verify initial state view will call showInitialStateResult behavior`()
+        `Then verify mps enabled`(initialStateData)
+    }
+
+    private fun `Then verify mps enabled`(initialState: InitialStateUniverse) {
+        initialState.isMps shouldBe true
+        verify {
+            initialStateView.enableMps()
+        }
     }
 }

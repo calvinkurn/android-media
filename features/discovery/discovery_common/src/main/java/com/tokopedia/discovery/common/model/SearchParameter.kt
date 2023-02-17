@@ -67,14 +67,24 @@ class SearchParameter(
 
     fun setSearchQuery(query: String) {
         set(SearchApiConst.Q, query)
-        set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_DEFAULT)
+        set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_PRODUCT)
+        remove(SearchApiConst.Q1)
+        remove(SearchApiConst.Q2)
+        remove(SearchApiConst.Q3)
+    }
+    fun setMpsQuery(query: String) {
+        set(SearchApiConst.Q, query)
+        set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_MPS)
+        remove(SearchApiConst.Q1)
+        remove(SearchApiConst.Q2)
+        remove(SearchApiConst.Q3)
     }
 
     fun setSearchQueries(queries: List<String>) {
-        set(SearchApiConst.Q, "")
+        remove(SearchApiConst.Q)
         set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_MPS)
-        queries.forEachIndexed {index, query ->
-            val key = when(index) {
+        queries.forEachIndexed { index, query ->
+            val key = when (index) {
                 1 -> SearchApiConst.Q2
                 2 -> SearchApiConst.Q3
                 else -> SearchApiConst.Q1
@@ -95,8 +105,29 @@ class SearchParameter(
         return contains(SearchApiConst.Q3) && get(SearchApiConst.Q3).isNotBlank()
     }
 
+    fun isMps() : Boolean {
+        return when {
+            contains(SearchApiConst.ACTIVE_TAB) -> get(SearchApiConst.ACTIVE_TAB) == SearchApiConst.ACTIVE_TAB_MPS
+            else -> false
+        }
+    }
+
+    private fun getMpsSearchQueryString() : String {
+        return if(contains(SearchApiConst.Q)) {
+            get(SearchApiConst.Q)
+        } else {
+            mutableListOf<String>().apply {
+                if(hasQuery1()) add(get(SearchApiConst.Q1))
+                if(hasQuery2()) add(get(SearchApiConst.Q2))
+                if(hasQuery3()) add(get(SearchApiConst.Q3))
+            }
+                .joinToString()
+        }
+    }
+
     fun getSearchQuery(): String {
         return when {
+            isMps() -> getMpsSearchQueryString()
             contains(SearchApiConst.Q) -> get(SearchApiConst.Q)
             contains(SearchApiConst.KEYWORD) -> get(SearchApiConst.KEYWORD)
             else -> ""
