@@ -15,6 +15,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -34,11 +35,11 @@ class FeedMainViewModel @Inject constructor(
         get() = _reportResponse
 
     fun fetchFeedTabs() {
-        launchCatchError(dispatchers.io, block = {
-            val response = feedTabsUseCase.executeOnBackground()
-            _feedTabs.postValue(Success(MapperFeedTabs.transform(response.feedTabs)))
+        launchCatchError(dispatchers.main, block = {
+            val response = withContext(dispatchers.io) { feedTabsUseCase.executeOnBackground() }
+            _feedTabs.value = (Success(MapperFeedTabs.transform(response.feedTabs)))
         }) {
-            _feedTabs.postValue(Fail(it))
+            _feedTabs.value = Fail(it)
         }
     }
 
