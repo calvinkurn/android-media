@@ -12,21 +12,26 @@
       "eventAction": "click on product dynamic channel left carousel",
       "sessionIris": ".*",
       "items": [{
-        "dimension83": "bebas ongkir|none / other",
+        "dimension83": ".*",
         "item_id": ".*",
         "dimension96": ".*",
-        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "price": ".*",
         "dimension40": ".*",
         "dimension84": ".*",
-        "index": "\\d*.\\d*",
+        "index": ".*",
         "item_name": ".*",
         "item_brand": ".*",
         "item_variant": ".*",
-        "item_category": ".*"
+        "item_category": ".*",
+        "shopName": ".*",
+        "shopId": ".*",
+        "shopType": ".*",
+        "category_id": ".*"
       }],
       "eventLabel": ".*",
       "channelId": ".*",
-      "campaignCode": ".*"
+      "campaignCode": ".*",
+      "userId": ".*"
     },
     {
       "eventCategory": "homepage",

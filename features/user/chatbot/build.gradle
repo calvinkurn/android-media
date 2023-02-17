@@ -65,6 +65,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
