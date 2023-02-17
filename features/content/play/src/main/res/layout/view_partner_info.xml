@@ -56,11 +56,12 @@
         android:text="@string/play_follow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/tv_partner_name"
         app:layout_constraintTop_toTopOf="parent"
         app:unifyButtonInvers="true"
         app:unifyButtonSize="micro"
-        app:layout_constrainedWidth="true"
+        app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,7 +55,7 @@
     <dimen name="play_like_bubble_original_size">12dp</dimen>
 
     <!--Partner Info-->
-    <dimen name="play_follow_button_width">53dp</dimen>
+    <dimen name="play_follow_button_width">56dp</dimen>
 
     <!--Featured Product-->
     <dimen name="play_featured_product_radius">8dp</dimen>
