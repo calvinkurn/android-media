@@ -82,15 +82,16 @@
 
         <com.tokopedia.unifycomponents.timer.TimerUnifySingle
             android:id="@+id/fst_ongoing_timer"
-            android:layout_width="90dp"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
+            android:minWidth="90dp"
+            app:layout_constraintEnd_toEndOf="@id/timer_text"
+            app:layout_constraintStart_toStartOf="@id/timer_text"
+            app:layout_constraintTop_toBottomOf="@id/timer_text"
             app:timer_unify_single_showClockIcon="true"
             app:timer_unify_single_textWidth="wrap"
-            app:timer_unify_single_variant="main"
-            app:layout_constraintStart_toStartOf="@id/timer_text"
-            app:layout_constraintEnd_toEndOf="@id/timer_text"
-            app:layout_constraintTop_toBottomOf="@id/timer_text"/>
+            app:timer_unify_single_variant="main" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
