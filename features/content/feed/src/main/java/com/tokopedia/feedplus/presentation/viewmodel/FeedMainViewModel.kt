@@ -30,6 +30,10 @@ class FeedMainViewModel @Inject constructor(
     val feedTabs: LiveData<Result<FeedTabsModel>>
         get() = _feedTabs
 
+    private val _feedCreateContentBottomSheetData = MutableLiveData<Result<List<ContentCreationTypeItem>>>()
+    val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
+        get() = _feedCreateContentBottomSheetData
+
     fun fetchFeedTabs() {
         launchCatchError(dispatchers.io, block = {
             feedXHeaderUseCase.setRequestParams(
@@ -38,13 +42,25 @@ class FeedMainViewModel @Inject constructor(
             val response = feedXHeaderUseCase.executeOnBackground()
             _feedTabs.postValue(Success(MapperFeedTabs.transform(response.feedXHeaderData)))
             handleCreationData(
-                    MapperFeedTabs.getCreationBottomSheetData(
-                        response.feedXHeaderData
-                    )
+                MapperFeedTabs.getCreationBottomSheetData(
+                    response.feedXHeaderData
+                )
             )
         }) {
             _feedTabs.postValue(Fail(it))
+            _feedCreateContentBottomSheetData.postValue(Fail(it))
         }
     }
 
+    private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
+        val authorUserdata = creationDataList.find { it.type == CreatorType.USER }
+        val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
+        val authorShopdata = creationDataList.find { it.type == CreatorType.SHOP }
+        val authorShopdataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
+
+        val creatorList =
+            (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
+                (authorShopdataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
+        _feedCreateContentBottomSheetData.postValue(Success(creatorList))
+    }
 }

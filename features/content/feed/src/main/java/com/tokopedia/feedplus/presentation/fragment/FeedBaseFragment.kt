@@ -10,9 +10,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
+import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
+import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,6 +38,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private lateinit var feedMainViewModel: FeedMainViewModel
 
     private var adapter: FeedPagerAdapter? = null
+    private var creationItemList: List<ContentCreationTypeItem> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,17 +61,42 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeFeedTabData()
+        observeCreateContentBottomSheetData()
+    }
 
-        feedMainViewModel.feedTabs.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> initView(it.data)
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
+    private fun observeFeedTabData() {
+        feedMainViewModel.feedTabs.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> initView(it.data)
+                    is Fail -> Toast.makeText(
+                        requireContext(),
+                        it.throwable.localizedMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-        })
+        )
+    }
+
+    private fun observeCreateContentBottomSheetData() {
+        feedMainViewModel.feedCreateContentBottomSheetData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        creationItemList = it.data
+                    }
+                    is Fail -> Toast.makeText(
+                        requireContext(),
+                        it.throwable.localizedMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
     }
 
     override fun onDestroyView() {
@@ -84,15 +117,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    onChangeTab(position)
-                }
-            })
+                    OnPageChangeCallback() {
+                    override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                    ) {
+                        onChangeTab(position)
+                    }
+                })
 
             it.tyFeedForYouTab.setOnClickListener { _ ->
                 it.vpFeedTabItemsContainer.setCurrentItem(TAB_FOR_YOU_INDEX, true)
@@ -109,6 +142,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             it.btnFeedLive.setOnClickListener {
                 onNavigateToLive()
             }
+            it.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
 
             it.feedUserProfileImage.setOnClickListener {
                 onNavigateToProfile()
@@ -199,10 +233,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
-
             }
-
         }
     }
-
 }
