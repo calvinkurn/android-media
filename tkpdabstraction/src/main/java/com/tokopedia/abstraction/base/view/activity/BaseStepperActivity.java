@@ -143,12 +143,17 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     }
     public int getParentView() { return com.tokopedia.abstraction.R.id.parent_view; }
 
+    @Override
+    protected int getToolbarResourceID() {
+        return com.tokopedia.abstraction.R.id.toolbar;
+    }
+
     public int getProgressBar(){
         return R.id.stepper_progress;
     }
 
     public void updateToolbarTitle(String title) {
-        getSupportActionBar().setTitle(title);
+        updateTitle(title);
     }
 
     public void setMaxProgressStepper(float maxProgress) {
