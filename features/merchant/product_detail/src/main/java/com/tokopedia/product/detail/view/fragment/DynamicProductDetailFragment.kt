@@ -3667,7 +3667,7 @@ open class DynamicProductDetailFragment :
             fragmentManager?.let {
                 addToCartDoneBottomSheet.show(
                     it,
-                    "TAG"
+                    AddToCartDoneBottomSheet::class.simpleName
                 )
             }
         }
