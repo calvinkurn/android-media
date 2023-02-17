@@ -9,7 +9,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_WITH_TICKER_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
@@ -130,6 +136,63 @@ class OrderSummaryPageActivityGoCicilTest {
                         installmentFee = "Rp111.106",
                         installmentTerm = "2 Bulan",
                         installmentPerPeriod = "Rp1.066.353",
+                        installmentFirstDate = "28 Februari 2022",
+                        installmentLastDate = "28 April 2022"
+                )
+            }
+        }
+    }
+
+    @Test
+    fun changeQtyAndTicker() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertPayment("Rp2.016.500", "Bayar")
+
+            assertGoCicilInstallment("3 bulan x Rp673.867")
+
+            clickChangeGoCicilInstallment {
+                assertTicker(false)
+                chooseInstallment(2)
+            }
+
+            assertGoCicilInstallment("2 bulan x Rp1.066.353")
+
+            assertPayment("Rp2.127.606", "Bayar")
+
+            paymentInterceptor.customGoCicilInstallmentOptionResponsePath = GOCICIL_INSTALLMENT_OPTION_WITH_TICKER_RESPONSE_PATH
+            clickAddProductQuantity()
+
+            clickChangeGoCicilInstallment {
+                assertTicker(true)
+                chooseInstallment(2)
+            }
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp4.000.000",
+                        shippingPrice = "Rp15.000",
+                        totalPrice = "Rp4.127.606",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1500.0,
+                                showTooltip = true
+                            )
+                        )
+                )
+
+                assertInstallmentSummary(
+                        installmentFee = "Rp111.106",
+                        installmentTerm = "2 Bulan",
+                        installmentPerPeriod = "Rp2.066.353",
                         installmentFirstDate = "28 Februari 2022",
                         installmentLastDate = "28 April 2022"
                 )
