@@ -40,7 +40,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_NN100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
 
@@ -58,7 +58,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_NN100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
 
@@ -76,7 +76,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_NN100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
 
@@ -94,7 +94,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_NN100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
 
@@ -112,7 +112,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_NN100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
 
@@ -130,7 +130,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_NN100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTextTransactionHistoryItem" />
     </RadioGroup>

@@ -14,28 +14,37 @@
         android:id="@+id/clSimulationCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:minWidth="@dimen/unify_space_128">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvInstallmentHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/credit_card_dp_10"
-            android:layout_marginTop="@dimen/unify_space_8"
             android:lineSpacingExtra="4sp"
-            android:paddingEnd="@dimen/credit_card_dp_10"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
-            tools:text="30 hari/akhir bulan" />
+            tools:text="30 hari" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/labelInstallment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/tvInstallmentHeader"
+            app:layout_constraintTop_toTopOf="@id/tvInstallmentHeader"
+            app:layout_constraintBottom_toBottomOf="@id/tvInstallmentHeader" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvMonthlyTenure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/unify_space_8"
-            android:paddingEnd="@dimen/credit_card_dp_10"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvInstallmentHeader"

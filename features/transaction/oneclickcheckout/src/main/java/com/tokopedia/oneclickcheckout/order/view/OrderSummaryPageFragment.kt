@@ -73,7 +73,6 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -1542,12 +1541,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val orderCost = viewModel.orderTotal.value.orderCost
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, orderCost.totalPriceWithoutPaymentFees)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
-                putExtra(PaymentListingActivity.EXTRA_ORDER_METADATA, GoCicilInstallmentRequest(
-                        merchantType = viewModel.orderCart.shop.merchantType,
-                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                        address = profile.address,
-                        products = viewModel.orderCart.products
-                ).orderMetadata)
+                val goCicilInstallmentRequest = viewModel.generateGoCicilInstallmentRequest(orderCost)
+                putExtra(
+                    PaymentListingActivity.EXTRA_ORDER_METADATA,
+                    goCicilInstallmentRequest.orderMetadata
+                )
+                putExtra(
+                    PaymentListingActivity.EXTRA_PROMO_PARAM,
+                    goCicilInstallmentRequest.promoParam
+                )
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1575,19 +1577,37 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onGopayInstallmentDetailClicked() {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
-                GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
-                        viewModel.orderCart, viewModel.orderPayment.value, viewModel.orderProfile.value, orderTotal.orderCost, userSession.get().userId,
-                        object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                            override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
-                                viewModel.chooseInstallment(selectedInstallment, installmentList, isSilent)
-                            }
+                GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(
+                    this@OrderSummaryPageFragment,
+                    viewModel.generateGoCicilInstallmentRequest(orderTotal.orderCost),
+                    viewModel.orderPayment.value,
+                    object :
+                        GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        override fun onSelectInstallment(
+                            selectedInstallment: OrderPaymentGoCicilTerms,
+                            installmentList: List<OrderPaymentGoCicilTerms>,
+                            tickerMessage: String,
+                            isSilent: Boolean
+                        ) {
+                            viewModel.chooseInstallment(
+                                selectedInstallment,
+                                installmentList,
+                                tickerMessage,
+                                isSilent
+                            )
+                        }
 
-                            override fun onFailedLoadInstallment() {
-                                view?.let { v ->
-                                    Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-                                }
+                        override fun onFailedLoadInstallment() {
+                            view?.let { v ->
+                                Toaster.build(
+                                    v,
+                                    getString(R.string.default_afpb_error),
+                                    type = Toaster.TYPE_ERROR
+                                ).show()
                             }
-                        })
+                        }
+                    }
+                )
                 orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
             }
         }

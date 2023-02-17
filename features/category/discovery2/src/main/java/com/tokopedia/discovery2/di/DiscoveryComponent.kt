@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.common_sdk_affiliate_toko.di.AffiliateCommonSdkModule
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
@@ -30,6 +31,7 @@ import dagger.Component
 @Component(modules = [DiscoveryModule::class,
     DiscoveryViewModelModule::class,
     TopAdsUrlHitterModule::class,
+    AffiliateCommonSdkModule::class,
     ExplicitViewModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)

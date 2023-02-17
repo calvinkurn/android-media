@@ -3,8 +3,7 @@ package com.tokopedia.pdpsimulation.paylater.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
-import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.*
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
@@ -165,17 +164,38 @@ class OccViewModelTest {
 
     @Test
     fun successPayLaterActivation() {
+        val tenureDetail = TenureDetail(
+            false,
+            0,
+            false,
+            "",
+            "",
+            "",
+            "",
+            ActivationInstallmentDetails(
+                "",
+                listOf(DetailContent("", "", 0))
+            ),
+            ""
+        )
         val checkoutData = CheckoutData("1",
             null,null,null,
             null,null,null,false,null,
-            null, listOf(),"",null,null,false)
+            null, listOf(tenureDetail),"",null,null,false)
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
+            paylaterActivationUseCase.getPayLaterActivationDetail(
+                any(),
+                any(),
+                0.0,
+                "",
+                "",
+                "",
+            )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
         }
-        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "", "")
         Assert.assertEquals(
                 (viewModel.payLaterActivationDetailLiveData.value as Success).data,
                 basePayLaterOptimizedModel
@@ -187,11 +207,18 @@ class OccViewModelTest {
     fun successPayLaterActivationConditionFail() {
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(emptyList(), "")
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
+            paylaterActivationUseCase.getPayLaterActivationDetail(
+                any(),
+                any(),
+                0.0,
+                "",
+                "",
+                "",
+            )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
         }
-        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "", "")
         Assert.assertEquals(
             (viewModel.payLaterActivationDetailLiveData.value as Fail).throwable.message,
           "Empty State"
@@ -202,11 +229,18 @@ class OccViewModelTest {
     @Test
     fun failPayLaterActivation() {
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
+            paylaterActivationUseCase.getPayLaterActivationDetail(
+                any(),
+                any(),
+                0.0,
+                "",
+                "",
+                "",
+            )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "", "")
         Assert.assertEquals(
                 (viewModel.payLaterActivationDetailLiveData.value as Fail).throwable,
                 mockThrowable
