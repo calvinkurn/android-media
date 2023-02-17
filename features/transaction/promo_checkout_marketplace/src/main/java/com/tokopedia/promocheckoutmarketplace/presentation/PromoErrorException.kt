@@ -18,8 +18,4 @@ class PromoErrorException : IOException {
             this.messageError = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
         }
     }
-
-    companion object {
-        private val serialVersionUID = -3848721958439593398L
-    }
 }
