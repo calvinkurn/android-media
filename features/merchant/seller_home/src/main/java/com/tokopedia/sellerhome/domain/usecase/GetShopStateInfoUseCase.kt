@@ -84,8 +84,6 @@ class GetShopStateInfoUseCase @Inject constructor(
                   }
                   meta {
                     shopState
-                    persona
-                    personaStatus
                   }
                   widgetDataSign
                   subType
