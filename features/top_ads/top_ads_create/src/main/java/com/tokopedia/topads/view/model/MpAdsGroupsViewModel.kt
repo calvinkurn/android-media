@@ -101,7 +101,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     private fun onFirstPageSuccess(data: TopAdsGroupsResponse){
         currentItemCount = data.response?.data?.size.orZero()
         totalItemCount = data.response?.page?.total ?: 0
-        if(data.response==null || data.response?.data==null || data.response!!.data!!.isEmpty()){
+        if(data.response==null || data.response!!.data==null || data.response!!.data!!.isEmpty()){
             createErrorList(GlobalError.PAGE_NOT_FOUND)
         }
         else{
