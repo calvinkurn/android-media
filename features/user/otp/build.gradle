@@ -68,6 +68,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lottie
 
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
