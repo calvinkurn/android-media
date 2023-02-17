@@ -29,7 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
 import com.tokopedia.common.payment.utils.LinkStatusMatcher
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -37,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
+import com.tokopedia.oneclickcheckout.common.utils.generateAppVersionForPayment
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentMethodBinding
 import com.tokopedia.oneclickcheckout.payment.di.PaymentComponent
@@ -64,12 +64,20 @@ class PaymentListingFragment : BaseDaggerFragment() {
         private const val ARG_MERCHANT_CODE = "merchant_code"
         private const val ARG_PAYMENT_BID = "bid"
         private const val ARG_ORDER_METADATA = "order_metadata"
+        private const val ARG_PROMO_PARAM = "promo_param"
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
         private const val REQUEST_CODE = 191
 
-        fun newInstance(paymentAmount: Double, addressId: String, profileCode: String,
-                        merchantCode: String, bid: String, orderMetadata: String): PaymentListingFragment {
+        fun newInstance(
+            paymentAmount: Double,
+            addressId: String,
+            profileCode: String,
+            merchantCode: String,
+            bid: String,
+            orderMetadata: String,
+            promoParam: String
+        ): PaymentListingFragment {
             val fragment = PaymentListingFragment()
             fragment.arguments = Bundle().apply {
                 putDouble(ARG_PAYMENT_AMOUNT, paymentAmount)
@@ -78,6 +86,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
                 putString(ARG_MERCHANT_CODE, merchantCode)
                 putString(ARG_PAYMENT_BID, bid)
                 putString(ARG_ORDER_METADATA, orderMetadata)
+                putString(ARG_PROMO_PARAM, promoParam)
             }
             return fragment
         }
@@ -99,6 +108,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private var merchantCode = ""
     private var bid = ""
     private var orderMetadata = ""
+    private var promoParam = ""
 
     private val viewModel: PaymentListingViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PaymentListingViewModel::class.java]
@@ -115,9 +125,9 @@ class PaymentListingFragment : BaseDaggerFragment() {
                     handleStatusMatching(status)
                 }
             }
-            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata)
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata, promoParam)
         } else if (requestCode == REQUEST_CODE && view != null) {
-            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata)
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata, promoParam)
         }
     }
 
@@ -149,6 +159,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
         merchantCode = arguments?.getString(ARG_MERCHANT_CODE) ?: ""
         bid = arguments?.getString(ARG_PAYMENT_BID) ?: ""
         orderMetadata = arguments?.getString(ARG_ORDER_METADATA) ?: ""
+        promoParam = arguments?.getString(ARG_PROMO_PARAM) ?: ""
         val parent: Context = activity ?: return
         SplitCompat.installActivity(parent)
     }
@@ -191,7 +202,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata)
+        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata, promoParam)
     }
 
     private fun loadWebView(param: String) {
@@ -203,12 +214,14 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
-        return PaymentListingParamRequest(merchantCode,
-                profileCode,
-                paymentListingUrl,
-                addressId,
-                "android-${GlobalConfig.VERSION_NAME}",
-                bid)
+        return PaymentListingParamRequest(
+            merchantCode,
+            profileCode,
+            paymentListingUrl,
+            addressId,
+            generateAppVersionForPayment(),
+            bid
+        )
     }
 
     private fun handleError(throwable: Throwable?) {
@@ -243,7 +256,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
         binding?.apply {
             globalError.setType(type)
             globalError.setActionClickListener {
-                viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata)
+                viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, orderMetadata, promoParam)
             }
             globalError.visible()
             webView.gone()

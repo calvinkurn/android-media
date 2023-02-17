@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
 import javax.inject.Inject
 
 class GetConsentCollectionUseCase @Inject constructor(
@@ -53,6 +54,15 @@ class GetConsentCollectionUseCase @Inject constructor(
                     policyNoticeType
                     PolicyNoticeTnCPageID
                     PolicyNoticePolicyPageID
+                    statementWording {
+                      template
+                      attributes {
+                        key
+                        type
+                        text
+                        link
+                      }
+                    }
                   }
                 }  
               }

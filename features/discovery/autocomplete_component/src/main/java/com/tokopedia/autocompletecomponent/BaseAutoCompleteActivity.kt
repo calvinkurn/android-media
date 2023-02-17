@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -38,6 +39,9 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SR
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.microinteraction.SEARCH_BAR_MICRO_INTERACTION_FLAG_BUNDLE
+import com.tokopedia.discovery.common.microinteraction.SearchBarMicroInteractionAttributes
+import com.tokopedia.discovery.common.microinteraction.autocomplete.autoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
@@ -62,6 +66,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         findViewById<ViewGroup?>(R.id.search_initial_state_container)
     }
 
+    private val autoCompleteMicroInteraction by autoCompleteMicroInteraction()
+
     private lateinit var searchParameter: SearchParameter
     private lateinit var autoCompleteTracking: AutoCompleteTracking
 
@@ -74,6 +80,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         init()
 
         sendTracking()
+
+        tryExecuteMicroInteraction()
     }
 
     private fun init() {
@@ -212,6 +220,21 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         autoCompleteTracking.eventImpressDiscoveryVoiceSearch(pageSource)
     }
 
+    private fun tryExecuteMicroInteraction() {
+        val searchBarMicroInteractionAttributes = getMicroInteractionFlag() ?: return
+
+        autoCompleteMicroInteraction?.run {
+            searchBarView?.setupMicroInteraction(this)
+            setSearchBarMicroInteractionAttributes(searchBarMicroInteractionAttributes)
+            animateSearchBar()
+        }
+    }
+
+    // Suppressed because the alternative requires min sdk 33
+    @SuppressLint("DeprecatedMethod")
+    private fun getMicroInteractionFlag(): SearchBarMicroInteractionAttributes? =
+        intent?.getParcelableExtra(SEARCH_BAR_MICRO_INTERACTION_FLAG_BUNDLE)
+
     override fun onStart() {
         super.onStart()
 
@@ -324,11 +347,15 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             .findFragmentByTag(SUGGESTION_FRAGMENT_TAG) as? SuggestionFragment
 
     override fun showInitialStateView() {
+        autoCompleteMicroInteraction?.animateContent(initialStateContainer)
+
         suggestionContainer?.hide()
         initialStateContainer?.show()
     }
 
     override fun showSuggestionView() {
+        autoCompleteMicroInteraction?.animateContent(suggestionContainer)
+
         initialStateContainer?.hide()
         suggestionContainer?.show()
     }

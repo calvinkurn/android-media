@@ -170,8 +170,6 @@ public interface UserSessionInterface {
 
     String getAndroidId();
 
-    String getAdsId();
-
     boolean isAffiliate();
 
     boolean hasShownSaldoIntroScreen();
