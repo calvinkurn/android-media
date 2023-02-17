@@ -5,9 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemPofDetailBinding
 import com.tokopedia.buyerorderdetail.presentation.model.PofDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
 
-class PofDetailViewHolder(view: View) : CustomPayloadViewHolder<PofDetailUiModel>(view) {
+class PofDetailViewHolder(view: View) : AbstractViewHolder<PofDetailUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_pof_detail
@@ -19,19 +18,6 @@ class PofDetailViewHolder(view: View) : CustomPayloadViewHolder<PofDetailUiModel
         with(binding) {
             setPofDetailLabel(element.label)
             setPofDetailValue(element.value)
-        }
-    }
-
-    override fun bindPayload(payloads: Pair<*, *>?) {
-        payloads?.let { (oldItem, newItem) ->
-            if (oldItem is PofDetailUiModel && newItem is PofDetailUiModel) {
-                if (oldItem.label != newItem.label) {
-                    binding.setPofDetailLabel(newItem.label)
-                }
-                if (oldItem.value != newItem.value) {
-                    binding.setPofDetailValue(newItem.value)
-                }
-            }
         }
     }
 

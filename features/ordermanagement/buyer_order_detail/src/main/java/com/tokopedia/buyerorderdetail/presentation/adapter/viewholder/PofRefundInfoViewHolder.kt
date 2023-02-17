@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.PofUtils.setupHyperlinkText
 import com.tokopedia.buyerorderdetail.databinding.ItemPartialOrderEstimateRefundedBinding
@@ -13,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 class PofRefundInfoViewHolder(
     view: View,
     private val listener: Listener
-) : CustomPayloadViewHolder<PofRefundInfoUiModel>(view) {
+) : AbstractViewHolder<PofRefundInfoUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_partial_order_estimate_refunded
@@ -27,25 +28,6 @@ class PofRefundInfoViewHolder(
             setEstimateInfoValue(element.totalAmountValue)
             setEstimateInfoIcon(element)
             setRefundSummaryCta(element)
-        }
-    }
-
-    override fun bindPayload(payloads: Pair<*, *>?) {
-        payloads?.let { (oldItem, newItem) ->
-            if (oldItem is PofRefundInfoUiModel && newItem is PofRefundInfoUiModel) {
-                if (oldItem.totalAmountLabel != newItem.totalAmountLabel) {
-                    binding.setEstimateInfoLabel(newItem.totalAmountLabel)
-                }
-                if (oldItem.totalAmountValue != newItem.totalAmountValue) {
-                    binding.setEstimateInfoValue(newItem.totalAmountValue)
-                }
-                if (oldItem.isRefunded != newItem.isRefunded || oldItem.estimateInfoUiModel != newItem.estimateInfoUiModel) {
-                    binding.setEstimateInfoIcon(newItem)
-                }
-                if (oldItem.isRefunded != newItem.isRefunded || oldItem.pofRefundSummaryUiModel != newItem.pofRefundSummaryUiModel) {
-                    binding.setRefundSummaryCta(newItem)
-                }
-            }
         }
     }
 

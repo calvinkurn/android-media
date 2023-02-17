@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.PofUtils.getColorHexString
@@ -9,10 +10,9 @@ import com.tokopedia.buyerorderdetail.presentation.model.PofProductUnfulfilledUi
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ContainerUnify
 
-
 class PofProductUnfulfilledViewHolder(
     view: View
-) : CustomPayloadViewHolder<PofProductUnfulfilledUiModel>(view) {
+) : AbstractViewHolder<PofProductUnfulfilledUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_unfulfilled_partial_order
@@ -27,27 +27,6 @@ class PofProductUnfulfilledViewHolder(
             setProductName(element.productName)
             setProductQtyPrice(element.getProductPriceQty())
             setProductRequestStock(element)
-        }
-    }
-
-    override fun bindPayload(payloads: Pair<*, *>?) {
-        payloads?.let { (oldItem, newItem) ->
-            if (oldItem is PofProductUnfulfilledUiModel && newItem is PofProductUnfulfilledUiModel) {
-                if (oldItem.productPictureUrl != newItem.productPictureUrl) {
-                    binding.setProductImageUrl(newItem.productPictureUrl)
-                }
-                if (oldItem.productName != newItem.productName) {
-                    binding.setProductName(newItem.productName)
-                }
-                if (oldItem.getProductPriceQty() != newItem.getProductPriceQty()) {
-                    binding.setProductQtyPrice(newItem.getProductPriceQty())
-                }
-                if ((oldItem.productQtyRequest != newItem.productQtyRequest) ||
-                    (oldItem.productQtyCheckout != newItem.productQtyCheckout)
-                ) {
-                    binding.setProductRequestStock(newItem)
-                }
-            }
         }
     }
 

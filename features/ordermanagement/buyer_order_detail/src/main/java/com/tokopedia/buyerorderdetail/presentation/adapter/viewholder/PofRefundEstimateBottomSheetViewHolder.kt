@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.PofUtils.setupHyperlinkText
 import com.tokopedia.buyerorderdetail.databinding.ItemPofEstimateRefundBottomsheetBinding
@@ -8,8 +9,9 @@ import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateBottomSheetUiModel
 
 class PofRefundEstimateBottomSheetViewHolder(
-    view: View, private val listener: Listener
-) : CustomPayloadViewHolder<PofRefundEstimateBottomSheetUiModel>(view) {
+    view: View,
+    private val listener: Listener
+) : AbstractViewHolder<PofRefundEstimateBottomSheetUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_pof_estimate_refund_bottomsheet
@@ -23,25 +25,6 @@ class PofRefundEstimateBottomSheetViewHolder(
             setRefundEstimateValue(element.refundEstimateValue)
             setRefundEstimateFooter(element.pofFooterInfo)
             setRefundEstimateIcon(element.estimateInfoUiModel)
-        }
-    }
-
-    override fun bindPayload(payloads: Pair<*, *>?) {
-        payloads?.let { (oldItem, newItem) ->
-            if (oldItem is PofRefundEstimateBottomSheetUiModel && newItem is PofRefundEstimateBottomSheetUiModel) {
-                if (oldItem.refundEstimateLabel != newItem.refundEstimateLabel) {
-                    binding.setRefundEstimateLabel(newItem.refundEstimateLabel)
-                }
-                if (oldItem.refundEstimateValue != newItem.refundEstimateValue) {
-                    binding.setRefundEstimateValue(newItem.refundEstimateValue)
-                }
-                if (oldItem.pofFooterInfo != newItem.pofFooterInfo) {
-                    binding.setRefundEstimateFooter(newItem.pofFooterInfo)
-                }
-                if (oldItem.estimateInfoUiModel != newItem.estimateInfoUiModel) {
-                    binding.setRefundEstimateIcon(newItem.estimateInfoUiModel)
-                }
-            }
         }
     }
 
