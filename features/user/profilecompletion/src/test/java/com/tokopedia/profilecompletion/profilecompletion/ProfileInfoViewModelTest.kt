@@ -2,22 +2,24 @@ package com.tokopedia.profilecompletion.profilecompletion
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
-import com.tokopedia.profilecompletion.profilecompletion.data.*
+import com.tokopedia.profilecompletion.domain.UserProfileCompletionUseCase
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureData
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureInnerData
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureResponse
+import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileInfoData
 import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileInfoViewModel
+import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -25,6 +27,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import kotlin.test.assertTrue
 
 /**
  * Created by Yoris Prayogo on 29/06/20.
@@ -35,7 +38,6 @@ class ProfileInfoViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val userProfileInfoUseCase = mockk<GraphqlUseCase<UserProfileInfoData>>(relaxed = true)
     val uploader = mockk<UploaderUseCase>(relaxed = true)
     val saveProfilePictureUseCase = mockk<SaveProfilePictureUseCase>(relaxed = true)
     private var userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
@@ -43,9 +45,7 @@ class ProfileInfoViewModelTest {
     val context = mockk<Context>(relaxed = true)
     val mockFile = mockk<File>(relaxed = true)
 
-    private var userProfileObserver = mockk<Observer<Result<ProfileCompletionData>>>(relaxed = true)
-    private var uploadProfileObserver = mockk<Observer<Result<UploadProfilePictureResult>>>(relaxed = true)
-    private var saveImageProfileObserver = mockk<Observer<Result<String>>>(relaxed = true)
+    private val userProfileCompletionUseCase = mockk<UserProfileCompletionUseCase>(relaxed = true)
 
     lateinit var viewModel: ProfileInfoViewModel
 
@@ -58,57 +58,39 @@ class ProfileInfoViewModelTest {
     @Before
     fun setUp() {
         viewModel = ProfileInfoViewModel(
-                userProfileInfoUseCase,
+                userProfileCompletionUseCase,
                 uploader,
                 saveProfilePictureUseCase,
                 userSessionInterface,
                 CoroutineTestDispatchersProvider
         )
-        viewModel.userProfileInfo.observeForever(userProfileObserver)
-        viewModel.uploadProfilePictureResponse.observeForever(uploadProfileObserver)
-        viewModel.saveImageProfileResponse.observeForever(saveImageProfileObserver)
-    }
-
-    @Test
-    fun `on getUserProfileInfo executed`() {
-
-        viewModel.getUserProfileInfo(context)
-
-        /* Then */
-        verify {
-            userProfileInfoUseCase.setGraphqlQuery(any<String>())
-            userProfileInfoUseCase.execute(any(), any())
-        }
     }
 
     @Test
     fun `on getUserProfileInfo Success`() {
         every { userSessionInterface.profilePicture } returns profilePict
-        every { userProfileInfoUseCase.execute(any(), any()) } answers {
-            firstArg<(UserProfileInfoData) -> Unit>().invoke(userProfileInfoData)
-        }
+        coEvery { userProfileCompletionUseCase(Unit) } returns userProfileInfoData
 
-        viewModel.getUserProfileInfo(context)
+        viewModel.getUserProfileInfo()
 
         /* Then */
-        verify { userProfileObserver.onChanged(any()) }
-        Assert.assertThat(viewModel.userProfileInfo.value, CoreMatchers.instanceOf(Success::class.java))
+        val result = viewModel.userProfileInfo.getOrAwaitValue()
+        Assert.assertThat(result, CoreMatchers.instanceOf(Success::class.java))
         assertEquals(userSessionInterface.profilePicture, userProfileInfoData.profileCompletionData.profilePicture)
     }
 
     @Test
     fun `on getUserProfileInfo Error`() {
 
-        every { userProfileInfoUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { userProfileCompletionUseCase(Unit) } throws mockThrowable
 
-        viewModel.getUserProfileInfo(context)
+        viewModel.getUserProfileInfo()
 
         /* Then */
-        Assert.assertThat(viewModel.userProfileInfo.value, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((viewModel.userProfileInfo.value as Fail).throwable, CoreMatchers.instanceOf(Throwable::class.java))
-        verify(atLeast = 1){ userProfileObserver.onChanged(any()) }
+        val result = viewModel.userProfileInfo.getOrAwaitValue()
+        Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
+        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(Throwable::class.java))
+        coVerify (atLeast = 1){ userProfileCompletionUseCase(Unit) }
     }
 
     @Test
@@ -128,9 +110,8 @@ class ProfileInfoViewModelTest {
 
         viewModel.uploadPicture(mockFile)
 
-        verify {
-            saveImageProfileObserver.onChanged(Success(profilePict))
-        }
+        val result = viewModel.saveImageProfileResponse.getOrAwaitValue()
+        assertEquals(Success(profilePict), result)
     }
 
     @Test
@@ -143,9 +124,8 @@ class ProfileInfoViewModelTest {
 
         viewModel.uploadPicture(mockFile)
 
-        verify {
-            saveImageProfileObserver.onChanged(any<Fail>())
-        }
+        val result = viewModel.saveImageProfileResponse.getOrAwaitValue()
+        assertTrue(result is Fail)
     }
 
     @Test
@@ -162,9 +142,8 @@ class ProfileInfoViewModelTest {
 
         viewModel.saveProfilePicture(uploadId)
 
-        verify {
-            saveImageProfileObserver.onChanged(Success(profilePict))
-        }
+        val result = viewModel.saveImageProfileResponse.getOrAwaitValue()
+        assertEquals(Success(profilePict), result)
     }
 
     @Test
@@ -173,9 +152,8 @@ class ProfileInfoViewModelTest {
         coEvery { saveProfilePictureUseCase(any()) } throws mockException
         viewModel.saveProfilePicture(uploadId)
 
-        verify {
-            saveImageProfileObserver.onChanged(Fail(mockException))
-        }
+        val result = viewModel.saveImageProfileResponse.getOrAwaitValue()
+        assertEquals(Fail(mockException), result)
     }
 
     @Test
@@ -193,10 +171,9 @@ class ProfileInfoViewModelTest {
 
         viewModel.saveProfilePicture(uploadId)
 
-        verify {
-            saveImageProfileObserver.onChanged(any<Fail>())
-        }
-        assertEquals(mockSaveSuccess.data.errorMessage[0], (viewModel.saveImageProfileResponse.value as Fail).throwable.message)
+        val result = viewModel.saveImageProfileResponse.getOrAwaitValue()
+        assertTrue(result is Fail)
+        assertEquals(mockSaveSuccess.data.errorMessage[0], result.throwable.message)
     }
 
 }

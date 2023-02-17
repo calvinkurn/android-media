@@ -1,21 +1,16 @@
 package com.tokopedia.profilecompletion.addbod
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
 import com.tokopedia.profilecompletion.addbod.data.UserProfileCompletionUpdateBodData
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.profilecompletion.domain.AddBodUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
@@ -33,69 +28,47 @@ class AddBodViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val bodGraphqlUseCase = mockk<GraphqlUseCase<UserProfileCompletionUpdateBodData>>(relaxed = true)
-    val context = mockk<Context>(relaxed = true)
-
-    private var observer = mockk<Observer<Result<AddBodData>>>(relaxed = true)
     lateinit var viewModel: AddBodViewModel
 
     val mockDate = "05/01/1990"
     val errMsg = "Error"
     val mockThrowable = Throwable(errMsg)
 
-    val messageException = MessageErrorException()
+    private val addBodUseCase = mockk<AddBodUseCase>(relaxed = true)
 
     @Before
     fun setUp() {
         viewModel = AddBodViewModel(
-                bodGraphqlUseCase,
+                addBodUseCase,
                 CoroutineTestDispatchersProvider
         )
-        viewModel.editBodUserProfileResponse.observeForever(observer)
-    }
-
-    @Test
-    fun `on Edit DOB executed`() {
-        val mockParam = mapOf(ProfileCompletionQueryConstant.PARAM_BOD to mockDate)
-
-        viewModel.editBodUserProfile(context, mockDate)
-
-        /* Then */
-        verify {
-            bodGraphqlUseCase.setGraphqlQuery(any<String>())
-            bodGraphqlUseCase.setTypeClass(any())
-            bodGraphqlUseCase.setRequestParams(mockParam)
-            bodGraphqlUseCase.execute(any(), any())
-        }
     }
 
     @Test
     fun `on Success Edit DOB`() {
         /* When */
         val mockBodData = AddBodData(isSuccess = true)
-        val mockUpdateModel = UserProfileCompletionUpdateBodData(mockBodData)
+        val mockUpdateModel = UserProfileCompletionUpdateBodData(addBodData = mockBodData)
 
-        every { bodGraphqlUseCase.execute(any(), any()) } answers {
-            firstArg<(UserProfileCompletionUpdateBodData) -> Unit>().invoke(mockUpdateModel)
-        }
+        coEvery { addBodUseCase(any()) } returns mockUpdateModel
 
-        viewModel.editBodUserProfile(context, mockDate)
+        viewModel.editBodUserProfile(mockDate)
 
         /* Then */
-        verify { observer.onChanged(Success(mockBodData)) }
+        val result = viewModel.editBodUserProfileResponse.getOrAwaitValue()
+        assertEquals(Success(mockBodData), result)
     }
 
     @Test
     fun `on generic Error Edit DOB`() {
 
-        every { bodGraphqlUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { addBodUseCase(any()) } throws mockThrowable
 
-        viewModel.editBodUserProfile(context, mockDate)
+        viewModel.editBodUserProfile(mockDate)
 
         /* Then */
-        verify { observer.onChanged(Fail(mockThrowable)) }
+        val result = viewModel.editBodUserProfileResponse.getOrAwaitValue()
+        assertEquals(Fail(mockThrowable), result)
     }
 
     @Test
@@ -105,16 +78,14 @@ class AddBodViewModelTest {
         val mockBodData = AddBodData(isSuccess = false, birthDateMessage = birthDateMsg)
         val mockUpdateModel = UserProfileCompletionUpdateBodData(mockBodData)
 
-        every { bodGraphqlUseCase.execute(any(), any()) } answers {
-            firstArg<(UserProfileCompletionUpdateBodData) -> Unit>().invoke(mockUpdateModel)
-        }
+        coEvery { addBodUseCase(any()) } returns mockUpdateModel
 
-        viewModel.editBodUserProfile(context, mockDate)
+        viewModel.editBodUserProfile(mockDate)
 
         /* Then */
-        assertThat(viewModel.editBodUserProfileResponse.value, instanceOf(Fail::class.java))
-        assertEquals(birthDateMsg, (viewModel.editBodUserProfileResponse.value as Fail).throwable.message)
-        verify(atLeast = 1){ observer.onChanged(any()) }
+        val result = viewModel.editBodUserProfileResponse.getOrAwaitValue()
+        assertThat(result, instanceOf(Fail::class.java))
+        assertEquals(birthDateMsg, (result as Fail).throwable.message)
     }
 
     @Test
@@ -123,15 +94,13 @@ class AddBodViewModelTest {
         val mockBodData = AddBodData(isSuccess = false)
         val mockUpdateModel = UserProfileCompletionUpdateBodData(mockBodData)
 
-        every { bodGraphqlUseCase.execute(any(), any()) } answers {
-            firstArg<(UserProfileCompletionUpdateBodData) -> Unit>().invoke(mockUpdateModel)
-        }
+        coEvery { addBodUseCase(any()) } returns mockUpdateModel
 
-        viewModel.editBodUserProfile(context, mockDate)
+        viewModel.editBodUserProfile(mockDate)
 
         /* Then */
-        assertThat(viewModel.editBodUserProfileResponse.value, instanceOf(Fail::class.java))
-        assertThat((viewModel.editBodUserProfileResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
-        verify(atLeast = 1){ observer.onChanged(any()) }
+        val result = viewModel.editBodUserProfileResponse.getOrAwaitValue()
+        assertThat(result, instanceOf(Fail::class.java))
+        assertThat((result as Fail).throwable, instanceOf(RuntimeException::class.java))
     }
 }
