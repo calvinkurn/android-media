@@ -4,8 +4,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/Unify_Background">
+    android:background="@color/Unify_Background"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/feed_appbar"
@@ -16,13 +16,13 @@
         app:elevation="0dp">
 
         <View
+            android:id="@+id/status_bar_bg"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@color/Unify_G500"
             android:visibility="invisible"
             app:layout_collapseMode="pin"
-            android:id="@+id/status_bar_bg"
-            android:background="@color/Unify_G500"
-            android:layout_width="match_parent"
-            app:layout_scrollFlags="enterAlways"
-            android:layout_height="25dp"/>
+            app:layout_scrollFlags="enterAlways" />
 
         <FrameLayout
             android:id="@+id/toolbarParent"
@@ -31,16 +31,16 @@
             android:layout_marginBottom="-20dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="enterAlways"/>
+            app:layout_scrollFlags="enterAlways" />
 
         <View
-            android:visibility="invisible"
-            app:layout_collapseMode="pin"
             android:id="@+id/status_bar_bg2"
-            android:background="@color/Unify_G500"
             android:layout_width="match_parent"
+            android:layout_height="25dp"
             android:layout_marginTop="-5dp"
-            android:layout_height="25dp"/>
+            android:background="@color/Unify_G500"
+            android:visibility="invisible"
+            app:layout_collapseMode="pin" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -89,11 +89,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.feedplus.view.customview.PostProgressUpdateView
+        <com.tokopedia.feedplus.oldFeed.view.customview.PostProgressUpdateView
             android:id="@+id/postUpdateView"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -102,21 +102,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/partial_feed_loading"
+        <include
             android:id="@+id/feed_loading"
-            android:visibility="gone"/>
+            layout="@layout/partial_feed_loading"
+            android:visibility="gone" />
 
-        <include layout="@layout/partial_feed_error"
+        <include
             android:id="@+id/feed_error"
-            android:visibility="gone"/>
+            layout="@layout/partial_feed_error"
+            android:visibility="gone" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </FrameLayout>
 
@@ -129,16 +131,14 @@
         android:layout_alignParentBottom="true"
         app:backgroundTint="@color/Unify_GN500"
         app:fbType="circle"
-        app:srcCompat="@drawable/ic_feed_post_plus"
-        />
+        app:srcCompat="@drawable/ic_feed_post_plus" />
 
     <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
         android:id="@+id/feed_floating_button"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/unify_space_16"
-        />
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

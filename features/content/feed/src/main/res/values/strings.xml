@@ -52,7 +52,7 @@ dari Feed.</string>
     <string name="feed_background_image">Feed background image</string>
     <string name="feed_header_mask">searchbar feed header mask</string>
     <string name="feed_fab_shop">Feed Fab Shop</string>
-  
+
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
     <string name="feed_post_successful_toaster">Yay, post kamu berhasil di-upload!</string>
@@ -75,4 +75,8 @@ dari Feed.</string>
     <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
     <string name="feed_upload_shorts_success">Yay, video kamu berhasil di-upload!</string>
     <string name="feed_upload_shorts_see_video">Lihat</string>
+
+    <string name="feed_for_you_label">Untuk Kamu</string>
+    <string name="feed_following_label">Following</string>
+    <string name="feed_live_label">LIVE</string>
 </resources>
