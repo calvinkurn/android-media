@@ -1128,7 +1128,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun onScrubStarted() {
         pinnedView?.setTransparent(true)
 
-        if (!orientation.isLandscape) return
+        if (!orientation.isLandscape || !orientation.isCompact) return
 
         cancelAllAnimations()
         fadeInAnimation.start(container)
@@ -1137,7 +1137,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun onScrubEnded() {
         pinnedView?.setTransparent(false)
 
-        if (!orientation.isLandscape) return
+        if (!orientation.isLandscape || !orientation.isCompact) return
 
         cancelAllAnimations()
         delayFadeOutAnimation.start(container)
