@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_ho
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTextViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 
-class SocialProofAdapterDelegate(
+class SocialProofAdapterFactory(
     private val listener: DynamicProductDetailListener
 ) {
 

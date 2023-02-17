@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.databinding.ItemDynamicSocialProofBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.SocialProofAdapter
-import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.SocialProofAdapterDelegate
+import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.SocialProofAdapterFactory
 import com.tokopedia.unifycomponents.toPx
 
 /**
@@ -38,7 +38,7 @@ class ProductMiniSocialProofViewHolder(
     }
 
     private val adapter by lazyThreadSafetyNone {
-        SocialProofAdapter(delegate = SocialProofAdapterDelegate(listener = listener))
+        SocialProofAdapter(factory = SocialProofAdapterFactory(listener = listener))
     }
 
     init {

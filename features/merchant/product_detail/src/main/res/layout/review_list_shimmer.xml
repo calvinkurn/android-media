@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/reviewListTitleLoader"
+        android:layout_width="150dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/reviewListSeeMoreLoader"
+        android:layout_width="75dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/reviewListTitleLoader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reviewListTitleLoader"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/reviewListItem1"
+        android:layout_width="292dp"
+        android:layout_height="104dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reviewListTitleLoader"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/reviewListItem2"
+        android:layout_width="292dp"
+        android:layout_height="104dp"
+        android:layout_marginStart="8dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/reviewListItem1"
+        app:layout_constraintTop_toTopOf="@+id/reviewListItem1"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
