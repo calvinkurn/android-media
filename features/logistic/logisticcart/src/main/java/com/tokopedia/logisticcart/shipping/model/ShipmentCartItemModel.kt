@@ -117,6 +117,14 @@ class ShipmentCartItemModel(
     // Flag for tracking
     var isHasShownCourierError: Boolean = false,
 
+    // Schedule delivery
+    var isShowScheduleDelivery: Boolean = false,
+    var scheduleDate: String = "",
+    var timeslotId: Long = 0L,
+    var validationMetadata: String = "",
+    var ratesValidationFlow: Boolean = false,
+    var hasSentScheduleDeliveryAnalytics: Boolean = false,
+
     // Multiple Order Plus Coachmark
     var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
 
@@ -190,14 +198,15 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.isLeasingProduct = shipmentCartItemModel.isLeasingProduct
             newShipmentCartItemModel.listPromoCodes = shipmentCartItemModel.listPromoCodes
             newShipmentCartItemModel.shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData
-            newShipmentCartItemModel.isDisableChangeCourier =
-                shipmentCartItemModel.isDisableChangeCourier
-            newShipmentCartItemModel.isAutoCourierSelection =
-                shipmentCartItemModel.isAutoCourierSelection
-            newShipmentCartItemModel.isHideChangeCourierCard =
-                shipmentCartItemModel.isHideChangeCourierCard
-            newShipmentCartItemModel.durationCardDescription =
-                shipmentCartItemModel.durationCardDescription
+            newShipmentCartItemModel.isDisableChangeCourier = shipmentCartItemModel.isDisableChangeCourier
+            newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
+            newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
+            newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
+            newShipmentCartItemModel.isShowScheduleDelivery = shipmentCartItemModel.isShowScheduleDelivery
+            newShipmentCartItemModel.timeslotId = shipmentCartItemModel.timeslotId
+            newShipmentCartItemModel.scheduleDate = shipmentCartItemModel.scheduleDate
+            newShipmentCartItemModel.validationMetadata = shipmentCartItemModel.validationMetadata
+            newShipmentCartItemModel.ratesValidationFlow = shipmentCartItemModel.ratesValidationFlow
             newShipmentCartItemModel.hasEthicalProducts = shipmentCartItemModel.hasEthicalProducts
             newShipmentCartItemModel.hasNonEthicalProducts = shipmentCartItemModel.hasNonEthicalProducts
             newShipmentCartItemModel.prescriptionIds = shipmentCartItemModel.prescriptionIds

@@ -1,6 +1,7 @@
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
+import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.tokopedia.sellerapp.navigation.*
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
@@ -9,6 +10,7 @@ import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
 fun SetupNavigation(
     navController: NavHostController,
     sharedViewModel: SharedViewModel,
+    remoteActivityHelper: RemoteActivityHelper
 ) {
     val nav = ScreenNavigation(navController)
     SwipeDismissableNavHost(
@@ -44,11 +46,9 @@ fun SetupNavigation(
             sharedViewModel = sharedViewModel
         )
         appNotInstalledScreenComposable(
-            sharedViewModel = sharedViewModel
+            remoteActivityHelper = remoteActivityHelper
         )
-        connectionFailedScreenComposable(
-            sharedViewModel = sharedViewModel
-        )
+        connectionFailedScreenComposable()
         acceptOrderScreenComposable(
             sharedViewModel = sharedViewModel,
             screenNavigation = nav

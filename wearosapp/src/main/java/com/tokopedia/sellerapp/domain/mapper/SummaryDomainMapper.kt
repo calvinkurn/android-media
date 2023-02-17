@@ -2,14 +2,9 @@ package com.tokopedia.sellerapp.domain.mapper
 
 import com.tokopedia.sellerapp.data.datasource.local.entity.SummaryEntity
 import com.tokopedia.sellerapp.domain.model.SummaryModel
-import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
-import com.tokopedia.sellerapp.presentation.model.TITLE_READY_TO_SHIP
 import com.tokopedia.sellerapp.util.MenuHelper
-import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_NEW_ORDER
-import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_READY_TO_SHIP
 
 object SummaryDomainMapper {
-
     fun List<SummaryEntity>.mapToListDomainModel() : List<SummaryModel> {
         return map {
             SummaryModel(

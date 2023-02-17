@@ -7,6 +7,12 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
         tenure
         text
         small_text
+        promo_name
+        label {
+          text
+          text_color
+          bg_color
+        }
         sections {
           title
           is_collapsible
@@ -64,6 +70,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
                 type
               }
             }
+            promo_name
           }
         }
       } 
@@ -121,6 +128,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       user_state
       user_balance_amt
       detail {
+        promo_name
         tenure
         tenure_disable
         label

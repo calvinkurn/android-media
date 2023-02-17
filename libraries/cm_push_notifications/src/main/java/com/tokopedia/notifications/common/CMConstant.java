@@ -290,6 +290,25 @@ public interface CMConstant {
         String VALUE_ACTION_ALLOW = "click allow";
         String VALUE_ACTION_CLICK_CLOSE = "click close";
         String VALUE_ACTION_CLICK_CTA = "click cta";
+        String KEY_EVENT_NAME = "event_name";
+        String KEY_MAIN_APP_PUSH_PERMISSION_STATUS = "android_push_permission_mainapp_device_status";
+        String KEY_SELLER_APP_PUSH_PERMISSION_STATUS = "android_push_permission_sellerapp_device_status";
+        String KEY_TRAFFIC_SOURCE_NAME = "traffic_source_name";
+        String KEY_TRAFFIC_SOURCE_ID = "traffic_source_id";
+        String KEY_EVENT_REFRESH_SOURCE = "event_refresh_source";
+        String KEY_DELAY_HRS_OPEN_HOME_SCR = "delayhours_to_user_open_homescreen";
+        String KEY_DELAY_DAY_OPEN_HOME_SCR = "delayday_to_user_open_homescreen";
+        String KEY_DEVICE_ID_NEW = "device_id";
+        String KEY_USER_ID_NEW = "user_id";
+        String KEY_SHOP_ID_NEW = "shop_id";
+        String KEY_CLIENT_TIMESTAMP = "client_timestamp";
+        String KEY_DEVICE_MODEL = "device_model";
+        String KEY_OS_VESION = "os_version";
+        String KEY_OS_NAME = "os_name";
+        String KEY_APP_VERSION = "app_version";
+        String KEY_DEVICE_MANUFACTURER = "device_manufacturer";
+        String KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS = "promo_app_push_permission_latest_status";
+        String KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS = "device_push_permission_latest_status";
     }
 
 }

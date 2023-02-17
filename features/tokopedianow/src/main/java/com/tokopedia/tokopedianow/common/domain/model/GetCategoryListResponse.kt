@@ -40,6 +40,9 @@ data class GetCategoryListResponse(
             @SerializedName("parentID")
             val parentId: String? = null,
             @Expose
+            @SerializedName("color")
+            val color: String,
+            @Expose
             @SerializedName("child")
             val childList: List<CategoryResponse>? = null
         )

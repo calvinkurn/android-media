@@ -34,16 +34,19 @@ class GetCourierRecommendationSubscriber(
 
     override fun onError(e: Throwable) {
         Timber.d(e)
+        val boPromoCode = getBoPromoCode()
         if (isInitialLoad) {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
-        view.logOnErrorLoadCourier(e, itemPosition)
+        view.logOnErrorLoadCourier(e, itemPosition, boPromoCode)
         logisticDonePublisher?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+        val boPromoCode = getBoPromoCode()
+        var errorReason = "rates invalid data"
         if (isInitialLoad || isForceReloadRates) {
             if (isInitialLoad && shipmentCartItemModel.shouldResetCourier) {
                 shipmentCartItemModel.shouldResetCourier = false
@@ -70,7 +73,8 @@ class GetCourierRecommendationSubscriber(
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException(
                                                     shippingCourierUiModel.productData.error?.errorMessage
-                                                ), itemPosition
+                                                ), itemPosition,
+                                                boPromoCode
                                             )
                                             logisticDonePublisher?.onCompleted()
                                             return
@@ -96,6 +100,8 @@ class GetCourierRecommendationSubscriber(
                                 }
                             }
                         }
+                    } else {
+                        errorReason = "promo not matched"
                     }
                 } else {
                     for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
@@ -116,7 +122,8 @@ class GetCourierRecommendationSubscriber(
                                             MessageErrorException(
                                                 shippingCourierUiModel.productData.error?.errorMessage
                                             ),
-                                            itemPosition
+                                            itemPosition,
+                                            boPromoCode
                                         )
                                         logisticDonePublisher?.onCompleted()
                                         return
@@ -132,7 +139,8 @@ class GetCourierRecommendationSubscriber(
                                             )
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException("rates ui hidden but no promo"),
-                                                itemPosition
+                                                itemPosition,
+                                                boPromoCode
                                             )
                                             logisticDonePublisher?.onCompleted()
                                             return
@@ -179,9 +187,13 @@ class GetCourierRecommendationSubscriber(
                         }
                     }
                 }
+            } else {
+                errorReason = "rates empty data"
             }
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
-            view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
+            view.logOnErrorLoadCourier(MessageErrorException(errorReason), itemPosition,
+                boPromoCode
+            )
         } else {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
@@ -228,7 +240,7 @@ class GetCourierRecommendationSubscriber(
         logisticPromo: LogisticPromoUiModel? = null
     ): CourierItemData {
         var courierItemData =
-            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel, shippingRecommendationData)
 
         // Auto apply Promo Stacking Logistic
         var logisticPromoChosen = logisticPromo
@@ -257,7 +269,7 @@ class GetCourierRecommendationSubscriber(
             }.shippingCourierViewModelList.first {
                 it.productData.shipperProductId == logisticPromoChosen.shipperProductId
             }
-            courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel)
+            courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel, shippingRecommendationData)
         }
         logisticPromoChosen?.let {
             courierItemData.logPromoCode = it.promoCode
@@ -276,5 +288,12 @@ class GetCourierRecommendationSubscriber(
             courierItemData.boCampaignId = it.boCampaignId
         }
         return courierItemData
+    }
+
+    private fun getBoPromoCode(): String {
+        if (isBoUnstackEnabled && !isForceReloadRates) {
+            return shipmentCartItemModel.boCode
+        }
+        return ""
     }
 }

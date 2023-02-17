@@ -1,14 +1,9 @@
 package com.tokopedia.fcmcommon
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.Log
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.constant.TkpdCache
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.fcmcommon.common.FcmCacheHandler
 import com.tokopedia.fcmcommon.common.FcmConstant
 import com.tokopedia.fcmcommon.data.TokenResponse
@@ -21,7 +16,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.io.IOException
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -45,70 +40,6 @@ class SendTokenToCMHandler @Inject constructor(
             FcmConstant.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
             false
         )
-
-    private val googleAdId: String
-        get() {
-            val localCacheHandler = LocalCacheHandler(mContext, TkpdCache.ADVERTISINGID)
-            val adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID)
-            adsId?.let {
-                val trimmedAdsId = adsId.trim { it <= ' ' }
-                if (trimmedAdsId.isNotBlank()) {
-                    return adsId
-                } else {
-                    val adInfo: AdvertisingIdClient.Info?
-                    try {
-                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
-                    } catch (e: IOException) {
-                        ServerLogger.log(
-                            Priority.P2,
-                            "CM_VALIDATION",
-                            mapOf(
-                                "type" to "exception",
-                                "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
-                                "data" to ""
-                            )
-                        )
-                        e.printStackTrace()
-                        return ""
-                    } catch (e: GooglePlayServicesNotAvailableException) {
-                        ServerLogger.log(
-                            Priority.P2,
-                            "CM_VALIDATION",
-                            mapOf(
-                                "type" to "exception",
-                                "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
-                                "data" to ""
-                            )
-                        )
-                        e.printStackTrace()
-                        return ""
-                    } catch (e: GooglePlayServicesRepairableException) {
-                        ServerLogger.log(
-                            Priority.P2,
-                            "CM_VALIDATION",
-                            mapOf(
-                                "type" to "exception",
-                                "err" to Log.getStackTraceString(e).take(FcmConstant.MAX_LIMIT),
-                                "data" to ""
-                            )
-                        )
-                        e.printStackTrace()
-                        return ""
-                    }
-
-                    if (adInfo != null) {
-                        val adID = adInfo.id
-
-                        if (!TextUtils.isEmpty(adID)) {
-                            localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID)
-                            localCacheHandler.applyEditor()
-                        }
-                        return adID
-                    }
-                }
-            }
-            return ""
-        }
 
     private val userId: String
         get() {
@@ -144,37 +75,19 @@ class SendTokenToCMHandler @Inject constructor(
 
             if (fcmTokenUtils.checkTokenValidity(token)) return
 
-            val gAdId = googleAdId
+            val gAdId = getAdsId()
+
             val appVersionName = fcmTokenUtils.getCurrentAppVersionName(mContext)
             val applicationName = fcmTokenUtils.getApplicationName(mContext)
             if (applicationName == fcmTokenUtils.SELLER_APP_NAME && !sellerAppCmAddTokenEnabled) {
                 return
             }
-
-            if (fcmTokenUtils.isTokenExpired(
-                    fcmCacheHandler,
-                    token,
-                    userId,
-                    gAdId,
-                    appVersionName
-                )
-            ) {
-                val requestParams = getRequestParams(token, appVersionName, applicationName)
-                launchCatchError(block = {
-                    val response = sendTokenToCMUseCase(requestParams)
-                    onGqlSuccess(response, appVersionName, gAdId)
-                }, onError = {
-                        ServerLogger.log(
-                            Priority.P2,
-                            "CM_VALIDATION",
-                            mapOf(
-                                "type" to "exception",
-                                "err" to Log.getStackTraceString(it)
-                                    .take(FcmConstant.MAX_LIMIT),
-                                "data" to ""
-                            )
-                        )
-                    })
+            if(gAdId.isEmpty()) {
+                DeviceInfo.getAdsIdSuspend(mContext, {
+                    checkTokenExpired(token, gAdId, appVersionName, applicationName)
+                })
+            } else {
+                checkTokenExpired(token, gAdId, appVersionName, applicationName)
             }
         } catch (e: Exception) {
             ServerLogger.log(
@@ -189,6 +102,45 @@ class SendTokenToCMHandler @Inject constructor(
             )
             e.printStackTrace()
         }
+    }
+
+    private fun checkTokenExpired(token: String, gAdId: String, appVersionName: String, applicationName: String) {
+        if (fcmTokenUtils.isTokenExpired(
+                fcmCacheHandler,
+                token,
+                userId,
+                gAdId,
+                appVersionName
+            )
+        ) {
+            val requestParams = getRequestParams(token, appVersionName, applicationName)
+            launchCatchError(block = {
+                val response = sendTokenToCMUseCase(requestParams)
+                onGqlSuccess(response, appVersionName, gAdId)
+            }, onError = {
+                ServerLogger.log(
+                    Priority.P2,
+                    "CM_VALIDATION",
+                    mapOf(
+                        "type" to "exception",
+                        "err" to Log.getStackTraceString(it)
+                            .take(FcmConstant.MAX_LIMIT),
+                        "data" to ""
+                    )
+                )
+            })
+        }
+    }
+
+    private fun getAdsId(): String {
+        val adsId = DeviceInfo.getAdsId(mContext)
+        if(adsId.isEmpty()) {
+
+            runBlocking {
+                return@runBlocking DeviceInfo.getlatestAdId(mContext)
+            }
+        }
+        return adsId
     }
 
     private fun onGqlSuccess(tokenResponse: TokenResponse, appVersionName: String, gAdId: String) {

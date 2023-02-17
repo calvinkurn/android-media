@@ -54,6 +54,7 @@ import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -200,6 +201,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -418,6 +420,8 @@ open class HomeRevampFragment :
     private var fragmentCurrentVisitableCount: Int = -1
     private var fragmentCurrentScrollPosition: Int = -1
 
+    private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()
@@ -614,6 +618,7 @@ open class HomeRevampFragment :
                 addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
+            it.setupMicroInteraction(navToolbarMicroInteraction)
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
@@ -1904,13 +1909,17 @@ open class HomeRevampFragment :
                     PARAM_APPLINK_AUTOCOMPLETE
                 },
                 searchbarClickCallback = {
-                    RouteManager.route(
+                    val intent = RouteManager.getIntent(
                         context,
                         ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
                         HOME_SOURCE,
                         data.keyword.safeEncodeUtf8(),
                         isFirstInstall().toString()
                     )
+
+                    navToolbarMicroInteraction
+                        ?.animate(intent, ::startActivity)
+                        ?: startActivity(intent)
                 },
                 searchbarImpressionCallback = {},
                 shouldShowTransition = false
