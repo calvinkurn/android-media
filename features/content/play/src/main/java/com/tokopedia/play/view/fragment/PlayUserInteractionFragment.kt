@@ -1426,7 +1426,12 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (isFreezeOrBanned) {
             videoSettingsView.hide()
-        } else if (videoOrientation.isHorizontal && videoPlayer.isGeneral() && !bottomInsets.isAnyShown) {
+        } else if (
+            videoOrientation.isHorizontal &&
+            videoPlayer.isGeneral() &&
+            orientation.isCompact &&
+            !bottomInsets.isAnyShown
+        ) {
             videoSettingsView.show()
         } else {
             videoSettingsView.hide()
