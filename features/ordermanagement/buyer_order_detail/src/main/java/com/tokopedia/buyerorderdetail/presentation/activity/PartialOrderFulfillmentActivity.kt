@@ -1,7 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.activity
 
 import android.app.Activity
-import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -12,11 +13,16 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
-import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderExtensionFragment
 import com.tokopedia.buyerorderdetail.presentation.fragment.PartialOrderFulfillmentFragment
 
-class PartialOrderFulfillmentActivity : BaseSimpleActivity(),
+class PartialOrderFulfillmentActivity :
+    BaseSimpleActivity(),
     HasComponent<BuyerOrderDetailComponent> {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adjustOrientation()
+    }
 
     override fun getNewFragment(): Fragment? {
         val intentExtras = intent.extras?.apply {
@@ -45,10 +51,14 @@ class PartialOrderFulfillmentActivity : BaseSimpleActivity(),
         setResultFinish(Activity.RESULT_CANCELED)
     }
 
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
     fun setResultFinish(resultCode: Int) {
         setResult(resultCode)
         finish()
     }
-
-
 }
