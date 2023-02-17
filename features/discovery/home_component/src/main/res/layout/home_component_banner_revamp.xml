@@ -19,16 +19,14 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_banner_revamp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 app:autoScroll="true"
                 app:isInfinite="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="0"
-                tools:layout_goneMarginTop="12dp"
-                tools:layout_marginBottom="12dp" />
+                app:layout_constraintDimensionRatio="H,328:182"/>
 
             <LinearLayout
                 android:id="@+id/indicator_layout"

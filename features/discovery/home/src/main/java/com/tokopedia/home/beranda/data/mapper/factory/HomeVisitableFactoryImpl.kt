@@ -287,7 +287,8 @@ class HomeVisitableFactoryImpl(
                         TYPE_BANNER -> {
                             data.atfStatusCondition(
                                 onLoading = {
-                                    visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+//                                    visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+                                            visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
                                 },
                                 onError = {
                                     when (channelPosition) {
