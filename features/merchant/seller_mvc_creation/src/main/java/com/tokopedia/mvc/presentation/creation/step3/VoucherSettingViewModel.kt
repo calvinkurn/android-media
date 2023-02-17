@@ -148,19 +148,24 @@ class VoucherSettingViewModel @Inject constructor(
     }
 
     private fun handlePromoTypeSelection(promoType: PromoType) {
-        val voucherServiceType =
-            getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
-        val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
-        val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, promoType)
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                voucherConfiguration = it.voucherConfiguration.copy(
-                    promoType = promoType
-                ),
-                spendingEstimation = 0,
-                availableTargetBuyer = availableTargetBuyer
-            )
+        val isDiscountPromoTypeEnabled = currentState.isDiscountPromoTypeEnabled
+        val isAllowedToChangePromoType = isAllowedToChangePromoType(promoType, isDiscountPromoTypeEnabled)
+
+        if (isAllowedToChangePromoType) {
+            val voucherServiceType =
+                getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
+            val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
+            val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, promoType)
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    voucherConfiguration = it.voucherConfiguration.copy(
+                        promoType = promoType
+                    ),
+                    spendingEstimation = 0,
+                    availableTargetBuyer = availableTargetBuyer
+                )
+            }
         }
     }
 
@@ -422,5 +427,28 @@ class VoucherSettingViewModel @Inject constructor(
             )
             else -> emptyList()
         }
+    }
+
+    /**
+     * If newly selected promo type is discount while it was toggled off by Backend,
+     * user cannot select discount promo type.
+     */
+    private fun isAllowedToChangePromoType(
+        newPromoType: PromoType,
+        isDiscountPromoTypeEnabled: Boolean
+    ): Boolean {
+        if (newPromoType == PromoType.FREE_SHIPPING) {
+            return true
+        }
+
+        if (newPromoType == PromoType.CASHBACK) {
+            return true
+        }
+
+        if (newPromoType == PromoType.DISCOUNT && !isDiscountPromoTypeEnabled) {
+            return false
+        }
+
+        return true
     }
 }
