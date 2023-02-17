@@ -142,4 +142,23 @@ class PlayViewModelFieldTest {
             viewModel.userId.isEqualTo(validUserId)
         }
     }
+
+    @Test
+    fun `given a performance summary page link, when retrieved, then it should be correct`() {
+
+        val performanceSummaryPageLink = "page_link_example"
+
+        val channelData = channelDataBuilder.buildChannelData(
+            channelReportInfo = channelReportBuilder.buildChannelReport(
+                performanceSummaryPageLink = performanceSummaryPageLink
+            )
+        )
+
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            viewModel.performanceSummaryPageLink.assertEqualTo(performanceSummaryPageLink)
+        }
+    }
 }
