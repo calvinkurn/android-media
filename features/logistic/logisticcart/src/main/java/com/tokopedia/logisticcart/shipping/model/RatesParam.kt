@@ -135,7 +135,7 @@ data class RatesParam(
         "bo_metadata" to bo_metadata,
         "products" to products,
         "psl_code" to psl_code,
-        "unique_id" to unique_id,
+        "unique_id" to unique_id
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
@@ -212,7 +212,5 @@ data class RatesParam(
         fun cartData(cart_data: String) = apply { this.cart_data = cart_data }
 
         fun build() = RatesParam(this)
-
     }
-
 }

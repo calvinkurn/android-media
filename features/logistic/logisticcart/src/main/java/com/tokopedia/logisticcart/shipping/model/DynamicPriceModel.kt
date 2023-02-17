@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class DynamicPriceModel(
-        var textLabel: String = ""
-): Parcelable
+    var textLabel: String = ""
+) : Parcelable

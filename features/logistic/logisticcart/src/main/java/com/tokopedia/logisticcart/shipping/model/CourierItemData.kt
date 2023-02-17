@@ -101,7 +101,7 @@ class CourierItemData(
             freeShippingMetadata = freeShippingMetadata,
             benefitClass = benefitClass,
             shippingSubsidy = shippingSubsidy,
-            boCampaignId = boCampaignId,
+            boCampaignId = boCampaignId
         ).apply {
             updateSelectedShipper(scheduleDeliveryUiModel)
         }

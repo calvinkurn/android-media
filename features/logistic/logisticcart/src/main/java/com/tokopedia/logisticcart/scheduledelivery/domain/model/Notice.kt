@@ -9,5 +9,5 @@ class Notice(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("text")
-    val text: String = "",
+    val text: String = ""
 ) : Parcelable

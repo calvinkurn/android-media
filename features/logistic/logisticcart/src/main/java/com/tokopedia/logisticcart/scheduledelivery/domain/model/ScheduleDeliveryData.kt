@@ -26,5 +26,5 @@ class ScheduleDeliveryData(
     @SerializedName("error")
     val error: ErrorRatesDetailData = ErrorRatesDetailData(),
     @SerializedName("delivery_services")
-    val deliveryServices: List<DeliveryService> = arrayListOf(),
+    val deliveryServices: List<DeliveryService> = arrayListOf()
 ) : Parcelable

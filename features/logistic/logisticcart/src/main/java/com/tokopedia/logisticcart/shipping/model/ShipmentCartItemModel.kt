@@ -135,7 +135,7 @@ class ShipmentCartItemModel(
     var tokoConsultationId: String = "",
     var partnerConsultationId: String = "",
     var consultationDataString: String = "",
-    var shouldResetCourier: Boolean = false,
+    var shouldResetCourier: Boolean = false
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean

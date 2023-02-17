@@ -243,7 +243,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     /*
     Section: Shipping Duration View
-    */
+     */
 
     override fun showLoading() {
         llContent?.visibility = View.GONE
@@ -361,7 +361,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     /*
     Section: Adapter Listener
-    */
+     */
 
     override fun onShippingDurationChoosen(
         shippingCourierUiModelList: List<ShippingCourierUiModel>,
