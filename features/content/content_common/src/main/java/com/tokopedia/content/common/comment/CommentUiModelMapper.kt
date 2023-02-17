@@ -21,6 +21,7 @@ class CommentUiModelMapper @Inject constructor() {
     @OptIn(ExperimentalStdlibApi::class)
     fun mapComments(comments: Comments) = CommentWidgetUiModel(
         cursor = comments.parent.lastCursor,
+        nextRepliesCount = comments.parent.nextRepliesCountFmt,
         list = buildList {
             comments.parent.comments.forEach {
                 add(mapComment(it, comments.parent.parentId))
@@ -46,6 +47,7 @@ class CommentUiModelMapper @Inject constructor() {
             content = comment.comment,
             createdTime = convertTime(comment.createdTime),
             commentType = parentId.convertToCommentType,
+            childCount = comment.repliesCountFmt,
         )
     }
 

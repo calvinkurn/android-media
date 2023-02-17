@@ -2,6 +2,7 @@ package com.tokopedia.content.common.comment.usecase
 
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.model.Comments
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,18 +29,19 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
         private const val PARAM_CURSOR = "cursor"
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_COMMENT_ID = "commentParentID"
-        private const val PARAM_LIMIT_VALUE = 20
+        private const val PARAM_LIMIT_PARENT_VALUE = 20
+        private const val PARAM_LIMIT_CHILD_VALUE = 5
 
         fun setParam(
             source: PageSource,
             cursor: String,
-            parentId: String
+            commentType: CommentType,
         ) = mapOf(
             PARAM_ID to source.id,
             PARAM_CONTENT_TYPE to source.type,
             PARAM_CURSOR to cursor,
-            PARAM_LIMIT to PARAM_LIMIT_VALUE,
-            PARAM_COMMENT_ID to parentId
+            PARAM_LIMIT to if(commentType is CommentType.Parent) PARAM_LIMIT_PARENT_VALUE else PARAM_LIMIT_CHILD_VALUE,
+            PARAM_COMMENT_ID to commentType.parentId
         )
 
         const val QUERY_NAME = "GetCommentsUseCaseQuery"

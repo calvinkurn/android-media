@@ -8,6 +8,7 @@ import com.tokopedia.content.common.types.ResultState
 data class CommentWidgetUiModel(
     val list: List<CommentUiModel>,
     val cursor: String,
+    val nextRepliesCount: String,
     val commentType: CommentType,
     val state: ResultState,
 ) {
@@ -16,6 +17,7 @@ data class CommentWidgetUiModel(
             get() = CommentWidgetUiModel(
                 list = emptyList(),
                 cursor = "",
+                nextRepliesCount = "",
                 commentType = CommentType.Parent,
                 state = ResultState.Loading,
             )

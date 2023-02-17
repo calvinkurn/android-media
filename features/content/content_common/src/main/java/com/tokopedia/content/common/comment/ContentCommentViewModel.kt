@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.comment.repository.ContentCommentRepository
-import com.tokopedia.content.common.comment.uimodel.CommentParam
-import com.tokopedia.content.common.comment.uimodel.CommentType
-import com.tokopedia.content.common.comment.uimodel.CommentUiModel
-import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
+import com.tokopedia.content.common.comment.uimodel.*
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
@@ -84,10 +81,13 @@ class ContentCommentViewModel @AssistedInject constructor(
                 _comments.getAndUpdate {
                     val selected = it.list
                         .indexOfFirst { item -> item is CommentUiModel.Expandable && item.commentType == param.commentType }
+                    val parent =
+                        it.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
                     val newChild = mutableListOf<CommentUiModel>().apply {
                         addAll(it.list.mapIndexed { index, model ->
                             if (index == selected && model is CommentUiModel.Expandable) model.copy(
-                                isExpanded = !model.isExpanded
+                                isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
+                                repliesCount = if (result.hasNextPage) model.repliesCount else parent?.childCount.orEmpty()
                             )
                             else model
                         })

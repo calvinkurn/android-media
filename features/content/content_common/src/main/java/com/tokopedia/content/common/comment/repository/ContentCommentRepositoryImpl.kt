@@ -96,7 +96,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
     ): CommentWidgetUiModel =
         withContext(dispatchers.io) {
             val response = getCommentsUseCase.apply {
-                setRequestParams(GetCommentsUseCase.setParam(source, cursor, commentType.parentId))
+                setRequestParams(GetCommentsUseCase.setParam(source, cursor, commentType))
             }.executeOnBackground()
             return@withContext mapper.mapComments(response)
         }

@@ -13,6 +13,7 @@ sealed interface CommentUiModel {
         val photo: String,
         val appLink: String,
         val commentType: CommentType,
+        val childCount: String,
     ) : CommentUiModel
 
     object Empty : CommentUiModel
