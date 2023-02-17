@@ -135,6 +135,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

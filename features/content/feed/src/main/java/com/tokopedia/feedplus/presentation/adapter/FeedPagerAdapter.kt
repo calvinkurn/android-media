@@ -12,17 +12,8 @@ import com.tokopedia.feedplus.presentation.model.FeedDataModel
 class FeedPagerAdapter(activity: FragmentActivity, private val tabsList: List<FeedDataModel>) :
     FragmentStateAdapter(activity) {
 
-    private val fragmentList: MutableList<Fragment> = mutableListOf()
-
     override fun getItemCount(): Int = tabsList.size
 
-    override fun createFragment(position: Int): Fragment {
-        if (position >= fragmentList.size) {
-            fragmentList.add(
-                FeedFragment.createFeedFragment(tabsList[position])
-            )
-        }
-
-        return fragmentList[position]
-    }
+    override fun createFragment(position: Int): Fragment =
+        FeedFragment.createFeedFragment(tabsList[position])
 }

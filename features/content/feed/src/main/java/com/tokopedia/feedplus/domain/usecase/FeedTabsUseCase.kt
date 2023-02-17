@@ -21,7 +21,7 @@ class FeedTabsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) 
 
     init {
         setGraphqlQuery(FeedTabsQuery())
-        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(FeedTabsEntity.Response::class.java)
     }
 
