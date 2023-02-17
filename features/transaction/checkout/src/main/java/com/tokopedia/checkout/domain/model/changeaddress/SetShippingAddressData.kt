@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SetShippingAddressData(
-        var isSuccess: Boolean = false,
-        var messages: List<String> = emptyList(),
+    var isSuccess: Boolean = false,
+    var messages: List<String> = emptyList()
 ) : Parcelable

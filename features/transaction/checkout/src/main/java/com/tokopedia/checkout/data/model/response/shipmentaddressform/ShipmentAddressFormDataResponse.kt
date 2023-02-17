@@ -72,5 +72,5 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("cart_data")
     val cartData: String = "",
     @SerializedName("coachmark")
-    val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse(),
+    val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse()
 )

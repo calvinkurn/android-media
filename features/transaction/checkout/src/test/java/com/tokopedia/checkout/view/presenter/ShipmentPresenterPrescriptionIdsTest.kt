@@ -166,7 +166,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                     prescriptionData = GetPrescriptionIdsResponse.EPharmacyCheckoutData.EPharmacyPrescriptionDetailData(
                         prescriptions = listOf(
                             GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("123"),
-                            GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("321"),
+                            GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("321")
                         ),
                         checkoutId = CHECKOUT_ID
                     )
@@ -176,8 +176,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.shipmentCartItemModelList = listOf()
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
-                false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf()
+                false,
+                "",
+                "",
+                checkoutId = CHECKOUT_ID,
+                arrayListOf()
             )
         )
 
@@ -265,8 +268,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.error(Throwable())
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
-                false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf()
+                false,
+                "",
+                "",
+                checkoutId = CHECKOUT_ID,
+                arrayListOf()
             )
         )
 
@@ -289,8 +295,11 @@ class ShipmentPresenterPrescriptionIdsTest {
         // When
         presenter.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
-                false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf()
+                false,
+                "",
+                "",
+                checkoutId = CHECKOUT_ID,
+                arrayListOf()
             )
         )
 
@@ -361,7 +370,7 @@ class ShipmentPresenterPrescriptionIdsTest {
             ShipmentCartItemModel(
                 isError = false,
                 hasEthicalProducts = false
-            ),
+            )
         )
         val prescriptions = arrayListOf("123", "456")
         presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
@@ -482,7 +491,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
-                            null, null,
+                            null,
+                            null,
                             null,
                             null,
                             null
@@ -552,14 +562,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         ),
                                         ProductsInfo(
                                             shopId = "6554232",
@@ -571,14 +581,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -603,7 +613,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null
-                        ),
+                        )
                     )
                 )
             )
@@ -689,14 +699,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -721,7 +731,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null
-                        ),
+                        )
                     )
                 )
             )
@@ -781,7 +791,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389389,
@@ -790,14 +800,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -822,7 +832,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null
-                        ),
+                        )
                     )
                 )
             )
@@ -924,7 +934,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
@@ -933,14 +943,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         ),
                                         ProductsInfo(
                                             shopId = "6554234",
@@ -952,14 +962,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -992,7 +1002,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389386,
@@ -1001,14 +1011,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -1054,7 +1064,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389385,
@@ -1063,14 +1073,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1",
+                                                    quantity = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
                                             shopLocation = "",
                                             shopLogoUrl = "",
                                             shopName = "",
-                                            shopType = "",
+                                            shopType = ""
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -1095,7 +1105,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null
-                        ),
+                        )
                     )
                 )
             )
@@ -1617,14 +1627,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             )
                         ),
                         partnerLogoUrl = "",
                         shopLocation = "",
                         shopLogoUrl = "",
                         shopName = "",
-                        shopType = "",
+                        shopType = ""
                     ),
                     ProductsInfo(
                         shopId = "6554232",
@@ -1636,14 +1646,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             )
                         ),
                         partnerLogoUrl = "",
                         shopLocation = "",
                         shopLogoUrl = "",
                         shopName = "",
-                        shopType = "",
+                        shopType = ""
                     )
                 ),
                 prescriptionImages = listOf(),
@@ -1651,7 +1661,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 consultationString = "",
                 tokoConsultationId = "123",
                 partnerConsultationId = "321",
-                prescription = listOf(),
+                prescription = listOf()
             )
         )
         presenter.shipmentCartItemModelList = arrayListOf(
@@ -1741,7 +1751,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389388,
@@ -1750,14 +1760,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             )
                         ),
                         partnerLogoUrl = "",
                         shopLocation = "",
                         shopLogoUrl = "",
                         shopName = "",
-                        shopType = "",
+                        shopType = ""
                     ),
                     ProductsInfo(
                         shopId = "6554234",
@@ -1769,14 +1779,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             )
                         ),
                         partnerLogoUrl = "",
                         shopLocation = "",
                         shopLogoUrl = "",
                         shopName = "",
-                        shopType = "",
+                        shopType = ""
                     )
                 ),
                 prescriptionImages = listOf(),
@@ -1784,7 +1794,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 tokoConsultationId = "123",
                 partnerConsultationId = "321",
                 consultationStatus = 2,
-                prescription = listOf(),
+                prescription = listOf()
             ),
             EPharmacyMiniConsultationResult(
                 epharmacyGroupId = "124",
@@ -1799,7 +1809,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389386,
@@ -1808,14 +1818,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             )
                         ),
                         partnerLogoUrl = "",
                         shopLocation = "",
                         shopLogoUrl = "",
                         shopName = "",
-                        shopType = "",
+                        shopType = ""
                     )
                 ),
                 prescriptionImages = listOf(
@@ -1836,7 +1846,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                 tokoConsultationId = "",
                 partnerConsultationId = "",
                 consultationStatus = 0,
-                prescription = listOf(),
+                prescription = listOf()
             ),
             EPharmacyMiniConsultationResult(
                 epharmacyGroupId = "125",
@@ -1851,7 +1861,7 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389385,
@@ -1860,14 +1870,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1",
+                                quantity = "1"
                             )
                         ),
                         partnerLogoUrl = "",
                         shopLocation = "",
                         shopLogoUrl = "",
                         shopName = "",
-                        shopType = "",
+                        shopType = ""
                     )
                 ),
                 prescriptionImages = listOf(),
@@ -1875,8 +1885,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 tokoConsultationId = "125",
                 partnerConsultationId = "521",
                 consultationStatus = 4,
-                prescription = listOf(),
-            ),
+                prescription = listOf()
+            )
         )
         presenter.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(

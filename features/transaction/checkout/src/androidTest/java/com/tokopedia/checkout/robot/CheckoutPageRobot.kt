@@ -89,9 +89,11 @@ class CheckoutPageRobot {
         return position
     }
 
-    private fun scrollRecyclerViewToPosition(activityRule: IntentsTestRule<ShipmentActivity>,
-                                             recyclerView: RecyclerView,
-                                             position: Int) {
+    private fun scrollRecyclerViewToPosition(
+        activityRule: IntentsTestRule<ShipmentActivity>,
+        recyclerView: RecyclerView,
+        position: Int
+    ) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
@@ -108,8 +110,12 @@ class CheckoutPageRobot {
         val position = scrollRecyclerViewToFirstOrder(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
-                            clickOnViewChild(R.id.layout_state_no_selected_shipping)))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        clickOnViewChild(R.id.layout_state_no_selected_shipping)
+                    )
+                )
         }
     }
 
@@ -121,8 +127,12 @@ class CheckoutPageRobot {
         val position = scrollRecyclerViewToPromoButton(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
-                            clickOnViewChild(R.id.promo_checkout_btn_shipment)))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        clickOnViewChild(R.id.promo_checkout_btn_shipment)
+                    )
+                )
         }
     }
 
@@ -130,8 +140,12 @@ class CheckoutPageRobot {
         val position = scrollRecyclerViewToChoosePaymentButton(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
-                            clickOnViewChild(R.id.btn_select_payment_method)))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        clickOnViewChild(R.id.btn_select_payment_method)
+                    )
+                )
         }
     }
 
@@ -148,34 +162,45 @@ class CheckoutPageRobot {
      * @param eta eta message
      * @param message additional promo message if available
      */
-    fun assertHasSingleShipmentSelected(activityRule: IntentsTestRule<ShipmentActivity>, title: String, originalPrice: String? = null,
-                                        discountedPrice: String? = null, eta: String, message: String? = null) {
+    fun assertHasSingleShipmentSelected(
+        activityRule: IntentsTestRule<ShipmentActivity>,
+        title: String,
+        originalPrice: String? = null,
+        discountedPrice: String? = null,
+        eta: String,
+        message: String? = null
+    ) {
         val position = scrollRecyclerViewToFirstOrder(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, object : ViewAction {
-                        override fun getConstraints(): Matcher<View>? = null
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
 
-                        override fun getDescription(): String = "Assert Single Shipment Selected UI"
+                            override fun getDescription(): String = "Assert Single Shipment Selected UI"
 
-                        override fun perform(uiController: UiController?, view: View) {
-                            assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
-                            assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text.toString())
-                            if (originalPrice != null) {
-                                Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(originalPrice))
-                            }
-                            if (discountedPrice != null) {
-                                Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(discountedPrice))
-                            }
-                            assertEquals(eta, view.findViewById<Typography>(R.id.label_single_shipping_eta).text)
-                            if (message != null) {
-                                assertEquals(message, view.findViewById<Typography>(R.id.label_single_shipping_message).text.toString())
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
-                            } else {
-                                assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
+                            override fun perform(uiController: UiController?, view: View) {
+                                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
+                                assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text.toString())
+                                if (originalPrice != null) {
+                                    Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(originalPrice))
+                                }
+                                if (discountedPrice != null) {
+                                    Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(discountedPrice))
+                                }
+                                assertEquals(eta, view.findViewById<Typography>(R.id.label_single_shipping_eta).text)
+                                if (message != null) {
+                                    assertEquals(message, view.findViewById<Typography>(R.id.label_single_shipping_message).text.toString())
+                                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
+                                } else {
+                                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
+                                }
                             }
                         }
-                    }))
+                    )
+                )
         }
     }
 }

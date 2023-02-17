@@ -24,10 +24,10 @@ class CheckoutEgoldAnalytics @Inject constructor(val userSession: UserSessionInt
 
     fun eventClickEgoldRoundup(checked: Boolean) {
         val gtmData = getGtmData(
-                CLICK_COURIER,
-                COURIER_SELECTION,
-                EVENT_ACTION_CLICK_EGOLD_ROUNDUP,
-                if (checked) EVENT_LABEL_CHECK else EVENT_LABEL_UNCHECK
+            CLICK_COURIER,
+            COURIER_SELECTION,
+            EVENT_ACTION_CLICK_EGOLD_ROUNDUP,
+            if (checked) EVENT_LABEL_CHECK else EVENT_LABEL_UNCHECK
         )
 
         gtmData[BUSINESS_UNIT] = DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -36,5 +36,4 @@ class CheckoutEgoldAnalytics @Inject constructor(val userSession: UserSessionInt
 
         sendGeneralEvent(gtmData)
     }
-
 }

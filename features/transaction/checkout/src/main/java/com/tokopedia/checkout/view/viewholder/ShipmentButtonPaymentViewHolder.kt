@@ -32,19 +32,18 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
         btnSelectPaymentMethod.isEnabled = model.enable
         btnSelectPaymentMethod.let {
             compositeSubscription.add(
-                    rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(t: Boolean?) {
-                            actionListener.onProcessToPayment()
-                        }
+                rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean?) {
+                        actionListener.onProcessToPayment()
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
+                    override fun onError(e: Throwable?) {
+                    }
+                })
             )
         }
-
     }
 }

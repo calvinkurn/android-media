@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class DropshipDataCheckoutRequest(
-        @SerializedName("name")
-        var name: String? = null,
-        @SerializedName("telp_no")
-        var telpNo: String? = null
+    @SerializedName("name")
+    var name: String? = null,
+    @SerializedName("telp_no")
+    var telpNo: String? = null
 ) : Parcelable

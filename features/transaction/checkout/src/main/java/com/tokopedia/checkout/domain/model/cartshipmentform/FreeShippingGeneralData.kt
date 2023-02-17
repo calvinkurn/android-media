@@ -7,10 +7,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FreeShippingGeneralData(
-        var badgeUrl: String = "",
-        var boType: Int = 0,
-        var boName: String = "",
-): Parcelable {
+    var badgeUrl: String = "",
+    var boType: Int = 0,
+    var boName: String = ""
+) : Parcelable {
 
     fun isBoTypePlus(): Boolean {
         return boType == BO_TYPE_PLUS || boType == BO_TYPE_PLUS_DT

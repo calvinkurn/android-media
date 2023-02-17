@@ -12,23 +12,25 @@ import javax.inject.Inject
 class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase) {
 
     fun execute(productId: Long): Observable<ReleaseBookingResponse> {
-        val param = mapOf("params" to arrayOf(
+        val param = mapOf(
+            "params" to arrayOf(
                 mapOf(
-                        "product_id" to productId
+                    "product_id" to productId
                 )
-        ))
+            )
+        )
         val gqlRequest = GraphqlRequest(query, ReleaseBookingResponse::class.java, param)
 
         gql.clearCache()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
-                .map {
-                    val response: ReleaseBookingResponse? = it.getData<ReleaseBookingResponse>(ReleaseBookingResponse::class.java)
-                    response
-                            ?: throw MessageErrorException(it.getError(ReleaseBookingResponse::class.java)[0].message)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                val response: ReleaseBookingResponse? = it.getData<ReleaseBookingResponse>(ReleaseBookingResponse::class.java)
+                response
+                    ?: throw MessageErrorException(it.getError(ReleaseBookingResponse::class.java)[0].message)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun unsubscribe() {

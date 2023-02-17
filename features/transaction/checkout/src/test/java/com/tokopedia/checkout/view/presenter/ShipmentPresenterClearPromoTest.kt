@@ -634,7 +634,7 @@ class ShipmentPresenterClearPromoTest {
                     CartItemModel(
                         preOrderDurationDay = 10
                     )
-                ),
+                )
             ),
             ShipmentCartItemModel(
                 cartString = "222-222-222",
@@ -650,8 +650,8 @@ class ShipmentPresenterClearPromoTest {
                     CartItemModel(
                         preOrderDurationDay = 10
                     )
-                ),
-            ),
+                )
+            )
         )
 
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
@@ -690,7 +690,7 @@ class ShipmentPresenterClearPromoTest {
                     CartItemModel(
                         preOrderDurationDay = 10
                     )
-                ),
+                )
             ),
             // Test voucherLogisticItemUiModel.code == ""
             ShipmentCartItemModel(
@@ -705,7 +705,7 @@ class ShipmentPresenterClearPromoTest {
                     CartItemModel(
                         preOrderDurationDay = 10
                     )
-                ),
+                )
             ),
             // Test voucherLogisticItemUiModel == null
             ShipmentCartItemModel(
@@ -720,8 +720,8 @@ class ShipmentPresenterClearPromoTest {
                     CartItemModel(
                         preOrderDurationDay = 10
                     )
-                ),
-            ),
+                )
+            )
         )
 
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
@@ -752,7 +752,7 @@ class ShipmentPresenterClearPromoTest {
         val clearPromoOrders = arrayListOf(
             ClearPromoOrder(uniqueId = "111-111-111"),
             ClearPromoOrder(uniqueId = "222-222-222"),
-            ClearPromoOrder(uniqueId = "333-333-333"),
+            ClearPromoOrder(uniqueId = "333-333-333")
         )
         val uniqueId = "111-111-111"
 
@@ -769,7 +769,7 @@ class ShipmentPresenterClearPromoTest {
         // Given
         val clearPromoOrders = arrayListOf(
             ClearPromoOrder(uniqueId = "222-222-222"),
-            ClearPromoOrder(uniqueId = "333-333-333"),
+            ClearPromoOrder(uniqueId = "333-333-333")
         )
         val uniqueId = "111-111-111"
 
@@ -798,7 +798,7 @@ class ShipmentPresenterClearPromoTest {
         // Given
         val clearPromoOrders = arrayListOf(
             ClearPromoOrder(uniqueId = "222-222-222"),
-            ClearPromoOrder(uniqueId = "333-333-333"),
+            ClearPromoOrder(uniqueId = "333-333-333")
         )
         val uniqueId = ""
 

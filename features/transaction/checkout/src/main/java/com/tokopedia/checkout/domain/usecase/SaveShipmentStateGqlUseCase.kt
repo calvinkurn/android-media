@@ -13,9 +13,11 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
-class SaveShipmentStateGqlUseCase @Inject constructor(@Named(SAVE_SHIPMENT_STATE_MUTATION) private val queryString: String,
-                                                     private val graphqlUseCase: GraphqlUseCase,
-                                                     private val schedulers: ExecutorSchedulers) : UseCase<SaveShipmentStateData>() {
+class SaveShipmentStateGqlUseCase @Inject constructor(
+    @Named(SAVE_SHIPMENT_STATE_MUTATION) private val queryString: String,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val schedulers: ExecutorSchedulers
+) : UseCase<SaveShipmentStateData>() {
 
     companion object {
         const val SAVE_SHIPMENT_STATE_MUTATION = "SAVE_SHIPMENT_STATE_MUTATION"
@@ -30,20 +32,19 @@ class SaveShipmentStateGqlUseCase @Inject constructor(@Named(SAVE_SHIPMENT_STATE
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val gqlResponse = it.getData<SaveShipmentStateGqlResponse>(SaveShipmentStateGqlResponse::class.java)
-                    if (gqlResponse != null) {
-                        SaveShipmentStateData().apply {
-                            isSuccess = gqlResponse.saveShipmentStateResponse.success == 1
-                            error = gqlResponse.saveShipmentStateResponse.error
-                            message = gqlResponse.saveShipmentStateResponse.message
-                        }
-                    } else {
-                        throw CartResponseErrorException(CART_ERROR_GLOBAL)
+            .map {
+                val gqlResponse = it.getData<SaveShipmentStateGqlResponse>(SaveShipmentStateGqlResponse::class.java)
+                if (gqlResponse != null) {
+                    SaveShipmentStateData().apply {
+                        isSuccess = gqlResponse.saveShipmentStateResponse.success == 1
+                        error = gqlResponse.saveShipmentStateResponse.error
+                        message = gqlResponse.saveShipmentStateResponse.message
                     }
+                } else {
+                    throw CartResponseErrorException(CART_ERROR_GLOBAL)
                 }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
-
 }

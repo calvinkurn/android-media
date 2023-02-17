@@ -67,5 +67,4 @@ class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActi
         @JvmField
         val ITEM_VIEW_DONATION = R.layout.item_donation
     }
-
 }

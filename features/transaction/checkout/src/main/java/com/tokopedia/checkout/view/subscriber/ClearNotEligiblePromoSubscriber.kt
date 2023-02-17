@@ -10,9 +10,11 @@ import rx.Subscriber
  * Created by Irfan Khoirul on 2019-06-25.
  */
 
-class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
-                                      val presenter: ShipmentPresenter,
-                                      val notEligiblePromoHolderdata: ArrayList<NotEligiblePromoHolderdata>) : Subscriber<ClearPromoUiModel>() {
+class ClearNotEligiblePromoSubscriber(
+    val view: ShipmentContract.View?,
+    val presenter: ShipmentPresenter,
+    val notEligiblePromoHolderdata: ArrayList<NotEligiblePromoHolderdata>
+) : Subscriber<ClearPromoUiModel>() {
 
     override fun onCompleted() {
     }
@@ -30,5 +32,4 @@ class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
         }
         view?.removeIneligiblePromo(notEligiblePromoHolderdata)
     }
-
 }

@@ -8,15 +8,17 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 object ShipmentAddOnMapper {
     private const val qty = "{{qty}}"
 
-    fun mapAddOnBottomSheetParam(addOnsDataModel: AddOnsDataModel,
-                                 availableBottomSheetData: AvailableBottomSheetData,
-                                 unavailableBottomSheetData: UnavailableBottomSheetData): AddOnProductData {
+    fun mapAddOnBottomSheetParam(
+        addOnsDataModel: AddOnsDataModel,
+        availableBottomSheetData: AvailableBottomSheetData,
+        unavailableBottomSheetData: UnavailableBottomSheetData
+    ): AddOnProductData {
         return AddOnProductData(
-                bottomSheetType = addOnsDataModel.addOnsButtonModel.action,
-                bottomSheetTitle = addOnsDataModel.addOnsBottomSheetModel.headerTitle,
-                source = AddOnProductData.SOURCE_NORMAL_CHECKOUT,
-                availableBottomSheetData = availableBottomSheetData,
-                unavailableBottomSheetData = unavailableBottomSheetData
+            bottomSheetType = addOnsDataModel.addOnsButtonModel.action,
+            bottomSheetTitle = addOnsDataModel.addOnsBottomSheetModel.headerTitle,
+            source = AddOnProductData.SOURCE_NORMAL_CHECKOUT,
+            availableBottomSheetData = availableBottomSheetData,
+            unavailableBottomSheetData = unavailableBottomSheetData
         )
     }
 
@@ -30,15 +32,15 @@ object ShipmentAddOnMapper {
 
         val listProduct = arrayListOf<Product>()
         for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-                val product = Product()
-                product.cartId = cartItemModel.cartId.toString()
-                product.productId = cartItemModel.productId.toString()
-                product.productName = cartItemModel.name
-                product.productPrice = cartItemModel.price.toLong()
-                product.productQuantity = cartItemModel.quantity
-                product.productImageUrl = cartItemModel.imageUrl
-                product.productParentId = cartItemModel.variantParentId
-                listProduct.add(product)
+            val product = Product()
+            product.cartId = cartItemModel.cartId.toString()
+            product.productId = cartItemModel.productId.toString()
+            product.productName = cartItemModel.name
+            product.productPrice = cartItemModel.price.toLong()
+            product.productQuantity = cartItemModel.quantity
+            product.productImageUrl = cartItemModel.imageUrl
+            product.productParentId = cartItemModel.variantParentId
+            listProduct.add(product)
         }
 
         val addOnDataList = arrayListOf<AddOnData>()
@@ -62,15 +64,15 @@ object ShipmentAddOnMapper {
         }
 
         return AvailableBottomSheetData(
-                addOnInfoWording = addOnWordingData,
-                shopName = shipmentCartItemModel.shopName ?: "",
-                products = listProduct,
-                addOnSavedStates = addOnDataList,
-                cartString = shipmentCartItemModel.cartString ?: "",
-                isTokoCabang = shipmentCartItemModel.isFulfillment,
-                warehouseId = shipmentCartItemModel.fulfillmentId.toString(),
-                defaultFrom = shipmentCartItemModel.addOnDefaultFrom ?: "",
-                defaultTo = shipmentCartItemModel.addOnDefaultTo ?: ""
+            addOnInfoWording = addOnWordingData,
+            shopName = shipmentCartItemModel.shopName ?: "",
+            products = listProduct,
+            addOnSavedStates = addOnDataList,
+            cartString = shipmentCartItemModel.cartString ?: "",
+            isTokoCabang = shipmentCartItemModel.isFulfillment,
+            warehouseId = shipmentCartItemModel.fulfillmentId.toString(),
+            defaultFrom = shipmentCartItemModel.addOnDefaultFrom ?: "",
+            defaultTo = shipmentCartItemModel.addOnDefaultTo ?: ""
         )
     }
 
@@ -94,9 +96,9 @@ object ShipmentAddOnMapper {
         }
 
         return UnavailableBottomSheetData(
-                description = addOnBottomSheetModel.description,
-                tickerMessage = addOnBottomSheetModel.ticker.text,
-                unavailableProducts = listUnavailableProduct
+            description = addOnBottomSheetModel.description,
+            tickerMessage = addOnBottomSheetModel.ticker.text,
+            unavailableProducts = listUnavailableProduct
         )
     }
 
@@ -149,15 +151,15 @@ object ShipmentAddOnMapper {
         }
 
         return AvailableBottomSheetData(
-                addOnInfoWording = addOnWordingData,
-                shopName = cartItemModel.shopName,
-                products = listProduct,
-                addOnSavedStates = addOnDataList,
-                cartString = cartItemModel.cartString,
-                isTokoCabang = cartItemModel.isTokoCabang,
-                warehouseId = cartItemModel.warehouseId,
-                defaultFrom = cartItemModel.addOnDefaultFrom,
-                defaultTo = cartItemModel.addOnDefaultTo
+            addOnInfoWording = addOnWordingData,
+            shopName = cartItemModel.shopName,
+            products = listProduct,
+            addOnSavedStates = addOnDataList,
+            cartString = cartItemModel.cartString,
+            isTokoCabang = cartItemModel.isTokoCabang,
+            warehouseId = cartItemModel.warehouseId,
+            defaultFrom = cartItemModel.addOnDefaultFrom,
+            defaultTo = cartItemModel.addOnDefaultTo
         )
     }
 
@@ -176,9 +178,9 @@ object ShipmentAddOnMapper {
         }
 
         return UnavailableBottomSheetData(
-                description = addOnBottomSheetModel.description,
-                tickerMessage = addOnBottomSheetModel.ticker.text,
-                unavailableProducts = listUnavailableProduct
+            description = addOnBottomSheetModel.description,
+            tickerMessage = addOnBottomSheetModel.ticker.text,
+            unavailableProducts = listUnavailableProduct
         )
     }
 }

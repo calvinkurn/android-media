@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OntimeDeliveryGuarantee(
-        @SerializedName("available")
-        var available: Boolean = false,
-        @SerializedName("duration")
-        var duration: Int = 0
+    @SerializedName("available")
+    var available: Boolean = false,
+    @SerializedName("duration")
+    var duration: Int = 0
 ) : Parcelable
