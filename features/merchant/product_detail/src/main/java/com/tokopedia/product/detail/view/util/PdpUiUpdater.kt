@@ -553,17 +553,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (p2Data.socialProof.isEmpty()) {
             removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
         } else {
-            miniSocialProofMap?.run {
-                items = p2Data.socialProof
-                shouldRender = true
-            }
+            miniSocialProofMap?.shouldRender = true
+            miniSocialProofMap?.items = p2Data.socialProof
         }
     }
 
     private fun updateReviewList(p2Data: ProductInfoP2UiData) {
-        reviewList?.apply {
-            shouldRender = true
-            data = p2Data.reviewList
+        if (p2Data.reviewList.reviews.isEmpty()) {
+            removeComponent(ProductDetailConstant.REVIEW_LIST)
+        } else {
+            reviewList?.shouldRender = true
+            reviewList?.data = p2Data.reviewList
         }
     }
 
