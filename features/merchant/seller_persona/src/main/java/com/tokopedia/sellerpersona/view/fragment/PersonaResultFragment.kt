@@ -254,6 +254,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         binding?.run {
             if (args.paramPersona.isBlank()) {
                 switchSpActivatePersona.isChecked = isPersonaActive
+                setTextPersonaActiveStatus(isPersonaActive)
             }
             switchSpActivatePersona.setOnCheckedChangeListener { _, isChecked ->
                 if (args.paramPersona.isBlank()) {
