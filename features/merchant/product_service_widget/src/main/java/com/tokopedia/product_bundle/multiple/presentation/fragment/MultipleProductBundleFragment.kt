@@ -20,7 +20,18 @@ import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
@@ -60,7 +71,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class MultipleProductBundleFragment : BaseDaggerFragment(),
+class MultipleProductBundleFragment :
+    BaseDaggerFragment(),
     ProductBundleMasterItemClickListener,
     ProductBundleDetailItemClickListener {
 
@@ -72,13 +84,16 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         private const val PAGE_SOURCE = "PAGE_SOURCE"
         private const val PARENT_PRODUCT_ID = "PARENT_PRODUCT_ID"
         private const val LOGIN_REQUEST_CODE = 1122
+
         @JvmStatic
-        fun newInstance(productBundleInfo: List<BundleInfo>,
-                        emptyVariantProductIds: List<String>,
-                        selectedBundleId: String,
-                        selectedProductIds: List<String>,
-                        pageSource: String,
-                        parentProductId: Long) =
+        fun newInstance(
+            productBundleInfo: List<BundleInfo>,
+            emptyVariantProductIds: List<String>,
+            selectedBundleId: String,
+            selectedProductIds: List<String>,
+            pageSource: String,
+            parentProductId: Long
+        ) =
             MultipleProductBundleFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
@@ -112,7 +127,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailView: RecyclerView? = null
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentMultipleProductBundleBinding.inflate(inflater, container, false)
@@ -169,7 +187,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                         productBundleMasterAdapter?.setProductBundleMasters(productBundleMasters, this.bundleId)
                     }
                     // set selected product variants to bundle details
-                    viewModel.setSelectedVariants(viewModel.selectedProductIds,this)
+                    viewModel.setSelectedVariants(viewModel.selectedProductIds, this)
                     // set selected bundle master to live data to render details
                     viewModel.setSelectedProductBundleMaster(this)
                     // render header info
@@ -178,7 +196,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     // update totalView atc button text
                     updateProductBundleOverViewButtonText(preOrderStatus, true)
                 }
-                //show error if bundle is empty
+                // show error if bundle is empty
                 showGlobalError(productBundleMasters.isEmpty())
             }
         }
@@ -200,7 +218,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         // observe selected product bundle master
         viewModel.selectedProductBundleMaster.observe(viewLifecycleOwner, { productBundleMaster ->
             productBundleMaster?.let {
-                val productBundleDetails =  viewModel.getProductBundleDetails(productBundleMaster)
+                val productBundleDetails = viewModel.getProductBundleDetails(productBundleMaster)
                 productBundleDetails?.run {
                     productBundleDetailAdapter?.setProductBundleDetails(this)
                     // render product bundle overview section
@@ -217,25 +235,27 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
                 if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
                     sendTrackerBundleAtcClickEvent(
-                            selectedProductIds = selectedProductIds,
-                            bundleId = it.requestParams.bundleId,
-                            productDetails = productDetails,
-                            shopId = it.requestParams.shopId
+                        selectedProductIds = selectedProductIds,
+                        bundleId = it.requestParams.bundleId,
+                        productDetails = productDetails,
+                        shopId = it.requestParams.shopId
                     )
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
                     intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
                     intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
-                    intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
-                        atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
+                    intent.putExtra(
+                        EXTRA_IS_VARIANT_CHANGED,
+                        atcResult.responseResult.data.isNotEmpty()
+                    ) // will empty if there is no GQL hit
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 } else {
                     sendTrackerBundleAtcClickEvent(
-                            selectedProductIds = selectedProductIds,
-                            bundleId = it.requestParams.bundleId,
-                            productDetails = productDetails,
-                            shopId = it.requestParams.shopId
+                        selectedProductIds = selectedProductIds,
+                        bundleId = it.requestParams.bundleId,
+                        productDetails = productDetails,
+                        shopId = it.requestParams.shopId
                     )
                     RouteManager.route(context, ApplinkConst.CART)
                 }
@@ -254,27 +274,32 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             errorMessage?.run {
                 // show error message
                 productBundleOverView?.bottomContentView?.apply {
-                    Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                        getString(R.string.action_oke)).setAnchorView(this).show()
+                    Toaster.build(
+                        this.rootView,
+                        errorMessage,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.action_oke)
+                    ).setAnchorView(this).show()
                 }
             }
         })
     }
 
     private fun sendTrackerBundleAtcClickEvent(
-            selectedProductIds: String,
-            bundleId: String,
-            productDetails: List<ProductDetailBundleTracker>,
-            shopId: String
+        selectedProductIds: String,
+        bundleId: String,
+        productDetails: List<ProductDetailBundleTracker>,
+        shopId: String
     ) {
         val _userId = viewModel.getUserId()
         MultipleProductBundleTracking.trackMultipleBuyClick(
-                userId = _userId,
-                bundleId = bundleId,
-                productIds = selectedProductIds,
-                source = viewModel.pageSource,
-                productDetails = productDetails,
-                shopId = shopId
+            userId = _userId,
+            bundleId = bundleId,
+            productIds = selectedProductIds,
+            source = viewModel.pageSource,
+            productDetails = productDetails,
+            shopId = shopId
         )
     }
 
@@ -313,7 +338,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
                 // validate add to cart input
                 val isAddToCartInputValid = viewModel.validateAddToCartInput(
-                    selectedProductBundleMaster, selectedBundleDetails)
+                    selectedProductBundleMaster,
+                    selectedBundleDetails
+                )
                 if (isAddToCartInputValid) {
                     // collect required data
                     val bundleId = selectedProductBundleMaster.bundleId
@@ -333,7 +360,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                         productDetails = productDetails
                     )
                 }
-            } else goToLoginPage()
+            } else {
+                goToLoginPage()
+            }
         }
     }
 
@@ -366,10 +395,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     @SuppressLint("SetTextI18n")
-    private fun renderPreOrderInfo(binding: FragmentMultipleProductBundleBinding?,
-                                     preOrderStatus: String,
-                                     processDay: Int,
-                                     processTypeNum: Int) {
+    private fun renderPreOrderInfo(
+        binding: FragmentMultipleProductBundleBinding?,
+        preOrderStatus: String,
+        processDay: Int,
+        processTypeNum: Int
+    ) {
         if (viewModel.isPreOrderActive(preOrderStatus)) {
             binding?.shopInfoHeaderLayout?.shopInfoDetailLayout?.show()
             val timeUnitWording = viewModel.getPreOrderTimeUnitWording(processTypeNum)
@@ -379,8 +410,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             if (binding?.shopInfoHeaderLayout?.tpgTotalSold?.isVisible == false) {
                 binding.shopInfoHeaderLayout.iuPoDivider.gone()
             }
-        }
-        else {
+        } else {
             binding?.shopInfoHeaderLayout?.run {
                 this.iuPoDivider.gone()
                 this.labelPreorder.gone()
@@ -554,7 +584,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     override fun onProductVariantSpinnerClicked(selectedProductBundleDetail: ProductBundleDetail) {
         val selectedProductId = selectedProductBundleDetail.productId.toString()
-        val variantProductId = selectedProductBundleDetail.selectedVariantId?: ""
+        val variantProductId = selectedProductBundleDetail.selectedVariantId ?: ""
         val bundleId = viewModel.getSelectedProductBundleMaster().bundleId.toString()
         val variantValue = selectedProductBundleDetail.selectedVariantText
         val selectedProductVariant = selectedProductBundleDetail.productVariant
