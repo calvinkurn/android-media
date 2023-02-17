@@ -9,6 +9,8 @@ import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
 import com.tokopedia.media.picker.ui.publisher.*
+import com.tokopedia.media.picker.utils.internal.NetworkStateManager
+import com.tokopedia.media.picker.utils.internal.ResourceManager
 import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
 import com.tokopedia.media.util.collectIntoChannel
@@ -20,10 +22,12 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -39,17 +43,23 @@ class PickerViewModelTest {
         coroutineScopeRule.dispatchers.main
     )
 
+    private val bitmapConverterRepository = mockk<BitmapConverterRepository>(relaxed = true)
     private val deviceInfoRepository = mockk<DeviceInfoRepository>()
-    private val bitmapConverterRepository = mockk<BitmapConverterRepository>()
     private val mediaRepository = mockk<MediaFileRepository>()
     private val paramCacheManager = mockk<PickerCacheManager>()
     private val featureToggleManager = mockk<FeatureToggleManager>()
+    private val networkStateManager = mockk<NetworkStateManager>()
+    private val resourcesManager = mockk<ResourceManager>()
 
     private lateinit var eventBus: PickerEventBus
     private lateinit var viewModel: PickerViewModel
 
     @Before
     fun setup() {
+        Dispatchers.setMain(
+            coroutineScopeRule.dispatchers.main
+        )
+
         mockkStatic(::mediaToUiModel)
         every { mediaToUiModel(any()) } returns mediaUiModelList
         every { paramCacheManager.get() } returns PickerParam()
@@ -64,6 +74,8 @@ class PickerViewModelTest {
             bitmapConverterRepository,
             paramCacheManager,
             featureToggleManager,
+            networkStateManager,
+            resourcesManager,
             coroutineScopeRule.dispatchers,
             eventBus
         )
@@ -113,37 +125,57 @@ class PickerViewModelTest {
 
         // Then
         viewModel.preSelectedMedias(paramCacheManager.get())
-
-        coVerify {
-            bitmapConverterRepository.convert(any())!! wasNot Called
-        }
+        verify { bitmapConverterRepository.convert(any()) wasNot Called }
     }
 
     @Test
-    fun `ui event should be invoked the SelectionChanged when includeMedias is exist`() = coroutineScopeRule.runBlockingTest {
-        // Given
+    fun `ui event should be not invoked the SelectionChanged when includeMedias is exist but no internet connection`() = coroutineScopeRule.runBlockingTest {
+        // When
+        val noInternetMessage = "Opps!"
         val mockImageUrl = "https://isfa.com/sample.png"
-        val mockConvertedPath = "/DCIM/Camera/sample.png"
 
         val includeMedias = listOf(
             mockImageUrl,
             "/DCIM/AnotherSample/download.jpeg"
         )
 
-        val expectedValue = includeMedias
-            .update(0, mockConvertedPath)
-
         // When
+        every { networkStateManager.isNetworkConnected() } returns false
+        every { resourcesManager.string(any()) } returns noInternetMessage
         every { paramCacheManager.get().includeMedias() } returns includeMedias
-        coEvery { bitmapConverterRepository.convert(mockImageUrl) } returns mockConvertedPath
 
         // Then
         viewModel.preSelectedMedias(paramCacheManager.get())
 
-        assertEquals(
-            expectedValue,
-            viewModel.includeMedias.value
+        assert(viewModel.connectionIssue.value == noInternetMessage)
+        verify { bitmapConverterRepository.convert(any()) wasNot Called }
+    }
+
+    @Test
+    fun `ui event should be invoked the SelectionChanged when includeMedias is exist`() = coroutineScopeRule.runBlockingTest {
+        // Given
+        val includeMedias = listOf(
+            "https://isfa.com/sample.png",
+            "/DCIM/AnotherSample/download.jpeg"
         )
+
+        val convertedResultMedias = listOf(
+            "/DCIM/Camera/sample.png",
+            "/DCIM/AnotherSample/download.jpeg"
+        )
+
+        // When
+        every { networkStateManager.isNetworkConnected() } returns true
+        every { paramCacheManager.get().includeMedias() } returns includeMedias
+        every { bitmapConverterRepository.convert(any()) } returns flow {
+            emit(convertedResultMedias)
+        }
+
+        // Then
+        viewModel.preSelectedMedias(paramCacheManager.get())
+
+        assert(viewModel.includeMedias.value != null)
+        assert(viewModel.isLoading.value != null)
     }
 
     @Test

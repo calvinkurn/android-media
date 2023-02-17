@@ -28,3 +28,18 @@ fun exceptionHandler(invoke: () -> Unit) {
 fun isOppoManufacturer(): Boolean {
     return Build.MANUFACTURER.contains("oppo", ignoreCase = true)
 }
+
+fun <T> List<T>.flattenFilter(predicate: (T) -> Boolean): Pair<List<T>, List<T>> {
+    val firstList = mutableListOf<T>()
+    val twoList = mutableListOf<T>()
+
+    map {
+        if (predicate(it)) {
+            firstList.add(it)
+        } else {
+            twoList.add(it)
+        }
+    }
+
+    return Pair(firstList, twoList)
+}
