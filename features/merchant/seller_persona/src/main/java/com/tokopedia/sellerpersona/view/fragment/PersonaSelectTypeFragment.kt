@@ -39,7 +39,7 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel: SelectPersonaTypeViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(SelectPersonaTypeViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[SelectPersonaTypeViewModel::class.java]
     }
     private val args: PersonaSelectTypeFragmentArgs by navArgs()
     private val personaTypeAdapter by lazy { PersonaTypeAdapter(this) }

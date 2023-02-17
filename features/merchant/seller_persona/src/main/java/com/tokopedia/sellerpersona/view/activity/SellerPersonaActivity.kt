@@ -20,8 +20,8 @@ import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerpersona.R
-import com.tokopedia.sellerpersona.data.local.PersonaSharedPreference
 import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
 import com.tokopedia.sellerpersona.di.DaggerSellerPersonaComponent
@@ -39,14 +39,13 @@ import javax.inject.Inject
 class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponent> {
 
     @Inject
-    lateinit var sharedPref: PersonaSharedPreference
-
-    @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    val openingImpressHolder by lazy { ImpressHolder() }
 
     private var binding: ActivitySellerPersonaBinding? = null
     private val viewModel: PersonaSharedViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(PersonaSharedViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[PersonaSharedViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

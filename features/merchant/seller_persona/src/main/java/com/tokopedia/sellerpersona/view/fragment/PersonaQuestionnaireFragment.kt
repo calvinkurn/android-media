@@ -50,7 +50,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: QuestionnaireViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(QuestionnaireViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[QuestionnaireViewModel::class.java]
     }
     private val pagerAdapter by lazy { QuestionnairePagerAdapter() }
     private val progressBarInterpolator by lazy { AccelerateDecelerateInterpolator() }
@@ -94,7 +94,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 p.options?.any { o -> o.isSelected }.orFalse()
             }
             if (!isAnyChanges) {
-                findNavController().navigateUp()
+                findNavController().navigate(R.id.actionQuestionnaireToOpening)
                 return
             }
 
@@ -110,7 +110,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 }
                 setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
                 setSecondaryCTAClickListener {
-                    findNavController().navigateUp()
+                    findNavController().navigate(R.id.actionQuestionnaireToOpening)
                     dismiss()
                 }
                 show()

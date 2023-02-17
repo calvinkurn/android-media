@@ -79,5 +79,3 @@ fun Long?.isMoreThanZero(): Boolean = this?.let { it > 0L } ?: false
 fun Long?.isLessThanZero(): Boolean = this?.let { it < 0L } ?: false
 fun Long?.isOdd(): Boolean = this?.let { it % 2L == 1L } ?: false
 fun Long?.isEven(): Boolean = this?.let { it % 2L == 0L } ?: false
-
-val Long.Companion.ZERO get() = 0L

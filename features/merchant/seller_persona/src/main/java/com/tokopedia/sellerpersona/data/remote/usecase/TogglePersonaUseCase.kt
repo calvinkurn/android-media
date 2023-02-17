@@ -39,7 +39,7 @@ class TogglePersonaUseCase @Inject constructor(
 
     private fun createParam(shopId: String, status: PersonaStatus): RequestParams {
         return RequestParams.create().apply {
-            putLong(KEY_SHOP_ID, shopId.toLongOrNull() ?: Long.ZERO)
+            putLong(KEY_SHOP_ID, shopId.toLongOrNull() ?: 0L)
             putInt(KEY_STATUS, status.value)
         }
     }

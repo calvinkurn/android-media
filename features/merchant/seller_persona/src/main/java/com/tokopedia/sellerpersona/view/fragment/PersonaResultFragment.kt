@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -53,7 +52,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: PersonaResultViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(PersonaResultViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[PersonaResultViewModel::class.java]
     }
     private val args: PersonaResultFragmentArgs by navArgs()
     private val backPressedCallback by lazy {
@@ -111,7 +110,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                 }
                 setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
                 setSecondaryCTAClickListener {
-                    findNavController().navigateUp()
+                    activity?.finish()
                     dismiss()
                 }
                 show()
