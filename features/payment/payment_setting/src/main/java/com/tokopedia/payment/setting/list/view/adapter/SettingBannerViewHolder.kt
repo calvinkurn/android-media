@@ -2,6 +2,8 @@ package com.tokopedia.payment.setting.list.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.model.SettingBannerModel
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
@@ -15,7 +17,7 @@ class SettingBannerViewHolder(itemView : View?)
     }
 
     override fun bind(element: SettingBannerModel) {
-        itemView.settingBanner.setImageUrl(element.assets)
+        itemView.settingBanner.loadImage(element.assets)
     }
 
 }

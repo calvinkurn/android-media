@@ -105,7 +105,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                     is Fail -> showGetListError(cardListResult.throwable)
                 }
 
-                if (bannerResult is Success) {
+                if (bannerResult is Success && bannerResult.data.assets.isNotEmpty()) {
                     list.add(0, bannerResult.data)
                 }
 
