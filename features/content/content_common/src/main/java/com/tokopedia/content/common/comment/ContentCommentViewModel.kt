@@ -87,7 +87,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                         addAll(it.list.mapIndexed { index, model ->
                             if (index == selected && model is CommentUiModel.Expandable) model.copy(
                                 isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
-                                repliesCount = if (result.hasNextPage) model.repliesCount else parent?.childCount.orEmpty()
+                                repliesCount = if (result.hasNextPage) result.nextRepliesCount else parent?.childCount.orEmpty()
                             )
                             else model
                         })
