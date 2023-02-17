@@ -224,6 +224,7 @@ class SummaryFragment :
         observeUploadCouponState()
         observeMaxExpense()
         observeCouponImage()
+        observeCouponPeriod()
     }
 
     private fun observeInitialData() {
@@ -302,6 +303,16 @@ class SummaryFragment :
     private fun observeCouponImage() {
         viewModel.couponImage.observe(viewLifecycleOwner) {
             binding?.layoutPreview?.ivPreview?.loadImage(it)
+        }
+    }
+
+    private fun observeCouponPeriod() {
+        viewModel.couponPeriods.observe(viewLifecycleOwner) {
+            val voucherPeriodBottomSheet = VoucherPeriodBottomSheet.newInstance(
+                title = context?.resources?.getString(R.string.voucher_bs_period_title_1).toBlankOrString(),
+                dateList = it
+            )
+            voucherPeriodBottomSheet.show(childFragmentManager, "")
         }
     }
 
@@ -539,11 +550,7 @@ class SummaryFragment :
     }
 
     private fun onMultiPeriodClicked(configuration: VoucherConfiguration) {
-        val voucherPeriodBottomSheet = VoucherPeriodBottomSheet.newInstance(
-            title = context?.resources?.getString(R.string.voucher_bs_period_title_1).toBlankOrString(),
-            dateList = viewModel.getOtherPeriod(configuration)
-        )
-        voucherPeriodBottomSheet.show(childFragmentManager, "")
+        viewModel.handleVoucherInputValidation(configuration)
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
