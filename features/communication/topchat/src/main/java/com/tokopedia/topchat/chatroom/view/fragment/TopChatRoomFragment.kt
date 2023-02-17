@@ -314,7 +314,7 @@ open class TopChatRoomFragment :
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
-    private val newMsgObserver = Observer<Visitable<*>> { uiModel ->
+    private val newMsgObserver = Observer<Visitable<*>?> { uiModel ->
         uiModel?.let {
             onSendAndReceiveMessage()
             onReceiveMessageEvent(it)
@@ -329,7 +329,7 @@ open class TopChatRoomFragment :
         }
     }
 
-    private val deleteMsgObserver = Observer<String> { replyTime ->
+    private val deleteMsgObserver = Observer<String?> { replyTime ->
         replyTime?.let {
             onReceiveWsEventDeleteMsg(replyTime)
         }
