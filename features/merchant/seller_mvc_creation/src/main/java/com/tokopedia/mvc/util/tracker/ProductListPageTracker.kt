@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.util.tracker
 
-import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.util.constant.TrackerConstant
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -8,12 +7,16 @@ import javax.inject.Inject
 
 class ProductListPageTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun sendClickBackButtonEvent(pageMode: PageMode) {
+    companion object {
+        private const val ZERO : Long = 0
+    }
+
+    fun sendClickBackButtonEvent(voucherId: Long) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click kembali arrow - fourth step")
             .setEventCategory("kupon toko saya - creation daftar produk")
-            .setEventLabel(pageMode.asEventLabel())
+            .setEventLabel(voucherId.asEventLabel())
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39419")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -23,12 +26,12 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
     }
 
 
-    fun sendButtonContinueClickEvent(pageMode: PageMode) {
+    fun sendButtonContinueClickEvent(voucherId: Long) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click lanjut - fourth step")
             .setEventCategory("kupon toko saya - creation daftar produk")
-            .setEventLabel(pageMode.asEventLabel())
+            .setEventLabel(voucherId.asEventLabel())
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39420")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -37,12 +40,12 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
             .send()
     }
 
-    fun sendClickToolbarBackButtonWithProductSelectedEvent(pageMode: PageMode) {
+    fun sendClickToolbarBackButtonWithProductSelectedEvent(voucherId: Long) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click kembali arrow - product selected - fourth step")
             .setEventCategory("kupon toko saya - creation daftar produk")
-            .setEventLabel(pageMode.asEventLabel())
+            .setEventLabel(voucherId.asEventLabel())
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39421")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -51,13 +54,11 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
             .send()
     }
 
-    private fun PageMode.asEventLabel(): String {
-        val mode = if (this == PageMode.CREATE) {
-            "create"
+    private fun Long.asEventLabel(): String {
+        return if (this == ZERO) {
+            "voucher_step: create - voucher_id: "
         } else {
-            "edit"
+            "voucher_step: edit - voucher_id: $this"
         }
-
-        return "voucher_step: $mode"
     }
 }

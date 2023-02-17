@@ -29,10 +29,6 @@ class ProductListViewModel @Inject constructor(
     private val productListUseCase: ProductListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    companion object {
-        private const val THREE_TOP_SELLING_PRODUCT_IMAGE_URL = 3
-    }
-
     private val _uiState = MutableStateFlow(ProductListUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -320,19 +316,11 @@ class ProductListViewModel @Inject constructor(
                 SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
             }
 
-            val topSellingProductImageUrls = currentState.products
-                .sortedByDescending { it.txStats.sold }
-                .take(THREE_TOP_SELLING_PRODUCT_IMAGE_URL)
-                .map { it.picture }
-
-
             val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(warehouseId = currentState.selectedWarehouseId)
-
             _uiEffect.tryEmit(
                 ProductListEffect.ProceedToVoucherPreviewPage(
                     modifiedVoucherConfiguration,
                     selectedProducts,
-                    topSellingProductImageUrls,
                     currentState.originalPageMode
                 )
             )
@@ -415,13 +403,13 @@ class ProductListViewModel @Inject constructor(
     private fun emitRedirectToAddProductPageEvent() {
         val currentlySelectedParentProduct = currentState.products.map { it.id }
         val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(productIds = currentlySelectedParentProduct)
-        _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(modifiedVoucherConfiguration))
+        _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(modifiedVoucherConfiguration, currentState.products))
     }
 
 
     private fun handleTapToolbarBackIcon() {
         val selectedProductCount = uiState.value.products.count()
-        _uiEffect.tryEmit(ProductListEffect.RedirectToPreviousPage(selectedProductCount, uiState.value.originalPageMode))
+        _uiEffect.tryEmit(ProductListEffect.RedirectToPreviousPage(selectedProductCount))
     }
 
     private fun handleTapBackButton() {
