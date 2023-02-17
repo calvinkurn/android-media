@@ -161,4 +161,20 @@ class PlayViewModelFieldTest {
             viewModel.performanceSummaryPageLink.assertEqualTo(performanceSummaryPageLink)
         }
     }
+
+    @Test
+    fun `given a quick reply list, when retrieved, then it should be correct`() {
+
+        val mockQuickReply = uiModelBuilder.buildQuickReply()
+        val channelData = channelDataBuilder.buildChannelData(
+            quickReplyInfo = mockQuickReply
+        )
+
+        givenPlayViewModelRobot(
+        ) andWhen {
+            createPage(channelData)
+        } thenVerify {
+            viewModel.quickReply.assertEqualTo(mockQuickReply)
+        }
+    }
 }
