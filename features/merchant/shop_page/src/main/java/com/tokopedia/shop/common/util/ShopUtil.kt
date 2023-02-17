@@ -2,7 +2,6 @@ package com.tokopedia.shop.common.util
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -11,16 +10,13 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
@@ -32,7 +28,6 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -103,20 +98,6 @@ object ShopUtil {
         )
     }
 
-    fun isUsingNewShareBottomSheet(context: Context): Boolean {
-        return UniversalShareBottomSheet.isCustomSharingEnabled(
-            context,
-            ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
-        )
-    }
-
-    fun joinStringWithDelimiter(vararg listString: String, delimiter: String): String {
-        val filteredListString = listString.filter {
-            it.isNotEmpty()
-        }
-        return TextUtils.join(delimiter, filteredListString)
-    }
-
     fun <E> MutableList<E>.setElement(index: Int, element: E) {
         if (index in 0 until size) {
             set(index, element)
@@ -154,10 +135,6 @@ object ShopUtil {
         mediaTarget: MediaBitmapEmptyTarget<Bitmap>
     ) {
         com.tokopedia.media.loader.loadImageWithEmptyTarget(context, url, properties, mediaTarget)
-    }
-
-    fun isEnableShopDynamicTab(context: Context?): Boolean {
-        return FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.ENABLE_SHOP_DYNAMIC_TAB)
     }
 
     fun String.isUrlPng(): Boolean {

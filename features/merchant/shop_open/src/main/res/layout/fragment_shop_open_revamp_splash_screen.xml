@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_1"/>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:layout_weight="1"
         android:id="@+id/img_icon_open_shop_finish"
         android:layout_width="match_parent"

@@ -82,6 +82,13 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
+    override fun handleReturnToShipperResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_FIRST_USER) {
+            shouldRefreshOrderList = true
+            loadDetail()
+        }
+    }
+
     override fun onGoToOrderDetailButtonClicked() {
         shouldRefreshOrderList = true
         super.onGoToOrderDetailButtonClicked()
@@ -117,7 +124,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         somDetail: SomDetailOrder.Data.GetSomDetail?,
         somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?,
         resolutionTicketStatusResponse: GetResolutionTicketStatusResponse
-                                            .ResolutionGetTicketStatus.ResolutionData?
+        .ResolutionGetTicketStatus.ResolutionData?
     ) {
         if (shouldPassInvoice) {
             shouldPassInvoice = false
