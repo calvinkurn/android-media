@@ -278,4 +278,44 @@ class GetChatViewModelTest : BaseTopChatViewModelTest() {
             (viewModel.bottomChat.value as Fail).throwable.message
         )
     }
+
+    @Test
+    fun should_do_nothing_when_set_message_id_but_room_message_id_null() {
+        // Given
+        viewModel.setRoomMetaData(null)
+
+        // When
+        viewModel.updateMessageId(testMessageId)
+
+        // Then
+        assertEquals(null, viewModel.roomMetaData.value)
+    }
+
+    @Test
+    fun should_give_correct_value_when_in_the_middle_of_page() {
+        // Given
+        every {
+            getChatUseCase.isInTheMiddleOfThePage()
+        } returns MutableLiveData(true)
+
+        // When
+        val result = viewModel.getMiddlePageLiveData().value
+
+        // Then
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun should_give_false_value_when_get_in_the_middle_of_page_but_null() {
+        // Given
+        every {
+            getChatUseCase.isInTheMiddleOfThePage()
+        } returns MutableLiveData(null)
+
+        // When
+        val result = viewModel.isInTheMiddleOfThePage()
+
+        // Then
+        assertEquals(false, result)
+    }
 }

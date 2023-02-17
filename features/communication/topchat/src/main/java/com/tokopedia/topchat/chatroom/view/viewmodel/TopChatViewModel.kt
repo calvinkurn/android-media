@@ -63,8 +63,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import okhttp3.internal.toImmutableList
-import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
@@ -201,7 +201,7 @@ open class TopChatViewModel @Inject constructor(
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val attachmentPreviewData: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
-    private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
+    var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
     init {
         _attachmentsPreview.value = arrayListOf()
@@ -793,8 +793,13 @@ open class TopChatViewModel @Inject constructor(
     }
 
     @VisibleForTesting
-    fun setRoomMetaData(roomMetaData: RoomMetaData) {
+    fun setRoomMetaData(roomMetaData: RoomMetaData?) {
         _roomMetaData.value = roomMetaData
+    }
+
+    @VisibleForTesting
+    fun setAttachmentsPreview(attachmentsPreview: ArrayList<SendablePreview>?) {
+        _attachmentsPreview.value = attachmentsPreview
     }
 
     companion object {

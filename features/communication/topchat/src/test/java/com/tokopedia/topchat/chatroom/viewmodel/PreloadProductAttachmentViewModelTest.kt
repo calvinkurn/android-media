@@ -4,8 +4,10 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachment
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
+import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import io.mockk.coEvery
+import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -124,5 +126,41 @@ class PreloadProductAttachmentViewModelTest : BaseTopChatViewModelTest() {
                 ).productId,
             product.id
         )
+    }
+
+    @Test
+    fun should_give_null_or_empty_when_attachment_preview_not_set() {
+        // When
+        val result = viewModel.hasEmptyAttachmentPreview()
+
+        // Then
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun should_do_nothing_when_pending_product_view_empty() {
+        // Given
+        viewModel.pendingLoadProductPreview.clear()
+
+        // When
+        viewModel.loadPendingProductPreview()
+
+        // Then
+        assertEquals(viewModel.attachmentsPreview.value, arrayListOf<SendablePreview>())
+    }
+
+    @Test
+    fun should_call_preattach_when_pending_product_view_empty() {
+        // Given
+        viewModel.roomMetaData.value?.updateMessageId(testMessageId)
+        viewModel.pendingLoadProductPreview = arrayListOf("testProductId")
+
+        // When
+        viewModel.loadPendingProductPreview()
+
+        // Then
+        coVerify(exactly = 1) {
+            chatPreAttachPayload(any())
+        }
     }
 }
