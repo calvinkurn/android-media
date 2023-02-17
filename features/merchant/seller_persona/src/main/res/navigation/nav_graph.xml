@@ -14,8 +14,7 @@
         <action
             android:id="@+id/actionOpeningFragmentToQuestionnaireFragment"
             app:destination="@id/questionnaireFragment"
-            app:popUpTo="@+id/openingFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
@@ -45,11 +44,6 @@
             android:id="@+id/actionQuestionnaireToResult"
             app:destination="@id/resultFragment"
             app:launchSingleTop="true"
-            app:popUpTo="@id/questionnaireFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/actionQuestionnaireToOpening"
-            app:destination="@id/openingFragment"
             app:popUpTo="@id/questionnaireFragment"
             app:popUpToInclusive="true" />
     </fragment>

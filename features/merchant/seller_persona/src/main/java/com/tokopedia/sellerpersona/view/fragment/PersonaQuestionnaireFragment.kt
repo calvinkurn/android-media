@@ -94,7 +94,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 p.options?.any { o -> o.isSelected }.orFalse()
             }
             if (!isAnyChanges) {
-                findNavController().navigate(R.id.actionQuestionnaireToOpening)
+                findNavController().navigateUp()
                 return
             }
 
@@ -110,7 +110,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 }
                 setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
                 setSecondaryCTAClickListener {
-                    findNavController().navigate(R.id.actionQuestionnaireToOpening)
+                    findNavController().navigateUp()
                     dismiss()
                 }
                 show()
