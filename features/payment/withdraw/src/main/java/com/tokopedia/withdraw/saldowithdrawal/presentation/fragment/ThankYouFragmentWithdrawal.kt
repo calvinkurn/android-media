@@ -109,21 +109,6 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun openApplink(applink: String) {
         if (applink.isEmpty()) return
 
-//        val eventLabel = when {
-//            withdrawalRequest.isJoinRekeningPremium -> {
-//                withdrawalResponse.joinPromptMessageResponse?.let {
-//                    String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-//                        it.title,it.description)
-//                }
-//            }
-//            withdrawalRequest.showJoinRekeningWidget -> {
-//                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-//                    getString(R.string.swd_come_on_join_rp),
-//                    getString(R.string.swd_come_on_join_rp_description))
-//            }
-//            else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
-//        }
-
         if (applink == ApplinkConst.SALDO) {
             onGoToSaldoDetail()
         } else {
