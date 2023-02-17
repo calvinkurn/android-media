@@ -348,6 +348,11 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ProductCardCarouselItemList,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
 
             // Product Card Sprint Sale
             initializeComponent(

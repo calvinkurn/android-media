@@ -59,6 +59,7 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
+    String POST_ATC = "tokopedia://post-atc/{productId}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String PRODUCT_AR = "tokopedia://productar/{product_id}";
@@ -170,6 +171,14 @@ public interface ApplinkConst {
             "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    /**
+     * Bubble Chat / Notif Bubbles Activation apge
+     */
+    String TOPCHAT_BUBBLE_ACTIVATION = "tokopedia://chatsettings/bubble-activation";
+
+    /**
+     * Tokochat (Chat with Gojek)
+     */
     String TOKO_CHAT = "tokopedia://tokochat";
 
     String CHATBOT_HOST = "chatbot";
@@ -502,6 +511,7 @@ public interface ApplinkConst {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
+        String TOPADS_ADD_CREDIT = "sellerapp://topads/add-credit";
         String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
         String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
         String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";
@@ -554,7 +564,7 @@ public interface ApplinkConst {
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
         String PRODUCT_MANAGE = "sellerapp://product/manage";
-
+        String TOPCHAT_BUBBLE_ACTIVATION = "sellerapp://chatsettings/bubble-activation";
     }
 
     interface TokopediaNow {

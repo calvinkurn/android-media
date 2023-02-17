@@ -13,7 +13,7 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.JoinRPOnWithdr
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.BaseWithdrawalFragment
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SaldoWithdrawalFragment
-import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SuccessFragmentWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.ThankYouFragmentWithdrawal
 import dagger.Component
 
 /**
@@ -30,7 +30,7 @@ interface WithdrawComponent {
     fun context(): Context
 
     fun inject(withdrawActivity: WithdrawActivity)
-    fun inject(successFragmentWithdrawal: SuccessFragmentWithdrawal)
+    fun inject(thankYouFragmentWithdrawal: ThankYouFragmentWithdrawal)
     fun inject(baseWithdrawalFragment: BaseWithdrawalFragment)
     fun inject(withdrawalParentFragment: SaldoWithdrawalFragment)
     fun inject(joinRPOnWithdrawalBottomSheet: JoinRPOnWithdrawalBottomSheet)

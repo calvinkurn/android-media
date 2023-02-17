@@ -28,6 +28,7 @@ object TopAdsDashboardConstant {
 
     const val AUTO_TOPUP_INACTIVE: Int = 0
     const val REQUEST_CODE_ADD_CREDIT = 99
+    const val REQUEST_CODE_TOP_UP_CREDIT = 1919
     const val ACTIVE_STATUS = "1"
 
 
@@ -126,4 +127,33 @@ object TopAdsDashboardConstant {
     const val CONST_PENGELURAN = 4
     const val CONST_EFECTIVITAS_IKLAN = 5
     const val DATE_PICKER_DEFAULT_INDEX = 2
+
+    object TopAdsCreditTopUpConstant{
+        const val TOP_UP_FREQUENCY_FOUR = 4
+        const val DEFAULT_TOP_UP_FREQUENCY = 6
+        const val TOP_UP_FREQUENCY_EIGHT = 8
+        const val INVALID_NOMINAL_INDEX = -1
+        const val RM = 0
+        const val PM = 1
+        const val OS = 2
+        const val PM_PRO = 3
+        const val PM_PRO_ADVANCED = 24
+        const val PM_PRO_EXPERT = 26
+        const val PM_PRO_ULTIMATE = 28
+        const val IS_EDIT_TOP_UP = "editAutoTopUp"
+        const val IS_TOP_UP_CREDIT_NEW_UI = "variant1_auto_topup_design"
+        const val IS_SHOW_OLD_FLOW = "is_show_old_flow"
+        const val TOP_UP_FREQUENTLY = "TopUpFrequently"
+        const val INSUFFICIENT_CREDIT = "InsufficientCredit"
+        const val TOP_ADS_TOP_UP_CREDIT_SP_NAME = "TopAdsTopUpCredit"
+        const val TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME = "TopAdsTopUpCreditSavedTime"
+        const val FREQUENCY = "frequency"
+        const val SHOP_IDS_KEY = "shopIds"
+        const val FIELDS_KEY = "fields"
+        const val SOURCE_KEY = "source"
+        const val OTHER_GOLD_OS_VALUE = "other-goldos"
+        const val TOP_ADS_DASHBOARD_VALUE = "top_ads_dashboard"
+        const val IS_BONUS_ZERO = "Bonus Rp0"
+        const val TIME_DURATION_FOR_INTERRUPT_SHEET  = 30
+    }
 }

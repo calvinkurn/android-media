@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.datamapper.getMapWithRpc
@@ -29,7 +30,8 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                 getQueryFilterString(
                     it.userAddressData,
                     paramWithoutRpc,
-                    paramWithRpc
+                    paramWithRpc,
+                    component
                 )
             )
             withContext(Dispatchers.IO) {
@@ -40,6 +42,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                     var isProductComponent = true
                     comp.pageEndPoint = component.pageEndPoint
                     comp.pagePath = component.pagePath
+                    comp.tabPosition = it.tabPosition
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
@@ -61,12 +64,23 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                             }
                         }
                         ComponentNames.ProductCardCarousel.componentName -> {
-                            DiscoveryDataMapper().mapListToComponentList(
-                                comp.data,
-                                ComponentNames.ProductCardCarouselItem.componentName,
-                                comp.properties,
-                                creativeName
-                            )
+                            if (comp.properties?.template == Constant.ProductTemplate.LIST) {
+                                DiscoveryDataMapper().mapListToComponentList(
+                                    comp.data,
+                                    ComponentNames.ProductCardCarouselItemList.componentName,
+                                    comp.properties,
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
+                                )
+                            } else {
+                                DiscoveryDataMapper().mapListToComponentList(
+                                    comp.data,
+                                    ComponentNames.ProductCardCarouselItem.componentName,
+                                    comp.properties,
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
+                                )
+                            }
                         }
                         ComponentNames.ProductCardSprintSale.componentName -> {
                             DiscoveryDataMapper().mapListToComponentList(
@@ -121,7 +135,8 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
     private fun getQueryFilterString(
         userAddressData: LocalCacheModel?,
         queryParameterMapWithoutRpc: Map<String, String>?,
-        queryParameterMapWithRpc: Map<String, String>?
+        queryParameterMapWithRpc: Map<String, String>?,
+        sectionComponent: ComponentsItem
     ): String {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
@@ -130,7 +145,9 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
         }
         queryParameterMapWithRpc?.let {
             for (entry in it) {
-                queryParameterMap[RPC_FILTER_KEY + entry.key] = entry.value
+                val adjustedValue = Utils.isRPCFilterApplicableForTab(entry.value, sectionComponent)
+                if (adjustedValue.isNotEmpty())
+                    queryParameterMap[RPC_FILTER_KEY + entry.key] = adjustedValue
             }
         }
         return Utils.getQueryString(queryParameterMap)

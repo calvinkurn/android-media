@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_title"
@@ -14,8 +15,8 @@
         android:maxLines="1"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_title_strike"
+        app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="wrap"
         app:layout_goneMarginEnd="2dp"
@@ -42,17 +43,19 @@
         android:layout_height="20dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@id/pdp_shipment_guidelines_end"
         app:layout_constraintTop_toTopOf="@id/pdp_shipment_title"
         app:unify_image_corner_radius="0"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_subtitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
+        app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_title"
         app:typographyType="display_3"
         tools:text="Min. belanja Rp50.000" />
@@ -64,7 +67,7 @@
         android:layout_marginTop="2dp"
         android:text="@string/pdp_shipping_dilayani_label"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_subtitle"
         app:typographyType="display_3" />
 
@@ -92,31 +95,37 @@
 
     <View
         android:id="@+id/pdp_shipment_line"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
         android:background="@color/Unify_NN50"
+        app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
+        app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_tc_label"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_destination"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_line"
         app:typographyType="display_3"
         tools:text="Dikirim ke Kantor Jamika Nasaputra" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_estimation"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_destination"
         app:layout_goneMarginTop="16dp"
         app:typographyType="display_3"
@@ -126,35 +135,22 @@
         android:id="@+id/pdp_shipment_courier_label_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="14dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_estimation"
         app:typographyType="display_3"
         tools:text="Kurir lainnya:" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/pdp_shipment_courier_option_1"
-        android:layout_width="wrap_content"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/pdp_shipment_courier_options"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        app:labelType="general_light_grey"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1"
-        tools:text="Instan" />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/pdp_shipment_courier_option_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="@string/pdp_shipping_cod_label"
-        app:labelType="general_light_grey"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_option_1"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1"
-        app:layout_goneMarginStart="4dp" />
+        android:orientation="horizontal"
+        app:flexWrap="wrap"
+        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_icon"
+        app:layout_constraintStart_toEndOf="@id/pdp_shipment_courier_label_1"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_shipment_courier_arrow"
@@ -162,36 +158,48 @@
         android:layout_height="24dp"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
-
-    <View
-        android:id="@+id/pdp_shipment_courier_placeholder_1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_option_2"
-        app:layout_constraintRight_toLeftOf="@id/pdp_shipment_courier_arrow"
+        app:layout_constraintRight_toRightOf="@id/pdp_shipment_guidelines_end"
         app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_courier_label_2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textColor="@color/Unify_GN500"
+        app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
+        app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Lihat Pilihan Kurir" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/pdp_shipment_ticker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="12dp"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="Halo halo halo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_2"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_rates_error"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textColor="@color/Unify_NN900"
-        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_2"
+        app:layout_constraintEnd_toEndOf="@id/pdp_shipment_guidelines_end"
+        app:layout_constraintStart_toStartOf="@id/pdp_shipment_guidelines_start"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_ticker"
         app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />
 
@@ -201,5 +209,19 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"
         tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/pdp_shipment_guidelines_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/pdp_shipment_guidelines_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,7 +51,7 @@ class SubmitWithdrawalViewModelTest {
         val submitWithdrawalResponse = mockk<SubmitWithdrawalResponse>()
         coEvery { useCase.submitWithdrawal(any(), any()) } returns result
         every { result.data.submitWithdrawalResponse} returns submitWithdrawalResponse
-        every { submitWithdrawalResponse.status } returns "success"
+        every { submitWithdrawalResponse.shouldRedirectToThankYouPage() } returns true
         saldoWithdrawalViewModel.submitWithdraw(withdrawalRequest, validateToken)
         saldoWithdrawalViewModel.submitWithdrawalResponseLiveData.observeOnce {
             when (it) {

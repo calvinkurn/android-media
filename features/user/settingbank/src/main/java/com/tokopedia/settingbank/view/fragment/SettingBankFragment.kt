@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
@@ -29,6 +29,7 @@ import com.tokopedia.settingbank.view.adapter.BankAccountListAdapter
 import com.tokopedia.settingbank.view.viewModel.SettingBankViewModel
 import com.tokopedia.settingbank.view.widgets.AccountConfirmationBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
+import com.tokopedia.settingbank.view.decoration.DividerItemDecoration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -86,7 +87,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         add_account_button.gone()
         add_account_button.setOnClickListener {
             when (bankAccountListAdapter.getBankAccountListSize()) {
-                0 -> bankSettingAnalytics.eventOnAddBankClick()
+                Int.ZERO -> bankSettingAnalytics.eventOnAddBankClick()
                 else ->
                     bankSettingAnalytics.eventOnAddAnotherBankClick()
             }
@@ -108,7 +109,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun initBankAccountRecyclerView() {
         account_list_rv.layoutManager = LinearLayoutManager(activity)
-        account_list_rv.addItemDecoration(DividerItemDecoration(activity))
+        account_list_rv.addItemDecoration(DividerItemDecoration())
         bankAccountListAdapter.bankAccountClickListener = this
         account_list_rv.adapter = bankAccountListAdapter
     }
@@ -134,8 +135,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                         showNoBankAccountState()
                     } else {
                         populateBankList(it.data)
-                        loadBankNote()
+                        addTNCNoteInAdapter()
                     }
+                    configAddAccountButtonText(it.data)
                 }
                 is Fail -> {
                     onBankAccountLoadingFailed(it.throwable)
@@ -146,10 +148,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
         settingBankViewModel.addBankAccountStateLiveData.observe(viewLifecycleOwner, Observer {
             updateAddBankAccountBtnState(it)
-        })
-
-        settingBankViewModel.tncNotesLiveData.observe(viewLifecycleOwner, Observer {
-            if (it is Success) populateTNCNoteInAdapter(it.data)
         })
 
         settingBankViewModel.termsAndConditionLiveData.observe(viewLifecycleOwner, Observer {
@@ -221,6 +219,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showErrorToaster(message: String) {
         view?.let {
+            Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
             Toaster.build(it, message, Toaster.TYPE_NORMAL).show()
         }
     }
@@ -231,13 +230,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         }
     }
 
-    private fun loadBankNote() {
-        settingBankViewModel.loadTermsAndConditionNotes()
-    }
-
     private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
         context?.let { context ->
             view?.let { view ->
+                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
                 retry?.let {
                     Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
                             Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
@@ -253,30 +249,37 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     fun showToasterOnUI(message: String?) {
         message?.let {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
+            view?.let {
+                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
+                Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun populateBankList(bankList: List<BankAccount>) {
         showBankAccountDisplayState()
-        if (bankList.isNotEmpty()) {
-            add_account_button.text = context?.getString(R.string.sbank_add_bank_account)
-        }
         account_list_rv.post {
             bankAccountListAdapter.updateItem(bankList as ArrayList<BankAccount>)
         }
     }
 
-    private fun populateTNCNoteInAdapter(templateData: TemplateData) {
+    private fun configAddAccountButtonText(bankList: List<BankAccount>) {
+        if (bankList.isNotEmpty()) {
+            add_account_button.text = context?.getString(R.string.sbank_add_bank_account)
+        } else {
+            add_account_button.text = context?.getString(R.string.sbank_no_bank_add_bank_account)
+        }
+    }
+
+    private fun addTNCNoteInAdapter() {
         account_list_rv.post {
-            bankAccountListAdapter.updateBankTNCNote(templateData)
+            bankAccountListAdapter.addBankTNCNote()
         }
     }
 
     private fun showLoadingState(show: Boolean) {
         if (show) {
             account_list_rv.gone()
-            view_btn_top_shadow.gone()
             add_account_button.gone()
 
             iv_noBankAccountAdded.gone()
@@ -289,7 +292,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showBankAccountDisplayState() {
         account_list_rv.visible()
-        view_btn_top_shadow.visible()
         add_account_button.visible()
 
         iv_noBankAccountAdded.gone()
@@ -301,7 +303,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showNoBankAccountState() {
         account_list_rv.gone()
-        view_btn_top_shadow.visible()
         add_account_button.visible()
 
         iv_noBankAccountAdded.visible()
@@ -323,6 +324,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(getMenuRes(), menu)
+        val menuItem = menu.findItem(R.id.menu_info)
+        menuItem?.actionView?.setOnClickListener {
+            onOptionsItemSelected(menuItem)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
