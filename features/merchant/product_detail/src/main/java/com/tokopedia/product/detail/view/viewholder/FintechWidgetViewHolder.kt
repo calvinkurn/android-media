@@ -17,23 +17,24 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
     companion object {
         val LAYOUT = R.layout.fintech_widget_layout
     }
-    private val fintechWidget:PdpFintechWidget = view.findViewById(R.id.pdpBasicFintechWidget)
-    override fun bind(element: FintechWidgetDataModel?) {
 
+    private val fintechWidget:PdpFintechWidget = view.findViewById(R.id.pdpBasicFintechWidget)
+
+    override fun bind(element: FintechWidgetDataModel?) {
         fintechWidget.updateBaseFragmentContext(
             listener.getParentViewModelStoreOwner(),
             listener.getParentLifeCyclerOwner()
         )
-        element?.idToPriceUrlMap?.let { fintechWidget.updateIdToPriceMap(it  ,
-            element.categoryId
-        ) }
+        element?.idToPriceUrlMap?.let {
+            fintechWidget.updateIdToPriceMap(it, element.categoryId)
+        }
 
         element?.productId?.let {
             fintechWidget.updateProductId(
                 it,
                 this,
                 element.isLoggedIn,
-                element.shopId,
+                element.shopId
             )
         }
     }
@@ -43,7 +44,6 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
         params.height = 0
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
-
     }
 
     override fun showWidget() {
@@ -53,13 +53,10 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
         itemView.layoutParams = params
     }
 
-
     override fun fintechChipClicked(
         fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
         redirectionUrl: String
     ) {
         listener.fintechRedirection(fintechRedirectionWidgetDataClass, redirectionUrl)
     }
-
-
 }
