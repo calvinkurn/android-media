@@ -1103,7 +1103,10 @@ object ShopPageHomeMapper {
             ?: shopProductResponse.stock
     }
 
-    fun mapToShopHomeProductBundleDetailUiModel(bundleDetailUiModel: BundleDetailUiModel): ShopHomeProductBundleDetailUiModel {
+    fun mapToShopHomeProductBundleDetailUiModel(
+        bundleDetailUiModel: BundleDetailUiModel,
+        bundleListUiModel: ShopHomeProductBundleListUiModel?
+    ): ShopHomeProductBundleDetailUiModel {
         return ShopHomeProductBundleDetailUiModel(
             bundleId = bundleDetailUiModel.bundleId,
             originalPrice = bundleDetailUiModel.originalPrice,
@@ -1116,7 +1119,8 @@ object ShopPageHomeMapper {
             savingAmountWording = bundleDetailUiModel.savingAmountWording,
             minOrder = bundleDetailUiModel.minOrder,
             minOrderWording = bundleDetailUiModel.minOrderWording,
-            isSelected = bundleDetailUiModel.isSelected
+            isSelected = bundleDetailUiModel.isSelected,
+            isFestivity = bundleListUiModel?.isFestivity.orFalse(),
         )
     }
 

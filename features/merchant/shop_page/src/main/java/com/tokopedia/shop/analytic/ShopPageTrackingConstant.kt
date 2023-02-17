@@ -327,6 +327,7 @@ object ShopPageTrackingConstant {
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
     const val SHOP_NOT_AFFILIATE = "not affiliate"
+    const val FESTIVITY = "festivity"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"

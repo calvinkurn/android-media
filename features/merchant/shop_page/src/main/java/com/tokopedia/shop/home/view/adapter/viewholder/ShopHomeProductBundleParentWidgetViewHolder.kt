@@ -95,7 +95,10 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         selectedMultipleBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel
     ) {
-        val selectedShopHomeBundleUiModel = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedMultipleBundle)
+        val selectedShopHomeBundleUiModel = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedMultipleBundle,
+            bundleListUiModel
+        )
         val selectedShopHomeProductUiModel = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
         when (bundle.bundleType) {
             BundleTypes.MULTIPLE_BUNDLE -> {
@@ -121,7 +124,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         selectedMultipleBundle: BundleDetailUiModel,
         bundlePosition: Int
     ) {
-        val selectedBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedMultipleBundle)
+        val selectedBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedMultipleBundle, bundleListUiModel)
         multipleProductBundleListener.impressionProductBundleMultiple(
             shopId = shopId,
             warehouseId = warehouseId,
@@ -137,7 +140,10 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         selectedBundle: BundleDetailUiModel
     ) {
         val selectedBundleProduct = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
-        val selectedMultipleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedBundle)
+        val selectedMultipleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedBundle,
+            bundleListUiModel
+        )
         multipleProductBundleListener.impressionProductItemBundleMultiple(
             selectedProduct = selectedBundleProduct,
             selectedMultipleBundle = selectedMultipleBundle,
@@ -155,7 +161,10 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         bundleName: String
     ) {
         val selectedProductVariant = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
-        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedBundle)
+        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedBundle,
+            bundleListUiModel
+        )
         singleProductBundleListener.onTrackSingleVariantChange(
             selectedProduct = selectedProductVariant,
             selectedSingleBundle = selectedSingleBundle,
@@ -168,7 +177,10 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         selectedProduct: BundleProductUiModel,
         bundleName: String
     ) {
-        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedBundle)
+        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedBundle,
+            bundleListUiModel
+        )
         val selectedBundleProduct = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
         singleProductBundleListener.impressionProductBundleSingle(
             shopId = shopId,

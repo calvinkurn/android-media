@@ -1784,7 +1784,8 @@ open class ShopPageHomeFragment :
             bundleName = bundleName,
             bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
             bundlePrice = selectedMultipleBundle.displayPriceRaw,
-            bundlePosition = bundlePosition
+            bundlePosition = bundlePosition,
+            isFestivity = selectedMultipleBundle.isFestivity
         )
     }
 
@@ -1818,7 +1819,8 @@ open class ShopPageHomeFragment :
             bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
             bundlePrice = selectedMultipleBundle.displayPriceRaw,
             bundlePosition = bundlePosition,
-            clickedProduct = selectedProduct
+            clickedProduct = selectedProduct,
+            isFestivity = selectedMultipleBundle.isFestivity
         )
     }
 
@@ -1830,7 +1832,8 @@ open class ShopPageHomeFragment :
             bundleName = bundleName,
             bundleId = selectedSingleBundle.bundleId,
             bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-            selectedPackage = selectedSingleBundle.minOrderWording
+            selectedPackage = selectedSingleBundle.minOrderWording,
+            isFestivity = selectedSingleBundle.isFestivity
         )
     }
 
@@ -1853,7 +1856,8 @@ open class ShopPageHomeFragment :
             bundleName = bundleName,
             bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
             bundlePrice = selectedSingleBundle.displayPriceRaw,
-            bundlePosition = bundlePosition
+            bundlePosition = bundlePosition,
+            isFestivity = selectedSingleBundle.isFestivity
         )
     }
 
@@ -1878,7 +1882,8 @@ open class ShopPageHomeFragment :
             bundlePrice = selectedSingleBundle.displayPriceRaw,
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct,
-            selectedPackage = selectedSingleBundle.minOrderWording
+            selectedPackage = selectedSingleBundle.minOrderWording,
+            isFestivity = selectedSingleBundle.isFestivity
         )
     }
 
@@ -2028,7 +2033,8 @@ open class ShopPageHomeFragment :
                 shopType = customDimensionShopPage.shopType.orEmpty(),
                 bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
                 shopId = shopId,
-                userId = userId
+                userId = userId,
+                isFestivity = shopHomeProductBundleDetailUiModel.isFestivity
             )
         } else if (bundleType == ShopPageConstant.BundleType.SINGLE_BUNDLE) {
             shopPageHomeTracking.clickAtcProductBundleSingle(
@@ -2042,7 +2048,8 @@ open class ShopPageHomeFragment :
                 bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
                 shopId = shopId,
                 userId = userId,
-                selectedPackage = shopHomeProductBundleDetailUiModel.minOrderWording
+                selectedPackage = shopHomeProductBundleDetailUiModel.minOrderWording,
+                isFestivity = shopHomeProductBundleDetailUiModel.isFestivity
             )
         }
     }

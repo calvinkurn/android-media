@@ -88,6 +88,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSI
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FESTIVITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.GENERAL
@@ -2146,10 +2147,16 @@ class ShopPageHomeTracking(
         shopType: String,
         bundlePriceCut: String,
         shopId: String,
-        userId: String
+        userId: String,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
         val itemBundle = arrayListOf<Bundle>()
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
         atcBundleModel.addToCartBundleDataModel.data.forEachIndexed { position, productDataModel ->
             itemBundle.add(
                 getItemsBundlingAtc(
@@ -2168,7 +2175,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT, BUNDLING_ADD_TO_CART)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut))
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
         bundle.putString(TRACKER_ID, TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -2190,11 +2197,17 @@ class ShopPageHomeTracking(
         bundlePriceCut: String,
         shopId: String,
         userId: String,
-        selectedPackage: String
+        selectedPackage: String,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
         val itemBundle = arrayListOf<Bundle>()
         var productId = ""
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage)
+        }
         atcBundleModel.addToCartBundleDataModel.data.forEachIndexed { position, productDataModel ->
             itemBundle.add(
                 getItemsBundlingAtc(
@@ -2215,7 +2228,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT, BUNDLING_ADD_TO_CART)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, SINGLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage))
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
         bundle.putString(TRACKER_ID, TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -2235,9 +2248,15 @@ class ShopPageHomeTracking(
         bundlePriceCut: String,
         bundlePrice: Long,
         bundlePosition: Int,
-        clickedProduct: ShopHomeBundleProductUiModel
+        clickedProduct: ShopHomeBundleProductUiModel,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
         val itemBundle = Bundle().apply {
             putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
@@ -2254,7 +2273,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut))
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
         bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_MULTIPLE_BUNDLE)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -2275,9 +2294,15 @@ class ShopPageHomeTracking(
         bundlePrice: Long,
         bundlePosition: Int,
         clickedProduct: ShopHomeBundleProductUiModel,
-        selectedPackage: String
+        selectedPackage: String,
+        isFestivity: Boolean
     ) {
         val bundle = Bundle()
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage)
+        }
         val itemBundle = Bundle().apply {
             putString(DIMENSION_117, VALUE_SINGLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
@@ -2294,7 +2319,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, SINGLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
-        bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage))
+        bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
         bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_SINGLE_BUNDLE)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -2314,13 +2339,19 @@ class ShopPageHomeTracking(
         bundleName: String,
         bundleId: String,
         bundlePriceCut: String,
-        selectedPackage: String
+        selectedPackage: String,
+        isFestivity: Boolean
     ) {
+        val eventLabel = if(isFestivity){
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage)
+        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to CLICK_PG,
             EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, selectedPackage),
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage),
+            EVENT_LABEL to eventLabel,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to productId,
@@ -2337,13 +2368,19 @@ class ShopPageHomeTracking(
         bundleName: String,
         bundlePriceCut: String,
         bundlePrice: Long,
-        bundlePosition: Int
+        bundlePosition: Int,
+        isFestivity: Boolean
     ) {
+        val eventLabel = if (isFestivity) {
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to PROMO_VIEW,
             EVENT_ACTION to joinDash(IMPRESSION, MULTIPLE_BUNDLE_WIDGET),
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut),
+            EVENT_LABEL to eventLabel,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             SHOP_ID to shopId,
@@ -2374,13 +2411,19 @@ class ShopPageHomeTracking(
         bundleName: String,
         bundlePriceCut: String,
         bundlePrice: Long,
-        bundlePosition: Int
+        bundlePosition: Int,
+        isFestivity: Boolean
     ) {
+        val eventLabel = if (isFestivity) {
+            joinDash(bundleId, bundleName, bundlePriceCut, FESTIVITY)
+        } else {
+            joinDash(bundleId, bundleName, bundlePriceCut)
+        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to PROMO_VIEW,
             EVENT_ACTION to joinDash(IMPRESSION, SINGLE_BUNDLE_WIDGET),
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut),
+            EVENT_LABEL to eventLabel,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to productId,

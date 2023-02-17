@@ -12,5 +12,6 @@ data class ShopHomeProductBundleDetailUiModel(
     var savingAmountWording: String = "",
     var minOrder: Int = 0,
     var minOrderWording: String = "",
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    var isFestivity: Boolean = false
 )
