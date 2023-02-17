@@ -201,6 +201,29 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
         renderSpendingEstimation(state.spendingEstimation)
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
+        renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
+        renderTicker(state.isDiscountPromoTypeEnabled, state.discountPromoTypeDisabledReason)
+    }
+
+    private fun renderPromoTypeChips(
+        voucherConfiguration: VoucherConfiguration,
+        isDiscountPromoTypeEnabled: Boolean
+    ) {
+        when (voucherConfiguration.promoType) {
+            PromoType.FREE_SHIPPING -> setFreeShippingSelected(isDiscountPromoTypeEnabled)
+            PromoType.CASHBACK -> setCashbackSelected(isDiscountPromoTypeEnabled)
+            PromoType.DISCOUNT -> {
+                if (isDiscountPromoTypeEnabled) {
+                    setDiscountSelected()
+                }
+            }
+        }
+
+        promoTypeSectionBinding?.chipDiscount?.showNewNotification = isDiscountPromoTypeEnabled
+
+        if (!isDiscountPromoTypeEnabled) {
+            promoTypeSectionBinding?.chipDiscount?.disable()
+        }
     }
 
     private fun renderFreeShippingValidation(state: VoucherCreationStepThreeUiState) {
@@ -329,7 +352,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             is VoucherCreationStepThreeAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
             is VoucherCreationStepThreeAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
             is VoucherCreationStepThreeAction.ShowCoachmark -> showCoachmark()
-            is VoucherCreationStepThreeAction.ShowError -> TODO()
+            is VoucherCreationStepThreeAction.ShowError -> {}
         }
     }
 
@@ -506,33 +529,16 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun setupPromoTypeSelection() {
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        val selectedPromoType = currentVoucherConfiguration.promoType
-        setPromoType(voucherConfiguration.promoType)
         promoTypeSectionBinding?.run {
-            when (selectedPromoType) {
-                PromoType.FREE_SHIPPING -> {
-                    setFreeShippingSelected()
-                }
-                PromoType.CASHBACK -> {
-                    setCashbackSelected()
-                }
-                PromoType.DISCOUNT -> {
-                    setDiscountSelected()
-                }
-            }
             if (pageMode == PageMode.CREATE) {
                 chipFreeShipping.chip_container.setOnClickListener {
                     setPromoType(PromoType.FREE_SHIPPING)
-                    setFreeShippingSelected()
                 }
                 chipCashback.chip_container.setOnClickListener {
                     setPromoType(PromoType.CASHBACK)
-                    setCashbackSelected()
                 }
                 chipDiscount.chip_container.setOnClickListener {
                     setPromoType(PromoType.DISCOUNT)
-                    setDiscountSelected()
                 }
             }
         }
@@ -544,11 +550,14 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     // Free shipping input region
-    private fun setFreeShippingSelected() {
+    private fun setFreeShippingSelected(isDiscountPromoTypeEnabled: Boolean) {
         promoTypeSectionBinding?.run {
             chipFreeShipping.setSelected()
             chipCashback.setNormal()
-            chipDiscount.setNormal()
+        }
+
+        if (isDiscountPromoTypeEnabled) {
+            promoTypeSectionBinding?.chipDiscount?.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.visible()
@@ -688,12 +697,15 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     // Cashback input region
-    private fun setCashbackSelected() {
+    private fun setCashbackSelected(isDiscountPromoTypeEnabled: Boolean) {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
             chipFreeShipping.setNormal()
             chipCashback.setSelected()
-            chipDiscount.setNormal()
+        }
+
+        if (isDiscountPromoTypeEnabled) {
+            promoTypeSectionBinding?.chipDiscount?.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
@@ -945,10 +957,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     // Discount input region
     private fun setDiscountSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+
         promoTypeSectionBinding?.run {
+            chipDiscount.setSelected()
             chipFreeShipping.setNormal()
             chipCashback.setNormal()
-            chipDiscount.setSelected()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
@@ -1388,4 +1401,21 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             colorTintGreen?.let { color -> chip_image_icon.setColorFilter(color) }
         }
     }
+
+    private fun ChipsUnify.disable() {
+        val color = ContextCompat.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+        chipType = ChipsUnify.TYPE_DISABLE
+        chip_image_icon.setColorFilter(color)
+    }
+
+    private fun renderTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
+        if (!isDiscountPromoTypeEnabled && remoteTickerMessage.isNotEmpty()) {
+            binding?.ticker?.visible()
+            binding?.ticker?.setTextDescription(remoteTickerMessage)
+        }
+    }
+
 }

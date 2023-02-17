@@ -27,7 +27,9 @@ data class GetInitiateVoucherPageResponse(
             @SerializedName("token")
             val token: String = "",
             @SerializedName("user_id")
-            val userId: String = ""
+            val userId: String = "",
+            @SerializedName("discount_active")
+            val discountActive: Boolean = false
         )
 
         data class Header(

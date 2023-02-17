@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.VoucherCreationMetadataWithRemoteTickerMessage
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
 import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
@@ -19,6 +20,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
@@ -29,6 +31,8 @@ import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.util.constant.NumberConstant
+import com.tokopedia.mvc.util.constant.TickerConstant
+import com.tokopedia.mvc.util.extension.firstTickerMessage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +52,8 @@ class MvcListViewModel @Inject constructor(
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
     private val shopBasicDataUseCase: ShopBasicDataUseCase,
-    private val getProductsUseCase: ProductListUseCase
+    private val getProductsUseCase: ProductListUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _voucherList = MutableLiveData<List<Voucher>>()
@@ -65,6 +70,9 @@ class MvcListViewModel @Inject constructor(
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    private val _voucherCreationMetadata = MutableLiveData<Result<VoucherCreationMetadataWithRemoteTickerMessage>>()
+    val voucherCreationMetadata: LiveData<Result<VoucherCreationMetadataWithRemoteTickerMessage>> get() = _voucherCreationMetadata
 
     private val _generateShareComponentMetaData =
         MutableLiveData<Result<ShareComponentMetaData>>()
@@ -268,6 +276,30 @@ class MvcListViewModel @Inject constructor(
             },
             onError = { error ->
                 _generateShareComponentMetaData.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun getVoucherCreationMetadata() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val voucherCreationMetadataDeferred = async { getInitiateVoucherPageUseCase.execute() }
+
+
+                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_LIST_PAGE)
+                val tickerWordingDeferred = async { getTargetedTickerUseCase.execute(tickerWordingParam) }
+
+                val voucherCreationMetadata = voucherCreationMetadataDeferred.await()
+
+                val tickerWordings = tickerWordingDeferred.await()
+                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
+
+                val data = VoucherCreationMetadataWithRemoteTickerMessage(voucherCreationMetadata, tickerWording)
+                _voucherCreationMetadata.postValue(Success(data))
+            },
+            onError = { error ->
+                _voucherCreationMetadata.postValue(Fail(error))
             }
         )
     }

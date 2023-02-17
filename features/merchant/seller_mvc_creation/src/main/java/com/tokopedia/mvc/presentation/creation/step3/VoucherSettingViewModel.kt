@@ -7,20 +7,43 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.enums.*
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepThreeFieldValidation
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
 import com.tokopedia.mvc.util.constant.CommonConstant
-import com.tokopedia.mvc.util.extension.*
+import com.tokopedia.mvc.util.constant.TickerConstant
+import com.tokopedia.mvc.util.extension.firstTickerMessage
+import com.tokopedia.mvc.util.extension.isCashback
+import com.tokopedia.mvc.util.extension.isDiscount
+import com.tokopedia.mvc.util.extension.isFreeShipping
+import com.tokopedia.mvc.util.extension.isPrivate
+import com.tokopedia.mvc.util.extension.isProductVoucher
+import com.tokopedia.mvc.util.extension.isPublic
+import com.tokopedia.mvc.util.extension.isShopVoucher
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class VoucherSettingViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
+    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
@@ -57,16 +80,51 @@ class VoucherSettingViewModel @Inject constructor(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                pageMode = pageMode,
-                voucherConfiguration = voucherConfiguration.copy(
-                    isFinishFilledStepTwo = true
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val action = if (pageMode == PageMode.CREATE) VoucherAction.CREATE else VoucherAction.UPDATE
+                val voucherCreationMetadataParam = GetInitiateVoucherPageUseCase.Param(
+                    action = action,
+                    promoType = voucherConfiguration.promoType,
+                    isVoucherProduct = voucherConfiguration.isVoucherProduct
                 )
-            )
-        }
-        handleVoucherInputValidation()
+
+                val voucherCreationMetadata = getInitiateVoucherPageUseCase.execute(voucherCreationMetadataParam)
+                val isDiscountPromoTypeEnabled = voucherCreationMetadata.discountActive
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        pageMode = pageMode,
+                        voucherConfiguration = voucherConfiguration.copy(
+                            isFinishFilledStepTwo = true
+                        ),
+                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled
+                    )
+                }
+
+                getTickerWording()
+                handleVoucherInputValidation()
+            },
+            onError = {}
+        )
+    }
+
+    private fun getTickerWording() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
+                val tickerWordings = getTargetedTickerUseCase.execute(tickerWordingParam)
+                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
+
+                _uiState.update {
+                    it.copy(discountPromoTypeDisabledReason = tickerWording)
+                }
+            },
+            onError = {}
+        )
     }
 
     fun getCurrentVoucherConfiguration(): VoucherConfiguration {
@@ -82,19 +140,24 @@ class VoucherSettingViewModel @Inject constructor(
     }
 
     private fun handlePromoTypeSelection(promoType: PromoType) {
-        val voucherServiceType =
-            getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
-        val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
-        val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, promoType)
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                voucherConfiguration = it.voucherConfiguration.copy(
-                    promoType = promoType
-                ),
-                spendingEstimation = 0,
-                availableTargetBuyer = availableTargetBuyer
-            )
+        val isDiscountPromoTypeEnabled = currentState.isDiscountPromoTypeEnabled
+        val isAllowedToChangePromoType = isAllowedToChangePromoType(promoType, isDiscountPromoTypeEnabled)
+
+        if (isAllowedToChangePromoType) {
+            val voucherServiceType =
+                getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
+            val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
+            val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, promoType)
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    voucherConfiguration = it.voucherConfiguration.copy(
+                        promoType = promoType
+                    ),
+                    spendingEstimation = 0,
+                    availableTargetBuyer = availableTargetBuyer
+                )
+            }
         }
         handleVoucherInputValidation()
     }
@@ -372,5 +435,28 @@ class VoucherSettingViewModel @Inject constructor(
             )
             else -> emptyList()
         }
+    }
+
+    /**
+     * If newly selected promo type is discount while it was toggled off by Backend,
+     * user cannot select discount promo type.
+     */
+    private fun isAllowedToChangePromoType(
+        newPromoType: PromoType,
+        isDiscountPromoTypeEnabled: Boolean
+    ): Boolean {
+        if (newPromoType == PromoType.FREE_SHIPPING) {
+            return true
+        }
+
+        if (newPromoType == PromoType.CASHBACK) {
+            return true
+        }
+
+        if (newPromoType == PromoType.DISCOUNT && !isDiscountPromoTypeEnabled) {
+            return false
+        }
+
+        return true
     }
 }

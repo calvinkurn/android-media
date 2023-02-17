@@ -29,6 +29,10 @@ class VoucherIntroCarouselViewHolder(itemView: View?) :
 
             setUpCarousel(this, ZEROTH_INDEX, element)
 
+            element?.tabsList?.forEach {
+                tabLayout.addTab(tabLayout.newTab().setText(it.tabHeader))
+            }
+
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val selectedTab = tabLayout.selectedTabPosition

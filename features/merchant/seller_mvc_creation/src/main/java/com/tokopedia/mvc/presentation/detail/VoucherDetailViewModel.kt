@@ -10,10 +10,15 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
-import com.tokopedia.mvc.domain.usecase.*
+import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
+import com.tokopedia.mvc.domain.usecase.ProductListUseCase
+import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -37,8 +42,8 @@ class VoucherDetailViewModel @Inject constructor(
         private const val THREE_TOP_SELLING_PRODUCT = 3
     }
 
-    private var _voucherDetail = MutableLiveData<Result<VoucherDetailData>>()
-    val voucherDetail: LiveData<Result<VoucherDetailData>>
+    private var _voucherDetail = MutableLiveData<Result<VoucherDetailWithVoucherCreationMetadata>>()
+    val voucherDetail: LiveData<Result<VoucherDetailWithVoucherCreationMetadata>>
         get() = _voucherDetail
 
     private val _generateVoucherImageMetadata =
@@ -62,9 +67,23 @@ class VoucherDetailViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val param = MerchantPromotionGetMVDataByIDUseCase.Param(voucherId)
-                val response = merchantPromotionGetMVDataByIDUseCase.execute(param)
-                _voucherDetail.postValue(Success(response))
+
+                val voucherCreationMetadataDeferred = async { getInitiateVoucherPageUseCase.execute() }
+
+                val voucherDetailParam = MerchantPromotionGetMVDataByIDUseCase.Param(voucherId)
+                val voucherDetailDeferred = async { merchantPromotionGetMVDataByIDUseCase.execute(voucherDetailParam) }
+
+                val voucherCreationMetadata = voucherCreationMetadataDeferred.await()
+                val voucherDetail = voucherDetailDeferred.await()
+
+
+                val data = VoucherDetailWithVoucherCreationMetadata(
+                    voucherDetail = voucherDetail,
+                    creationMetadata = voucherCreationMetadata,
+                    tickerWording = ""
+                )
+
+                _voucherDetail.postValue(Success(data))
             },
             onError = { error ->
                 _voucherDetail.postValue(Fail(error))
@@ -167,9 +186,9 @@ class VoucherDetailViewModel @Inject constructor(
         _redirectToProductListPage.value = voucherDetail
     }
 
-    private fun Result<VoucherDetailData>.unwrapOrNull(): VoucherDetailData? {
+    private fun Result<VoucherDetailWithVoucherCreationMetadata>.unwrapOrNull(): VoucherDetailData? {
         return if (this is Success) {
-            this.data
+            this.data.voucherDetail
         } else {
             null
         }

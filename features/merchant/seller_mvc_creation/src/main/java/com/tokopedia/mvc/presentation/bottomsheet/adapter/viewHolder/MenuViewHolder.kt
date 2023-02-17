@@ -18,12 +18,18 @@ class MenuViewHolder(itemView: View?, private val callback: (MoreMenuUiModel) ->
     }
 
     private var binding: SmvcItemThreeDotsMenuBinding? by viewBinding()
-    override fun bind(element: MoreMenuUiModel) {
+    override fun bind(menu: MoreMenuUiModel) {
         binding?.apply {
-            bottomSheetText.text = element.title?.getString(itemView.context).toBlankOrString()
-            icon.setImage(element.icon)
+            bottomSheetText.text = menu.title?.getString(itemView.context).toBlankOrString()
+            bottomSheetText.isEnabled = menu.enabled
+
+            icon.setImage(menu.icon)
+            icon.isEnabled = menu.enabled
+
             root.setOnClickListener {
-                callback(element)
+                if (menu.enabled) {
+                    callback(menu)
+                }
             }
         }
     }

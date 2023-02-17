@@ -13,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -52,6 +53,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
@@ -239,7 +241,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupView(data: VoucherDetailData) {
+    private fun setupView(data: VoucherDetailWithVoucherCreationMetadata) {
         binding?.run {
             layoutHeader.setOnInflateListener { _, view ->
                 headerBinding = SmvcVoucherDetailHeaderSectionBinding.bind(view)
@@ -257,13 +259,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 voucherProductBinding = SmvcVoucherDetailProductSectionBinding.bind(view)
             }
         }
-        setupHeaderSection(data)
-        setupVoucherTypeSection(data)
-        setupVoucherInfoSection(data)
-        setupVoucherSettingSection(data)
-        setupProductListSection(data)
-        setupSpendingEstimationSection(data)
-        setupButtonSection(data)
+        setupHeaderSection(data.voucherDetail)
+        setupVoucherTypeSection(data.voucherDetail)
+        setupVoucherInfoSection(data.voucherDetail)
+        setupVoucherSettingSection(data.voucherDetail)
+        setupProductListSection(data.voucherDetail)
+        setupSpendingEstimationSection(data.voucherDetail)
+        setupButtonSection(data.voucherDetail, data.creationMetadata.discountActive)
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
@@ -636,7 +638,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupButtonSection(data: VoucherDetailData) {
+    private fun setupButtonSection(data: VoucherDetailData, isDiscountPromoTypeEnabled: Boolean) {
         binding?.run {
             when (data.voucherStatus) {
                 VoucherStatus.NOT_STARTED -> {
@@ -670,6 +672,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         R.layout.smvc_voucher_detail_button_section_state_3
                     if (layoutButton.parent != null) {
                         layoutButton.inflate()
+                    }
+
+                    if (!isDiscountPromoTypeEnabled) {
+                        stateButtonDuplicateBinding?.btnDuplicate?.disable()
                     }
                 }
             }

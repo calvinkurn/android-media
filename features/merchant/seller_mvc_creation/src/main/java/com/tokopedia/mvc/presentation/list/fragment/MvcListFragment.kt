@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -197,6 +198,7 @@ class MvcListFragment :
         setupStopConfirmationDialog()
         setupObservables()
         setupObserveDeleteUiEffect()
+        viewModel.getVoucherCreationMetadata()
     }
 
     override fun onResume() {
@@ -269,7 +271,7 @@ class MvcListFragment :
                 deleteVoucher(voucher)
                 voucherListActionTracker.sendClickHentikanEvent(voucher)
             }
-            is MoreMenuUiModel.Copy -> {
+            is MoreMenuUiModel.DuplicateVoucher -> {
                 redirectToDuplicatePage(voucher.id)
                 voucherListActionTracker.sendClickDuplikatEvent(voucher)
             }
@@ -582,6 +584,8 @@ class MvcListFragment :
     }
 
     private fun setupObservables() {
+        observeVoucherCreationMetadata()
+
         viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
             val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
             adapter?.addDataList(vouchers)
@@ -615,6 +619,14 @@ class MvcListFragment :
                 }
                 is Fail -> {
                 }
+            }
+        }
+    }
+
+    private fun observeVoucherCreationMetadata() {
+        viewModel.voucherCreationMetadata.observe(viewLifecycleOwner) { result ->
+            if (result is Success) {
+                displayTicker(result.data.creationMetadata.discountActive, result.data.tickerWording)
             }
         }
     }
@@ -1045,4 +1057,12 @@ class MvcListFragment :
         val intent = SummaryActivity.buildDuplicateModeIntent(context, voucherId)
         startActivity(intent)
     }
+
+    private fun displayTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
+        if (!isDiscountPromoTypeEnabled && remoteTickerMessage.isNotEmpty()) {
+            binding?.ticker?.visible()
+            binding?.ticker?.setTextDescription(remoteTickerMessage)
+        }
+    }
+
 }

@@ -16,7 +16,8 @@ class GetInitiateVoucherPageMapper @Inject constructor() {
                 prefixVoucherCode,
                 shopId.toLongOrZero(),
                 token,
-                userId.toLongOrZero()
+                userId.toLongOrZero(),
+                discountActive
             )
         }
     }

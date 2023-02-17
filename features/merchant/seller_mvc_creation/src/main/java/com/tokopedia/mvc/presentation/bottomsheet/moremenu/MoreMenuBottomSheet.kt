@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.mvc.databinding.SmvcBottomsheetThreeDotsMenuBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -16,6 +18,8 @@ import com.tokopedia.mvc.presentation.bottomsheet.adapter.MoreMenuAdapter
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.MoreMenuViewModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -23,7 +27,6 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private var context: FragmentActivity? = null
     private var voucher: Voucher? = null
-    private var menuItem: List<MoreMenuUiModel> = emptyList()
     private var sheetTitle: String = ""
     private var binding by autoClearedNullable<SmvcBottomsheetThreeDotsMenuBinding>()
     private var adapter: MoreMenuAdapter? = null
@@ -40,6 +43,15 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         ViewModelProvider(this, viewModelFactory).get(MoreMenuViewModel::class.java)
     }
 
+    private fun initInjector() {
+        DaggerMerchantVoucherCreationComponent.builder()
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
+            .build()
+            .inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,29 +61,48 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         initInjector()
         setChild(binding?.root)
         setTitle(sheetTitle)
-        binding?.recyclerView?.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        this.menuItem = viewModel.getMenuList(
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeVoucherCreationMetadata()
+        viewModel.getVoucherCreationMetadata()
+    }
+
+    private fun observeVoucherCreationMetadata() {
+        viewModel.voucherCreationMetadata.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    binding?.loader?.gone()
+                    setupRecyclerView(result.data.discountActive)
+                }
+                is Fail -> {
+                    binding?.loader?.gone()
+                    binding?.root?.showToasterError(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView(isDiscountPromoTypeEnabled: Boolean) {
+        binding?.recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        val menuItem = viewModel.getMenuList(
             voucher,
             voucherStatus,
-            pageSource
+            pageSource,
+            isDiscountPromoTypeEnabled
         )
 
         adapter?.clearAllElements()
         adapter?.addElement(menuItem)
 
         binding?.recyclerView?.adapter = adapter
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initInjector() {
-        DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent(
-                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
-            )
-            .build()
-            .inject(this)
-    }
+
 
     fun setOnMenuClickListener(callback: (MoreMenuUiModel) -> Unit) {
         this.adapter = MoreMenuAdapter(callback)
