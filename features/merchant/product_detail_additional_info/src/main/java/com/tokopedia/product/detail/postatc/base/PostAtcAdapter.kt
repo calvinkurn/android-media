@@ -28,7 +28,7 @@ class PostAtcAdapter(
         val findIndex = items.indexOfFirst { it.id == uiModelId }
         if (findIndex > -1) {
             removeItemAt(findIndex)
-            notifyItemRemoved(findIndex)
+            notifyDataSetChanged()
         }
     }
 
@@ -43,7 +43,7 @@ class PostAtcAdapter(
             val item = items[findIndex] as? T
             if (item != null) {
                 updater.invoke(item)
-                notifyItemChanged(findIndex)
+                notifyDataSetChanged()
             }
         }
     }
@@ -58,4 +58,3 @@ class PostAtcAdapter(
         setItems(items)
     }
 }
-
