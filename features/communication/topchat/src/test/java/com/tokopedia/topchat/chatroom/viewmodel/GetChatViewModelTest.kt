@@ -5,6 +5,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
@@ -317,5 +318,18 @@ class GetChatViewModelTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(false, result)
+    }
+
+    @Test
+    fun should_give_correct_value_when_set_user_location() {
+        // Given
+        val localCacheModel = LocalCacheModel(address_id = "123")
+        viewModel.initUserLocation(localCacheModel)
+
+        // When
+        val result = viewModel.userLocationInfo.value
+
+        // Then
+        assertEquals(localCacheModel.address_id, result?.address_id)
     }
 }

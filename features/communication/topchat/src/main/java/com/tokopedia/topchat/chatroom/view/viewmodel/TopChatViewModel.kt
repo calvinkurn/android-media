@@ -209,9 +209,8 @@ open class TopChatViewModel @Inject constructor(
     }
 
     fun initUserLocation(userLocation: LocalCacheModel?) {
-        userLocation ?: return
         _userLocationInfo.value = userLocation
-        this.attachProductWarehouseId = userLocation.warehouse_id
+        this.attachProductWarehouseId = userLocation?.warehouse_id ?: ""
     }
 
     fun getMessageId(
@@ -688,7 +687,7 @@ open class TopChatViewModel @Inject constructor(
 
     fun loadProductPreview(productIds: List<String>) {
         if (productIds.isEmpty()) return
-        if (_roomMetaData.value?.hasMsgId() == false) {
+        if (_roomMetaData.value?.hasMsgId() == false || _roomMetaData.value == null) {
             pendingLoadProductPreview.clear()
             pendingLoadProductPreview.addAll(productIds)
             return
