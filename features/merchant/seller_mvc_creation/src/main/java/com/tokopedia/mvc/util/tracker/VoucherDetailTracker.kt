@@ -136,6 +136,20 @@ class VoucherDetailTracker @Inject constructor(private val userSession: UserSess
             .send()
     }
 
+    fun sendClickCloseMenuEvent(data: VoucherDetailData) {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT)
+            .setEventAction("click cancel")
+            .setEventCategory(TrackerConstant.ThreeDotsMenu.event)
+            .setEventLabel(data.toEventLabel())
+            .setCustomProperty(TrackerConstant.TRACKER_ID, "40640")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE)
+            .setShopId(userSession.shopId)
+            .build()
+            .send()
+    }
+
     fun sendClickHentikanEvent(data: VoucherDetailData) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
