@@ -658,16 +658,11 @@ class AddProductViewModel @Inject constructor(
 
             val newlySelectedProducts = currentState.products
                 .filter { it.isSelected }
-                .filter { it.id !in previouslySelectedProductIds }
+                .filter { it.id !in previouslySelectedProductIds } //Make sure newly selected product id is not in a previously selected product ids
 
             val selectedProducts = previouslySelectedProducts + newlySelectedProducts
 
-            val topSellingProductImageUrls = selectedProducts
-                .sortedByDescending { it.txStats.sold }
-                .map { it.picture }
-
-
-            _uiEffect.tryEmit(AddProductEffect.AddNewProducts(selectedProducts, topSellingProductImageUrls))
+            _uiEffect.tryEmit(AddProductEffect.AddNewProducts(selectedProducts))
         }
     }
 
