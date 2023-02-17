@@ -262,7 +262,6 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         private const val LABEL_FORMAT_REASON = "%s - reason : %s"
         private const val ARG_WITHDRAWAL_REQUEST = "arg_withdrawal_request"
         private const val ARG_SUBMIT_WITHDRAWAL_RESPONSE = "arg_submit_withdrawal_response"
-        private const val HELP_URL = "https://www.tokopedia.com/help"
 
         fun getInstance(withdrawalRequest: WithdrawalRequest,
                         submitWithdrawalResponse: SubmitWithdrawalResponse): Fragment {
