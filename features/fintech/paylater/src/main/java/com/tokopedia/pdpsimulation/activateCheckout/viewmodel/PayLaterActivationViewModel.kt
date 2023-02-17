@@ -122,14 +122,15 @@ class PayLaterActivationViewModel @Inject constructor(
     }
 
 
-    fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayCode: String) {
+    fun getOptimizedCheckoutDetail(productId: String, price: Double, gatewayCode: String, shopId: String) {
         paylaterActivationUseCase.cancelJobs()
         paylaterActivationUseCase.getPayLaterActivationDetail(
             ::onSuccessActivationData,
             ::onFailActivationData,
             price,
             productId,
-            gatewayCode
+            gatewayCode,
+            shopId,
         )
     }
 

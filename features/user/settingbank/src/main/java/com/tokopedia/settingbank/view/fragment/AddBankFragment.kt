@@ -11,6 +11,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,6 +20,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -27,7 +30,6 @@ import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.domain.model.*
 import com.tokopedia.settingbank.util.AddBankAccountException
-import com.tokopedia.settingbank.util.getBankTypeFromAbbreviation
 import com.tokopedia.settingbank.util.textChangedListener
 import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.viewModel.AddAccountViewModel
@@ -36,10 +38,13 @@ import com.tokopedia.settingbank.view.widgets.BankPrivacyPolicyBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_bank.*
+import kotlinx.android.synthetic.main.fragment_add_bank.add_account_button
+import kotlinx.android.synthetic.main.fragment_add_bank.progress_bar
 import javax.inject.Inject
 
 
@@ -126,15 +131,31 @@ class AddBankFragment : BaseDaggerFragment() {
         setTncText()
         startObservingViewModels()
         setBankName()
-        btnPeriksa.setOnClickListener { checkAccountNumber() }
+        configAccountNumberEditText()
+        textPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
         if (!::bank.isInitialized) {
             openBankListForSelection()
         }
     }
 
+    private fun configAccountNumberEditText() {
+        textPeriksa?.post {
+            textPeriksa.translationY =
+                (textAreaBankAccountNumber.editText.measuredHeight.toFloat()
+                    - textPeriksa.measuredHeight.toFloat()) / 2 + TEXT_PERIKSA_MARGIN_OFFSET_DP.toPx()
+
+            textAreaBankAccountNumber.editText.setPadding(
+                textAreaBankAccountNumber.editText.paddingLeft,
+                textAreaBankAccountNumber.editText.paddingTop,
+                textPeriksa.measuredWidth + + BANK_ACC_NUMBER_PADDING_RIGHT_DP.toPx(),
+                textAreaBankAccountNumber.editText.paddingBottom,
+            )
+        }
+    }
+
     private fun initializeTextAreaField() {
-        textAreaBankName.textAreaInput.apply {
+        textAreaBankName.editText.apply {
             isClickable = false
             isFocusable = false
             isSingleLine = true
@@ -146,7 +167,17 @@ class AddBankFragment : BaseDaggerFragment() {
             val paddingEndDimen = getDimens(com.tokopedia.unifycomponents.R.dimen.unify_space_32)
             setPadding(paddingLeft, paddingTop, paddingEndDimen, paddingBottom)
         }
-        textAreaBankAccountNumber.textAreaInput.apply {
+        textAreaBankName.apply {
+            icon1.visible()
+            icon1.setImageDrawable(
+                getIconUnifyDrawable(
+                    context,
+                    IconUnify.CHEVRON_DOWN,
+                    ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN900),
+                )
+            )
+        }
+        textAreaBankAccountNumber.editText.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
                 getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat()
@@ -155,15 +186,14 @@ class AddBankFragment : BaseDaggerFragment() {
             keyListener = DigitsKeyListener.getInstance(false, false)
             textChangedListener(onTextChangeExt = ::onTextChanged)
         }
-        textAreaBankAccountHolderName.textAreaInput.apply {
+        textAreaBankAccountHolderName.editText.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
                 getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat()
             )
             inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
-            textAreaBankAccountHolderName.textAreaInput.filters = getAlphabetOnlyInputFilter()
+            textAreaBankAccountHolderName.editText.filters = getAlphabetOnlyInputFilter()
         }
-        setAccountNumberInputFilter()
 
     }
 
@@ -172,12 +202,12 @@ class AddBankFragment : BaseDaggerFragment() {
             unregisterObserver()
             builder.getAccountName()?.let {
                 if (it.isNotBlank())
-                    textAreaBankAccountNumber.textAreaInput.setText(it)
+                    textAreaBankAccountNumber.editText.setText(it)
             }
             builder.getAccountName()?.let {
                 if (it.isNotBlank()) {
                     if (builder.isManual()) {
-                        textAreaBankAccountHolderName.textAreaInput.setText(it)
+                        textAreaBankAccountHolderName.editText.setText(it)
                         textAreaBankAccountHolderName.visible()
                         groupAccountNameAuto.gone()
                     } else {
@@ -220,7 +250,8 @@ class AddBankFragment : BaseDaggerFragment() {
                     }
                     is ValidateAccountNumberSuccess -> {
                         setAccountNumberError(null)
-                        onValidateAccountNumber(it)
+                        onValidateAccountNumber()
+                        setPeriksaButtonState(true)
                     }
                 }
             })
@@ -249,6 +280,7 @@ class AddBankFragment : BaseDaggerFragment() {
         })
 
         addAccountViewModel.checkAccountDataLiveData.observe(viewLifecycleOwner, Observer {
+            progress_bar.gone()
             when (it) {
                 is Success ->
                     handleCheckAccountState(it.data)
@@ -259,18 +291,21 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun handleCheckAccountState(data: CheckAccountNameState) {
         setPeriksaButtonState(false)
-        this.checkAccountNameState = data
         when (data) {
             is AccountNameFinalValidationSuccess -> {
                 onAccountNumberAndNameValidationSuccess(data)
+                if (data.checkAccountAction != ActionValidateAccountName)
+                    this.checkAccountNameState = data
             }
 
             is EditableAccountName -> {
                 onEditableAccountFound(data)
+                this.checkAccountNameState = data
             }
 
             is AccountNameCheckError -> {
                 onAccountNumberCheckError(data)
+                this.checkAccountNameState = data
             }
         }
     }
@@ -294,32 +329,35 @@ class AddBankFragment : BaseDaggerFragment() {
         add_account_button.isEnabled = true
         groupAccountNameAuto.gone()
         textAreaBankAccountHolderName.visible()
-        textAreaBankAccountHolderName.textAreaInput.isEnabled = true
-        if (data.accountName.isNotEmpty())
-            textAreaBankAccountHolderName.textAreaInput.setText(data.accountName)
+        textAreaBankAccountHolderName.requestFocus()
         showManualAccountNameError(data.message)
     }
 
     private fun onAccountNumberCheckError(data: AccountNameCheckError) {
-        add_account_button.isEnabled = false
         if (data.accountName.isEmpty()) {
+            add_account_button.isEnabled = false
             setAccountNumberError(data.message)
         } else {
+            add_account_button.isEnabled = true
             groupAccountNameAuto.gone()
             textAreaBankAccountHolderName.visible()
-            textAreaBankAccountHolderName.textAreaInput.setText(data.accountName)
-            textAreaBankAccountHolderName.textAreaInput.isEnabled = false
-            showManualAccountNameError(data.message)
+            textAreaBankAccountHolderName.requestFocus()
+            textAreaBankAccountHolderName.editText.setText("")
+            showManualAccountNameError(
+                data.message,
+                if (data.successCode == SUCCESS_CODE_428) false else null,
+            )
         }
     }
 
     private fun checkAccountNumber() {
         if (::bank.isInitialized) {
-            if (textAreaBankAccountNumber.textAreaInput.text != null) {
+            if (textAreaBankAccountNumber.editText.text != null) {
+                progress_bar.visible()
                 bankSettingAnalytics.eventOnPericsaButtonClick()
                 addAccountViewModel.checkAccountNumber(
                     bank.bankID,
-                    textAreaBankAccountNumber.textAreaInput.text.toString()
+                    textAreaBankAccountNumber.editText.text.toString()
                 )
             }
         } else {
@@ -333,26 +371,29 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showManualAccountNameError(error: String?) {
-        textAreaBankAccountHolderName.textAreaWrapper.error = error
+    private fun showManualAccountNameError(errorStr: String?, isInputError: Boolean? = null) {
+        textAreaBankAccountHolderName.setMessage(
+            if (errorStr != null && errorStr.isNotEmpty())
+                errorStr
+            else
+                getString(R.string.account_name_info)
+        )
+        textAreaBankAccountHolderName.isInputError = isInputError ?: errorStr?.isNotEmpty() ?: false
     }
 
-    private fun onValidateAccountNumber(onTextChanged: ValidateAccountNumberSuccess) {
-        setPeriksaButtonState(onTextChanged.isCheckEnable)
-        add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
-        builder.setAccountNumber(textAreaBankAccountNumber.textAreaInput.text.toString())
-        setPeriksaButtonState(onTextChanged.isCheckEnable)
-        add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
+    private fun onValidateAccountNumber() {
+        builder.setAccountNumber(textAreaBankAccountNumber.editText.text.toString())
         hideAccountHolderNameUI()
     }
 
     private fun setAccountNumberError(errorStr: String?) {
-        textAreaBankAccountNumber.textAreaWrapper.error = errorStr
+        textAreaBankAccountNumber.setMessage(errorStr ?: "")
+        textAreaBankAccountNumber.isInputError = errorStr?.isNotEmpty() ?: false
     }
 
     private fun hideAccountHolderNameUI() {
         tvAccountHolderName.text = ""
-        textAreaBankAccountHolderName.textAreaInput.setText("")
+        textAreaBankAccountHolderName.editText.setText("")
         showManualAccountNameError(null)
         textAreaBankAccountHolderName.gone()
         groupAccountNameAuto.gone()
@@ -362,25 +403,14 @@ class AddBankFragment : BaseDaggerFragment() {
         bank = selectedBank
         this.checkAccountNameState = null
         setBankName()
-        textAreaBankAccountNumber.textAreaInput.setText("")
-        setAccountNumberInputFilter()
+        textAreaBankAccountNumber.editText.setText("")
         hideAccountHolderNameUI()
-    }
-
-    private fun setAccountNumberInputFilter() {
-        if (::bank.isInitialized) {
-            val abbreviation = bank.abbreviation ?: ""
-            val bankAccountNumberCount = getBankTypeFromAbbreviation(abbreviation)
-            val filterArray = arrayOfNulls<InputFilter>(1)
-            filterArray[0] = InputFilter.LengthFilter(bankAccountNumberCount.count)
-            textAreaBankAccountNumber.textAreaInput.filters = filterArray
-        }
     }
 
     private fun setBankName() {
         if (::bank.isInitialized) {
             builder.bank(bank.bankID, bank.bankName)
-            textAreaBankName.textAreaInput.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
+            textAreaBankName.editText.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
         }
     }
 
@@ -389,39 +419,60 @@ class AddBankFragment : BaseDaggerFragment() {
             openBankListForSelection()
         } else
             try {
+                val accountHolderCustomName =
+                    textAreaBankAccountHolderName.editText.text.toString()
                 if (checkAccountNameState is AccountNameFinalValidationSuccess) {
                     bankSettingAnalytics.eventOnAutoNameSimpanClick()
+                    if (builder.isManual()) builder.setAccountName(accountHolderCustomName, true)
                     openConfirmationPopUp()
-                } else if (checkAccountNameState is EditableAccountName) {
+                } else {
                     bankSettingAnalytics.eventOnManualNameSimpanClick()
-                    val accountHolderName =
-                        textAreaBankAccountHolderName.textAreaInput.text.toString()
-                    if (isAccountNameLengthValid(accountHolderName)) {
-                        if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
-                            builder.setAccountName(accountHolderName, true)
-                            openConfirmationPopUp()
-                        } else {
-                            addAccountViewModel.validateEditedAccountInfo(
-                                bank.bankID,
-                                textAreaBankAccountNumber.textAreaInput.text.toString(),
-                                accountHolderName
-                            )
+                    checkAccountNameLength(accountHolderCustomName) {
+                        when (checkAccountNameState) {
+                            is EditableAccountName -> {
+                                if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
+                                    builder.setAccountName(accountHolderCustomName, true)
+                                    openConfirmationPopUp()
+
+                                } else {
+                                    addAccountViewModel.validateEditedAccountInfo(
+                                        bank.bankID,
+                                        textAreaBankAccountNumber.editText.text.toString(),
+                                        accountHolderCustomName
+                                    )
+                                }
+                            }
+                            is AccountNameCheckError -> {
+                                if ((checkAccountNameState as AccountNameCheckError).isValidBankAccount) {
+                                    builder.setAccountName(accountHolderCustomName, true)
+                                    openConfirmationPopUp()
+                                } else {
+                                    addAccountViewModel.validateEditedAccountInfo(
+                                        bank.bankID,
+                                        textAreaBankAccountNumber.editText.text.toString(),
+                                        accountHolderCustomName
+                                    )
+                                }
+                            }
                         }
-                    } else {
-                        showManualAccountNameError(
-                            getString(R.string.sbank_name_char_limit_error)
-                        )
                     }
                 }
             } catch (e: Exception) {
             }
     }
 
-    private fun isAccountNameLengthValid(accountHolderName: String): Boolean {
-        if (accountHolderName.length in BANK_ACC_START_IDX..BANK_ACC_LAST_IDX) {
-            return true
+    private fun checkAccountNameLength(accountHolderName: String, action: () -> Unit) {
+        if (accountHolderName.length < BANK_ACC_START_IDX) {
+            showManualAccountNameError(
+                getString(R.string.sbank_name_char_less_error)
+            )
+        } else if (accountHolderName.length > BANK_ACC_LAST_IDX) {
+            showManualAccountNameError(
+                getString(R.string.sbank_name_char_greater_error)
+            )
+        } else {
+            action.invoke()
         }
-        return false
     }
 
     private fun openConfirmationPopUp() {
@@ -437,7 +488,7 @@ class AddBankFragment : BaseDaggerFragment() {
             ).apply {
                 setTitle(getString(R.string.sbank_confirm_add_bank_account))
                 setDescription(description)
-                setPrimaryCTAText(getString(R.string.sbank_ya_tambah))
+                setPrimaryCTAText(getString(R.string.sbank_ya_benar))
                 setSecondaryCTAText(getString(R.string.sbank_batal))
                 setPrimaryCTAClickListener {
                     bankSettingAnalytics.eventDialogConfirmAddAccountClick()
@@ -519,8 +570,11 @@ class AddBankFragment : BaseDaggerFragment() {
         const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
         private const val REQUEST_OTP = 103
 
-        const val BANK_ACC_START_IDX = 3
-        const val BANK_ACC_LAST_IDX = 128
+        private const val BANK_ACC_START_IDX = 3
+        private const val BANK_ACC_LAST_IDX = 50
+        private const val TEXT_PERIKSA_MARGIN_OFFSET_DP = 5
+        private const val BANK_ACC_NUMBER_PADDING_RIGHT_DP = 20
+        private const val SUCCESS_CODE_428 = 428
     }
 
     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -546,16 +600,10 @@ class AddBankFragment : BaseDaggerFragment() {
         val originalText = createTermsAndConditionSpannable()
         val startIndexPrivacy = originalText?.indexOf(getString(R.string.sbank_privacy)) ?: 0
         val endIndexPrivacy =
-            originalText?.indexOf(getString(R.string.sbank_and_privacy_terms))?.minus(1) ?: 0
+            originalText?.indexOf(getString(R.string.sbank_untuk_tnc))?.minus(1) ?: 0
         val spannableStringPrivacyPolicy = SpannableString(originalText)
         val color =
-            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
-        spannableStringPrivacyPolicy.setSpan(
-            color,
-            startIndexPrivacy,
-            endIndexPrivacy,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
         spannableStringPrivacyPolicy.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 openPrivacyBottomSheet()
@@ -565,6 +613,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.color = color
+                ds.isFakeBoldText = true
             }
         }, startIndexPrivacy, endIndexPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -576,17 +625,9 @@ class AddBankFragment : BaseDaggerFragment() {
         val originalText = getString(R.string.sbank_add_bank_tnc)
         val spannableStringTermAndCondition = SpannableString(originalText)
         val startIndex = originalText.indexOf(getString(R.string.sbank_terms))
-        val endIndex = originalText.length
-
-
+        val endIndex = originalText.indexOf(getString(R.string.sbank_serta_tnc)).minus(1)
         val color =
-            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
-        spannableStringTermAndCondition.setSpan(
-            color,
-            startIndex,
-            endIndex,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
         spannableStringTermAndCondition.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 loadTncForAddBank()
@@ -596,6 +637,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.color = color
+                ds.isFakeBoldText = true
             }
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableStringBuilder.valueOf(spannableStringTermAndCondition)
@@ -623,6 +665,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 else -> SettingBankErrorHandler.getErrorMessage(context, throwable)
             }
             view?.let { view ->
+                Toaster.toasterCustomBottomHeight = getToasterOffset()
                 retry?.let {
                     Toaster.build(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
                         getString(R.string.sbank_promo_coba_lagi),
@@ -634,6 +677,18 @@ class AddBankFragment : BaseDaggerFragment() {
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun showError(message: String?) {
+        if (message == null) return
+
+        Toaster.toasterCustomBottomHeight = getToasterOffset()
+        view?.let { view ->
+            Toaster.build(
+                view, message,
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
@@ -658,10 +713,25 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun setPeriksaButtonState(isEnable: Boolean) {
         if (isEnable)
-            btnPeriksa.buttonVariant = UnifyButton.Variant.GHOST
+            textPeriksa.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         else
-            btnPeriksa.buttonVariant = UnifyButton.Variant.FILLED
-        btnPeriksa.isEnabled = isEnable
+            textPeriksa.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+
+        textPeriksa.isEnabled = isEnable
+        textPeriksa.isClickable = isEnable
+    }
+
+    private fun getToasterOffset(): Int {
+        val buttonHeight = add_account_button.measuredHeight
+        val tvAddBankTncHeight = tvAddBankTnc.measuredHeight
+        val tvAddBankTncHeightMarginBottom =
+            (tvAddBankTnc.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+        val shadowHeight = view_btn_top_shadow.measuredHeight
+        val shadowMarginBottom =
+            (view_btn_top_shadow.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+
+        return buttonHeight + tvAddBankTncHeight + tvAddBankTncHeightMarginBottom + shadowHeight +
+            shadowMarginBottom
     }
 
 }
