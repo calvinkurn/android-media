@@ -995,6 +995,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     sendDeleteOrStopVoucherTracker(data)
                     setDismissDialog()
                 }
+                setOnNegativeConfirmed {
+                    voucherDetailTracker.sendClickCloseMenuEvent(data)
+                    setDismissDialog()
+                }
                 show(
                     getTitleStopVoucherDialog(voucherStatus),
                     getStringDescStopVoucherDialog(voucherStatus, data.voucherName),
