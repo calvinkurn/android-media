@@ -89,16 +89,10 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
     ) {
         BuyerPartialOrderFulfillmentTracker.eventClickTotalAvailableItemPof()
 
-        val oldItem = partialOrderFulfillmentAdapter.filterUiModel<PofFulfilledToggleUiModel>()
-        oldItem?.let {
-            val newItem = it.copy(isExpanded = isExpanded)
-            partialOrderFulfillmentAdapter.updateItem(oldItem, newItem)
-        }
-
         if (isExpanded) {
-            partialOrderFulfillmentAdapter.expandFulfilledProducts(item.pofProductFulfilledList)
+            partialOrderFulfillmentAdapter.expandFulfilledProducts(item.pofProductFulfilledList, isExpanded)
         } else {
-            partialOrderFulfillmentAdapter.collapseFulfilledProducts()
+            partialOrderFulfillmentAdapter.collapseFulfilledProducts(isExpanded)
         }
     }
 

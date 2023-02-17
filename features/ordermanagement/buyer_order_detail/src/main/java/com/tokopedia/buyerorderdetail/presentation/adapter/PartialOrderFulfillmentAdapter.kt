@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.PartialOrderFulfillmentDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
-import com.tokopedia.buyerorderdetail.presentation.model.BasePofVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
@@ -26,37 +25,56 @@ class PartialOrderFulfillmentAdapter(
             partialOrderFulfillmentTypeFactoryImpl
         )
 
-        visitables.clear()
-        visitables.addAll(newPofList)
-
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
+
+        visitables.clear()
+        visitables.addAll(newPofList)
     }
 
-    fun updateItem(
-        oldItem: BasePofVisitableUiModel,
-        newItem: BasePofVisitableUiModel
-    ) {
-        val index = visitables.indexOf(oldItem)
-        if (index != RecyclerView.NO_POSITION) {
-            visitables[index] = newItem
-            notifyItemChanged(index, oldItem to newItem)
-        }
-    }
-
-    fun collapseFulfilledProducts() {
-        val fulFilledProductSize = visitables.filterIsInstance<PofProductFulfilledUiModel>().size
+    fun collapseFulfilledProducts(isExpanded: Boolean) {
+        val fulFilledProductSize = list.filterIsInstance<PofProductFulfilledUiModel>().size
         if (fulFilledProductSize.isMoreThanZero()) {
-            visitables.removeAll { it is PofProductFulfilledUiModel }
-            notifyItemRangeRemoved(visitables.size, fulFilledProductSize)
+            val collapseItems = list.toMutableList()
+
+            val newPofFulfilledToggleUiModel = filterUiModel<PofFulfilledToggleUiModel>()
+                ?.copy(isExpanded = isExpanded)
+            val pofFulfilledToggleIndex = list
+                .indexOfFirst { it is PofFulfilledToggleUiModel }
+                .takeIf { it != RecyclerView.NO_POSITION }
+
+            pofFulfilledToggleIndex?.let {
+                collapseItems.set(
+                    it,
+                    newPofFulfilledToggleUiModel
+                )
+            }
+            collapseItems.removeAll { it is PofProductFulfilledUiModel }
+            val collapseNewItems =
+                collapseItems as List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>
+            updateItems(collapseNewItems)
         }
     }
 
-    fun expandFulfilledProducts(fulfilledProducts: List<PofProductFulfilledUiModel>) {
-        val fulfilledProductIndex =
-            visitables.indexOfFirst { it is PofFulfilledToggleUiModel } + Int.ONE
-        visitables.addAll(fulfilledProductIndex, fulfilledProducts)
-        notifyItemRangeInserted(fulfilledProductIndex, fulfilledProducts.size)
+    fun expandFulfilledProducts(fulfilledProducts: List<PofProductFulfilledUiModel>, isExpanded: Boolean) {
+        val fulfilledProductIndex = list.indexOfFirst { it is PofFulfilledToggleUiModel } + Int.ONE
+        val expandItems = list.toMutableList()
+
+        val newPofFulfilledToggleUiModel = filterUiModel<PofFulfilledToggleUiModel>()
+            ?.copy(isExpanded = isExpanded)
+        val pofFulfilledToggleIndex = list
+            .indexOfFirst { it is PofFulfilledToggleUiModel }
+            .takeIf { it != RecyclerView.NO_POSITION }
+
+        pofFulfilledToggleIndex?.let {
+            expandItems.set(
+                it,
+                newPofFulfilledToggleUiModel
+            )
+        }
+        expandItems.addAll(fulfilledProductIndex, fulfilledProducts)
+        val expandNewItems = expandItems as List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>
+        updateItems(expandNewItems)
     }
 
     fun showLoadingShimmer() {
@@ -90,5 +108,4 @@ class PartialOrderFulfillmentAdapter(
     inline fun <reified T : Visitable<*>> filterUiModel(): T? {
         return list.filterIsInstance<T>().firstOrNull()
     }
-
 }
