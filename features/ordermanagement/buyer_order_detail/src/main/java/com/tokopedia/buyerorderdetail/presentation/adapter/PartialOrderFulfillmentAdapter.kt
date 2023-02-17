@@ -18,7 +18,9 @@ class PartialOrderFulfillmentAdapter(
     private val partialOrderFulfillmentTypeFactoryImpl: PartialOrderFulfillmentTypeFactoryImpl
 ) : BaseAdapter<PartialOrderFulfillmentTypeFactoryImpl>(partialOrderFulfillmentTypeFactoryImpl) {
 
-    fun updateItems(newPofList: List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>) {
+    fun updateItems(newPofList: List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>?) {
+        if (newPofList.isNullOrEmpty()) return
+
         val diffCallback = PartialOrderFulfillmentDiffUtilCallback(
             visitables as List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>,
             newPofList,
@@ -51,8 +53,8 @@ class PartialOrderFulfillmentAdapter(
             }
             collapseItems.removeAll { it is PofProductFulfilledUiModel }
             val collapseNewItems =
-                collapseItems as List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>
-            updateItems(collapseNewItems)
+                collapseItems as? List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>
+            updateItems(collapseNewItems?.toList())
         }
     }
 
@@ -73,8 +75,8 @@ class PartialOrderFulfillmentAdapter(
             )
         }
         expandItems.addAll(fulfilledProductIndex, fulfilledProducts)
-        val expandNewItems = expandItems as List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>
-        updateItems(expandNewItems)
+        val expandNewItems = expandItems as? List<Visitable<PartialOrderFulfillmentTypeFactoryImpl>>
+        updateItems(expandNewItems?.toList())
     }
 
     fun showLoadingShimmer() {
