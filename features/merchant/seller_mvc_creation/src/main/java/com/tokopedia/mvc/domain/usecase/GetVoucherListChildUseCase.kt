@@ -20,11 +20,14 @@ class GetVoucherListChildUseCase @Inject constructor(
     companion object {
         private const val PARAM_KEY = "voucherId"
         private const val PARAM_FILTER_VOUCHER_STATUS = "voucherStatus"
+        private const val PARAM_SORT_BY = "sortBy"
+        private const val VALUE_SORT = "voucher_start_time"
         private const val OPERATION_NAME = "MerchantPromotionGetChildMVList"
         private const val QUERY = """
-            query MerchantPromotionGetChildMVList(${'$'}voucherId: Int!, ${'$'}voucherStatus: String) {
+            query MerchantPromotionGetChildMVList(${'$'}voucherId: Int!, ${'$'}voucherStatus: String, ${'$'}sortBy: String) {
                 MerchantPromotionGetChildMVList(parent_voucher_id: ${'$'}voucherId, Filter: {
                 voucher_status: ${'$'}voucherStatus
+                sort_by: ${'$'}sortBy
                 }) {
                     data {
                       vouchers {
@@ -91,7 +94,8 @@ class GetVoucherListChildUseCase @Inject constructor(
             GetMerchantVoucherListResponse::class.java,
             mapOf(
                 PARAM_KEY to voucherId,
-                PARAM_FILTER_VOUCHER_STATUS to voucherStatus
+                PARAM_FILTER_VOUCHER_STATUS to voucherStatus,
+                PARAM_SORT_BY to VALUE_SORT
             )
         )
     }
