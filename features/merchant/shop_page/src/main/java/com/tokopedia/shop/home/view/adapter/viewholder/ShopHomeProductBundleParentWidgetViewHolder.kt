@@ -103,6 +103,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         when (bundle.bundleType) {
             BundleTypes.MULTIPLE_BUNDLE -> {
                 handleMultipleBundleClickEvent(
+                    bundleUiModel = bundle,
                     selectedBundle = selectedMultipleBundle,
                     selectedProduct = selectedProduct,
                     selectedShopHomeBundleUiModel = selectedShopHomeBundleUiModel,
@@ -111,6 +112,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             }
             BundleTypes.SINGLE_BUNDLE -> {
                 handleSingleBundleClickEvent(
+                    bundleUiModel = bundle,
                     selectedBundle = selectedMultipleBundle,
                     selectedProduct = selectedProduct,
                     selectedShopHomeBundleUiModel = selectedShopHomeBundleUiModel,
@@ -121,6 +123,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     override fun impressionMultipleBundle(
+        bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         bundlePosition: Int
     ) {
@@ -129,13 +132,14 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             shopId = shopId,
             warehouseId = warehouseId,
             selectedMultipleBundle = selectedBundle,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
-            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundle.bundleName,
+            bundleType = bundle.bundleType.toString(),
             bundlePosition = adapterPosition
         )
     }
 
     override fun impressionMultipleBundleProduct(
+        bundle: BundleUiModel,
         selectedProduct: BundleProductUiModel,
         selectedBundle: BundleDetailUiModel
     ) {
@@ -147,7 +151,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         multipleProductBundleListener.impressionProductItemBundleMultiple(
             selectedProduct = selectedBundleProduct,
             selectedMultipleBundle = selectedMultipleBundle,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundle.bundleName,
             bundlePosition = adapterPosition,
             widgetTitle = bundleWidgetTitle,
             widgetName = bundleWidgetName,
@@ -190,30 +194,12 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             bundleName = bundleName,
             bundlePosition = adapterPosition,
             widgetTitle = bundleWidgetTitle,
-            widgetName = bundleWidgetName,
-            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId)
+            widgetName = bundleWidgetName
         )
     }
 
-    private fun getBundleName(
-        bundleListUiModel: ShopHomeProductBundleListUiModel?,
-        bundleId: String
-    ): String {
-        return bundleListUiModel?.productBundleList?.firstOrNull {
-            it.bundleGroupId == bundleId
-        }?.bundleName.orEmpty()
-    }
-
-    private fun getBundleType(
-        bundleListUiModel: ShopHomeProductBundleListUiModel?,
-        bundleId: String
-    ): String {
-        return bundleListUiModel?.productBundleList?.firstOrNull {
-            it.bundleGroupId == bundleId
-        }?.bundleType.orEmpty()
-    }
-
     private fun handleMultipleBundleClickEvent(
+        bundleUiModel: BundleUiModel,
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
         selectedShopHomeBundleUiModel: ShopHomeProductBundleDetailUiModel,
@@ -224,8 +210,8 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             warehouseId = warehouseId,
             selectedProduct = selectedShopHomeProductUiModel,
             selectedMultipleBundle = selectedShopHomeBundleUiModel,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
-            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundleUiModel.bundleName,
+            bundleType = bundleUiModel.bundleType.toString(),
             bundlePosition = adapterPosition,
             widgetTitle = bundleWidgetTitle,
             widgetName = bundleWidgetName,
@@ -234,6 +220,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     private fun handleSingleBundleClickEvent(
+        bundleUiModel: BundleUiModel,
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
         selectedShopHomeBundleUiModel: ShopHomeProductBundleDetailUiModel,
@@ -244,12 +231,12 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             warehouseId = warehouseId,
             selectedProduct = selectedShopHomeProductUiModel,
             selectedSingleBundle = selectedShopHomeBundleUiModel,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundleUiModel.bundleName,
             bundlePosition = selectedBundle.products.indexOf(selectedProduct),
             widgetTitle = bundleWidgetTitle,
             widgetName = bundleWidgetName,
             productItemPosition = adapterPosition,
-            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId)
+            bundleType = bundleUiModel.bundleType.toString()
         )
     }
 }

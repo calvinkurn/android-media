@@ -481,7 +481,8 @@ class ShopPageHomeTracking(
         widgetId: String,
         widgetName: String,
         widgetOption: Int,
-        customDimensionShopPage: CustomDimensionShopPageAttribution
+        customDimensionShopPage: CustomDimensionShopPageAttribution,
+
     ) {
         val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
         val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, layoutId, widgetNameEventValue)

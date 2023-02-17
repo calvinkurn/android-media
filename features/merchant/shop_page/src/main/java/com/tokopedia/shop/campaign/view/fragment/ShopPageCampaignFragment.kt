@@ -341,7 +341,6 @@ class ShopPageCampaignFragment :
         bundlePosition: Int,
         widgetTitle: String,
         widgetName: String,
-        bundleType: String
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             selectedProduct.productId,

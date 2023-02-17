@@ -113,12 +113,29 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         listener?.impressionMultipleBundle(selectedMultipleBundle, bundlePosition)
     }
 
+    override fun impressionProductBundleMultiple(
+        bundle: BundleUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundlePosition: Int
+    ) {
+        listener?.impressionMultipleBundle(bundle, selectedMultipleBundle, bundlePosition)
+    }
+
     override fun impressionProductItemBundleMultiple(
         selectedProduct: BundleProductUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int
     ) {
         listener?.impressionMultipleBundleProduct(selectedProduct, selectedMultipleBundle)
+    }
+
+    override fun impressionProductItemBundleMultiple(
+        bundle: BundleUiModel,
+        selectedProduct: BundleProductUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        productItemPosition: Int
+    ) {
+        listener?.impressionMultipleBundleProduct(bundle, selectedProduct, selectedMultipleBundle)
     }
 
     override fun onAttachedToWindow() {

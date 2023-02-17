@@ -1845,8 +1845,7 @@ open class ShopPageHomeFragment :
         bundleName: String,
         bundlePosition: Int,
         widgetTitle: String,
-        widgetName: String,
-        bundleType: String
+        widgetName: String
     ) {
         shopPageHomeTracking.impressionSingleBundleWidget(
             shopId = shopId,
