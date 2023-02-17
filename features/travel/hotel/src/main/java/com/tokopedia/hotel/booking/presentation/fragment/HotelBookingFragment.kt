@@ -49,11 +49,11 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelUtils.Companion.getImageToLoad
 import com.tokopedia.hotel.common.util.MutationHotelCheckout
 import com.tokopedia.hotel.common.util.QueryHotelCancelVoucher
 import com.tokopedia.hotel.common.util.QueryHotelGetCart
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
-import com.tokopedia.hotel.common.util.HotelUtils.Companion.getImageUrl
 import com.tokopedia.hotel.databinding.FragmentHotelBookingBinding
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -359,15 +359,9 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding?.ivHotelInfoImage?.clipToOutline = true
         }
-        binding?.ivHotelInfoImage?.loadIcon(getImageToLoad(property)){
+        binding?.ivHotelInfoImage?.loadIcon(property.getImageToLoad(context)){
             setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
         }
-    }
-
-    private fun getImageToLoad(property: HotelPropertyData): String {
-        val lowQualityUrl = property.image.urlMax300
-        val highQualityUrl = property.image.urlOriginal
-        return getImageUrl(context, highQualityUrl, lowQualityUrl)
     }
 
     private fun setupRoomDuration(property: HotelPropertyData, cart: HotelCartData) {
