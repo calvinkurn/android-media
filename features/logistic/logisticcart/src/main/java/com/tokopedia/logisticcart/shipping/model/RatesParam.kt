@@ -54,29 +54,29 @@ data class RatesParam(
         destination = builder.destination,
         weight = builder.weight,
         actualWeight = builder.weightActual,
-        trade_in = builder.trade_in,
-        is_corner = builder.is_corner,
-        shop_id = builder.shop_id,
-        shop_tier = builder.shop_tier,
+        trade_in = builder.tradeIn,
+        is_corner = builder.isCorner,
+        shop_id = builder.shopId,
+        shop_tier = builder.shopTier,
         token = builder.token,
         ut = builder.ut,
         insurance = builder.insurance,
-        product_insurance = builder.product_insurance,
-        order_value = builder.order_value,
-        cat_id = builder.cat_id,
-        user_history = builder.user_history,
-        is_blackbox = builder.is_blackbox,
-        address_id = builder.address_id,
+        product_insurance = builder.productInsurance,
+        order_value = builder.orderValue,
+        cat_id = builder.catId,
+        user_history = builder.userHistory,
+        is_blackbox = builder.isBlackbox,
+        address_id = builder.addressId,
         preorder = builder.preorder,
-        vehicle_leasing = builder.vehicle_leasing,
-        psl_code = builder.psl_code,
+        vehicle_leasing = builder.vehicleLeasing,
+        psl_code = builder.pslCode,
         products = builder.products,
-        unique_id = builder.unique_id,
-        is_fulfillment = builder.is_fulfillment,
-        po_time = builder.po_time,
+        unique_id = builder.uniqueId,
+        is_fulfillment = builder.isFulfillment,
+        po_time = builder.poTime,
         mvc = builder.mvc,
-        bo_metadata = builder.bo_metadata,
-        cart_data = builder.cart_data,
+        bo_metadata = builder.boMetadata,
+        cart_data = builder.cartData,
         occ = builder.occ
     )
 
@@ -150,13 +150,13 @@ data class RatesParam(
             private set
         var weightActual: String = shipping.weightActualInKilograms.toString()
             private set
-        var trade_in: Int = RatesParamHelper.determineTradeIn(shipping)
+        var tradeIn: Int = RatesParamHelper.determineTradeIn(shipping)
             private set
-        var is_corner = 0
+        var isCorner = 0
             private set
-        var shop_id: String = shipping.shopId ?: ""
+        var shopId: String = shipping.shopId ?: ""
             private set
-        var shop_tier: Int = shipping.shopTier
+        var shopTier: Int = shipping.shopTier
             private set
         var token: String = shipping.token ?: ""
             private set
@@ -164,52 +164,52 @@ data class RatesParam(
             private set
         var insurance: String = shipping.insurance.toString()
             private set
-        var product_insurance: String = shipping.productInsurance.toString()
+        var productInsurance: String = shipping.productInsurance.toString()
             private set
-        var order_value: String = shipping.orderValue.toString()
+        var orderValue: String = shipping.orderValue.toString()
             private set
-        var cat_id: String = shipping.categoryIds ?: ""
+        var catId: String = shipping.categoryIds ?: ""
             private set
-        var user_history: Int = -1
+        var userHistory: Int = -1
             private set
-        var is_blackbox: Int = if (shipping.isBlackbox) 1 else 0
+        var isBlackbox: Int = if (shipping.isBlackbox) 1 else 0
             private set
-        var address_id: String = shipping.addressId ?: "0"
+        var addressId: String = shipping.addressId ?: "0"
             private set
         var preorder: Int = if (shipping.isPreorder) 1 else 0
             private set
-        var vehicle_leasing: Int = 0
+        var vehicleLeasing: Int = 0
             private set
-        var psl_code: String = ""
+        var pslCode: String = ""
             private set
         var products: String = RatesParamHelper.generateProducts(shipping)
             private set
-        var unique_id: String = shipping.uniqueId ?: ""
+        var uniqueId: String = shipping.uniqueId ?: ""
             private set
-        var is_fulfillment: Boolean = shipping.isFulfillment
+        var isFulfillment: Boolean = shipping.isFulfillment
             private set
-        var po_time: Int = shipping.preOrderDuration
+        var poTime: Int = shipping.preOrderDuration
             private set
         var mvc: String = ""
-        var bo_metadata: String = RatesParamHelper.generateBoMetadata(shipping.boMetadata)
+        var boMetadata: String = RatesParamHelper.generateBoMetadata(shipping.boMetadata)
             private set
         var occ: String = "0"
-        var cart_data: String = ""
+        var cartData: String = ""
             private set
 
-        fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
+        fun isCorner(is_corner: Boolean) = apply { this.isCorner = if (is_corner) 1 else 0 }
 
-        fun codHistory(history: Int) = apply { this.user_history = history }
+        fun codHistory(history: Int) = apply { this.userHistory = history }
 
-        fun isLeasing(leasing: Boolean) = apply { this.vehicle_leasing = if (leasing) 1 else 0 }
+        fun isLeasing(leasing: Boolean) = apply { this.vehicleLeasing = if (leasing) 1 else 0 }
 
-        fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
+        fun promoCode(code: String?) = apply { this.pslCode = code ?: "" }
 
         fun mvc(mvc: String?) = apply { this.mvc = mvc ?: "" }
 
         fun isOcc(isOcc: Boolean) = apply { this.occ = if (isOcc) "1" else "0" }
 
-        fun cartData(cart_data: String) = apply { this.cart_data = cart_data }
+        fun cartData(cart_data: String) = apply { this.cartData = cart_data }
 
         fun build() = RatesParam(this)
     }
