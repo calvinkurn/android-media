@@ -22,7 +22,8 @@ import javax.inject.Inject
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedBaseFragment : BaseDaggerFragment() {
+class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
+
     private var binding: FragmentFeedBaseBinding? = null
 
     @Inject
@@ -145,7 +146,13 @@ class FeedBaseFragment : BaseDaggerFragment() {
     }
 
     private fun onCreatePostClicked() {
-        Toast.makeText(context, "Create Post Clicked", Toast.LENGTH_SHORT).show()
+        activity?.let {
+            val creationBottomSheet = FeedContentCreationTypeBottomSheet
+                .getFragment(it.supportFragmentManager, it.classLoader)
+            creationBottomSheet.setListener(this)
+            creationBottomSheet.setData(creationItemList)
+            creationBottomSheet.show(it.supportFragmentManager)
+        }
     }
 
     private fun onNavigateToLive() {
@@ -160,4 +167,42 @@ class FeedBaseFragment : BaseDaggerFragment() {
         const val TAB_FOR_YOU_INDEX = 0
         const val TAB_FOLLOWING_INDEX = 1
     }
+
+    override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
+        when (creationTypeItem.type) {
+            CreateContentType.CREATE_LIVE -> {
+                RouteManager.route(
+                    requireContext(),
+                    ApplinkConst.PLAY_BROADCASTER
+                )
+            }
+            CreateContentType.CREATE_POST -> {
+                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                intent.putExtra(
+                    BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
+                intent.putExtra(
+                    BundleData.MAX_MULTI_SELECT_ALLOWED,
+                    BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
+                )
+                intent.putExtra(
+                    BundleData.TITLE,
+                    getString(R.string.feed_post_sebagai)
+                )
+                intent.putExtra(
+                    BundleData.APPLINK_FOR_GALLERY_PROCEED,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
+                startActivity(intent)
+            }
+
+            CreateContentType.CREATE_SHORT_VIDEO -> {
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
+
+            }
+
+        }
+    }
+
 }
