@@ -62,6 +62,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                       update_time
                       update_by
                       is_public
+                      is_child
                       is_quota_avaiable
                       voucher_type_formatted
                       voucher_status_formatted

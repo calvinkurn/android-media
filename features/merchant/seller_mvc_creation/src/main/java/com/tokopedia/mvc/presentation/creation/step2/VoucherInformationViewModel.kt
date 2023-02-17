@@ -81,7 +81,7 @@ class VoucherInformationViewModel @Inject constructor(
                 pageMode = pageMode,
                 voucherConfiguration = voucherConfiguration.copy(
                     isFinishFilledStepOne = true,
-                    startPeriod = it.voucherConfiguration.startPeriod.roundTimePerHalfHour()
+                    startPeriod = voucherConfiguration.startPeriod.roundTimePerHalfHour()
                 )
             )
         }

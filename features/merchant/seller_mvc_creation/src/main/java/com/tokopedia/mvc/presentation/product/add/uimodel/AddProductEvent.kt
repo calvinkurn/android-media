@@ -9,7 +9,11 @@ import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 
 sealed class AddProductEvent {
-    data class FetchRequiredData(val pageMode: PageMode, val voucherConfiguration: VoucherConfiguration) : AddProductEvent()
+    data class FetchRequiredData(
+        val pageMode: PageMode,
+        val voucherConfiguration: VoucherConfiguration,
+        val products: List<Product>
+    ) : AddProductEvent()
     data class LoadPage(val page: Int) : AddProductEvent()
     object ClearSearchBar : AddProductEvent()
     object ClearFilter : AddProductEvent()

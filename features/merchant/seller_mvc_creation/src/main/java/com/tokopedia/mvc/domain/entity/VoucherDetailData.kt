@@ -32,6 +32,7 @@ data class VoucherDetailData(
     val updateTime: String = "",
     val updateBy: Int = 0,
     val isPublic: Int = 0,
+    val isChild: Int = 0,
     val isQuotaAvailable: Int = 0,
     val voucherTypeFormatted: String = "",
     val voucherStatusFormatted: String = "",

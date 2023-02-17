@@ -44,8 +44,7 @@ sealed class AddProductEffect {
     ) : AddProductEffect()
 
     data class AddNewProducts(
-        val selectedProducts: List<Product>,
-        val selectedParentProductImageUrls: List<String>
+        val selectedProducts: List<Product>
     ) : AddProductEffect()
 
     data class ShowChangeWarehouseDialogConfirmation(val selectedWarehouseLocation: Warehouse) : AddProductEffect()

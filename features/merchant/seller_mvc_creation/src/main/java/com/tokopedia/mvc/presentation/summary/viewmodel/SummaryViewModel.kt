@@ -6,20 +6,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.usecase.AddEditCouponFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
+import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.mvc.util.tracker.SummaryPageTracker
-import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.date.addTimeToSpesificDate
 import java.util.*
 import javax.inject.Inject
 
@@ -28,6 +29,7 @@ class SummaryViewModel @Inject constructor(
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase,
     private val addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase,
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
     private val tracker: SummaryPageTracker
 ) : BaseViewModel(dispatchers.main) {
 
@@ -80,6 +82,10 @@ class SummaryViewModel @Inject constructor(
     private val _couponImage = MutableLiveData<Bitmap>()
     val couponImage: LiveData<Bitmap>
         get() = _couponImage
+
+    private val _couponPeriods = MutableLiveData<List<DateStartEndData>>()
+    val couponPeriods: LiveData<List<DateStartEndData>>
+        get() = _couponPeriods
 
     private var isDuplicate = false
 
@@ -194,28 +200,60 @@ class SummaryViewModel @Inject constructor(
         }
     }
 
-    fun getOtherPeriod(configuration: VoucherConfiguration): MutableList<DateStartEndData> {
-        val list = mutableListOf<DateStartEndData>()
-        repeat(configuration.totalPeriod) {
-            val start = configuration.startPeriod.addTimeToSpesificDate(Calendar.MONTH, it.inc())
-            val end = configuration.endPeriod.addTimeToSpesificDate(Calendar.MONTH, it.inc())
-            list.add(
-                DateStartEndData(
-                    start.formatTo(DateUtil.YYYY_MM_DD),
-                    end.formatTo(DateUtil.YYYY_MM_DD),
-                    start.formatTo(DateUtil.HH_MM),
-                    end.formatTo(DateUtil.HH_MM),
-                )
-            )
-        }
-        return list
-    }
-
     fun validateTnc(checked: Boolean) {
         _isInputValid.value = checked
     }
 
     fun checkIsAdding(configuration: VoucherConfiguration): Boolean {
         return configuration.voucherId == ADDING_VOUCHER_ID
+    }
+
+    fun handleVoucherInputValidation(voucherConfiguration: VoucherConfiguration) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val voucherValidationParam = VoucherValidationPartialUseCase.Param(
+                    benefitIdr = voucherConfiguration.benefitIdr,
+                    benefitMax = voucherConfiguration.benefitMax,
+                    benefitPercent = voucherConfiguration.benefitPercent,
+                    benefitType = voucherConfiguration.benefitType,
+                    promoType = voucherConfiguration.promoType,
+                    isVoucherProduct = voucherConfiguration.isVoucherProduct,
+                    minPurchase = voucherConfiguration.minPurchase,
+                    productIds = emptyList(),
+                    targetBuyer = voucherConfiguration.targetBuyer,
+                    couponName = voucherConfiguration.voucherName,
+                    isPublic = voucherConfiguration.isVoucherPublic,
+                    code = voucherConfiguration.voucherCode,
+                    isPeriod = voucherConfiguration.isPeriod,
+                    periodType = voucherConfiguration.periodType,
+                    periodRepeat = voucherConfiguration.periodRepeat,
+                    totalPeriod = voucherConfiguration.totalPeriod,
+                    startDate = voucherConfiguration.startPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+                    endDate = voucherConfiguration.endPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
+                    startHour = voucherConfiguration.startPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
+                    endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
+                    quota = voucherConfiguration.quota
+                )
+                val validationResult = voucherValidationPartialUseCase.execute(voucherValidationParam)
+                _couponPeriods.postValue(mapVoucherRecurringPeriodData(validationResult.validationDate))
+            },
+            onError = {
+                _error.postValue(it)
+            }
+        )
+    }
+
+    fun mapVoucherRecurringPeriodData(validationDate: List<VoucherValidationResult.ValidationDate>): List<DateStartEndData> {
+        return validationDate
+            .filter { it.available }
+            .map {
+                DateStartEndData(
+                    dateStart = it.dateStart,
+                    dateEnd = it.dateEnd,
+                    hourStart = it.hourStart,
+                    hourEnd = it.hourEnd
+                )
+            }
     }
 }

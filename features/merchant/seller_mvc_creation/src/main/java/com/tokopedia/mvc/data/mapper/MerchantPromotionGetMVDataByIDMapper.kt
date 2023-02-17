@@ -44,6 +44,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 updateTime = updateTime,
                 updateBy = updateBy,
                 isPublic = isPublic,
+                isChild = isChild,
                 isQuotaAvailable = isQuotaAvailable,
                 voucherTypeFormatted = voucherTypeFormatted,
                 voucherStatusFormatted = voucherStatusFormatted,

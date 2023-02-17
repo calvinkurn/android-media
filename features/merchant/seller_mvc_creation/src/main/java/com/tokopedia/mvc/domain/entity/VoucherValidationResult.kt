@@ -1,7 +1,6 @@
 package com.tokopedia.mvc.domain.entity
 
 data class VoucherValidationResult(
-    val availableMonth: List<AvailableMonth>,
     val totalAvailableQuota: Int,
     val validationDate: List<ValidationDate>,
     val validationError: ValidationError,
@@ -16,11 +15,6 @@ data class VoucherValidationResult(
         val available: Boolean,
         val notAvailableReason: String,
         val type: Int
-    )
-
-    data class AvailableMonth(
-        val month: String,
-        val available: Boolean,
     )
 
     data class ValidationError(

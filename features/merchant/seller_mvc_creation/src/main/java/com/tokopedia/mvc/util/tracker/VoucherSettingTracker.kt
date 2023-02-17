@@ -38,12 +38,12 @@ class VoucherSettingTracker @Inject constructor(private val userSession: UserSes
             .send()
     }
 
-    fun sendClickFieldPersentaseCashbackEvent(eventLabel: String) {
+    fun sendClickFieldPersentaseCashbackEvent(promoType: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
-            .setEventAction("click field persentase cashback")
+            .setEventAction("click field persentase $promoType")
             .setEventCategory(TrackerConstant.CreationVoucherSetting.event)
-            .setEventLabel(eventLabel)
+            .setEventLabel(promoType)
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39409")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -52,12 +52,12 @@ class VoucherSettingTracker @Inject constructor(private val userSession: UserSes
             .send()
     }
 
-    fun sendClickFieldMaximumCashbackEvent(eventLabel: String) {
+    fun sendClickFieldMaximumCashbackEvent(promoType: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
-            .setEventAction("click field maksimum cashback")
+            .setEventAction("click field maksimum $promoType")
             .setEventCategory(TrackerConstant.CreationVoucherSetting.event)
-            .setEventLabel(eventLabel)
+            .setEventLabel(promoType)
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39410")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -80,12 +80,12 @@ class VoucherSettingTracker @Inject constructor(private val userSession: UserSes
             .send()
     }
 
-    fun sendClickFieldMinimumCashbackEvent(eventLabel: String) {
+    fun sendClickFieldMinimumCashbackEvent(promoType: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
-            .setEventAction("click field minimum cashback")
+            .setEventAction("click field minimum $promoType")
             .setEventCategory(TrackerConstant.CreationVoucherSetting.event)
-            .setEventLabel(eventLabel)
+            .setEventLabel(promoType)
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39412")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -184,6 +184,6 @@ private fun BenefitType.toEventLabel(): String {
 private fun VoucherTargetBuyer.toEventLabel(promoType: PromoType): String {
     return when (this) {
         VoucherTargetBuyer.ALL_BUYER -> "target pembeli: semua pembeli - tipe promo: ${promoType.toEventLabel()}"
-        else -> "target pembeli: pengikut baru - tipe promo: ${promoType.toEventLabel()}"
+        else -> "target pembeli: follower baru - tipe promo: ${promoType.toEventLabel()}"
     }
 }

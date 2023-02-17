@@ -1,7 +1,9 @@
 package com.tokopedia.mvc.presentation.intro.util
 
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant.TRACKER_ID
+import com.tokopedia.mvc.util.constant.TrackerConstant.EVENT
+import com.tokopedia.mvc.util.constant.TrackerConstant.TRACKER_ID
+import com.tokopedia.mvc.util.constant.TrackerConstant.BUSINESS_UNIT
+import com.tokopedia.mvc.util.constant.TrackerConstant.CURRENT_SITE
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -10,13 +12,13 @@ class MvcIntroPageTracker @Inject constructor(private val userSession: UserSessi
 
     fun sendMvcIntroPageCreateVoucherEvent() {
         Tracker.Builder()
-            .setEvent(MvcTrackerConstant.MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction(CREATE_COUPON)
             .setEventCategory(EVENT_CATEGORY)
             .setEventLabel("")
             .setCustomProperty(TRACKER_ID, "39390")
-            .setBusinessUnit(MvcTrackerConstant.MVC_BUSINESS_UNIT)
-            .setCurrentSite(MvcTrackerConstant.MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -24,13 +26,13 @@ class MvcIntroPageTracker @Inject constructor(private val userSession: UserSessi
 
     fun sendMvcIntroPageArrowButton() {
         Tracker.Builder()
-            .setEvent(MvcTrackerConstant.MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction(VIEW_MORE)
             .setEventCategory(EVENT_CATEGORY)
             .setEventLabel("")
             .setCustomProperty(TRACKER_ID, "39391")
-            .setBusinessUnit(MvcTrackerConstant.MVC_BUSINESS_UNIT)
-            .setCurrentSite(MvcTrackerConstant.MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()

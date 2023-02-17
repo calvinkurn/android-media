@@ -26,7 +26,6 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
-import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -62,7 +61,6 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 
@@ -75,7 +73,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         @JvmStatic
         fun newInstance(
             pageMode: PageMode,
-            voucherConfiguration: VoucherConfiguration
+            voucherConfiguration: VoucherConfiguration,
+            products: List<Product>
         ): AddProductFragment {
             return AddProductFragment().apply {
                 arguments = Bundle().apply {
@@ -83,6 +82,10 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                     putParcelable(
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
+                    )
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                        ArrayList(products)
                     )
                 }
             }
@@ -92,6 +95,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+    private val selectedParentProducts by lazy { arguments?.getParcelableArrayList<Product>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS) }
 
     private var binding by autoClearedNullable<SmvcFragmentAddProductBinding>()
     private val locationChips by lazy { SortFilterItem(getString(R.string.smvc_location)) }
@@ -147,7 +151,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         observeUiState()
 
         viewModel.processEvent(
-            AddProductEvent.FetchRequiredData(pageMode ?: return, voucherConfiguration ?: return)
+            AddProductEvent.FetchRequiredData(
+                pageMode ?: return,
+                voucherConfiguration ?: return,
+                selectedParentProducts?.toList().orEmpty()
+            )
         )
         registerBackPressEvent()
     }
@@ -155,7 +163,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun registerBackPressEvent() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                tracker.sendClickButtonBackToPreviousPageEvent(pageMode ?: return)
+                tracker.sendClickButtonBackToPreviousPageEvent(voucherConfiguration?.voucherId.orZero())
                 activity?.finish()
             }
         }
@@ -174,7 +182,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupToolbar() {
         binding?.header?.setNavigationOnClickListener {
-            tracker.sendClickToolbarBackButtonEvent(pageMode ?: return@setNavigationOnClickListener)
+            tracker.sendClickToolbarBackButtonEvent(voucherConfiguration?.voucherId.orZero())
             activity?.finish()
         }
         binding?.header?.headerSubTitle = getString(R.string.smvc_add_product_subtitle)
@@ -182,7 +190,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupButton() {
         binding?.btnAddProduct?.setOnClickListener {
-            tracker.sendClickAddProductButtonEvent(pageMode ?: return@setOnClickListener)
+            tracker.sendClickAddProductButtonEvent(voucherConfiguration?.voucherId.orZero())
 
             if (pageMode == PageMode.CREATE) {
                 viewModel.processEvent(AddProductEvent.ConfirmAddProduct)

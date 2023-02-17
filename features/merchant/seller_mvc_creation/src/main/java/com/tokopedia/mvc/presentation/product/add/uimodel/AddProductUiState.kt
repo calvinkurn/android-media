@@ -44,6 +44,7 @@ data class AddProductUiState(
         productIds = emptyList(),
         targetBuyer = VoucherTargetBuyer.ALL_BUYER
     ),
+    val previouslySelectedProducts: List<Product> = emptyList(),
     val error: Throwable? = null
 ) {
     enum class CheckboxState {
