@@ -728,10 +728,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             moreMenuBottomSheet?.setOnMenuClickListener { menu ->
                 onClickListenerForMoreMenu(menu, data)
             }
-            moreMenuBottomSheet?.setCloseClickListener {
-                voucherDetailTracker.sendClickCloseMenuEvent(data)
-                moreMenuBottomSheet?.dismiss()
-            }
             moreMenuBottomSheet?.show(childFragmentManager, "")
         }
     }
@@ -997,6 +993,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 setOnPositiveConfirmed {
                     updateVoucherStatusData(data)
                     sendDeleteOrStopVoucherTracker(data)
+                    setDismissDialog()
+                }
+                setOnNegativeConfirmed {
+                    voucherDetailTracker.sendClickCloseMenuEvent(data)
                     setDismissDialog()
                 }
                 show(
