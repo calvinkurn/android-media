@@ -112,7 +112,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 analytic2?.clickPiP()
                 mListener?.onPipClicked(this)
             },
-            priority = 1,
+            priority = 2,
             onImpress = { analytic2?.impressPiP() }
         )
     }
@@ -138,6 +138,28 @@ class PlayMoreActionBottomSheet @Inject constructor(
         )
     }
 
+    private val seePerformanceAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.SeePerformance,
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.GRAPH,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
+            subtitleRes = R.string.play_kebab_see_performance,
+            onClick = {
+                mListener?.onSeePerformanceClicked(this)
+            },
+            priority = 1,
+            onImpress = {
+
+            }
+        )
+    }
+
     private var analytic2: PlayAnalytic2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -159,7 +181,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
-        setObserve()
+        setupObserve()
+        setupListAction()
     }
 
     fun setState(isFreeze: Boolean) {}
@@ -189,7 +212,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
      *
      * Setup Observer
      */
-    private fun setObserve() {
+    private fun setupObserve() {
         observeKebabInsets()
         observeUserReport()
         observeUserReportSubmission()
@@ -198,7 +221,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         observeCast()
         observeVideoMeta()
         observeState()
-        buildListAction(action = reportAction)
     }
 
     private fun observeBottomInsets() {
@@ -347,6 +369,13 @@ class PlayMoreActionBottomSheet @Inject constructor(
     /***
      * Private Methods
      */
+
+    private fun setupListAction() {
+        buildListAction(action = reportAction)
+
+        if(playViewModel.performanceSummaryPageLink.isNotEmpty())
+            buildListAction(action = seePerformanceAction)
+    }
 
     private fun hideSheets() {
         if (requireParentFragment() is PlayUserInteractionFragment) (requireParentFragment() as PlayUserInteractionFragment).hideBottomSheet()
@@ -521,6 +550,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     interface Listener {
         fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
         fun onPipClicked(bottomSheet: PlayMoreActionBottomSheet)
+        fun onSeePerformanceClicked(bottomSheet: PlayMoreActionBottomSheet)
     }
 
     companion object {

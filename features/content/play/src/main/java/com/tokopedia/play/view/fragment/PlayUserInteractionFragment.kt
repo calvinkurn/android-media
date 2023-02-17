@@ -323,6 +323,10 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomSheet.dismiss()
     }
 
+    override fun onSeePerformanceClicked(bottomSheet: PlayMoreActionBottomSheet) {
+        router.route(context, playViewModel.performanceSummaryPageLink)
+    }
+
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         return false
     }

@@ -52,7 +52,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
-                channelReportInfo = mapChannelReportInfo(it.id, extraParams),
+                channelReportInfo = mapChannelReportInfo(it.id, it.performanceSummaryPageLink, extraParams),
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -104,10 +104,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapChannelReportInfo(
         channelId: String,
+        performanceSummaryPageLink: String,
         extraParams: ExtraParams
     ) = PlayChannelReportUiModel(
         shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
-        sourceType = extraParams.sourceType
+        sourceType = extraParams.sourceType,
+        performanceSummaryPageLink = performanceSummaryPageLink,
     )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {

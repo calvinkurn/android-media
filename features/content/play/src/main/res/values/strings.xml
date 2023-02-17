@@ -92,6 +92,7 @@
     <string name="play_kebab_pip">Picture in Picture</string>
     <string name="play_kebab_chromecast">Chromecast</string>
     <string name="play_kebab_watch_mode">Mode Nonton</string>
+    <string name="play_kebab_see_performance">Lihat Performa</string>
 
     <!--User Report-->
     <string name="play_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
