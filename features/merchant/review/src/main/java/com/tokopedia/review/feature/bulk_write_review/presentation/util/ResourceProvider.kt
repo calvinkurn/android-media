@@ -69,4 +69,8 @@ object ResourceProvider {
     fun getRemoveReviewItemDialogSubtitle(): StringRes {
         return StringRes(R.string.bulk_review_remove_review_item_dialog_description)
     }
+
+    fun getMessageBadRatingReasonReasonMustBeSelected(): StringRes {
+        return StringRes(R.string.toaster_bulk_review_at_least_one_bad_rating_category_must_be_selected)
+    }
 }

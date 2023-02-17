@@ -18,6 +18,7 @@ import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -25,12 +26,12 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.AutocompleteSearchBarViewBinding
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.microinteraction.autocomplete.AutoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -72,7 +73,6 @@ class SearchBarView constructor(
     private var mSavedState: SavedState? = null
     private var searchParameter = SearchParameter()
 
-    private var allowVoiceSearch: Boolean = false
     private var copyText = false
     private var compositeSubscription: CompositeSubscription? = null
     private var queryListener: QueryListener? = null
@@ -137,13 +137,13 @@ class SearchBarView constructor(
 
     private fun initiateView(attrs: AttributeSet) {
         initAttribute(attrs)
+
         val view = LayoutInflater.from(mContext).inflate(R.layout.autocomplete_search_bar_view, this, true)
         binding = AutocompleteSearchBarViewBinding.bind(view)
 
-        configureSearchNavigationLayout()
-        setSearchNavigationListener()
+        configureSearchNavigationButtonVisibility()
 
-        allowVoiceSearch = true
+        setSearchNavigationListener()
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
 
@@ -167,33 +167,10 @@ class SearchBarView constructor(
         }
     }
 
-    private fun configureSearchNavigationLayout() {
-        configureSearchNavigationView()
-    }
-
-    private fun configureSearchNavigationView() {
-        configureSearchNavigationButtonVisibility()
-        configureSearchNavigationSearchTextView()
-    }
-
     private fun configureSearchNavigationButtonVisibility() {
         val binding = binding ?: return
-        binding.autocompleteActionUpButton.visibility = View.VISIBLE
-        binding.autocompleteVoiceButton.visibility = View.VISIBLE
-        binding.autocompleteClearButton.visibility = View.VISIBLE
         binding.autocompleteSearchIcon.visibility = View.VISIBLE
         showAddButton()
-    }
-
-    private fun configureSearchNavigationSearchTextView() {
-        val searchTextView = binding?.searchTextView ?: return
-        searchTextView.setHintTextColor(ContextCompat.getColor(mContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-        searchTextView.setPadding(
-            28.dpToPx(mContext.resources.displayMetrics),
-            12.dpToPx(mContext.resources.displayMetrics),
-            32.dpToPx(mContext.resources.displayMetrics),
-            12.dpToPx(mContext.resources.displayMetrics),
-        )
     }
 
     private fun setSearchNavigationListener() {
@@ -206,29 +183,10 @@ class SearchBarView constructor(
 
     private fun showVoiceButton(show: Boolean) {
         val binding = binding ?: return
-        if (show && isVoiceAvailable && allowVoiceSearch) {
+        if (show && isVoiceAvailable)
             binding.autocompleteVoiceButton.visibility = View.VISIBLE
-        } else {
+        else
             binding.autocompleteVoiceButton.visibility = View.GONE
-
-            if (!isVoiceAvailable) {
-                @Suppress("MagicNumber")
-                setMargin(binding.searchTextView, convertDpToPx(8), 0, convertDpToPx(12), 0)
-            }
-        }
-    }
-
-    private fun setMargin(view: View, left: Int, top: Int, right: Int, bottom: Int) {
-        if (view.layoutParams is MarginLayoutParams) {
-            val p = view.layoutParams as MarginLayoutParams
-            p.setMargins(left, top, right, bottom)
-            view.requestLayout()
-        }
-    }
-
-    private fun convertDpToPx(dp: Int): Int {
-        val r = mContext.resources
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), r.displayMetrics).toInt()
     }
 
     private fun initSearchView() {
@@ -463,14 +421,6 @@ class SearchBarView constructor(
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun setBackground(background: Drawable?) {
-        binding?.searchTopBar?.background = background
-    }
-
-    override fun setBackgroundColor(color: Int) {
-        binding?.searchTopBar?.setBackgroundColor(color)
-    }
-
     fun setQuery(query: CharSequence, submit: Boolean, copyText: Boolean) {
         this.copyText = copyText
         setQuery(query, submit)
@@ -503,8 +453,6 @@ class SearchBarView constructor(
 
     private fun showSearch() {
         textViewRequestFocus()
-
-        binding?.searchTopBar?.visibility = View.VISIBLE
     }
 
     private fun setHintIfExists(hint: String?, placeholder: String?) {
@@ -579,6 +527,15 @@ class SearchBarView constructor(
     fun allowKeyboardDismiss() {
         val binding = binding ?: return
         binding.searchTextView.setPreventDismissKeyboard(false)
+    }
+
+    fun setupMicroInteraction(autoCompleteMicroInteraction: AutoCompleteMicroInteraction?) {
+        autoCompleteMicroInteraction?.setSearchBarComponents(
+            this,
+            binding?.autocompleteActionUpButton,
+            binding?.searchTextView,
+            binding?.autocompleteVoiceButton,
+        )
     }
 
     public override fun onSaveInstanceState(): Parcelable? {

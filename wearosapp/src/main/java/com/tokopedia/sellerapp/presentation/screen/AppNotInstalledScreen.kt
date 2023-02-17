@@ -1,5 +1,7 @@
 package com.tokopedia.sellerapp.presentation.screen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,11 +15,11 @@ import androidx.wear.compose.material.Text
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.tokopedia.sellerapp.presentation.theme.NEST_LAYOUT_LVL1
 import com.tokopedia.sellerapp.presentation.theme.NEST_LAYOUT_LVL3
-import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
+import com.tokopedia.sellerapp.util.MarketURIConstant
 
 @Composable
 fun AppNotInstalledScreen(
-    sharedViewModel: SharedViewModel,
+    remoteActivityHelper: RemoteActivityHelper
 ) {
     Column(
         modifier = Modifier
@@ -37,7 +39,11 @@ fun AppNotInstalledScreen(
 
         Button(
             onClick = {
-                sharedViewModel.openAppInStoreOnPhone()
+                val intent = Intent(Intent.ACTION_VIEW)
+                    .addCategory(Intent.CATEGORY_BROWSABLE)
+                    .setData(Uri.parse(MarketURIConstant.MARKET_TOKOPEDIA))
+
+                remoteActivityHelper.startRemoteActivity(intent)
             },
         ) {
             Text(text = "Install")

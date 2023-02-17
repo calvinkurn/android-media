@@ -760,6 +760,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 it.show(childFragmentManager, BulkReviewBadRatingCategoryBottomSheet.TAG) {
                     it.setData(badRatingCategories)
                     it.setListener(badRatingCategoryBottomSheetListener)
+                    it.setToasterQueue(viewModel.badRatingCategoryBottomSheetToasterQueue)
                 }
             }
         }
@@ -888,6 +889,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
         override fun onBadRatingCategoryImpressed(position: Int, reason: String) {
             viewModel.onBadRatingCategoryImpressed(position, reason)
+        }
+
+        override fun onClickOutsideBottomSheet() {
+            viewModel.onCancelBadRatingCategoryBottomSheet()
         }
     }
 

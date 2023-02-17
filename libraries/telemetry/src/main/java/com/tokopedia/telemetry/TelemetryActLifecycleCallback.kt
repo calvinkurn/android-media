@@ -6,7 +6,6 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
-import android.hardware.SensorManager.SENSOR_DELAY_UI
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -114,7 +113,7 @@ class TelemetryActLifecycleCallback(
 
     private fun collectTelemetryInTeleActivity(activity: ITelemetryActivity) {
         if (activity !is AppCompatActivity) {
-            return;
+            return
         }
         val sectionName = activity.getTelemetrySectionName()
 
@@ -126,7 +125,7 @@ class TelemetryActLifecycleCallback(
 
     private fun collectTelemetryInNonTeleActivity(activity: Activity) {
         if (activity !is AppCompatActivity) {
-            return;
+            return
         }
         if (Telemetry.hasOpenTime()) {
             // check if it is already past section duration or not
@@ -135,10 +134,13 @@ class TelemetryActLifecycleCallback(
                 registerTelemetryListener(activity)
                 // timer to stop after telemetry duration
                 activity.lifecycleScope.launch {
-                    val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
-                    delay(remainingDurr)
-                    stopTelemetryListener(activity)
-                    Telemetry.addStopTime()
+                    try {
+                        val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
+                        delay(remainingDurr)
+                        stopTelemetryListener(activity)
+                        Telemetry.addStopTime()
+                    } catch (ignored: Throwable) {
+                    }
                 }
             } else { // duration is due
                 val estimatedDuration =
@@ -149,7 +151,7 @@ class TelemetryActLifecycleCallback(
     }
 
     private fun collectTelemetry(activity: AppCompatActivity, sectionName: String) {
-        //stop time for prev telemetry
+        // stop time for prev telemetry
         Telemetry.addStopTime(sectionName)
         TelemetryWorker.scheduleWorker(activity.applicationContext)
 
@@ -158,9 +160,12 @@ class TelemetryActLifecycleCallback(
 
         // timer to stop after telemetry duration
         activity.lifecycleScope.launch {
-            delay(SECTION_TELEMETRY_DURATION)
-            stopTelemetryListener(activity)
-            Telemetry.addStopTime()
+            try {
+                delay(SECTION_TELEMETRY_DURATION)
+                stopTelemetryListener(activity)
+                Telemetry.addStopTime()
+            } catch (ignored: Throwable) {
+            }
         }
     }
 
