@@ -122,8 +122,6 @@ class BulkReviewViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        const val BAD_RATING_CATEGORY_THRESHOLD = 2
-
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val DELAY_WAIT_FOR_UI_STATE_RESTORATION = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
@@ -1345,8 +1343,8 @@ class BulkReviewViewModel @Inject constructor(
         currentRating: Int,
         priorRating: Int
     ) {
-        if (currentRating <= BAD_RATING_CATEGORY_THRESHOLD) {
-            if (priorRating > BAD_RATING_CATEGORY_THRESHOLD) {
+        if (currentRating <= ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD) {
+            if (priorRating > ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD) {
                 showBadRatingCategoryBottomSheet(inboxID = inboxID)
             } else {
                 // ignore, user need to click `Ubah` to show the bad rating categories bottomsheet

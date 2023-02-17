@@ -125,7 +125,6 @@ class CreateReviewViewModel @Inject constructor(
     companion object {
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
-        private const val GOOD_RATING_THRESHOLD = 2
         private const val REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS = 1L
 
         private const val SAVED_STATE_RATING = "savedStateRating"
@@ -388,7 +387,7 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun mapIsGoodRating(rating: Int): Boolean {
-        return rating > GOOD_RATING_THRESHOLD
+        return rating > ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD
     }
 
     private fun mapMediaItems(
@@ -455,7 +454,7 @@ class CreateReviewViewModel @Inject constructor(
         reviewFormResult: ReviewFormRequestSuccessState
     ): StringRes {
         val badRatingCategoriesShowing = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
-        return if (rating in CreateReviewFragment.RATING_1..CreateReviewFragment.RATING_2) {
+        return if (rating in ReviewConstants.RATING_1..ReviewConstants.RATING_2) {
             if (badRatingCategoriesShowing) {
                 if (isOnlyBadRatingOtherCategorySelected) {
                     StringRes(R.string.review_form_bad_helper_must_fill)
@@ -467,7 +466,7 @@ class CreateReviewViewModel @Inject constructor(
                 // it isn't showing yet, so we need to wait for it to be showing
                 textAreaHint.value
             }
-        } else if (rating == CreateReviewFragment.RATING_3) {
+        } else if (rating == ReviewConstants.RATING_3) {
             StringRes(R.string.review_form_neutral_helper)
         } else {
             reviewFormResult.result.productrevGetForm.placeholder.takeIf {
@@ -576,9 +575,9 @@ class CreateReviewViewModel @Inject constructor(
     ): CreateReviewTextAreaTitleUiState {
         return if (canRenderForm) {
             val stringResId = when (rating) {
-                CreateReviewFragment.RATING_1 -> R.string.review_create_worst_title
-                CreateReviewFragment.RATING_2 -> R.string.review_form_bad_title
-                CreateReviewFragment.RATING_3 -> R.string.review_form_neutral_title
+                ReviewConstants.RATING_1 -> R.string.review_create_worst_title
+                ReviewConstants.RATING_2 -> R.string.review_form_bad_title
+                ReviewConstants.RATING_3 -> R.string.review_form_neutral_title
                 else -> R.string.review_create_best_title
             }
             CreateReviewTextAreaTitleUiState.Showing(StringRes(stringResId))

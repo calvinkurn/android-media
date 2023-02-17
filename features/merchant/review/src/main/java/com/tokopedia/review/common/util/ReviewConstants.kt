@@ -148,6 +148,13 @@ object ReviewConstants {
     const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
     const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
     const val MEDIA_UPLOAD_ERROR_MESSAGE = "Error when uploading %s. Cause: %s"
+
+    const val RATING_1 = 1
+    const val RATING_2 = 2
+    const val RATING_3 = 3
+    const val RATING_4 = 4
+    const val RATING_5 = 5
+    const val BAD_RATING_CATEGORY_THRESHOLD = 3
 }
 
 
