@@ -6,8 +6,9 @@ import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketpla
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
 
-class PromoEmptyStateViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoEmptyBinding,
-                                private val listener: PromoCheckoutActionListener
+class PromoEmptyStateViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoEmptyBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoEmptyStateUiModel>(viewBinding.root) {
 
     companion object {
@@ -30,5 +31,4 @@ class PromoEmptyStateViewHolder(private val viewBinding: PromoCheckoutMarketplac
             }
         }
     }
-
 }

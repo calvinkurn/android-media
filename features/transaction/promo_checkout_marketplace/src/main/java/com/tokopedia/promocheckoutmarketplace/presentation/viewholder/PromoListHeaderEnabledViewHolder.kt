@@ -11,8 +11,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.purchase_platform.common.utils.Utils
 
-class PromoListHeaderEnabledViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoListHeaderEnabledBinding,
-                                       private val listener: PromoCheckoutActionListener
+class PromoListHeaderEnabledViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoListHeaderEnabledBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoListHeaderUiModel>(viewBinding.root) {
 
     companion object {
@@ -45,12 +46,11 @@ class PromoListHeaderEnabledViewHolder(private val viewBinding: PromoCheckoutMar
                 labelPromoListHeaderSubTitle.text =
                     itemView.context.getString(R.string.label_promo_selectable_template, itemView.context.getString(R.string.label_subtitle_promo_selected))
             } else {
-                labelPromoListHeaderSubTitle.text =  itemView.context.getString(R.string.label_promo_selectable_template, element.uiData.selectablePromoMessage)
+                labelPromoListHeaderSubTitle.text = itemView.context.getString(R.string.label_promo_selectable_template, element.uiData.selectablePromoMessage)
                 labelPromoListHeaderSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
             }
 
             labelPromoListHeaderSubTitle.show()
         }
     }
-
 }

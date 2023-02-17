@@ -29,5 +29,4 @@ class PromoCheckoutAnalyticsTest : BasePromoCheckoutMarketplaceAnalyticsTest() {
     fun performTest() {
         performPromoAnalyticsActions()
     }
-
 }

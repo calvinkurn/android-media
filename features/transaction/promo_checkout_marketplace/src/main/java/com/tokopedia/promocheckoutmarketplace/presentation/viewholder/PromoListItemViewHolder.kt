@@ -26,7 +26,6 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItem
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
-
 class PromoListItemViewHolder(
     private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
     private val listener: PromoCheckoutActionListener
@@ -563,7 +562,8 @@ class PromoListItemViewHolder(
 
     private fun renderPromoDetailButton(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel, timeValidityInfo: PromoInfo?
+        element: PromoListItemUiModel,
+        timeValidityInfo: PromoInfo?
     ) {
         with(viewBinding) {
             if (!element.uiState.isBebasOngkir && !element.uiState.isAttempted) {

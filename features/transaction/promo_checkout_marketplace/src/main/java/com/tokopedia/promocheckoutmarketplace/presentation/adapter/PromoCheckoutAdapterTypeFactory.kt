@@ -12,8 +12,8 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.*
 
-class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionListener)
-    : BaseAdapterTypeFactory(), PromoCheckoutTypeFactory {
+class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionListener) :
+    BaseAdapterTypeFactory(), PromoCheckoutTypeFactory {
 
     override fun type(uiModel: PromoRecommendationUiModel): Int {
         return PromoRecommendationViewHolder.LAYOUT
@@ -99,6 +99,5 @@ class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionL
             }
             else -> super.createViewHolder(view, viewType)
         }
-
     }
 }

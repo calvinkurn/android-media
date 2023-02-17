@@ -6,11 +6,13 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 
 data class CouponListRecommendationRequest(
-        @SerializedName("promo")
-        var promoRequest: PromoRequest = PromoRequest()
+    @SerializedName("promo")
+    var promoRequest: PromoRequest = PromoRequest()
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(parcel.readParcelable(PromoRequest::class.java.classLoader)
-            ?: PromoRequest()) {
+    constructor(parcel: Parcel) : this(
+        parcel.readParcelable(PromoRequest::class.java.classLoader)
+            ?: PromoRequest()
+    ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -30,5 +32,4 @@ data class CouponListRecommendationRequest(
             return arrayOfNulls(size)
         }
     }
-
 }

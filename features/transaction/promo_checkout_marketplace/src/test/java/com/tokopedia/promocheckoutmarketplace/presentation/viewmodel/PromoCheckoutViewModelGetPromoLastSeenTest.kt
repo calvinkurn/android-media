@@ -11,66 +11,65 @@ class PromoCheckoutViewModelGetPromoLastSeenTest : BasePromoCheckoutViewModelTes
 
     @Test
     fun `WHEN get promo last seen and success THEN get promo last seen response should not be null`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessWithData()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assertNotNull(viewModel.getPromoSuggestionResponse.value)
     }
 
     @Test
     fun `WHEN get promo last seen and success with not empty data THEN get promo last seen response state should be show promo last seen`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessWithData()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assert(viewModel.getPromoSuggestionResponse.value?.state == GetPromoSuggestionAction.ACTION_SHOW)
     }
 
     @Test
     fun `WHEN get promo last seen and success with not empty data THEN promo last seen data should not be empty`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessWithData()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assert(viewModel.getPromoSuggestionResponse.value?.data?.uiData?.promoSuggestionItemUiModelList?.isNotEmpty() == true)
     }
 
     @Test
     fun `WHEN get promo last seen and success with empty data THEN get promo last seen response state should not be show promo last seen`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessEmpty()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assert(viewModel.getPromoSuggestionResponse.value?.state != GetPromoSuggestionAction.ACTION_SHOW)
     }
-
 }

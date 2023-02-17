@@ -66,5 +66,4 @@ object IconHelper {
             else -> return IconUnify.IMAGE_BROKEN
         }
     }
-
 }

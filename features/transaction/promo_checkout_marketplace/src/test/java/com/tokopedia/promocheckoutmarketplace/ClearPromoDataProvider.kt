@@ -17,5 +17,4 @@ object ClearPromoDataProvider {
     fun provideClearPromoResponseFailed(): ClearPromoResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/clear_promo_response_failed.json"), ClearPromoResponse::class.java)
     }
-
 }

@@ -17,5 +17,4 @@ object GetPromoLastSeenDataProvider {
     fun provideGetPromoLastSeenSuccessWithData(): GetPromoSuggestionResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_last_seen_success_with_data.json"), GetPromoSuggestionResponse::class.java)
     }
-
 }

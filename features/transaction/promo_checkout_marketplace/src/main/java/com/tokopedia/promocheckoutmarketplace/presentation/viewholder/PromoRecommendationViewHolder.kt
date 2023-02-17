@@ -12,8 +12,9 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import timber.log.Timber
 
-class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoRecommendationBinding,
-                                    private val listener: PromoCheckoutActionListener
+class PromoRecommendationViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoRecommendationBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoRecommendationUiModel>(viewBinding.root) {
 
     companion object {
@@ -75,5 +76,4 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
             }
         }
     }
-
 }

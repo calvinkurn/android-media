@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
 data class PromoInputUiModel(
-        var uiData: UiData,
-        var uiState: UiState
+    var uiData: UiData,
+    var uiState: UiState
 ) : Visitable<PromoCheckoutAdapterTypeFactory> {
 
     override fun type(typeFactory: PromoCheckoutAdapterTypeFactory): Int {
@@ -13,18 +13,17 @@ data class PromoInputUiModel(
     }
 
     data class UiData(
-            var promoCode: String = "",
-            var exception: Throwable? = null,
-            var validSuggestionPromoCode: String = ""
+        var promoCode: String = "",
+        var exception: Throwable? = null,
+        var validSuggestionPromoCode: String = ""
     )
 
     data class UiState(
-            var isButtonSelectEnabled: Boolean = false,
-            var isError: Boolean = false,
-            var isLoading: Boolean = false,
-            var isValidSuggestionPromo: Boolean = false,
-            var viewHeight: Int = 0,
-            var needToDismissBottomsheet: Boolean = false
+        var isButtonSelectEnabled: Boolean = false,
+        var isError: Boolean = false,
+        var isLoading: Boolean = false,
+        var isValidSuggestionPromo: Boolean = false,
+        var viewHeight: Int = 0,
+        var needToDismissBottomsheet: Boolean = false
     )
-
 }

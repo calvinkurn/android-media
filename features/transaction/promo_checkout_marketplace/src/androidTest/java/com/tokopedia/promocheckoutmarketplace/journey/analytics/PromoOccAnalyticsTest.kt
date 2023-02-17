@@ -29,5 +29,4 @@ class PromoOccAnalyticsTest : BasePromoCheckoutMarketplaceAnalyticsTest() {
     fun performTest() {
         performPromoAnalyticsActions()
     }
-
 }

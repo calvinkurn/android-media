@@ -7,7 +7,6 @@ import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutU
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 
 object GetPromoListDataProvider {
@@ -393,5 +392,4 @@ object GetPromoListDataProvider {
     fun provideFragmentData(): FragmentUiModel {
         return uiModelmapper.mapFragmentUiModel(PAGE_CART, "Error message")
     }
-
 }
