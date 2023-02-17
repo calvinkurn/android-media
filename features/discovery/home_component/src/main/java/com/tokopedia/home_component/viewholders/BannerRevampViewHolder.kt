@@ -31,6 +31,7 @@ import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
+import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
 import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -180,11 +181,7 @@ class BannerRevampViewHolder(
     }
 
     private fun getLayoutManager(list: List<BannerItemModel>): LinearLayoutManager {
-        layoutManager = if (list.size == 1) {
-            LinearLayoutManager(itemView.context)
-        } else {
-            PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        }
+        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         return layoutManager
     }
 
@@ -200,20 +197,10 @@ class BannerRevampViewHolder(
         }
 
         val layoutParams = binding?.rvBannerRevamp?.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.setMargins(MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO, itemView.resources.getDimensionPixelOffset(dimenMarginBottom))
-        layoutParams.goneTopMargin = itemView.resources.getDimensionPixelOffset(dimenMarginTop)
         binding?.rvBannerRevamp?.layoutParams = layoutParams
 
         binding?.rvBannerRevamp?.layoutManager = getLayoutManager(list)
-        binding?.rvBannerRevamp?.removeAllItemDecoration()
-        if (binding?.rvBannerRevamp?.itemDecorationCount == 0) {
-            if (list.size == 1) {
-                binding?.rvBannerRevamp?.addItemDecoration(BannerChannelSingleItemDecoration())
-            } else {
-                binding?.rvBannerRevamp?.addItemDecoration(BannerChannelDecoration())
-            }
-        }
-        val adapter = BannerChannelAdapter(list, this, cardInteraction, isUsingDotsAndInfiniteScroll)
+        val adapter = BannerRevampChannelAdapter(list, this, cardInteraction, isUsingDotsAndInfiniteScroll)
         binding?.rvBannerRevamp?.adapter = adapter
     }
 
