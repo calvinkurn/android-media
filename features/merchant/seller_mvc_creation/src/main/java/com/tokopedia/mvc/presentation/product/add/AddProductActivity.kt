@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -17,6 +19,10 @@ class AddProductActivity : BaseSimpleActivity() {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.CREATE)
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                putParcelableArrayList(
+                    BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                    ArrayList()
+                )
             }
 
             val intent = Intent(context, AddProductActivity::class.java)
@@ -25,10 +31,18 @@ class AddProductActivity : BaseSimpleActivity() {
             return intent
         }
 
-        fun buildEditModeIntent(context: Context, voucherConfiguration: VoucherConfiguration): Intent {
+        fun buildEditModeIntent(
+            context: Context,
+            voucherConfiguration: VoucherConfiguration,
+            products: List<Product>
+        ): Intent {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.EDIT)
                 putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                putParcelableArrayList(
+                    BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                    ArrayList(products)
+                )
             }
 
             val intent = Intent(context, AddProductActivity::class.java)
@@ -40,10 +54,12 @@ class AddProductActivity : BaseSimpleActivity() {
 
     private val pageMode by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode ?: PageMode.CREATE }
     private val voucherConfiguration by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration ?: VoucherConfiguration() }
-
+    private val selectedProducts by lazy {
+        intent?.extras?.getParcelableArrayList<Product>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS)
+    }
     override fun getLayoutRes() = R.layout.smvc_activity_add_product
     override fun getParentViewResourceID() = R.id.container
     override fun getNewFragment(): Fragment {
-        return AddProductFragment.newInstance(pageMode, voucherConfiguration)
+        return AddProductFragment.newInstance(pageMode, voucherConfiguration, selectedProducts?.toList().orEmpty())
     }
 }

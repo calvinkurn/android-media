@@ -59,7 +59,12 @@ class AddProductViewModel @Inject constructor(
     fun processEvent(event: AddProductEvent) {
         when(event) {
             is AddProductEvent.FetchRequiredData -> {
-                _uiState.update { it.copy(voucherConfiguration = event.voucherConfiguration) }
+                _uiState.update {
+                    it.copy(
+                        voucherConfiguration = event.voucherConfiguration,
+                        previouslySelectedProducts = event.products
+                    )
+                }
                 getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration)
                 getShopShowcases()
             }
@@ -648,7 +653,14 @@ class AddProductViewModel @Inject constructor(
 
     private fun handleAddNewProducts() {
         launch(dispatchers.computation) {
-            val selectedProducts = currentState.products.filter { it.isSelected }
+            val previouslySelectedProducts = currentState.previouslySelectedProducts
+            val previouslySelectedProductIds = previouslySelectedProducts.map { it.id }
+
+            val newlySelectedProducts = currentState.products
+                .filter { it.isSelected }
+                .filter { it.id !in previouslySelectedProductIds }
+
+            val selectedProducts = previouslySelectedProducts + newlySelectedProducts
 
             val topSellingProductImageUrls = selectedProducts
                 .sortedByDescending { it.txStats.sold }

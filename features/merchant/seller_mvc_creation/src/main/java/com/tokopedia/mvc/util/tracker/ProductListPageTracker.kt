@@ -8,12 +8,12 @@ import javax.inject.Inject
 
 class ProductListPageTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun sendClickBackButtonEvent(pageMode: PageMode) {
+    fun sendClickBackButtonEvent(pageMode: PageMode, voucherId: Long) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click kembali arrow - fourth step")
             .setEventCategory("kupon toko saya - creation daftar produk")
-            .setEventLabel(pageMode.asEventLabel())
+            .setEventLabel(pageMode.asEventLabel(voucherId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39419")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -23,12 +23,12 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
     }
 
 
-    fun sendButtonContinueClickEvent(pageMode: PageMode) {
+    fun sendButtonContinueClickEvent(pageMode: PageMode, voucherId: Long) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click lanjut - fourth step")
             .setEventCategory("kupon toko saya - creation daftar produk")
-            .setEventLabel(pageMode.asEventLabel())
+            .setEventLabel(pageMode.asEventLabel(voucherId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39420")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -37,12 +37,12 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
             .send()
     }
 
-    fun sendClickToolbarBackButtonWithProductSelectedEvent(pageMode: PageMode) {
+    fun sendClickToolbarBackButtonWithProductSelectedEvent(pageMode: PageMode, voucherId: Long) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click kembali arrow - product selected - fourth step")
             .setEventCategory("kupon toko saya - creation daftar produk")
-            .setEventLabel(pageMode.asEventLabel())
+            .setEventLabel(pageMode.asEventLabel(voucherId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39421")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
@@ -51,13 +51,11 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
             .send()
     }
 
-    private fun PageMode.asEventLabel(): String {
-        val mode = if (this == PageMode.CREATE) {
-            "create"
+    private fun PageMode.asEventLabel(voucherId: Long): String {
+        return if (this == PageMode.CREATE || this == PageMode.DUPLICATE) {
+            "voucher_step: create - voucher_id: "
         } else {
-            "edit"
+            "voucher_step: edit - voucher_id: $voucherId"
         }
-
-        return "voucher_step: $mode"
     }
 }

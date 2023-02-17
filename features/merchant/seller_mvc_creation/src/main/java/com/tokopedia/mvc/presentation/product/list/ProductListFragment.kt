@@ -178,7 +178,6 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun setupButton() {
         binding?.btnContinue?.setOnClickListener {
-            tracker.sendButtonContinueClickEvent(pageMode ?: return@setOnClickListener)
             viewModel.processEvent(ProductListEvent.TapContinueButton)
         }
         binding?.btnBack?.setOnClickListener {
@@ -230,22 +229,23 @@ class ProductListFragment : BaseDaggerFragment() {
                         effect.deletedProductCount
                     ), ctaText = getString(R.string.smvc_ok))
             ProductListEffect.ProductDeleted -> binding?.cardUnify2.showToaster(message = getString(R.string.smvc_product_deleted), ctaText = getString(R.string.smvc_ok))
-            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls, effect.pageMode)
+            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.originalPageMode)
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
-            is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
+            is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration, effect.products)
             is ProductListEffect.RedirectToPreviousPage -> redirectToPreviousPage(effect.selectedProductCount, effect.pageMode)
             is ProductListEffect.TapBackButton -> {
-                tracker.sendClickBackButtonEvent(effect.originalPageMode)
+                activity?.finish()
+                tracker.sendClickBackButtonEvent(effect.originalPageMode, voucherConfiguration?.voucherId.orZero())
             }
         }
     }
 
     private fun redirectToPreviousPage(selectedProductCount: Int, pageMode: PageMode) {
         if (selectedProductCount.isZero()) {
-            tracker.sendClickBackButtonEvent(pageMode)
+            tracker.sendClickBackButtonEvent(pageMode, voucherConfiguration?.voucherId.orZero())
         } else {
-            tracker.sendClickToolbarBackButtonWithProductSelectedEvent(pageMode)
+            tracker.sendClickToolbarBackButtonWithProductSelectedEvent(pageMode, voucherConfiguration?.voucherId.orZero())
         }
 
         activity?.finish()
@@ -298,11 +298,7 @@ class ProductListFragment : BaseDaggerFragment() {
             getString(R.string.smvc_placholder_selected_product_count, productCount)
 
         val selectedProductCountWording = if (selectedProductCount.isZero()) {
-            getString(
-                R.string.smvc_select_all,
-                selectedProductCount,
-                productCount
-            )
+            getString(R.string.smvc_select_all)
         } else {
             getString(
                 R.string.smvc_placeholder_review_selected_product_count,
@@ -469,9 +465,13 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun navigateToVoucherPreviewPage(
         voucherConfiguration: VoucherConfiguration,
         selectedProducts: List<SelectedProduct>,
-        selectedParentProductImageUrls: List<String>,
-        pageMode: PageMode
+        originalPageMode: PageMode
     ) {
+        tracker.sendButtonContinueClickEvent(
+            originalPageMode,
+            voucherConfiguration.voucherId.orZero()
+        )
+
         SummaryActivity.start(context, voucherConfiguration, selectedProducts)
         val returnIntent = Intent()
         returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
@@ -484,10 +484,11 @@ class ProductListFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
-    private fun redirectToAddProductPage(voucherConfiguration: VoucherConfiguration) {
+    private fun redirectToAddProductPage(voucherConfiguration: VoucherConfiguration, products: List<Product>) {
         val intent = AddProductActivity.buildEditModeIntent(
             activity ?: return,
-            voucherConfiguration
+            voucherConfiguration,
+            products
         )
         startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION)
     }
