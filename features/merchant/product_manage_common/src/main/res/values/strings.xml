@@ -1,13 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">product_manage_common</string>
     
-    <string name="product_manage_snack_bar_retry">Coba lagi</string>
-    <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
-    <string name="product_manage_stock_description_information_stock">Produk tidak bisa dilihat calon pembeli karena stoknya kosong.</string>
-    <string name="product_manage_stock_info_description">Stock 0 tidak muncul di calon pembeli.</string>
-    <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
-    <string name="product_manage_stock_description_information_stock_reminder">Pengingat Stok sudah diaktifkan dan kamu akan menerima notifikasi saat stok produk ini di bawah %d.</string>
-    <string name="product_manage_stock_description_information_stock_reminder_active">Stok produk di bawah batas min. stok untuk pengingat (%d). Ayo update stok agar pembeli bisa tetap membeli produk ini.</string>
+    <string name="product_manage_snack_bar_retry" tools:keep="@string/product_manage_snack_bar_retry">Coba lagi</string>
+    <string name="product_manage_snack_bar_fail" tools:keep="@string/product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_stock_description_information_stock" tools:keep="@string/product_manage_stock_description_information_stock">Produk tidak bisa dilihat calon pembeli karena stoknya kosong.</string>
+    <string name="product_manage_stock_info_description" tools:keep="@string/product_manage_stock_info_description">Stock 0 tidak muncul di calon pembeli.</string>
+    <string name="product_stock_reminder_toaster_failed_desc" tools:keep="@string/product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_stock_description_information_stock_reminder" tools:keep="@string/product_manage_stock_description_information_stock_reminder">Pengingat Stok sudah diaktifkan dan kamu akan menerima notifikasi saat stok produk ini di bawah %d.</string>
+    <string name="product_manage_stock_description_information_stock_reminder_active" tools:keep="@string/product_manage_stock_description_information_stock_reminder_active">Stok produk di bawah batas min. stok untuk pengingat (%d). Ayo update stok agar pembeli bisa tetap membeli produk ini.</string>
 
     <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_save">Simpan</string>
@@ -20,13 +20,13 @@
     <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
     <string name="product_manage_quick_edit_stock_max_stock">Maks. %s</string>
 
-    <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_quick_edit_stock_success" tools:keep="@string/product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_quick_edit_price_ticker_info">Kamu akan mengubah harga lokasi utama saja. Untuk mengubah harga lokasi lain, akses Tokopedia Seller melalui desktop.</string>
 
-    <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
-    <string name="product_manage_campaign_status_success_toast">Status \"%1$s\" berhasil diubah.</string>
-    <string name="product_manage_campaign_stock_status_success_toast">Status dan stok \"%1$s\" berhasil diubah.</string>
-    <string name="product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
+    <string name="product_manage_campaign_stock_success_toast" tools:keep="@string/product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_status_success_toast" tools:keep="@string/product_manage_campaign_status_success_toast">Status \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_stock_status_success_toast" tools:keep="@string/product_manage_campaign_stock_status_success_toast">Status dan stok \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_stock_error_toast" tools:keep="@string/product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
 
     <string name="content_desc_quickEditStockActivateSwitch">button switch status produk</string>
     <string name="content_desc_quickEditStockQuantityEditor">input stok</string>
@@ -34,13 +34,12 @@
 
     <string name="product_manage_stock_warning_ticker_description">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
     <string name="product_manage_stock_ticker_description"><![CDATA[<b>1.</b> Hanya menampilkan stok di lokasi utama. Atur alokasi stok di lokasi lain lewat desktop. <br><br> <b>2.</b> Perubahan status berlaku untuk semua lokasi.]]></string>
-    <string name="product_manage_closable_stock_ticker_description">Untuk melihat harga, jumlah, dan alokasi stok produk di tiap lokasi, akses Tokopedia Seller melalui Desktop, ya.</string>
-    <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
+    <string name="product_manage_closable_stock_ticker_description" tools:keep="@string/product_manage_closable_stock_ticker_description">Untuk melihat harga, jumlah, dan alokasi stok produk di tiap lokasi, akses Tokopedia Seller melalui Desktop, ya.</string>
+    <string name="product_manage_closable_stock_ticker_title" tools:keep="@string/product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
     <string name="product_manage_ticker_description_format" tools:ignore="UnusedResources"><![CDATA[%s <a href="\"%s\"" target="_blank">%s</a>]]></string>
 
     <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
-    <string name="product_manage_campaign_label">Campaign</string>
     <string name="product_manage_campaign_count">%d Promosi</string>
     <string name="product_manage_suspend_stock_info_description">Stok dikosongkan karena sering terjadi pembatalan</string>
     <string name="product_manage_notify_me_buyer_info_in_edit_stock"><![CDATA[Ada <b>%s</b> calon pembeli yang menunggu produk ini.]]></string>
@@ -48,10 +47,7 @@
     <string name="product_manage_zero_stock_info_in_edit_stock_variant"><![CDATA[Produk dengan stok <b>0</b> belum bisa muncul ke pembeli.]]></string>
     <string name="product_manage_has_stock_alert_info_in_edit_stock_variant">Fitur Pengingat Stok untuk produk ini aktif.</string>
     <string name="product_manage_stock_alert_active_info_in_edit_stock_variant">Stok produk di bawah batas min. pengingat stok.</string>
-    <string name="product_manage_stock_description_information_stock_available">"Produk ini dapat tanda “Stok Tersedia” yang bisa dilihat pembeli di halaman produk. "</string>
-    <string name="product_manage_stock_available">"Tanda “Stok Tersedia” "</string>
-
-    <string name="product_manage_stock_available_title" tools:ignore="UnusedResources">Produkmu bisa dapat tanda “Stok Tersedia”!</string>
-    <string name="product_manage_stock_available_description" tools:ignore="UnusedResources"><![CDATA[Tanda ini akan ada di halaman detail produkmu yang artinya produk siap dibeli. <a href="https://seller.tokopedia.com/edu/reward-tanda-stok-tersedia/" target="_blank">Baca Artikel</a>]]></string>
+    <string name="product_manage_stock_description_information_stock_available" tools:keep="@string/product_manage_stock_description_information_stock_available">"Produk ini dapat tanda “Stok Tersedia” yang bisa dilihat pembeli di halaman produk. "</string>
+    <string name="product_manage_stock_available" tools:keep="@string/product_manage_stock_available">"Tanda “Stok Tersedia” "</string>
 
 </resources>

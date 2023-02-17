@@ -29,18 +29,6 @@ object ProductManageTracking {
         )
     }
 
-    private fun eventEditProduct(action: String, shopId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            EventTracking(
-                ProductManageDataLayer.EVENT_NAME_EDIT_PRODUCT,
-                ProductManageDataLayer.EVENT_CATEGORY_EDIT_PRODUCT,
-                action,
-                "",
-                shopId
-            ).dataTracking
-        )
-    }
-
     private infix fun String.withAllocationType(isVariant: Boolean): String {
         val allocationType =
             if (isVariant) {
@@ -446,13 +434,6 @@ object ProductManageTracking {
         val eventAction =
             ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant
         eventProductManage(eventAction, label)
-    }
-
-    fun eventClickPreviewVariantProduct() {
-        eventProductManage(
-            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT,
-            ""
-        )
     }
 
     fun eventClickCreateProductCoupon(shopId: String) {

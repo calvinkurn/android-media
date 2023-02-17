@@ -2,13 +2,11 @@ package com.tokopedia.product.manage.common.feature.variant.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.databinding.LayoutProductManageTickerBinding
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariantTicker
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.utils.view.binding.viewBinding
 

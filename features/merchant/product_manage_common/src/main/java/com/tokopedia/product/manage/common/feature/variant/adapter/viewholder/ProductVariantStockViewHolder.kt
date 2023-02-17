@@ -144,7 +144,7 @@ class ProductVariantStockViewHolder(
     private fun setupNotifyMeInfo(variant: ProductVariant) {
         binding?.tvIconInfo?.run {
             text = getString(
-                com.tokopedia.product.manage.common.R.string.product_manage_notify_me_buyer_info_in_edit_stock_variant,
+                R.string.product_manage_notify_me_buyer_info_in_edit_stock_variant,
                 variant.notifymeCount.toString()
             ).parseAsHtml()
             setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notify_me_buyer, 0, 0, 0)
@@ -155,7 +155,7 @@ class ProductVariantStockViewHolder(
     private fun setupEmptyStockInfo(variant: ProductVariant) {
         binding?.tvIconInfo?.run {
             text = getString(
-                com.tokopedia.product.manage.common.R.string.product_manage_zero_stock_info_in_edit_stock_variant,
+                R.string.product_manage_zero_stock_info_in_edit_stock_variant,
                 variant.notifymeCount.toString()
             ).parseAsHtml()
             show()
@@ -166,7 +166,7 @@ class ProductVariantStockViewHolder(
     private fun setupStockAlertActiveInfo(variant: ProductVariant) {
         binding?.tvIconInfo?.run {
             text = getString(
-                com.tokopedia.product.manage.common.R.string.product_manage_stock_alert_active_info_in_edit_stock_variant,
+                R.string.product_manage_stock_alert_active_info_in_edit_stock_variant,
                 variant.notifymeCount.toString()
             ).parseAsHtml()
             show()
@@ -182,7 +182,7 @@ class ProductVariantStockViewHolder(
     private fun setupHasStockAlertInfo(variant: ProductVariant) {
         binding?.tvIconInfo?.run {
             text = getString(
-                com.tokopedia.product.manage.common.R.string.product_manage_has_stock_alert_info_in_edit_stock_variant,
+                R.string.product_manage_has_stock_alert_info_in_edit_stock_variant,
                 variant.notifymeCount.toString()
             ).parseAsHtml()
             show()
