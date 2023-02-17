@@ -3,10 +3,10 @@ package com.tokopedia.mvc.util.tracker
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_BUSINESS_UNIT
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_CURRENT_SITE
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_EVENT
+import com.tokopedia.mvc.util.constant.TrackerConstant.EVENT
+import com.tokopedia.mvc.util.constant.TrackerConstant.TRACKER_ID
+import com.tokopedia.mvc.util.constant.TrackerConstant.BUSINESS_UNIT
+import com.tokopedia.mvc.util.constant.TrackerConstant.CURRENT_SITE
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -26,13 +26,13 @@ class VoucherListActionTracker @Inject constructor(
     
     fun sendClickUbahQuotaEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click ubah quota")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39435")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39435")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -40,13 +40,13 @@ class VoucherListActionTracker @Inject constructor(
 
     fun sendClickUbahPeriodEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click ubah period")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39436")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39436")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -54,13 +54,13 @@ class VoucherListActionTracker @Inject constructor(
 
     fun sendClickUbahEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click ubah")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39437")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39437")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -68,13 +68,13 @@ class VoucherListActionTracker @Inject constructor(
 
     fun sendClickLihatDetailEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click lihat detail")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39438")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39438")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -82,13 +82,13 @@ class VoucherListActionTracker @Inject constructor(
     
     fun sendClickBroadcastChatEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click broadcast chat")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39439")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39439")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -96,13 +96,13 @@ class VoucherListActionTracker @Inject constructor(
     
     fun sendClickDownloadEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click download")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39440")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39440")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -110,13 +110,13 @@ class VoucherListActionTracker @Inject constructor(
     
     fun sendClickBatalkanEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click batalkan")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39441")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39441")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -124,13 +124,13 @@ class VoucherListActionTracker @Inject constructor(
     
     fun sendClickBagikanEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click bagikan")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39442")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39442")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -138,13 +138,13 @@ class VoucherListActionTracker @Inject constructor(
     
     fun sendClickHentikanEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click hentikan")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39443")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39443")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -152,13 +152,13 @@ class VoucherListActionTracker @Inject constructor(
 
     fun sendClickDuplikatEvent(voucher: Voucher) {
         Tracker.Builder()
-            .setEvent(MVC_EVENT)
+            .setEvent(EVENT)
             .setEventAction("click duplikat")
             .setEventCategory(EC_VOUCHER_LIST_ACTION_PAGE)
             .setEventLabel(getEventLabel(voucher))
-            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39444")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setCustomProperty(TRACKER_ID, "39444")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
