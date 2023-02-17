@@ -140,14 +140,13 @@ class MpAdsGroupsViewModel @Inject constructor(
         val endIndex = startIndex + min(PER_PAGE,statList.size) - 1
         for(idx in startIndex..endIndex){
             val visitable = visitableList[idx]
-            if(visitable is AdGroupUiModel){
-                visitableList[idx] = AdGroupUiModel(
-                    groupId = visitable.groupId,
-                    groupName = visitable.groupName,
-                    adGroupSetting = visitable.adGroupSetting.copy(),
-                    adGroupStats = statList[idx-startIndex]
-                )
-            }
+            visitable as AdGroupUiModel
+            visitableList[idx] = AdGroupUiModel(
+                groupId = visitable.groupId,
+                groupName = visitable.groupName,
+                adGroupSetting = visitable.adGroupSetting.copy(),
+                adGroupStats = statList[idx-startIndex]
+            )
         }
         updateVisitableLiveData()
     }
@@ -282,19 +281,16 @@ class MpAdsGroupsViewModel @Inject constructor(
       By default it returns for the current page
      */
     private fun getGroupsIds(page:Int = currentPage) : String{
-        return if(page<=currentPage){
-            val grpIdsString = StringBuilder()
-            val dataListSize = adGroupDataList.size
-            val startIndex = (page - 1) * PER_PAGE
-            val endIndex = startIndex + min(PER_PAGE,(dataListSize - startIndex))
-            for(idx in startIndex until endIndex){
-                val groupData = adGroupDataList[idx]
-                grpIdsString.append(groupData.groupId)
-                if(idx!=endIndex-1) grpIdsString.append(",")
-            }
-            grpIdsString.toString()
+        val grpIdsString = StringBuilder()
+        val dataListSize = adGroupDataList.size
+        val startIndex = (page - 1) * PER_PAGE
+        val endIndex = startIndex + min(PER_PAGE,(dataListSize - startIndex))
+        for(idx in startIndex until endIndex){
+            val groupData = adGroupDataList[idx]
+            grpIdsString.append(groupData.groupId)
+            if(idx!=endIndex-1) grpIdsString.append(",")
         }
-        else ""
+        return grpIdsString.toString()
     }
 
     fun chooseAdGroup(selectedPos:Int){

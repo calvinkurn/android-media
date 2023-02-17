@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.GetTopAdsDashboardGroupsV3
+import com.tokopedia.topads.common.data.response.GetTopadsDashboardGroupStatisticsV3
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
 import com.tokopedia.topads.common.data.response.TopAdsGroupsStatisticResponseResponse
 import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsResponse
@@ -511,6 +512,25 @@ class MpAdsGroupsViewModelTest {
         }
         viewModel?.loadFirstPage()
         viewModel?.moveTopAdsGroup(productId)
+        viewModel?.mainListLiveData?.value?.assertLists(expectedList)
+    }
+
+    @Test
+    fun `load first page success empty stats`(){
+        val groupResponse = getAdGroupDummyData()
+        val groupStatsResponse = TopAdsGroupsStatisticResponseResponse(
+            GetTopadsDashboardGroupStatisticsV3()
+        )
+        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+            createAdGroupListWithStatsLoading()
+        }
+        every { getTopAdsGroupsUseCase.getAdGroups("","",1,"",any(),any()) } answers {
+            arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
+        }
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",1,"",any(),any(),any()) } answers {
+            arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponse)
+        }
+        viewModel?.loadFirstPage()
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
