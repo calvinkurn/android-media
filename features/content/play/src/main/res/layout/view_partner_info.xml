@@ -61,6 +61,7 @@
         app:unifyButtonInvers="true"
         app:unifyButtonSize="micro"
         app:layout_constrainedWidth="true"
+        android:ellipsize="none"
         app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
