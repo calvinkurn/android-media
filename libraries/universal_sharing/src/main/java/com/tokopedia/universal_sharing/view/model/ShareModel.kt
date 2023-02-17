@@ -19,6 +19,9 @@ sealed class ShareModel {
     var subjectName: String = ""
     var isAffiliate: Boolean = false
     var socialMediaOrderingScore:Int = 100
+    // this variable is used for personalized campaign that has duration of campaign
+    var personalizedMessageFormat: String = ""
+
 
     /* source id from imagenerator contextual image */
     var sourceId: String = ""

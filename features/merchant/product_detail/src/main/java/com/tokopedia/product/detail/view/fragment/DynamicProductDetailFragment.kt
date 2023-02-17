@@ -290,6 +290,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -3954,6 +3955,17 @@ open class DynamicProductDetailFragment :
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                 ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
                 ?.map { it.urlOriginal } ?: emptyList()
+            val personalizedCampaignModel = PersonalizedCampaignModel(
+                imageGeneratorData.campaignName,
+                viewModel.getDynamicProductInfoP1?.data?.campaign?.discountedPriceFmt ?: "",
+                    viewModel.getDynamicProductInfoP1?.data?.campaign?.percentageAmount ?: 0F,
+                    viewModel.p2Data.value?.upcomingCampaigns?.getOrDefault(
+                    viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+                    null
+                )?.startDate.toLongOrZero(),
+                (viewModel.getDynamicProductInfoP1?.data?.campaign?.endDateUnix
+                    ?: "").toLongOrZero()
+            )
 
             shareProductInstance?.showUniversalShareBottomSheet(
                 fragmentManager = it.supportFragmentManager,
@@ -3968,7 +3980,8 @@ open class DynamicProductDetailFragment :
                 },
                 postBuildImg = { hideProgressDialog() },
                 screenshotDetector,
-                imageGeneratorData
+                imageGeneratorData,
+                personalizedCampaignModel
             )
         }
     }

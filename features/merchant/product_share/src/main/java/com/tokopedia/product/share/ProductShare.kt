@@ -32,8 +32,8 @@ import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWi
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
-import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -340,10 +340,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                         branchTime = (branchEnd - branchStart)
                         postBuildImage.invoke()
                         try {
-                            val shareString = productData.getTextDescription(
-                                activity.applicationContext,
-                                linkerShareResult.url
-                            )
+                            val shareString = String.format(shareModel.personalizedMessageFormat, linkerShareResult.url)
                             shareModel.subjectName = productData.productName ?: ""
                             SharingUtil.executeShareIntent(
                                 shareModel,
@@ -435,6 +432,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         postBuildImg: () -> Unit,
         screenshotDetector: ScreenshotDetector? = null,
         paramImageGenerator: PdpParamModel,
+        personalizedCampaignModel: PersonalizedCampaignModel
     ) {
         cancelShare = false
         resetLog()
@@ -456,6 +454,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
                 setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
+                setPersonalizedCampaign(personalizedCampaignModel)
                 setImageGeneratorParam(paramImageGenerator)
                 init(object : ShareBottomsheetListener {
                     override fun onShareOptionClicked(shareModel: ShareModel) {

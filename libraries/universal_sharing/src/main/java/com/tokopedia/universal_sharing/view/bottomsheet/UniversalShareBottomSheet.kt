@@ -340,6 +340,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var isInitialClickThumbnail = true
 
+    private var personalizedMessage = ""
+
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
         object : DefaultLifecycleObserver {
@@ -1102,6 +1104,45 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    /**
+     * @param model is not null then the campaign is not started
+     * @param endTime is not null then the campaign is on going
+     */
+    fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
+        val context = LinkerManager.getInstance().context
+
+        when (model.getCampaignStatus()) {
+            CampaignStatus.UPCOMING -> {
+                personalizedMessage = context.getString(
+                    R.string.personalized_campaign_message_upcoming,
+                    model.getDiscountString(),
+                    model.discountPrice,
+                    model.getUpcomingString()
+                )
+            }
+            CampaignStatus.ON_GOING -> {
+                personalizedMessage = context.getString(
+                    R.string.personalized_campaign_message_ongoing,
+                    model.getDiscountString(),
+                    model.discountPrice,
+                    model.getEndHourString()
+                )
+            }
+            CampaignStatus.END_SOON -> {
+                personalizedMessage = context.getString(
+                    R.string.personalized_campaign_message_endsoon,
+                    model.getDiscountString(),
+                    model.discountPrice,
+                    model.getMinuteLeft().toString()
+                )
+            }
+            CampaignStatus.NO_CAMPAIGN -> {
+                /* no-op */
+            }
+        }
+
+    }
+
     private fun executePdpContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
         (imageGeneratorParam as? PdpParamModel)?.apply {
@@ -1154,6 +1195,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
+        shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
@@ -1164,6 +1206,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
+        shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
