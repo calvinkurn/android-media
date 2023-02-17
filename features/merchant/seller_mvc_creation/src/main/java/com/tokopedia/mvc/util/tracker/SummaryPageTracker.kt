@@ -1,8 +1,8 @@
 package com.tokopedia.mvc.util.tracker
 
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_BUSINESS_UNIT
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_CURRENT_SITE
-import com.tokopedia.mvc.util.constant.MvcTrackerConstant.TRACKER_ID
+import com.tokopedia.mvc.util.constant.TrackerConstant.TRACKER_ID
+import com.tokopedia.mvc.util.constant.TrackerConstant.BUSINESS_UNIT
+import com.tokopedia.mvc.util.constant.TrackerConstant.CURRENT_SITE
 import com.tokopedia.mvc.util.constant.TrackerConstant.EVENT
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,8 +30,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_SUCCESS)
             .setEventLabel(shareMethodName)
             .setCustomProperty(TRACKER_ID, "39425")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -52,8 +52,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_SUCCESS)
             .setEventLabel(EL_VOUCHER_ID_PREFIX + voucherId)
             .setCustomProperty(TRACKER_ID, "39427")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -70,8 +70,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_PROCESS)
             .setEventLabel("")
             .setCustomProperty(TRACKER_ID, "39422")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -84,8 +84,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_PROCESS)
             .setEventLabel(getEventLavel("", ""))
             .setCustomProperty(TRACKER_ID, "39423")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -98,8 +98,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_PROCESS)
             .setEventLabel("")
             .setCustomProperty(TRACKER_ID, "39424")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .build()
             .send()
     }
@@ -115,8 +115,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_SUMMARY)
             .setEventLabel(getEventLavel(voucherId, "") + EL_DELIMITER + sectionName)
             .setCustomProperty(TRACKER_ID, "40622")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -129,8 +129,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_SUMMARY)
             .setEventLabel(getEventLavel(voucherId, ""))
             .setCustomProperty(TRACKER_ID, "40623")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -143,8 +143,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_SUMMARY)
             .setEventLabel(getEventLavel(voucherId, ""))
             .setCustomProperty(TRACKER_ID, "40624")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
@@ -157,8 +157,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .setEventCategory(EC_CREATION_SUMMARY)
             .setEventLabel(getEventLavel(voucherId, ""))
             .setCustomProperty(TRACKER_ID, "40625")
-            .setBusinessUnit(MVC_BUSINESS_UNIT)
-            .setCurrentSite(MVC_CURRENT_SITE)
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
             .setShopId(userSession.shopId)
             .build()
             .send()
