@@ -229,23 +229,23 @@ class ProductListFragment : BaseDaggerFragment() {
                         effect.deletedProductCount
                     ), ctaText = getString(R.string.smvc_ok))
             ProductListEffect.ProductDeleted -> binding?.cardUnify2.showToaster(message = getString(R.string.smvc_product_deleted), ctaText = getString(R.string.smvc_ok))
-            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.originalPageMode)
+            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts)
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration, effect.products)
-            is ProductListEffect.RedirectToPreviousPage -> redirectToPreviousPage(effect.selectedProductCount, effect.pageMode)
+            is ProductListEffect.RedirectToPreviousPage -> redirectToPreviousPage(effect.selectedProductCount)
             is ProductListEffect.TapBackButton -> {
                 activity?.finish()
-                tracker.sendClickBackButtonEvent(effect.originalPageMode, voucherConfiguration?.voucherId.orZero())
+                tracker.sendClickBackButtonEvent(voucherConfiguration?.voucherId.orZero())
             }
         }
     }
 
-    private fun redirectToPreviousPage(selectedProductCount: Int, pageMode: PageMode) {
+    private fun redirectToPreviousPage(selectedProductCount: Int) {
         if (selectedProductCount.isZero()) {
-            tracker.sendClickBackButtonEvent(pageMode, voucherConfiguration?.voucherId.orZero())
+            tracker.sendClickBackButtonEvent(voucherConfiguration?.voucherId.orZero())
         } else {
-            tracker.sendClickToolbarBackButtonWithProductSelectedEvent(pageMode, voucherConfiguration?.voucherId.orZero())
+            tracker.sendClickToolbarBackButtonWithProductSelectedEvent(voucherConfiguration?.voucherId.orZero())
         }
 
         activity?.finish()
@@ -464,11 +464,9 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun navigateToVoucherPreviewPage(
         voucherConfiguration: VoucherConfiguration,
-        selectedProducts: List<SelectedProduct>,
-        originalPageMode: PageMode
+        selectedProducts: List<SelectedProduct>
     ) {
         tracker.sendButtonContinueClickEvent(
-            originalPageMode,
             voucherConfiguration.voucherId.orZero()
         )
 

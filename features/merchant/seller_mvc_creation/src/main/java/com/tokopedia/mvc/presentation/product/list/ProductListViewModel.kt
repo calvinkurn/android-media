@@ -409,7 +409,7 @@ class ProductListViewModel @Inject constructor(
 
     private fun handleTapToolbarBackIcon() {
         val selectedProductCount = uiState.value.products.count()
-        _uiEffect.tryEmit(ProductListEffect.RedirectToPreviousPage(selectedProductCount, uiState.value.originalPageMode))
+        _uiEffect.tryEmit(ProductListEffect.RedirectToPreviousPage(selectedProductCount))
     }
 
     private fun handleTapBackButton() {

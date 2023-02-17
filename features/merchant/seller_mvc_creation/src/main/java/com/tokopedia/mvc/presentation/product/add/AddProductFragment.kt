@@ -38,7 +38,6 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
-import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
@@ -164,10 +163,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun registerBackPressEvent() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                tracker.sendClickButtonBackToPreviousPageEvent(
-                    pageMode ?: return,
-                    voucherConfiguration?.voucherId.orZero()
-                )
+                tracker.sendClickButtonBackToPreviousPageEvent(voucherConfiguration?.voucherId.orZero())
                 activity?.finish()
             }
         }
@@ -186,10 +182,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupToolbar() {
         binding?.header?.setNavigationOnClickListener {
-            tracker.sendClickToolbarBackButtonEvent(
-                pageMode ?: return@setNavigationOnClickListener,
-                voucherConfiguration?.voucherId.orZero()
-            )
+            tracker.sendClickToolbarBackButtonEvent(voucherConfiguration?.voucherId.orZero())
             activity?.finish()
         }
         binding?.header?.headerSubTitle = getString(R.string.smvc_add_product_subtitle)
@@ -197,10 +190,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupButton() {
         binding?.btnAddProduct?.setOnClickListener {
-            tracker.sendClickAddProductButtonEvent(
-                pageMode ?: return@setOnClickListener,
-                voucherConfiguration?.voucherId.orZero()
-            )
+            tracker.sendClickAddProductButtonEvent(voucherConfiguration?.voucherId.orZero())
 
             if (pageMode == PageMode.CREATE) {
                 viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
