@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSort
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayAffiliateTnCBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import dagger.Binds
 import dagger.Module
@@ -65,4 +66,9 @@ abstract class PlayShortsFragmentModule {
     @IntoMap
     @FragmentKey(ProductPickerUGCBottomSheet::class)
     abstract fun getPlayPlaceholderBottomSheet(bottomSheet: ProductPickerUGCBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayAffiliateTnCBottomSheet::class)
+    abstract fun getPlayAffiliateTnCBottomSheet(fragment: PlayAffiliateTnCBottomSheet): Fragment
 }

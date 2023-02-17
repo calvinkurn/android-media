@@ -22,11 +22,10 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
+import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -42,7 +41,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayAffiliateTnCBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
@@ -54,6 +53,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -244,6 +244,19 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.toolbar.apply {
             navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
+        }
+
+        /** TODO
+         * some logic to check whether to show banner affiliate or not
+         * but BE team is not ready yet
+         */
+        binding.bannerShorts.apply {
+            title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
+            description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
+            bannerIcon = IconUnify.SALDO
+            setOnClickListener {
+                openShortsAffiliateTncBottomSheet()
+            }
         }
     }
 
@@ -664,6 +677,12 @@ class PlayShortsPreparationFragment @Inject constructor(
         analytic.viewSwitchAccountBottomSheet(viewModel.selectedAccount)
 
         ContentAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
+    }
+
+    private fun openShortsAffiliateTncBottomSheet() {
+        PlayAffiliateTnCBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }

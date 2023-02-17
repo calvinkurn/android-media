@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_tnc_shorts_affiliate_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/play_shorts_affiliate_tnc_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_tnc_shorts_affiliate_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/play_shorts_affiliate_tnc_description"
+        app:layout_constraintTop_toBottomOf="@id/tv_tnc_shorts_affiliate_title"
+        app:typographyType="body_1" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_tnc_shorts_affiliate"
+        android:layout_width="@dimen/play_shorts_tnc_image_width"
+        android:layout_height="@dimen/play_shorts_tnc_image_height"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_tnc_shorts_affiliate_description"
+        app:unify_image_url_src="@string/play_shorts_affiliate_tnc" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbx_tnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_tnc_shorts_affiliate" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_accept_tnc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="@string/ugc_onboarding_accept_tnc"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cbx_tnc"
+        app:layout_constraintTop_toTopOf="@id/cbx_tnc"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
