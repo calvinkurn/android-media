@@ -15,6 +15,7 @@ query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: Str
             search_title
             show_choose_address
             tokonow_has_mini_cart_active
+            is_affiliate
             thematic_header {
                   title
        			  subtitle

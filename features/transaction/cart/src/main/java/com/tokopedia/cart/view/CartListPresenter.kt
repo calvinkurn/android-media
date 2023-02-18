@@ -28,6 +28,7 @@ import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
 import com.tokopedia.cart.view.subscriber.AddToCartSubscriber
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
 import com.tokopedia.cart.view.subscriber.ClearRedPromosBeforeGoToCheckoutSubscriber
+import com.tokopedia.cart.view.subscriber.ClearRedPromosBeforeGoToPromoSubscriber
 import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
 import com.tokopedia.cart.view.subscriber.GetRecentViewSubscriber
 import com.tokopedia.cart.view.subscriber.GetRecommendationSubscriber
@@ -1837,6 +1838,15 @@ class CartListPresenter @Inject constructor(
         compositeSubscription.add(
             clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                 .subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
+        )
+    }
+
+    override fun doClearRedPromosBeforeGoToPromo(clearPromoRequest: ClearPromoRequest) {
+        view?.showItemLoading()
+        clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest)
+        compositeSubscription.add(
+            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+                .subscribe(ClearRedPromosBeforeGoToPromoSubscriber(view))
         )
     }
 

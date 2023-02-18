@@ -230,7 +230,8 @@ class LivenessDetectionAnalytics @Inject constructor() {
         val projectIdAlaCarte = listOf(
             PROJECT_ID_HOME_CREDIT,
             PROJECT_ID_CO_BRAND_CC,
-            PROJECT_ID_GO_CICIL
+            PROJECT_ID_GO_CICIL,
+            OFFICIAL_STORE_PROJECT_ID
         )
         return if (projectIdAlaCarte.contains(projectID)) {
             TYPE_ALA_CARTE
@@ -250,6 +251,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
         private const val PROJECT_ID_HOME_CREDIT = "16"
         private const val PROJECT_ID_CO_BRAND_CC = "18"
         private const val PROJECT_ID_GO_CICIL = "21"
+        private const val OFFICIAL_STORE_PROJECT_ID = "23"
         private const val TYPE_ALA_CARTE = "ala carte"
         private const val TYPE_CKYC = "ckyc"
 

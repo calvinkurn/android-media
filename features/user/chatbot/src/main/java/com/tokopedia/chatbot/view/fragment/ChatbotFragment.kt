@@ -84,6 +84,7 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_ITEM_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_VIDEO_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.RemoteConfigHelper
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -292,6 +293,7 @@ class ChatbotFragment :
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
+    private var csatRemoteConfig: Boolean = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
 
     companion object {
@@ -352,19 +354,41 @@ class ChatbotFragment :
     }
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
-        mCsatResponse = csatResponse
-        if (::mCsatResponse.isInitialized) {
-            getBindingView().listQuickReply.hide()
-            showCsatRatingView()
+        if (csatRemoteConfig) {
+            openCsatNewFlow(csatResponse)
+        } else {
+            openCsatOldFlow(csatResponse)
         }
     }
 
-    private fun showCsatRatingView() {
-        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+    private fun openCsatOldFlow(csatResponse: WebSocketCsatResponse) {
+        mCsatResponse = csatResponse
+        if (::mCsatResponse.isInitialized) {
+            getBindingView().listQuickReply.hide()
+            showCsatRatingViewOldFlow()
+        }
+    }
+
+    private fun openCsatNewFlow(csatResponse: WebSocketCsatResponse) {
+        mCsatResponse = csatResponse
+        if (::mCsatResponse.isInitialized) {
+            showCsatRatingViewNewFlow()
+        }
+    }
+
+    private fun showCsatRatingViewOldFlow() {
         getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
             mCsatResponse.attachment?.attributes?.title
-        hideKeyboard()
         getBindingView().chatbotViewHelpRate.layoutOfRate.show()
+        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+        hideKeyboard()
+    }
+
+    private fun showCsatRatingViewNewFlow() {
+        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+        hideKeyboard()
+        smallReplyBox?.hide()
+        onClickEmoji(RATING_FIVE)
     }
 
     private fun hideCsatRatingView() {
@@ -470,7 +494,7 @@ class ChatbotFragment :
             } else {
                 isSendButtonActivated = false
 
-                smallReplyBox?.disableSendButton()
+                disableSendButton()
                 isFloatingSendButton = true
                 val labelType = InvoiceStatusLabelHelper.getLabelType(hashMap[STATUS_COLOR])
 
@@ -554,8 +578,8 @@ class ChatbotFragment :
         )
     }
 
-    fun setDateIndicator(): (String) -> Unit = {
-        if (it.isNotEmpty() && it != context?.resources?.getString(R.string.chatbot_placeholder_date).toBlankOrString()) {
+    private fun setDateIndicator(): (String) -> Unit = {
+        if (it.isNotEmpty()) {
             dateIndicator?.text = it
             dateIndicatorContainer?.show()
         }
@@ -583,6 +607,7 @@ class ChatbotFragment :
 
         smallReplyBox?.bindCommentTextBackground()
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
+        smallReplyBox?.listener = this
 
         setUpBigReplyBoxListeners()
         replyBubbleOnBoardingHasBeenShow = replyBubbleOnBoarding.hasBeenShown()
@@ -603,6 +628,7 @@ class ChatbotFragment :
         viewState?.initView()
         presenter.checkForSession(messageId)
         presenter.checkUploadVideoEligibility(messageId)
+        remoteConfigForCsatExperiment()
         showTicker()
 
         initRecyclerViewListener()
@@ -1055,6 +1081,7 @@ class ChatbotFragment :
         chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
         getViewState()?.hideQuickReplyOnClick()
+        hideCsatRatingView()
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
@@ -1135,6 +1162,7 @@ class ChatbotFragment :
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
         presenter.submitCsatRating(messageId, input)
+        getBindingView().listQuickReply.show()
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
@@ -1160,7 +1188,6 @@ class ChatbotFragment :
         view?.let {
             Toaster.showNormalWithAction(it, msg, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
         }
-        getBindingView().listQuickReply.show()
     }
 
     private fun onPickedAttachImage(resultCode: Int, data: Intent?) {
@@ -2154,12 +2181,12 @@ class ChatbotFragment :
 
     override fun disableSendButton() {
         isSendButtonActivated = false
-        smallReplyBox?.disableSendButton()
+        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
     }
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-        smallReplyBox?.enableSendButton()
+        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send)
     }
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
@@ -2196,6 +2223,10 @@ class ChatbotFragment :
             replyBubbleContainer?.referredMsg,
             onSendingMessage(msg, startTime, replyBubbleContainer?.referredMsg)
         )
+    }
+
+    private fun remoteConfigForCsatExperiment() {
+        csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) } ?: false
     }
 
     override fun onDestroyView() {

@@ -188,6 +188,17 @@ class GoCicilInstallmentDetailBottomSheetRobot {
             radioButtonUnify.performClick()
         }
     }
+
+    fun assertTicker(visible: Boolean) {
+        onView(withId(R.id.ticker_installment_info)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (visible) {
+                assertEquals(View.VISIBLE, view.visibility)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+    }
 }
 
 class OvoActivationBottomSheetRobot {

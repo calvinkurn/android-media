@@ -13,8 +13,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.topchat.chatlist.data.TopChatUrl.Companion.BASE_URL
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl
@@ -64,8 +64,8 @@ open class TemplateChatModule {
         @ApplicationContext context: Context,
         networkRouter: NetworkRouter,
         userSessionInterface: UserSessionInterface
-    ): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
+    ): TkpdOldAuthInterceptor {
+        return TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ActivityScope
@@ -77,7 +77,7 @@ open class TemplateChatModule {
         httpLoggingInterceptor: HttpLoggingInterceptor,
         networkRouter: NetworkRouter,
         userSessionInterface: UserSessionInterface,
-        tkpdAuthInterceptor: TkpdAuthInterceptor
+        tkpdAuthInterceptor: TkpdOldAuthInterceptor
     ): OkHttpClient {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
             .addInterceptor(FingerprintInterceptor(networkRouter, userSessionInterface))

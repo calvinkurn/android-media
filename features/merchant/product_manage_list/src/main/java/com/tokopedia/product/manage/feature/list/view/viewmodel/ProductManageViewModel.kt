@@ -146,8 +146,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _editVariantStockResult
     val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
-    val onClickPromoTopAds: LiveData<TopAdsPage>
-        get() = _onClickPromoTopAds
     val productManageAccess: LiveData<Result<ProductManageAccess>>
         get() = _productManageAccess
     val deleteProductDialog: LiveData<DeleteProductDialogType>
@@ -181,7 +179,6 @@ class ProductManageViewModel @Inject constructor(
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
-    private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
@@ -403,12 +400,16 @@ class ProductManageViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 getTickerUseCase.execute()
             }
-            _tickerData.value = tickerStaticDataProvider.createTicker(
+            _tickerData.value = tickerStaticDataProvider.getTickers(
                 isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty(),
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-            _tickerData.value = tickerStaticDataProvider.createTicker(isMultiLocationShop)
+            _tickerData.value = tickerStaticDataProvider.getTickers(
+                isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty()
+            )
         })
     }
 
@@ -775,23 +776,6 @@ class ProductManageViewModel @Inject constructor(
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
         _toggleMultiSelect.value = !multiSelectEnabled
-    }
-
-    fun onPromoTopAdsClicked(productId: String) {
-        val topAdsInfo = _topAdsInfo.value
-
-        if (topAdsInfo != null) {
-            val shopHasTopAds = topAdsInfo.isTopAds
-            val shopHasAutoAds = topAdsInfo.isAutoAds
-
-            _onClickPromoTopAds.value = when {
-                shopHasAutoAds -> TopAdsPage.AutoAds(productId)
-                shopHasTopAds -> TopAdsPage.ManualAds(productId)
-                else -> TopAdsPage.OnBoarding(productId)
-            }
-        } else {
-            _onClickPromoTopAds.value = TopAdsPage.OnBoarding(productId)
-        }
     }
 
     fun onDeleteSingleProduct(productName: String, productId: String) {

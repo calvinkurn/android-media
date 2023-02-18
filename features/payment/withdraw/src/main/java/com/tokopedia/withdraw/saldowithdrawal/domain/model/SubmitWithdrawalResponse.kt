@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -21,7 +22,29 @@ data class SubmitWithdrawalResponse(
         @SerializedName("errorCode")
         val errorCode: String? = null,
         @SerializedName("joinPromptMessageResponse")
-        val joinPromptMessageResponse: JoinPromptMessageResponse? = null) : Parcelable
+        val joinPromptMessageResponse: JoinPromptMessageResponse? = null,
+        @SerializedName("title")
+        val title: String? = null,
+        @SerializedName("description")
+        val description: String? = null,
+        @SerializedName("header")
+        val header: String? = null,
+        @SerializedName("ctaLink")
+        val ctaLink: String? = null,
+        @SerializedName("ctaWording")
+        val ctaWording: String? = null,
+        @SerializedName("image")
+        val image: String? = null,
+) : Parcelable {
+    fun shouldRedirectToThankYouPage(): Boolean {
+        return status == STATUS_SUCCESS || status == STATUS_INVALID_DATA
+    }
+
+    companion object {
+        const val STATUS_SUCCESS = "success"
+        const val STATUS_INVALID_DATA = "invalid_data"
+    }
+}
 
 data class JoinPromptMessageResponse(
         @SerializedName("title")

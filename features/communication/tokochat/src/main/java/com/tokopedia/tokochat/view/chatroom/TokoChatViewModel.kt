@@ -266,11 +266,11 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun loadChatRoomTicker() {
-        launchCatchError(block = {
+        launchCatchError(context = dispatcher.io, block = {
             val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
-            _chatRoomTicker.value = Success(result)
+            _chatRoomTicker.postValue(Success(result))
         }, onError = {
-                _chatRoomTicker.value = Fail(it)
+                _chatRoomTicker.postValue(Fail(it))
             })
     }
 
@@ -379,7 +379,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TOKOFOOD_SERVICE_TYPE = 5
+        const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
     }

@@ -11,4 +11,5 @@ interface PlayViewerRepository : PlayViewerCartRepository,
         PlayViewerTagItemRepository,
         PlayViewerBroTrackerRepository,
         PlayViewerUserReportRepository,
-        PlayViewerSocketRepository
+        PlayViewerSocketRepository,
+        PlayExploreWidgetRepository
