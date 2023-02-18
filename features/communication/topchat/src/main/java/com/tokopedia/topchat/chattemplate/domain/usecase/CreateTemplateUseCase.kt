@@ -16,7 +16,7 @@ open class CreateTemplateUseCase @Inject constructor(
 ) : CoroutineUseCase<CreateTemplateUseCase.Param, ChatAddTemplateResponse>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
-        mutation chatAddTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_VALUE: String) {
+        mutation chatAddTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_VALUE: String!) {
           chatAddTemplate($PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_VALUE: $$PARAM_VALUE){
             success
           }
@@ -36,7 +36,7 @@ open class CreateTemplateUseCase @Inject constructor(
     ) : GqlParam
 
     companion object {
-        private const val PARAM_IS_SELLER = "is_seller"
+        private const val PARAM_IS_SELLER = "isSeller"
         private const val PARAM_VALUE = "value"
     }
 }

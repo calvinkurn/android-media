@@ -41,11 +41,4 @@ object TemplateChatMapper {
             list.add(templateChatModel)
         }
     }
-
-//    fun TemplateData.mapToEditTemplateUiModel(): EditTemplateResultModel {
-//        val model = EditTemplateResultModel()
-//        model.isSuccess = this.isSuccess
-//        model.isEnabled = this.isIsEnable
-//        return model
-//    }
 }
