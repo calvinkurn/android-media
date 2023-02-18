@@ -1,46 +1,41 @@
 package com.tokopedia.sellerapp.presentation.viewmodel
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import androidx.lifecycle.viewModelScope
-import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
+import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
-import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.interactor.OrderUseCase
+import com.tokopedia.sellerapp.domain.model.NotificationModel
 import com.tokopedia.sellerapp.domain.model.OrderModel
-import com.tokopedia.sellerapp.domain.model.PhoneState
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
-import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
-import com.tokopedia.sellerapp.util.MenuHelper
+import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_NEW_ORDER
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
-    private val orderUseCaseImpl: OrderUseCaseImpl,
+    dispatchers: CoroutineDispatchers,
+    private val orderUseCase: OrderUseCase,
     private val getSummaryUseCase: GetSummaryUseCase,
-    private val getOrderUseCase: OrderUseCaseImpl,
     private val capabilityClient: CapabilityClient,
-    private val remoteActivityHelper: RemoteActivityHelper,
+    private val getNotificationUseCase: GetNotificationUseCase,
     private val clientMessageDatasource: ClientMessageDatasource
 ) : BaseViewModel(dispatchers.io) {
 
@@ -52,6 +47,7 @@ class SharedViewModel @Inject constructor(
     init {
         launch {
             clientMessageDatasource.sendMessagesToNodes(Action.GET_ORDER_LIST)
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_NOTIFICATION_LIST)
             clientMessageDatasource.sendMessagesToNodes(Action.GET_SUMMARY)
         }
     }
@@ -71,15 +67,22 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
-    private val _orderSummary = MutableStateFlow<UiState<SummaryModel>>(UiState.Loading())
-    val orderSummary : StateFlow<UiState<SummaryModel>> = _orderSummary.stateIn(
+    private val _notifications = MutableStateFlow<UiState<List<NotificationModel>>>(UiState.Loading())
+    val notifications : StateFlow<UiState<List<NotificationModel>>> = _notifications.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
         initialValue = UiState.Idle()
     )
 
-    private val _currentState = MutableStateFlow<UiState<PhoneState>>(UiState.Loading())
-    val currentState : StateFlow<UiState<PhoneState>> = _currentState.stateIn(
+    private val _notificationDetail = MutableStateFlow<UiState<NotificationModel>>(UiState.Loading())
+    val notificationDetail : StateFlow<UiState<NotificationModel>> = _notificationDetail.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
+    private val _orderSummary = MutableStateFlow<UiState<SummaryModel>>(UiState.Loading())
+    val orderSummary : StateFlow<UiState<SummaryModel>> = _orderSummary.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
         initialValue = UiState.Idle()
@@ -92,10 +95,6 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
-    private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
-    val action: StateFlow<UiState<Boolean>>
-        get() = _action
-
     private var _acceptBulkOrder= MutableStateFlow<UiState<Unit>>(UiState.Loading())
     val acceptBulkOrder: StateFlow<UiState<Unit>> = _acceptBulkOrder.stateIn(
         scope = viewModelScope,
@@ -103,67 +102,9 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
-    fun checkPhoneState() {
-        viewModelScope.launch {
-            checkIfPhoneHasApp()
-        }
-    }
-
-    fun getOrderSummary(dataKey: String) {
-        viewModelScope.launch {
-            _orderSummary.emitAll(
-                getSummaryUseCase.getOrderSummary(dataKey).map {
-                    UiState.Success(data = it)
-                }
-            )
-        }
-    }
-
-    fun getOrderList(dataKey: String) {
-        viewModelScope.launch {
-            _orderList.emitAll(
-                orderUseCaseImpl.getOrderList(dataKey).map {
-                    UiState.Success(data = it)
-                }
-            )
-        }
-    }
-
-    fun getOrderDetail(orderId: String) {
-        viewModelScope.launch {
-            _orderDetail.emitAll(
-                orderUseCaseImpl.getOrderDetail(orderId).map {
-                    UiState.Success(data = it)
-                }
-            )
-        }
-    }
-
-    fun sendRequest() {
-        launchCatchError(block = {
-            _action.value = UiState.Loading()
-
-            // call usecase method
-
-            _action.value = UiState.Success()
-        }, onError = { throwable ->
-            _action.value = UiState.Fail(
-                throwable = throwable
-            )
-        })
-    }
-
-    fun sendRequestAcceptBulkOrder(listOrderId: List<String>) {
-        launch {
-            clientMessageDatasource.sendMessagesToNodes(Action.ACCEPT_BULK_ORDER, listOrderId)
-        }
-    }
-
-    fun resetAcceptBulkOrderState() {
-        launch {
-            _acceptBulkOrder.emit(UiState.Loading())
-        }
-    }
+    private val _ifPhoneHasApp = MutableStateFlow(false)
+    val ifPhoneHasApp: StateFlow<Boolean>
+        get() = _ifPhoneHasApp
 
     private fun getUpdatedMenuCounter(listSummary: List<SummaryModel>) : List<MenuItem> {
         return homeMenu.value.toMutableList().apply {
@@ -179,9 +120,79 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private val _ifPhoneHasApp: MutableStateFlow<Boolean?> = MutableStateFlow(null)
-    val ifPhoneHasApp: StateFlow<Boolean?>
-        get() = _ifPhoneHasApp
+    private fun openNewOrderList() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_NEW_ORDER_LIST)
+        }
+    }
+
+    private fun openReadyToShip() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_READY_TO_SHIP)
+        }
+    }
+
+    fun getNotificationList() {
+        launch {
+            _notifications.emitAll(
+                getNotificationUseCase.getNotificationList().map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
+
+    fun getNotificationDetail(notificationId: String) {
+        launch {
+            _notificationDetail.emitAll(
+                getNotificationUseCase.getNotificationDetail(notificationId).map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
+
+    fun getOrderSummary(dataKey: String) {
+        launch {
+            _orderSummary.emitAll(
+                getSummaryUseCase.getOrderSummary(dataKey).map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
+
+    fun getOrderList(dataKey: String) {
+        launch {
+            _orderList.emitAll(
+                orderUseCase.getOrderList(dataKey).map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
+
+    fun getOrderDetail(orderId: String) {
+        launch {
+            _orderDetail.emitAll(
+                orderUseCase.getOrderDetail(orderId).map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
+
+    fun sendRequestAcceptBulkOrder(listOrderId: List<String>) {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.ACCEPT_BULK_ORDER, listOrderId)
+        }
+    }
+
+    fun resetAcceptBulkOrderState() {
+        launch {
+            _acceptBulkOrder.emit(UiState.Loading())
+        }
+    }
 
     fun checkIfPhoneHasApp() {
         launch {
@@ -190,46 +201,17 @@ class SharedViewModel @Inject constructor(
                     .getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)
                     .await()
 
-                withContext(dispatchers.main) {
-                    // There should only ever be one phone in a node set (much less w/ the correct
-                    // capability), so I am just grabbing the first one (which should be the only one).
-                    val nodes = capabilityInfo.nodes
-                    val androidPhoneNodeWithApp =
-                        nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
-                    val phoneHasApp = androidPhoneNodeWithApp != null
-                    _ifPhoneHasApp.value = phoneHasApp
+                // There should only ever be one phone in a node set (much less w/ the correct
+                // capability), so I am just grabbing the first one (which should be the only one).
+                val nodes = capabilityInfo.nodes
+                val androidPhoneNodeWithApp = nodes.firstOrNull { it.isNearby }?.id
+                val phoneHasApp = androidPhoneNodeWithApp != null
+                _ifPhoneHasApp.value = phoneHasApp
 
-                    if (phoneHasApp) {
-                        clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
-                    }
+                if (phoneHasApp) {
+                    clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
                 }
-            } catch (cancellationException: CancellationException) {
-                // Request was cancelled normally
-            } catch (throwable: Throwable) {
-
-            }
-        }
-    }
-
-    fun openAppInStoreOnPhone() {
-        val intent = Intent(Intent.ACTION_VIEW)
-            .addCategory(Intent.CATEGORY_BROWSABLE)
-            .setData(Uri.parse(MARKET_TOKOPEDIA))
-
-        launch {
-            startRemoteActivity(remoteActivityHelper, intent)
-        }
-    }
-
-    fun openNewOrderList() {
-        launch {
-            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_NEW_ORDER_LIST)
-        }
-    }
-
-    fun openReadyToShip() {
-        launch {
-            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_READY_TO_SHIP)
+            } catch (throwable: Throwable) { /* nothing to do */ }
         }
     }
 
@@ -239,29 +221,14 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private suspend fun startRemoteActivity(
-        remoteActivityHelper: RemoteActivityHelper,
-        intent: Intent,
-    ) {
-        try {
-            remoteActivityHelper.startRemoteActivity(intent).await()
-        } catch (cancellationException: CancellationException) {
-            // Request was cancelled normally
-            throw cancellationException
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
-        }
-    }
-
     fun setAcceptOrderSuccess() {
-        launchCatchError(block = {
+        launch {
             _acceptBulkOrder.emit(UiState.Success())
-        }){
         }
     }
 
     fun openOrderPageBasedOnType(orderType: String) {
-        if (orderType == MenuHelper.DATAKEY_NEW_ORDER) {
+        if (orderType == DATAKEY_NEW_ORDER) {
             openNewOrderList()
         } else {
             openReadyToShip()

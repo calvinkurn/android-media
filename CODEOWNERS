@@ -44,6 +44,8 @@
 /features/user/notif-troubleshooter/                    @tokopedia/android-miniondave-dev
 /features/user/settingnotif/                    		@tokopedia/android-miniondave-dev
 
+/features/watch/                                        @tokopedia/android-core-dev
+
 /features/common/app_common                             @tokopedia/android-core-dev
 /features/common/developer_options                  	@tokopedia/android-core-dev
 /features/common/nps                                	@tokopedia/android-core-dev
@@ -248,7 +250,7 @@
 /features/communication/topchat/                        @tokopedia/android-minionkevin-dev
 /features/communication/tokochat/                       @tokopedia/android-minionkevin-dev
 /features/communication/tokochat_common/                @tokopedia/android-minionkevin-dev
-/features/tokochat_config_common/                       @tokopedia/android-minionkevin-dev
+/features/communication/tokochat_config_common/         @tokopedia/android-minionkevin-dev
 
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
@@ -338,7 +340,7 @@
 /libraries/iris/										@tokopedia/android-gatekeeperanalytic-dev
 /libraries/iris_session/	                            @tokopedia/android-gatekeeperanalytic-dev
 /libraries/kotlin_extensions/							@tokopedia/android-core-dev
-/libraries/linker/										@tokopedia/android-core-dev
+/libraries/linker/										@tokopedia/android-minionkevin-dev
 /libraries/lint/										@tokopedia/android-miniondarth-dev
 /libraries/liveness_lib/								@tokopedia/android-core-dev
 /libraries/locationmanager/								@tokopedia/android-core-dev
@@ -380,7 +382,7 @@
 /libraries/telemetry                                    @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
-/libraries/universal_sharing/							@tokopedia/android-core-dev
+/libraries/universal_sharing/							@tokopedia/android-minionkevin-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
@@ -407,6 +409,7 @@
 /build.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
+/wearosapp/                                        @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 /testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev

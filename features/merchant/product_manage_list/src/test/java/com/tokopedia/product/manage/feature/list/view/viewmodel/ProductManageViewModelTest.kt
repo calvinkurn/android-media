@@ -930,11 +930,16 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
-            onGetStatusShop_thenReturn(StatusInfo("3", "", "", ""))
             onGetTickerList_thenReturn(tickerResponse)
             onGetTickerData_thenReturn(listOf(mockk()), tickerResponse)
             onGetIsShowStockAvailableTicker(true)
+            val statusShop = StatusInfo("1", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
 
+            val accessData = Data(listOf(Access(ADD_PRODUCT)))
+            val accessResponse = Response(data = accessData)
+
+            onGetProductManageAccess_thenReturn(accessResponse)
             viewModel.getProductManageAccess()
             viewModel.getTickerData()
             viewModel.getProductList(shopId, paramsProductList)
@@ -978,6 +983,14 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetTickerData_thenReturn(listOf(mockk()), tickerResponse)
             onGetIsShowStockAvailableTicker(true)
 
+            val statusShop = StatusInfo("1", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
+
+            val accessData = Data(listOf(Access(ADD_PRODUCT)))
+            val accessResponse = Response(data = accessData)
+
+            onGetProductManageAccess_thenReturn(accessResponse)
+            viewModel.getProductManageAccess()
             viewModel.getTickerData()
             viewModel.getProductList(shopId)
             viewModel.hideTicker()
@@ -1103,11 +1116,21 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("1", MAIN_LOCATION),
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
+
             onGetWarehouseId_thenReturn(locationList)
             onGetIsShowStockAvailableTicker(true)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+
             onGetProductList_thenReturn(productListData)
             onGetTickerData_thenReturn(listOf(mockk()), mockk())
+            val statusShop = StatusInfo("1", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
+
+            val accessData = Data(listOf(Access(ADD_PRODUCT)))
+            val accessResponse = Response(data = accessData)
+
+            onGetProductManageAccess_thenReturn(accessResponse)
+            viewModel.getProductManageAccess()
             viewModel.getTickerData()
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
@@ -2228,41 +2251,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `given productId when promo top ads clicked should set live data with top ads page`() {
-        val productId = "1"
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = MANUAL_ADS,
-            expectedPage = TopAdsPage.ManualAds(productId)
-        )
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = AUTO_ADS,
-            expectedPage = TopAdsPage.AutoAds(productId)
-        )
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = UNKNOWN_ADS,
-            expectedPage = TopAdsPage.OnBoarding(productId)
-        )
-    }
-
-    @Test
-    fun `given topAdsInfo NULL when promo top ads clicked should set live data with onboarding page`() {
-        val productId = "1"
-
-        viewModel.onPromoTopAdsClicked(productId)
-
-        val expectedPage = TopAdsPage.OnBoarding(productId)
-
-        viewModel.onClickPromoTopAds
-            .verifyValueEquals(expectedPage)
-    }
-
-    @Test
     fun `given user is shop owner when get product manage access should set live data with owner access`() {
         onGetIsShopOwner_thenReturn(isShopOwner = true)
 
@@ -2482,6 +2470,14 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             )
             onGetTickerData_thenReturn(tickerData, tickerResponse)
 
+            val statusShop = StatusInfo("1", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
+
+            val accessData = Data(listOf(Access(ADD_PRODUCT)))
+            val accessResponse = Response(data = accessData)
+
+            onGetProductManageAccess_thenReturn(accessResponse)
+            viewModel.getProductManageAccess()
             viewModel.getTickerData()
 
             verifyTickerDataEquals(tickerData)
@@ -2541,16 +2537,21 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
-            val statusInfo = StatusInfo("3", "", "", "")
-            onGetStatusShop_thenReturn(statusInfo)
             onGetIsShopOwner_thenReturn(isShopOwner = true)
             onGetTickerData_thenReturn(listOf(mockk()), mockk())
+            val statusShop = StatusInfo("1", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
+
+            val accessData = Data(listOf(Access(ADD_PRODUCT)))
+            val accessResponse = Response(data = accessData)
+
+            onGetProductManageAccess_thenReturn(accessResponse)
             viewModel.getProductManageAccess()
             viewModel.getProductList(shopId, paramsProductList)
             viewModel.getTickerData()
             viewModel.showTicker()
             viewModel.shopStatus
-                .verifyValueEquals(statusInfo)
+                .verifyValueEquals(statusShop)
             viewModel.showTicker.verifyValueEquals(true)
         }
     }
@@ -2716,24 +2717,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         viewModel.productManageAccess
             .verifySuccessEquals(expectedResult)
-    }
-
-    private fun testOnClickPromoTopAds(
-        productId: String,
-        adsCategory: Int,
-        expectedPage: TopAdsPage
-    ) {
-        val topAdsData = ShopInfoTopAds(Data(category = adsCategory))
-        val response = ShopInfoTopAdsResponse(topAdsData)
-
-        onGetShopInfoTopAds_thenReturn(response)
-
-        viewModel.getTopAdsInfo()
-        viewModel.onPromoTopAdsClicked(productId)
-
-
-        viewModel.onClickPromoTopAds
-            .verifyValueEquals(expectedPage)
     }
 
     private fun testGetTopAdsInfo(
@@ -2925,8 +2908,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         tickerResponse: GetTargetedTickerResponse
     ) {
         every {
-            tickerStaticDataProvider.createTicker(
+            tickerStaticDataProvider.getTickers(
                 true,
+                "1",
                 tickerResponse.getTargetedTicker?.tickers.orEmpty()
             )
         } returns tickerData

@@ -10,8 +10,11 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -48,6 +51,8 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
+import rx.observers.TestSubscriber
+import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 
 class ShipmentPresenterClearPromoTest {
@@ -75,6 +80,9 @@ class ShipmentPresenterClearPromoTest {
 
     @MockK
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
+
+    @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
 
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
@@ -112,6 +120,9 @@ class ShipmentPresenterClearPromoTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -122,13 +133,30 @@ class ShipmentPresenterClearPromoTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
         )
         presenter.attachView(view)
     }
@@ -400,7 +428,9 @@ class ShipmentPresenterClearPromoTest {
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         val presenterSpy = spyk(presenter)
-        every { presenterSpy.getClearPromoOrderByUniqueId(any(), any()) } returns ClearPromoOrder(uniqueId = "1")
+        every { presenterSpy.getClearPromoOrderByUniqueId(any(), any()) } returns ClearPromoOrder(
+            uniqueId = "1"
+        )
         presenterSpy.shipmentCartItemModelList = null
 
         // When
@@ -777,5 +807,79 @@ class ShipmentPresenterClearPromoTest {
 
         // Then
         assert(result == null)
+    }
+
+    @Test
+    fun `WHEN clear BBO promo success from schedule delivery THEN should complete publisher`() {
+        // Given
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = true,
+            shouldStopInValidateUsePromo = false
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "123",
+            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+            cartItemModels = listOf(CartItemModel())
+        )
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        presenter.cancelAutoApplyPromoStackLogistic(
+            0,
+            "code",
+            shipmentCartItemModel
+        )
+
+        // Then
+        verify {
+            view.onSuccessClearPromoLogistic(0, any())
+        }
+        testSubscriber.assertCompleted()
+    }
+
+    @Test
+    fun `WHEN clear BBO promo failed from schedule delivery THEN should complete publisher`() {
+        // Given
+        val errorMessage = "error"
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(
+            Throwable(errorMessage)
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = true,
+            shouldStopInValidateUsePromo = false
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "123",
+            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+            cartItemModels = listOf(CartItemModel())
+        )
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        presenter.cancelAutoApplyPromoStackLogistic(
+            0,
+            "code",
+            shipmentCartItemModel
+        )
+
+        // Then
+        testSubscriber.assertCompleted()
     }
 }

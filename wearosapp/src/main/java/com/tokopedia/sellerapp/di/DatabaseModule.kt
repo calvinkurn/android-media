@@ -30,6 +30,10 @@ object DatabaseModule {
 
     @Singleton
     @Provides
+    fun provideNotificationDao(database: WearDatabase) = database.notificationDao()
+
+    @Singleton
+    @Provides
     fun provideSummaryDao(database: WearDatabase) = database.summaryDao()
 
 }

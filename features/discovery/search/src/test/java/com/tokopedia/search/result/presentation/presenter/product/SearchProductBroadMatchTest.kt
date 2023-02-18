@@ -65,6 +65,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         `When Load Data`()
 
         `Then assert view will only show empty search`()
+        `Then verify recommendation use case is called`()
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -90,6 +91,12 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         )
     }
 
+    private fun `Then verify recommendation use case is called`() {
+        verify {
+            recommendationUseCase.execute(any(), any())
+        }
+    }
+
     @Test
     fun `Show empty result when response code is 0, 4, or 5 but does not have broad match`() {
         val searchProductModel = broadMatchResponseCode4ButNoBroadmatch.jsonToObject<SearchProductModel>()
@@ -99,6 +106,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         `When Load Data`()
 
         `Then assert view will only show empty search`()
+        `Then verify recommendation use case is called`()
     }
 
     @Test
@@ -120,21 +128,28 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             keyword,
         )
         `Then assert visitable list does not contain Separator`(visitableList)
+        `Then verify recommendation use case is not called`()
     }
 
     private fun `Given keyword from view`(keyword: String) {
         every { productListView.queryKey } returns keyword
     }
 
+    private fun `Then assert view updater will show product list`() {
+        verify {
+            productListView.setProductList(capture(visitableListSlot))
+            productListView.updateScrollListener()
+            productListView.hideRefreshLayout()
+        }
+    }
+
     private fun `Then assert visitable list does not contain Separator`(visitableList: List<Visitable<*>>) {
         assertFalse(visitableList.any { it is VerticalSeparable && it.verticalSeparator !is VerticalSeparator.None })
     }
 
-    private fun `Then assert view updater will show product list`() {
-        verify {
-            viewUpdater.setItems(capture(visitableListSlot))
-            productListView.updateScrollListener()
-            productListView.hideRefreshLayout()
+    private fun `Then verify recommendation use case is not called`() {
+        verify(exactly = 0) {
+            recommendationUseCase.execute(any(), any())
         }
     }
 
