@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chattemplate.viewmodel.chat_template
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topchat.chattemplate.domain.pojo.ChatMoveTemplateResponse
+import com.tokopedia.topchat.chattemplate.view.viewmodel.ChatTemplateViewModel.Companion.ERROR_REARRANGE_TEMPLATE
 import com.tokopedia.topchat.chattemplate.viewmodel.chat_template.base.BaseChatTemplateViewModelTest
 import io.mockk.coEvery
 import org.junit.Assert
@@ -47,6 +49,50 @@ class ArrangeTemplateViewModelTest : BaseChatTemplateViewModelTest() {
         Assert.assertEquals(
             null,
             viewModel.arrangeTemplate.value?.error
+        )
+    }
+
+    @Test
+    fun should_give_error_when_not_success_arrange_template_buyer() {
+        // Given
+        val isSeller = false
+        val expectedResponse = ChatMoveTemplateResponse().apply {
+            this.chatMoveTemplate.success = 0
+        }
+        val expectedException = MessageErrorException(ERROR_REARRANGE_TEMPLATE)
+        coEvery {
+            rearrangeTemplateUseCase(any())
+        } returns expectedResponse
+
+        // When
+        viewModel.rearrangeTemplate(isSeller, 0, 1)
+
+        // Then
+        Assert.assertEquals(
+            expectedException.message,
+            viewModel.arrangeTemplate.value?.error?.message
+        )
+    }
+
+    @Test
+    fun should_give_error_when_not_success_arrange_template_seller() {
+        // Given
+        val isSeller = true
+        val expectedResponse = ChatMoveTemplateResponse().apply {
+            this.chatMoveTemplate.success = 0
+        }
+        val expectedException = MessageErrorException(ERROR_REARRANGE_TEMPLATE)
+        coEvery {
+            rearrangeTemplateUseCase(any())
+        } returns expectedResponse
+
+        // When
+        viewModel.rearrangeTemplate(isSeller, 0, 1)
+
+        // Then
+        Assert.assertEquals(
+            expectedException.message,
+            viewModel.arrangeTemplate.value?.error?.message
         )
     }
 

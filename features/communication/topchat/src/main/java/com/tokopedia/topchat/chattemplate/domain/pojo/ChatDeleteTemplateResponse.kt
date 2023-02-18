@@ -9,5 +9,5 @@ data class ChatDeleteTemplateResponse(
 
 data class ChatDeleteTemplate(
     @SerializedName("success")
-    val success: Int = 0
+    var success: Int = 0
 )

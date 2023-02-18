@@ -1,7 +1,9 @@
 package com.tokopedia.topchat.chattemplate.viewmodel.chat_template
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topchat.chattemplate.domain.pojo.ChatToggleTemplate
 import com.tokopedia.topchat.chattemplate.domain.pojo.ChatToggleTemplateResponse
+import com.tokopedia.topchat.chattemplate.view.viewmodel.ChatTemplateViewModel
 import com.tokopedia.topchat.chattemplate.viewmodel.chat_template.base.BaseChatTemplateViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -15,6 +17,30 @@ class ToggleTemplateViewModelTest : BaseChatTemplateViewModelTest() {
     fun should_give_chat_template_response_when_success_switch_template_true_buyer() {
         // Given
         val isEnable = true
+        val isSeller = false
+        val expectedResponse = ChatToggleTemplateResponse(
+            chatToggleTemplate = ChatToggleTemplate(
+                success = 1
+            )
+        )
+        coEvery {
+            toggleTemplateUseCase(any())
+        } returns expectedResponse
+
+        // When
+        viewModel.toggleTemplate(isSeller, isEnable)
+
+        // Then
+        Assert.assertEquals(
+            expectedResponse.chatToggleTemplate.success,
+            (viewModel.templateAvailability.value?.second as Success).data
+        )
+    }
+
+    @Test
+    fun should_give_chat_template_response_when_success_switch_template_true_buyer_but_disabled() {
+        // Given
+        val isEnable = false
         val isSeller = false
         val expectedResponse = ChatToggleTemplateResponse(
             chatToggleTemplate = ChatToggleTemplate(
@@ -66,9 +92,10 @@ class ToggleTemplateViewModelTest : BaseChatTemplateViewModelTest() {
         val isSeller = false
         val expectedResponse = ChatToggleTemplateResponse(
             chatToggleTemplate = ChatToggleTemplate(
-                success = 1
+                success = 0
             )
         )
+        val expectedError = MessageErrorException(ChatTemplateViewModel.ERROR_TOGGLE_TEMPLATE)
         coEvery {
             toggleTemplateUseCase(any())
         } returns expectedResponse
@@ -78,8 +105,8 @@ class ToggleTemplateViewModelTest : BaseChatTemplateViewModelTest() {
 
         // Then
         Assert.assertEquals(
-            expectedResponse.chatToggleTemplate.success,
-            (viewModel.templateAvailability.value?.second as Success).data
+            expectedError.message,
+            (viewModel.templateAvailability.value?.second as Fail).throwable.message
         )
     }
 
@@ -90,9 +117,10 @@ class ToggleTemplateViewModelTest : BaseChatTemplateViewModelTest() {
         val isSeller = true
         val expectedResponse = ChatToggleTemplateResponse(
             chatToggleTemplate = ChatToggleTemplate(
-                success = 1
+                success = 0
             )
         )
+        val expectedError = MessageErrorException(ChatTemplateViewModel.ERROR_TOGGLE_TEMPLATE)
         coEvery {
             toggleTemplateUseCase(any())
         } returns expectedResponse
@@ -102,8 +130,8 @@ class ToggleTemplateViewModelTest : BaseChatTemplateViewModelTest() {
 
         // Then
         Assert.assertEquals(
-            expectedResponse.chatToggleTemplate.success,
-            (viewModel.templateAvailability.value?.second as Success).data
+            expectedError.message,
+            (viewModel.templateAvailability.value?.second as Fail).throwable.message
         )
     }
 
