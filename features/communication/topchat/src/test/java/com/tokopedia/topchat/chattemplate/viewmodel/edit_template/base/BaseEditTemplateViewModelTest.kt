@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase
-import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase
+import com.tokopedia.topchat.chattemplate.domain.usecase.UpdateTemplateUseCase
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -17,7 +17,7 @@ abstract class BaseEditTemplateViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var editTemplateUseCase: EditTemplateUseCase
+    lateinit var updateTemplateUseCase: UpdateTemplateUseCase
 
     @RelaxedMockK
     lateinit var createTemplateUseCase: CreateTemplateUseCase
@@ -33,7 +33,7 @@ abstract class BaseEditTemplateViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewModel = EditTemplateViewModel(
-            editTemplateUseCase,
+            updateTemplateUseCase,
             createTemplateUseCase,
             deleteTemplateUseCase,
             dispatchers

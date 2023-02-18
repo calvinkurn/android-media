@@ -11,7 +11,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.stub.chattemplate.di.FakeTemplateActivityComponentFactory
 import com.tokopedia.topchat.stub.chattemplate.usecase.api.ChatTemplateApiStub
@@ -23,7 +22,9 @@ abstract class BaseChatTemplateTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        TemplateChatActivityStub::class.java, false, false
+        TemplateChatActivityStub::class.java,
+        false,
+        false
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext

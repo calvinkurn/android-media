@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
@@ -73,11 +74,14 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.fragment_template_chat, container, false
+            R.layout.fragment_template_chat,
+            container,
+            false
         ).also {
             bindView(it)
             getTemplate()
@@ -113,7 +117,9 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
         recyclerView?.adapter = adapter
         adapter.notifyDataSetChanged()
         layoutManager = LinearLayoutManager(
-            activity, LinearLayoutManager.VERTICAL, false
+            activity,
+            LinearLayoutManager.VERTICAL,
+            false
         )
         recyclerView?.layoutManager = layoutManager
         mItemTouchHelper = ItemTouchHelper(callback)
@@ -135,7 +141,7 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
 
     private fun switchTemplateAvailability(isEnabled: Boolean) {
         showLoading()
-        viewModel.switchTemplateAvailability(isSeller, isEnabled)
+        viewModel.toggleTemplate(isSeller, isEnabled)
     }
 
     private fun setupInfo() {
@@ -204,7 +210,7 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
     override fun reArrange(from: Int, to: Int) {
         switchTemplate?.let {
             showLoading()
-            viewModel.setArrange(isSeller, it.isChecked, arrangeList(from, to), from, to)
+            viewModel.rearrangeTemplate(isSeller, from, to)
         }
     }
 
@@ -301,7 +307,7 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
     }
 
     private fun setupObservers() {
-        viewModel.chatTemplate.observe(viewLifecycleOwner, {
+        viewModel.chatTemplate.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val temp: ArrayList<Visitable<*>> = it.data.listTemplate
@@ -318,13 +324,13 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
                 is Fail -> setTemplate(null)
             }
             finishLoading()
-        })
+        }
 
-        viewModel.templateAvailability.observe(viewLifecycleOwner, {
+        viewModel.templateAvailability.observe(viewLifecycleOwner) {
             val isEnabled = it.first
             when (val result = it.second) {
                 is Success -> {
-                    if (result.data.isSuccess) {
+                    if (result.data == Int.ONE) {
                         successSwitch()
                     }
                 }
@@ -334,18 +340,19 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
                 }
             }
             finishLoading()
-        })
+        }
 
-        viewModel.arrangeTemplate.observe(viewLifecycleOwner, {
-            when (val result = it.templateResult) {
-                is Success -> successRearrange()
-                is Fail -> {
-                    showError(result.throwable)
-                    revertArrange(it.from, it.to)
+        viewModel.arrangeTemplate.observe(viewLifecycleOwner) {
+            if (it.error != null) {
+                it.error?.let { error ->
+                    showError(error)
                 }
+                revertArrange(it.from, it.to)
+            } else {
+                successRearrange()
             }
             finishLoading()
-        })
+        }
     }
 
     companion object {

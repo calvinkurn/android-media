@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -36,7 +35,7 @@ class CreateTemplateUseCaseTest {
 
     @Test
     fun should_get_template_data_when_success_create_template_buyer() {
-        //Given
+        // Given
         val expectedResponse = TemplateData().apply {
             isIsEnable = true
             isSuccess = true
@@ -47,17 +46,17 @@ class CreateTemplateUseCaseTest {
         } returns expectedResponse
 
         runBlocking {
-            //When
+            // When
             val result = createTemplateUseCase.createTemplate(testString, false)
 
-            //Then
+            // Then
             Assert.assertEquals(result, expectedResponse)
         }
     }
 
     @Test
     fun should_get_template_data_when_success_create_template_seller() {
-        //Given
+        // Given
         val expectedResponse = TemplateData().apply {
             isIsEnable = true
             isSuccess = true
@@ -68,22 +67,22 @@ class CreateTemplateUseCaseTest {
         } returns expectedResponse
 
         runBlocking {
-            //When
+            // When
             val result = createTemplateUseCase.createTemplate(testString, true)
 
-            //Then
+            // Then
             Assert.assertEquals(result, expectedResponse)
         }
     }
 
     @Test
     fun should_get_error_when_fail_to_create_template_buyer() {
-        //Given
+        // Given
         coEvery {
             templateRepository.createTemplate(any())
         } throws expectedThrowable
 
-        //Then
+        // Then
         assertThrows<Throwable> {
             runBlocking {
                 createTemplateUseCase.createTemplate(testString, false)
@@ -93,12 +92,12 @@ class CreateTemplateUseCaseTest {
 
     @Test
     fun should_get_error_when_fail_to_create_template_seller() {
-        //Given
+        // Given
         coEvery {
             templateRepository.createTemplate(any())
         } throws expectedThrowable
 
-        //Then
+        // Then
         assertThrows<Throwable> {
             runBlocking {
                 createTemplateUseCase.createTemplate(testString, true)

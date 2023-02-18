@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chattemplate.viewmodel.edit_template
 
-import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper.mapToEditTemplateUiModel
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.chattemplate.domain.mapper.TemplateChatMapper.mapToEditTemplateUiModel
 import com.tokopedia.topchat.chattemplate.view.uimodel.CreateEditTemplateResultModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel.Companion.ERROR_EDIT_TEMPLATE
 import com.tokopedia.topchat.chattemplate.viewmodel.edit_template.base.BaseEditTemplateViewModelTest
@@ -9,7 +8,7 @@ import io.mockk.coEvery
 import org.junit.Assert
 import org.junit.Test
 
-class EditTemplateViewModelTest: BaseEditTemplateViewModelTest() {
+class EditTemplateViewModelTest : BaseEditTemplateViewModelTest() {
 
     private val testString = "testString"
     private val testExistingString = "test1"
@@ -29,13 +28,13 @@ class EditTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             text = testString
         )
         coEvery {
-            editTemplateUseCase.editTemplate(any(), any(), any())
+            updateTemplateUseCase.editTemplate(any(), any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, testExistingString, testList, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.editTemplateResultModel.listTemplate,
             viewModel.createEditTemplate.value?.editTemplateResultModel?.listTemplate
@@ -55,13 +54,13 @@ class EditTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             text = testString
         )
         coEvery {
-            editTemplateUseCase.editTemplate(any(), any(), any())
+            updateTemplateUseCase.editTemplate(any(), any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, testExistingString, testList, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.editTemplateResultModel.listTemplate,
             viewModel.createEditTemplate.value?.editTemplateResultModel?.listTemplate
@@ -76,13 +75,13 @@ class EditTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             templates = testList
         )
         coEvery {
-            editTemplateUseCase.editTemplate(any(), any(), any())
+            updateTemplateUseCase.editTemplate(any(), any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, testExistingString, testList, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             ERROR_EDIT_TEMPLATE,
             viewModel.errorAction.value?.message
@@ -97,13 +96,13 @@ class EditTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             templates = testList
         )
         coEvery {
-            editTemplateUseCase.editTemplate(any(), any(), any())
+            updateTemplateUseCase.editTemplate(any(), any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, testExistingString, testList, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             ERROR_EDIT_TEMPLATE,
             viewModel.errorAction.value?.message
@@ -113,13 +112,13 @@ class EditTemplateViewModelTest: BaseEditTemplateViewModelTest() {
     @Test
     fun should_get_error_when_error_edit_template_buyer() {
         coEvery {
-            editTemplateUseCase.editTemplate(any(), any(), any())
+            updateTemplateUseCase.editTemplate(any(), any(), any())
         } throws expectedThrowable
 
-        //When
+        // When
         viewModel.submitText(testString, testExistingString, testList, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedThrowable,
             viewModel.errorAction.value
@@ -129,13 +128,13 @@ class EditTemplateViewModelTest: BaseEditTemplateViewModelTest() {
     @Test
     fun should_get_error_when_error_edit_template_seller() {
         coEvery {
-            editTemplateUseCase.editTemplate(any(), any(), any())
+            updateTemplateUseCase.editTemplate(any(), any(), any())
         } throws expectedThrowable
 
-        //When
+        // When
         viewModel.submitText(testString, testExistingString, testList, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedThrowable,
             viewModel.errorAction.value

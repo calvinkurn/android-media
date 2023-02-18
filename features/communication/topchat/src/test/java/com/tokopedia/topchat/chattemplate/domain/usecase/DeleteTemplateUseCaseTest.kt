@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -37,7 +36,7 @@ class DeleteTemplateUseCaseTest {
 
     @Test
     fun should_get_template_data_when_success_delete_template_buyer() {
-        //Given
+        // Given
         val expectedResponse = TemplateData().apply {
             isIsEnable = true
             isSuccess = true
@@ -48,17 +47,17 @@ class DeleteTemplateUseCaseTest {
         } returns expectedResponse
 
         runBlocking {
-            //When
+            // When
             val result = deleteTemplateUseCase.deleteTemplate(testIndex, false)
 
-            //Then
+            // Then
             Assert.assertEquals(result, expectedResponse)
         }
     }
 
     @Test
     fun should_get_template_data_when_success_delete_template_seller() {
-        //Given
+        // Given
         val expectedResponse = TemplateData().apply {
             isIsEnable = true
             isSuccess = true
@@ -69,22 +68,22 @@ class DeleteTemplateUseCaseTest {
         } returns expectedResponse
 
         runBlocking {
-            //When
+            // When
             val result = deleteTemplateUseCase.deleteTemplate(testIndex, true)
 
-            //Then
+            // Then
             Assert.assertEquals(result, expectedResponse)
         }
     }
 
     @Test
     fun should_get_error_when_fail_to_delete_template_buyer() {
-        //Given
+        // Given
         coEvery {
             templateRepository.deleteTemplate(any(), any())
         } throws expectedThrowable
 
-        //Then
+        // Then
         assertThrows<Throwable> {
             runBlocking {
                 deleteTemplateUseCase.deleteTemplate(testIndex, false)
@@ -94,12 +93,12 @@ class DeleteTemplateUseCaseTest {
 
     @Test
     fun should_get_error_when_fail_to_delete_template_seller() {
-        //Given
+        // Given
         coEvery {
             templateRepository.deleteTemplate(any(), any())
         } throws expectedThrowable
 
-        //Then
+        // Then
         assertThrows<Throwable> {
             runBlocking {
                 deleteTemplateUseCase.deleteTemplate(testIndex, true)

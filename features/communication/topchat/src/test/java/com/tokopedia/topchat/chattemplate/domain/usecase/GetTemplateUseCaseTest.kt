@@ -2,8 +2,6 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -31,12 +29,14 @@ class GetTemplateUseCaseTest {
     fun before() {
         MockKAnnotations.init(this)
         getTemplateUseCase = GetTemplateUseCase(
-            templateRepository, CoroutineTestDispatchersProvider)
+            templateRepository,
+            CoroutineTestDispatchersProvider
+        )
     }
 
     @Test
     fun should_get_template_data_when_success_get_template_buyer() {
-        //Given
+        // Given
         val expectedResponse = TemplateDataWrapper(
             data = TemplateData().also {
                 it.isIsEnable = true
@@ -49,10 +49,10 @@ class GetTemplateUseCaseTest {
         } returns expectedResponse.data
 
         runBlocking {
-            //When
+            // When
             val result = getTemplateUseCase.getTemplate(false)
 
-            //Then
+            // Then
             Assert.assertEquals(
                 expectedResponse.data,
                 result
@@ -62,7 +62,7 @@ class GetTemplateUseCaseTest {
 
     @Test
     fun should_get_template_data_when_success_get_template_seller() {
-        //Given
+        // Given
         val expectedResponse = TemplateDataWrapper(
             data = TemplateData().also {
                 it.isIsEnable = true
@@ -75,10 +75,10 @@ class GetTemplateUseCaseTest {
         } returns expectedResponse.data
 
         runBlocking {
-            //When
+            // When
             val result = getTemplateUseCase.getTemplate(true)
 
-            //Then
+            // Then
             Assert.assertEquals(
                 expectedResponse.data,
                 result
@@ -88,12 +88,12 @@ class GetTemplateUseCaseTest {
 
     @Test
     fun should_get_error_when_fail_to_get_template_buyer() {
-        //Given
+        // Given
         coEvery {
             templateRepository.getTemplateSuspend(any())
         } throws testException
 
-        //Then
+        // Then
         assertThrows<Exception> {
             runBlocking {
                 getTemplateUseCase.getTemplate(false)
@@ -103,12 +103,12 @@ class GetTemplateUseCaseTest {
 
     @Test
     fun should_get_error_when_fail_to_get_template_seller() {
-        //Given
+        // Given
         coEvery {
             templateRepository.getTemplateSuspend(any())
         } throws testException
 
-        //Then
+        // Then
         assertThrows<Exception> {
             runBlocking {
                 getTemplateUseCase.getTemplate(true)

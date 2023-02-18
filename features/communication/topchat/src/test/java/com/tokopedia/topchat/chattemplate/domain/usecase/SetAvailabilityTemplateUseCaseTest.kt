@@ -2,8 +2,6 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -30,12 +28,14 @@ class SetAvailabilityTemplateUseCaseTest {
     fun before() {
         MockKAnnotations.init(this)
         templateUseCase = SetAvailabilityTemplateUseCase(
-            templateRepository, CoroutineTestDispatchersProvider)
+            templateRepository,
+            CoroutineTestDispatchersProvider
+        )
     }
 
     @Test
     fun should_get_template_data_when_success_set_availability_true_buyer() {
-        //Given
+        // Given
         val isEnabled = true
         val isSeller = false
         val expectedResponse = TemplateDataWrapper(
@@ -48,14 +48,17 @@ class SetAvailabilityTemplateUseCaseTest {
             templateRepository.setAvailabilityTemplate(any(), any())
         } returns expectedResponse.data
 
-        //When
+        // When
         val result = runBlocking {
             val params = SetAvailabilityTemplateUseCase.getAvailabilityJson(
-                null, isSeller, isEnabled)
+                null,
+                isSeller,
+                isEnabled
+            )
             templateUseCase.setAvailability(params)
         }
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResponse.data,
             result
@@ -64,7 +67,7 @@ class SetAvailabilityTemplateUseCaseTest {
 
     @Test
     fun should_get_template_data_when_success_set_availability_false_buyer() {
-        //Given
+        // Given
         val isEnabled = false
         val isSeller = false
         val expectedResponse = TemplateDataWrapper(
@@ -77,14 +80,17 @@ class SetAvailabilityTemplateUseCaseTest {
             templateRepository.setAvailabilityTemplate(any(), any())
         } returns expectedResponse.data
 
-        //When
+        // When
         val result = runBlocking {
             val params = SetAvailabilityTemplateUseCase.getAvailabilityJson(
-                null, isSeller, isEnabled)
+                null,
+                isSeller,
+                isEnabled
+            )
             templateUseCase.setAvailability(params)
         }
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResponse.data,
             result
@@ -93,7 +99,7 @@ class SetAvailabilityTemplateUseCaseTest {
 
     @Test
     fun should_get_template_data_when_success_set_availability_true_seller() {
-        //Given
+        // Given
         val isEnabled = true
         val isSeller = true
         val expectedResponse = TemplateDataWrapper(
@@ -106,14 +112,17 @@ class SetAvailabilityTemplateUseCaseTest {
             templateRepository.setAvailabilityTemplate(any(), any())
         } returns expectedResponse.data
 
-        //When
+        // When
         val result = runBlocking {
             val params = SetAvailabilityTemplateUseCase.getAvailabilityJson(
-                null, isSeller, isEnabled)
+                null,
+                isSeller,
+                isEnabled
+            )
             templateUseCase.setAvailability(params)
         }
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResponse.data,
             result
@@ -122,7 +131,7 @@ class SetAvailabilityTemplateUseCaseTest {
 
     @Test
     fun should_get_template_data_when_success_set_availability_false_seller() {
-        //Given
+        // Given
         val isEnabled = false
         val isSeller = true
         val expectedResponse = TemplateDataWrapper(
@@ -135,14 +144,17 @@ class SetAvailabilityTemplateUseCaseTest {
             templateRepository.setAvailabilityTemplate(any(), any())
         } returns expectedResponse.data
 
-        //When
+        // When
         val result = runBlocking {
             val params = SetAvailabilityTemplateUseCase.getAvailabilityJson(
-                null, isSeller, isEnabled)
+                null,
+                isSeller,
+                isEnabled
+            )
             templateUseCase.setAvailability(params)
         }
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResponse.data,
             result
@@ -151,18 +163,21 @@ class SetAvailabilityTemplateUseCaseTest {
 
     @Test
     fun should_get_error_when_set_availability_template_buyer() {
-        //Given
+        // Given
         val isEnabled = true
         val isSeller = false
         coEvery {
             templateRepository.setAvailabilityTemplate(any(), any())
         } throws testException
 
-        //Then
+        // Then
         assertThrows<Exception> {
             runBlocking {
                 val params = SetAvailabilityTemplateUseCase.getAvailabilityJson(
-                    null, isSeller, isEnabled)
+                    null,
+                    isSeller,
+                    isEnabled
+                )
                 templateUseCase.setAvailability(params)
             }
         }
@@ -170,18 +185,21 @@ class SetAvailabilityTemplateUseCaseTest {
 
     @Test
     fun should_get_error_when_set_availability_template_seller() {
-        //Given
+        // Given
         val isEnabled = true
         val isSeller = true
         coEvery {
             templateRepository.setAvailabilityTemplate(any(), any())
         } throws testException
 
-        //Then
+        // Then
         assertThrows<Exception> {
             runBlocking {
                 val params = SetAvailabilityTemplateUseCase.getAvailabilityJson(
-                    null, isSeller, isEnabled)
+                    null,
+                    isSeller,
+                    isEnabled
+                )
                 templateUseCase.setAvailability(params)
             }
         }

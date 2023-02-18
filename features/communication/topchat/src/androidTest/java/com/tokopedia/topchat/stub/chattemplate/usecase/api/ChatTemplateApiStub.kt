@@ -2,13 +2,11 @@ package com.tokopedia.topchat.stub.chattemplate.usecase.api
 
 import com.google.gson.JsonObject
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateDataWrapper
 import com.tokopedia.topchat.common.chat.api.ChatTemplateApi
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class ChatTemplateApiStub @Inject constructor(): ChatTemplateApi {
+class ChatTemplateApiStub @Inject constructor() : ChatTemplateApi {
 
     var delay = 0L
     var templateResponse: TemplateData = TemplateData().apply {

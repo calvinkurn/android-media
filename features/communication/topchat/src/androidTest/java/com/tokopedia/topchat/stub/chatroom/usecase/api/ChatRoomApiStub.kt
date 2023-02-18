@@ -3,11 +3,9 @@ package com.tokopedia.topchat.stub.chatroom.usecase.api
 import com.tokopedia.chat_common.domain.pojo.ReplyChatItemPojo
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import kotlinx.coroutines.delay
 import retrofit2.Response
 import rx.Observable
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ChatRoomApiStub @Inject constructor() : ChatRoomApi {
@@ -20,7 +18,7 @@ class ChatRoomApiStub @Inject constructor() : ChatRoomApi {
     }
 
     override fun reply(
-            requestParams: HashMap<String, Any>
+        requestParams: HashMap<String, Any>
     ): Observable<Response<DataResponse<ReplyChatItemPojo>>> {
         // TODO: TBD
         return Observable.just(Response.success(DataResponse()))

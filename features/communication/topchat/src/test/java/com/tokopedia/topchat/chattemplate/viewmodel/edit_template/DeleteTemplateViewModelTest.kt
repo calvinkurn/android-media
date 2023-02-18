@@ -1,21 +1,20 @@
 package com.tokopedia.topchat.chattemplate.viewmodel.edit_template
 
-import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper.mapToEditTemplateUiModel
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.chattemplate.domain.mapper.TemplateChatMapper.mapToEditTemplateUiModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel.Companion.ERROR_DELETE_TEMPLATE
 import com.tokopedia.topchat.chattemplate.viewmodel.edit_template.base.BaseEditTemplateViewModelTest
 import io.mockk.coEvery
 import org.junit.Assert
 import org.junit.Test
 
-class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
+class DeleteTemplateViewModelTest : BaseEditTemplateViewModelTest() {
 
     private val testResultList = listOf("test1")
     private val testIndex = 1
 
     @Test
     fun should_get_template_data_when_success_delete_template_buyer() {
-        //Given
+        // Given
         val expectedResponse = TemplateData(
             isSuccess = true,
             templates = testResultList,
@@ -26,10 +25,10 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             deleteTemplateUseCase.deleteTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.deleteTemplate(testIndex, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.first.listTemplate,
             viewModel.deleteTemplate.value?.first?.listTemplate
@@ -42,7 +41,7 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
 
     @Test
     fun should_get_template_data_when_success_delete_template_seller() {
-        //Given
+        // Given
         val expectedResponse = TemplateData(
             isSuccess = true,
             templates = testResultList,
@@ -53,10 +52,10 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             deleteTemplateUseCase.deleteTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.deleteTemplate(testIndex, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.first.listTemplate,
             viewModel.deleteTemplate.value?.first?.listTemplate
@@ -69,7 +68,7 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
 
     @Test
     fun should_get_error_message_when_fail_to_delete_template_buyer() {
-        //Given
+        // Given
         val expectedResponse = TemplateData(
             isSuccess = false,
             templates = testResultList,
@@ -79,10 +78,10 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             deleteTemplateUseCase.deleteTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.deleteTemplate(testIndex, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             ERROR_DELETE_TEMPLATE,
             viewModel.errorAction.value?.message
@@ -100,10 +99,10 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             deleteTemplateUseCase.deleteTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.deleteTemplate(testIndex, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             ERROR_DELETE_TEMPLATE,
             viewModel.errorAction.value?.message
@@ -116,10 +115,10 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             deleteTemplateUseCase.deleteTemplate(any(), any())
         } throws expectedThrowable
 
-        //When
+        // When
         viewModel.deleteTemplate(testIndex, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedThrowable.message,
             viewModel.errorAction.value?.message
@@ -132,10 +131,10 @@ class DeleteTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             deleteTemplateUseCase.deleteTemplate(any(), any())
         } throws expectedThrowable
 
-        //When
+        // When
         viewModel.deleteTemplate(testIndex, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedThrowable.message,
             viewModel.errorAction.value?.message

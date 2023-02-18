@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chattemplate.viewmodel.edit_template
 
-import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper.mapToEditTemplateUiModel
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.chattemplate.domain.mapper.TemplateChatMapper.mapToEditTemplateUiModel
 import com.tokopedia.topchat.chattemplate.view.uimodel.CreateEditTemplateResultModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel
 import com.tokopedia.topchat.chattemplate.viewmodel.edit_template.base.BaseEditTemplateViewModelTest
@@ -9,7 +8,7 @@ import io.mockk.coEvery
 import org.junit.Assert
 import org.junit.Test
 
-class CreateTemplateViewModelTest: BaseEditTemplateViewModelTest() {
+class CreateTemplateViewModelTest : BaseEditTemplateViewModelTest() {
 
     private val testString = "testString"
     private val testResultList = listOf("testString")
@@ -30,10 +29,10 @@ class CreateTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             createTemplateUseCase.createTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, "", listOf(), false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.editTemplateResultModel.listTemplate,
             viewModel.createEditTemplate.value?.editTemplateResultModel?.listTemplate
@@ -56,10 +55,10 @@ class CreateTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             createTemplateUseCase.createTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, "", listOf(), true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.editTemplateResultModel.listTemplate,
             viewModel.createEditTemplate.value?.editTemplateResultModel?.listTemplate
@@ -77,10 +76,10 @@ class CreateTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             createTemplateUseCase.createTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, "", listOf(), false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             EditTemplateViewModel.ERROR_CREATE_TEMPLATE,
             viewModel.errorAction.value?.message
@@ -98,10 +97,10 @@ class CreateTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             createTemplateUseCase.createTemplate(any(), any())
         } returns expectedResponse
 
-        //When
+        // When
         viewModel.submitText(testString, "", listOf(), true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             EditTemplateViewModel.ERROR_CREATE_TEMPLATE,
             viewModel.errorAction.value?.message
@@ -114,10 +113,10 @@ class CreateTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             createTemplateUseCase.createTemplate(any(), any())
         } throws expectedThrowable
 
-        //When
+        // When
         viewModel.submitText(testString, "", listOf(), false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedThrowable,
             viewModel.errorAction.value
@@ -130,10 +129,10 @@ class CreateTemplateViewModelTest: BaseEditTemplateViewModelTest() {
             createTemplateUseCase.createTemplate(any(), any())
         } throws expectedThrowable
 
-        //When
+        // When
         viewModel.submitText(testString, "", listOf(), true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedThrowable,
             viewModel.errorAction.value

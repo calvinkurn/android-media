@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -15,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
-class EditTemplateUseCaseTest {
+class UpdateTemplateUseCaseTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -23,7 +22,7 @@ class EditTemplateUseCaseTest {
     @RelaxedMockK
     private lateinit var templateRepository: EditTemplateRepository
 
-    private lateinit var editTemplateUseCase: EditTemplateUseCase
+    private lateinit var updateTemplateUseCase: UpdateTemplateUseCase
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
     private val testString = "Tokopedia saja!"
     private val expectedThrowable = Throwable("Oops!")
@@ -32,7 +31,7 @@ class EditTemplateUseCaseTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        editTemplateUseCase = EditTemplateUseCase(templateRepository, dispatchers)
+        updateTemplateUseCase = UpdateTemplateUseCase(templateRepository, dispatchers)
     }
 
     @Test
@@ -49,7 +48,7 @@ class EditTemplateUseCaseTest {
 
         runBlocking {
             //When
-            val result = editTemplateUseCase.editTemplate(testIndex, testString, false)
+            val result = updateTemplateUseCase.editTemplate(testIndex, testString, false)
 
             //Then
             Assert.assertEquals(result, expectedResponse)
@@ -70,7 +69,7 @@ class EditTemplateUseCaseTest {
 
         runBlocking {
             //When
-            val result = editTemplateUseCase.editTemplate(testIndex, testString, true)
+            val result = updateTemplateUseCase.editTemplate(testIndex, testString, true)
 
             //Then
             Assert.assertEquals(result, expectedResponse)
@@ -87,7 +86,7 @@ class EditTemplateUseCaseTest {
         //Then
         assertThrows<Throwable> {
             runBlocking {
-                val result = editTemplateUseCase.editTemplate(testIndex, testString, false)
+                val result = updateTemplateUseCase.editTemplate(testIndex, testString, false)
             }
         }
     }
@@ -102,7 +101,7 @@ class EditTemplateUseCaseTest {
         //Then
         assertThrows<Throwable> {
             runBlocking {
-                editTemplateUseCase.editTemplate(testIndex, testString, true)
+                updateTemplateUseCase.editTemplate(testIndex, testString, true)
             }
         }
     }
