@@ -17,7 +17,7 @@ data class GetChatTemplate(
 
 data class TopchatChatTemplates(
     @SerializedName("isEnable")
-    val isEnable: Boolean = false,
+    var isEnable: Boolean = false,
 
     @SerializedName("IsEnableSmartReply")
     val isEnableSmartReply: Boolean = false,
@@ -26,5 +26,5 @@ data class TopchatChatTemplates(
     val isSeller: Boolean = false,
 
     @SerializedName("templates")
-    val templates: ArrayList<String> = arrayListOf()
+    var templates: ArrayList<String> = arrayListOf()
 )

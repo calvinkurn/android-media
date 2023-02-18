@@ -9,5 +9,5 @@ data class ChatMoveTemplateResponse(
 
 data class ChatMoveTemplate(
     @SerializedName("success")
-    val success: Int = 0
+    var success: Int = 0
 )

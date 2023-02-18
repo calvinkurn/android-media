@@ -2,7 +2,6 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
-import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
 import javax.inject.Inject
 

@@ -15,13 +15,7 @@ open class ToggleTemplateUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<ToggleTemplateUseCase.Param, ChatToggleTemplateResponse>(dispatcher.io) {
 
-    override fun graphqlQuery(): String = """
-        mutation chatToggleTemplate($$PARAM_IS_ENABLE: Boolean!) {
-          chatToggleTemplate($PARAM_IS_ENABLE: $$PARAM_IS_ENABLE){
-            success
-          }
-        }
-    """.trimIndent()
+    override fun graphqlQuery(): String = QUERY
 
     override suspend fun execute(params: Param): ChatToggleTemplateResponse {
         return repository.request(graphqlQuery(), params)
@@ -34,5 +28,12 @@ open class ToggleTemplateUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_IS_ENABLE = "isEnable"
+        val QUERY = """
+            mutation chatToggleTemplate($$PARAM_IS_ENABLE: Boolean!) {
+              chatToggleTemplate($PARAM_IS_ENABLE: $$PARAM_IS_ENABLE){
+                success
+              }
+            }
+        """.trimIndent()
     }
 }

@@ -9,5 +9,5 @@ data class ChatToggleTemplateResponse(
 
 data class ChatToggleTemplate(
     @SerializedName("success")
-    val success: Int = 0
+    var success: Int = 0
 )

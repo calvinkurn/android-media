@@ -15,13 +15,7 @@ open class CreateTemplateUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<CreateTemplateUseCase.Param, ChatAddTemplateResponse>(dispatcher.io) {
 
-    override fun graphqlQuery(): String = """
-        mutation chatAddTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_VALUE: String!) {
-          chatAddTemplate($PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_VALUE: $$PARAM_VALUE){
-            success
-          }
-        }
-    """.trimIndent()
+    override fun graphqlQuery(): String = QUERY
 
     override suspend fun execute(params: Param): ChatAddTemplateResponse {
         return repository.request(graphqlQuery(), params)
@@ -38,5 +32,12 @@ open class CreateTemplateUseCase @Inject constructor(
     companion object {
         private const val PARAM_IS_SELLER = "isSeller"
         private const val PARAM_VALUE = "value"
+        val QUERY = """
+            mutation chatAddTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_VALUE: String) {
+              chatAddTemplate($PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_VALUE: $$PARAM_VALUE){
+                success
+              }
+            }
+        """.trimIndent()
     }
 }

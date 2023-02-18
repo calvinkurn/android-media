@@ -15,13 +15,7 @@ open class UpdateTemplateUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<UpdateTemplateUseCase.Param, ChatUpdateTemplateResponse>(dispatcher.io) {
 
-    override fun graphqlQuery(): String = """
-        mutation chatUpdateTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_VALUE: String!, $$PARAM_INDEX: Int!) {
-          chatUpdateTemplate($PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_VALUE: $$PARAM_VALUE, $PARAM_INDEX: $$PARAM_INDEX){
-            success
-          }
-        }
-    """.trimIndent()
+    override fun graphqlQuery(): String = QUERY
 
     override suspend fun execute(params: Param): ChatUpdateTemplateResponse {
         return repository.request(graphqlQuery(), params)
@@ -42,5 +36,12 @@ open class UpdateTemplateUseCase @Inject constructor(
         private const val PARAM_IS_SELLER = "isSeller"
         private const val PARAM_INDEX = "index"
         private const val PARAM_VALUE = "value"
+        val QUERY = """
+            mutation chatUpdateTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_VALUE: String!, $$PARAM_INDEX: Int!) {
+              chatUpdateTemplate($PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_VALUE: $$PARAM_VALUE, $PARAM_INDEX: $$PARAM_INDEX){
+                success
+              }
+            }
+        """.trimIndent()
     }
 }

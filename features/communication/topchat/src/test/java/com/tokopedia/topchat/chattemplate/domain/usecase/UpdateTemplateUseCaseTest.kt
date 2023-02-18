@@ -2,10 +2,12 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topchat.chattemplate.domain.pojo.ChatUpdateTemplateResponse
+import com.tokopedia.topchat.stubRepository
+import com.tokopedia.topchat.stubRepositoryAsThrow
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -20,7 +22,7 @@ class UpdateTemplateUseCaseTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    private lateinit var templateRepository: EditTemplateRepository
+    lateinit var repository: GraphqlRepository
 
     private lateinit var updateTemplateUseCase: UpdateTemplateUseCase
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
@@ -31,77 +33,95 @@ class UpdateTemplateUseCaseTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        updateTemplateUseCase = UpdateTemplateUseCase(templateRepository, dispatchers)
+        updateTemplateUseCase = UpdateTemplateUseCase(repository, dispatchers)
     }
 
     @Test
     fun should_get_template_data_when_success_edit_template_buyer() {
-        //Given
-        val expectedResponse = TemplateData().apply {
-            isIsEnable = true
-            isSuccess = true
-            templates = listOf(testString)
-        }
-        coEvery {
-            templateRepository.editTemplate(any(), any(), any())
-        } returns expectedResponse
+        // Given
+        val expectedResponse = ChatUpdateTemplateResponse()
 
         runBlocking {
-            //When
-            val result = updateTemplateUseCase.editTemplate(testIndex, testString, false)
+            // When
+            repository.stubRepository(
+                onSuccess = expectedResponse,
+                onError = mapOf()
+            )
+            val result = updateTemplateUseCase(
+                UpdateTemplateUseCase.Param(
+                    false,
+                    testIndex,
+                    testString
+                )
+            )
 
-            //Then
+            // Then
             Assert.assertEquals(result, expectedResponse)
         }
     }
 
     @Test
     fun should_get_template_data_when_success_edit_template_seller() {
-        //Given
-        val expectedResponse = TemplateData().apply {
-            isIsEnable = true
-            isSuccess = true
-            templates = listOf(testString)
-        }
-        coEvery {
-            templateRepository.editTemplate(any(), any(), any())
-        } returns expectedResponse
+        // Given
+        val expectedResponse = ChatUpdateTemplateResponse()
 
         runBlocking {
-            //When
-            val result = updateTemplateUseCase.editTemplate(testIndex, testString, true)
+            // When
+            repository.stubRepository(
+                onSuccess = expectedResponse,
+                onError = mapOf()
+            )
+            val result = updateTemplateUseCase(
+                UpdateTemplateUseCase.Param(
+                    true,
+                    testIndex,
+                    testString
+                )
+            )
 
-            //Then
+            // Then
             Assert.assertEquals(result, expectedResponse)
         }
     }
 
     @Test
     fun should_get_error_when_fail_to_edit_template_buyer() {
-        //Given
-        coEvery {
-            templateRepository.editTemplate(any(), any(), any())
-        } throws expectedThrowable
-
-        //Then
         assertThrows<Throwable> {
             runBlocking {
-                val result = updateTemplateUseCase.editTemplate(testIndex, testString, false)
+                // When
+                repository.stubRepositoryAsThrow(
+                    throwable = expectedThrowable
+                )
+
+                // Then
+                updateTemplateUseCase(
+                    UpdateTemplateUseCase.Param(
+                        false,
+                        testIndex,
+                        testString
+                    )
+                )
             }
         }
     }
 
     @Test
     fun should_get_error_when_fail_to_edit_template_seller() {
-        //Given
-        coEvery {
-            templateRepository.editTemplate(any(), any(), any())
-        } throws expectedThrowable
-
-        //Then
         assertThrows<Throwable> {
             runBlocking {
-                updateTemplateUseCase.editTemplate(testIndex, testString, true)
+                // When
+                repository.stubRepositoryAsThrow(
+                    throwable = expectedThrowable
+                )
+
+                // Then
+                updateTemplateUseCase(
+                    UpdateTemplateUseCase.Param(
+                        true,
+                        testIndex,
+                        testString
+                    )
+                )
             }
         }
     }

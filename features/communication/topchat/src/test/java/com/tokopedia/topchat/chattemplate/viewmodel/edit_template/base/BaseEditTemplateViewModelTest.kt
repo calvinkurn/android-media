@@ -33,8 +33,8 @@ abstract class BaseEditTemplateViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewModel = EditTemplateViewModel(
-            updateTemplateUseCase,
             createTemplateUseCase,
+            updateTemplateUseCase,
             deleteTemplateUseCase,
             dispatchers
         )

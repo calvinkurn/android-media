@@ -1,10 +1,12 @@
 package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
+import com.tokopedia.topchat.stubRepository
+import com.tokopedia.topchat.stubRepositoryAsThrow
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -18,18 +20,17 @@ class GetTemplateUseCaseTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    private lateinit var templateRepository: TemplateRepository
+    lateinit var repository: GraphqlRepository
 
     private lateinit var getTemplateUseCase: GetTemplateUseCase
 
-    private val testTemplate = arrayListOf("template1, template2, template3")
-    private val testException = Exception("Oops!")
+    private val testException = Throwable("Oops!")
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
         getTemplateUseCase = GetTemplateUseCase(
-            templateRepository,
+            repository,
             CoroutineTestDispatchersProvider
         )
     }
@@ -37,24 +38,19 @@ class GetTemplateUseCaseTest {
     @Test
     fun should_get_template_data_when_success_get_template_buyer() {
         // Given
-        val expectedResponse = TemplateDataWrapper(
-            data = TemplateData().also {
-                it.isIsEnable = true
-                it.isSuccess = true
-                it.templates = testTemplate
-            }
-        )
-        coEvery {
-            templateRepository.getTemplateSuspend(any())
-        } returns expectedResponse.data
+        val expectedResponse = GetChatTemplateResponse()
 
         runBlocking {
             // When
-            val result = getTemplateUseCase.getTemplate(false)
+            repository.stubRepository(
+                onSuccess = expectedResponse,
+                onError = mapOf()
+            )
+            val result = getTemplateUseCase(GetTemplateUseCase.Param(false))
 
             // Then
             Assert.assertEquals(
-                expectedResponse.data,
+                expectedResponse,
                 result
             )
         }
@@ -63,24 +59,19 @@ class GetTemplateUseCaseTest {
     @Test
     fun should_get_template_data_when_success_get_template_seller() {
         // Given
-        val expectedResponse = TemplateDataWrapper(
-            data = TemplateData().also {
-                it.isIsEnable = true
-                it.isSuccess = true
-                it.templates = testTemplate
-            }
-        )
-        coEvery {
-            templateRepository.getTemplateSuspend(any())
-        } returns expectedResponse.data
+        val expectedResponse = GetChatTemplateResponse()
 
         runBlocking {
             // When
-            val result = getTemplateUseCase.getTemplate(true)
+            repository.stubRepository(
+                onSuccess = expectedResponse,
+                onError = mapOf()
+            )
+            val result = getTemplateUseCase(GetTemplateUseCase.Param(true))
 
             // Then
             Assert.assertEquals(
-                expectedResponse.data,
+                expectedResponse,
                 result
             )
         }
@@ -89,29 +80,30 @@ class GetTemplateUseCaseTest {
     @Test
     fun should_get_error_when_fail_to_get_template_buyer() {
         // Given
-        coEvery {
-            templateRepository.getTemplateSuspend(any())
-        } throws testException
+        assertThrows<Throwable> {
+            // When
+            repository.stubRepositoryAsThrow(
+                throwable = testException
+            )
 
-        // Then
-        assertThrows<Exception> {
+            // Then
             runBlocking {
-                getTemplateUseCase.getTemplate(false)
+                getTemplateUseCase(GetTemplateUseCase.Param(false))
             }
         }
     }
 
     @Test
     fun should_get_error_when_fail_to_get_template_seller() {
-        // Given
-        coEvery {
-            templateRepository.getTemplateSuspend(any())
-        } throws testException
-
-        // Then
-        assertThrows<Exception> {
+        assertThrows<Throwable> {
             runBlocking {
-                getTemplateUseCase.getTemplate(true)
+                // When
+                repository.stubRepositoryAsThrow(
+                    throwable = testException
+                )
+
+                // Then
+                getTemplateUseCase(GetTemplateUseCase.Param(true))
             }
         }
     }

@@ -2,10 +2,12 @@ package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topchat.chattemplate.domain.pojo.ChatAddTemplateResponse
+import com.tokopedia.topchat.stubRepository
+import com.tokopedia.topchat.stubRepositoryAsThrow
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -20,7 +22,7 @@ class CreateTemplateUseCaseTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    private lateinit var templateRepository: EditTemplateRepository
+    lateinit var repository: GraphqlRepository
 
     private lateinit var createTemplateUseCase: CreateTemplateUseCase
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
@@ -30,24 +32,21 @@ class CreateTemplateUseCaseTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        createTemplateUseCase = CreateTemplateUseCase(templateRepository, dispatchers)
+        createTemplateUseCase = CreateTemplateUseCase(repository, dispatchers)
     }
 
     @Test
     fun should_get_template_data_when_success_create_template_buyer() {
         // Given
-        val expectedResponse = TemplateData().apply {
-            isIsEnable = true
-            isSuccess = true
-            templates = listOf(testString)
-        }
-        coEvery {
-            templateRepository.createTemplate(any())
-        } returns expectedResponse
+        val expectedResponse = ChatAddTemplateResponse()
 
         runBlocking {
             // When
-            val result = createTemplateUseCase.createTemplate(testString, false)
+            repository.stubRepository(
+                onSuccess = expectedResponse,
+                onError = mapOf()
+            )
+            val result = createTemplateUseCase(CreateTemplateUseCase.Param(false, testString))
 
             // Then
             Assert.assertEquals(result, expectedResponse)
@@ -57,18 +56,14 @@ class CreateTemplateUseCaseTest {
     @Test
     fun should_get_template_data_when_success_create_template_seller() {
         // Given
-        val expectedResponse = TemplateData().apply {
-            isIsEnable = true
-            isSuccess = true
-            templates = listOf(testString)
-        }
-        coEvery {
-            templateRepository.createTemplate(any())
-        } returns expectedResponse
-
+        val expectedResponse = ChatAddTemplateResponse()
         runBlocking {
             // When
-            val result = createTemplateUseCase.createTemplate(testString, true)
+            repository.stubRepository(
+                onSuccess = expectedResponse,
+                onError = mapOf()
+            )
+            val result = createTemplateUseCase(CreateTemplateUseCase.Param(true, testString))
 
             // Then
             Assert.assertEquals(result, expectedResponse)
@@ -77,30 +72,40 @@ class CreateTemplateUseCaseTest {
 
     @Test
     fun should_get_error_when_fail_to_create_template_buyer() {
-        // Given
-        coEvery {
-            templateRepository.createTemplate(any())
-        } throws expectedThrowable
-
-        // Then
         assertThrows<Throwable> {
             runBlocking {
-                createTemplateUseCase.createTemplate(testString, false)
+                // When
+                repository.stubRepositoryAsThrow(
+                    throwable = expectedThrowable
+                )
+
+                // Then
+                createTemplateUseCase(
+                    CreateTemplateUseCase.Param(
+                        isSeller = false,
+                        value = testString
+                    )
+                )
             }
         }
     }
 
     @Test
     fun should_get_error_when_fail_to_create_template_seller() {
-        // Given
-        coEvery {
-            templateRepository.createTemplate(any())
-        } throws expectedThrowable
-
-        // Then
         assertThrows<Throwable> {
             runBlocking {
-                createTemplateUseCase.createTemplate(testString, true)
+                // When
+                repository.stubRepositoryAsThrow(
+                    throwable = expectedThrowable
+                )
+
+                // Then
+                createTemplateUseCase(
+                    CreateTemplateUseCase.Param(
+                        isSeller = true,
+                        value = testString
+                    )
+                )
             }
         }
     }
