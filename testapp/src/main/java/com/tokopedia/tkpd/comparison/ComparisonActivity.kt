@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.exp
+package com.tokopedia.tkpd.comparison
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -25,7 +25,7 @@ import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
-class ExpActivity : AppCompatActivity() {
+class ComparisonActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

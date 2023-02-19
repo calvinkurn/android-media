@@ -21,7 +21,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="label,android:allowBackup,android:theme">
         <activity
-            android:name=".exp.ExpActivity"
+            android:name=".comparison.ComparisonActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

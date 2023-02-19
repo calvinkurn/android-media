@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.exp
+package com.tokopedia.tkpd.comparison
 
 import android.content.Context
 import androidx.compose.runtime.Composable
