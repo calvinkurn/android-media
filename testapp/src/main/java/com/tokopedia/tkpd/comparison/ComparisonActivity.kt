@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -48,11 +49,11 @@ class ComparisonActivity : AppCompatActivity() {
                                 Text(text = "Heading 3", style = NestTheme.typography.heading3)
                                 Text(text = "Display 3", style = NestTheme.typography.display3)
                                 Text(text = "Body 1", style = NestTheme.typography.body1)
-                                Button(onClick = {}) {
+                                Button(modifier = Modifier.height(40.dp), onClick = {}) {
                                     Text(
                                         text = "Click me!",
                                         color = Color.White,
-                                        style = NestTheme.typography.display2,
+                                        style = NestTheme.typography.display1.copy(fontSize = 14.sp),
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
