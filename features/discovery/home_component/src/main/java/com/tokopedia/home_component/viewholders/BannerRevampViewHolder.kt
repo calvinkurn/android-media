@@ -17,22 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.databinding.HomeComponentBannerBinding
 import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
-import com.tokopedia.home_component.decoration.BannerChannelDecoration
-import com.tokopedia.home_component.decoration.BannerChannelSingleItemDecoration
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.home_component.util.toDpInt
-import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
-import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -47,10 +40,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.unifyprinciples.R as RUnify
-
-/**
- * @author by devarafikry on 11/28/20.
- */
 
 class BannerRevampViewHolder(
     itemView: View,
@@ -200,7 +189,7 @@ class BannerRevampViewHolder(
         binding?.rvBannerRevamp?.layoutParams = layoutParams
 
         binding?.rvBannerRevamp?.layoutManager = getLayoutManager(list)
-        val adapter = BannerRevampChannelAdapter(list, this, cardInteraction, isUsingDotsAndInfiniteScroll)
+        val adapter = BannerRevampChannelAdapter(list, this, isUsingDotsAndInfiniteScroll)
         binding?.rvBannerRevamp?.adapter = adapter
     }
 
@@ -213,7 +202,7 @@ class BannerRevampViewHolder(
                         currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
                         channelModel?.let {
                             val dotsPosition = currentPagePosition % (channelModel?.channelGrids?.size ?: 0)
-                            drawIndicators(binding?.indicatorLayout!! , dotsPosition, it.channelGrids.size)
+                            drawIndicators(binding?.indicatorLayout!!, dotsPosition, it.channelGrids.size)
                         }
                         resumeAutoScroll()
                     }
