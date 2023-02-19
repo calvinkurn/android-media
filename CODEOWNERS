@@ -382,6 +382,8 @@
 /libraries/telemetry                                    @tokopedia/android-core-dev
 /libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
+/libraries/macrobenchmark_util							@tokopedia/android-core-dev
+/libraries/common_compose                               @tokopedia/android-core-dev
 /libraries/universal_sharing/							@tokopedia/android-minionkevin-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 
