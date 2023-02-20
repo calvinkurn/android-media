@@ -3,6 +3,8 @@ package com.tokopedia.review.feature.reviewreminder.view.viewmodel
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounterResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderListResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplateResponseWrapper
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevSendReminder
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevSendReminderResponseWrapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -74,5 +76,33 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
     fun `when send reminder should call usecase`() {
         viewModel.sendReminder(anyString())
         coVerify { productrevSendReminderUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `when send reminder success should update result live data`() {
+        val responseWrapper = ProductrevSendReminderResponseWrapper(
+            ProductrevSendReminder(success = true)
+        )
+        coEvery { productrevSendReminderUseCase.executeOnBackground() } returns responseWrapper
+        viewModel.sendReminder(anyString())
+        coVerify { productrevSendReminderUseCase.executeOnBackground() }
+        viewModel.getSendReminderResult().verifyValueEquals(true)
+    }
+
+    @Test
+    fun `when send reminder error should update result live data to false`() {
+        coEvery { productrevSendReminderUseCase.executeOnBackground() } throws Throwable()
+        viewModel.sendReminder(anyString())
+        coVerify { productrevSendReminderUseCase.executeOnBackground() }
+        viewModel.getSendReminderResult().verifyValueEquals(false)
+    }
+
+    @Test
+    fun `when send reminder error should update error live data with the throwable`() {
+        val throwable = Throwable()
+        coEvery { productrevSendReminderUseCase.executeOnBackground() } throws throwable
+        viewModel.sendReminder(anyString())
+        coVerify { productrevSendReminderUseCase.executeOnBackground() }
+        viewModel.getError().verifyValueEquals(throwable)
     }
 }
