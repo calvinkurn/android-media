@@ -10,7 +10,8 @@ data class TokoNowCategoryMenuItemUiModel(
     val imageUrl: String? = null,
     val appLink: String = "",
     val warehouseId: String = "",
-    val headerName: String = ""
+    val headerName: String = "",
+    val color: String = ""
 ): Visitable<TokoNowCategoryMenuItemTypeFactory>, ImpressHolder() {
     override fun type(typeFactoryCategory: TokoNowCategoryMenuItemTypeFactory): Int {
         return typeFactoryCategory.type(this)

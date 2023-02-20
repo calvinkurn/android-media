@@ -8,6 +8,6 @@ import kotlinx.parcelize.Parcelize
 data class AlbumUiModel(
     var id: Long = 0L,
     var name: String = "",
-    var preview: Uri? = null,
+    var uri: Uri? = null,
     var count: Int = 0
 ) : Parcelable

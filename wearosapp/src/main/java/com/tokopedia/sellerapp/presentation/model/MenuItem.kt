@@ -25,10 +25,10 @@ fun generateInitialMenu() = listOf(
     /**
      * FOR NEXT DEVELOPMENT
      */
-//    MenuItem(
-//        title = TITLE_NOTIF,
-//        icon = ICON_NOTIF,
-//    ),
+    MenuItem(
+        title = TITLE_NOTIF,
+        icon = ICON_NOTIF,
+    ),
 //    MenuItem(
 //        title = TITLE_CHAT,
 //        icon = ICON_CHAT,

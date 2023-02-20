@@ -44,6 +44,8 @@
 /features/user/notif-troubleshooter/                    @tokopedia/android-miniondave-dev
 /features/user/settingnotif/                    		@tokopedia/android-miniondave-dev
 
+/features/watch/                                        @tokopedia/android-core-dev
+
 /features/common/app_common                             @tokopedia/android-core-dev
 /features/common/developer_options                  	@tokopedia/android-core-dev
 /features/common/nps                                	@tokopedia/android-core-dev
@@ -248,7 +250,7 @@
 /features/communication/topchat/                        @tokopedia/android-minionkevin-dev
 /features/communication/tokochat/                       @tokopedia/android-minionkevin-dev
 /features/communication/tokochat_common/                @tokopedia/android-minionkevin-dev
-/features/tokochat_config_common/                       @tokopedia/android-minionkevin-dev
+/features/communication/tokochat_config_common/         @tokopedia/android-minionkevin-dev
 
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
@@ -407,6 +409,7 @@
 /build.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
+/wearosapp/                                        @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 /testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev

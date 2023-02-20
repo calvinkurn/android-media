@@ -1,7 +1,7 @@
 package com.tokopedia.cart.domain.usecase
 
 const val CART_REVAMP_V3_QUERY =
-        """
+    """
         query cartRevampV3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
           cart_revamp_v3(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
@@ -128,7 +128,11 @@ const val CART_REVAMP_V3_QUERY =
                     ticker_text
                     icon_url
                     add_on_ids
-                 }
+                  }
+                  epharmacy_consultation {
+                    ticker_text
+                    icon_url
+                  }
                   user_address_id
                   shipment_information {
                     shop_location
@@ -210,6 +214,10 @@ const val CART_REVAMP_V3_QUERY =
                         additional_fee
                       }
                       is_dropship_enabled
+                    }
+                    enabler_data {
+                      label_name
+                      show_label
                     }
                   }
                   promo_codes
@@ -479,6 +487,10 @@ const val CART_REVAMP_V3_QUERY =
                       badge
                       badge_svg
                       title
+                    }
+                    enabler_data {
+                      label_name
+                      show_label
                     }
                   }
                   promo_codes

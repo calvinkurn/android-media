@@ -10,10 +10,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
+import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.model.NotificationModel
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.model.PhoneState
 import com.tokopedia.sellerapp.domain.model.SummaryModel
@@ -39,6 +40,7 @@ class SharedViewModel @Inject constructor(
     private val orderUseCaseImpl: OrderUseCaseImpl,
     private val getSummaryUseCase: GetSummaryUseCase,
     private val getOrderUseCase: OrderUseCaseImpl,
+    private val getNotificationUseCase: GetNotificationUseCase,
     private val capabilityClient: CapabilityClient,
     private val remoteActivityHelper: RemoteActivityHelper,
     private val clientMessageDatasource: ClientMessageDatasource
@@ -52,6 +54,7 @@ class SharedViewModel @Inject constructor(
     init {
         launch {
             clientMessageDatasource.sendMessagesToNodes(Action.GET_ORDER_LIST)
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_NOTIFICATION_LIST)
             clientMessageDatasource.sendMessagesToNodes(Action.GET_SUMMARY)
         }
     }
@@ -66,6 +69,20 @@ class SharedViewModel @Inject constructor(
 
     private val _orderList = MutableStateFlow<UiState<List<OrderModel>>>(UiState.Loading())
     val orderList : StateFlow<UiState<List<OrderModel>>> = _orderList.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
+    private val _notifications = MutableStateFlow<UiState<List<NotificationModel>>>(UiState.Loading())
+    val notifications : StateFlow<UiState<List<NotificationModel>>> = _notifications.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
+    private val _notificationDetail = MutableStateFlow<UiState<NotificationModel>>(UiState.Loading())
+    val notificationDetail : StateFlow<UiState<NotificationModel>> = _notificationDetail.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
         initialValue = UiState.Idle()
@@ -106,6 +123,26 @@ class SharedViewModel @Inject constructor(
     fun checkPhoneState() {
         viewModelScope.launch {
             checkIfPhoneHasApp()
+        }
+    }
+
+    fun getNotificationList() {
+        viewModelScope.launch {
+            _notifications.emitAll(
+                getNotificationUseCase.getNotificationList().map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
+
+    fun getNotificationDetail(notificationId: String) {
+        viewModelScope.launch {
+            _notificationDetail.emitAll(
+                getNotificationUseCase.getNotificationDetail(notificationId).map {
+                    UiState.Success(data = it)
+                }
+            )
         }
     }
 
