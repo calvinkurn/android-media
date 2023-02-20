@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.databinding.ItemFeedThreeDotsMenuBinding
-import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
-import com.tokopedia.feedplus.presentation.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.unifyprinciples.R
 
 /**

@@ -3,7 +3,7 @@ package com.tokopedia.content.common.report_content.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
-import com.tokopedia.feedplus.presentation.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023

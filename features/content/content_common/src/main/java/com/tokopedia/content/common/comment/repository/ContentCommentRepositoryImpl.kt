@@ -9,7 +9,8 @@ import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.usecase.DeleteCommentUseCase
 import com.tokopedia.content.common.comment.usecase.GetCommentsUseCase
 import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
-import com.tokopedia.content.common.comment.usecase.SubmitReportCommentUseCase
+import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -24,7 +25,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
     private val mapper: CommentUiModelMapper,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val postCommentUseCase: PostCommentUseCase,
-    private val submitReportCommentUseCase: SubmitReportCommentUseCase,
+    private val submitReportCommentUseCase: FeedComplaintSubmitReportUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
 ) : ContentCommentRepository {
 
@@ -71,21 +72,13 @@ class ContentCommentRepositoryImpl @Inject constructor(
     }
 
     override suspend fun reportComment(
-        source: PageSource,
-        reportType: String,
-        reason: String,
-        detail: String
+        param: FeedReportRequestParamModel
     ): Boolean = withContext(dispatchers.io) {
         val response = submitReportCommentUseCase.apply {
             setRequestParams(
-                SubmitReportCommentUseCase.setParam(
-                    source = source,
-                    reportType = reportType,
-                    reason = reason,
-                    detail = detail
-                )
+                FeedComplaintSubmitReportUseCase.createParam(param)
             )
-        }.executeOnBackground().status.success
+        }.executeOnBackground().data.success
         return@withContext response
     }
 

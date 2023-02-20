@@ -14,7 +14,22 @@ sealed interface CommentUiModel {
         val appLink: String,
         val commentType: CommentType,
         val childCount: String,
-    ) : CommentUiModel
+        val isOwner: Boolean,
+    ) : CommentUiModel {
+        companion object {
+            val Empty = Item(
+                id = "",
+                username = "",
+                content = "",
+                createdTime = "",
+                photo = "",
+                appLink = "",
+                commentType = CommentType.Parent,
+                childCount = "",
+                isOwner = false,
+            )
+        }
+    }
 
     object Empty : CommentUiModel
     object Shimmer : CommentUiModel

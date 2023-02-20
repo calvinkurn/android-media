@@ -12,8 +12,8 @@ import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
-import com.tokopedia.feedplus.presentation.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -41,7 +41,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
                     dismiss()
                 }
 
-                mListener?.onMenuItemClick(item)
+                mListener?.onMenuItemClick(item, contentId)
             }
         })
     }

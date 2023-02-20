@@ -1,33 +1,43 @@
 package com.tokopedia.content.common.comment.ui
 
+import android.app.Activity
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.content.common.comment.ContentCommentFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.comment.CommentAction
-import com.tokopedia.content.common.comment.ContentCommentViewModel
-import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
+import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -36,7 +46,9 @@ import javax.inject.Inject
  */
 class ContentCommentBottomSheet @Inject constructor(
     factory: ContentCommentFactory.Creator,
-) : BottomSheetUnify(), CommentViewHolder.Item.Listener, CommentViewHolder.Expandable.Listener {
+    private val router: Router,
+) : BottomSheetUnify(), CommentViewHolder.Item.Listener, CommentViewHolder.Expandable.Listener,
+    ContentThreeDotsMenuBottomSheet.Listener {
 
     private var _binding: FragmentContentCommentBottomSheetBinding? = null
     private val binding: FragmentContentCommentBottomSheetBinding
@@ -64,6 +76,15 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+    private val sheetMenu by lazyThreadSafetyNone {
+        ContentThreeDotsMenuBottomSheet.getFragment(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).apply {
+            setListener(this@ContentCommentBottomSheet)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -75,6 +96,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
         setupView()
         observeData()
+        observeEvent()
     }
 
     private fun setupBottomSheet() {
@@ -98,7 +120,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun observeData() {
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenStarted {
             viewModel.comments.collectLatest {
                 when (it.state) {
                     ResultState.Success -> {
@@ -117,6 +139,36 @@ class ContentCommentBottomSheet @Inject constructor(
                             viewModel.submitAction(CommentAction.RefreshComment)
                         }
                         showError(true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.event.collect { event ->
+                when (event) {
+                    is CommentEvent.ShowSuccessToaster -> {
+                        Toaster.build(
+                            requireView(),
+                            text = event.message.orEmpty(),
+                            actionText = getString(R.string.comment_delete_undo),
+                            duration = Toaster.LENGTH_LONG,
+                            clickListener = { event.onClick }
+                        )
+                    }
+                    is CommentEvent.ShowErrorToaster -> {
+                        Toaster.build(
+                            requireView(),
+                            text = event.message.message.orEmpty(),
+                            actionText = getString(R.string.feed_content_coba_lagi_text),
+                            duration = Toaster.LENGTH_LONG,
+                            clickListener = { event.onClick }
+                        )
+                    }
+                    is CommentEvent.OpenAppLink -> {
+                        router.route(context = requireContext(), appLinkPattern = event.appLink)
                     }
                 }
             }
@@ -147,12 +199,13 @@ class ContentCommentBottomSheet @Inject constructor(
         viewModel.submitAction(CommentAction.RefreshComment)
     }
 
-    override fun onReplyClicked(item: CommentUiModel) {
+    override fun onReplyClicked(item: CommentUiModel.Item) {
         //TODO("Not yet implemented")
     }
 
-    override fun onLongClicked(item: CommentUiModel) {
-        //TODO("Not yet implemented")
+    override fun onLongClicked(item: CommentUiModel.Item) {
+        sheetMenu.setData(getMenuItems(item.isOwner), item.id)
+        sheetMenu.show(childFragmentManager)
     }
 
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
@@ -184,6 +237,60 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private val getCommentShimmering: List<CommentUiModel.Shimmer> = List(6) {
         CommentUiModel.Shimmer
+    }
+
+    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
+        when (feedMenuItem.type) {
+            FeedMenuIdentifier.DELETE -> {
+                viewModel.submitAction(CommentAction.DeleteComment(contentId))
+            }
+            FeedMenuIdentifier.LAPORKAN -> sheetMenu.showReportLayoutWhenLaporkanClicked()
+        }
+    }
+
+    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+        viewModel.submitAction(
+            CommentAction.ReportComment(
+                feedReportRequestParamModel.copy(
+                    reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_COMMENT
+                )
+            )
+        )
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun getMenuItems(isOwner: Boolean): List<FeedMenuItem> = buildList {
+        if (isOwner)
+            add(
+                FeedMenuItem(
+                    name = getString(R.string.content_common_menu_delete),
+                    drawable = getIconUnifyDrawable(
+                        context = requireContext(),
+                        iconId = IconUnify.DELETE
+                    ),
+                    type = FeedMenuIdentifier.DELETE
+                )
+            )
+        else
+            add(
+                FeedMenuItem(
+                    drawable = getIconUnifyDrawable(
+                        requireContext(), IconUnify.WARNING, MethodChecker.getColor(
+                            context,
+                            R.color.Unify_RN500
+                        )
+                    ),
+                    name = getString(R.string.content_common_menu_report),
+                    type = FeedMenuIdentifier.LAPORKAN
+                )
+            )
+        Toast.LENGTH_LONG
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) return
+
+        viewModel.submitAction(CommentAction.ResultAction(requestCode))
     }
 
     interface EntrySource {

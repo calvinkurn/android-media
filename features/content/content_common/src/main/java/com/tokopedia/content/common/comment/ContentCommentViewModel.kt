@@ -3,10 +3,13 @@ package com.tokopedia.content.common.comment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.repository.ContentCommentRepository
 import com.tokopedia.content.common.comment.uimodel.*
+import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -19,11 +22,15 @@ import kotlinx.coroutines.launch
 class ContentCommentViewModel @AssistedInject constructor(
     @Assisted private val source: PageSource,
     private val dispatchers: CoroutineDispatchers,
-    private val repo: ContentCommentRepository
+    private val repo: ContentCommentRepository,
+    private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
     val comments: Flow<CommentWidgetUiModel>
         get() = _comments
+
+    val event: Flow<CommentEvent>
+        get() = _event
 
     @AssistedFactory
     interface Factory {
@@ -32,6 +39,8 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     private val _query = MutableStateFlow(CommentParam())
     private val _comments = MutableStateFlow(CommentWidgetUiModel.Empty)
+
+    private val _event = MutableSharedFlow<CommentEvent>(extraBufferCapacity = 2)
 
     init {
         viewModelScope.launch {
@@ -120,6 +129,8 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.LoadNextPage -> updateQuery(action.commentType)
             CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
+            is CommentAction.DeleteComment -> deleteComment(action.commentId)
+            is CommentAction.ReportComment -> reportComment(action.param)
         }
     }
 
@@ -156,6 +167,59 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun resetQuery(needToRefresh: Boolean) {
         _query.update {
             CommentParam(needToRefresh = needToRefresh)
+        }
+    }
+
+    private fun deleteComment(commentId: String) { //isFromToaster [add Param]
+        removeComment(commentId)
+        viewModelScope.launchCatchError(block = {
+            val result = repo.deleteComment(commentId)
+            if (result) {
+                _event.emit(CommentEvent.ShowSuccessToaster(onClick = {
+                    deleteComment(commentId)
+                }))
+            }
+        }) {
+            _event.emit(CommentEvent.ShowErrorToaster(message = it) {
+                deleteComment(commentId)
+            })
+        }
+    }
+
+    private fun reportComment(
+        param: FeedReportRequestParamModel,
+    ) {
+        requireLogin {
+            viewModelScope.launchCatchError(block = {
+                val result = repo.reportComment(param)
+                if (result) removeComment(param.contentId)
+            }) {
+                _event.emit(
+                    CommentEvent.ShowErrorToaster(
+                        message = it,
+                        onClick = { reportComment(param) })
+                )
+            }
+        }
+    }
+
+    private fun removeComment(id: String) {
+        _comments.getAndUpdate {
+            it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == id })
+        }
+    }
+
+    private fun requireLogin(action: (isLoggedIn: Boolean) -> Unit) {
+        if (!userSession.isLoggedIn) {
+            viewModelScope.launch {
+                _event.emit(
+                    CommentEvent.OpenAppLink(
+                        appLink = ApplinkConst.LOGIN,
+                    )
+                )
+            }
+        } else {
+            action(true)
         }
     }
 }
