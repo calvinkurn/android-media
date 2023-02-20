@@ -683,9 +683,9 @@ class DigitalCartFragment :
         )
         binding?.run {
             if (isChecked) {
-                binding?.checkoutBottomViewWidget?.showCrossSellConsent()
+                binding?.checkoutBottomViewWidget?.showCrossSellConsentIfAvailable()
             } else {
-                binding?.checkoutBottomViewWidget?.hideCrossSellConsent()
+                binding?.checkoutBottomViewWidget?.hideCrossSellConsentIfAvailable()
             }
             val consentPayload = if (checkoutBottomViewWidget.isCrossSellConsentVisible()) {
                 checkoutBottomViewWidget.getCrossSellConsentPayload()
