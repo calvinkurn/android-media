@@ -1477,7 +1477,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         shouldVisible = false
                     )
                 }
-                STATUS_PERSONA_ACTIVE -> {
+                STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
                     val btmSheet = SellerPersonaBottomSheet.newInstance()
                     val shouldShowBottomSheet =
                         !it.isFinishing && !btmSheet.isAdded && sharedPref.shouldShowPersonaHomePopup(
@@ -1487,6 +1487,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         runCatching {
                             btmSheet.setOnDismissListener {
                                 sharedPref.markPersonaHomePopupShown(userSession.userId)
+                                if (personaStatus == STATUS_PERSONA_INACTIVE) {
+                                    showPersonaToaster()
+                                }
                             }
                             btmSheet.show(childFragmentManager)
                         }
@@ -1495,12 +1498,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         userSession.userId, shouldVisible = true
                     )
                 }
-                STATUS_PERSONA_INACTIVE, STATUS_PERSONA_SHOW_POPUP -> {
+                STATUS_PERSONA_SHOW_POPUP -> {
                     sharedPref.setPersonaEntryPointVisibility(
                         userSession.userId,
                         shouldVisible = true
                     )
                 }
+            }
+        }
+    }
+
+    private fun showPersonaToaster() {
+        view?.run {
+            post {
+                val message = context.getString(R.string.sah_activate_persona_entry_point_info)
+                val cta = context.getString(R.string.saldo_btn_oke)
+                Toaster.build(
+                    rootView,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    cta
+                ).show()
             }
         }
     }

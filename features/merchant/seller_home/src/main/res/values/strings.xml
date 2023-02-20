@@ -250,4 +250,5 @@
     <string name="sah_seller_persona_bottom_sheet_sub_title">Kamu bisa cek tipe Seller-mu di menu Pengaturan Akun</string>
     <string name="sah_seller_persona_bottom_sheet_description">Jawaban kuismu dipakai untuk menyesuaikan tampilan Home Tokopedia Seller kamu.</string>
     <string name="sah_persona_bottom_sheet_title">Akses profil di pengaturan</string>
+    <string name="sah_activate_persona_entry_point_info">Aktifkan personalisasi berdasarkan tipe Seller agar tampilan Home sesuai kebutuhanmu, ya.</string>
 </resources>

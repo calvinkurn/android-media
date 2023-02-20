@@ -43,7 +43,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     companion object {
         private const val PERSONA_TITLE = "\uD83C\uDF1F %s \uD83C\uDF1F"
-        private const val CORPORATE_OWNER = "corporate-supervisor-owner"
+        private const val CORPORATE_EMPLOYEE = "corporate-employee"
     }
 
     @Inject
@@ -114,8 +114,12 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                 }
                 setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
                 setSecondaryCTAClickListener {
-                    activity?.finish()
                     dismiss()
+                    if (sharedPref.isFirstVisit) {
+                        val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
+                        RouteManager.route(it, appLink)
+                    }
+                    activity?.finish()
                 }
                 show()
             }
@@ -187,6 +191,8 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     private fun handleError() {
         binding?.run {
             dismissLoadingState()
+            tvSpLblActivatePersonaStatus.gone()
+            btnSpApplyPersona.gone()
             groupSpResultComponents.gone()
             errorViewPersonaResult.visible()
             errorViewPersonaResult.setOnActionClicked {
@@ -292,13 +298,14 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             R.string.sp_inactive
         }
         binding?.run {
+            tvSpLblActivatePersonaStatus.visible()
             tvSpLblActivatePersonaStatus.text = root.context.getString(activeStatus)
         }
     }
 
     private fun setTipsVisibility(persona: String) {
         binding?.run {
-            if (persona == CORPORATE_OWNER && userSession.isShopOwner) {
+            if (persona == CORPORATE_EMPLOYEE && userSession.isShopOwner) {
                 dividerSpResultBottom.visible()
                 icSpOwnerInfo.visible()
                 tvSpLblOwnerInfo.visible()
