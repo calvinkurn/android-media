@@ -2021,9 +2021,21 @@ class ShopPageHomeTracking(
         widgetId: String,
         widgetPosition: Int,
         shopId: String,
-        userId: String
+        userId: String,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
-        val eventLabel = String.format(LABEL_SHOP_DECOR_IMPRESSION, segmentName, decorWidgetName)
+        var eventLabel = joinDash(
+            LABEL_SHOP_DECOR_IMPRESSION,
+            segmentName,
+            decorWidgetName,
+            widgetMasterId
+        )
+        eventLabel = if (isFestivity) {
+            joinDash(eventLabel, FESTIVITY)
+        } else {
+            eventLabel
+        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to PROMO_VIEW,
             EVENT_ACTION to ACTION_SHOP_DECOR_IMPRESSION,
@@ -2055,9 +2067,21 @@ class ShopPageHomeTracking(
         widgetId: String,
         widgetPosition: Int,
         shopId: String,
-        userId: String
+        userId: String,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
-        val eventLabel = String.format(LABEL_SHOP_DECOR_CLICK, segmentName, decorWidgetName)
+        var eventLabel = joinDash(
+            LABEL_SHOP_DECOR_CLICK,
+            segmentName,
+            decorWidgetName,
+            widgetMasterId
+        )
+        eventLabel = if (isFestivity) {
+            joinDash(eventLabel, FESTIVITY)
+        } else {
+            eventLabel
+        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to CLICK_SHOP_PAGE,
             EVENT_ACTION to ACTION_SHOP_DECOR_CLICK,

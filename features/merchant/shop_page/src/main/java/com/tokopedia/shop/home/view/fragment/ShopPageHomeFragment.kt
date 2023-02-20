@@ -1797,7 +1797,16 @@ open class ShopPageHomeFragment :
         widgetTitle: String,
         widgetName: String,
         productItemPosition: Int
-    ) {}
+    ) {
+        sendShopHomeWidgetImpressionTracker(
+            widgetTitle,
+            widgetName,
+            selectedMultipleBundle.widgetId,
+            bundlePosition,
+            selectedMultipleBundle.widgetMasterId,
+            selectedMultipleBundle.isFestivity
+        )
+    }
 
     override fun onMultipleBundleProductClicked(
         shopId: String,
@@ -1845,8 +1854,17 @@ open class ShopPageHomeFragment :
         bundleName: String,
         bundlePosition: Int,
         widgetTitle: String,
-        widgetName: String
+        widgetName: String,
+        bundleType: String
     ) {
+        sendShopHomeWidgetImpressionTracker(
+            widgetTitle,
+            widgetName,
+            selectedSingleBundle.widgetId,
+            bundlePosition,
+            selectedSingleBundle.widgetMasterId,
+            selectedSingleBundle.isFestivity
+        )
         shopPageHomeTracking.impressionSingleBundleWidget(
             shopId = shopId,
             userId = userId,
@@ -2093,7 +2111,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_SHOWCASE,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position)
+            ShopUtil.getActualPositionFromIndex(position),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 
@@ -2107,7 +2127,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_SHOWCASE,
             shopHomeShowcaseListSliderUiModel.name,
             shopHomeShowcaseListSliderUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeShowcaseListSliderUiModel.widgetMasterId,
+            shopHomeShowcaseListSliderUiModel.isFestivity
         )
         shopPageHomeTracking.clickShowcaseListWidgetItem(
             showcaseItem,
@@ -2203,7 +2225,9 @@ open class ShopPageHomeFragment :
             segmentName,
             displayWidgetUiModel?.name.orEmpty(),
             displayWidgetUiModel?.widgetId.orEmpty(),
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            displayWidgetUiModel?.widgetMasterId.orEmpty(),
+            displayWidgetUiModel?.isFestivity.orFalse()
         )
         shopPageHomeTracking.clickDisplayWidget(
             false,
@@ -2244,7 +2268,9 @@ open class ShopPageHomeFragment :
             segmentName,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position)
+            ShopUtil.getActualPositionFromIndex(position),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 
@@ -2252,7 +2278,9 @@ open class ShopPageHomeFragment :
         segmentName: String,
         widgetName: String,
         widgetId: String,
-        position: Int
+        position: Int,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onImpressionShopHomeWidget(
@@ -2261,7 +2289,9 @@ open class ShopPageHomeFragment :
                 widgetId,
                 position,
                 shopId,
-                userId
+                userId,
+                widgetMasterId,
+                isFestivity
             )
         }
     }
@@ -2270,7 +2300,9 @@ open class ShopPageHomeFragment :
         segmentName: String,
         widgetName: String,
         widgetId: String,
-        position: Int
+        position: Int,
+        widgetMasterId: String,
+        isFestivity: Boolean
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onClickedShopHomeWidget(
@@ -2279,7 +2311,9 @@ open class ShopPageHomeFragment :
                 widgetId,
                 position,
                 shopId,
-                userId
+                userId,
+                widgetMasterId,
+                isFestivity
             )
         }
     }
@@ -2293,7 +2327,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_VOUCHER,
             model.name,
             model.widgetId,
-            position
+            position,
+            model.widgetMasterId,
+            model.isFestivity
         )
         shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCoupon(shopId, viewModel?.userId)
     }
@@ -2306,7 +2342,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_VOUCHER,
             model.name,
             model.widgetId,
-            position
+            position,
+            model.widgetMasterId,
+            model.isFestivity
         )
         shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCouponTokoMemberInformation(
             shopId
@@ -2493,7 +2531,9 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
                 shopHomeCarousellProductUiModel?.name.orEmpty(),
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-                ShopUtil.getActualPositionFromIndex(parentPosition)
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
             shopPageHomeTracking.clickProductPersonalization(
                 isOwner,
@@ -2523,7 +2563,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
             shopHomeCarousellProductUiModel?.name.orEmpty(),
             shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+            shopHomeCarousellProductUiModel?.isFestivity.orFalse()
         )
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProductPersonalizationReminder(
@@ -2554,7 +2596,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
             shopHomeCarousellProductUiModel.name,
             shopHomeCarousellProductUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeCarousellProductUiModel.widgetMasterId,
+            shopHomeCarousellProductUiModel.isFestivity
         )
         shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
             itemPosition,
@@ -2755,7 +2799,9 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
                 shopHomeCarousellProductUiModel?.name.orEmpty(),
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-                ShopUtil.getActualPositionFromIndex(parentPosition)
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
             shopPageHomeTracking.clickProduct(
                 isOwner,
@@ -2846,7 +2892,9 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
                 shopHomeCarousellProductUiModel?.name.orEmpty(),
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
-                ShopUtil.getActualPositionFromIndex(parentPosition)
+                ShopUtil.getActualPositionFromIndex(parentPosition),
+                shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
             shopPageHomeTracking.clickCarouselProductShowcaseItem(
                 isOwner,
@@ -3015,7 +3063,9 @@ open class ShopPageHomeFragment :
             segmentName,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(adapterPosition)
+            ShopUtil.getActualPositionFromIndex(adapterPosition),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 
@@ -3342,7 +3392,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
             shopHomeNewProductLaunchCampaignUiModel.name,
             shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+            shopHomeNewProductLaunchCampaignUiModel.isFestivity
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             shopPageHomeTracking.clickCampaignNplProduct(
@@ -3575,7 +3627,9 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
                 shopHomeNewProductLaunchCampaignUiModel.name,
                 shopHomeNewProductLaunchCampaignUiModel.widgetId,
-                ShopUtil.getActualPositionFromIndex(position)
+                ShopUtil.getActualPositionFromIndex(position),
+                shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                shopHomeNewProductLaunchCampaignUiModel.isFestivity
             )
             shopPageHomeTracking.impressionCampaignNplWidget(
                 it.statusCampaign,
@@ -4209,7 +4263,9 @@ open class ShopPageHomeFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_PLAY,
             model.name,
             model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position)
+            ShopUtil.getActualPositionFromIndex(position),
+            model.widgetMasterId,
+            model.isFestivity
         )
     }
 

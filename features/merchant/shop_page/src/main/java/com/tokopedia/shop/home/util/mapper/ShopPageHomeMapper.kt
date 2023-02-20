@@ -1121,6 +1121,8 @@ object ShopPageHomeMapper {
             minOrderWording = bundleDetailUiModel.minOrderWording,
             isSelected = bundleDetailUiModel.isSelected,
             isFestivity = bundleListUiModel?.isFestivity.orFalse(),
+            widgetId = bundleListUiModel?.widgetId.orEmpty(),
+            widgetMasterId = bundleListUiModel?.widgetMasterId.orEmpty()
         )
     }
 

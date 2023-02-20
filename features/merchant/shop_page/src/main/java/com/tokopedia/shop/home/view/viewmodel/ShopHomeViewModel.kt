@@ -281,10 +281,12 @@ class ShopHomeViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, block = {
             var uiModel = shopHomeVoucherUiModel
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
+            val widgetMasterId = uiModel.widgetMasterId
             uiModel = uiModel.copy(
                 data = ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId),
                 isError = false
             )
+            uiModel.widgetMasterId = widgetMasterId
             val code = response.data?.resultStatus?.code
             if (code != CODE_STATUS_SUCCESS) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))

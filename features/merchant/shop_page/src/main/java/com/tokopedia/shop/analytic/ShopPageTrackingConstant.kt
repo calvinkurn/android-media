@@ -206,8 +206,8 @@ object ShopPageTrackingConstant {
     const val LABEL_CLICK_PRODUCT_LIST_TOGGLE = "click - tampilan toko - %1s - %2s"
     const val LABEL_CLICK_SHOWCASE_CHIP = "click - etalase chip - %1s"
     const val LABEL_CLICK_APPLY_FILTER_CHIP = "click - filter chip"
-    const val LABEL_SHOP_DECOR_IMPRESSION = "impression - shop decor - %1s - %2s"
-    const val LABEL_SHOP_DECOR_CLICK = "click - shop decor - %1s - %2s"
+    const val LABEL_SHOP_DECOR_IMPRESSION = "impression - shop decor"
+    const val LABEL_SHOP_DECOR_CLICK = "click - shop decor"
     const val IMPRESSION_SHOP_BANNER_LABEL = "impression - shop banner - campaign tab - %1s - %2s"
     const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
 

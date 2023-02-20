@@ -144,7 +144,8 @@ class ShopHomeProductBundleSingleViewHolder(
                     bundle.bundleName,
                     adapterPosition,
                     widgetTitle,
-                    widgetName
+                    widgetName,
+                    bundle.bundleType
             )
         }
 
@@ -241,5 +242,6 @@ interface SingleProductBundleListener {
             bundlePosition: Int,
             widgetTitle: String,
             widgetName: String,
+            bundleType: String,
     )
 }

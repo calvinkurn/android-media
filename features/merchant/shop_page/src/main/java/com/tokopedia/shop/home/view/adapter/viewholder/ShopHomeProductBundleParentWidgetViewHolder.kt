@@ -194,7 +194,8 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             bundleName = bundleName,
             bundlePosition = adapterPosition,
             widgetTitle = bundleWidgetTitle,
-            widgetName = bundleWidgetName
+            widgetName = bundleWidgetName,
+            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId)
         )
     }
 
@@ -238,5 +239,14 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             productItemPosition = adapterPosition,
             bundleType = bundleUiModel.bundleType.toString()
         )
+    }
+
+    private fun getBundleType(
+        bundleListUiModel: ShopHomeProductBundleListUiModel?,
+        bundleId: String
+    ): String {
+        return bundleListUiModel?.productBundleList?.firstOrNull {
+            it.bundleGroupId == bundleId
+        }?.bundleType.orEmpty()
     }
 }

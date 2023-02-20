@@ -13,5 +13,7 @@ data class ShopHomeProductBundleDetailUiModel(
     var minOrder: Int = 0,
     var minOrderWording: String = "",
     var isSelected: Boolean = false,
-    var isFestivity: Boolean = false
+    var isFestivity: Boolean = false,
+    var widgetId: String = "",
+    var widgetMasterId: String = ""
 )
