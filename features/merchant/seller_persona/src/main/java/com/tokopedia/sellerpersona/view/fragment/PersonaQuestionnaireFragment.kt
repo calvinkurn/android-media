@@ -237,7 +237,9 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 when (it) {
                     is Success -> {
                         val action = PersonaQuestionnaireFragmentDirections
-                            .actionQuestionnaireToResult(paramPersona = it.data)
+                            .actionQuestionnaireToResult(
+                                paramPersona = it.data
+                            )
                         findNavController().navigate(action)
                     }
                     is Fail -> {

@@ -23,6 +23,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.common.Utils
+import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
@@ -47,6 +48,9 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var sharedPref: PersonaSharedPref
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -120,7 +124,6 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     private fun observePersonaToggleStatus() {
         viewLifecycleOwner.observe(viewModel.togglePersonaStatus) {
-            dismissLoadingButton()
             when (it) {
                 is Success -> setOnToggleSuccess(it.data)
                 is Fail -> showToggleErrorMessage()
@@ -153,6 +156,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     private fun showToggleErrorMessage() {
         view?.run {
+            dismissLoadingButton()
             val dp64 = context.resources.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
             )
@@ -243,9 +247,19 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         binding?.run {
             if (args.paramPersona.isNotBlank()) {
                 btnSpApplyPersona.visible()
-                btnSpApplyPersona.text = root.context.getString(R.string.sp_apply)
+                setApplyButtonText()
             } else {
                 btnSpApplyPersona.gone()
+            }
+        }
+    }
+
+    private fun setApplyButtonText() {
+        binding?.run {
+            btnSpApplyPersona.text = if (sharedPref.isFirstVisit) {
+                root.context.getString(R.string.sp_apply)
+            } else {
+                root.context.getString(R.string.sp_apply_changes)
             }
         }
     }
@@ -260,7 +274,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                 if (args.paramPersona.isBlank()) {
                     if (isPersonaActive != isChecked) {
                         btnSpApplyPersona.visible()
-                        btnSpApplyPersona.text = root.context.getString(R.string.sp_apply_changes)
+                        setApplyButtonText()
                     } else {
                         btnSpApplyPersona.gone()
                     }
@@ -284,13 +298,13 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     private fun setTipsVisibility(persona: String) {
         binding?.run {
-            if (persona == CORPORATE_OWNER) {
+            if (persona == CORPORATE_OWNER && userSession.isShopOwner) {
                 dividerSpResultBottom.visible()
-                tvSpOwnerInfo.visible()
+                icSpOwnerInfo.visible()
                 tvSpLblOwnerInfo.visible()
             } else {
                 dividerSpResultBottom.gone()
-                tvSpOwnerInfo.gone()
+                icSpOwnerInfo.gone()
                 tvSpLblOwnerInfo.gone()
             }
         }

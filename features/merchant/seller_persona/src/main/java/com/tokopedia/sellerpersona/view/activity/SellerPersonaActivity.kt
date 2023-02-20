@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
 import com.tokopedia.sellerpersona.di.DaggerSellerPersonaComponent
@@ -40,6 +41,9 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var sharedPref: PersonaSharedPref
 
     val openingImpressHolder by lazy { ImpressHolder() }
 
@@ -70,6 +74,13 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        if (sharedPref.isFirstVisit) {
+            sharedPref.setIsFirstVisit(false)
+        }
+        super.onDestroy()
     }
 
     private fun observePersonaData() {
@@ -124,6 +135,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             val defaultDestination = if (hasPersona) {
                 R.id.resultFragment
             } else {
+                markAsPersonaFirstVisit()
                 R.id.openingFragment
             }
             graph.startDestination = defaultDestination
@@ -131,6 +143,10 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             navController.graph = graph
             setupToolbar(navController)
         }
+    }
+
+    private fun markAsPersonaFirstVisit() {
+        sharedPref.setIsFirstVisit(true)
     }
 
     private fun setupToolbar(navController: NavController) {

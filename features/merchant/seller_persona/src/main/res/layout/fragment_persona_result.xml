@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="imgSpResultBackdrop, imgSpResultAvatar, tvSpSelectManualType, btnSpRetryQuestionnaire, tvSpPersonaContentDescription, switchSpActivatePersona, tvSpLblActivatePersona, dividerSpResultBottom, rvSpResultInfoList, dividerSpResultTop, tvSpResultInfoTitle, tvSpSellerTypeNote, tvSpSellerType, tvSpLblSellerType, tvSpOwnerInfo, tvSpLblOwnerInfo, dividerSpResultMiddle" />
+            app:constraint_referenced_ids="imgSpResultBackdrop, imgSpResultAvatar, tvSpSelectManualType, btnSpRetryQuestionnaire, tvSpPersonaContentDescription, switchSpActivatePersona, tvSpLblActivatePersona, rvSpResultInfoList, dividerSpResultTop, tvSpResultInfoTitle, tvSpSellerTypeNote, tvSpSellerType, tvSpLblSellerType, dividerSpResultMiddle" />
 
         <com.tokopedia.sellerpersona.view.customview.PersonaErrorView
             android:id="@+id/errorViewPersonaResult"
@@ -157,19 +157,23 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/guidelineSpEnd"
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
-            app:layout_constraintTop_toBottomOf="@+id/rvSpResultInfoList" />
+            app:layout_constraintTop_toBottomOf="@+id/rvSpResultInfoList"
+            tools:visibility="visible" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/tvSpOwnerInfo"
+            android:id="@+id/icSpOwnerInfo"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_GN500"
             app:icon_name="LIGHT_BULB"
             app:layout_constraintBottom_toBottomOf="@+id/tvSpLblOwnerInfo"
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
-            app:layout_constraintTop_toTopOf="@+id/tvSpLblOwnerInfo" />
+            app:layout_constraintTop_toTopOf="@+id/tvSpLblOwnerInfo"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSpLblOwnerInfo"
@@ -179,10 +183,12 @@
             android:layout_marginTop="16dp"
             android:text="@string/sp_result_create_admin_account"
             android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/guidelineSpEnd"
-            app:layout_constraintStart_toEndOf="@+id/tvSpOwnerInfo"
+            app:layout_constraintStart_toEndOf="@+id/icSpOwnerInfo"
             app:layout_constraintTop_toBottomOf="@+id/dividerSpResultBottom"
-            app:typographyType="display_3" />
+            app:typographyType="display_3"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerSpResultMiddle"

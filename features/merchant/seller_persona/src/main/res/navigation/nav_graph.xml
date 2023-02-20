@@ -12,7 +12,7 @@
         android:label="@string/sp_opening_page_type"
         tools:layout="@layout/fragment_persona_opening">
         <action
-            android:id="@+id/actionOpeningFragmentToQuestionnaireFragment"
+            android:id="@+id/actionOpeningToQuestionnaire"
             app:destination="@id/questionnaireFragment"
             app:popUpToInclusive="false" />
     </fragment>

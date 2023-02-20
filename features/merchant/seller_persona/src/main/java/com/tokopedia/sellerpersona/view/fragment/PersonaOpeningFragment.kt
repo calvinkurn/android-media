@@ -8,7 +8,6 @@ import androidx.navigation.findNavController
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaOpeningBinding
@@ -65,7 +64,8 @@ class PersonaOpeningFragment : BaseFragment<FragmentPersonaOpeningBinding>() {
     private fun setupQuestionnaireNavigation() {
         binding?.btnOpeningStartQuiz?.setOnClickListener { v ->
             SellerPersonaTracking.sendClickSellerPersonaStartQuizEvent()
-            v.findNavController().navigate(R.id.actionOpeningFragmentToQuestionnaireFragment)
+            val action = PersonaOpeningFragmentDirections.actionOpeningToQuestionnaire()
+            v.findNavController().navigate(action)
         }
     }
 }
