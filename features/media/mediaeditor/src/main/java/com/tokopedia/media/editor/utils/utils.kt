@@ -6,14 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import androidx.core.content.ContextCompat
-<<<<<<< HEAD
 import androidx.fragment.app.Fragment
-import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.analytics.*
-import com.tokopedia.media.editor.data.repository.WatermarkType
-import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
-=======
->>>>>>> 8f0284dc48e4 (fix canvas draw overflow size)
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.utils.file.FileUtil
@@ -139,7 +132,6 @@ fun cropCenterImage(
     return null
 }
 
-<<<<<<< HEAD
 // validation for each delay to make sure fragment still exist
 fun Fragment.getRunnable(action: () -> Unit): Runnable {
     return Runnable {
@@ -147,9 +139,9 @@ fun Fragment.getRunnable(action: () -> Unit): Runnable {
             action()
         }
     }
-=======
-private const val MAX_IMAGE_PIXEL_DRAW = 25000000 //25 million pixel
+}
+
+private const val MAX_IMAGE_PIXEL_DRAW = 25000000 // 25 million pixel
 fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
     return (width * height) >= MAX_IMAGE_PIXEL_DRAW
->>>>>>> 8f0284dc48e4 (fix canvas draw overflow size)
 }

@@ -14,7 +14,6 @@ class PickerFragmentStateAdapter constructor(
     var fragments = mutableListOf<Fragment>()
         private set
 
-
     override fun getItemCount(): Int {
         return fragments.size
     }
@@ -28,9 +27,9 @@ class PickerFragmentStateAdapter constructor(
     }
 
     override fun containsItem(itemId: Long): Boolean {
-        return fragments.map {
-            it.hashCode().toLong()
-        }.contains(itemId)
+        return fragments.any {
+            it.hashCode().toLong() == itemId
+        }
     }
 
     fun addSingleFragment(fragment: Fragment) {
