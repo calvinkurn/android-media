@@ -23,7 +23,6 @@ import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
 import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.mvc.util.constant.TickerConstant
-import com.tokopedia.mvc.util.extension.firstTickerMessage
 import com.tokopedia.mvc.util.extension.isCashback
 import com.tokopedia.mvc.util.extension.isDiscount
 import com.tokopedia.mvc.util.extension.isFreeShipping
@@ -104,24 +103,21 @@ class VoucherSettingViewModel @Inject constructor(
                     )
                 }
 
-                getTickerWording()
+                getTickers()
                 handleVoucherInputValidation()
             },
             onError = {}
         )
     }
 
-    private fun getTickerWording() {
+    private fun getTickers() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
-                val tickerWordings = getTargetedTickerUseCase.execute(tickerWordingParam)
-                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
+                val tickersParams = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
+                val tickers = getTargetedTickerUseCase.execute(tickersParams)
 
-                _uiState.update {
-                    it.copy(discountPromoTypeDisabledReason = tickerWording)
-                }
+                _uiState.update { it.copy(tickers = tickers) }
             },
             onError = {}
         )

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
@@ -24,6 +25,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeDiscountInputSe
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInputSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -42,6 +44,11 @@ import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.tracker.VoucherSettingTracker
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -202,7 +209,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderSpendingEstimation(state.spendingEstimation)
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
         renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
-        renderTicker(state.isDiscountPromoTypeEnabled, state.discountPromoTypeDisabledReason)
+        renderTicker(state.isDiscountPromoTypeEnabled, state.tickers)
     }
 
     private fun renderPromoTypeChips(
@@ -1411,11 +1418,44 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         chip_image_icon.setColorFilter(color)
     }
 
-    private fun renderTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
-        if (!isDiscountPromoTypeEnabled && remoteTickerMessage.isNotEmpty()) {
-            binding?.ticker?.visible()
-            binding?.ticker?.setTextDescription(remoteTickerMessage)
+    private fun renderTicker(isDiscountPromoTypeEnabled: Boolean, tickers: List<RemoteTicker>) {
+        if (!isDiscountPromoTypeEnabled && tickers.isNotEmpty()) {
+            showTickers(tickers)
         }
     }
 
+    private fun showTickers(tickers: List<RemoteTicker>) {
+        binding?.run {
+            ticker.visible()
+
+            val remoteTickers = tickers.map { remoteTicker ->
+                TickerData(
+                    title = remoteTicker.title,
+                    description = remoteTicker.description,
+                    isFromHtml = true,
+                    type = Ticker.TYPE_ANNOUNCEMENT
+                )
+            }
+
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    routeToUrl(linkUrl.toString())
+                }
+            })
+
+
+            ticker.addPagerView(tickerAdapter, remoteTickers)
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+
+                }
+            })
+        }
+    }
 }
