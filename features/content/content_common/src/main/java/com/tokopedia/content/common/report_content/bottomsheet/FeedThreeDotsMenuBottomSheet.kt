@@ -7,16 +7,18 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.databinding.BottomSheetFeedThreeDotsMenuBinding
 import com.tokopedia.content.common.databinding.BottomsheetFeedPostReportBinding
 import com.tokopedia.content.common.report_content.adapter.FeedMenuAdapter
+import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.content.common.R as contentCommonR
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
 import com.tokopedia.feedplus.presentation.model.FeedMenuItem
-
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
@@ -30,15 +32,16 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
     private var isClicked = 0
     private var reasonType: String = ""
     private var reasonDesc: String = ""
+    private var contentId: String = ""
 
     private val adapter: FeedMenuAdapter by lazy {
         FeedMenuAdapter(object : FeedMenuViewHolder.Listener {
             override fun onClick(item: FeedMenuItem) {
-                mListener?.onMenuItemClick(item)
-                if (item.type ==  FeedMenuIdentifier.LAPORKAN)
-                    showReportLayoutWhenLaporkanClicked()
-                else
+                if (item.type != FeedMenuIdentifier.LAPORKAN) {
                     dismiss()
+                }
+
+                mListener?.onMenuItemClick(item)
             }
         })
     }
@@ -70,7 +73,6 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
         setChild(binding.root)
         clearClose(true)
         clearHeader(true)
-
     }
     fun showReportLayoutWhenLaporkanClicked() {
         binding.let {
@@ -80,7 +82,7 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
         }
     }
     private fun setUpReportLayoutView(binding: BottomsheetFeedPostReportBinding) {
-        binding.let{
+        binding.let {
             it.reportSubtext1.setOnClickListener {
                 setSpamCase()
             }
@@ -117,7 +119,6 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
             it.reportSubtext6Icon.setOnClickListener {
                 setIlleagalGoodSaleCase()
             }
-
         }
     }
 
@@ -147,8 +148,16 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
         isClicked = ILLEGAL_GOODS
         sendReport()
     }
-    fun sendReport(){
-        mListener?.onReportPost()
+    fun sendReport() {
+        getReason()
+        mListener?.onReportPost(
+            FeedReportRequestParamModel(
+                reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_POST,
+                contentId = contentId,
+                reason = reasonType,
+                reasonDetails = reasonDesc
+            )
+        )
     }
 
     fun setFinalView() {
@@ -195,16 +204,35 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        if(!isAdded) show(fragmentManager, TAG)
+        if (!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setData(feedMenuItemList: List<FeedMenuItem>): FeedThreeDotsMenuBottomSheet {
+    fun setData(feedMenuItemList: List<FeedMenuItem>, contentId: String): FeedThreeDotsMenuBottomSheet {
+        this.contentId = contentId
         mFeedMenuItemList.clear()
         mFeedMenuItemList.addAll(feedMenuItemList)
 
-        if(isAdded) adapter.updateData(mFeedMenuItemList)
+        if (isAdded) adapter.updateData(mFeedMenuItemList)
 
         return this
+    }
+    fun showToasterOnLoginSuccessFollow(
+        message: String,
+        type: Int,
+        actionText: String? = null
+    ) {
+        view?.rootView?.let {
+            context?.resources?.let { resource ->
+                Toaster.toasterCustomBottomHeight =
+                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+            }
+            if (actionText?.isEmpty() == false) {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
+                    .show()
+            } else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
+            }
+        }
     }
 
     fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
@@ -228,7 +256,7 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): FeedThreeDotsMenuBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedThreeDotsMenuBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -240,6 +268,6 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onMenuItemClick(feedMenuItem: FeedMenuItem)
-        fun onReportPost()
+        fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel)
     }
 }
