@@ -173,11 +173,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableNewChat
     val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
         get() = _observableNewMetrics
-    val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
-    val observableTitle: LiveData<PlayTitleUiModel.HasTitle> =
-        getCurrentSetupDataStore().getObservableTitle()
-            .filterIsInstance<PlayTitleUiModel.HasTitle>()
-            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
     val observableLeaderboardInfo: LiveData<NetworkResult<List<LeaderboardGameUiModel>>>
@@ -378,6 +373,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _selectedAccount,
         _accountStateInfo,
         _menuListUiState,
+        _title,
+        _cover,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -392,7 +389,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         quizBottomSheetUiState,
         selectedFeedAccount,
         accountStateInfo,
-        menuListUiState ->
+        menuListUiState,
+        title,
+        cover, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -409,6 +408,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             selectedContentAccount = selectedFeedAccount,
             accountStateInfo = accountStateInfo,
             menuList = menuListUiState,
+            title = title,
+            cover = cover,
         )
     }.stateIn(
         viewModelScope,

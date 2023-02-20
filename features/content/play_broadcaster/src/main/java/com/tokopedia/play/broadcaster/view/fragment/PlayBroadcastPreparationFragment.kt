@@ -59,6 +59,7 @@ import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
@@ -507,8 +508,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupObserver() {
         observeConfigInfo()
 
-        observeTitle()
-        observeCover()
+        observeUploadTitleEvent()
         observeCreateLiveStream()
 
         observeUiState()
@@ -584,7 +584,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun observeTitle() {
+    private fun observeUploadTitleEvent() {
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
@@ -599,31 +599,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun observeCover() {
-        /** TODO: combine this to uiState */
-//        parentViewModel.observableCover.observe(viewLifecycleOwner) {
-//            when (val croppedCover = it.croppedCover) {
-//                is CoverSetupState.Cropped.Uploaded -> {
-//                    if (croppedCover.coverImage.toString().isNotEmpty() &&
-//                        croppedCover.coverImage.toString().contains("http")
-//                    ) {
-//                        /** TODO: delete this */
-////                        binding.viewPreparationMenu.isSetCoverChecked(true)
-//                        binding.formCover.setCover(croppedCover.coverImage.toString())
-//                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
-//                        /** TODO: delete this */
-////                        binding.viewPreparationMenu.isSetCoverChecked(true)
-//                        binding.formCover.setCover(croppedCover.localImage.toString())
-//                    } else {
-//                        /** TODO: delete this */
-////                        binding.viewPreparationMenu.isSetCoverChecked(false)
-//                        binding.formCover.setInitialCover()
-//                    }
-//                }
-//            }
-//        }
     }
 
     private fun observeCreateLiveStream() {
@@ -647,6 +622,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPreparationMenu(prevState?.menuList, state.menuList)
+                renderCover(prevState?.cover, state.cover)
                 renderAccountInfo(prevState?.selectedContentAccount, state.selectedContentAccount)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
@@ -749,6 +725,30 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if(prevState == state) return
 
         binding.preparationMenu.submitMenu(state)
+    }
+
+    private fun renderCover(
+        prevState: PlayCoverUiModel?,
+        state: PlayCoverUiModel,
+    ) {
+        if(prevState == state) return
+
+        when (val croppedCover = state.croppedCover) {
+            is CoverSetupState.Cropped.Uploaded -> {
+                if (croppedCover.coverImage.toString().isNotEmpty() &&
+                    croppedCover.coverImage.toString().contains("http")
+                ) {
+                    binding.formCover.setCover(croppedCover.coverImage.toString())
+                } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
+                    binding.formCover.setCover(croppedCover.localImage.toString())
+                } else {
+                    binding.formCover.setInitialCover()
+                }
+            }
+            else -> {
+                binding.formCover.setInitialCover()
+            }
+        }
     }
 
     private fun renderAccountInfo(

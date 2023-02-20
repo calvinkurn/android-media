@@ -37,6 +37,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
@@ -299,7 +300,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
-        observeTitle()
         actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener {
@@ -389,12 +389,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 marginLayoutParams.updateMargins(bottom = newBottomMargin)
                 v.parent.requestLayout()
             }
-        }
-    }
-
-    private fun observeTitle() {
-        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            actionBarLiveView.setTitle(it.title)
         }
     }
 
@@ -732,6 +726,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderTitle(prevState?.title, state.title)
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
                 renderQuizForm(
@@ -850,6 +845,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
+
+    private fun renderTitle(
+        prevState: PlayTitleUiModel?,
+        state: PlayTitleUiModel
+    ) {
+        if(prevState == state) return
+
+        actionBarLiveView.setTitle(
+            when(state) {
+                is PlayTitleUiModel.HasTitle -> state.title
+                else -> ""
+            }
+        )
+    }
 
     private fun renderPinnedMessageView(
         prevState: PinnedMessageUiState?,
