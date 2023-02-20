@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -76,7 +77,11 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 recipeItemListener = RecipeListListener(
                     view = this,
                     analytics = analytics,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    userSession = userSession,
+                    directToLoginPage = {
+                        openLoginPage()
+                    }
                 ),
                 recipeFilterListener = RecipeFilterListener(
                     view = this,
@@ -93,6 +98,14 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeListBinding>()
 
     private val loadMoreListener by lazy { createLoadMoreListener() }
+
+    private val startLoginPageForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            onRefreshPage()
+        }
+    }
 
     private var navToolbar: TokoNowNavToolbar? = null
 
@@ -399,8 +412,17 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     }
 
     private fun goToBookmarkPage() {
-        analytics.clickBookmarkList()
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
+        if (userSession.isLoggedIn) {
+            analytics.clickBookmarkList()
+            RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
+        } else {
+            openLoginPage()
+        }
+    }
+
+    private fun openLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startLoginPageForResult.launch(intent)
     }
 
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
@@ -439,4 +461,5 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         setupLoadMoreListener()
         viewModel.refreshPage()
     }
+
 }
