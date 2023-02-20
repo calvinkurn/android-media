@@ -91,6 +91,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
+        const val KEYWORD_LOGIN_HELPER = "Login Helper"
     }
 
     /**
@@ -99,6 +100,7 @@ class DeveloperOptionAdapter(
      * Variable contains UiModels that you want to show in RecyclerView, put keyword as param
      **/
     private val defaultItems = mutableListOf(
+        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),

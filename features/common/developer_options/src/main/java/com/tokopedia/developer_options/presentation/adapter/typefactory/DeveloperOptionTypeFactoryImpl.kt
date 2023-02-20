@@ -69,6 +69,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
     override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
+    override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -121,6 +122,7 @@ class DeveloperOptionTypeFactoryImpl(
             ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
             TopchatWebSocketLoggingViewHolder.LAYOUT -> TopchatWebSocketLoggingViewHolder(view)
+            LoginHelperViewHolder.LAYOUT -> LoginHelperViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
