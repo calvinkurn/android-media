@@ -38,21 +38,11 @@
                 app:layout_constraintBottom_toBottomOf="@id/rv_banner_revamp"
                 tools:visibility="visible" />
             
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="48dp"
-                android:layout_height="6dp"
-                android:progress="50"
-                style="@style/IndicatorBanner"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="10dp"
-                />
-
             <com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
+                android:id="@+id/banner_indicator"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="6dp"
+                android:layout_marginBottom="14dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

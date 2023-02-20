@@ -98,7 +98,6 @@ class BannerRevampViewHolder(
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
-            animateIndicatorBanner()
             channelModel?.let { it ->
                 this.isCache = element.isCache
                 val size = it.channelGrids.size
@@ -113,20 +112,6 @@ class BannerRevampViewHolder(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    private fun animateIndicatorBanner() {
-        val slideAnimator = ValueAnimator
-            .ofInt(0, 100)
-            .setDuration(5000)
-        slideAnimator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-            binding?.progress?.progress = value
-        }
-        val set = AnimatorSet()
-        set.play(slideAnimator)
-        set.interpolator = LinearInterpolator()
-        set.start()
     }
 
     private fun setViewPortImpression(element: BannerRevampDataModel) {
