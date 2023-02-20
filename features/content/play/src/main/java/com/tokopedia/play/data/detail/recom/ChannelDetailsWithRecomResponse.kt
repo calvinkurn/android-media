@@ -66,7 +66,7 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("description")
         val description: String = "",
 
-        @SerializedName("performance_summary_page_link")
+        @SerializedName("performanceSummaryPageLink")
         val performanceSummaryPageLink: String = "",
     )
 
