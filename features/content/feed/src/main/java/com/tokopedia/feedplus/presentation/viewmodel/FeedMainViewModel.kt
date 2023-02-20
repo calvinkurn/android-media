@@ -8,7 +8,6 @@ import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
-import com.tokopedia.feedplus.domain.usecase.FeedTabsUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
@@ -25,8 +24,8 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 09/02/23
  */
 class FeedMainViewModel @Inject constructor(
-    private val feedTabsUseCase: FeedTabsUseCase,
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
+    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -38,7 +37,8 @@ class FeedMainViewModel @Inject constructor(
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
 
-    private val _feedCreateContentBottomSheetData = MutableLiveData<Result<List<ContentCreationTypeItem>>>()
+    private val _feedCreateContentBottomSheetData =
+        MutableLiveData<Result<List<ContentCreationTypeItem>>>()
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
@@ -89,6 +89,4 @@ class FeedMainViewModel @Inject constructor(
             _reportResponse.postValue(Fail(it))
         }
     }
-
-
 }

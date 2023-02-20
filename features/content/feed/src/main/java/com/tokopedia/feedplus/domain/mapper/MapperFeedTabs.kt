@@ -1,7 +1,13 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.feedplus.data.FeedXHeader
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.ContentCreationItem
+import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreateContentType
+import com.tokopedia.feedplus.presentation.model.CreatorType
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.iconunify.IconUnify
 
 /**
@@ -17,15 +23,16 @@ object MapperFeedTabs {
                 profilePhotoUrl = header.data?.userProfile?.image ?: "",
                 showMyProfile = header.data?.userProfile?.isShown ?: false
             ),
-            data = header.data?.tab?.items?.map {
-                FeedDataModel(
-                    title = it.title ?: "",
-                    key = it.key ?: "",
-                    type = it.type ?: "",
-                    position = it.position ?: 0,
-                    isActive = it.isActive ?: false
-                )
-            }?.toList() ?: emptyList()
+            data = header.data?.tab?.items?.sortedBy { it.position }
+                ?.filter { it.isActive ?: false }?.map {
+                    FeedDataModel(
+                        title = it.title ?: "",
+                        key = it.key ?: "",
+                        type = it.type ?: "",
+                        position = it.position ?: 0,
+                        isActive = it.isActive ?: false
+                    )
+                }?.toList() ?: emptyList()
         )
 
     fun getCreationBottomSheetData(header: FeedXHeader): List<ContentCreationItem> =
