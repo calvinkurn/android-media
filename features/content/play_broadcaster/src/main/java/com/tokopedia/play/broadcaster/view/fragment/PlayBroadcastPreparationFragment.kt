@@ -56,11 +56,9 @@ import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticMa
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
-import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
@@ -178,9 +176,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupListener()
         setupObserver()
         setupCoachMark()
-
-        /** TODO: delete this */
-//        binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
 
     override fun onStart() {
@@ -590,11 +585,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun observeTitle() {
-        /** TODO: delete this */
-//        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-//            binding.viewPreparationMenu.isSetTitleChecked(it.title.isNotEmpty())
-//        }
-
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
@@ -658,9 +648,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPreparationMenu(prevState?.menuList, state.menuList)
                 renderAccountInfo(prevState?.selectedContentAccount, state.selectedContentAccount)
-                /** TODO: delete this */
-//                renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
-//                renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
                 renderShortsEntryPoint(prevState?.channel, state.channel)
@@ -776,27 +763,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             icon = state.iconUrl
         }
     }
-
-    /** TODO: delete this */
-//    private fun renderProductMenu(
-//        prevState: List<ProductTagSectionUiModel>?,
-//        state: List<ProductTagSectionUiModel>
-//    ) {
-//        if (prevState != state) {
-//            binding.viewPreparationMenu.isSetProductChecked(
-//                state.any { it.products.isNotEmpty() }
-//            )
-//        }
-//    }
-
-    /** TODO: delete this */
-//    private fun renderScheduleMenu(
-//        state: ScheduleUiModel
-//    ) {
-//        binding.viewPreparationMenu.isSetScheduleChecked(
-//            state.schedule is BroadcastScheduleUiModel.Scheduled
-//        )
-//    }
 
     private fun renderSchedulePicker(
         prevState: ScheduleUiModel?,
