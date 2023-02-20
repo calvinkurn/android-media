@@ -91,29 +91,30 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initCalender()
-        binding?.unifyButtonSelect?.setOnClickListener {
-            val selectedStartDate = newSelectedDateFrom
-            val selectedEndDate = newSelectedDateTo
-
-            val isNewSelectedStartDateSame = areTheDatesSame(
-                selectedStartDate, defaultDateFrom
-            )
-            val isNewSelectedEndDateSame = areTheDatesSame(
-                selectedEndDate, defaultDateTo
-            )
-            if (selectedStartDate != null && selectedEndDate != null &&
-                !(isNewSelectedStartDateSame && isNewSelectedEndDateSame)
-            ) {
-                (parentFragment as? OnDateRangeSelectListener)?.onDateRangeSelected(
-                    selectedStartDate,
-                    selectedEndDate
-                )
-            }
-            dismissAllowingStateLoss()
-        }
 
         binding?.tvSahCommissionStartDate?.isEnabled = false
         binding?.tvSahCommissionEndDate?.isEnabled = false
+
+        this.setAction("Terapkan"){
+//            val selectedStartDate = newSelectedDateFrom
+//            val selectedEndDate = newSelectedDateTo
+//
+//            val isNewSelectedStartDateSame = areTheDatesSame(
+//                selectedStartDate, defaultDateFrom
+//            )
+//            val isNewSelectedEndDateSame = areTheDatesSame(
+//                selectedEndDate, defaultDateTo
+//            )
+//            if (selectedStartDate != null && selectedEndDate != null &&
+//                !(isNewSelectedStartDateSame && isNewSelectedEndDateSame)
+//            ) {
+//                (parentFragment as? OnDateRangeSelectListener)?.onDateRangeSelected(
+//                    selectedStartDate,
+//                    selectedEndDate
+//                )
+//            }
+//            dismissAllowingStateLoss()
+        }
     }
 
     private fun initCalender() {
