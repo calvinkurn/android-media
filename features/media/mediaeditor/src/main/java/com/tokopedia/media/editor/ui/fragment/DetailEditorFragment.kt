@@ -357,7 +357,7 @@ class DetailEditorFragment @Inject constructor(
     override fun onLogoChosen(bitmap: Bitmap) {
         viewBinding?.imgPreviewOverlay?.apply {
             show()
-            setImageBitmap(bitmap)
+            setImageBitmap(validateImageSize(bitmap))
             isEdited = true
         }
     }
@@ -950,24 +950,7 @@ class DetailEditorFragment @Inject constructor(
                     originalImageWidth = bitmap.width
                     originalImageHeight = bitmap.height
 
-                    var finalBitmap: Bitmap? = null
-                    if (checkBitmapSizeOverflow(originalImageWidth.toFloat(), originalImageHeight.toFloat())) {
-                        var newImageHeight = 0f
-                        var newImageWidth = bitmap.width.toFloat()
-                        do {
-                            newImageWidth *= SCALED_DOWN_VALUE
-                            newImageHeight = (newImageWidth / bitmap.width) * bitmap.height
-                        } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
-
-                        finalBitmap = Bitmap.createScaledBitmap(
-                            bitmap,
-                            newImageWidth.toInt(),
-                            newImageHeight.toInt(),
-                            true
-                        )
-                    }
-
-                    viewBinding?.imgViewPreview?.setImageBitmap(finalBitmap ?: bitmap)
+                    viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
 
                     if (readPreviousValue) {
                         readPreviousState()
@@ -1210,6 +1193,27 @@ class DetailEditorFragment @Inject constructor(
     private fun setCropRatio(newRatioPair: Pair<Int, Int>) {
         data.cropRotateValue.cropRatio = newRatioPair
         isEdited = true
+    }
+
+    // validate image pixel not greater than 25 million, used for image that will be draw only
+    private fun validateImageSize(source: Bitmap): Bitmap {
+        return if (checkBitmapSizeOverflow(source.width.toFloat(), source.height.toFloat())) {
+            var newImageHeight = 0f
+            var newImageWidth = source.width.toFloat()
+            do {
+                newImageWidth *= SCALED_DOWN_VALUE
+                newImageHeight = (newImageWidth / source.width) * source.height
+            } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
+
+            return Bitmap.createScaledBitmap(
+                source,
+                newImageWidth.toInt(),
+                newImageHeight.toInt(),
+                true
+            )
+        } else {
+            source
+        }
     }
 
     override fun getScreenName() = SCREEN_NAME
