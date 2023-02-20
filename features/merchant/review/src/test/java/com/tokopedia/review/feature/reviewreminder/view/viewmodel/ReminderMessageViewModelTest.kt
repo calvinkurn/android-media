@@ -5,7 +5,11 @@ import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderLis
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplateResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevSendReminder
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevSendReminderResponseWrapper
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test
@@ -86,23 +90,15 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         coEvery { productrevSendReminderUseCase.executeOnBackground() } returns responseWrapper
         viewModel.sendReminder(anyString())
         coVerify { productrevSendReminderUseCase.executeOnBackground() }
-        viewModel.getSendReminderResult().verifyValueEquals(true)
+        viewModel.getSendReminderResult().verifySuccessEquals(Success(true))
     }
 
     @Test
-    fun `when send reminder error should update result live data to false`() {
-        coEvery { productrevSendReminderUseCase.executeOnBackground() } throws Throwable()
-        viewModel.sendReminder(anyString())
-        coVerify { productrevSendReminderUseCase.executeOnBackground() }
-        viewModel.getSendReminderResult().verifyValueEquals(false)
-    }
-
-    @Test
-    fun `when send reminder error should update error live data with the throwable`() {
+    fun `when send reminder error should update result live data with the throwable`() {
         val throwable = Throwable()
         coEvery { productrevSendReminderUseCase.executeOnBackground() } throws throwable
         viewModel.sendReminder(anyString())
         coVerify { productrevSendReminderUseCase.executeOnBackground() }
-        viewModel.getError().verifyValueEquals(throwable)
+        viewModel.getSendReminderResult().verifyErrorEquals(Fail(throwable))
     }
 }
