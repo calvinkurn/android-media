@@ -15,11 +15,11 @@ import com.tokopedia.review.feature.reviewreminder.domain.ProductrevSendReminder
 import javax.inject.Inject
 
 class ReminderMessageViewModel @Inject constructor(
-        dispatcherProvider: CoroutineDispatchers,
-        private val productrevGetReminderCounterUseCase: ProductrevGetReminderCounterUseCase,
-        private val productrevGetReminderTemplateUseCase: ProductrevGetReminderTemplateUseCase,
-        private val productrevGetReminderListUseCase: ProductrevGetReminderListUseCase,
-        private val productrevSendReminderUseCase: ProductrevSendReminderUseCase
+    dispatcherProvider: CoroutineDispatchers,
+    private val productrevGetReminderCounterUseCase: ProductrevGetReminderCounterUseCase,
+    private val productrevGetReminderTemplateUseCase: ProductrevGetReminderTemplateUseCase,
+    private val productrevGetReminderListUseCase: ProductrevGetReminderListUseCase,
+    private val productrevSendReminderUseCase: ProductrevSendReminderUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private var isLoadEstimation = false
@@ -41,6 +41,9 @@ class ReminderMessageViewModel @Inject constructor(
     private val error = MutableLiveData<Throwable>()
     fun getError(): LiveData<Throwable> = error
 
+    private val sendReminderResult = MutableLiveData<Boolean>()
+    fun getSendReminderResult(): LiveData<Boolean> = sendReminderResult
+
     fun fetchReminderCounter() {
         launchCatchError(block = {
             isLoadEstimation = true
@@ -49,10 +52,10 @@ class ReminderMessageViewModel @Inject constructor(
             isLoadEstimation = false
             checkFetchStatus()
         }, onError = {
-            error.postValue(it)
-            isLoadEstimation = false
-            checkFetchStatus()
-        })
+                error.postValue(it)
+                isLoadEstimation = false
+                checkFetchStatus()
+            })
     }
 
     fun fetchReminderTemplate() {
@@ -63,10 +66,10 @@ class ReminderMessageViewModel @Inject constructor(
             isLoadTemplate = false
             checkFetchStatus()
         }, onError = {
-            error.postValue(it)
-            isLoadTemplate = false
-            checkFetchStatus()
-        })
+                error.postValue(it)
+                isLoadTemplate = false
+                checkFetchStatus()
+            })
     }
 
     fun fetchProductList(lastProductId: String = "0") {
@@ -78,18 +81,21 @@ class ReminderMessageViewModel @Inject constructor(
             isLoadProducts = false
             checkFetchStatus()
         }, onError = {
-            error.postValue(it)
-            isLoadProducts = false
-            checkFetchStatus()
-        })
+                error.postValue(it)
+                isLoadProducts = false
+                checkFetchStatus()
+            })
     }
 
     fun sendReminder(template: String?) {
         launchCatchError(block = {
             productrevSendReminderUseCase.setParams(template ?: "")
             val responseWrapper = productrevSendReminderUseCase.executeOnBackground()
-            responseWrapper.productrevSendReminder
-        }, onError = { error.postValue(it) })
+            sendReminderResult.postValue(responseWrapper.productrevSendReminder.success)
+        }, onError = {
+                error.postValue(it)
+                sendReminderResult.postValue(false)
+            })
     }
 
     private fun checkFetchStatus() {
@@ -97,5 +103,4 @@ class ReminderMessageViewModel @Inject constructor(
             isFetching.postValue(false)
         }
     }
-
 }
