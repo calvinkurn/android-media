@@ -2166,7 +2166,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             order.metadata.buttons.getOrNull(buttonIndex)?.let { button ->
                 _buttonAction = button.actionType
                 if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                    handleRouting(button.appURL)
+                    if (button.appURL.isNotEmpty()) {
+                        handleRouting(button.appURL)
+                    } else {
+                        return
+                    }
                 } else {
                     when {
                         button.actionType.equals(GQL_FINISH_ORDER, true) -> {
