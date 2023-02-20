@@ -266,7 +266,10 @@ class HomeVisitableFactoryImpl(
                 var tickerPosition = 0
                 var iconPosition = 0
 
-                it.dataList.forEachIndexed { index, data ->
+                if (it.dataList.isEmpty()) {
+                    visitableList.add(ShimmeringChannelDataModel(""))
+                } else {
+                    it.dataList.forEachIndexed { index, data ->
                     when (data.component) {
                         TYPE_ICON -> {
                             data.atfStatusCondition(
@@ -344,12 +347,13 @@ class HomeVisitableFactoryImpl(
                         }
                     }
                 }
+                }
             }
         } else if (isProcessingAtf) {
             visitableList.add(HomeInitialShimmerDataModel())
         }
 
-        if (homeData?.atfData == null) {
+        if (homeData?.atfData == null && visitableList.isEmpty()) {
             visitableList.add(ErrorStateAtfModel())
         }
         return this
