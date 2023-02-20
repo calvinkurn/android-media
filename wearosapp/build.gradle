@@ -110,6 +110,11 @@ android {
             dimension "client"
         }
     }
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+        }
+    }
 }
 dependencies {
     implementation rootProject.ext.playServicesDependencies.base
@@ -160,4 +165,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+
+    // Unit test
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
+
+apply from: 'jacoco_wearos_task.gradle'
+apply from: '../sonar_config.gradle'
