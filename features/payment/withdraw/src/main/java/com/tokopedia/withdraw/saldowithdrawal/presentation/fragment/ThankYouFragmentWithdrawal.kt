@@ -13,6 +13,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -29,7 +32,7 @@ import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_success_page.*
 import javax.inject.Inject
 
-class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
+class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
     @Inject
     lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
@@ -76,7 +79,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun inflateUi() {
         activity?.let { activity ->
             val bankAccount: BankAccount = withdrawalRequest.bankAccount
-            tvWithdrawalTimeNote.text = withdrawalResponse.withdrawalNote
+            tvWithdrawalTimeNote.text = withdrawalResponse.description
             tvBankName.text = bankAccount.bankName
             if (bankAccount.adminFee > 0) {
                 tvAdminFees.text = String.format(activity.resources.getString(R.string.swd_admin_fee_msg)
@@ -87,7 +90,30 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
             showRekeningWidgets(activity)
         }
-        btnOpenSaldoDetail.setOnClickListener { onGoToSaldoDetail() }
+        btnCta.setOnClickListener { onCtaClick() }
+        btnCta.text = withdrawalResponse.ctaWording
+        tvWithdrawalTitle.text = withdrawalResponse.title
+        setContentImage()
+    }
+
+    private fun setContentImage() {
+        withdrawalResponse.image?.let {
+            ivWithdrawalSuccess.setImageUrl(it)
+        }
+    }
+
+    private fun onCtaClick() {
+        openApplink(withdrawalResponse.ctaLink ?: "")
+    }
+
+    private fun openApplink(applink: String) {
+        if (applink.isEmpty()) return
+
+        if (applink == ApplinkConst.SALDO) {
+            onGoToSaldoDetail()
+        } else {
+            RouteManager.route(context, applink)
+        }
     }
 
     private fun showRekeningWidgets(context: Context) {
@@ -162,7 +188,6 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString)
     }
-
 
     private fun onGoToSaldoDetail() {
         val eventLabel = when {
@@ -240,7 +265,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
         fun getInstance(withdrawalRequest: WithdrawalRequest,
                         submitWithdrawalResponse: SubmitWithdrawalResponse): Fragment {
-            val successFragment: Fragment = SuccessFragmentWithdrawal()
+            val successFragment: Fragment = ThankYouFragmentWithdrawal()
             val bundle = Bundle()
             bundle.putParcelable(ARG_WITHDRAWAL_REQUEST, withdrawalRequest)
             bundle.putParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE, submitWithdrawalResponse)
