@@ -189,8 +189,8 @@ open class TopChatViewModel @Inject constructor(
     val userLocationInfo: LiveData<LocalCacheModel?>
         get() = _userLocationInfo
 
-    private val _attachmentsPreview = MutableLiveData<ArrayList<SendablePreview>>()
-    val attachmentsPreview: LiveData<ArrayList<SendablePreview>>
+    private val _attachmentsPreview = MutableLiveData<ArrayList<SendablePreview>?>()
+    val attachmentsPreview: LiveData<ArrayList<SendablePreview>?>
         get() = _attachmentsPreview
 
     private val _roomMetaData = MutableLiveData<RoomMetaData>()
