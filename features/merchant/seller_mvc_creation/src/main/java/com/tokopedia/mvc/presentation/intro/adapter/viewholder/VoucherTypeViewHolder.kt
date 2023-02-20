@@ -22,6 +22,7 @@ class VoucherTypeViewHolder(itemView: View?) : AbstractViewHolder<VoucherTypeUiM
 
     override fun bind(element: VoucherTypeUiModel?) {
         binding?.apply {
+            container.setBackgroundResource(R.drawable.bg_intro_voucher_type)
             title.text = element?.title.toBlankOrString()
             element?.list?.getOrNull(ZEROTH_INDEX)?.let {
                 viewVoucherShop.setData(it.benefitTitle, it.benefitSubtitle, it.benefitImageUrl)

@@ -85,11 +85,11 @@ class VouchersViewHolder(
 
     private fun SmvcItemVoucherDataBinding.setupMainInfo(voucher: Voucher) {
         tfVoucherName.text = voucher.name
-        viewVoucherType.background = if (voucher.isLockToProduct) {
-            MethodChecker.getDrawable(root.context, R.drawable.ic_voucher_product)
+        viewVoucherType.setBackgroundResource(if (voucher.isLockToProduct) {
+            R.drawable.ic_voucher_product
         } else {
-            MethodChecker.getDrawable(root.context, R.drawable.ic_voucher_shop)
-        }
+            R.drawable.ic_voucher_shop
+        })
         btnCodeBackground.isVisible = !voucher.isPublic
         layoutCodeBackground.isVisible = !voucher.isPublic
         layoutCodeBackground.setOnClickListener {
