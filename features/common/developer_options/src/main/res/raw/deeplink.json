@@ -2493,5 +2493,10 @@
           "destination_activity": "com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity", 
           "deeplink": "tokopedia-android-internal://global/youtube-video", 
           "deeplink_variable": "ApplinkConstInternalGlobal.YOUTUBE_VIDEO"
+     },
+     {
+          "destination_activity": "com.tokopedia.login_helper.presentation.LoginHelperActivity",
+          "deeplink": "tokopedia-android-internal://global/login-helper",
+          "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER"
      }
 ]
