@@ -17,7 +17,6 @@ import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentFactory
@@ -216,6 +215,7 @@ import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductShopReviewTracking
+import com.tokopedia.product.detail.tracking.ProductSocialProofTracking
 import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
@@ -5887,40 +5887,48 @@ open class DynamicProductDetailFragment :
 
     private fun socialProofTalkTracking(trackData: ComponentTrackDataModel?) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(
+
+        ProductSocialProofTracking.onTalkClicked(
+            deepLink = deeplinkUrl,
             productInfo = productInfo,
-            deeplinkUrl = deeplinkUrl,
-            shopName = productInfo.basic.shopName,
-            componentTrackDataModel = trackData ?: ComponentTrackDataModel()
+            trackDataModel = trackData
         )
-        DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(productInfo = productInfo)
     }
 
     private fun socialProofMediaTracking(trackData: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(
-            productInfo = viewModel.getDynamicProductInfoP1,
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onMediaClicked(
+            productInfo = productInfo,
             userId = viewModel.userId,
-            componentTrackDataModel = trackData ?: ComponentTrackDataModel()
+            trackDataModel = trackData ?: ComponentTrackDataModel()
         )
     }
 
     private fun socialProofNewProductTracking(trackData: ComponentTrackDataModel?) {
-        Toast.makeText(context, "tracker under maintenance", Toast.LENGTH_SHORT).show()
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onNewProductClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
     }
 
     private fun socialProofRatingTracking() {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-
-        DynamicProductDetailTracking.Iris.eventReviewClickedIris(
-            productInfo = productInfo,
-            deeplinkUrl = deeplinkUrl,
-            shopName = productInfo.basic.shopName
+        ProductSocialProofTracking.onRatingClicked(
+            deepLink = deeplinkUrl,
+            productInfo = productInfo
         )
-        DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(productInfo)
     }
 
     private fun socialProofShopRatingTracking(trackData: ComponentTrackDataModel?) {
-        Toast.makeText(context, "tracker under maintenance", Toast.LENGTH_SHORT).show()
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onShopRatingClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
     }
 
     override fun onShopReviewSeeMore(
