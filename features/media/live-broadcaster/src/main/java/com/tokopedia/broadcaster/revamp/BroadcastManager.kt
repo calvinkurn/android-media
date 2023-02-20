@@ -75,7 +75,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private val mAudioCallback =
         Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
-
             /**
              * @param audioFormat [android.media.AudioFormat.ENCODING_PCM_16BIT]
              * @param data
