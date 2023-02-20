@@ -35,7 +35,6 @@ class PersonaTypeViewHolder(
         with(binding) {
             tvSpPersonaType.text = element.headerTitle
             tvSpSellerTypeStatus.text = String.format(SUB_TITLE_FORMAT, element.headerSubTitle)
-            radioSpPersonaType.isChecked = element.isSelected
             imgSpSellerTypeAvatar.loadImage(element.avatarImage)
             containerSpItemPersonaType.setBackgroundResource(R.drawable.sp_bg_seller_type)
 
@@ -47,11 +46,13 @@ class PersonaTypeViewHolder(
 
     private fun handleClickState(element: PersonaUiModel) {
         with(binding) {
+            radioSpPersonaType.isChecked = element.isSelected
             radioSpPersonaType.setOnCheckedChangeListener { _, isChecked ->
                 element.isSelected = isChecked
                 showBackground(element)
                 listener.onItemClickListener(element)
             }
+
             containerSpItemPersonaType.setOnClickListener {
                 onItemClicked()
             }

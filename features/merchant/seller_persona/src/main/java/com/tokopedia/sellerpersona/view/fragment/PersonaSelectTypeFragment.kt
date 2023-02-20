@@ -67,15 +67,13 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     }
 
     override fun onItemClickListener(item: PersonaUiModel) {
-        if (item.isSelected) {
-            personaTypeAdapter.getItems().forEachIndexed { i, persona ->
-                if (item.value != persona.value) {
-                    persona.isSelected = false
-                    try {
-                        personaTypeAdapter.notifyItemChanged(i)
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
+        personaTypeAdapter.getItems().forEachIndexed { i, persona ->
+            if (item.value != persona.value) {
+                persona.isSelected = false
+                try {
+                    personaTypeAdapter.notifyItemChanged(i)
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
             }
         }
@@ -119,13 +117,10 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     }
 
     private fun onSuccessSetPersona(persona: String) {
-        val selectedPersona = personaTypeAdapter.getItems().firstOrNull { it.value == persona }
-        selectedPersona?.let {
-            val action = PersonaSelectTypeFragmentDirections.actionSelectTypeToResult(
-                paramPersona = persona
-            )
-            findNavController().navigate(action)
-        }
+        val action = PersonaSelectTypeFragmentDirections.actionSelectTypeToResult(
+            paramPersona = persona
+        )
+        findNavController().navigate(action)
     }
 
     private fun observePersonaList() {
