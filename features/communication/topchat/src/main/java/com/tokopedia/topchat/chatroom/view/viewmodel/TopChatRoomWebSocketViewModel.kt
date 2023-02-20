@@ -35,7 +35,6 @@ import com.tokopedia.topchat.common.websocket.WebSocketParser
 import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -104,8 +103,6 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
     private val _attachmentSent = MutableLiveData<SendablePreview?>()
     val attachmentSent: LiveData<SendablePreview?>
         get() = _attachmentSent
-
-    private var autoRetryJob: Job? = null
 
     var roomMetaData: RoomMetaData = RoomMetaData()
     var userLocationInfo: LocalCacheModel = LocalCacheModel()
@@ -191,9 +188,9 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
         chatWebSocket.reset()
         chatWebSocket.close()
         _isWebsocketError.postValue(true)
-        autoRetryJob = launchCatchError(
-            dispatcher.io,
-            {
+        launchCatchError(
+            context = dispatcher.io,
+            block = {
                 Timber.d("$TAG - scheduleForRetry")
                 webSocketStateHandler.scheduleForRetry {
                     withContext(dispatcher.main) {
@@ -202,7 +199,7 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
                     }
                 }
             },
-            {
+            onError = {
                 Timber.d("$TAG - ${it.message}")
             }
         )
@@ -279,8 +276,8 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
     }
 
     private fun handleSrwBubbleState(previewToSent: SendablePreview) {
-        when (previewToSent) {
-            is InvoicePreviewUiModel -> _removeSrwBubble.value = null
+        if (previewToSent is InvoicePreviewUiModel) {
+            _removeSrwBubble.value = null
         }
     }
 
@@ -328,7 +325,7 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
         }
     }
 
-    fun sendMsg(
+    fun sendMessage(
         message: String,
         intention: String?,
         referredMsg: ParentReply?,

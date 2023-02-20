@@ -1320,7 +1320,7 @@ open class TopChatRoomFragment :
                 }
             })
         replyBubbleOnBoarding.dismiss()
-        webSocketViewModel.sendMsg(message, intention, referredMsg)
+        webSocketViewModel.sendMessage(message, intention, referredMsg)
     }
 
     private fun delaySendMessage() {
@@ -2645,7 +2645,7 @@ open class TopChatRoomFragment :
         onSendingMessage(false).invoke()
         replyBubbleOnBoarding.dismiss()
         sendAttachmentPreviews(question.content)
-        webSocketViewModel.sendMsg(question.content, question.intent, referredMsg)
+        webSocketViewModel.sendMessage(question.content, question.intent, referredMsg)
         clearAttachmentPreviews()
         clearReferredMsg()
     }
@@ -2654,7 +2654,7 @@ open class TopChatRoomFragment :
         onSendAndReceiveMessage()
         onSendingMessage(false).invoke()
         val question = viewModel.generateSrwQuestionUiModel(attachment)
-        webSocketViewModel.sendMsg(
+        webSocketViewModel.sendMessage(
             message = question.content,
             intention = question.intent,
             referredMsg = null,
@@ -2684,7 +2684,7 @@ open class TopChatRoomFragment :
         question: QuestionUiModel
     ) {
         onSendAndReceiveMessage()
-        webSocketViewModel.sendMsg(
+        webSocketViewModel.sendMessage(
             message = question.content,
             intention = question.intent,
             products = products,

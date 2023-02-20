@@ -28,8 +28,8 @@ class WebsocketSendTest : BaseTopChatViewModelTest() {
         } returns payload
 
         // When
-        webSocketViewModel.sendMsg("", null, null)
-        webSocketViewModel.sendMsg("", null, null, listOf())
+        webSocketViewModel.sendMessage("", null, null)
+        webSocketViewModel.sendMessage("", null, null, listOf())
 
         // Then
         assertEquals(webSocketViewModel.previewMsg.value, preview)
