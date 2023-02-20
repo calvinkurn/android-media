@@ -5,7 +5,7 @@ package com.tokopedia.product.detail.data.model.datamodel.review_list
  * Project name: android-tokopedia-core
  **/
 
-data class ProductReviewListUiModel(
+data class ProductShopReviewUiModel(
     val title: String = "",
     val appLink: String = "",
     val appLinkTitle: String = "",

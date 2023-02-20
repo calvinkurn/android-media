@@ -20,7 +20,7 @@ import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
-import com.tokopedia.product.detail.data.model.review_list.ReviewListData
+import com.tokopedia.product.detail.data.model.review_list.ShopReviewData
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
@@ -172,7 +172,7 @@ data class ProductInfoP2Data(
 
     @SerializedName("reviewList")
     @Expose
-    val reviewList: ReviewListData = ReviewListData()
+    val shopReview: ShopReviewData = ShopReviewData()
 ) {
     data class Response(
         @SerializedName("pdpGetData")

@@ -58,7 +58,7 @@ import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductReviewListDataModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -178,8 +178,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val otherOffers: ProductCustomInfoTitleDataModel?
         get() = mapOfData[ProductDetailConstant.OTHER_OFFERS] as? ProductCustomInfoTitleDataModel
 
-    val reviewList: ProductReviewListDataModel?
-        get() = mapOfData[ProductDetailConstant.REVIEW_LIST] as? ProductReviewListDataModel
+    val shopReview: ProductShopReviewDataModel?
+        get() = mapOfData[ProductDetailConstant.SHOP_REVIEW] as? ProductShopReviewDataModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -543,7 +543,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 updateCustomInfoTitleP2(p2 = it)
             }
 
-            updateData(ProductDetailConstant.REVIEW_LIST) {
+            updateData(ProductDetailConstant.SHOP_REVIEW) {
                 updateReviewList(it)
             }
         }
@@ -559,11 +559,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun updateReviewList(p2Data: ProductInfoP2UiData) {
-        if (p2Data.reviewList.reviews.isEmpty()) {
-            removeComponent(ProductDetailConstant.REVIEW_LIST)
+        if (p2Data.shopReview.reviews.isEmpty()) {
+            removeComponent(ProductDetailConstant.SHOP_REVIEW)
         } else {
-            reviewList?.shouldRender = true
-            reviewList?.data = p2Data.reviewList
+            shopReview?.shouldRender = true
+            shopReview?.data = p2Data.shopReview
         }
     }
 

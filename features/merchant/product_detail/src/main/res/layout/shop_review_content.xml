@@ -7,11 +7,11 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/reviewListTitle"
+        android:id="@+id/shopReviewListTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/reviewListSeeMore"
+        app:layout_constraintEnd_toStartOf="@+id/shopReviewListSeeMore"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
@@ -19,21 +19,21 @@
         tools:text="Ulasan buat toko ini" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/reviewListSeeMore"
+        android:id="@+id/shopReviewListSeeMore"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:textColor="@color/Unify_GN500"
-        app:layout_constraintBottom_toBottomOf="@+id/reviewListTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/shopReviewListTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/reviewListTitle"
+        app:layout_constraintTop_toTopOf="@+id/shopReviewListTitle"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
         tools:text="Lihat Semua" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reviewList"
+        android:id="@+id/shopReviewList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -41,7 +41,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/reviewListTitle"
-        tools:listitem="@layout/review_list_item" />
+        app:layout_constraintTop_toBottomOf="@+id/shopReviewListTitle"
+        tools:listitem="@layout/shop_review_list_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

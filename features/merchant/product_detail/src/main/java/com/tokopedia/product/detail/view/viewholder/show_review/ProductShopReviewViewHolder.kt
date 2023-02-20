@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder.review_list
+package com.tokopedia.product.detail.view.viewholder.show_review
 
 import android.graphics.Rect
 import android.view.View
@@ -13,50 +13,48 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductReviewListDataModel
-import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductReviewListUiModel
-import com.tokopedia.product.detail.databinding.ItemDynamicReviewListBinding
-import com.tokopedia.product.detail.databinding.ReviewListContentBinding
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.databinding.ItemDynamicShopReviewBinding
+import com.tokopedia.product.detail.databinding.ShopReviewContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.inflateWithBinding
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
-import com.tokopedia.product.detail.view.viewholder.review_list.adapter.ReviewListItemAdapter
+import com.tokopedia.product.detail.view.viewholder.show_review.adapter.ShopReviewListItemAdapter
 import com.tokopedia.unifycomponents.toPx
-import timber.log.Timber
 
 /**
  * Created by Yehezkiel on 18/05/20
  */
-class ProductReviewListViewHolder(
+class ProductShopReviewViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : ProductDetailPageViewHolder<ProductReviewListDataModel>(view) {
+) : ProductDetailPageViewHolder<ProductShopReviewDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_dynamic_review_list
+        val LAYOUT = R.layout.item_dynamic_shop_review
 
         private val SPACE_BETWEEN_ITEM = 8.toPx()
     }
 
     private val binding by lazyThreadSafetyNone {
-        ItemDynamicReviewListBinding.bind(view)
+        ItemDynamicShopReviewBinding.bind(view)
     }
 
     private val content by lazyThreadSafetyNone {
-        val view = binding.stubReviewListContent.inflate()
-        ReviewListContentBinding.bind(view)
+        val view = binding.stubShopReviewContent.inflate()
+        ShopReviewContentBinding.bind(view)
     }
 
     private val adapter by lazyThreadSafetyNone {
-        ReviewListItemAdapter(listener = listener)
+        ShopReviewListItemAdapter(listener = listener)
     }
 
     init {
         initRecyclerView()
     }
 
-    override fun bind(element: ProductReviewListDataModel) {
+    override fun bind(element: ProductShopReviewDataModel) {
         if (!element.shouldRender) {
             binding.showLoading()
         } else {
@@ -65,54 +63,54 @@ class ProductReviewListViewHolder(
         }
     }
 
-    private fun ItemDynamicReviewListBinding.showLoading() {
-        reviewListHeaderShimmer.container.show()
+    private fun ItemDynamicShopReviewBinding.showLoading() {
+        shopReviewHeaderShimmer.container.show()
 
-        if (binding.stubReviewListContent.isInflated()) {
+        if (binding.stubShopReviewContent.isInflated()) {
             content.container.hide()
         }
     }
 
-    private fun ItemDynamicReviewListBinding.hideLoading() {
-        reviewListHeaderShimmer.container.hide()
+    private fun ItemDynamicShopReviewBinding.hideLoading() {
+        shopReviewHeaderShimmer.container.hide()
 
-        if (binding.stubReviewListContent.isInflated()) {
+        if (binding.stubShopReviewContent.isInflated()) {
             content.container.show()
         }
     }
 
-    private fun ReviewListContentBinding.renderUI(element: ProductReviewListDataModel) {
+    private fun ShopReviewContentBinding.renderUI(element: ProductShopReviewDataModel) {
         renderHeader(uiModel = element.data)
         renderItems(uiModel = element.data, trackDataModel = getComponentTrackData(element))
         setEventClick(uiModel = element.data)
         setImpression(element = element)
     }
 
-    private fun ReviewListContentBinding.renderHeader(uiModel: ProductReviewListUiModel) {
-        reviewListTitle.text = uiModel.title
-        reviewListSeeMore.text = uiModel.appLinkTitle
+    private fun ShopReviewContentBinding.renderHeader(uiModel: ProductShopReviewUiModel) {
+        shopReviewListTitle.text = uiModel.title
+        shopReviewListSeeMore.text = uiModel.appLinkTitle
     }
 
-    private fun renderItems(uiModel: ProductReviewListUiModel, trackDataModel: ComponentTrackDataModel) {
+    private fun renderItems(uiModel: ProductShopReviewUiModel, trackDataModel: ComponentTrackDataModel) {
         adapter.submitList(uiModel.reviews, trackDataModel = trackDataModel)
     }
 
-    private fun ReviewListContentBinding.setEventClick(uiModel: ProductReviewListUiModel) {
+    private fun ShopReviewContentBinding.setEventClick(uiModel: ProductShopReviewUiModel) {
         if (uiModel.appLink.isNotBlank()) {
-            reviewListSeeMore.setOnClickListener {
+            shopReviewListSeeMore.setOnClickListener {
                 listener.goToApplink(url = uiModel.appLink)
             }
         }
     }
 
-    private fun ReviewListContentBinding.setImpression(element: ProductReviewListDataModel) {
+    private fun ShopReviewContentBinding.setImpression(element: ProductShopReviewDataModel) {
         root.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
-    private fun initRecyclerView() = with(content.reviewList) {
-        adapter = this@ProductReviewListViewHolder.adapter
+    private fun initRecyclerView() = with(content.shopReviewList) {
+        adapter = this@ProductShopReviewViewHolder.adapter
         layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
         addItemDecoration(createSpaceBetweenItem())
     }

@@ -11,11 +11,11 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
  **/
 
 
-data class ProductReviewListDataModel(
+data class ProductShopReviewDataModel(
     val type: String = "",
     val name: String = "",
     var shouldRender: Boolean = false,
-    var data: ProductReviewListUiModel = ProductReviewListUiModel()
+    var data: ProductShopReviewUiModel = ProductShopReviewUiModel()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -29,7 +29,7 @@ data class ProductReviewListDataModel(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return if (newData is ProductReviewListDataModel) {
+        return if (newData is ProductShopReviewDataModel) {
             shouldRender == newData.shouldRender &&
                 data == newData.data &&
                 data.reviews.hashCode() == newData.data.hashCode()

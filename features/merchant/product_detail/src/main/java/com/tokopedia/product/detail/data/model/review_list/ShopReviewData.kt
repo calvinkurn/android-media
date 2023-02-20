@@ -2,14 +2,14 @@ package com.tokopedia.product.detail.data.model.review_list
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductReviewListUiModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
 
 /**
  * Created by yovi.putra on 16/02/23"
  * Project name: android-tokopedia-core
  **/
 
-data class ReviewListData(
+data class ShopReviewData(
     @SerializedName("title")
     @Expose
     val title: String = "",
@@ -46,7 +46,7 @@ data class ReviewListData(
     )
 }
 
-internal fun ReviewListData.Review.asUiModel() = ProductReviewListUiModel.Review(
+internal fun ShopReviewData.Review.asUiModel() = ProductShopReviewUiModel.Review(
     userImage = userImage,
     userName = userName,
     userTitle = userTitle,
@@ -55,10 +55,10 @@ internal fun ReviewListData.Review.asUiModel() = ProductReviewListUiModel.Review
     appLink = appLink
 )
 
-internal fun List<ReviewListData.Review>.asUiModel() = map {
+internal fun List<ShopReviewData.Review>.asUiModel() = map {
     it.asUiModel()
 }
-internal fun ReviewListData.asUiModel() = ProductReviewListUiModel(
+internal fun ShopReviewData.asUiModel() = ProductShopReviewUiModel(
     title = title,
     appLink = appLink,
     appLinkTitle = appLinkTitle,
