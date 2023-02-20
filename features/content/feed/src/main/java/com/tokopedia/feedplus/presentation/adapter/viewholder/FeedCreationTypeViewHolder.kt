@@ -5,19 +5,31 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.databinding.ItemFeedContentCreationTypeBinding
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.iconunify.getIconUnifyDrawable
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
  */
 class FeedCreationTypeViewHolder(
     private val binding: ItemFeedContentCreationTypeBinding,
-    private val listener: Listener,
+    private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: ContentCreationTypeItem) {
         binding.apply {
             tvName.text = item.name
-            item.imageSrc?.let { ivIcon.setImageUrl(it) }
+            if (!item.imageSrc.isNullOrEmpty()) {
+                ivIcon.setImageUrl(item.imageSrc)
+            } else {
+                item.drawableIconId?.let {
+                    ivIcon.setImageDrawable(
+                        getIconUnifyDrawable(
+                            itemView.context,
+                            it
+                        )
+                    )
+                }
+            }
 
             root.setOnClickListener {
                 listener.onClick(item)
@@ -28,7 +40,7 @@ class FeedCreationTypeViewHolder(
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            listener: Listener
         ): FeedCreationTypeViewHolder {
             return FeedCreationTypeViewHolder(
                 ItemFeedContentCreationTypeBinding.inflate(

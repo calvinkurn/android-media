@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.feedplus.data.FeedXHeader
 import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.iconunify.IconUnify
 
 /**
  * Created By : Muhammad Furqan on 09/02/23
@@ -37,17 +38,27 @@ object MapperFeedTabs {
                 hasUsername = author.hasUsername ?: false,
                 hasAcceptTnC = author.hasAcceptTnC ?: false,
                 items = author.items.map {
+                    val currentCreationType = CreateContentType.values().find { createContentType ->
+                        createContentType.value == it.type
+                    } ?: CreateContentType.NONE
                     ContentCreationTypeItem(
                         name = it.title ?: "",
                         isActive = it.isActive ?: false,
                         imageSrc = it.image ?: "",
-                        type = CreateContentType.values().find { createContentType ->
-                            createContentType.value == it.type
-                        } ?: CreateContentType.NONE,
+                        drawableIconId = getDefaultDrawableForCreationOption(type = currentCreationType),
+                        type = currentCreationType,
                         weblink = it.weblink ?: "",
                         applink = it.applink ?: ""
                     )
                 }.toList()
             )
         } ?: emptyList()
+
+    private fun getDefaultDrawableForCreationOption(type: CreateContentType): Int? =
+        when (type) {
+            CreateContentType.CREATE_LIVE -> IconUnify.VIDEO
+            CreateContentType.CREATE_POST -> IconUnify.IMAGE
+            CreateContentType.CREATE_SHORT_VIDEO -> IconUnify.SHORT_VIDEO
+            CreateContentType.NONE -> null
+        }
 }
