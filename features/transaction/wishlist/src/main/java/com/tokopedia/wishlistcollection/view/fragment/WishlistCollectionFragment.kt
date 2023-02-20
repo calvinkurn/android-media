@@ -30,7 +30,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
@@ -136,13 +135,13 @@ class WishlistCollectionFragment :
     }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
 
-    private val coachMarkItem = ArrayList<CoachMark2Item>()
+    private val coachMarkItem = arrayListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
 
-    private val coachMarkItemSharing1 = ArrayList<CoachMark2Item>()
+    private val coachMarkItemSharing1 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing1: CoachMark2? = null
 
-    private val coachMarkItemSharing2 = ArrayList<CoachMark2Item>()
+    private val coachMarkItemSharing2 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing2: CoachMark2? = null
 
     override fun getScreenName(): String = ""
@@ -222,6 +221,19 @@ class WishlistCollectionFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        manageCoachmark(isVisibleToUser)
+    }
+
+    private fun manageCoachmark(isVisibleToUser: Boolean) {
+        if (!isVisibleToUser) {
+            coachMark?.dismissCoachMark()
+            coachMarkSharing1?.dismissCoachMark()
+            coachMarkSharing2?.dismissCoachMark()
+        }
     }
 
     private fun observingData() {
@@ -816,7 +828,7 @@ class WishlistCollectionFragment :
     }
 
     override fun onShareItemShown(anchorView: View) {
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING) && userVisibleHint) {
             showCoachmarkKebabItem2(anchorView)
         }
     }
@@ -833,7 +845,7 @@ class WishlistCollectionFragment :
         _firstCollectionName = collectionName
         _firstActionsCollection = actions
         _firstCollectionIndicatorTitle = collectionIndicatorTitle
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING) && userVisibleHint) {
             showWishlistCollectionSharingCoachMark(anchorKebabMenuView, collectionId, collectionName, actions, collectionIndicatorTitle)
         }
     }
@@ -891,7 +903,7 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_lanjut)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && coachMarkItemSharing1.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing1, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
@@ -900,6 +912,7 @@ class WishlistCollectionFragment :
     }
 
     private fun showCoachmarkKebabItem2(view: View) {
+        if (!userVisibleHint) return
         if (coachMarkItemSharing2.isEmpty()) {
             coachMarkItemSharing2.add(
                 CoachMark2Item(
@@ -943,7 +956,7 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_finish)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && coachMarkItemSharing2.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
@@ -953,6 +966,7 @@ class WishlistCollectionFragment :
     }
 
     private fun showWishlistCollectionCoachMark(view1: View, view2: View) {
+        if (!userVisibleHint) return
         if (coachMarkItem.isEmpty()) {
             coachMarkItem.add(
                 CoachMark2Item(
@@ -983,7 +997,7 @@ class WishlistCollectionFragment :
                 getString(R.string.collection_coachmark_try_create_wishlist)
             it.stepPrev?.text = getString(R.string.collection_coachmark_back)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && coachMarkItem.isNotEmpty()) {
                 it.showCoachMark(coachMarkItem, null)
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)

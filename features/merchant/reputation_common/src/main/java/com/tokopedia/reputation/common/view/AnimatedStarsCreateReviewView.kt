@@ -37,4 +37,14 @@ class AnimatedStarsCreateReviewView @JvmOverloads constructor(
         drawable?.start()
         showingNormalAnim = !showingNormalAnim
     }
+
+    fun toggleStar() {
+        val drawable = if (showingNormalAnim) {
+            MethodChecker.getDrawable(context, R.drawable.filled_star_create_review)
+        } else {
+            MethodChecker.getDrawable(context, R.drawable.empty_star_create_review)
+        }
+        setImageDrawable(drawable)
+        showingNormalAnim = !showingNormalAnim
+    }
 }

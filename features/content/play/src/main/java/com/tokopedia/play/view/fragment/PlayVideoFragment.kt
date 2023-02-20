@@ -400,8 +400,14 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observeOnboarding() {
+        val startingChannel = activity?.intent?.data?.lastPathSegment.orEmpty()
+        val isShown = startingChannel == channelId || channelId == "0" // 0 for handling channel recom
+
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape) onboardingView?.showAnimated()
+            analytic.screenWithSwipeCoachMark(isShown = isShown)
+            if (!orientation.isLandscape && isShown) {
+                onboardingView?.showAnimated()
+            }
         })
     }
 

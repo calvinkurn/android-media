@@ -3,6 +3,7 @@ package com.tokopedia.media.picker.data.repository
 import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
@@ -13,7 +14,7 @@ interface BitmapConverterRepository {
 }
 
 class BitmapConverterRepositoryImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : BitmapConverterRepository {
 
     override suspend fun convert(url: String): String? {

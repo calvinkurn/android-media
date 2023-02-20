@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
@@ -20,7 +21,8 @@ object BuyerOrderDetailUiStateMapper {
         shipmentInfoUiState: ShipmentInfoUiState,
         pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
-        orderInsuranceUiState: OrderInsuranceUiState
+        orderInsuranceUiState: OrderInsuranceUiState,
+        epharmacyInfoUiState: EpharmacyInfoUiState
     ): BuyerOrderDetailUiState {
         return if (
             actionButtonsUiState is ActionButtonsUiState.HasData &&
@@ -29,6 +31,7 @@ object BuyerOrderDetailUiStateMapper {
             productListUiState is ProductListUiState.HasData &&
             shipmentInfoUiState is ShipmentInfoUiState.HasData &&
             pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData &&
+            epharmacyInfoUiState is EpharmacyInfoUiState.HasData &&
             orderResolutionTicketStatusUiState !is OrderResolutionTicketStatusUiState.Loading
         ) {
             if (
@@ -39,7 +42,8 @@ object BuyerOrderDetailUiStateMapper {
                 shipmentInfoUiState is ShipmentInfoUiState.HasData.Reloading ||
                 pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData.Reloading ||
                 orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading ||
-                orderInsuranceUiState is OrderInsuranceUiState.HasData.Reloading
+                orderInsuranceUiState is OrderInsuranceUiState.HasData.Reloading ||
+                epharmacyInfoUiState is EpharmacyInfoUiState.HasData.Reloading
             ) {
                 BuyerOrderDetailUiState.HasData.PullRefreshLoading(
                     actionButtonsUiState,
@@ -49,7 +53,8 @@ object BuyerOrderDetailUiStateMapper {
                     shipmentInfoUiState,
                     pgRecommendationWidgetUiState,
                     orderResolutionTicketStatusUiState,
-                    orderInsuranceUiState
+                    orderInsuranceUiState,
+                    epharmacyInfoUiState
                 )
             } else {
                 BuyerOrderDetailUiState.HasData.Showing(
@@ -60,7 +65,8 @@ object BuyerOrderDetailUiStateMapper {
                     shipmentInfoUiState,
                     pgRecommendationWidgetUiState,
                     orderResolutionTicketStatusUiState,
-                    orderInsuranceUiState
+                    orderInsuranceUiState,
+                    epharmacyInfoUiState
                 )
             }
         } else if (actionButtonsUiState is ActionButtonsUiState.Error) {
@@ -72,7 +78,9 @@ object BuyerOrderDetailUiStateMapper {
         } else if (productListUiState is ProductListUiState.Error) {
             BuyerOrderDetailUiState.Error(productListUiState.throwable)
         } else if (shipmentInfoUiState is ShipmentInfoUiState.Error) {
-            BuyerOrderDetailUiState.Error(shipmentInfoUiState.throwable)
+            BuyerOrderDetailUiState.Error(shipmentInfoUiState.throwable) }
+        else if (epharmacyInfoUiState is EpharmacyInfoUiState.Error) {
+            BuyerOrderDetailUiState.Error(epharmacyInfoUiState.throwable)
         } else if (pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.Error) {
             BuyerOrderDetailUiState.Error(pgRecommendationWidgetUiState.throwable)
         } else {

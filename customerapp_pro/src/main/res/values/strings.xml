@@ -192,6 +192,7 @@
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
+    <string name="title_activity_bulk_review">Kasih Ulasan Sekaligus</string>
 
     <string name="pdp_common_educational_title">Product Educational</string>
     <!-- Profile completion resources -->

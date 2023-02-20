@@ -7,6 +7,7 @@ object MainNavConst {
         const val ORDER = 2
         const val USER_MENU = 3
         const val HOME = 4
+        const val ACTIVITY = 5
     }
 
     object MainNavState{

@@ -6,5 +6,5 @@ data class MvcShippingBenefit(
         @SerializedName("benefit_amount")
         val benefitAmount: Int = 0,
         @SerializedName("sp_id")
-        val spId: Int = 0
+        val spId: Long = 0
 )

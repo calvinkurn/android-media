@@ -61,6 +61,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation

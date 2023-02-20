@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.graphics.Paint
+import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -15,11 +16,15 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
+import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 
 class ShipmentViewHolder(
     view: View,
@@ -115,9 +120,17 @@ class ShipmentViewHolder(
         renderBo(element, rates)
         renderShipment(element, rates)
         renderCourier(element, rates)
+        renderTicker(element)
 
         itemView.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            val componentTrackData = getComponentTrackData(element)
+            listener.onImpressComponent(componentTrackData)
+            if (rates.isScheduled) {
+                listener.onImpressScheduledDelivery(
+                    rates.chipsLabel,
+                    componentTrackData
+                )
+            }
         }
     }
 
@@ -178,44 +191,63 @@ class ShipmentViewHolder(
         rates: P2RatesEstimateData
     ) = with(viewMain) {
         val labels = rates.chipsLabel
-        var usedLabels = emptyList<String>()
 
         if (labels.isEmpty()) {
             pdpShipmentCourierLabel2.show()
-            val labelStringId = if (element.isTokoNow)
+            val labelStringId = if (element.isTokoNow) {
                 R.string.merchant_product_detail_label_selengkapnya
-            else R.string.pdp_shipping_choose_courier_label
+            } else {
+                R.string.pdp_shipping_choose_courier_label
+            }
             pdpShipmentCourierLabel2.text = context.getString(labelStringId)
         } else {
-            val chipViews = listOf(
-                pdpShipmentCourierOption1,
-                pdpShipmentCourierOption2
-            )
-            usedLabels = labels.take(chipViews.size)
-            usedLabels.forEachIndexed { index, label ->
-                chipViews[index].showIfWithBlock(label.isNotEmpty()) {
-                    setLabel(label)
+            pdpShipmentCourierOptions.show()
+            pdpShipmentCourierOptions.removeAllViews()
+            labels.forEach { label ->
+                if (label.isNotEmpty()) {
+                    val itemBinding = ItemShipmentOptionBinding.inflate(LayoutInflater.from(context))
+                    itemBinding.pdpShipmentCourierOption.setLabel(label)
+                    pdpShipmentCourierOptions.addView(itemBinding.root)
                 }
             }
             pdpShipmentCourierLabel1.text = rates.subtitle
 
             pdpShipmentCourierLabel1.show()
             pdpShipmentCourierArrow.show()
-            pdpShipmentCourierPlaceholder1.show()
         }
 
         setOnClickOnViews(
             listOf(
                 pdpShipmentCourierLabel1,
-                pdpShipmentCourierOption1,
-                pdpShipmentCourierOption2,
+                pdpShipmentCourierOptions,
                 pdpShipmentCourierArrow,
-                pdpShipmentCourierPlaceholder1,
                 pdpShipmentCourierLabel2
             )
         ) {
             listener.openShipmentClickedBottomSheet(
-                rates.title, usedLabels, element.isCod, componentTrackDataModel
+                rates.title,
+                labels,
+                element.isCod,
+                rates.isScheduled,
+                getComponentTrackData(element)
+            )
+        }
+    }
+
+    private fun renderTicker(element: ProductShipmentDataModel) = with(viewMain) {
+        val tickers = element.rates.tickers.map {
+            TickerData(
+                description = it.message,
+                type = Ticker.TYPE_ANNOUNCEMENT,
+                title = it.title,
+                isFromHtml = true
+            )
+        }
+
+        pdpShipmentTicker.showIfWithBlock(tickers.isNotEmpty()) {
+            addPagerView(
+                TickerPagerAdapter(context, tickers),
+                tickers
             )
         }
     }
@@ -251,13 +283,13 @@ class ShipmentViewHolder(
             pdpShipmentGroupTc.hide()
             pdpShipmentDestination.hide()
             pdpShipmentEstimation.hide()
+            pdpShipmentCourierOptions.hide()
             pdpShipmentCourierLabel1.hide()
-            pdpShipmentCourierOption1.hide()
-            pdpShipmentCourierOption2.hide()
-            pdpShipmentCourierPlaceholder1.hide()
             pdpShipmentCourierArrow.hide()
             pdpShipmentCourierLabel2.hide()
             pdpShipmentRatesError.hide()
+            pdpShipmentTitleStrike.hide()
+            pdpShipmentTicker.hide()
         }
     }
 
@@ -268,5 +300,4 @@ class ShipmentViewHolder(
         element?.name ?: "",
         adapterPosition + 1
     )
-
 }

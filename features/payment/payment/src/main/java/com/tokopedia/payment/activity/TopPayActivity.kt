@@ -258,7 +258,9 @@ class TopPayActivity :
     }
 
     private fun isInsufficientBookingStockUrl(url: String): Boolean {
-        return url.startsWith(INSUFFICIENT_STOCK_URL, ignoreCase = true)
+        val uri = Uri.parse(url)
+        val path = uri.path
+        return path != null && path.startsWith(INSUFFICIENT_STOCK_URL_PATH, ignoreCase = true)
     }
 
     override fun showToastMessageWithForceCloseView(message: String) {
@@ -934,7 +936,7 @@ class TopPayActivity :
         private const val CC_LOADING_URL = "https://centinelapi.cardinalcommerce.com/V1/Cruise/Collect"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
-        private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
+        private const val INSUFFICIENT_STOCK_URL_PATH = "/cart/insufficient_booking_stock"
         private val GOPAY_TOP_UP = "${TokopediaUrl.getInstance().WEB}gopay/top-up"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"

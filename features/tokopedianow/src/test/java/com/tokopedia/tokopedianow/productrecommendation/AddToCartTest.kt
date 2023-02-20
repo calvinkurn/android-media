@@ -5,7 +5,6 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
@@ -42,8 +41,8 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
             data = DataModel(
                 success = success,
                 cartId = cartId,
-                productId = productId.toLongOrZero(),
-                shopId = shopId.toLongOrZero(),
+                productId = productId,
+                shopId = shopId,
                 quantity = quantity
             )
         )

@@ -452,4 +452,14 @@ public class MyApplication extends BaseMainApplication
 
         }
     }
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+
+    }
 }

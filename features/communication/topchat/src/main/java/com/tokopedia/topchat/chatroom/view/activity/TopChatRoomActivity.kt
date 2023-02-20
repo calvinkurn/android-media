@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -596,9 +597,15 @@ open class TopChatRoomActivity :
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (::chatRoomFragment.isInitialized) {
+            chatRoomFragment.setupAttachmentsPreview(intent?.extras)
+        }
+    }
+
     companion object {
         const val SOURCE_ASK_BUYER = "tx_ask_buyer"
-        val REQUEST_ATTACH_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"

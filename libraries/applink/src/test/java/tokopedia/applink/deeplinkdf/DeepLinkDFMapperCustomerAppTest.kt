@@ -26,7 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import org.junit.Test
 
-class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
+class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check onboarding appLink then should return DF_BASE in customerapp`() {
@@ -119,12 +119,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check kol youtube appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://kolyoutube/https://www.youtube.com/watch?v=WMh0KzwTviY"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
     fun `check content report appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/content-report/12345"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
@@ -133,12 +127,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check video detail appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/video-detail/{id}"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check media preview appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/media-preview/12345"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
@@ -615,7 +603,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US)
     }
 
-
     @Test
     fun `check payment setting appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalPayment.INTERNAL_PAYMENT}/setting"
@@ -1077,7 +1064,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check tokofood post purchase appLink then should return DF_TOKOFOOD in customerapp`() {
         val orderId = "123"
         val internalAppLink =
-            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
+            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=$orderId"
         assertEqualDeepLinkCustomerApp(internalAppLink, DeeplinkDFMapper.DF_TOKOFOOD)
     }
 
@@ -1094,6 +1081,5 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
         val internalApplink =
             "${ApplinkConstInternalCommunication.TOKO_CHAT}?source=$source&orderId=$orderId"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOCHAT)
-
     }
 }

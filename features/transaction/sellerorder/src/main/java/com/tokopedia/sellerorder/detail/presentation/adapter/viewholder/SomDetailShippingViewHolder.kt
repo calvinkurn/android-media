@@ -167,12 +167,10 @@ class SomDetailShippingViewHolder(
                     }
 
                     if (item.dataObject.driverPhone.isNotEmpty()) {
-                        tvDriverPhone.text = item.dataObject.driverPhone
                         driverCallBtn.setOnClickListener {
                             actionListener?.onDialPhone(item.dataObject.driverPhone)
                         }
                     } else {
-                        tvDriverPhone.visibility = View.GONE
                         driverCallBtn.visibility = View.GONE
                     }
 

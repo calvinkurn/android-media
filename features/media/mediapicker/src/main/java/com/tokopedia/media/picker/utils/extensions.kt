@@ -3,6 +3,7 @@ package com.tokopedia.media.picker.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import com.tokopedia.config.GlobalConfig
 
@@ -22,4 +23,8 @@ fun exceptionHandler(invoke: () -> Unit) {
             e.printStackTrace()
         }
     }
+}
+
+fun isOppoManufacturer(): Boolean {
+    return Build.MANUFACTURER.contains("oppo", ignoreCase = true)
 }

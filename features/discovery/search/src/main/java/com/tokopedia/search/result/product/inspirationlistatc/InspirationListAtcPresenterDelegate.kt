@@ -31,6 +31,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     ) {
         if (product.shouldOpenVariantBottomSheet()) {
             inspirationListAtcView.trackAddToCartVariant(product)
+            if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
 
             inspirationListAtcView.openVariantBottomSheet(product, type)
         } else {
@@ -59,6 +60,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
             )
         inspirationListAtcView.trackItemClick(trackingData)
         inspirationListAtcView.trackAddToCart(trackingData)
+        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {

@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
@@ -76,7 +77,7 @@ import kotlinx.coroutines.flow.collect
 import java.io.File
 import javax.inject.Inject
 
-class TokoChatFragment :
+open class TokoChatFragment :
     TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
@@ -125,7 +126,7 @@ class TokoChatFragment :
         initializeChatRoom(savedInstanceState)
     }
 
-    private fun initializeChatRoom(savedInstanceState: Bundle?) {
+    protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
         setDataFromArguments(savedInstanceState)
         if (viewModel.gojekOrderId.isNotBlank()) { // Do not init when order id empty
             initGroupBooking()
@@ -227,7 +228,6 @@ class TokoChatFragment :
         observeTokoChatBackground()
         observeChatRoomTicker()
         observeChannelDetails()
-        observeMemberLeft()
         observeLoadOrderTransactionStatus()
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
@@ -407,7 +407,7 @@ class TokoChatFragment :
         }
     }
 
-    private fun observeChatRoomTicker() {
+    protected open fun observeChatRoomTicker() {
         observe(viewModel.chatRoomTicker) {
             when (it) {
                 is Success -> {
@@ -440,6 +440,7 @@ class TokoChatFragment :
                     handleFailGetChannelDetails(it.throwable)
                 }
             }
+            observeMemberLeft()
         }
     }
 
@@ -493,8 +494,14 @@ class TokoChatFragment :
     }
 
     private fun observeMemberLeft() {
+        // reset member left live data before observe to remove old data
+        viewModel.resetMemberLeft()
         observe(viewModel.getMemberLeft()) {
-            showUnavailableBottomSheet()
+            // If the livedata gives null, then do nothing
+            // If the livedata gives old data, then do nothing
+            if (it != null && it == headerUiModel?.id) {
+                showUnavailableBottomSheet()
+            }
         }
     }
 
@@ -780,11 +787,7 @@ class TokoChatFragment :
     private fun observeChatHistory() {
         observe(viewModel.getChatHistory(viewModel.channelId)) {
             // First time get Chat History
-            if (firstTimeOpen) {
-                firstTimeOpen = false
-                viewModel.loadChatRoomTicker()
-                observerTyping()
-            }
+            handleFirstTimeGetChatHistory()
 
             // It's from load more func, if recyclerview is loading more
             // Should skip if recyclerview is not loading more message
@@ -794,12 +797,24 @@ class TokoChatFragment :
             }
 
             // Map conversation message into ui model
-            val result = mapper.mapToChatUiModel(it, viewModel.getUserId())
-            adapter.setItemsAndAnimateChanges(result)
-            scrollToBottom()
+            mapConversationMessageToUiModel(it)
 
             // Mark the chat as read
             viewModel.markChatAsRead(viewModel.channelId)
+        }
+    }
+
+    protected open fun mapConversationMessageToUiModel(list: List<ConversationsMessage>) {
+        val result = mapper.mapToChatUiModel(list, viewModel.getUserId())
+        adapter.setItemsAndAnimateChanges(result)
+        scrollToBottom()
+    }
+
+    private fun handleFirstTimeGetChatHistory() {
+        if (firstTimeOpen) {
+            firstTimeOpen = false
+            viewModel.loadChatRoomTicker()
+            observerTyping()
         }
     }
 
@@ -1026,7 +1041,7 @@ class TokoChatFragment :
         )
     }
 
-    private fun showUnavailableBottomSheet() {
+    protected open fun showUnavailableBottomSheet() {
         if (unavailableBottomSheet.isVisible) return
         unavailableBottomSheet.setListener(buttonAction = {
             activity?.finish()

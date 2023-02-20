@@ -18,8 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -64,7 +62,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.popup_validation_bo.view.*
-import timber.log.Timber
 
 /**
  * Created by Kris on 2/19/2016.
@@ -487,29 +484,19 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun openGeoLocation() {
-        val activity = activity ?: return
-        val availability = GoogleApiAvailability.getInstance()
-        val resultCode = availability.isGooglePlayServicesAvailable(activity)
-        if (ConnectionResult.SUCCESS == resultCode) {
-            val locationPass = LocationPass()
-            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false &&
-                editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false
-            ) {
-                locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
-                locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
-                locationPass.generatedAddress = addressLayout?.googleMapAddressString
-            } else {
-                locationPass.districtName =
-                    editShippingPresenter?.shopInformation?.getDistrictName()
-                locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
-            }
-            val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
-            startActivityForResult(intent, OPEN_MAP_CODE)
+        val locationPass = LocationPass()
+        if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false &&
+            editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false
+        ) {
+            locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
+            locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
+            locationPass.generatedAddress = addressLayout?.googleMapAddressString
         } else {
-            Timber.d("Google play services unavailable")
-            val dialog = availability.getErrorDialog(activity, resultCode, 0)
-            dialog?.show()
+            locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
+            locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
         }
+        val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
+        startActivityForResult(intent, OPEN_MAP_CODE)
     }
 
     override fun showInfoBottomSheet(information: String?, serviceName: String?) {

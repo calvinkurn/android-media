@@ -57,17 +57,16 @@ class TokoNowSearchViewModel @Inject constructor (
     abTestPlatformWrapper: ABTestPlatformWrapper,
     userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
-        baseDispatcher,
-        queryParamMap,
-        getFilterUseCase,
-        getProductCountUseCase,
-        getMiniCartListSimplifiedUseCase,
-        cartService,
-        getWarehouseUseCase,
-        setUserPreferenceUseCase,
-        chooseAddressWrapper,
-        abTestPlatformWrapper,
-        userSession,
+    baseDispatcher,
+    queryParamMap,
+    getFilterUseCase,
+    getProductCountUseCase,
+    getMiniCartListSimplifiedUseCase,
+    cartService,
+    getWarehouseUseCase,
+    setUserPreferenceUseCase,
+    chooseAddressWrapper,
+    userSession,
 ) {
     companion object {
         private val showBroadMatchResponseCodeList = listOf("4", "5")

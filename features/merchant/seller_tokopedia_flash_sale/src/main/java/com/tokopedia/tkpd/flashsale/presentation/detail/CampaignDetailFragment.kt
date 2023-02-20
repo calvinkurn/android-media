@@ -64,6 +64,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     companion object {
         private const val PAGE_SIZE = 10
         private const val APPLINK_SEGMENTS_SIZE = 2
+        private const val DEFAULT_FOR_EMPTY_FLASH_SALE_ID = 0L
         private const val DELAY = 1500L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped_new.png"
@@ -120,9 +121,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
         if (isOpenedFromApplink(appLinkData)) {
-            appLinkData?.lastPathSegment?.toLong().orZero()
+            getFLashSaleIdFromApplink(appLinkData)
         } else {
-            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+            getFlashSaleIdFromBundle()
         }
     }
 
@@ -223,6 +224,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                         getFlashSaleSubmissionProgress(flashSaleId)
                     }
                     is Fail -> {
+                        binding?.run { header.setNavigationOnClickListener { activity?.finish() } }
                         showGlobalError()
                     }
                 }
@@ -1577,7 +1579,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             globalError.apply {
                 show()
                 setActionClickListener {
-                    loadCampaignDetailData()
+                    activity?.finish()
                 }
             }
         }
@@ -1653,5 +1655,21 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun isOpenedFromApplink(appLinkData: Uri?): Boolean {
         return appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size >= APPLINK_SEGMENTS_SIZE
+    }
+
+    private fun getFLashSaleIdFromApplink(appLinkData: Uri?): Long {
+        return try {
+            appLinkData?.lastPathSegment?.toLong().orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
+    }
+
+    private fun getFlashSaleIdFromBundle(): Long {
+        return try {
+            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
     }
 }

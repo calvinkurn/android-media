@@ -53,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
@@ -109,12 +110,15 @@ dependencies {
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebserver
+    androidTestImplementation rootProject.ext.testDependencies.okhttpIdlingResource
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler

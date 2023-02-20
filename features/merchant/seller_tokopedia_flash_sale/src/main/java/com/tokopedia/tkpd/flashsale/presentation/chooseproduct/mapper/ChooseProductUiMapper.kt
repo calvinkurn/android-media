@@ -13,7 +13,7 @@ object ChooseProductUiMapper {
     private const val MAX_PRODUCT_SELECTION = 40
 
     private fun List<CriteriaSelection>.validateMax(): Boolean {
-        return !any { it.selectionCount >= it.selectionCountMax }
+        return !any { it.selectionCount > it.selectionCountMax }
     }
 
     private fun List<CriteriaSelection>.getDisabledCriteriaIds(): List<Long> {

@@ -64,6 +64,99 @@
                                 }
                             ]
                         }
+                    },
+                    {
+                        "orderUUID": "96c1817a-e281-4409-8ca4-c55e8739123d",
+                        "status": "tiba_di_tujuan",
+                        "metadata": {
+                            "queryParams": "{\"ICLogoOS\":\"https://images.tokopedia.net/img/official_store/badge_official.png\",\"ICLogoPM\":\"https://images.tokopedia.net/order/power_merchant_color.png\",\"ICLogoPMPro\":\"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png\",\"ICLogoTokoNow\":\"https://images.tokopedia.net/img/now/badge/now-badge.png\",\"accept_deadline\":\"2021-08-30 16:46:48\",\"confirm_shipping_deadline\":\"2021-09-01 16:46:48\",\"estimated_arrival_max_date\":\"2021-08-29 19:41:45\",\"estimated_arrival_min_date\":\"2021-08-28 16:46:45\",\"estimated_arrival_text\":\"Estimasi tiba 28 - 29 Aug\",\"invoice\":\"INV/20210827/MPL/1536619756\",\"invoice_url\":\"https://www.tokopedia.com/invoice?id=INV%2F20210827%2FMPL%2F1536619756\\u0026source=\",\"is_power_merchant\":\"true\",\"order_id\":\"908533988\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"product_snapshot_url\":\"https://www.tokopedia.com/snapshot_product?order_id=908533988\\u0026dtl_id=1536619757\",\"role\":\"buyer\",\"shop_id\":\"1479278\",\"shop_name\":\"Tumbler Starbucks 123\",\"shop_type\":\"0\",\"shop_url\":\"https://www.tokopedia.com/tumblersbux\",\"status\":\"450\",\"user_id\":\"12299592\"}",
+                            "detailURL": {
+                                "appURL": "tokopedia://marketplace/order/1197216381"
+                            },
+                            "status": {
+                                "label": "Tiba di Tujuan",
+                                "textColor": "#FA591D",
+                                "bgColor": "#FFF0B3"
+                            },
+                            "products": [
+                                {
+                                    "title": "MIYAKO 12\" DOU KAD 1227B KIPAS ANGIN MEJA DAN DINDING",
+                                    "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/10/22/11e7b991-d105-430e-85ae-ffadb2e9de6e.jpg",
+                                    "inline1": {
+                                        "label": "1 barang",
+                                        "textColor": "",
+                                        "bgColor": ""
+                                    },
+                                    "inline2": {
+                                        "label": "",
+                                        "textColor": "",
+                                        "bgColor": ""
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "orderUUID": "96c1817a-e281-4409-8ca4-c55e8739763f",
+                        "status": "tiba_di_tujuan",
+                        "metadata": {
+                            "queryParams": "{\"ICLogoOS\":\"https://images.tokopedia.net/img/official_store/badge_official.png\",\"ICLogoPM\":\"https://images.tokopedia.net/order/power_merchant_color.png\",\"ICLogoPMPro\":\"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png\",\"ICLogoTokoNow\":\"https://images.tokopedia.net/img/now/badge/now-badge.png\",\"accept_deadline\":\"2021-08-30 16:46:48\",\"confirm_shipping_deadline\":\"2021-09-01 16:46:48\",\"estimated_arrival_max_date\":\"2021-08-29 19:41:45\",\"estimated_arrival_min_date\":\"2021-08-28 16:46:45\",\"estimated_arrival_text\":\"Estimasi tiba 28 - 29 Aug\",\"invoice\":\"INV/20210827/MPL/1536619756\",\"invoice_url\":\"https://www.tokopedia.com/invoice?id=INV%2F20210827%2FMPL%2F1536619756\\u0026source=\",\"is_power_merchant\":\"true\",\"order_id\":\"908533988\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"product_snapshot_url\":\"https://www.tokopedia.com/snapshot_product?order_id=908533988\\u0026dtl_id=1536619757\",\"role\":\"buyer\",\"shop_id\":\"1479278\",\"shop_name\":\"Tumbler Starbucks 123\",\"shop_type\":\"0\",\"shop_url\":\"https://www.tokopedia.com/tumblersbux\",\"status\":\"450\",\"user_id\":\"12299592\"}",
+                            "detailURL": {
+                                "appURL": "tokopedia://marketplace/order/1197216381"
+                            },
+                            "status": {
+                                "label": "Tiba di Tujuan",
+                                "textColor": "#FA591D",
+                                "bgColor": "#FFF0B3"
+                            },
+                            "products": [
+                                {
+                                    "title": "MIYAKO 12\" DOU KAD 1227B KIPAS ANGIN MEJA DAN DINDING",
+                                    "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/10/22/11e7b991-d105-430e-85ae-ffadb2e9de6e.jpg",
+                                    "inline1": {
+                                        "label": "1 barang",
+                                        "textColor": "",
+                                        "bgColor": ""
+                                    },
+                                    "inline2": {
+                                        "label": "",
+                                        "textColor": "",
+                                        "bgColor": ""
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "orderUUID": "96c1817a-e281-4409-8ca4-c55e8739028c",
+                        "status": "tiba_di_tujuan",
+                        "metadata": {
+                            "queryParams": "{\"ICLogoOS\":\"https://images.tokopedia.net/img/official_store/badge_official.png\",\"ICLogoPM\":\"https://images.tokopedia.net/order/power_merchant_color.png\",\"ICLogoPMPro\":\"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png\",\"ICLogoTokoNow\":\"https://images.tokopedia.net/img/now/badge/now-badge.png\",\"accept_deadline\":\"2021-08-30 16:46:48\",\"confirm_shipping_deadline\":\"2021-09-01 16:46:48\",\"estimated_arrival_max_date\":\"2021-08-29 19:41:45\",\"estimated_arrival_min_date\":\"2021-08-28 16:46:45\",\"estimated_arrival_text\":\"Estimasi tiba 28 - 29 Aug\",\"invoice\":\"INV/20210827/MPL/1536619756\",\"invoice_url\":\"https://www.tokopedia.com/invoice?id=INV%2F20210827%2FMPL%2F1536619756\\u0026source=\",\"is_power_merchant\":\"true\",\"order_id\":\"908533988\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"product_snapshot_url\":\"https://www.tokopedia.com/snapshot_product?order_id=908533988\\u0026dtl_id=1536619757\",\"role\":\"buyer\",\"shop_id\":\"1479278\",\"shop_name\":\"Tumbler Starbucks 123\",\"shop_type\":\"0\",\"shop_url\":\"https://www.tokopedia.com/tumblersbux\",\"status\":\"450\",\"user_id\":\"12299592\"}",
+                            "detailURL": {
+                                "appURL": "tokopedia://marketplace/order/1197216381"
+                            },
+                            "status": {
+                                "label": "Tiba di Tujuan",
+                                "textColor": "#FA591D",
+                                "bgColor": "#FFF0B3"
+                            },
+                            "products": [
+                                {
+                                    "title": "MIYAKO 12\" DOU KAD 1227B KIPAS ANGIN MEJA DAN DINDING",
+                                    "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/10/22/11e7b991-d105-430e-85ae-ffadb2e9de6e.jpg",
+                                    "inline1": {
+                                        "label": "1 barang",
+                                        "textColor": "",
+                                        "bgColor": ""
+                                    },
+                                    "inline2": {
+                                        "label": "",
+                                        "textColor": "",
+                                        "bgColor": ""
+                                    }
+                                }
+                            ]
+                        }
                     }
                 ]
             }

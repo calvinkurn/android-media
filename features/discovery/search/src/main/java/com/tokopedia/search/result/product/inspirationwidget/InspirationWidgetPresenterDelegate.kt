@@ -1,9 +1,11 @@
 package com.tokopedia.search.result.product.inspirationwidget
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.search.di.scope.SearchScope
 import timber.log.Timber
 import javax.inject.Inject
 
+@SearchScope
 class InspirationWidgetPresenterDelegate @Inject constructor() {
 
     private var inspirationWidgetVisitable = mutableListOf<InspirationWidgetVisitable>()

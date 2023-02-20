@@ -144,6 +144,8 @@ interface ICartListView : CustomerView {
 
     fun onSuccessClearRedPromosThenGoToCheckout()
 
+    fun onSuccessClearRedPromosThenGoToPromo()
+
     fun navigateToPromoRecommendation()
 
     fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean

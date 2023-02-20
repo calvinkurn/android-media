@@ -31,4 +31,22 @@
     <string name="up_user_profile_reminder_title">Yuk bikin profil yang unik &#10024;</string>
     <string name="up_user_profile_reminder_sub_title">Bikin username, foto profil &amp; bio yang kamu banget!</string>
     <string name="up_user_profile_reminder_cta">Lengkapi Profil</string>
+    
+    <!--Block-->
+    <string name="up_block_user">Blokir pengguna</string>
+    <string name="up_block_user_dialog_cancel">Batal</string>
+    <string name="up_block_user_dialog_confirm">Ya, Blokir</string>
+    <string name="up_block_user_dialog_title">Blokir %s?</string>
+    <string name="up_block_user_dialog_desc">Jika diblokir, pengguna tidak bisa melihat maupun berinteraksi dengan konten dengan pengguna ini. Mereka tidak akan diberi tahu jika kamu memblokir.</string>
+    <string name="up_block_user_success_toaster">Pengguna ini telah diblokir.</string>
+    <string name="up_block_user_error_toaster">Permintaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
+
+    <string name="up_unblock_action">Unblock</string>
+    <string name="up_unblock_user">Buka blokir pengguna</string>
+    <string name="up_unblock_user_success_toaster">Pengguna ini kembali tidak diblokir.</string>
+    <string name="up_unblock_user_error_toaster">Permintaan pembukaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
+
+    <!--Report-->
+    <string name="up_report_user">Laporkan</string>
+
 </resources>

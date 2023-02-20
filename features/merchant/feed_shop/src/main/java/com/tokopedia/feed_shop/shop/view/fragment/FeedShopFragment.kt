@@ -93,7 +93,8 @@ import com.tokopedia.universal_sharing.R as universalSharingR
 /**
  * @author by yfsx on 08/05/19.
  */
-class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+class FeedShopFragment :
+    BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
     KolPostLikeListener,
     DynamicPostViewHolder.DynamicPostListener,
     TopadsShopViewHolder.TopadsShopListener,
@@ -104,7 +105,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     GridPostAdapter.GridItemListener,
     VideoViewHolder.VideoViewListener,
     FeedMultipleImageView.FeedMultipleImageViewListener,
-    FeedShopContract.View, TopAdsBannerViewHolder.TopAdsBannerListener,
+    FeedShopContract.View,
+    TopAdsBannerViewHolder.TopAdsBannerListener,
     InterfaceShopPageFab {
 
     override val androidContext: Context
@@ -245,11 +247,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun observeSharedLiveData() {
-        shopFeedTabSharedViewModel.feedTabClearCache.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                clearCache()
+        shopFeedTabSharedViewModel.feedTabClearCache.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it) {
+                    clearCache()
+                }
             }
-        })
+        )
     }
 
     private fun initVar() {
@@ -261,8 +266,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()
-                        && newState == RecyclerView.SCROLL_STATE_IDLE
+                    if (hasFeed() &&
+                        newState == RecyclerView.SCROLL_STATE_IDLE
                     ) {
                         if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
                             showBottomSheetSellerMigration()
@@ -280,10 +285,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun hasFeed(): Boolean {
-        return (adapter.list != null
-            && adapter.list.isNotEmpty()
-            && adapter.list.size > 1
-            && adapter.list[0] !is EmptyModel)
+        return (
+            adapter.list != null &&
+                adapter.list.isNotEmpty() &&
+                adapter.list.size > 1 &&
+                adapter.list[0] !is EmptyModel
+            )
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -477,7 +484,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onErrorFollowKol(errorMessage: String) {
-
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
@@ -501,14 +507,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 getString(com.tokopedia.abstraction.R.string.title_try_again),
                 View.OnClickListener {
                     presenter.deletePost(id, rowNumber)
-                })
+                }
+            )
         }
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
-        if (adapter.data.size > rowNumber
-            && adapter.data[rowNumber] != null
-            && adapter.data[rowNumber] is DynamicPostModel
+        if (adapter.data.size > rowNumber &&
+            adapter.data[rowNumber] != null &&
+            adapter.data[rowNumber] is DynamicPostModel
         ) {
             val model = adapter.data[rowNumber] as DynamicPostModel
             val like = model.footer.like
@@ -536,7 +543,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onLikeKolError(message: String) = showError(message)
 
-
     fun onLikeKolClicked(
         rowNumber: Int,
         id: Long,
@@ -554,12 +560,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         rowNumber: Int,
         id: String,
         hasMultipleContent: Boolean,
-        activityType: String,
+        activityType: String
     ) {
         RouteManager.getIntent(
             requireContext(),
             UriUtil.buildUriAppendParam(
-                ApplinkConstInternalContent.COMMENT_NEW,
+                ApplinkConstInternalContent.COMMENT,
                 mapOf(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
@@ -581,7 +587,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isCaption: Boolean
     ) {
     }
-
 
     override fun onHeaderActionClick(
         positionInFeed: Int,
@@ -613,7 +618,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
     }
 
-
     override fun onMenuClick(
         positionInFeed: Int,
         postId: String,
@@ -630,19 +634,22 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
         context?.let {
             val menus =
-                createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
-                    override fun onDeleteClicked() {
-                        createDeleteDialog(positionInFeed, postId)?.show()
-                    }
+                createBottomMenu(
+                    it, deletable, reportable, editable,
+                    object : PostMenuListener {
+                        override fun onDeleteClicked() {
+                            createDeleteDialog(positionInFeed, postId)?.show()
+                        }
 
-                    override fun onReportClick() {
-                        goToContentReport(postId)
-                    }
+                        override fun onReportClick() {
+                            goToContentReport(postId)
+                        }
 
-                    override fun onEditClick() {
-                        goToEditPost(caption, postId.toString(), id)
+                        override fun onEditClick() {
+                            goToEditPost(caption, postId.toString(), id)
+                        }
                     }
-                })
+                )
             menus.show()
         }
     }
@@ -728,14 +735,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         mediaType: String,
         isTopads: Boolean,
         playChannelId: String,
-        weblink: String,
+        weblink: String
     ) {
         activity?.let {
-            ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
-                override fun onShareItemClicked(packageName: String) {
-
-                }
-            }, "", imageUrl, url, description, title)
+            ShareBottomSheets.newInstance(
+                object : ShareBottomSheets.OnShareItemClickListener {
+                    override fun onShareItemClicked(packageName: String) {
+                    }
+                },
+                "", imageUrl, url, description, title
+            )
         }.also {
             fragmentManager?.run {
                 it?.show(this)
@@ -750,7 +759,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         likeCount: Int,
         commentCount: Int
     ) {
-        //Not Used
+        // Not Used
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
@@ -774,7 +783,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         shouldTrack: Boolean,
         isFullScreen: Boolean
     ) {
-
     }
 
     override fun sendWatchVODTracker(
@@ -783,7 +791,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         rowNumber: Int,
         time: Long
     ) {
-
     }
 
     override fun addVODView(
@@ -793,7 +800,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         time: Long,
         hitTrackerApi: Boolean
     ) {
-
     }
 
     override fun onPostTagBubbleClick(
@@ -803,7 +809,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         adClickUrl: String
     ) {
     }
-
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean) {
         for (tracking in trackList) {
@@ -831,7 +836,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
         presenter.addPostTagItemToCart(postTagItem)
     }
-
 
     override fun onActionPopup() {
     }
@@ -893,32 +897,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             .build().toString()
 
     override fun onMediaGridClick(
-        positionInFeed: Int, contentPosition: Int,
-        redirectLink: String, isSingleItem: Boolean
+        positionInFeed: Int,
+        contentPosition: Int,
+        redirectLink: String,
+        isSingleItem: Boolean
     ) {
-        val model = adapter.data[positionInFeed] as? DynamicPostModel
-        if (!isSingleItem && model != null) {
-            RouteManager.route(
-                requireContext(),
-                UriUtil.buildUriAppendParam(
-                    ApplinkConstInternalContent.MEDIA_PREVIEW,
-                    mapOf(
-                        MEDIA_PREVIEW_INDEX to contentPosition.toString()
-                    )
-                ),
-                model.id.toString()
-            )
-        }
-        if (adapter.data[positionInFeed] is DynamicPostModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
-            feedAnalytics.eventShopPageClickPost(
-                trackingPostModel.postId.toString(),
-                trackingPostModel.activityName,
-                trackingPostModel.mediaType,
-                trackingPostModel.mediaUrl,
-                positionInFeed
-            )
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onShopItemClicked(
@@ -956,14 +942,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         contentPosition: Int,
         youtubeId: String
     ) {
-        val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
-
-        if (context != null) {
-            RouteManager.route(
-                requireContext(),
-                redirectUrl
-            )
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onPollOptionClick(
@@ -1050,7 +1031,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
-
     }
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
@@ -1077,19 +1057,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
-
     }
 
     override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
-
     }
 
     override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
-
     }
 
     override fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int) {
-
     }
 
     override fun muteUnmuteVideo(
@@ -1182,7 +1158,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             .orEmpty()
     }
 
-
     private fun createDeleteDialog(rowNumber: Int, id: String): DialogUnify? {
         return context?.let {
             val dialog =
@@ -1227,17 +1202,27 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun onSuccessReportContent() {
         view?.let {
-            Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(universalSharingR.string.label_close), View.OnClickListener { })
+            Toaster.make(
+                it,
+                getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(universalSharingR.string.label_close),
+                View.OnClickListener { }
+            )
         }
     }
 
     private fun onErrorReportContent(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMessage,
-                Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(universalSharingR.string.label_close), View.OnClickListener { })
+            Toaster.make(
+                it,
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(universalSharingR.string.label_close),
+                View.OnClickListener { }
+            )
         }
     }
 
@@ -1262,8 +1247,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private fun showError(errorMessage: String, listener: View.OnClickListener?) {
         listener?.let {
             Toaster.make(
-                requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.title_try_again), it
+                requireView(),
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again),
+                it
             )
         }
     }
@@ -1277,8 +1266,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun clearCache() {
-        if (::presenter.isInitialized)
+        if (::presenter.isInitialized) {
             presenter.clearCache()
+        }
     }
 
     private fun trackGotoSellerApp() {
@@ -1296,7 +1286,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
-
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {
@@ -1306,8 +1295,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     return
                 }
 
-                if (intent.action == BROADCAST_SUBMIT_POST
-                    && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true
+                if (intent.action == BROADCAST_SUBMIT_POST &&
+                    intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true
                 ) {
                     onSwipeRefresh()
                 }
@@ -1348,7 +1337,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
-
     }
 
     override fun onClickSekSekarang(

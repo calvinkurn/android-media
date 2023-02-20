@@ -5,6 +5,7 @@
     <string name="on_success_remove_from_wishlist_msg">Barang telah dihapus dari Wishlist.</string>
     <string name="cta_success_add_to_wishlist">Lihat</string>
     <string name="cta_success_remove_from_wishlist">Oke</string>
+    <string name="cta_ok_wishlist">Oke</string>
     <string name="on_failed_remove_from_wishlist_msg">Gagal menghapus wishlist</string>
     <string name="on_failed_add_to_wishlist_msg">Gagal menambahkan wishlist</string>
     <string name="add_to_wishlist_invalid">Produk invalid</string>

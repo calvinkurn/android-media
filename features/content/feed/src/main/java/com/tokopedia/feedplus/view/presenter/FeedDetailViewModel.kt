@@ -43,22 +43,25 @@ class FeedDetailViewModel @Inject constructor(
         return feedDetailLiveData
     }
 
-    fun getFeedDetail(detailId: String, page: Int, shopId: String, activityId: String) {
-        viewModelScope.launchCatchError(block = {
-            if (page == 1) {
-                feedDetailLiveData.value =
-                    FeedDetailViewState.LoadingState(isLoading = true, loadingMore = false)
-            } else {
-                feedDetailLiveData.value =
-                    FeedDetailViewState.LoadingState(isLoading = true, loadingMore = true)
+    fun getFeedDetail(detailId: String, page: Int) {
+        viewModelScope.launchCatchError(
+            block = {
+                if (page == 1) {
+                    feedDetailLiveData.value =
+                        FeedDetailViewState.LoadingState(isLoading = true, loadingMore = false)
+                } else {
+                    feedDetailLiveData.value =
+                        FeedDetailViewState.LoadingState(isLoading = true, loadingMore = true)
+                }
+                val feedQuery = feedDetailRepository.fetchFeedDetail(detailId, cursor)
+                handleDataForFeedDetail(feedQuery, page)
+            },
+            onError =
+            {
+                it.printStackTrace()
+                feedDetailLiveData.value = FeedDetailViewState.Error(it)
             }
-            val feedQuery = feedDetailRepository.fetchFeedDetail(detailId, cursor)
-            handleDataForFeedDetail(feedQuery, page, shopId, activityId)
-        }, onError =
-        {
-            it.printStackTrace()
-            feedDetailLiveData.value = FeedDetailViewState.Error(it)
-        })
+        )
     }
 
     fun fetchMerchantVoucherSummary(shopId: String) {
@@ -79,9 +82,7 @@ class FeedDetailViewModel @Inject constructor(
 
     private fun handleDataForFeedDetail(
         feedQuery: FeedXGQLResponse,
-        page: Int,
-        shopId: String,
-        activityId: String
+        page: Int
     ) {
         cursor = feedQuery.data.nextCursor
         if (page == 1) {

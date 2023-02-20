@@ -11,6 +11,8 @@ import com.tokopedia.privacycenter.domain.SearchRequestUseCase
 import com.tokopedia.privacycenter.domain.SubmitRequestUseCase
 import com.tokopedia.privacycenter.ui.dsar.uimodel.CustomDateModel
 import com.tokopedia.privacycenter.ui.dsar.uimodel.SubmitRequestUiModel
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class DsarViewModel @Inject constructor(
     val submitRequestUseCase: SubmitRequestUseCase,
     val searchRequestUseCase: SearchRequestUseCase,
+    val getProfileUseCase: GetProfileUseCase,
     val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -130,18 +133,27 @@ class DsarViewModel @Inject constructor(
         }
     }
 
+    fun fetchInitialData() {
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+            { checkRequestStatus() },
+            {
+                _globalError.value = true
+                _mainLoader.value = false
+            },
+            showLocationAdminPopUp = {},
+            onLocationAdminRedirection = {},
+            showErrorGetAdminType = {}
+        ))
+    }
+
     fun checkRequestStatus() {
         _mainLoader.value = true
         launch {
             try {
                 val param = SearchRequestBody(email = userSession.email)
                 val result = searchRequestUseCase(param)
-
                 if (result.status.isNotEmpty()) {
-                    if (result.status != DsarConstants.STATUS_REJECTED &&
-                        result.status != DsarConstants.STATUS_COMPLETED &&
-                        result.status != DsarConstants.STATUS_CLOSED
-                    ) {
+                    if(!DsarConstants.DSAR_STATUS.contains(result.status.lowercase())) {
                         _requestDetails.value = result
                     } else {
                         _showMainLayout.value = true

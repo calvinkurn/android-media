@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.net.Uri
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
@@ -40,9 +43,11 @@ object WebViewHelper {
 
     private fun getDomainName(url: String): String {
         val domain = Uri.parse(url).host
-        return if (domain != null)
+        return if (domain != null) {
             if (domain.startsWith(PREFIX_PATTERN)) domain.substring(4) else domain
-        else ""
+        } else {
+            ""
+        }
     }
 
     private fun isSeamless(url: String): Boolean = getDomainName(url) == JS_DOMAIN_PATTERN
@@ -51,7 +56,6 @@ object WebViewHelper {
         val uri = Uri.parse(url)
         return uri.getQueryParameter(KEY_PARAM_URL)
     }
-
 
     /**
      * This function appends GA client ID as a query param for url contains tokopedia as domain
@@ -65,18 +69,18 @@ object WebViewHelper {
         Timber.d("WebviewHelper before $url")
         var returnURl = url
 
-        if (url?.contains("ta.tokopedia.com") == true)
+        if (url?.contains("ta.tokopedia.com") == true) {
             return url
+        }
 
         if (url != null && isPassingGAClientIdEnable(context)) {
             try {
-                //parse url
+                // parse url
                 val uri = Uri.parse(url)
 
-
-                //logic to append GA clientID in web URL to track app to web sessions
+                // logic to append GA clientID in web URL to track app to web sessions
                 if (uri != null && !url.contains(PARAM_APPCLIENT_ID)) {
-                    val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString();
+                    val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString()
 
                     if (clientID != null && url.contains("js.tokopedia.com")) {
                         val tokopediaEncodedUrl = uri.getQueryParameter("url")
@@ -98,14 +102,13 @@ object WebViewHelper {
                     }
                 }
             } catch (ex: Exception) {
-                //do nothing
+                // do nothing
             }
         }
 
         Timber.d("WebviewHelper after $returnURl")
         return returnURl
     }
-
 
     private fun isPassingGAClientIdEnable(context: Context?): Boolean {
         if (context == null) return false
@@ -165,7 +168,7 @@ object WebViewHelper {
      * Input3: tokopedia://webview?url=https://abc.com/#/a?a=b&titlebar=false
      * Expected url query = https://abc.com/#/a?a=b&titlebar=false
      */
-     fun getUrlQuery(uri: Uri): String? {
+    fun getUrlQuery(uri: Uri): String? {
         val uriStringAfterMark = uri.toString().substringAfter("?").substringAfter("$KEY_URL=")
         return if (uriStringAfterMark.contains("#")) {
             if (uriStringAfterMark.contains("?")) {
@@ -289,7 +292,16 @@ object WebViewHelper {
             .queryIntentActivities(intent, 0)
         return if (resolveInfos.isNotEmpty()) {
             intent
-        } else null
+        } else {
+            null
+        }
     }
 
+    fun getMediaPickerIntent(context: Context): Intent {
+        return MediaPicker.intent(context) {
+            pageSource(PageSource.WebView)
+            modeType(ModeType.IMAGE_ONLY)
+            singleSelectionMode()
+        }
+    }
 }

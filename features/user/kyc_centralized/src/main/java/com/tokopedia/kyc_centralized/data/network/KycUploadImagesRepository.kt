@@ -19,6 +19,7 @@ class KycUploadImagesRepository @Inject constructor(
         return when (projectId) {
             KYCConstant.HOME_CREDIT_PROJECT_ID,
             KYCConstant.CO_BRAND_PROJECT_ID,
+            KYCConstant.OFFICIAL_STORE_PROJECT_ID,
             KYCConstant.GO_CICIL_PROJECT_ID -> {
                 uploadImagesAlaCarte(requestBodyProjectId, params, ktpImage, faceImage)
             }

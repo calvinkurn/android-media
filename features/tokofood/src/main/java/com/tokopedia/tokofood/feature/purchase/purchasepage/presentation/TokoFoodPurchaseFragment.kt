@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,7 +43,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -55,6 +53,7 @@ import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -377,7 +376,12 @@ class TokoFoodPurchaseFragment :
                 )
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
                 PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                    loadData()
+                    (it.data as? Pair<*, *>)?.let { (latitude, longitude) ->
+                        if (latitude is String && longitude is String) {
+                            setupChooseAddress(latitude, longitude)
+                            loadData()
+                        }
+                    }
                 }
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                     (it.data as? Throwable)?.message?.let { error ->
@@ -471,6 +475,10 @@ class TokoFoodPurchaseFragment :
                 }
             }
         }
+    }
+
+    private fun setupChooseAddress(latitude: String, longitude: String) {
+        context?.updateLocalChosenAddressPinpoint(latitude, longitude)
     }
 
     private fun collectSharedUiState() {
@@ -684,17 +692,13 @@ class TokoFoodPurchaseFragment :
     }
 
     private fun navigateToSetPinpoint(locationPass: LocationPass) {
-        view?.let {
-            MapsAvailabilityHelper.onMapsAvailableState(it) {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                val bundle = Bundle().apply {
-                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                }
-                intent.putExtras(bundle)
-                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
-            }
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        val bundle = Bundle().apply {
+            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
         }
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {

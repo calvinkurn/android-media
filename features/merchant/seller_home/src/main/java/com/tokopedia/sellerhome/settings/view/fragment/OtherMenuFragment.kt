@@ -47,6 +47,7 @@ import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.seller.menu.common.exception.UserShopInfoException
+import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -118,6 +119,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         const val FREE_SHIPPING = "free shipping"
         const val TOTAL_TOKO_MEMBER = "total tokomember"
 
+        private const val MAX_RM_TRANSACTION_THRESHOLD = 100
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -212,7 +214,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
+            val isNewSeller = (activity as? SellerHomeActivity)?.isNewSeller == true
+            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this, isNewSeller)
         }
         viewHolder?.setInitialLayouts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -282,8 +285,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
-    override fun onRmTransactionClicked() {
-        goToNewMembershipScheme()
+    override fun onRmTransactionClicked(currentTransactionTotal: Long) {
+        if (currentTransactionTotal < MAX_RM_TRANSACTION_THRESHOLD) {
+            openRmTransactionBottomSheet(currentTransactionTotal)
+        } else {
+            goToNewMembershipScheme()
+        }
     }
 
     override fun onShopBadgeClicked() {
@@ -729,6 +736,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         val totalMemberIntent =
             RouteManager.getIntent(context, ApplinkConstInternalSellerapp.INTERNAL_MEMBER_LIST)
         startActivity(totalMemberIntent)
+    }
+
+    private fun openRmTransactionBottomSheet(currentTransactionTotal: Long) {
+        RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
     }
 
     private fun goToNewMembershipScheme() {

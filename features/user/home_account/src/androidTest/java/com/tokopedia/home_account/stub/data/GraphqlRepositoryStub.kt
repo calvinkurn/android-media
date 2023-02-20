@@ -62,17 +62,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         mapOf(),
                         false
                 )
-                it.contains("get_wallet_eligible") && mapParam[TestStateParam.WALLET] == TestStateValue.WALLET_ELIGIBLE -> GraphqlResponse(
-                        mapOf(WalletEligibleDataModel::class.java to provideWalletEligibileSuccess()),
-                        mapOf(),
-                        false
-                )
-                it.contains("get_wallet_eligible") && mapParam[TestStateParam.WALLET] == TestStateValue.WALLET_NOT_ELIGIBLE ->  {
-                    GraphqlResponse(
-                        mapOf(WalletEligibleDataModel::class.java to provideWalletNotEligibileSuccess()),
-                        mapOf(),
-                        false
-                ) }
                 it.contains("tokopoints") && it.contains("tier") -> GraphqlResponse(
                         mapOf(ShortcutResponse::class.java to provideStatusFilteredSuccess()),
                         mapOf(),
@@ -152,22 +141,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
                     R.raw.success_get_cobrandcc_balance_and_point,
                     BalanceAndPointDataModel::class.java
             )
-
-    private fun provideWalletEligibileSuccess(): WalletEligibleDataModel {
-        val response = AndroidFileUtil.parse(
-                R.raw.success_get_wallet_eligible,
-                WalletEligibleDataModel::class.java
-        ) as WalletEligibleDataModel
-        return response
-    }
-
-    private fun provideWalletNotEligibileSuccess(): WalletEligibleDataModel {
-        val response = AndroidFileUtil.parse(
-                R.raw.success_get_wallet_not_eligible,
-                WalletEligibleDataModel::class.java
-        ) as WalletEligibleDataModel
-        return response
-    }
 
     private fun provideOfferInterruptResponse(): OfferInterruptResponse {
         return AndroidFileUtil.parse(

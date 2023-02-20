@@ -8,6 +8,7 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
@@ -23,6 +24,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
+import com.tokopedia.feedcomponent.presentation.utils.FeedXCardSubtitlesAnimationHandler
 import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.feedcomponent.util.caption.FeedCaption
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
@@ -42,6 +44,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import java.lang.ref.WeakReference
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -84,8 +87,15 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private var listener: ContentDetailPostViewHolder.CDPListener? = null
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
-    private val topAdsProductCampaignCopywritingText = findViewById<Typography>(R.id.top_ads_campaign_copywriting)
+    private val asgcProductCampaignCopywritingContainer =
+        findViewById<FrameLayout>(R.id.top_ads_campaign_copywriting_container)
+    private val asgcProductCampaignCopywritingFirst =
+        findViewById<Typography>(R.id.top_ads_campaign_copywriting_first)
+    private val asgcProductCampaignCopywritingSecond =
+        findViewById<Typography>(R.id.top_ads_campaign_copywriting_second)
     private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
+    private var animationHandler: FeedXCardSubtitlesAnimationHandler? = null
+
 
     private var mData = FeedXCard()
     private var positionInCdp: Int = 0
@@ -448,20 +458,32 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         topAdsProductName.text = getCTAButtonText(feedXCard)
-        val ctaSubtitle =
-            if (feedXCard.cta.subtitle.isNotEmpty()) feedXCard.cta.subtitle.firstOrNull()
-                ?: String.EMPTY else String.EMPTY
-        topAdsProductCampaignCopywritingText.text = ctaSubtitle
+        val ctaSubtitle = getCTAButtonSubtitle(feedXCard)
+
+        ctaSubtitle.mapIndexed { index, item ->
+            if (index == ZERO) {
+                asgcProductCampaignCopywritingFirst.text = item
+            } else if (index == ONE) {
+                asgcProductCampaignCopywritingSecond.text = item
+            }
+        }
+
+        if (ctaSubtitle.size >= TWO && shouldShowCtaSubtitile(ctaSubtitle)) {
+            animationHandler = FeedXCardSubtitlesAnimationHandler(
+                WeakReference(asgcProductCampaignCopywritingFirst),
+                WeakReference(asgcProductCampaignCopywritingSecond)
+            )
+            animationHandler?.subtitles = ctaSubtitle
+            animationHandler?.checkToCancelTimer()
+            animationHandler?.startTimer()
+        } else if (animationHandler != null) {
+            animationHandler?.stopAnimation()
+        }
+        asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                     feedXCard.media.any { it.isImage }
-        )
-        topAdsProductCampaignCopywritingText.showWithCondition(
-            shouldShowCtaSubtitile(
-                ctaSubtitle,
-                feedXCard
-            )
         )
 
         topAdsCard.setOnClickListener {
@@ -475,8 +497,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
         }
     }
-    private fun shouldShowCtaSubtitile(subtitle: String, card: FeedXCard) =
-        subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
+    private fun shouldShowCtaSubtitile(subtitle: List<String>) =
+        subtitle.isNotEmpty()
 
 
     private fun bindViews(feedXCard: FeedXCard){
@@ -970,7 +992,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 .addTarget(topAdsCard)
         )
         topAdsProductName.setTextColor(secondaryColor)
-        topAdsProductCampaignCopywritingText.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingFirst.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingSecond.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
     }
@@ -1003,7 +1026,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         secondaryColor: Int,
     ) {
         topAdsProductName.setTextColor(secondaryColor)
-        topAdsProductCampaignCopywritingText.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingFirst.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingSecond.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)
     }
@@ -1029,6 +1053,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private fun getCTAButtonText(card: FeedXCard) =
         if (card.isTypeProductHighlight) card.cta.text
         else context.getString(feedComponentR.string.feeds_cek_sekarang)
+
+    private fun getCTAButtonSubtitle(card: FeedXCard) = card.cta.subtitle
+
 
 
     fun onCTAVisible(feedXCard: FeedXCard) {
@@ -1086,6 +1113,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         super.onDetachedFromWindow()
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
         feedVODViewHolder.onPause()
+        if (animationHandler != null) {
+            animationHandler?.stopAnimation()
+            animationHandler = null
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -1134,13 +1165,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         private const val FOCUS_CTA_DELAY = 2000L
 
         private const val FOLLOW_COUNT_THRESHOLD = 100
-        private const val FOLLOW_MARGIN = 6
-        private const val MARGIN_ZERO = 0
-        private const val FOLLOW_SIZE = 7
-        private const val SPACE = 3
-        private const val DOT_SPACE = 2
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
+
         private const val MAX_CHAR = 120
-        private const val CAPTION_END = 120
         private const val VIEWS_START_VALUE = 14
 
     }

@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -361,6 +362,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
+    }
+
+    fun setupMicroInteraction(navToolbarMicroInteraction: NavToolbarMicroInteraction?) {
+        navToolbarMicroInteraction?.setNavToolbarComponents(layoutSearch)
     }
 
     /**

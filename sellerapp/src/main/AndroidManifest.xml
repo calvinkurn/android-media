@@ -645,8 +645,8 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher_sellerapp"
-        android:roundIcon="@mipmap/ic_launcher_sellerapp_round"
+        android:icon="@mipmap/ic_launcher_sellerapp_ramadhan"
+        android:roundIcon="@mipmap/ic_launcher_sellerapp_ramadhan_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:supportsRtl="true"
@@ -666,6 +666,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
             <meta-data
                 android:name="android.app.shortcuts"

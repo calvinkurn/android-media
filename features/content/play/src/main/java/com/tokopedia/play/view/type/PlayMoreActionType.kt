@@ -8,5 +8,7 @@ enum class PlayMoreActionType {
     Share,
     WatchMode,
     CloseVideo,
-    Report
+    Report,
+    PiP,
+    Chromecast,
 }

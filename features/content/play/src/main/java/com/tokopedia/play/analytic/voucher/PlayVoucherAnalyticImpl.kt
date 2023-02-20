@@ -1,9 +1,13 @@
 package com.tokopedia.play.analytic.voucher
 
 import com.tokopedia.play.analytic.*
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -12,6 +16,7 @@ import javax.inject.Inject
  */
 class PlayVoucherAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
+    private val trackingQueue: TrackingQueue
 ) : PlayVoucherAnalytic {
 
     private var channelInfo = PlayChannelInfoUiModel()
@@ -28,7 +33,7 @@ class PlayVoucherAnalyticImpl @Inject constructor(
     private val channelType: String
         get() = channelInfo.channelType.value
 
-    override fun setData(channelInfoUiModel: PlayChannelInfoUiModel){
+    override fun setData(channelInfoUiModel: PlayChannelInfoUiModel) {
         channelInfo = channelInfoUiModel
     }
 
@@ -104,7 +109,6 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .send()
     }
 
-
     override fun clickToasterPublic() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
@@ -161,5 +165,44 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .setUserId(userId)
             .build()
             .send()
+    }
+
+    override fun clickInfoVoucher() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - entry point voucher bottomsheet")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - $channelType")
+            .setCustomProperty(KEY_TRACK_TRACKER_ID, "40976")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun impressInfoVoucher(voucher: PlayVoucherUiModel.Merchant) {
+        val map = BaseTrackerBuilder().constructBasicPromotionView(
+            event = KEY_TRACK_PROMO_VIEW,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - entry point voucher bottomsheet",
+            eventLabel = "$channelId - $channelType",
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = channelId,
+                    name = "/play/explorewidget",
+                    creative = voucher.title,
+                    position = "1"
+                )
+            )
+        )
+            .appendUserId(userId)
+            .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .appendCustomKeyValue(KEY_TRACK_TRACKER_ID, "40973")
+            .build()
+
+        trackingQueue.putEETracking(map as? HashMap<String, Any>)
     }
 }

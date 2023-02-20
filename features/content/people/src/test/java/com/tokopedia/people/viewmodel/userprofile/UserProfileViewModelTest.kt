@@ -19,6 +19,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -54,6 +55,7 @@ class UserProfileViewModelTest {
 
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOtherProfile = profileBuilder.buildProfile(userID = mockOtherUserId)
+    private val mockOtherBlockedProfile = profileBuilder.buildProfile(userID = mockOtherUserId, isBlocking = true)
     private val mockShopRecom = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
@@ -123,7 +125,6 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.Self
                 profileWhitelist equalTo mockHasAcceptTnc
-                shopRecom equalTo mockShopRecom
             }
         }
     }
@@ -268,6 +269,102 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+            }
+        }
+    }
+
+    @Test
+    fun `when user block a creator and it is success, it should be blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coJustRun { mockRepo.blockUser(any()) }
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.BlockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo true
+            }
+        }
+    }
+
+    @Test
+    fun `when user block a creator and it is failed, it should not be blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.blockUser(any()) } throws mockException
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.BlockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo false
+            }
+        }
+    }
+
+    @Test
+    fun `when user unblock a creator and it is success, it should not be blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherBlockedProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coJustRun { mockRepo.unblockUser(any()) }
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.UnblockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo false
+            }
+        }
+    }
+
+    @Test
+    fun `when user unblock a creator and it is failed, it should stay blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherBlockedProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.unblockUser(any()) } throws mockException
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.UnblockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo true
             }
         }
     }

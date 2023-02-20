@@ -1,7 +1,7 @@
 package com.tokopedia.media.preview.ui.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
 import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.media.util.test
@@ -25,7 +25,7 @@ class PreviewViewModelTest {
 
     private val saveToGalleryRepository = mockk<SaveToGalleryRepository>()
     private val imageCompressorRepository = mockk<ImageCompressionRepository>()
-    private val paramCache = mockk<ParamCacheManager>()
+    private val paramCache = mockk<PickerCacheManager>()
 
     private lateinit var viewModel: PreviewViewModel
 

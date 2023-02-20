@@ -33,6 +33,7 @@ import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -90,8 +91,11 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
         private const val TRACKER_PREF_NAME = "NotificationUserSettings"
+        private const val WEAR_PREF_NAME = "WearPopupSharedPref"
+
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
-        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
+        private const val WEAR_POPUP_KEY = "isWearPopupShown"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
     }
 
     @Inject
@@ -127,12 +131,17 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private val sharedPreference: SharedPreferences by lazy {
         applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
     }
+    private val wearSharedPreference: SharedPreferences by lazy {
+        applicationContext.getSharedPreferences(WEAR_PREF_NAME, MODE_PRIVATE)
+    }
 
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
 
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+
+    var isNewSeller = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
@@ -141,14 +150,14 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onCreate(savedInstanceState)
         setContentView()
 
+        hideStatusBar()
         setupBackground()
         setupToolbar()
         setupStatusBar()
-        setupBottomNav()
         setupNavigator()
         setupShadow()
 
-        setupDefaultPage(savedInstanceState)
+        observeShopStateInfo(savedInstanceState)
 
         checkAppUpdate()
         observeNotificationsLiveData()
@@ -170,7 +179,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && remoteConfig.isWatchAppCheckingEnabled()) {
             homeViewModel.checkIfWearHasCompanionApp()
         }
 
@@ -319,6 +328,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun setupToolbar() {
         binding?.run {
+            sahToolbar.show()
             setSupportActionBar(sahToolbar)
         }
     }
@@ -532,6 +542,49 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         homeViewModel.getShopInfo()
     }
 
+    private fun observeShopStateInfo(savedInstanceState: Bundle?) {
+        observe(homeViewModel.shopStateInfo) {
+            hideProgressbarContainer()
+
+            showStatusBarShadow()
+
+            if (it is Success) {
+                val info = it.data
+                this.isNewSeller = info.isNewSellerState
+            }
+
+            setupBottomNav(this.isNewSeller)
+
+            showShadowLines()
+            setupDefaultPage(savedInstanceState)
+        }
+
+        fetchShopStateInfo()
+    }
+
+    private fun hideProgressbarContainer() {
+        binding?.progressBarContainerSah?.hide()
+    }
+
+    private fun fetchShopStateInfo() {
+        binding?.progressBarContainerSah?.show()
+        homeViewModel.getShopStateInfo()
+    }
+
+    private fun hideStatusBar() {
+        binding?.run {
+            statusBarShadow?.hide()
+            statusBarBackground?.hide()
+        }
+    }
+
+    private fun showStatusBarShadow() {
+        binding?.run {
+            statusBarShadow?.show()
+            statusBarBackground?.show()
+        }
+    }
+
     private fun observeIsRoleEligible() {
         homeViewModel.isRoleEligible.observe(this) { result ->
             if (result is Success) {
@@ -542,6 +595,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     }
                 }
             }
+        }
+    }
+
+    private fun showShadowLines() {
+        binding?.run {
+            navBarShadow.show()
         }
     }
 
@@ -580,17 +639,30 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         binding?.sahToolbar?.hide()
     }
 
-    private fun setupBottomNav() {
+    private fun setupBottomNav(isNewSeller: Boolean) {
         binding?.sahBottomNav?.setBackgroundColor(getResColor(android.R.color.transparent))
+
+        val (homeIconActive, homeIconInActive) =
+            if (isNewSeller) {
+                Pair(R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive)
+            } else {
+                Pair(R.drawable.ic_sah_bottom_nav_home_ramadhan_active, R.drawable.ic_sah_bottom_nav_home_ramadhan_inactive)
+            }
+
+        val (homeLottieActive, homeLottieInActive) = if (isNewSeller) {
+            Pair(R.raw.anim_bottom_nav_home_to_enabled, R.raw.anim_bottom_nav_home)
+        } else {
+            Pair(R.raw.anim_bottom_nav_home_ramadhan, R.raw.anim_bottom_nav_home_ramadhan_to_enabled)
+        }
 
         menu.add(
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home,
-                R.raw.anim_bottom_nav_home_to_enabled,
-                R.drawable.ic_sah_bottom_nav_home_active,
-                R.drawable.ic_sah_bottom_nav_home_inactive,
+                homeLottieInActive,
+                homeLottieActive,
+                homeIconActive,
+                homeIconInActive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
@@ -726,10 +798,13 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun observeWearDialog() {
         homeViewModel.shouldAskInstallCompanionApp.observe(this) {
-            if (it) {
+            val isWearPopupShown: Boolean =
+                wearSharedPreference.getBoolean(WEAR_POPUP_KEY, false)
+            if (it && !isWearPopupShown) {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.apply{
                     setTitle(resources.getString(R.string.wearos_install_popup_title))
+                    setDescription(resources.getString(R.string.wearos_install_popup_description))
                     setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
                     setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
                     setPrimaryCTAClickListener {
@@ -737,12 +812,21 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                             .addCategory(Intent.CATEGORY_BROWSABLE)
                             .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
                         homeViewModel.launchMarket(marketIntent)
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@SellerHomeActivity,
+                            resources.getString(R.string.wearos_toast_install),
+                            Toast.LENGTH_LONG
+                            ).show()
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()
                     }
                 }
                 dialog.show()
+                wearSharedPreference.edit()
+                    .putBoolean(WEAR_POPUP_KEY, true)
+                    .apply()
             }
         }
     }

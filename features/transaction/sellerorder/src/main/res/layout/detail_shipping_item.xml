@@ -173,23 +173,10 @@
             tools:text="@string/tv_driver_name_example" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_driver_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_driver_name"
-            android:layout_toStartOf="@+id/driver_call_btn"
-            android:layout_toEndOf="@+id/iv_driver"
-            android:inputType="none"
-            android:textIsSelectable="true"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            tools:text="@string/tv_driver_phone_example" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_driver_license"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_driver_phone"
+            android:layout_below="@+id/tv_driver_name"
             android:layout_toStartOf="@+id/driver_call_btn"
             android:layout_toEndOf="@+id/iv_driver"
             android:textColor="@color/Unify_N700_68"

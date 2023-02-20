@@ -536,7 +536,6 @@ public class BranchWrapper implements WrapperInterface {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
         } else if (LinkerData.HOTEL_TYPE.equalsIgnoreCase(data.getType())) {
-            linkProperties.setFeature(LinkerConstants.FEATURE_TYPE_HOTEL);
             linkProperties.addTag(LinkerConstants.HOTEL_LABEL);
             linkProperties.addTag(LinkerConstants.PDP_LABEL);
             if (!desktopUrl.isEmpty()) {
@@ -544,7 +543,6 @@ public class BranchWrapper implements WrapperInterface {
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
             }
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
-            linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
             deeplinkPath = data.getDeepLink();
         } else if (LinkerData.ENTERTAINMENT_TYPE.equalsIgnoreCase(data.getType())) {
             if (!desktopUrl.isEmpty()) {
@@ -555,6 +553,8 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.USER_PROFILE_SOCIAL, data.getId());
         } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())) {
+            deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.FLIGHT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
         }
 

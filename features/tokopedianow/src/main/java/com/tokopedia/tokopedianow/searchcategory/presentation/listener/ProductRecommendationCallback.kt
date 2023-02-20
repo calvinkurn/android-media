@@ -22,8 +22,8 @@ import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 
 data class ProductRecommendationCallback(
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
@@ -84,19 +84,16 @@ data class ProductRecommendationCallback(
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            ProductRecommendationTracking.getClickProductTracking(
-                recommendationItem = recommendationItem,
-                eventCategory = eventCategory,
-                headerTitle = product.headerName,
-                position = position,
-                isLoggedIn = isLogin,
-                userId = userId,
-                eventLabel = eventLabel,
-                eventAction = eventActionClicked,
-                listValue = getListValue(recommendationItem),
-            )
+        SearchResultTracker.trackClickProduct(
+            position,
+            eventLabel,
+            eventActionClicked,
+            eventCategory,
+            getListValue(recommendationItem),
+            userId,
+            recommendationItem
         )
+
         RouteManager.route(activity, product.appLink)
     }
 
@@ -107,18 +104,14 @@ data class ProductRecommendationCallback(
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
-        trackingQueue?.putEETracking(
-            ProductRecommendationTracking.getImpressionProductTracking(
-                recommendationItem = recommendationItem,
-                eventCategory = eventCategory,
-                headerTitle = product.headerName,
-                position = position,
-                isLoggedIn = isLogin,
-                userId = userId,
-                eventLabel = eventLabel,
-                eventAction = eventActionImpressed,
-                listValue = getListValue(recommendationItem),
-            )
+        SearchResultTracker.trackImpressionProduct(
+            position,
+            eventLabel,
+            eventActionImpressed,
+            eventCategory,
+            getListValue(recommendationItem),
+            userId,
+            recommendationItem
         )
     }
 
@@ -141,7 +134,7 @@ data class ProductRecommendationCallback(
             CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
             modifySeeMoreAppLink(appLink)
         } else {
-            SearchTracking.sendRecommendationSeeAllClickEvent(query)
+            SearchResultTracker.sendRecommendationSeeAllClickEvent(query)
             appLink
         }
         RouteManager.route(activity, newAppLink)

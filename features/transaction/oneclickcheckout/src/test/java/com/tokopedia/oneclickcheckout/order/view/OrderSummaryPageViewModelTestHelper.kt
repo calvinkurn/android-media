@@ -144,7 +144,7 @@ class OrderSummaryPageViewModelTestHelper {
                 addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER,
                 addOnData = listOf(
                     AddOnData(
-                        addOnPrice = 2000
+                        addOnPrice = 2000.0
                     )
                 )
             )
@@ -158,7 +158,7 @@ class OrderSummaryPageViewModelTestHelper {
                 addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                 addOnData = listOf(
                     AddOnData(
-                        addOnPrice = 2000
+                        addOnPrice = 2000.0
                     )
                 )
             )
@@ -172,7 +172,7 @@ class OrderSummaryPageViewModelTestHelper {
                 addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                 addOnData = listOf(
                     AddOnData(
-                        addOnPrice = 1000
+                        addOnPrice = 1000.0
                     )
                 )
             )
@@ -186,7 +186,7 @@ class OrderSummaryPageViewModelTestHelper {
                 addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER,
                 addOnData = listOf(
                     AddOnData(
-                        addOnPrice = 1000
+                        addOnPrice = 1000.0
                     )
                 )
             )
