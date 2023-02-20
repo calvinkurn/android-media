@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.imagegenerator.ImageGeneratorArgs
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -1781,6 +1782,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val imagePolicy = repo.getImageGeneratorPolicy()
             Timber.d(imagePolicy.toString())
+
+            val args = ImageGeneratorArgs(
+                backgroundColor = "blue",
+                logo = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/4/7/fd207246-a066-4dc0-9c32-db6a81e6b6c8.jpg",
+                productUrl1 = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/4/7/fd207246-a066-4dc0-9c32-db6a81e6b6c8.jpg",
+                productUrl2 = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/4/7/fd207246-a066-4dc0-9c32-db6a81e6b6c8.jpg",
+                productAmount = "2",
+            )
+            val imageGenerated = repo.getGeneratedImageCover(args)
+            Timber.d(imageGenerated.toString())
         }, onError = {
             Timber.d(it.toString())
         })

@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.domain.model.imagegenerator
 
 import com.google.gson.annotations.SerializedName
 
-data class GetImageGeneratorGenerateImage(
+data class GetGeneratedImageCoverResponse(
     @SerializedName("imagenerator_generate_image")
     val imageGeneratorGenerateImage: ImageGeneratorGenerateImage = ImageGeneratorGenerateImage()
 ) {

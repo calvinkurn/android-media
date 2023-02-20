@@ -5,28 +5,31 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetImageGeneratorGenerateImage
-import com.tokopedia.play.broadcaster.domain.usecase.imagegenerator.GetImageGeneratorGenerateImageUseCase.Companion.QUERY_GET_IMAGE_GENERATOR_GENERATE_IMAGE
-import com.tokopedia.play.broadcaster.domain.usecase.imagegenerator.GetImageGeneratorGenerateImageUseCase.Companion.QUERY_NAME
+import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetGeneratedImageCoverResponse
+import com.tokopedia.play.broadcaster.domain.usecase.imagegenerator.GetGeneratedImageCoverUseCase.Companion.QUERY_GET_IMAGE_GENERATOR_GENERATE_IMAGE
+import com.tokopedia.play.broadcaster.domain.usecase.imagegenerator.GetGeneratedImageCoverUseCase.Companion.QUERY_NAME
 import javax.inject.Inject
 
 @GqlQuery(QUERY_NAME, QUERY_GET_IMAGE_GENERATOR_GENERATE_IMAGE)
-class GetImageGeneratorGenerateImageUseCase @Inject constructor(
+class GetGeneratedImageCoverUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<GetImageGeneratorGenerateImage>(graphqlRepository) {
+) : GraphqlUseCase<GetGeneratedImageCoverResponse>(graphqlRepository) {
 
     init {
         setGraphqlQuery(GetImageGeneratorGenerateImageQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(GetImageGeneratorGenerateImage::class.java)
+        setTypeClass(GetGeneratedImageCoverResponse::class.java)
     }
 
-    suspend fun execute(): GetImageGeneratorGenerateImage {
-        this.createRequestParams()
+    suspend fun execute(args: List<Map<String, String>>): GetGeneratedImageCoverResponse {
+        this.createRequestParams(args = args)
         return executeOnBackground()
     }
 
-    private fun createRequestParams(sourceId: String = VALUE_SOURCE_ID, args: HashMap<String, String> = hashMapOf()) {
+    private fun createRequestParams(
+        sourceId: String = VALUE_SOURCE_ID,
+        args: List<Map<String, String>>
+    ) {
         val request = mapOf(
             PARAMS_SOURCE_ID to sourceId,
             PARAMS_ARGS to args,
@@ -40,9 +43,9 @@ class GetImageGeneratorGenerateImageUseCase @Inject constructor(
         private const val VALUE_SOURCE_ID = "LScDrk"
         const val QUERY_NAME = "GetImageGeneratorGenerateImageQuery"
         const val QUERY_GET_IMAGE_GENERATOR_GENERATE_IMAGE = """
-            query ImageGeneratorPolicy(
+            mutation ImageGeneratorGenerateImage(
             ${"$${PARAMS_SOURCE_ID}"}: String!,
-            ${"$${PARAMS_ARGS}"}: Map!
+            ${"$${PARAMS_ARGS}"}: [ImageneratorGenerateImageArg]
             ) {
               imagenerator_generate_image(
               $PARAMS_SOURCE_ID: ${"$${PARAMS_SOURCE_ID}"},

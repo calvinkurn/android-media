@@ -7,10 +7,13 @@ import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.domain.model.Config
+import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetGeneratedImageCoverResponse
 import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetImageGeneratorPolicyResponse
+import com.tokopedia.play.broadcaster.domain.model.imagegenerator.ImageGeneratorArgs
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.imagegenerator.GetGeneratedImageCoverUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.imagegenerator.GetImageGeneratorPolicyUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
@@ -36,6 +39,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val getImageGeneratorPolicyUseCase: GetImageGeneratorPolicyUseCase,
+    private val getGeneratedImageCoverUseCase: GetGeneratedImageCoverUseCase,
 ): PlayBroadcastChannelRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
@@ -90,6 +94,10 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
 
     override suspend fun getImageGeneratorPolicy(): GetImageGeneratorPolicyResponse = withContext(dispatchers.io) {
         return@withContext getImageGeneratorPolicyUseCase.execute()
+    }
+
+    override suspend fun getGeneratedImageCover(imageGeneratorArgs: ImageGeneratorArgs): GetGeneratedImageCoverResponse = withContext(dispatchers.io) {
+        return@withContext getGeneratedImageCoverUseCase.execute(imageGeneratorArgs.getArg())
     }
 
     override suspend fun updateSchedule(
