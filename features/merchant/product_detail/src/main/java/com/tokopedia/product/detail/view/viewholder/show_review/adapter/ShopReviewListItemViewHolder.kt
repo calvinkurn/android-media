@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder.show_review.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -41,7 +40,11 @@ class ShopReviewListItemViewHolder(
 
         if (appLink.isNotBlank()) {
             root.setOnClickListener {
-                Toast.makeText(itemView.context, "under maintenance", Toast.LENGTH_SHORT).show()
+                listener.onShopReviewSeeMore(
+                    appLink = appLink,
+                    eventLabel = uiModel.talkId,
+                    trackData = trackData
+                )
             }
         }
     }

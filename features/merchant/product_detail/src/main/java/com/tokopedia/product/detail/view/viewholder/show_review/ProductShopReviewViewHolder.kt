@@ -13,8 +13,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
 import com.tokopedia.product.detail.databinding.ItemDynamicShopReviewBinding
 import com.tokopedia.product.detail.databinding.ShopReviewContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -82,7 +82,7 @@ class ProductShopReviewViewHolder(
     private fun ShopReviewContentBinding.renderUI(element: ProductShopReviewDataModel) {
         renderHeader(uiModel = element.data)
         renderItems(uiModel = element.data, trackDataModel = getComponentTrackData(element))
-        setEventClick(uiModel = element.data)
+        setEventClick(uiModel = element.data, trackDataModel = getComponentTrackData(element))
         setImpression(element = element)
     }
 
@@ -95,10 +95,17 @@ class ProductShopReviewViewHolder(
         adapter.submitList(uiModel.reviews, trackDataModel = trackDataModel)
     }
 
-    private fun ShopReviewContentBinding.setEventClick(uiModel: ProductShopReviewUiModel) {
+    private fun ShopReviewContentBinding.setEventClick(
+        uiModel: ProductShopReviewUiModel,
+        trackDataModel: ComponentTrackDataModel
+    ) {
         if (uiModel.appLink.isNotBlank()) {
             shopReviewListSeeMore.setOnClickListener {
-                listener.goToApplink(url = uiModel.appLink)
+                listener.onShopReviewSeeMore(
+                    appLink = uiModel.appLink,
+                    eventLabel = "",
+                    trackData = trackDataModel
+                )
             }
         }
     }

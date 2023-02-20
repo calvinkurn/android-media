@@ -141,6 +141,11 @@ interface DynamicProductDetailListener {
         userLabel: String,
         componentTrackData: ComponentTrackDataModel
     )
+    fun onShopReviewSeeMore(
+        appLink: String,
+        eventLabel: String,
+        trackData: ComponentTrackDataModel?
+    )
 
     /**
      * ProductMerchantVoucherViewHolder

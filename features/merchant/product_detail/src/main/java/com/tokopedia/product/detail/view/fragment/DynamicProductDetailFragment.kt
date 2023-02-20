@@ -215,6 +215,7 @@ import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.tracking.ProductShopReviewTracking
 import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
@@ -5920,5 +5921,20 @@ open class DynamicProductDetailFragment :
 
     private fun socialProofShopRatingTracking(trackData: ComponentTrackDataModel?) {
         Toast.makeText(context, "tracker under maintenance", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onShopReviewSeeMore(
+        appLink: String,
+        eventLabel: String,
+        trackData: ComponentTrackDataModel?
+    ) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        goToApplink(url = appLink)
+        ProductShopReviewTracking.onItemClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData,
+            eventLabel = eventLabel
+        )
     }
 }
