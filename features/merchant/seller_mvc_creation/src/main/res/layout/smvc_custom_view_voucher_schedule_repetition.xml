@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/ic_tooltip"/>
+            app:srcCompat="@drawable/ic_tooltip"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_title"

@@ -23,6 +23,7 @@ class IntroVoucherViewHolder(itemView: View?) : AbstractViewHolder<IntroVoucherU
 
     override fun bind(element: IntroVoucherUiModel?) {
         binding?.apply {
+            container.setBackgroundResource(R.drawable.bg_intro_voucher)
             title.text = element?.title.toBlankOrString()
             subtitle.text = element?.subtitle.toBlankOrString()
             element?.list?.getOrNull(ZEROTH_INDEX)?.let {

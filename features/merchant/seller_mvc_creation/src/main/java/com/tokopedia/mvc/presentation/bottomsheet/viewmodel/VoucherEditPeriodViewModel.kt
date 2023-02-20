@@ -50,29 +50,27 @@ class VoucherEditPeriodViewModel @Inject constructor(
         get() = _updateVoucherPeriodStateLiveData
 
     fun setStartDateTime(startDate: Calendar?) {
-        if (startDate == null) {
-            return
-        }
-        _startDateCalendarLiveData.value = startDate
-        _dateStartLiveData.value = startDate.time.toFormattedString(DASH_DATE_FORMAT)
-        _hourStartLiveData.value = startDate.time.toFormattedString(HOUR_FORMAT)
-        if (getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar?)?.compareTo(
-                _endDateCalendarLiveData.value
-            ).isLessThanZero()
-        ) {
-            val modifiedEndDate = getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar)
-            setEndDateTime(modifiedEndDate)
-            _toShowDateToaster.value = true
+        startDate?.let {
+            _startDateCalendarLiveData.value = it
+            _dateStartLiveData.value = it.time.toFormattedString(DASH_DATE_FORMAT)
+            _hourStartLiveData.value = it.time.toFormattedString(HOUR_FORMAT)
+            if (getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar?)?.compareTo(
+                    _endDateCalendarLiveData.value ?: GregorianCalendar()
+                ).isLessThanZero()
+            ) {
+                val modifiedEndDate = getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar)
+                setEndDateTime(modifiedEndDate)
+                _toShowDateToaster.value = true
+            }
         }
     }
 
     fun setEndDateTime(endDate: Calendar?) {
-        if (endDate == null) {
-            return
+        endDate?.let {
+            _endDateCalendarLiveData.value = it
+            _dateEndLiveData.value = it.time.toFormattedString(DASH_DATE_FORMAT)
+            _hourEndLiveData.value = it.time.toFormattedString(HOUR_FORMAT)
         }
-        _endDateCalendarLiveData.value = endDate
-        _dateEndLiveData.value = endDate.time.toFormattedString(DASH_DATE_FORMAT)
-        _hourEndLiveData.value = endDate.time.toFormattedString(HOUR_FORMAT)
     }
 
     fun validateAndUpdateDateTime(voucher: Voucher) {
