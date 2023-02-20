@@ -171,6 +171,7 @@
     <string name="play_bro_cover_label">Cover</string>
     <string name="play_bro_product_label">Produk</string>
     <string name="play_bro_schedule_label">Atur Jadwal</string>
+    <string name="play_bro_face_filter_label">Filter Wajah</string>
     <string name="play_bro_save">Simpan</string>
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>

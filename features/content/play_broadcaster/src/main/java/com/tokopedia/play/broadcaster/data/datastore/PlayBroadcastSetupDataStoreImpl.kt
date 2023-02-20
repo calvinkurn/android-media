@@ -77,6 +77,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         return coverDataStore.getObservableSelectedCover()
     }
 
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
+        return coverDataStore.getSelectedCoverAsFlow()
+    }
+
     override fun getSelectedCover(): PlayCoverUiModel? {
         return coverDataStore.getSelectedCover()
     }

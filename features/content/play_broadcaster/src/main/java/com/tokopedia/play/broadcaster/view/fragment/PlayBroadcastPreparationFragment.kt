@@ -39,6 +39,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
+import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -97,7 +98,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
-    PreparationMenuView.Listener,
     TitleFormView.Listener,
     CoverFormView.Listener {
 
@@ -179,7 +179,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupObserver()
         setupCoachMark()
 
-        binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
+        /** TODO: delete this */
+//        binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
 
     override fun onStart() {
@@ -413,7 +414,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
-        binding.viewPreparationMenu.doOnApplyWindowInsets { v, insets, _, margin ->
+        binding.preparationMenu.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
             if (marginLayoutParams.bottomMargin != newBottomMargin) {
@@ -425,7 +426,32 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun setupListener() {
         binding.apply {
-            viewPreparationMenu.setListener(this@PlayBroadcastPreparationFragment)
+            preparationMenu.setOnMenuClickListener {
+                when(it.menuId) {
+                    DynamicPreparationMenu.TITLE -> {
+                        analytic.clickSetupTitleMenu()
+                        showTitleForm(true)
+                    }
+                    DynamicPreparationMenu.COVER -> {
+                        analytic.clickSetupCoverMenu()
+                        showCoverForm(true)
+                    }
+                    DynamicPreparationMenu.PRODUCT -> {
+                        analytic.clickSetupProductMenu()
+
+                        childFragmentManager.beginTransaction()
+                            .add(ProductSetupFragment::class.java, null, null)
+                            .commit()
+                    }
+                    DynamicPreparationMenu.SCHEDULE -> {
+                        eventBus.emit(Event.ClickSetSchedule)
+                    }
+                    DynamicPreparationMenu.FACE_FILTER -> {
+
+                    }
+                    else -> {}
+                }
+            }
             formTitle.setListener(this@PlayBroadcastPreparationFragment)
             formCover.setListener(this@PlayBroadcastPreparationFragment)
 
@@ -564,9 +590,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun observeTitle() {
-        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            binding.viewPreparationMenu.isSetTitleChecked(it.title.isNotEmpty())
-        }
+        /** TODO: delete this */
+//        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
+//            binding.viewPreparationMenu.isSetTitleChecked(it.title.isNotEmpty())
+//        }
 
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
@@ -585,24 +612,28 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun observeCover() {
-        parentViewModel.observableCover.observe(viewLifecycleOwner) {
-            when (val croppedCover = it.croppedCover) {
-                is CoverSetupState.Cropped.Uploaded -> {
-                    if (croppedCover.coverImage.toString().isNotEmpty() &&
-                        croppedCover.coverImage.toString().contains("http")
-                    ) {
-                        binding.viewPreparationMenu.isSetCoverChecked(true)
-                        binding.formCover.setCover(croppedCover.coverImage.toString())
-                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
-                        binding.viewPreparationMenu.isSetCoverChecked(true)
-                        binding.formCover.setCover(croppedCover.localImage.toString())
-                    } else {
-                        binding.viewPreparationMenu.isSetCoverChecked(false)
-                        binding.formCover.setInitialCover()
-                    }
-                }
-            }
-        }
+        /** TODO: combine this to uiState */
+//        parentViewModel.observableCover.observe(viewLifecycleOwner) {
+//            when (val croppedCover = it.croppedCover) {
+//                is CoverSetupState.Cropped.Uploaded -> {
+//                    if (croppedCover.coverImage.toString().isNotEmpty() &&
+//                        croppedCover.coverImage.toString().contains("http")
+//                    ) {
+//                        /** TODO: delete this */
+////                        binding.viewPreparationMenu.isSetCoverChecked(true)
+//                        binding.formCover.setCover(croppedCover.coverImage.toString())
+//                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
+//                        /** TODO: delete this */
+////                        binding.viewPreparationMenu.isSetCoverChecked(true)
+//                        binding.formCover.setCover(croppedCover.localImage.toString())
+//                    } else {
+//                        /** TODO: delete this */
+////                        binding.viewPreparationMenu.isSetCoverChecked(false)
+//                        binding.formCover.setInitialCover()
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun observeCreateLiveStream() {
@@ -625,9 +656,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderPreparationMenu(prevState?.menuList, state.menuList)
                 renderAccountInfo(prevState?.selectedContentAccount, state.selectedContentAccount)
-                renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
-                renderScheduleMenu(state.schedule)
+                /** TODO: delete this */
+//                renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
+//                renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
                 renderShortsEntryPoint(prevState?.channel, state.channel)
@@ -722,6 +755,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
+    private fun renderPreparationMenu(
+        prevState: List<DynamicPreparationMenu>?,
+        state: List<DynamicPreparationMenu>,
+    ) {
+        if(prevState == state) return
+
+        binding.preparationMenu.submitMenu(state)
+    }
+
     private fun renderAccountInfo(
         prevState: ContentAccountUiModel?,
         state: ContentAccountUiModel
@@ -735,24 +777,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderProductMenu(
-        prevState: List<ProductTagSectionUiModel>?,
-        state: List<ProductTagSectionUiModel>
-    ) {
-        if (prevState != state) {
-            binding.viewPreparationMenu.isSetProductChecked(
-                state.any { it.products.isNotEmpty() }
-            )
-        }
-    }
+    /** TODO: delete this */
+//    private fun renderProductMenu(
+//        prevState: List<ProductTagSectionUiModel>?,
+//        state: List<ProductTagSectionUiModel>
+//    ) {
+//        if (prevState != state) {
+//            binding.viewPreparationMenu.isSetProductChecked(
+//                state.any { it.products.isNotEmpty() }
+//            )
+//        }
+//    }
 
-    private fun renderScheduleMenu(
-        state: ScheduleUiModel
-    ) {
-        binding.viewPreparationMenu.isSetScheduleChecked(
-            state.schedule is BroadcastScheduleUiModel.Scheduled
-        )
-    }
+    /** TODO: delete this */
+//    private fun renderScheduleMenu(
+//        state: ScheduleUiModel
+//    ) {
+//        binding.viewPreparationMenu.isSetScheduleChecked(
+//            state.schedule is BroadcastScheduleUiModel.Scheduled
+//        )
+//    }
 
     private fun renderSchedulePicker(
         prevState: ScheduleUiModel?,
@@ -872,31 +916,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 .getFragment(childFragmentManager, requireActivity().classLoader)
                 .show(childFragmentManager)
         } catch (e: Exception) {}
-    }
-
-    /** Callback Preparation Menu */
-    override fun onClickSetTitle() {
-        analytic.clickSetupTitleMenu()
-
-        showTitleForm(true)
-    }
-
-    override fun onClickSetCover() {
-        analytic.clickSetupCoverMenu()
-
-        showCoverForm(true)
-    }
-
-    override fun onClickSetProduct() {
-        analytic.clickSetupProductMenu()
-
-        childFragmentManager.beginTransaction()
-            .add(ProductSetupFragment::class.java, null, null)
-            .commit()
-    }
-
-    override fun onClickSetSchedule() {
-        eventBus.emit(Event.ClickSetSchedule)
     }
 
     /** Callback Title Form */

@@ -22,7 +22,7 @@ class TitleDataStoreImpl @Inject constructor(
     private val mTitle: PlayTitleUiModel
         get() = _observableTitle.value
 
-    override fun getObservableTitle(): Flow<PlayTitleUiModel> {
+    override fun getObservableTitle(): MutableStateFlow<PlayTitleUiModel> {
         return _observableTitle
     }
 

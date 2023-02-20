@@ -20,6 +20,7 @@ data class DynamicPreparationMenu(
         const val COVER = "COVER"
         const val SCHEDULE = "SCHEDULE"
         const val PRODUCT = "PRODUCT"
+        const val FACE_FILTER = "FACE_FILTER"
 
         fun createTitle(isMandatory: Boolean) = DynamicPreparationMenu(
             menuId = TITLE,
@@ -52,6 +53,15 @@ data class DynamicPreparationMenu(
             menuId = SCHEDULE,
             iconId = IconUnify.CALENDAR_TIME,
             textResId = R.string.play_bro_schedule_label,
+            isMandatory = isMandatory,
+            isChecked = false,
+            isEnabled = isMandatory,
+        )
+
+        fun createFaceFilter(isMandatory: Boolean) = DynamicPreparationMenu(
+            menuId = FACE_FILTER,
+            iconId = IconUnify.SMILE,
+            textResId = R.string.play_bro_face_filter_label,
             isMandatory = isMandatory,
             isChecked = false,
             isEnabled = isMandatory,
