@@ -25,8 +25,8 @@ class HomeAtfRepository @Inject constructor(
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
         // TODO set with correct value after API deployed
-        params.putString(EXPERIMENT, "")
-        params.putString(VARIANT, "")
+//        params.putString(EXPERIMENT, "")
+//        params.putString(VARIANT, "")
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
