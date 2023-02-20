@@ -16,8 +16,8 @@
         tools:background="@color/black" />
 
     <View
-        android:layout_width="0dp"
         android:id="@+id/bg_overlay"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/bottomsheetunify_overlay"
         app:layout_constraintBottom_toBottomOf="@id/view_feed_tab_indicator"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ty_feed_for_you_tab"
+        android:id="@+id/ty_feed_first_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -51,14 +51,14 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ty_feed_following_tab"
+        android:id="@+id/ty_feed_second_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:text="@string/feed_following_label"
         android:textColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
-        app:layout_constraintStart_toEndOf="@id/ty_feed_for_you_tab"
+        app:layout_constraintStart_toEndOf="@id/ty_feed_first_tab"
         app:layout_constraintTop_toTopOf="@id/btn_feed_create_post"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
@@ -69,9 +69,9 @@
         android:layout_height="2dp"
         android:layout_marginTop="6dp"
         android:background="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="@id/ty_feed_for_you_tab"
-        app:layout_constraintStart_toStartOf="@id/ty_feed_for_you_tab"
-        app:layout_constraintTop_toBottomOf="@id/ty_feed_for_you_tab" />
+        app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
+        app:layout_constraintStart_toStartOf="@id/ty_feed_first_tab"
+        app:layout_constraintTop_toBottomOf="@id/ty_feed_first_tab" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_feed_live"

@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +12,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -33,10 +37,6 @@ class FeedBaseFragment : BaseDaggerFragment() {
     private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
 
     private var adapter: FeedPagerAdapter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,12 +93,44 @@ class FeedBaseFragment : BaseDaggerFragment() {
                 }
             })
 
-            it.tyFeedForYouTab.setOnClickListener { _ ->
-                it.vpFeedTabItemsContainer.setCurrentItem(TAB_FOR_YOU_INDEX, true)
+            var firstTabData: FeedDataModel? = null
+            var secondTabData: FeedDataModel? = null
+
+            if (data.data.isNotEmpty()) {
+                firstTabData = data.data[TAB_FIRST_INDEX]
+                if (data.data.size > TAB_SECOND_INDEX && data.data[TAB_SECOND_INDEX].isActive) {
+                    secondTabData = data.data[TAB_SECOND_INDEX]
+                }
             }
 
-            it.tyFeedFollowingTab.setOnClickListener { _ ->
-                it.vpFeedTabItemsContainer.setCurrentItem(TAB_FOLLOWING_INDEX, true)
+            if (firstTabData != null) {
+                it.tyFeedFirstTab.text = firstTabData.title
+                it.tyFeedFirstTab.setOnClickListener { _ ->
+                    it.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
+                }
+                it.tyFeedFirstTab.show()
+            } else {
+                it.tyFeedFirstTab.hide()
+            }
+
+            if (secondTabData != null) {
+                it.tyFeedSecondTab.text = secondTabData.title
+                it.tyFeedSecondTab.setOnClickListener { _ ->
+                    it.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
+                }
+                it.tyFeedSecondTab.show()
+            } else {
+                it.tyFeedSecondTab.hide()
+            }
+
+            if (data.meta.showMyProfile && data.meta.profilePhotoUrl.isNotEmpty()) {
+                it.feedUserProfileImage.loadImage(data.meta.profilePhotoUrl)
+                it.feedUserProfileImage.setOnClickListener { _ ->
+                    RouteManager.route(it.root.context, data.meta.profileApplink)
+                }
+                it.feedUserProfileImage.show()
+            } else {
+                it.feedUserProfileImage.hide()
             }
 
             it.btnFeedCreatePost.setOnClickListener {
@@ -117,7 +149,8 @@ class FeedBaseFragment : BaseDaggerFragment() {
 
     private fun onChangeTab(position: Int) {
         binding?.let {
-            val newTabView = if (position == 0) it.tyFeedForYouTab else it.tyFeedFollowingTab
+            val newTabView =
+                if (position == TAB_FIRST_INDEX) it.tyFeedFirstTab else it.tyFeedSecondTab
 
             val newConstraintSet = ConstraintSet()
             newConstraintSet.clone(it.root)
@@ -157,11 +190,7 @@ class FeedBaseFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        const val TAB_FOR_YOU_INDEX = 0
-        const val TAB_FOLLOWING_INDEX = 1
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        const val TAB_FIRST_INDEX = 0
+        const val TAB_SECOND_INDEX = 1
     }
 }

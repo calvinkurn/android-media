@@ -18,7 +18,7 @@ object MapperFeedTabs {
                 profilePhotoUrl = entity.meta.myProfilePhotoUrl,
                 showMyProfile = entity.meta.showMyProfile
             ),
-            data = entity.getSortedData().map {
+            data = entity.getSortedData().filter { it.isActive }.map {
                 FeedDataModel(
                     title = it.title,
                     key = it.key,
