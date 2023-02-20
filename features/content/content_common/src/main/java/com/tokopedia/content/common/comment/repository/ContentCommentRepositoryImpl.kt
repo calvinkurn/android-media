@@ -64,10 +64,9 @@ class ContentCommentRepositoryImpl @Inject constructor(
                 )
             }.executeOnBackground()
             lastRequestTime = System.currentTimeMillis()
-            mapper.mapComment(
+            mapper.mapNewComment(
                 response.parent.data,
-                response.parent.data.id
-            ) //change to commentParentId
+            )
         }
     }
 

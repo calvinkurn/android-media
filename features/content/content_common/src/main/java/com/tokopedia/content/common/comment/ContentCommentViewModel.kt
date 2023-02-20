@@ -228,7 +228,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             val result = repo.replyComment(source, commentType, comment)
             _comments.getAndUpdate {
                 val newList = it.list.toMutableList().apply {
-                    add(1, result)
+                    add(0, result)
                 }
                 it.copy(list = newList)
             }

@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.comment
 
 import com.tokopedia.content.common.comment.model.Comments
+import com.tokopedia.content.common.comment.model.PostComment
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
@@ -49,6 +50,21 @@ class CommentUiModelMapper @Inject constructor() {
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
             isOwner = comment.isCommentOwner,
+        )
+    }
+
+    fun mapNewComment(comment: PostComment.Parent.NewComment): CommentUiModel {
+        val username = comment.userInfo.username.ifBlank { comment.userInfo.firstName }
+        return CommentUiModel.Item(
+            id = comment.id,
+            username = username,
+            photo = comment.userInfo.photo,
+            appLink = comment.id,
+            content = comment.comment,
+            createdTime = convertTime(comment.createdTime),
+            commentType = comment.parentId.convertToCommentType,
+            childCount = "0",
+            isOwner = true,
         )
     }
 
