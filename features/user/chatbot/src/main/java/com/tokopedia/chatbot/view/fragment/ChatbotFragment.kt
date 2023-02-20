@@ -52,6 +52,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
@@ -115,12 +116,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
-import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
-import com.tokopedia.chatbot.util.SmoothScroller
-import com.tokopedia.chatbot.util.VideoUploadData
-import com.tokopedia.chatbot.util.VideoUtil
-import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.chatbot.util.*
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -293,6 +289,8 @@ class ChatbotFragment :
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
     private var csatRemoteConfig: Boolean = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
+
+    private var pageSource: String= ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -624,7 +622,7 @@ class ChatbotFragment :
 
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
-        val pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
         handlingForMessageIdValidity(messageId)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
@@ -989,6 +987,7 @@ class ChatbotFragment :
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
+                    activity?.finish()
                 }
             }
         }
@@ -999,6 +998,13 @@ class ChatbotFragment :
             messageId.toLong()
         } catch (e: NumberFormatException) {
             setErrorLayoutForServer()
+            ChatbotNewRelicLogger.logNewRelic(
+                false,
+                messageId,
+                ChatbotConstant.NewRelic.KEY_CHATBOT_INVALID_ID_MESSAGE,
+                e,
+                pageSource = pageSource
+            )
         }
     }
 
