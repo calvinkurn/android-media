@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 215
+        const val SIZE_MAPPER = 216
     }
 
     override fun setup() {
@@ -1726,6 +1726,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         } returns ""
 
         assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check DSAR appLink then should return tokopedia internal DSAR in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/dsar"
+        assertEqualsDeepLinkMapper(ApplinkConst.User.DSAR, expectedDeepLink)
     }
 
     @Test

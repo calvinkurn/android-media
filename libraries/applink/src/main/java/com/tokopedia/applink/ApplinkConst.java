@@ -455,6 +455,10 @@ public interface ApplinkConst {
 
     String WEB_HOST = "www.tokopedia.com";
 
+    interface User {
+        String DSAR = "tokopedia://privacy-center/dsar";
+    }
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }

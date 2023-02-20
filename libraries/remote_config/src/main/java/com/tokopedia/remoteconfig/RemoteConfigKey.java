@@ -314,5 +314,7 @@ public class RemoteConfigKey {
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
 
+    public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
+
     public static final String ENABLE_CHATBOT_CSAT_NEW_FLOW = "android_chatbot_csat_experiment";
 }

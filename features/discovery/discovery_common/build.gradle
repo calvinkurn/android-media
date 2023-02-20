@@ -25,6 +25,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
