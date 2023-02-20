@@ -64,7 +64,9 @@ object UohConsts {
     const val TYPE_ACTION_BUTTON_LINK = "link"
     const val TYPE_ACTION_CANCEL_ORDER = "cancelOrder"
     const val GQL_FINISH_ORDER = "gql-mp-finish"
-    const val GQL_ATC = "gql-mp-atc"
+    const val GQL_MP_ATC = "gql-mp-atc"
+    const val GQL_MP_ATC_REDIRECTION = "gql-mp-atc-redirection"
+    const val GQL_MP_OCC = "gql-mp-occ"
     const val GQL_TRACK = "gql-mp-track"
     const val GQL_LS_FINISH = "gql-ls-finish"
     const val GQL_LS_LACAK = "gql-ls-lacak"
@@ -173,4 +175,10 @@ object UohConsts {
     const val TDN_RADIUS = 16
 
     const val PMS_IMAGE_URL = "https://images.tokopedia.net/img/android/uoh/saldo_tempo.png"
+
+    const val BELI_LAGI_LABEL = "Beli Lagi"
+    const val ULAS_LABEL = "Ulas"
+    const val EVENT_LABEL_CART_EXISTING = "toaster"
+    const val EVENT_LABEL_CART_REDIRECTION = "cart"
+    const val EVENT_LABEL_OCC_REDIRECTION = "occ"
 }

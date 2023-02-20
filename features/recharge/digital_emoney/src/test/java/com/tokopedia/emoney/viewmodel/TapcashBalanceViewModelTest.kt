@@ -36,6 +36,7 @@ class TapcashBalanceViewModelTest {
     private lateinit var emptyByteNfc: ByteArray
     private lateinit var challangeResultSuccess: ByteArray
     private lateinit var challangeResultFail: ByteArray
+    private lateinit var challangeResultEmpty: ByteArray
 
     val challangeResult = "895EEC0E771D3A369000"
     val challangeFail = "6A80"
@@ -49,11 +50,11 @@ class TapcashBalanceViewModelTest {
     val writeResultFailedSize = "0614A3859256C46C23792A757F400F3C258FB7A98578D9009C40B65448823BB65448823B30FA7200000400000400009000"
 
     val dummyResponseNoCrypto = """
-        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"","rrn":0,"amount":10000,"button_text":"Top-up Sekarang","image_issuer":"https://ecs7.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
+        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"","rrn":0,"amount":10000,"button_text":"Top-up Sekarang","image_issuer":"https://images.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
     """.trimIndent()
 
     val dummyResponseWithCrypto = """
-        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":20000,"button_text":"Top-up Sekarang","image_issuer":"https://ecs7.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
+        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":20000,"button_text":"Top-up Sekarang","image_issuer":"https://images.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
     """.trimIndent()
 
     @Before
@@ -64,6 +65,7 @@ class TapcashBalanceViewModelTest {
         emptyByteNfc = byteArrayOf()
         challangeResultSuccess = NFCUtils.stringToByteArrayRadix(challangeResult)
         challangeResultFail = NFCUtils.stringToByteArrayRadix(challangeFail)
+        challangeResultEmpty = NFCUtils.stringToByteArrayRadix("")
         tapcashBalanceViewModel = spyk(TapcashBalanceViewModel(graphqlRepository, Dispatchers.Unconfined))
     }
 
@@ -80,6 +82,19 @@ class TapcashBalanceViewModelTest {
         //given
         initSuccessData()
         every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultFail
+
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_EmptyChallange() {
+        //given
+        initSuccessData()
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultEmpty
 
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")

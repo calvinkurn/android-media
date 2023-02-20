@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
@@ -25,10 +26,13 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
-import com.tokopedia.tradein.*
+import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
+import com.tokopedia.tradein.TradeInGTMConstants
+import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.fragment.TradeInEducationalPageFragment
 import com.tokopedia.tradein.view.fragment.TradeInHomePageFragment
@@ -37,7 +41,6 @@ import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 const val APP_SETTINGS = 9988
 const val LOGIN_REQUEST = 514
@@ -137,14 +140,26 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
 
     private fun askPermissions() {
         if (!viewModel.isPermissionGranted()) {
-            ActivityCompat.requestPermissions(this, arrayOf(
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.VIBRATE),
-                MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
-            )
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                ActivityCompat.requestPermissions(this, arrayOf(
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.VIBRATE),
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
+                )
+            }else{
+                ActivityCompat.requestPermissions(this, arrayOf(
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.VIBRATE),
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
+                )
+            }
         } else {
             setUpEducationalFragment()
         }
@@ -268,16 +283,16 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     private fun goToCheckout(finalPrice: String) {
         viewModel.data?.let { data->
             val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
-                productId = data.productId.toLongOrNull() ?: 0
-                shopId = data.shopID.toIntOrZero()
+                productId = data.productId
+                shopId = data.shopID.toZeroStringIfNull()
                 quantity = data.minOrder
                 notes = ""
-                customerId = viewModel.userId.toIntOrZero()
-                warehouseId = data.selectedWarehouseId
+                customerId = viewModel.userId
+                warehouseId = data.selectedWarehouseId.toString()
                 trackerAttribution = data.trackerAttributionPdp ?: ""
                 trackerListName = data.trackerListNamePdp ?: ""
                 isTradeIn = true
-                shippingPrice = data.shippingMinimumPrice.roundToInt()
+                shippingPrice = data.shippingMinimumPrice
                 productName = data.getProductName ?: ""
                 category = data.categoryName ?: ""
                 price = finalPrice

@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.shoprecom.adapter
 
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -18,4 +19,9 @@ class ShopRecomViewHolder(
         view.setListener(listener)
     }
 
+    companion object {
+        fun create(parent: ViewGroup, listener: ShopRecomWidgetCallback) = ShopRecomViewHolder(
+            ShopRecomView(parent.context), listener
+        )
+    }
 }

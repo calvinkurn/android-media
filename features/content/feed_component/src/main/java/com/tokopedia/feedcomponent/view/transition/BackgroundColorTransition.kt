@@ -34,8 +34,8 @@ class BackgroundColorTransition : Transition() {
             return null
         }
 
-        val startColor = startValues.values[PROPNAME_BACKGROUND_COLOR] as Int
-        val endColor = endValues.values[PROPNAME_BACKGROUND_COLOR] as Int
+        val startColor = startValues.values[PROPNAME_BACKGROUND_COLOR] as? Int ?: return null
+        val endColor = endValues.values[PROPNAME_BACKGROUND_COLOR] as? Int ?: return null
 
         if (startColor == endColor) return null
 

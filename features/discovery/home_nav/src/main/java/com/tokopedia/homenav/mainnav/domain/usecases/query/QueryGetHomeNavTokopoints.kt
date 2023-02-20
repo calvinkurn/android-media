@@ -11,7 +11,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.query.QueryGetHomeNavTokopo
 internal object QueryGetHomeNavTokopoints {
     const val GET_HOME_NAV_TOKOPOINTS_QUERY_NAME = "GetHomeNavTokopointsQuery"
     const val GET_HOME_NAV_TOKOPOINTS_QUERY = "" +
-        "query GetHomeNavTokopoints {\n" +
+        "query GetHomeNavTokopoints() {\n" +
         "  tokopointsStatusFiltered(filterKeys: [\"points\"], pointsExternalCurrency: \"IDR\", source: \"globalMenu\"){\n" +
         "    statusFilteredData {\n" +
         "      points {\n" +

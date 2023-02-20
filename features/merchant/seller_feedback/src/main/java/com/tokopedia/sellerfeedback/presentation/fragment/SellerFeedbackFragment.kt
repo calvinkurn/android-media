@@ -55,6 +55,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_MEDIA_IMAGES
 import javax.inject.Inject
 
 class SellerFeedbackFragment : BaseDaggerFragment(),
@@ -207,7 +208,11 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
 
     override fun onClickAddImage() {
         context?.let {
-            if (!permissionCheckerHelper?.hasPermission(it, arrayOf(PERMISSION_READ_EXTERNAL_STORAGE)).orFalse()) {
+            if (!permissionCheckerHelper?.hasPermission(it, arrayOf(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    PERMISSION_READ_MEDIA_IMAGES
+                }else{
+                    PERMISSION_READ_EXTERNAL_STORAGE
+                })).orFalse()) {
                 checkPermission()
                 return@let
             }
@@ -472,7 +477,11 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     }
 
     private fun checkPermission() {
-        permissionCheckerHelper?.checkPermission(this, PERMISSION_READ_EXTERNAL_STORAGE,
+        permissionCheckerHelper?.checkPermission(this, if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            PERMISSION_READ_MEDIA_IMAGES
+        }else{
+            PERMISSION_READ_EXTERNAL_STORAGE
+        },
             object : PermissionCheckerHelper.PermissionCheckListener {
 
                 override fun onPermissionDenied(permissionText: String) {

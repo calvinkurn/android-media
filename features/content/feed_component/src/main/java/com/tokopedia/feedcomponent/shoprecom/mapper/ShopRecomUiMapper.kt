@@ -9,6 +9,6 @@ import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
  * created by fachrizalmrsln on 14/10/22
  **/
 interface ShopRecomUiMapper {
-    fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel
+    fun mapShopRecom(response: UserShopRecomModel, limit: Int): ShopRecomUiModel
     fun mapShopFollow(response: ShopFollowModel): MutationUiModel
 }

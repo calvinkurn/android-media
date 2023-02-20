@@ -5,7 +5,7 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 
 data class SpanTextHelper(
-        var sourceString: String
+    var sourceString: String
 ) : SpannableString(sourceString) {
 
     fun bold(targetString: String, isReverse: Boolean, isIgnoreCase: Boolean): SpanTextHelper {

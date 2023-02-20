@@ -14,9 +14,9 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.categorylevels.view.activity.CategoryRevampActivity
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
@@ -74,7 +74,8 @@ class CategoryLevelsTopAdsVerificationTest {
         when (recyclerView.findViewHolderForAdapterPosition(i)) {
             is MasterProductCardItemViewHolder -> {
                 try {
-                    onView(withId(com.tokopedia.discovery2.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<MasterProductCardItemViewHolder>(
+                    onView(withId(com.tokopedia.discovery2.R.id.recycler_view))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<MasterProductCardItemViewHolder>(
                             i, ViewActions.click()))
                 } catch (e:Exception){
                     e.printStackTrace()
@@ -90,7 +91,10 @@ class CategoryLevelsTopAdsVerificationTest {
     private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
         val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
+        when (recyclerView.findViewHolderForAdapterPosition(position)) {
+            is ProductCardRevampViewHolder -> {
+                waitForData()
+            }
+        }
     }
-
-
 }

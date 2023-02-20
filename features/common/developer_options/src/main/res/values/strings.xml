@@ -103,6 +103,7 @@
     <string name="new_cart_checkout_bundling">New Cart Checkout Bundling</string>
     <string name="type_anything">Type Anything Here</string>
     <string name="play_websocket_and_sse_logging_title">Play - Web Socket and SSE Logging</string>
+    <string name="topchat_websocket_logging_title">Topchat WebSocket Logging</string>
     <string name="view_sse_logging">View SSE Logging</string>
     <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
     <string name="view_websocket_logging">View Web Socket Logging</string>
@@ -132,5 +133,6 @@
     <string name="label_function_id">Function ID:</string>
     <string name="label_function_name">Function Name:</string>
     <string name="label_counter">Counter:</string>
+    <string name="enable_strict_mode_leak_publisher">Enable Strict Mode Leak Publihser</string>
 
 </resources>

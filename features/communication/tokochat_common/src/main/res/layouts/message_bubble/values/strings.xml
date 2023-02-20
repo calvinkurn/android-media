@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tokochat_connected_websocket">"Terhubung!"</string>
+    <string name="tokochat_title_last_online">Terakhir online</string>
+    <string name="tokochat_online">Online</string>
+    <string name="tokochat_online_minutes_ago">Terakhir online %1$d menit lalu</string>
+    <string name="tokochat_online_hours_ago">Terakhir online %1$d jam lalu</string>
+    <string name="tokochat_online_days_ago">Terakhir online %1$d hari lalu</string>
+    <string name="tokochat_online_months_ago">Terakhir online %1$d bulan lalu</string>
+
+    <string name="tokochat_desc_checkmark">Checkmark status</string>
+</resources>

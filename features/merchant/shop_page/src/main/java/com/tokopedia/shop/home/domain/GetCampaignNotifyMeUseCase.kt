@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetCampaignNotifyMeUseCase @Inject constructor(
-        private val gqlUseCase: MultiRequestGraphqlUseCase
+    private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<GetCampaignNotifyMeModel>() {
 
     companion object {
@@ -22,15 +22,15 @@ class GetCampaignNotifyMeUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(
-                campaignId: String = "",
-                source: String = DEFAULT_SOURCE_VALUE
+            campaignId: String = "",
+            source: String = DEFAULT_SOURCE_VALUE
         ): Map<String, Any> {
             val paramsGetCampaignNotifyMe = GetCampaignNotifyMeRequest(
-                    campaignId.toLongOrZero(),
-                    source
+                campaignId.toLongOrZero(),
+                source
             )
             return mapOf<String, Any>(
-                    KEY_PARAMS to paramsGetCampaignNotifyMe
+                KEY_PARAMS to paramsGetCampaignNotifyMe
             )
         }
     }
@@ -45,21 +45,23 @@ class GetCampaignNotifyMeUseCase @Inject constructor(
                 is_available
               }
             }
-        """.trimIndent()
+    """.trimIndent()
 
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): GetCampaignNotifyMeModel {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+        )
         val gqlRequest = GraphqlRequest(query, GetCampaignNotifyMeModel.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<GetCampaignNotifyMeModel.Response>(GetCampaignNotifyMeModel.Response::class.java)
-                    .getCampaignNotifyMeModel
+                .getCampaignNotifyMeModel
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
@@ -68,5 +70,4 @@ class GetCampaignNotifyMeUseCase @Inject constructor(
     fun clearCache() {
         gqlUseCase.clearCache()
     }
-
 }

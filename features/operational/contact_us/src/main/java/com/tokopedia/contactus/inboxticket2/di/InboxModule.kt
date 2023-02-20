@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
@@ -25,8 +23,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module(includes = [ImageUploaderModule::class])
@@ -38,11 +34,6 @@ class InboxModule(private val context: Context) {
         return context
     }
 
-    @Provides
-    @ApplicationContext
-    fun provideApplicationContext(): Context {
-        return context.applicationContext
-    }
 
     @InboxScope
     @Provides
@@ -70,14 +61,6 @@ class InboxModule(private val context: Context) {
                                   userSession: UserSessionInterface,
                                   dispatcher: CoroutineDispatchers): InboxDetailContract.Presenter {
         return InboxDetailPresenter(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, contactUsUploadImageUseCase, chipUploadHostConfigUseCase, secureUploadUseCase, userSession, dispatcher)
-    }
-
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
-
-    @Provides
-    fun getDefaultDispatcher(): CoroutineDispatcher {
-        return Dispatchers.Default
     }
 
     @Provides

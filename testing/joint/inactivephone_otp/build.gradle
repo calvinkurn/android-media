@@ -29,7 +29,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.pin
 
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

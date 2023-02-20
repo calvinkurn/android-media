@@ -11,6 +11,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleDataView
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
@@ -54,5 +55,6 @@ interface ProductListTypeFactory {
     fun type(inspirationProductBundleDataView: InspirationProductBundleDataView) : Int
     fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
     fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int
+    fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="312dp"
+    android:layout_height="128dp"
+    android:minHeight="110dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingTop="5dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp">
+
+        <View
+            android:id="@+id/bg_product_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="3dp"
+            android:alpha="0.6"
+            android:background="@drawable/bg_product_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_product_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@id/bg_product_icon"
+            app:layout_constraintEnd_toEndOf="@id/bg_product_icon"
+            app:layout_constraintStart_toStartOf="@id/bg_product_icon"
+            app:layout_constraintTop_toTopOf="@id/bg_product_icon"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tv_product_detail_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:labelType="general_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bg_product_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Tagihan Listrik" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_detail_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bg_product_icon"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_detail_category"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="PLN" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_detail_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bg_product_icon"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_detail_name"
+            app:typographyType="display_3"
+            tools:text="Rumah Papa (802930293023)" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_main_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bg_product_icon"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_detail_number"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Rp1.250.000" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tv_expired"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            app:labelType="general_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bg_product_icon"
+            app:layout_constraintTop_toBottomOf="@id/tv_main_price"
+            tools:text="Terlambat 2 hari" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

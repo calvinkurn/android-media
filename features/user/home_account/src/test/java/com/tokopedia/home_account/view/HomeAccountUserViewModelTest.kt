@@ -7,7 +7,6 @@ import com.tokopedia.home_account.FileUtil
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSettingResponse
-import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.pref.AccountPreference
@@ -23,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -34,7 +34,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusResponseDataModel
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -52,7 +55,7 @@ class HomeAccountUserViewModelTest {
 
     private val homeAccountUserUsecase = mockk<HomeAccountUserUsecase>(relaxed = true)
     private val homeAccountShortcutUseCase = mockk<HomeAccountShortcutUseCase>(relaxed = true)
-    private val homeAccountSafeSettingProfileUseCase = mockk<SafeSettingProfileUseCase>(relaxed = true)
+    private val updateSafeModeUseCase = mockk<UpdateSafeModeUseCase>(relaxed = true)
     private val homeAccountRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     private val centralizedUserAssetConfigUseCase = mockk<GetCentralizedUserAssetConfigUseCase>(relaxed = true)
     private val balanceAndPointUseCase = mockk<GetBalanceAndPointUseCase>(relaxed = true)
@@ -62,11 +65,12 @@ class HomeAccountUserViewModelTest {
     private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
     private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
-    private val userProfileSafeModeUseCase = mockk<UserProfileSafeModeUseCase>(relaxed = true)
+    private val getSafeModeUseCase = mockk<GetSafeModeUseCase>(relaxed = true)
     private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
     private val saveAttributeOnLocal = mockk<SaveAttributeOnLocalUseCase>(relaxed = true)
     private val tokopediaPlusUseCase = mockk<TokopediaPlusUseCase>(relaxed = true)
     private val offerInterruptUseCase = mockk<OfferInterruptUseCase>(relaxed = true)
+    private val refreshProfileUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -100,7 +104,7 @@ class HomeAccountUserViewModelTest {
             fingerprintPreferenceManager,
             homeAccountUserUsecase,
             homeAccountShortcutUseCase,
-            homeAccountSafeSettingProfileUseCase,
+            updateSafeModeUseCase,
             homeAccountRecommendationUseCase,
             topAdsImageViewUseCase,
             centralizedUserAssetConfigUseCase,
@@ -110,11 +114,12 @@ class HomeAccountUserViewModelTest {
             coBrandCCBalanceAndPointUseCase,
             getLinkStatusUseCase,
             getPhoneUseCase,
-            userProfileSafeModeUseCase,
+            getSafeModeUseCase,
             checkFingerprintToggleUseCase,
             tokopediaPlusUseCase,
             saveAttributeOnLocal,
             offerInterruptUseCase,
+            refreshProfileUseCase,
             dispatcher
         )
 
@@ -367,17 +372,12 @@ class HomeAccountUserViewModelTest {
     fun `Get safe mode success`() {
         val isActive = true
         val data = UserProfileSetting(safeMode = isActive)
-        val setUserProfileResponse = UserProfileSettingResponse(data)
+        val getSafeModeResponse = UserProfileSettingResponse(data)
 
         /* When */
-        every {
-            userProfileSafeModeUseCase.executeQuerySafeMode(
-                any(),
-                any()
-            )
-        } answers {
-            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
-        }
+        coEvery {
+            getSafeModeUseCase(Unit)
+        } returns getSafeModeResponse
 
         viewModel.getSafeModeValue()
 
@@ -391,74 +391,51 @@ class HomeAccountUserViewModelTest {
     fun `Get safe mode success, return false`() {
         val isActive = false
         val data = UserProfileSetting(safeMode = isActive)
-        val setUserProfileResponse = UserProfileSettingResponse(data)
+        val getSafeModeResponse = UserProfileSettingResponse(data)
 
         /* When */
-        every {
-            userProfileSafeModeUseCase.executeQuerySafeMode(
-                any(),
-                any()
-            )
-        } answers {
-            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
-        }
+        coEvery {
+            getSafeModeUseCase(Unit)
+        } returns getSafeModeResponse
 
         viewModel.getSafeModeValue()
 
-        verify {
+        assert(viewModel.safeModeStatus.getOrAwaitValue() == false)
+        coVerify {
             accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
-            safeStatusResponse.onChanged(isActive)
         }
     }
 
     @Test
-    fun `Get safe mode failed`() {
+    fun `Get safe mode failed - throwable`() {
         /* When */
-        every {
-            userProfileSafeModeUseCase.executeQuerySafeMode(
-                any(),
-                any()
-            )
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
-        }
+        coEvery {
+            getSafeModeUseCase(Unit)
+        } throws Exception()
 
         viewModel.getSafeModeValue()
-
-        verify(atLeast = 1) {
-            throwableMock.printStackTrace()
-        }
     }
 
     @Test
     fun `Set safe mode success`() {
         val data = SetUserProfileSetting(isSuccess = true, error = "")
-        val setUserProfileResponse = SetUserProfileSettingResponse(data)
+        val updateResponse = SetUserProfileSettingResponse(data)
 
         val isActive = true
 
         val getData = UserProfileSetting(safeMode = isActive)
-        val getSafeModeData = UserProfileSettingResponse(getData)
+        val getResponse = UserProfileSettingResponse(getData)
+
+        val safeModeParam = SafeModeParam(isActive)
 
         /* When */
-        every {
-            userProfileSafeModeUseCase.executeQuerySafeMode(
-                any(),
-                any()
-            )
-        } answers {
-            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(getSafeModeData)
-        }
+        coEvery {
+            updateSafeModeUseCase(safeModeParam)
+        } returns updateResponse
 
-        every {
-            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
-                any(),
-                any(),
-                isActive
-            )
-        } answers {
-            firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
-        }
+        coEvery {
+            getSafeModeUseCase(Unit)
+        } returns getResponse
 
         viewModel.setSafeMode(isActive)
 
@@ -471,83 +448,43 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Set safe mode Failed`() {
         val isActive = true
+        val safeModeParam = SafeModeParam(isActive)
+
         /* When */
-        every {
-            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
-                any(),
-                any(),
-                any()
-            )
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
-        }
+        coEvery {
+            updateSafeModeUseCase(safeModeParam)
+        } throws Exception()
 
         viewModel.setSafeMode(isActive)
-
-        justRun { throwableMock.printStackTrace() }
-        verify(atLeast = 1) {
-            throwableMock.printStackTrace()
-        }
     }
 
     @Test
     fun `Set safe mode inactive success`() {
         val data = SetUserProfileSetting(isSuccess = true, error = "")
-        val setUserProfileResponse = SetUserProfileSettingResponse(data)
+        val updateResponse = SetUserProfileSettingResponse(data)
 
         val isActive = false
 
         val getData = UserProfileSetting(safeMode = isActive)
-        val getSafeModeData = UserProfileSettingResponse(getData)
+        val getResponse = UserProfileSettingResponse(getData)
+
+        val safeModeParam = SafeModeParam(isActive)
 
         /* When */
-        every {
-            userProfileSafeModeUseCase.executeQuerySafeMode(
-                any(),
-                any()
-            )
-        } answers {
-            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(getSafeModeData)
-        }
+        coEvery {
+            updateSafeModeUseCase(safeModeParam)
+        } returns updateResponse
 
-        /* When */
-        every {
-            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
-                any(),
-                any(),
-                any()
-            )
-        } answers {
-            firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
-        }
+        coEvery {
+            getSafeModeUseCase(Unit)
+        } returns getResponse
+
 
         viewModel.setSafeMode(isActive)
 
         verify {
             accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
             safeStatusResponse.onChanged(isActive)
-        }
-    }
-
-    @Test
-    fun `Set safe mode inactive Failed`() {
-        val isActive = false
-        /* When */
-        every {
-            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
-                any(),
-                any(),
-                any()
-            )
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
-        }
-
-        viewModel.setSafeMode(isActive)
-
-        justRun { throwableMock.printStackTrace() }
-        verify(atLeast = 1) {
-            throwableMock.printStackTrace()
         }
     }
 
@@ -565,13 +502,14 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `get shortcut data fail`() {
+        val exception = mockk<Exception>(relaxed = true)
         /* When */
-        coEvery { homeAccountShortcutUseCase(Unit) } throws throwableResponse
+        coEvery { homeAccountShortcutUseCase(Unit) } throws exception
 
         viewModel.getShortcutData()
 
         verify {
-            shortCutResponse.onChanged(Fail(throwableResponse))
+            shortCutResponse.onChanged(Fail(exception))
         }
     }
 
@@ -877,6 +815,31 @@ class HomeAccountUserViewModelTest {
         coVerify {
             tokopediaPlusObserver.onChanged(Fail(throwableResponse))
         }
+    }
+
+    @Test
+    fun `Refresh session success`() {
+        val profileInfo = ProfileInfo(fullName = "Yoris")
+        val profilePojo = ProfilePojo(profileInfo = profileInfo)
+
+        coEvery {
+            refreshProfileUseCase(Unit)
+        } returns Success(profilePojo)
+
+        viewModel.refreshUserProfile()
+
+        coVerify(exactly = 1) {
+            refreshProfileUseCase(Unit)
+        }
+    }
+
+    @Test
+    fun `Refresh session - throw error`() {
+        coEvery {
+            refreshProfileUseCase(Unit)
+        } throws Exception()
+
+        viewModel.refreshUserProfile()
     }
 
     companion object {

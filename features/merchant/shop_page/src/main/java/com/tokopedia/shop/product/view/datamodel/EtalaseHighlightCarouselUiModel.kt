@@ -9,8 +9,10 @@ import java.util.*
 /**
  * Created by zulfikarrahman on 1/16/18.
  */
-class EtalaseHighlightCarouselUiModel(shopProductUiModelList: List<ShopProductUiModel>?,
-                                      shopEtalaseViewModel: ShopEtalaseItemDataModel) : Visitable<BaseAdapterTypeFactory?> {
+class EtalaseHighlightCarouselUiModel(
+    shopProductUiModelList: List<ShopProductUiModel>?,
+    shopEtalaseViewModel: ShopEtalaseItemDataModel
+) : Visitable<BaseAdapterTypeFactory?> {
     var shopProductUiModelList: List<ShopProductUiModel>? = null
         private set
     var shopEtalaseViewModel: ShopEtalaseItemDataModel? = null

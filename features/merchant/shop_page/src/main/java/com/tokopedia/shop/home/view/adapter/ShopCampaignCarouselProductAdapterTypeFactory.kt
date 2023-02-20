@@ -12,9 +12,9 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 class ShopCampaignCarouselProductAdapterTypeFactory(
-        private val shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
-        private val parentPosition: Int
+    private val shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+    private val parentPosition: Int
 ) : BaseAdapterTypeFactory(), TypeFactoryShopCampaignCarouselProduct {
 
     var adapter: ShopCampaignCarouselProductAdapter? = null
@@ -31,18 +31,18 @@ class ShopCampaignCarouselProductAdapterTypeFactory(
         return when (type) {
             ShopHomeCampaignCarouselProductItemViewHolder.LAYOUT -> {
                 ShopHomeCampaignCarouselProductItemViewHolder(
-                        parent,
-                        parentPosition,
-                        shopHomeNewProductLaunchCampaignUiModel,
-                        shopHomeCampaignNplWidgetListener
+                    parent,
+                    parentPosition,
+                    shopHomeNewProductLaunchCampaignUiModel,
+                    shopHomeCampaignNplWidgetListener
                 )
             }
             ShopHomeCampaignCarouselClickableBannerAreaViewHolder.LAYOUT -> {
                 ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
-                        parent,
-                        parentPosition,
-                        shopHomeNewProductLaunchCampaignUiModel,
-                        shopHomeCampaignNplWidgetListener
+                    parent,
+                    parentPosition,
+                    shopHomeNewProductLaunchCampaignUiModel,
+                    shopHomeCampaignNplWidgetListener
                 )
             }
             else -> {
@@ -50,5 +50,4 @@ class ShopCampaignCarouselProductAdapterTypeFactory(
             }
         }
     }
-
 }

@@ -6,13 +6,13 @@ import androidx.test.filters.FlakyTest
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
-import org.hamcrest.Matchers.`is`
-import org.junit.Test
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding.Companion.KEY_REPLY_BUBBLE_ONBOARDING
+import org.hamcrest.CoreMatchers.`is`
+import org.junit.Test
 
 @UiTest
 class ReplyBubbleTest : TopchatRoomTest() {
@@ -257,7 +257,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        val incomingEventWs = websocket.generateUploadImageResposne(roomMetaData)
+        val incomingEventWs = websocket.generateUploadImageResponse(roomMetaData, false)
         websocket.simulateResponse(incomingEventWs)
 
         // Then
@@ -272,5 +272,4 @@ class ReplyBubbleTest : TopchatRoomTest() {
     // TODO: should_send_reply_bubble_when_user_send_srw
     // TODO: should show onboarding reply bubble
     // TODO: should send reply bubble preview when user click one of SRW preview question
-
 }

@@ -28,10 +28,14 @@ import javax.inject.Inject
 class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @JvmField @Inject
+    var viewModelFactory: ViewModelProvider.Factory? = null
     private val topAdsHeadlineViewModel by lazy {
-        val vm = ViewModelProvider(context as AppCompatActivity, viewModelFactory).get(TopAdsHeadlineViewModel::class.java)
+        val vm = viewModelFactory?.let {
+            ViewModelProvider(context as AppCompatActivity,
+                it
+            ).get(TopAdsHeadlineViewModel::class.java)
+        }
         WeakReference(vm)
     }
 

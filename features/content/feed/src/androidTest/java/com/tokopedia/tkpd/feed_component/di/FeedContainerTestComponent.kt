@@ -5,6 +5,7 @@ import com.tokopedia.feedplus.view.di.FeedContainerComponent
 import com.tokopedia.feedplus.view.di.FeedContainerScope
 import com.tokopedia.feedplus.view.di.FeedContainerViewModelModule
 import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play_common.shortsuploader.di.uploader.PlayShortsUploaderModule
 import dagger.Component
 
 /**
@@ -15,7 +16,8 @@ import dagger.Component
     modules = [
         FeedContainerTestModule::class,
         FeedContainerViewModelModule::class,
-        PlayWidgetModule::class
+        PlayWidgetModule::class,
+        PlayShortsUploaderModule::class
     ], dependencies = [BaseAppComponent::class]
 )
 interface FeedContainerTestComponent : FeedContainerComponent

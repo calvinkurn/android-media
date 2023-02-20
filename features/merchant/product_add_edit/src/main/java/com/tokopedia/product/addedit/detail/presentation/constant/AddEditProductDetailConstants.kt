@@ -8,6 +8,7 @@ class AddEditProductDetailConstants {
         const val MAX_SUGGESTION_NAME = 5
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0
+        const val REQUEST_CODE_IMAGE_IMPROVEMENT = 10
         const val REQUEST_CODE_CATEGORY = 1
         const val REQUEST_CODE_SHOP_LOCATION = 2
         const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 3
@@ -35,14 +36,19 @@ class AddEditProductDetailConstants {
         const val MAX_PREORDER_WEEKS = 13
         const val MAX_SPECIFICATION_COUNTER = 5
         const val EXTRA_RESULT_STATUS = "extra_result_status"
+
         // request key for set fragment result
         const val REQUEST_KEY_ADD_MODE = "request_key_add_mode"
         const val REQUEST_KEY_DESCRIPTION = "request_key_description"
         const val REQUEST_KEY_DETAIL = "request_key_detail"
         const val REQUEST_KEY_SHIPMENT = "request_key_shipment"
         const val BUNDLE_CACHE_MANAGER_ID = "bundle_cache_manager_id"
+
         // price recommendation
         const val PRICE_RECOMMENDATION_BANNER_URL = "https://images.tokopedia.net/img/android/product-add-edit/banner_price_recommendation.png"
         const val MAX_LENGTH_PRICE = 11 // Sample: 999.999.999
+
+        // CPL
+        const val ON_BOARDING_ITEMS = 3
     }
 }

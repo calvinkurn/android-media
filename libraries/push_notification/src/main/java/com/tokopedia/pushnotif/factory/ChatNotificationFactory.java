@@ -10,14 +10,25 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 
+import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel;
+import com.tokopedia.bubbles.data.model.BubbleNotificationModel;
+import com.tokopedia.bubbles.factory.BubblesFactory;
+import com.tokopedia.bubbles.factory.BubblesFactoryImpl;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.db.model.HistoryNotification;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ricoharisin .
@@ -34,10 +45,16 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private static String USER_ID = "user_id";
 
     private RemoteConfig remoteConfig;
+    private BubblesFactory bubblesFactory;
+
+    private List<HistoryNotification> listHistoryNotification;
 
     public ChatNotificationFactory(Context context) {
         super(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (isEnableBubble()) {
+            generateBubbleFactory(context);
+        }
     }
 
     @Override
@@ -66,6 +83,15 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             if (GlobalConfig.isSellerApp()) {
                 builder.setShowWhen(true);
                 builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
+            }
+        }
+
+        if (isEnableBubble()) {
+            if (bubblesFactory == null) {
+                generateBubbleFactory(context);
+            }
+            if (bubblesFactory != null) {
+                setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
             }
         }
 
@@ -116,4 +142,87 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private Boolean isEnableReplyChatNotification() {
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PUSH_NOTIFICATION_CHAT_SELLER, false);
     }
+
+    private void generateBubbleFactory(Context context) {
+        if (context != null) {
+            bubblesFactory = new BubblesFactoryImpl(context);
+        }
+    }
+
+    private void setupBubble(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        try {
+            BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
+
+            updateBubblesShortcuts(notificationType, bubbleNotificationModel);
+            updateBubblesBuilder(builder, bubbleNotificationModel);
+        } catch (Exception ignored) { }
+    }
+
+    private void updateBubblesShortcuts(int notificationType, BubbleNotificationModel bubbleNotificationModel) {
+        listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
+        List<BubbleHistoryItemModel> historyItemModels = getBubbleHistoryItems(listHistoryNotification);
+        bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel);
+    }
+
+    private void updateBubblesBuilder(NotificationCompat.Builder builder, BubbleNotificationModel bubbleNotificationModel) {
+        bubblesFactory.setupBubble(builder, bubbleNotificationModel);
+    }
+
+    private List<BubbleHistoryItemModel> getBubbleHistoryItems(List<HistoryNotification> historyNotificationList) {
+        List<BubbleHistoryItemModel> mappedResult = new ArrayList<>();
+        for(HistoryNotification item: historyNotificationList) {
+            String applink = item.getAppLink() == null ? "" : item.getAppLink();
+            String senderName = item.getSenderName() == null ? "" : item.getSenderName();
+            String avatarUrl = item.getAvatarUrl() == null ? "" : item.getAvatarUrl();
+            String shortcutId = getMessageId(item.getAppLink());
+            BubbleHistoryItemModel historyItemModel = new BubbleHistoryItemModel(
+                    shortcutId,
+                    applink,
+                    senderName,
+                    avatarUrl
+            );
+            mappedResult.add(historyItemModel);
+        }
+        return mappedResult;
+    }
+
+    private BubbleNotificationModel getBubbleNotificationModel(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        String shortcutId = getMessageId(applinkNotificationModel.getApplinks());
+        return new BubbleNotificationModel(
+                notificationType,
+                notificationId,
+                shortcutId,
+                applinkNotificationModel.getSenderId(),
+                applinkNotificationModel.getApplinks(),
+                applinkNotificationModel.getFullName(),
+                applinkNotificationModel.getThumbnail(),
+                applinkNotificationModel.getSummary(),
+                applinkNotificationModel.getSentTime()
+        );
+    }
+
+    private boolean isEnableBubble() {
+        boolean isEnableBubble =
+                GlobalConfig.isSellerApp() &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                getIsBubbleRollenceEnabled() && getShouldEnableBubble();
+        return isEnableBubble;
+    }
+
+    private boolean getIsBubbleRollenceEnabled() {
+        boolean isRollenceEnabled;
+        try {
+            isRollenceEnabled = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                    RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, ""
+            ).equals(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT);
+        } catch (Exception exception) {
+            isRollenceEnabled = true;
+        }
+        return isRollenceEnabled;
+    }
+
+    private boolean getShouldEnableBubble() {
+        return true;
+    }
+
 }

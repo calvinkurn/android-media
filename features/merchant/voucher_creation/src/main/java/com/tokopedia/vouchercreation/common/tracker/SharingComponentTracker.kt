@@ -23,6 +23,22 @@ class SharingComponentTracker @Inject constructor(private val userSession : User
         TrackApp.getInstance().gtm.sendGeneralEvent(payload)
     }
 
+    fun sendShareVoucherClickEvent(entryPoint : String, voucherId : String, trackerId: String) {
+        val payload = mapOf(
+            VoucherCreationAnalyticConstant.Key.EVENT to "clickCommunication",
+            VoucherCreationAnalyticConstant.Key.EVENT_ACTION to "click - share button",
+            VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to "shop page - mvc locked product",
+            VoucherCreationAnalyticConstant.Key.EVENT_LABEL to "$entryPoint - $voucherId - ${userSession.shopId}",
+            VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.SHARING_EXPERIENCE,
+            VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+            VoucherCreationAnalyticConstant.Key.SHOP_ID to userSession.shopId,
+            VoucherCreationAnalyticConstant.Key.USER_ID to userSession.userId,
+            VoucherCreationAnalyticConstant.Key.TRACKER_ID to trackerId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(payload)
+    }
+
     fun sendShareBottomSheetDismissClickEvent(couponId : String) {
         sendGeneralTracking(
             event = "clickCommunication",
@@ -34,6 +50,22 @@ class SharingComponentTracker @Inject constructor(private val userSession : User
             userId = userSession.userId,
             shopId = userSession.shopId
         )
+    }
+
+    fun sendShareVoucherBottomSheetDismissClickEvent(voucherId: String, trackerId: String) {
+        val payload = mapOf(
+            VoucherCreationAnalyticConstant.Key.EVENT to "clickCommunication",
+            VoucherCreationAnalyticConstant.Key.EVENT_ACTION to "click - close share button sheet",
+            VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to "shop page - mvc locked product",
+            VoucherCreationAnalyticConstant.Key.EVENT_LABEL to "$voucherId - ${userSession.shopId}",
+            VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.SHARING_EXPERIENCE,
+            VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+            VoucherCreationAnalyticConstant.Key.SHOP_ID to userSession.shopId,
+            VoucherCreationAnalyticConstant.Key.USER_ID to userSession.userId,
+            VoucherCreationAnalyticConstant.Key.TRACKER_ID to trackerId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(payload)
     }
 
     fun sendSelectShareChannelClickEvent(selectedChannel: String, couponId : String) {
@@ -49,6 +81,21 @@ class SharingComponentTracker @Inject constructor(private val userSession : User
         )
     }
 
+    fun sendSelectVoucherShareChannelClickEvent(selectedChannel: String, voucherId: String, trackerId: String, imageType: String) {
+        val payload = mapOf(
+            VoucherCreationAnalyticConstant.Key.EVENT to "clickCommunication",
+            VoucherCreationAnalyticConstant.Key.EVENT_ACTION to "click - sharing channel",
+            VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to "shop page - mvc locked product",
+            VoucherCreationAnalyticConstant.Key.EVENT_LABEL to "$selectedChannel - $voucherId - ${userSession.shopId} - $imageType",
+            VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.SHARING_EXPERIENCE,
+            VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+            VoucherCreationAnalyticConstant.Key.SHOP_ID to userSession.shopId,
+            VoucherCreationAnalyticConstant.Key.USER_ID to userSession.userId,
+            VoucherCreationAnalyticConstant.Key.TRACKER_ID to trackerId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(payload)
+    }
+
 
     fun sendShareBottomSheetDisplayedEvent(couponId : String) {
         sendGeneralTracking(
@@ -61,6 +108,21 @@ class SharingComponentTracker @Inject constructor(private val userSession : User
             userId = userSession.userId,
             shopId = userSession.shopId
         )
+    }
+
+    fun sendShareVoucherBottomSheetDisplayedEvent(voucherId: String, trackerId: String) {
+        val payload = mapOf(
+            VoucherCreationAnalyticConstant.Key.EVENT to "viewCommunicationIris",
+            VoucherCreationAnalyticConstant.Key.EVENT_ACTION to "view on sharing channel",
+            VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to "shop page - mvc locked product",
+            VoucherCreationAnalyticConstant.Key.EVENT_LABEL to "$voucherId - ${userSession.shopId}",
+            VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.SHARING_EXPERIENCE,
+            VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+            VoucherCreationAnalyticConstant.Key.SHOP_ID to userSession.shopId,
+            VoucherCreationAnalyticConstant.Key.USER_ID to userSession.userId,
+            VoucherCreationAnalyticConstant.Key.TRACKER_ID to trackerId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(payload)
     }
 
     private fun sendGeneralTracking(

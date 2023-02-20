@@ -3,10 +3,12 @@ package com.tokopedia.universal_sharing.constants
 class ImageGeneratorConstants {
     object ImageGeneratorSourceId{
         const val PDP = "gFZoml"
+        const val AB_TEST_PDP = "wmVUzt"
         const val FS_TOKO = "tJHYeb"
         const val RILISAN_SPESIAL = "aaGBeS"
         const val MVC_PRODUCT = "ZmygOT"
         const val WISHLIST_COLLECTION = "yxIvgB"
+        const val SHOP_PAGE = "LSfHao"
     }
     object ImageGeneratorKeys{
         const val PRODUCT_IMAGE_URL = "product_image_url"
@@ -16,8 +18,17 @@ class ImageGeneratorConstants {
         const val BEBAS_ONGKIR_TYPE = "bebas_ongkir_type"
         const val PLATFORM = "platform"
         const val PRODUCT_RATING = "product_rating"
+        const val PRODUCT_ID = "product_id"
+        const val NEW_PRODUCT_PRICE = "new_product_price"
+        const val HAS_CAMPAIGN = "has_campaign"
+        const val CAMPAIGN_DISCOUNT = "campaign_discount"
+        const val CAMPAIGN_NAME_PDP = "campaign_name"
         const val SHOP_LOGO = "shop-logo"
         const val SHOP_NAME = "shop-name"
+        const val SHOP_NAME_UNDERSCORE = "shop_name"
+        const val SHOP_BADGE = "shop_badge"
+        const val SHOP_PROFILE_IMAGE = "shop_profile_image"
+        const val SHOP_LOCATION = "shop_location"
         const val BADGE = "badge"
         const val DATE = "date"
         const val DISCOUNT = "discount"
@@ -71,6 +82,19 @@ class ImageGeneratorConstants {
         const val PRODUCT_PRICE_4 = "product_price_4"
         const val PRODUCT_PRICE_5 = "product_price_5"
         const val PRODUCT_PRICE_6 = "product_price_6"
+
+        // shop page
+        const val IS_PROFILE_IMAGE_EXIST = "is_profile_image_exist"
+        const val SHOP_INFO_TYPE_1 = "info_1_type"
+        const val SHOP_INFO_VALUE_1 = "info_1_value"
+        const val SHOP_INFO_LABEL_1 = "info_1_label"
+        const val SHOP_INFO_TYPE_2 = "info_2_type"
+        const val SHOP_INFO_VALUE_2 = "info_2_value"
+        const val SHOP_INFO_LABEL_2 = "info_2_label"
+        const val SHOP_INFO_TYPE_3 = "info_3_type"
+        const val SHOP_INFO_VALUE_3 = "info_3_value"
+        const val SHOP_INFO_LABEL_3 = "info_3_label"
+        const val SHOP_IS_HEADLESS = "is_headless"
     }
     object ImageGeneratorPlatforms{
         const val WHATSAPP = "wa"
@@ -89,6 +113,7 @@ class ImageGeneratorConstants {
     object VoucherBenefitType{
         const val CASHBACK = "cashback"
         const val GRATIS_ONGKIR = "gratis-ongkir"
+        const val DISCOUNT = "diskon"
     }
     object CashbackType{
         const val PERCENTAGE = "percentage"

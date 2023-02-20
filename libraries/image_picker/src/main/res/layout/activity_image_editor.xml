@@ -62,7 +62,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_Background">
 
         <LinearLayout
             android:id="@+id/vg_content_container"
@@ -111,7 +111,7 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:clipChildren="false"
-                android:background="@color/Unify_N0">
+                android:background="@color/Unify_Background">
 
                 <LinearLayout
                     android:id="@+id/vg_editor_main"

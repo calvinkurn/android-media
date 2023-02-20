@@ -3,6 +3,7 @@ package com.tokopedia.play.view.uimodel.state
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.ExploreWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
@@ -36,6 +37,8 @@ data class PlayViewerNewUiState(
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
     val engagement: EngagementUiState,
+    val followPopUp: Boolean,
+    val exploreWidget: ExploreWidgetUiState,
 ) {
 
     companion object {
@@ -67,6 +70,8 @@ data class PlayViewerNewUiState(
                 ),
                 featuredProducts = emptyList(),
                 engagement = EngagementUiState.Empty,
+                followPopUp = false,
+                exploreWidget = ExploreWidgetUiState.Empty,
             )
     }
 }
@@ -127,11 +132,38 @@ data class AddressWidgetUiState(
     val warehouseInfo: WarehouseInfoUiModel
 )
 
+
 data class EngagementUiState(
     val shouldShow: Boolean,
     val data: List<EngagementUiModel>,
 ) {
     companion object {
         val Empty: EngagementUiState get() = EngagementUiState(shouldShow = false, data = emptyList())
+    }
+}
+
+data class FollowPopUpUiState(
+    val shouldShow: Boolean,
+    val partnerId: Long,
+){
+    companion object {
+        val Empty: FollowPopUpUiState
+            get() = FollowPopUpUiState(
+                shouldShow = false,
+                partnerId = 0L,
+            )
+    }
+}
+
+data class ExploreWidgetUiState(
+    val shouldShow: Boolean,
+    val data: ExploreWidgetUiModel,
+) {
+    companion object {
+        val Empty: ExploreWidgetUiState
+            get() = ExploreWidgetUiState(
+                shouldShow = false,
+                data = ExploreWidgetUiModel.Empty,
+            )
     }
 }

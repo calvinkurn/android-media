@@ -1,35 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/Unify_Background">
 
-    <FrameLayout
-        android:id="@+id/feed_background_frame"
+    <View
+        android:id="@+id/transparent_overlay_coachmark"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_scrollFlags="scroll|snap">
+        android:layout_height="match_parent"
+        android:elevation="8dp"
+        android:clickable="true"
+        android:background="@color/transparent"
+        android:visibility="visible"/>
 
-        <ImageView
-            android:id="@+id/feed_background_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/feed_background_image"
-            android:background="@drawable/gradient_feed"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:contentDescription="@string/feed_header_mask"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_searchbar_feed_header_mask"/>
-    </FrameLayout>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/feed_appbar"
@@ -113,7 +99,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+        <com.tokopedia.feedplus.view.customview.PostProgressUpdateView
             android:id="@+id/postUpdateView"
             android:visibility="gone"
             android:layout_width="match_parent"

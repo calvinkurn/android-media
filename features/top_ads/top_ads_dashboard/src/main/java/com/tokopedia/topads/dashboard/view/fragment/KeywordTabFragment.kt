@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -70,7 +71,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private var deleteCancel = false
     private var singleAction = false
     private var currentPageNum = 1
-    private val groupId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getInt(GROUP_ID, 0).toString() }
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(GROUP_ID) ?: "0" }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -156,7 +157,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
     private fun fetchNextPage(currentPage: Int) {
         val resources = context?.resources ?: return
-        viewModel.getGroupKeywordData(resources, 1, arguments?.getInt(GROUP_ID) ?: 0,
+        viewModel.getGroupKeywordData(resources, 1, arguments?.getString(GROUP_ID).toIntOrZero(),
             searchBar?.searchBarTextField?.text.toString(),
             groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
             currentPage, ::onSuccessKeyword, ::onEmpty)
@@ -170,7 +171,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
         viewModel.setKeywordActionForGroup(groupId, actionActivate,
-            listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()),
+            listOf((adapter.items[pos] as KeywordItemModel).result.keywordId),
             resources, ::onSuccessAction)
     }
 
@@ -220,7 +221,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
-            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(GROUP_ID).toString())
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getString(GROUP_ID))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI,
@@ -263,12 +264,12 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private fun fetchData() {
         val resources = context?.resources ?: return
         viewModel.getCountProductKeyword(resources,
-            listOf(arguments?.getInt(GROUP_ID).toString()), ::successCount)
+            listOf(arguments?.getString(GROUP_ID) ?: "0"), ::successCount)
         currentPageNum = 1
         loader?.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
-        viewModel.getGroupKeywordData(resources, 1, arguments?.getInt(GROUP_ID) ?: 0,
+        viewModel.getGroupKeywordData(resources, 1, arguments?.getString(GROUP_ID).toIntOrZero() ,
             searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
             groupFilterSheet.getSelectedStatusId(), currentPageNum, ::onSuccessKeyword, ::onEmpty)
     }
@@ -276,7 +277,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
         adapter.getSelectedItems().forEach {
-            ads.add(it.result.keywordId.toString())
+            ads.add(it.result.keywordId)
         }
         return ads
     }

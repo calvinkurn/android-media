@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 data class OrderProfile(
         val profileId: Int = 0,
@@ -11,7 +12,7 @@ data class OrderProfile(
         val shipment: OrderProfileShipment = OrderProfileShipment()
 ) {
     val isValidProfile: Boolean
-        get() = address.addressId > 0 && payment.gatewayCode.isNotEmpty()
+        get() = address.addressId.isNotBlankOrZero() && payment.gatewayCode.isNotEmpty()
 
     fun isDisableChangeCourierAndNeedPinpoint(): Boolean {
         return shipment.isDisableChangeCourier && address.hasNoPinpoint
@@ -19,15 +20,15 @@ data class OrderProfile(
 }
 
 data class OrderProfileAddress(
-        val addressId: Long = 0,
+        val addressId: String = "",
         val receiverName: String = "",
         val addressName: String = "",
         val addressStreet: String = "",
-        val districtId: Long = 0,
+        val districtId: String = "",
         val districtName: String = "",
-        val cityId: Long = 0,
+        val cityId: String = "",
         val cityName: String = "",
-        val provinceId: Long = 0,
+        val provinceId: String = "",
         val provinceName: String = "",
         val country: String = "",
         val phone: String = "",
@@ -65,11 +66,11 @@ data class OrderProfileAddressTokoNow(
 
 data class OrderProfileShipment(
         val serviceName: String = "",
-        val serviceId: Int = 0,
+        val serviceId: String = "",
         val serviceDuration: String = "",
-        val spId: Int = 0,
-        val recommendationServiceId: Int = 0,
-        val recommendationSpId: Int = 0,
+        val spId: String = "",
+        val recommendationServiceId: String = "",
+        val recommendationSpId: String = "",
         val isFreeShippingSelected: Boolean = false,
         val isDisableChangeCourier: Boolean = false,
         val autoCourierSelection: Boolean = false,

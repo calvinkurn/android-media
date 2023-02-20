@@ -1,7 +1,7 @@
 package com.tokopedia.cmhomewidget.domain.query
 
-const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
-    notifier_getHtdw(){
+const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query(${"$"}param: Notifier_Htdw_v2_request!){
+    notifier_getHtdw_v2(input: ${"$"}param){
         status
         data {
             notification_id

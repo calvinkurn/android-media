@@ -148,6 +148,13 @@ public class BranchHelper {
         saveBranchEvent(branchEvent);
     }
 
+    public static void sendPageViewShop(Context context, String userId) {
+        BranchEvent branchEvent = new BranchEvent(LinkerConstants.EVENT_PAGE_VIEW_STORE)
+                .addCustomDataProperty(LinkerConstants.USER_ID, userId);
+        branchEvent.logEvent(context);
+        saveBranchEvent(branchEvent);
+    }
+
     public static void sendItemViewEvent(Context context, LinkerData linkerData) {
         BranchUniversalObject buo = new BranchUniversalObject()
                 .setTitle(linkerData.getProductName())

@@ -18,15 +18,14 @@ import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
+import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleListPageTracker
@@ -97,6 +96,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
     }
 
+    override fun onResume() {
+        super.onResume()
+        getFlashSaleSubmissionProgress()
+    }
+
     private fun setupView() {
         binding?.run {
             header.headerTitle = getString(R.string.fs_tkpd_title)
@@ -117,6 +121,10 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getFlashSaleSubmissionProgress() {
+        viewModel.getFlashSaleSubmissionProgress()
+    }
+
     private fun handleEffect(effect: FlashSaleContainerViewModel.UiEffect) {
         when (effect) {
             is FlashSaleContainerViewModel.UiEffect.ErrorFetchTabsMetaData -> {
@@ -125,7 +133,29 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             FlashSaleContainerViewModel.UiEffect.ShowIneligibleAccessWarning -> {
                 showIneligibleAccessBottomSheet()
             }
+            is FlashSaleContainerViewModel.UiEffect.FlashSaleSubmissionProgress -> {
+                setupWidgetCampaignProductSubmissionProgress(effect.uiModel)
+            }
         }
+    }
+
+    private fun setupWidgetCampaignProductSubmissionProgress(
+        uiModel: List<FlashSaleProductSubmissionProgress.Campaign>
+    ) {
+        binding?.widgetCampaignProductSubmissionProgress?.run {
+            if (uiModel.isNotEmpty()) {
+                show()
+                setData(uiModel) {
+                    navigateToFlashSaleDetailPage(it.campaignId.toLongOrZero())
+                }
+            } else {
+                hide()
+            }
+        }
+    }
+
+    private fun navigateToFlashSaleDetailPage(campaignId : Long) {
+        CampaignDetailActivity.start(context ?: return, campaignId)
     }
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {

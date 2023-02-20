@@ -24,7 +24,7 @@ import com.tokopedia.talk.feature.inbox.presentation.fragment.TalkInboxFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListener, HasComponent<TalkComponent> {
+open class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListener, HasComponent<TalkComponent> {
 
     companion object {
         fun createIntent(context: Context) : Intent {

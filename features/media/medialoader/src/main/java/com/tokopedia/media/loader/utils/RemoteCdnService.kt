@@ -1,8 +1,9 @@
 package com.tokopedia.media.loader.utils
 
+import android.util.Patterns
+import android.webkit.URLUtil
 import com.tokopedia.abstraction.common.utils.network.AuthUtil.HEADER_USER_AGENT
 import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.user.session.UserSession
 import java.net.HttpURLConnection
 import java.net.InetAddress
 import java.net.URL
@@ -32,6 +33,19 @@ object RemoteCdnService {
             urlConnection?.disconnect()
         }
         return cdnNameHeader
+    }
+
+    fun isValidUrl(urlString: String?): Boolean {
+        if (urlString.isNullOrBlank()) return false
+
+        val urlRegex = "^(https?)://.*\$".toRegex()
+
+        return try {
+            (URLUtil.isValidUrl(urlString) && Patterns.WEB_URL.matcher(urlString).matches()) ||
+                urlString.matches(urlRegex)
+        } catch (ignored: Exception) {
+            false
+        }
     }
 
     private fun HttpURLConnection.setRequestProperty(): HttpURLConnection {

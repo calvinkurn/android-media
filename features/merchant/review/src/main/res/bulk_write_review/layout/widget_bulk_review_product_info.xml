@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_bulk_review_product_image"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:background="@drawable/bg_bulk_review_product_thumbnail"
+        app:layout_constraintBottom_toBottomOf="@id/iv_bulk_review_product_image"
+        app:layout_constraintEnd_toEndOf="@id/iv_bulk_review_product_image"
+        app:layout_constraintStart_toStartOf="@id/iv_bulk_review_product_image"
+        app:layout_constraintTop_toTopOf="@id/iv_bulk_review_product_image" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bulk_review_product_purchase_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_bulk_review_product_image"
+        app:layout_constraintTop_toTopOf="@id/iv_bulk_review_product_image"
+        app:typographyType="small"
+        tools:text="7 Agu" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bulk_review_product_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_bulk_review_product_image"
+        app:layout_constraintTop_toBottomOf="@id/tv_bulk_review_product_purchase_date"
+        app:typographyType="display_2"
+        tools:text="@string/lorem" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bulk_review_product_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_bulk_review_product_image"
+        app:layout_constraintTop_toBottomOf="@id/tv_bulk_review_product_name"
+        app:layout_constraintVertical_bias="0"
+        app:typographyType="paragraph_3"
+        tools:text="Varian: White Susu Kedelai" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

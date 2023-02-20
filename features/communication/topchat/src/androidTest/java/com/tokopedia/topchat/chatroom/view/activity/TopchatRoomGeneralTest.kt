@@ -94,7 +94,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         getChatUseCase.response.chatReplies.list = arrayListOf()
         chatAttachmentUseCase.response = chatAttachmentResponse
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
-        launchChatRoomActivity()
+        launchChatRoomActivity(isSellerApp = true)
 
         onView(withId(R.id.recycler_view_chatroom)).check(
             matches(

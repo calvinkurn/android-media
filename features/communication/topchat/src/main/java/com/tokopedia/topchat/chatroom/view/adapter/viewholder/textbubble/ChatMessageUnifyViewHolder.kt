@@ -28,7 +28,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOpposite
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
-import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.unifyprinciples.Typography
 
 class ChatMessageUnifyViewHolder(
@@ -115,7 +114,6 @@ class ChatMessageUnifyViewHolder(
         if (!msg.isBanned() && !msg.isDeleted()) {
             fxChat?.setOnLongClickListener {
                 val menus = createLongClickMenuMsgBubble()
-                TopChatAnalyticsKt.eventTapAndHoldBubbleChat(msg.replyId)
                 commonListener.showMsgMenu(
                     msg, fxChat.message?.text ?: "", menus
                 )

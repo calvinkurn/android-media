@@ -34,7 +34,7 @@ data class Banner(
             attribution = parcel.readString() ?: ""
     )
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest?.run {
             writeParcelable(cta, flags)
             writeLong(id)

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheetViewModel
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantViewModel
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel.ChooseProductViewModel
@@ -13,7 +14,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.viewmodel.CampaignDetail
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailViewModel
 import com.tokopedia.tkpd.flashsale.presentation.ineligibleaccess.IneligibleAccessViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantViewModel
-import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListListViewModel
+import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
@@ -67,12 +68,17 @@ abstract class TokopediaFlashSaleViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FlashSaleManageProductListListViewModel::class)
-    internal abstract fun provideFlashSaleManageProductListListViewModel(viewModel: FlashSaleManageProductListListViewModel): ViewModel
+    @ViewModelKey(FlashSaleManageProductListViewModel::class)
+    internal abstract fun provideFlashSaleManageProductListViewModel(viewModel: FlashSaleManageProductListViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(IneligibleAccessViewModel::class)
     internal abstract fun provideIneligibleAccessViewModel(viewModel: IneligibleAccessViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlashSaleProductListSseSubmissionErrorBottomSheetViewModel::class)
+    internal abstract fun provideFlashSaleProductListSseSubmissionErrorBottomSheetViewModel(viewModel: FlashSaleProductListSseSubmissionErrorBottomSheetViewModel): ViewModel
 
 }

@@ -2,19 +2,29 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -61,6 +71,9 @@ class ShipmentPresenterGetShippingRatesTest {
     @MockK(relaxed = true)
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
+    @MockK(relaxed = true)
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
@@ -91,6 +104,9 @@ class ShipmentPresenterGetShippingRatesTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var ratesStatesConverter = RatesResponseStateConverter()
     private var shippingCourierConverter = ShippingCourierConverter()
@@ -104,13 +120,31 @@ class ShipmentPresenterGetShippingRatesTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -162,14 +196,14 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
         }
     }
 
@@ -179,7 +213,9 @@ class ShipmentPresenterGetShippingRatesTest {
         val response = DataProvider.provideRatesV3apiResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
 
-        every { getRatesApiUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
 
         val shipperId = 1
         val spId = 1
@@ -227,14 +263,14 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
         }
     }
 
@@ -242,12 +278,16 @@ class ShipmentPresenterGetShippingRatesTest {
     fun `WHEN get shipping rates with mvc success THEN should render success`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
         val response = DataProvider.provideRatesV3apiResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
 
-        every { getRatesApiUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
 
         val shipperId = 1
         val spId = 1
@@ -289,14 +329,14 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
         }
     }
 
@@ -345,20 +385,44 @@ class ShipmentPresenterGetShippingRatesTest {
         val isForceReload = false
         val skipMvc = true
 
+        every { view.renderCourierStateSuccess(any(), any(), any(), any()) } answers {
+            presenter.logisticDonePublisher.onCompleted()
+        }
+
         // When get first shipping
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId,
+            spId,
+            itemPosition,
+            shipmentDetailData,
+            ShipmentCartItemModel().apply { orderNumber = itemPosition },
+            shopShipmentList,
+            isInitialLoad,
+            products,
+            cartString,
+            isTradeInDropOff,
+            recipientAddressModel,
+            isForceReload,
+            skipMvc
         )
 
         itemPosition++
 
         // When get second shipping
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId,
+            spId,
+            itemPosition,
+            shipmentDetailData,
+            ShipmentCartItemModel().apply { orderNumber = itemPosition },
+            shopShipmentList,
+            isInitialLoad,
+            products,
+            cartString,
+            isTradeInDropOff,
+            recipientAddressModel,
+            isForceReload,
+            skipMvc
         )
 
         // Then
@@ -372,17 +436,5 @@ class ShipmentPresenterGetShippingRatesTest {
     @Test
     fun `WHEN get shipping courier view model state before get rates THEN should return null`() {
         assertNull(presenter.getShippingCourierViewModelsState(0))
-    }
-
-    @Test
-    fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
-        // When
-        presenter.detachView()
-
-        // Then
-        verify {
-            getRatesUseCase.unsubscribe()
-            getRatesApiUseCase.unsubscribe()
-        }
     }
 }

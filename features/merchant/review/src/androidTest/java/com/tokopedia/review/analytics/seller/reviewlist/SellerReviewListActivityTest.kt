@@ -20,7 +20,7 @@ import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.review.stub.inbox.presentation.activity.InboxReputationActivityStub
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 import org.junit.Rule
 import org.junit.Test
 
@@ -86,7 +86,7 @@ class SellerReviewListActivityTest: CassavaTestFixture() {
             waitUntilBottomSheetShowingAndSettled {
                 findFragmentByTag(RatingProductFragment.BOTTOM_SHEET_FILTER_TAG)
             }
-            Espresso.onData(Matchers.anything())
+            Espresso.onData(CoreMatchers.anything())
                 .inAdapterView(ViewMatchers.withId(R.id.listFilterRatingProduct)).atPosition(1)
                 .perform(ViewActions.click())
         } assertTest {
@@ -102,7 +102,7 @@ class SellerReviewListActivityTest: CassavaTestFixture() {
             waitUntilBottomSheetShowingAndSettled {
                 findFragmentByTag(RatingProductFragment.BOTTOM_SHEET_SORT_TAG)
             }
-            Espresso.onData(Matchers.anything())
+            Espresso.onData(CoreMatchers.anything())
                 .inAdapterView(ViewMatchers.withId(R.id.listSortRatingProduct)).atPosition(1)
                 .perform(ViewActions.click())
         } assertTest {

@@ -612,28 +612,28 @@ class TopSectionVH(
             val animSetScaleUp = AnimatorSet()
             val animSetScaleDown = AnimatorSet()
             animSetScaleUp.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     animSetScaleDown.playTogether( animationScaleXN ,animationScaleYN )
                     animSetScaleDown.start()                }
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
             })
             animSetScaleUp.playTogether(animationScaleY, animationScaleX )
             animSetScaleUp.start()
 
             animSetScaleDown.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     completion?.invoke()
                 }
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
             })
 

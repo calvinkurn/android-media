@@ -14,7 +14,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.testDependencies.androidxTest
-    implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
     implementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoContrib

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="csat_dms_rating_bg">#252930</color>
+    <color name="csat_dms_rating_inactive">#8B96AC</color>
+    <color name="csat_dms_divider">#3D444F</color>
+    <color name="csat_dms_reason_text">#DCE4ED</color>
     <color name="csat_dms_message_color_bad">#ff4f00</color>
     <color name="csat_dms_message_color_neutral">#fec100</color>
     <color name="csat_dms_message_color_good">#00ac47</color>

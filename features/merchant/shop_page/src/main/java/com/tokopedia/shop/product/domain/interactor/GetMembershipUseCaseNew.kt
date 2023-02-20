@@ -3,15 +3,13 @@ package com.tokopedia.shop.product.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetMembershipUseCaseNew @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<MembershipStampProgress>
+    private val gqlUseCase: GraphqlUseCase<MembershipStampProgress>
 ) : UseCase<MembershipStampProgress>() {
 
     companion object {
@@ -68,6 +66,4 @@ class GetMembershipUseCaseNew @Inject constructor(
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
         return gqlUseCase.executeOnBackground()
     }
-
-
 }

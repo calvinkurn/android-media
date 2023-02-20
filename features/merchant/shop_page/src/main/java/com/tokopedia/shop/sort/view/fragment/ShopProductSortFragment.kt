@@ -88,11 +88,11 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun initInjector() {
         DaggerShopProductSortComponent
-                .builder()
-                .shopProductSortModule(ShopProductSortModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+            .builder()
+            .shopProductSortModule(ShopProductSortModule())
+            .shopComponent(getComponent(ShopComponent::class.java))
+            .build()
+            .inject(this)
     }
 
     override fun getScreenName(): String {

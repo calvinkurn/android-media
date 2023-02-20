@@ -66,6 +66,7 @@ object KeroLogisticQuery {
               is_corner
               is_state_chosen_address
               radio_button_checked
+              is_shared_address
             }
             token {
               district_recommendation

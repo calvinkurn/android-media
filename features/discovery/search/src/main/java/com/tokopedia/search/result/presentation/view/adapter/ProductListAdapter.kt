@@ -7,9 +7,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
@@ -24,7 +21,8 @@ class ProductListAdapter(
     private val list = mutableListOf<Visitable<*>>()
     private val loadingMoreModel = LoadingMoreModel()
 
-    val itemList get() = list
+    val itemList: List<Visitable<*>>
+        get() = list
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val context = parent.context
@@ -78,50 +76,6 @@ class ProductListAdapter(
         val start = itemCount
         this.list.addAll(list)
         notifyItemRangeInserted(start, list.size)
-    }
-
-    fun updateWishlistStatus(productId: String, isWishlisted: Boolean) {
-        list.forEachIndexed { i, visitable ->
-            if (visitable is ProductItemDataView) {
-                if (productId == visitable.productID) {
-                    visitable.isWishlisted = isWishlisted
-                    notifyItemChanged(i, "wishlist")
-                }
-            } else if (visitable is RecommendationItemDataView) {
-                if (productId == visitable.recommendationItem.productId.toString()) {
-                    visitable.recommendationItem.isWishlist = isWishlisted
-                    notifyItemChanged(i, "wishlist")
-                }
-            } else if (visitable is BroadMatchDataView) {
-                visitable.broadMatchItemDataViewList.forEach { broadMatchItemDataView ->
-                    if (broadMatchItemDataView.id == productId) {
-                        broadMatchItemDataView.isWishlisted = isWishlisted
-                    }
-                }
-            }
-        }
-    }
-
-    fun updateWishlistStatus(adapterPosition: Int, isWishlisted: Boolean) {
-        if (adapterPosition !in list.indices) return
-
-        val visitable = list[adapterPosition]
-
-        if (visitable is ProductItemDataView) {
-            visitable.isWishlisted = isWishlisted
-            notifyItemChanged(adapterPosition)
-        } else if (visitable is RecommendationItemDataView) {
-            visitable.recommendationItem.isWishlist = isWishlisted
-            notifyItemChanged(adapterPosition)
-        }
-    }
-
-    fun isProductItem(position: Int): Boolean {
-        return (position in list.indices) && list[position] is ProductItemDataView
-    }
-
-    fun isRecommendationItem(position: Int): Boolean {
-        return (position in list.indices) && list[position] is RecommendationItemDataView
     }
 
     fun addLoading() {

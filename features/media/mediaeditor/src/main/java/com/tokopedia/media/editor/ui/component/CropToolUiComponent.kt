@@ -33,14 +33,14 @@ class CropToolUiComponent constructor(
                 addView(
                     generateCropButton(
                         it,
-                        true
+                        detailUiModel.isToolCrop()
                     )
                 )
             } ?: run {
                 editorParam?.ratioList()?.let {
                     availableRatio = it
                     it.forEachIndexed { index, ratio ->
-                        val isSelected = if (detailUiModel.cropRotateValue.getRatio() != null) {
+                        val isSelected = if (detailUiModel.cropRotateValue.getRatio() != null && detailUiModel.isToolCrop()) {
                             detailUiModel.cropRotateValue.getRatio() == ratio.getRatio()
                         } else (index == 0 && detailUiModel.isToolCrop())
 

@@ -68,6 +68,7 @@ interface PlayTagItemsAnalytic {
         product: PlayProductUiModel.Product,
         cartId: String,
         quantity: Int,
+        action: ProductAction,
     )
 
     fun atcPinnedProductInCarousel(

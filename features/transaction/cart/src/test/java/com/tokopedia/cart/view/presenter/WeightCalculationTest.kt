@@ -20,7 +20,7 @@ class WeightCalculationTest : BaseCartTest() {
     private fun initializeData() {
         //region First Item In First Shop
         firstProductFirstShop = CartItemHolderData().apply {
-            productPrice = 1000
+            productPrice = 1000.0
             parentId = "0"
             productId = "1"
             productCashBack = "10%"
@@ -31,7 +31,7 @@ class WeightCalculationTest : BaseCartTest() {
 
         //region First Item In Second Shop
         firstProductSecondShop = CartItemHolderData().apply {
-            productPrice = 40
+            productPrice = 40.0
             parentId = "0"
             productId = "2"
             quantity = 2
@@ -41,7 +41,7 @@ class WeightCalculationTest : BaseCartTest() {
 
         //region Second Item In First Shop
         secondProductFirstShop = CartItemHolderData().apply {
-            productPrice = 200
+            productPrice = 200.0
             parentId = "0"
             productId = "3"
             quantity = 3
@@ -51,7 +51,7 @@ class WeightCalculationTest : BaseCartTest() {
 
         //region Second Item In Second Shop
         secondProductSecondShop = CartItemHolderData().apply {
-            productPrice = 1
+            productPrice = 1.0
             parentId = "0"
             productId = "4"
             quantity = 4

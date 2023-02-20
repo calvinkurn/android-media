@@ -20,6 +20,7 @@ object InstrumentationAuthHelper {
     fun loginInstrumentationTestUser1() {
         userSession {
             userId = "108956738"
+            name = "Erick Samuel (test)"
             email = "erick.samuel+testingtokenandroid1@tokopedia.com"
             accessTokenBearer = "ghSZU8GxoVSK3qkEqgFUrlHt3pFSS+Xtmb5peuCDaca/R0LwyqhTqwTJVcupIX78E5xicw3oliW9AdyRWr4Apg=="
         }

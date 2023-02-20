@@ -10,25 +10,27 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetShopReputationUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopBadge>() {
+class GetShopReputationUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ShopBadge>() {
 
     var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
-    val request by lazy{
+    val request by lazy {
         GraphqlRequest(SHOP_REPUTATION_QUERY_STRING, ShopBadge.Response::class.java, params)
     }
 
     override suspend fun executeOnBackground(): ShopBadge {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build()
+        )
         gqlUseCase.addRequest(request)
         val gqlResponse = gqlUseCase.executeOnBackground()
 
         val gqlError = gqlResponse.getError(ShopBadge.Response::class.java)
-        if (gqlError?.isNotEmpty() != true){
+        if (gqlError?.isNotEmpty() != true) {
             return gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
-                    .result.first()
+                .result.first()
         } else {
             throw MessageErrorException(gqlError.mapNotNull { it.message }.joinToString(separator = ", "))
         }

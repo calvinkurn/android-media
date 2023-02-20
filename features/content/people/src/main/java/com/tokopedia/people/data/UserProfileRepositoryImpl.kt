@@ -3,10 +3,10 @@ package com.tokopedia.people.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
-import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_USER_PROFILE
 import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
@@ -16,14 +16,16 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
-import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -46,6 +48,9 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val shopFollowUseCase: ShopFollowUseCase,
     private val getFollowerListUseCase: GetFollowerListUseCase,
     private val getFollowingListUseCase: GetFollowingListUseCase,
+    private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
+    private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
+    private val postBlockUserUseCase: PostBlockUserUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -96,6 +101,18 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getFeedPosts(userID: String, cursor: String, limit: Int): UserFeedPostsUiModel {
+        return withContext(dispatcher.io) {
+            return@withContext mapper.mapFeedPosts(
+                getUserProfileFeedPostsUseCase.executeOnBackground(
+                    userID = userID,
+                    cursor = cursor,
+                    limit = limit,
+                ),
+            )
+        }
+    }
+
     override suspend fun getPlayVideo(username: String, cursor: String): UserPostModel {
         return withContext(dispatcher.io) {
             return@withContext playVodUseCase.executeOnBackground(
@@ -107,14 +124,14 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
+    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel = withContext(dispatcher.io) {
         val result = shopRecomUseCase.executeOnBackground(
             screenName = VAL_SCREEN_NAME_USER_PROFILE,
             limit = VAL_LIMIT,
-            cursor = VAL_CURSOR,
+            cursor = cursor,
         )
 
-        return@withContext shopRecomMapper.mapShopRecom(result)
+        return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
     }
 
     override suspend fun shopFollowUnfollow(
@@ -151,6 +168,25 @@ class UserProfileRepositoryImpl @Inject constructor(
             cursor = cursor,
             limit = limit,
         )
+    }
+
+    override suspend fun getUserProfileTab(userID: String): ProfileTabUiModel {
+        return withContext(dispatcher.io) {
+            val result = getUserProfileTabUseCase.executeOnBackground(
+                userID = userID,
+            )
+            return@withContext mapper.mapProfileTab(result)
+        }
+    }
+
+    override suspend fun blockUser(userId: String) = withContext(dispatcher.io) {
+        val response = postBlockUserUseCase.execute(userId, true)
+        if (!response.data.success) error("Failed to block user $userId")
+    }
+
+    override suspend fun unblockUser(userId: String) = withContext(dispatcher.io) {
+        val response = postBlockUserUseCase.execute(userId, false)
+        if (!response.data.success) error("Failed to unblock user $userId")
     }
 
     companion object {

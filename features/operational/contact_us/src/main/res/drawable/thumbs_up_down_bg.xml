@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <padding android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp"/>
     <corners android:radius="8dp"/>
-    <solid android:color="@color/contact_us_thumbs_up_down_bg_color"/>
+    <solid android:color="@color/contact_us_dms_thumbs_up_down_bg_color"/>
 </shape>

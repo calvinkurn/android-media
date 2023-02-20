@@ -21,6 +21,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
 import java.io.File
 
@@ -38,52 +39,59 @@ class WishlistCollectionSharingUtils() {
     ) {
         val shareListener = object : ShareBottomsheetListener {
             override fun onShareOptionClicked(shareModel: ShareModel) {
-                val linkerShareResult = DataMapper.getLinkerShareData(LinkerData().apply {
-                    type = LinkerData.WISHLIST_COLLECTION_TYPE
-                    uri = data.shareLink.redirectionUrl
-                    id = data.collection.id.toString()
-                    feature = shareModel.feature
-                    channel = shareModel.channel
-                    campaign = shareModel.campaign
-                    ogTitle = "Koleksi ${data.collection.name}"
-                    ogDescription = data.collection.owner.name
-                    if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
-                        ogImageUrl = shareModel.ogImgUrl
+                val linkerShareResult = DataMapper.getLinkerShareData(
+                    LinkerData().apply {
+                        type = LinkerData.WISHLIST_COLLECTION_TYPE
+                        uri = data.shareLink.redirectionUrl
+                        id = data.collection.id.toString()
+                        feature = shareModel.feature
+                        channel = shareModel.channel
+                        campaign = shareModel.campaign
+                        ogTitle = "Koleksi ${data.collection.name}"
+                        ogDescription = data.collection.owner.name
+                        if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                            ogImageUrl = shareModel.ogImgUrl
+                        }
                     }
-                })
+                )
 
                 LinkerManager.getInstance().executeShareRequest(
-                    LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
-                        override fun urlCreated(linkerShareResult: LinkerShareResult?) {
-                            val shareString = activity.getString(R.string.sharing_collection_desc, data.collection.name) + " ${linkerShareResult?.url}"
-                            shareModel.subjectName = data.collection.owner.name
-                            SharingUtil.executeShareIntent(
-                                shareModel,
-                                linkerShareResult,
-                                activity,
-                                view,
-                                shareString
-                            )
-                            collectionShareBottomSheet?.dismiss()
-                        }
-
-                        override fun onError(linkerError: LinkerError?) {
-                            activity.let {
-                                WishlistCollectionSharingUtils().openIntentShareDefaultUniversalSharing(
-                                    file = null,
-                                    shareProductName = data.collection.name,
-                                    shareDescription = data.collection.owner.name,
-                                    shareUrl = data.shareLink.redirectionUrl,
-                                    context = it
+                    LinkerUtils.createShareRequest(
+                        0,
+                        linkerShareResult,
+                        object : ShareCallback {
+                            override fun urlCreated(linkerShareResult: LinkerShareResult?) {
+                                val shareString = activity.getString(R.string.sharing_collection_desc, data.collection.name) + " ${linkerShareResult?.url}"
+                                shareModel.subjectName = data.collection.owner.name
+                                SharingUtil.executeShareIntent(
+                                    shareModel,
+                                    linkerShareResult,
+                                    activity,
+                                    view,
+                                    shareString
                                 )
+                                collectionShareBottomSheet?.dismiss()
+                                WishlistCollectionAnalytics.sendClickSharingChannelCollectionEvent(shareModel.socialMediaName ?: shareModel.platform, data.collection.id, userId)
+                            }
+
+                            override fun onError(linkerError: LinkerError?) {
+                                activity.let {
+                                    WishlistCollectionSharingUtils().openIntentShareDefaultUniversalSharing(
+                                        file = null,
+                                        shareProductName = data.collection.name,
+                                        shareDescription = data.collection.owner.name,
+                                        shareUrl = data.shareLink.redirectionUrl,
+                                        context = it
+                                    )
+                                }
                             }
                         }
-                    })
+                    )
                 )
             }
 
             override fun onCloseOptionClicked() {
-                // analytics?
+                WishlistCollectionAnalytics.sendClickCloseShareButtonCollectionEvent(data.collection.id, userId)
             }
         }
         collectionShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -99,6 +107,7 @@ class WishlistCollectionSharingUtils() {
             )
         }
         collectionShareBottomSheet?.show(childFragmentManager, fragment)
+        WishlistCollectionAnalytics.sendViewOnSharingChannelCollectionEvent(data.collection.id, userId)
     }
 
     fun mapParamImageGenerator(data: GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData.Data): WishlistCollectionParamModel {

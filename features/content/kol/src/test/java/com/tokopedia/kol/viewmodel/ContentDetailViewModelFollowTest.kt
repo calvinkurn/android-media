@@ -6,6 +6,7 @@ import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
 import com.tokopedia.kol.model.ContentDetailModelBuilder
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -100,4 +101,75 @@ class ContentDetailViewModelFollowTest {
             .assertThat(result)
             .isInstanceOf(ContentDetailResult.Failure::class.java)
     }
+
+    @Test
+    fun `when user follow user, given response success, then it should emit updated data`() {
+        val rowNumber = 0
+        val followAction = false
+        val mutationSuccess = builder.buildMutationSuccess()
+        val expectedResultFollow = builder.getUserFollowUnfollowModel(followAction, rowNumber)
+
+        coEvery { mockRepo.followUnfollowUser(followAction, any()) } returns mutationSuccess
+
+        viewModel.followUnFollowUser(followAction, "123", rowNumber)
+
+        val resultMutation = viewModel.followUserObservable.value
+
+        Assertions
+            .assertThat(resultMutation)
+            .isEqualTo(ContentDetailResult.Success(expectedResultFollow))
+    }
+
+    @Test
+    fun `when user follow user, given response fail, then it should emit error`() {
+        val rowNumber = 0
+        val followAction = false
+        val mutationError = Throwable("fail follow user")
+
+        coEvery { mockRepo.followUnfollowUser(followAction, any()) } throws mutationError
+
+        viewModel.followUnFollowUser(followAction, "123", rowNumber)
+
+        val resultMutation = viewModel.followUserObservable.value
+
+        Assertions
+            .assertThat(resultMutation)
+            .isInstanceOf(ContentDetailResult.Failure::class.java)
+    }
+
+    @Test
+    fun `when user unfollow user, given response success, then it should emit updated data`() {
+        val rowNumber = 0
+        val followAction = true
+        val mutationSuccess = builder.buildMutationSuccess()
+        val expectedResult = builder.getUserFollowUnfollowModel(followAction, rowNumber)
+
+        coEvery { mockRepo.followUnfollowUser(followAction, any()) } returns mutationSuccess
+
+        viewModel.followUnFollowUser(followAction, "123", rowNumber)
+
+        val resultMutation = viewModel.followUserObservable.value
+
+        Assertions
+            .assertThat(resultMutation)
+            .isEqualTo(ContentDetailResult.Success(expectedResult))
+    }
+
+    @Test
+    fun `when user unfollow user, given response fail, then it should emit error`() {
+        val rowNumber = 0
+        val followAction = true
+        val mutationError = Throwable("fail follow user")
+
+        coEvery { mockRepo.followUnfollowUser(followAction, any()) } throws mutationError
+
+        viewModel.followUnFollowUser(followAction, "123", rowNumber)
+
+        val resultMutation = viewModel.followUserObservable.value
+
+        Assertions
+            .assertThat(resultMutation)
+            .isInstanceOf(ContentDetailResult.Failure::class.java)
+    }
+
 }

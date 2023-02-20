@@ -29,6 +29,7 @@ import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateSSAShopListActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
@@ -44,6 +45,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -51,7 +53,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
+class AffiliatePromoFragment :
+    AffiliateBaseFragment<AffiliatePromoViewModel>(),
     AffiliatePromoInterface {
 
     @Inject
@@ -76,7 +79,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         super.onCreate(savedInstanceState)
         setObservers()
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -115,17 +117,37 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         view?.findViewById<ImageUnify>(R.id.icon_more)?.setOnClickListener {
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
+        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.setOnClickListener {
+            sendClickEvent()
+            context?.let {
+                startActivity(
+                    Intent(it, AffiliateSSAShopListActivity::class.java)
+                )
+            }
+        }
+        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.isVisible =
+            affiliatePromoViewModel.isAffiliateSSAShopEnabled()
         setupViewPager()
         showDefaultState()
         affiliatePromoViewModel.getAffiliateValidateUser()
     }
 
-    fun handleBack() {
-        if (view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.isVisible == true) (
-            activity as? AffiliateActivity)?.handleBackButton(
-            false
+    private fun sendClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_SSA_SHOP_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            "",
+            userSessionInterface.userId
         )
-        else showDefaultState()
+    }
+
+    fun handleBack() {
+        if (view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.isVisible == true) {
+            (activity as? AffiliateActivity)?.handleBackButton(false)
+        } else {
+            showDefaultState()
+        }
     }
 
     override fun onCreateView(
@@ -157,7 +179,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             viewPager?.adapter = adapter
             if (tabLayout != null && viewPager != null) {
                 TabLayoutMediator(tabLayout, viewPager) { _, _ ->
-
                 }.attach()
             }
             tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -173,7 +194,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                         adapter.setOnSelectView(tab)
                     }
                 }
-
             })
         }
         setCustomTabText(requireContext(), tabLayout)
@@ -200,21 +220,22 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                 if (visibility) {
                     hideAllElements()
                     view?.findViewById<Group>(R.id.promo_affiliate_progress_view)?.show()
-                } else
+                } else {
                     view?.findViewById<Group>(R.id.promo_affiliate_progress_view)?.gone()
+                }
             }
         }
 
         affiliatePromoViewModel.getErrorMessage().observe(this) { _ ->
             view?.rootView?.let {
                 Toaster.build(
-                    it, getString(R.string.affiliate_product_link_invalid),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR
+                    it,
+                    getString(R.string.affiliate_product_link_invalid),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
                 ).show()
             }
         }
-
-
 
         affiliatePromoViewModel.getValidateUserdata().observe(this) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
@@ -249,14 +270,11 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         }
     }
 
-
     private fun showDefaultState() {
-        view?.findViewById<Typography>(R.id.promotion_card_title)?.hide()
         view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.show()
     }
 
     private fun hideAllElements() {
-        view?.findViewById<Typography>(R.id.promotion_card_title)?.hide()
         view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.hide()
     }
 
@@ -282,11 +300,9 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         affiliatePromoViewModel = viewModel as AffiliatePromoViewModel
     }
 
-
     private fun disableSearchButton() {
         view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
     }
-
 
     private fun setCustomTabText(context: Context?, tabLayout: TabLayout?) {
         if (context != null && tabLayout != null) {
@@ -322,7 +338,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         }
     }
 
-
     override fun onSystemDown() {
         disableSearchButton()
         affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
@@ -356,7 +371,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     override fun enterLinkButtonClicked() {
         startActivity(Intent(context, AffiliatePromoSearchActivity::class.java))
     }
-
 }
 
 interface AffiliatePromoInterface {

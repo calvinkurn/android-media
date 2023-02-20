@@ -3,19 +3,25 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.clearText
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
+import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers.allOf
 
 class EditAddressRevampRobot {
 
@@ -42,7 +48,7 @@ class EditAddressRevampRobot {
 
     fun onClickChangePinpoint() {
         onView(withId(R.id.btn_change)).perform(click())
-        waitForData()
+        waitForData(3000)
     }
 
     fun onClickCariUlangAlamat() {
@@ -117,8 +123,8 @@ class EditAddressRevampRobot {
             .perform(click(), typeText(address), closeSoftKeyboard())
     }
 
-    private fun waitForData() {
-        Thread.sleep(1000L)
+    private fun waitForData(millis: Long = 1000L) {
+        Thread.sleep(millis)
     }
 
 }

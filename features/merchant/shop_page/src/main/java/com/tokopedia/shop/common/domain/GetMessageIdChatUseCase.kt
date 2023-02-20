@@ -7,33 +7,34 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
-import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetMessageIdChatUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ChatExistingChat>() {
+class GetMessageIdChatUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ChatExistingChat>() {
 
     private val _chatExistingChat = "query getExistingChat(\$shopIds: Int!){\n" +
-            "     chatExistingChat(toShopId: \$shopIds) {\n" +
-            "         messageId\n" +
-            "     }\n" +
-            " }"
+        "     chatExistingChat(toShopId: \$shopIds) {\n" +
+        "         messageId\n" +
+        "     }\n" +
+        " }"
 
     var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
-    val request by lazy{
+    val request by lazy {
         GraphqlRequest(_chatExistingChat, ChatExistingChat::class.java, params)
     }
 
     override suspend fun executeOnBackground(): ChatExistingChat {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build()
+        )
         gqlUseCase.addRequest(request)
         val gqlResponse = gqlUseCase.executeOnBackground()
 
         val gqlError = gqlResponse.getError(ChatExistingChat::class.java)
-        if (gqlError?.isNotEmpty() != true){
+        if (gqlError?.isNotEmpty() != true) {
             return gqlResponse.getData(ChatExistingChat::class.java)
         } else {
             throw MessageErrorException(gqlError.mapNotNull { it.message }.joinToString(separator = ", "))

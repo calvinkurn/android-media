@@ -1,8 +1,7 @@
 package com.tokopedia.chatbot.view.activity
 
 import android.content.Intent
-import android.content.res.Configuration
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,20 +20,24 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.pushnotif.PushNotification
 import com.tokopedia.pushnotif.data.constant.Constant
 
-
 /**
  * @author by nisie on 23/11/18.
  */
 class ChatbotActivity : BaseChatToolbarActivity() {
 
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data!!,true)
-        if(!list.isNullOrEmpty()){
-            bundle.putString(MESSAGE_ID,list[0])
+        val list = intent?.data?.let {
+            bundle.putString(DEEP_LINK_URI, it.toString())
+            UriUtil.destructureUri(
+                ApplinkConstInternalGlobal.CHAT_BOT + "/{id}",
+                it,
+                true
+            )
         }
-        bundle.putString(DEEP_LINK_URI,intent.data.toString())
+        if (!list.isNullOrEmpty()) {
+            bundle.putString(MESSAGE_ID, list[0])
+        }
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
         return fragment
@@ -44,7 +47,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
         const val MESSAGE_ID = "message_id"
         const val DEEP_LINK_URI = "deep_link_uri"
-
     }
 
     override fun onResume() {
@@ -58,13 +60,16 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         PushNotification.setIsChatBotWindowOpen(false)
     }
 
-    override fun getChatHeaderLayout() :Int = R.layout.chatbot_header_layout
+    override fun getChatHeaderLayout(): Int = R.layout.chatbot_header_layout
 
     override fun setupToolbar() {
         super.setupToolbar()
+        supportActionBar?.run {
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+        }
         val userAvatar = findViewById<ImageView>(R.id.user_avatar)
         userAvatar.apply {
-            if (userAvatar.isInDarkMode()){
+            if (userAvatar.isInDarkMode()) {
                 setImageResource(R.drawable.ic_tanya_dark_mode)
             } else {
                 setImageResource(R.drawable.chatbot_avatar)
@@ -83,8 +88,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
             badge.show()
             ImageHandler.loadImageFitCenter(this, badge, badgeImage?.light)
         }
-
-
     }
 
     override fun onNewIntent(intent: Intent) {

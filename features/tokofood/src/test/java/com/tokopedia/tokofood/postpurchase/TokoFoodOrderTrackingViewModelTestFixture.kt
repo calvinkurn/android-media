@@ -4,9 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderDetailMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderStatusMapper
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,6 +39,12 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     protected lateinit var getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>
 
     @RelaxedMockK
+    protected lateinit var getTokoChatUnreadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>
+
+    @RelaxedMockK
+    protected lateinit var getTokoChatConfigGroupBookingUseCase: TokoChatConfigGroupBookingUseCase
+
+    @RelaxedMockK
     protected lateinit var userSession: UserSessionInterface
 
     protected lateinit var tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
@@ -54,14 +58,16 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
         MockKAnnotations.init(this)
         tokoFoodOrderDetailMapper = TokoFoodOrderDetailMapper(mockk(relaxed = true), mockk(relaxed = true))
         tokoFoodOrderStatusMapper = TokoFoodOrderStatusMapper()
+        getTokoChatConfigGroupBookingUseCase = TokoChatConfigGroupBookingUseCase(mockk(relaxed = true))
         viewModel = TokoFoodOrderTrackingViewModel(
             userSession,
             savedStateHandle,
             CoroutineTestDispatchersProvider,
             getTokoFoodOrderDetailUseCase,
             getTokoFoodOrderStatusUseCase,
-            getDriverPhoneNumberUseCase
-        )
+            getDriverPhoneNumberUseCase,
+            getTokoChatUnreadChatCountUseCase
+        ) { getTokoChatConfigGroupBookingUseCase }
     }
 
     @After
@@ -71,6 +77,8 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
 
     companion object {
         const val ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
+        const val CHANNEL_ID = "1234567"
+        const val GOFOOD_ORDER_NUMBER = "f-52af8a53-86cc-40b7-bb98-cc3adde8e32a"
 
         const val ORDER_TRACKING_OTW_DESTINATION = "json/ordertracking/order_tracking_otw_destination.json"
         const val ORDER_TRACKING_CANCELLED = "json/ordertracking/orderdetailcancelled.json"

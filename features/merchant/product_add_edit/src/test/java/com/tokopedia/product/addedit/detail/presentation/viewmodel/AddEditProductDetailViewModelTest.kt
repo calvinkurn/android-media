@@ -19,10 +19,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
-import com.tokopedia.product.addedit.detail.presentation.model.SimilarProduct
-import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
+import com.tokopedia.product.addedit.detail.presentation.model.*
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -110,6 +107,9 @@ class AddEditProductDetailViewModelTest {
     lateinit var getDefaultCommissionRulesUseCase: GetDefaultCommissionRulesUseCase
 
     @RelaxedMockK
+    lateinit var getProductAutoMigratedStatusUseCase: GetProductAutoMigratedStatusUseCase
+
+    @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
 
     @RelaxedMockK
@@ -178,19 +178,22 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, CoroutineTestDispatchersProvider,
-                getNameRecommendationUseCase, getCategoryRecommendationUseCase,
-                validateProductUseCase,
-                validateProductNameUseCase,
-                getShopEtalaseUseCase,
-                annotationCategoryUseCase,
-                getAddProductPriceSuggestionUseCase,
-                getEditProductPriceSuggestionUseCase,
-                getProductTitleValidationUseCase,
-                getMaxStockThresholdUseCase,
-                getShopInfoUseCase,
-                getDefaultCommissionRulesUseCase,
-                userSession)
+        AddEditProductDetailViewModel(
+            provider, CoroutineTestDispatchersProvider,
+            getNameRecommendationUseCase, getCategoryRecommendationUseCase,
+            validateProductUseCase,
+            validateProductNameUseCase,
+            getShopEtalaseUseCase,
+            annotationCategoryUseCase,
+            getAddProductPriceSuggestionUseCase,
+            getEditProductPriceSuggestionUseCase,
+            getProductTitleValidationUseCase,
+            getMaxStockThresholdUseCase,
+            getShopInfoUseCase,
+            getDefaultCommissionRulesUseCase,
+            getProductAutoMigratedStatusUseCase,
+            userSession
+        )
     }
 
     @Test
@@ -373,7 +376,6 @@ class AddEditProductDetailViewModelTest {
 
         isValid = getIsTheLastOfWholeSaleTestResult(false, false)
         Assert.assertFalse(isValid)
-
     }
 
     @Test
@@ -755,7 +757,8 @@ class AddEditProductDetailViewModelTest {
         // create stub
         coEvery {
             getMaxStockThresholdUseCase.execute(anyString())
-        } returns MaxStockThresholdResponse(getIMSMeta = GetIMSMeta(
+        } returns MaxStockThresholdResponse(
+            getIMSMeta = GetIMSMeta(
                 data = Data(
                     maxStockThreshold = expectedMaxStockThreshold
                 ),
@@ -806,7 +809,8 @@ class AddEditProductDetailViewModelTest {
         // create stub
         coEvery {
             getMaxStockThresholdUseCase.execute(anyString())
-        } returns MaxStockThresholdResponse(getIMSMeta = GetIMSMeta(
+        } returns MaxStockThresholdResponse(
+            getIMSMeta = GetIMSMeta(
                 data = Data(
                     maxStockThreshold = expectedMaxStockThreshold
                 ),
@@ -1017,8 +1021,10 @@ class AddEditProductDetailViewModelTest {
 
         coEvery {
             validateProductUseCase.executeOnBackground().productValidateV3
-        } returns ProductValidateV3(isSuccess = true,
-                data = ProductValidateData(resultMessage, resultMessage))
+        } returns ProductValidateV3(
+            isSuccess = true,
+            data = ProductValidateData(resultMessage, resultMessage)
+        )
 
         viewModel.validateProductSkuInput("ESKU")
         val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
@@ -1088,7 +1094,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `set data to productNameInputFromNetwork and isProductNameInputError, the value should the same with the latest provided variable`()  {
+    fun `set data to productNameInputFromNetwork and isProductNameInputError, the value should the same with the latest provided variable`() {
         var productName: Success<String>? = null
         viewModel.setProductNameInputFromNetwork(productName)
         productName = Success("Error Message")
@@ -1104,13 +1110,15 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = coroutineTestRule.runBlockingTest  {
+    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = coroutineTestRule.runBlockingTest {
         val resultMessage = listOf("error 1", "error 2")
 
         coEvery {
             validateProductUseCase.executeOnBackground().productValidateV3
-        } returns ProductValidateV3(isSuccess = false,
-                data = ProductValidateData(resultMessage, resultMessage))
+        } returns ProductValidateV3(
+            isSuccess = false,
+            data = ProductValidateData(resultMessage, resultMessage)
+        )
 
         viewModel.validateProductSkuInput("ES KU")
         val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
@@ -1125,7 +1133,7 @@ class AddEditProductDetailViewModelTest {
     fun `When validate product sku error, should log error to crashlytics`() {
         coEvery { validateProductUseCase.executeOnBackground() } throws MessageErrorException("")
 
-        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        // Mock FirebaseCrashlytics because .getInstance() method is a static method
         mockkStatic(FirebaseCrashlytics::class)
 
         every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
@@ -1168,11 +1176,13 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == sampleProductPhotos.size &&
+        Assert.assertTrue(
+            viewModel.productInputModel.detailInputModel.pictureList.size == sampleProductPhotos.size &&
                 viewModel.productPhotoPaths.size == 3 &&
                 viewModel.productPhotoPaths[0] == sampleProductPhotos[0].urlThumbnail &&
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail &&
-                viewModel.productPhotoPaths.last() == imagePickerResult.last())
+                viewModel.productPhotoPaths.last() == imagePickerResult.last()
+        )
     }
 
     @Test
@@ -1189,10 +1199,12 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
+        Assert.assertTrue(
+            viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
                 viewModel.productInputModel.detailInputModel.pictureList.first().picID == sampleProductPhotos[1].picID &&
                 viewModel.productPhotoPaths.size == 1 &&
-                viewModel.productPhotoPaths == imagePickerResult)
+                viewModel.productPhotoPaths == imagePickerResult
+        )
     }
 
     @Test
@@ -1209,11 +1221,13 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
+        Assert.assertTrue(
+            viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
                 viewModel.productInputModel.detailInputModel.pictureList.first().picID == sampleProductPhotos[0].picID &&
                 viewModel.productPhotoPaths.size == 1 &&
-                viewModel.productPhotoPaths[0] == sampleProductPhotos[0].urlThumbnail)
+                viewModel.productPhotoPaths[0] == sampleProductPhotos[0].urlThumbnail
+        )
     }
 
     @Test
@@ -1230,10 +1244,12 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
+        Assert.assertTrue(
+            viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
                 viewModel.productPhotoPaths.size == 2 &&
                 viewModel.productPhotoPaths[0] == imagePickerResult[0] &&
-                viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail)
+                viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail
+        )
     }
 
     @Test
@@ -1244,6 +1260,57 @@ class AddEditProductDetailViewModelTest {
 
         val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editedStatus)
         Assert.assertTrue(newUpdatedPhotos.imageUrlOrPathList.size == 2)
+    }
+
+    @Test
+    fun `updateProductPhotos with expected edit picture`(){
+        //params
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "a/0/tkpd/102014.jpg")
+        val originalImage = arrayListOf("", "a/0/tkpd/102013.jpg", "")
+
+        //data existing
+        val list = listOf(
+            PictureInputModel(picID = "1", urlOriginal = "a/0/tkpd/102012.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
+            PictureInputModel(picID = "2", urlOriginal = "a/0/tkpd/102014.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
+        )
+        val sampleProductPhotos = list
+
+        //target
+        val targetImageUrlOrPathList = arrayListOf("thumb 1","a/0/tkpd/102013.jpg", "thumb 2")
+        val objectTarget = DetailInputModel().apply {
+            this.pictureList = list
+            this.imageUrlOrPathList = targetImageUrlOrPathList
+        }
+
+
+        viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
+        val actual = viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assertEquals(objectTarget, actual)
+    }
+
+    @Test
+    fun `updateProductPhotos with expected all new image`(){
+        //params
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "a/tkpd/102014.jpg")
+        val originalImage = arrayListOf("", "a/0/tkpd/102013.jpg", "")
+
+        //data existing
+        val list = listOf(
+            PictureInputModel(picID = "1", urlOriginal = "a/0/tkpd/102020.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
+            PictureInputModel(picID = "2", urlOriginal = "a/0/tkpd/102021.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
+        )
+        val sampleProductPhotos = list
+
+        //target
+        val targetImageUrlOrPathList = arrayListOf("a/0/tkpd/102012.jpg","a/0/tkpd/102013.jpg", "a/tkpd/102014.jpg")
+        val objectTarget = DetailInputModel().apply {
+            this.pictureList = emptyList()
+            this.imageUrlOrPathList = targetImageUrlOrPathList
+        }
+
+        viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
+        val actual = viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assertEquals(objectTarget, actual)
     }
 
     @Test
@@ -1272,7 +1339,6 @@ class AddEditProductDetailViewModelTest {
         }
 
         assertEquals(expectedResponse, actualResponse)
-
     }
 
     @Test
@@ -1297,7 +1363,7 @@ class AddEditProductDetailViewModelTest {
         coEvery {
             annotationCategoryUseCase.executeOnBackground()
         } returns AnnotationCategoryResponse(
-                DrogonAnnotationCategoryV2(annotationCategoryData)
+            DrogonAnnotationCategoryV2(annotationCategoryData)
         )
 
         viewModel.getAnnotationCategory("", "")
@@ -1319,24 +1385,26 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `getAnnotationCategory should return specification data when productId is provided`() = coroutineTestRule.runBlockingTest {
         val annotationCategoryData = listOf(
-                AnnotationCategoryData(
-                        variant = "Merek",
-                        data = listOf(
-                                Values("1", "Indomie", true, ""),
-                                Values("1", "Seedap", false, ""))
-                ),
-                AnnotationCategoryData(
-                        variant = "Rasa",
-                        data = listOf(
-                                Values("1", "Soto", false, ""),
-                                Values("1", "Bawang", true, ""))
+            AnnotationCategoryData(
+                variant = "Merek",
+                data = listOf(
+                    Values("1", "Indomie", true, ""),
+                    Values("1", "Seedap", false, "")
                 )
+            ),
+            AnnotationCategoryData(
+                variant = "Rasa",
+                data = listOf(
+                    Values("1", "Soto", false, ""),
+                    Values("1", "Bawang", true, "")
+                )
+            )
         )
 
         coEvery {
             annotationCategoryUseCase.executeOnBackground()
         } returns AnnotationCategoryResponse(
-                DrogonAnnotationCategoryV2(annotationCategoryData)
+            DrogonAnnotationCategoryV2(annotationCategoryData)
         )
 
         viewModel.getAnnotationCategory("", "11090")
@@ -1361,48 +1429,54 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = coroutineTestRule.runBlockingTest {
         val annotationCategoryData = listOf(
-                AnnotationCategoryData(
-                        variant = "Merek",
-                        data = listOf(
-                                Values("1", "Indomie", true, ""),
-                                Values("1", "Seedap", false, ""))
-                ),
-                AnnotationCategoryData(
-                        variant = "Rasa1",
-                        data = listOf(
-                                Values("1", "Soto1", false, ""),
-                                Values("1", "Bawang1", true, ""))
-                ),
-                AnnotationCategoryData(
-                        variant = "Rasa2",
-                        data = listOf(
-                                Values("1", "Soto2", false, ""),
-                                Values("1", "Bawang2", true, ""))
-                ),
-                AnnotationCategoryData(
-                        variant = "Rasa3",
-                        data = listOf(
-                                Values("1", "Soto3", false, ""),
-                                Values("1", "Bawang3", true, ""))
-                ),
-                AnnotationCategoryData(
-                        variant = "Rasa4",
-                        data = listOf(
-                                Values("1", "Soto4", false, ""),
-                                Values("1", "Bawang4", true, ""))
-                ),
-                AnnotationCategoryData(
-                        variant = "Rasa5",
-                        data = listOf(
-                                Values("1", "Soto5", false, ""),
-                                Values("1", "Bawang5", true, ""))
+            AnnotationCategoryData(
+                variant = "Merek",
+                data = listOf(
+                    Values("1", "Indomie", true, ""),
+                    Values("1", "Seedap", false, "")
                 )
+            ),
+            AnnotationCategoryData(
+                variant = "Rasa1",
+                data = listOf(
+                    Values("1", "Soto1", false, ""),
+                    Values("1", "Bawang1", true, "")
+                )
+            ),
+            AnnotationCategoryData(
+                variant = "Rasa2",
+                data = listOf(
+                    Values("1", "Soto2", false, ""),
+                    Values("1", "Bawang2", true, "")
+                )
+            ),
+            AnnotationCategoryData(
+                variant = "Rasa3",
+                data = listOf(
+                    Values("1", "Soto3", false, ""),
+                    Values("1", "Bawang3", true, "")
+                )
+            ),
+            AnnotationCategoryData(
+                variant = "Rasa4",
+                data = listOf(
+                    Values("1", "Soto4", false, ""),
+                    Values("1", "Bawang4", true, "")
+                )
+            ),
+            AnnotationCategoryData(
+                variant = "Rasa5",
+                data = listOf(
+                    Values("1", "Soto5", false, ""),
+                    Values("1", "Bawang5", true, "")
+                )
+            )
         )
 
         coEvery {
             annotationCategoryUseCase.executeOnBackground()
         } returns AnnotationCategoryResponse(
-                DrogonAnnotationCategoryV2(annotationCategoryData)
+            DrogonAnnotationCategoryV2(annotationCategoryData)
         )
 
         every { provider.getProductSpecificationCounter(any()) } returns ", +1 lainnya"
@@ -1443,12 +1517,13 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
         val annotationCategoryData = listOf(
-                AnnotationCategoryData(
-                        variant = "Merek",
-                        data = listOf(
-                                Values("1", "Indomie", false, ""),
-                                Values("1", "Seedap", false, ""))
+            AnnotationCategoryData(
+                variant = "Merek",
+                data = listOf(
+                    Values("1", "Indomie", false, ""),
+                    Values("1", "Seedap", false, "")
                 )
+            )
         )
         viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
         val specificationText = viewModel.specificationText.getOrAwaitValue()
@@ -1550,7 +1625,7 @@ class AddEditProductDetailViewModelTest {
     fun `getProductPriceRecommendation should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
         coEvery {
             getEditProductPriceSuggestionUseCase.executeOnBackground()
-                    .priceSuggestionSuggestedPriceGet
+                .priceSuggestionSuggestedPriceGet
         } returns PriceSuggestionSuggestedPriceGet(suggestedPrice = 1000.0)
 
         viewModel.getProductPriceRecommendation()
@@ -1568,7 +1643,7 @@ class AddEditProductDetailViewModelTest {
         val expectedErrorMessage = "error happen"
         coEvery {
             getEditProductPriceSuggestionUseCase.executeOnBackground()
-                    .priceSuggestionSuggestedPriceGet
+                .priceSuggestionSuggestedPriceGet
         } throws MessageErrorException(expectedErrorMessage)
 
         viewModel.getProductPriceRecommendation()
@@ -1591,7 +1666,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.setProductNameInput("A")
 
         val mProductNameInputLiveData = viewModel
-                .getPrivateProperty<AddEditProductDetailViewModel, MutableLiveData<String>>("mProductNameInputLiveData")
+            .getPrivateProperty<AddEditProductDetailViewModel, MutableLiveData<String>>("mProductNameInputLiveData")
         assert(mProductNameInputLiveData?.value.orEmpty().isNotEmpty())
     }
 
@@ -1605,9 +1680,11 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `when updateHasRequiredSpecification updated with SIGNAL_STATUS_VARIANT, should update hasRequiredSpecification`() {
-        val annotationData = listOf(AnnotationCategoryData(
-            variant = SIGNAL_STATUS_VARIANT
-        ))
+        val annotationData = listOf(
+            AnnotationCategoryData(
+                variant = SIGNAL_STATUS_VARIANT
+            )
+        )
         viewModel.updateHasRequiredSpecification(annotationData)
         val result = viewModel.hasRequiredSpecification.getOrAwaitValue()
 
@@ -1625,12 +1702,16 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `when validateSelectedSpecificationList, should return valid result`() {
-        val annotationData = listOf(AnnotationCategoryData(
-            variant = SIGNAL_STATUS_VARIANT
-        ))
-        val selectedSpec = listOf(SpecificationInputModel(
-            specificationVariant = SIGNAL_STATUS_VARIANT
-        ))
+        val annotationData = listOf(
+            AnnotationCategoryData(
+                variant = SIGNAL_STATUS_VARIANT
+            )
+        )
+        val selectedSpec = listOf(
+            SpecificationInputModel(
+                specificationVariant = SIGNAL_STATUS_VARIANT
+            )
+        )
 
         val resultEmptyState = viewModel.validateSelectedSpecificationList()
         viewModel.updateHasRequiredSpecification(annotationData)
@@ -1734,10 +1815,10 @@ class AddEditProductDetailViewModelTest {
             viewModel.validateProductMinOrderInput("", "")
         }
         runValidationAndProvideMessage(provider::getEmptyOrderQuantityErrorMessage, null) {
-            viewModel.validateProductMinOrderInput("", (MIN_MIN_ORDER_QUANTITY-1).toString())
+            viewModel.validateProductMinOrderInput("", (MIN_MIN_ORDER_QUANTITY - 1).toString())
         }
         runValidationAndProvideMessage(provider::getMinOrderExceedLimitQuantityErrorMessage, null) {
-            viewModel.validateProductMinOrderInput("", (MAX_MIN_ORDER_QUANTITY+1).toString())
+            viewModel.validateProductMinOrderInput("", (MAX_MIN_ORDER_QUANTITY + 1).toString())
         }
         runValidationAndProvideMessage(provider::getEmptyOrderQuantityErrorMessage, null) {
             viewModel.validateProductMinOrderInput("2", "2")
@@ -1755,7 +1836,7 @@ class AddEditProductDetailViewModelTest {
             viewModel.validatePreOrderDurationInput(0, "")
         }
         runValidationAndProvideMessage(provider::getMinLimitPreorderDurationErrorMessage, null) {
-            viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "${AddEditProductDetailConstants.MIN_PREORDER_DURATION-1}")
+            viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "${AddEditProductDetailConstants.MIN_PREORDER_DURATION - 1}")
         }
         runValidationAndProvideMessage(provider::getMaxDaysLimitPreorderDuratioErrorMessage, null) {
             viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_DAY, "${AddEditProductDetailConstants.MAX_PREORDER_DAYS + 1}")
@@ -1780,16 +1861,16 @@ class AddEditProductDetailViewModelTest {
     fun `getAddProductPriceSuggestion should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
         coEvery {
             getAddProductPriceSuggestionUseCase.executeOnBackground()
-                    .priceSuggestionByKeyword
+                .priceSuggestionByKeyword
         } returns PriceSuggestionByKeyword(
-                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
-                        suggestedPrice = 8000.0,
-                        suggestedPriceMin = 6000.0,
-                        suggestedPriceMax = 10000.0
-                )
+            summary = PriceSuggestionSuggestedPriceByKeywordSummary(
+                suggestedPrice = 8000.0,
+                suggestedPriceMin = 6000.0,
+                suggestedPriceMax = 10000.0
+            )
         )
 
-        viewModel.getAddProductPriceSuggestion("keyword","categoryL3")
+        viewModel.getAddProductPriceSuggestion("keyword", "categoryL3")
         val result = viewModel.addProductPriceSuggestion.getOrAwaitValue()
 
         coVerify {
@@ -1804,10 +1885,10 @@ class AddEditProductDetailViewModelTest {
         val expectedErrorMessage = "error happen"
         coEvery {
             getAddProductPriceSuggestionUseCase.executeOnBackground()
-                    .priceSuggestionByKeyword
+                .priceSuggestionByKeyword
         } throws MessageErrorException(expectedErrorMessage)
 
-        viewModel.getAddProductPriceSuggestion("keyword","categoryL3")
+        viewModel.getAddProductPriceSuggestion("keyword", "categoryL3")
         val resultErrorMessage = viewModel.addProductPriceSuggestionError.getOrAwaitValue()
 
         assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
@@ -1816,11 +1897,12 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when the list of similar product from response is empty the expect list of similar product to be empty`() {
         val testData = PriceSuggestionByKeyword(
-                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
-                        suggestedPrice = 8000.0,
-                        suggestedPriceMin = 6000.0,
-                        suggestedPriceMax = 10000.0
-                ), suggestions = listOf()
+            summary = PriceSuggestionSuggestedPriceByKeywordSummary(
+                suggestedPrice = 8000.0,
+                suggestedPriceMin = 6000.0,
+                suggestedPriceMax = 10000.0
+            ),
+            suggestions = listOf()
         )
         val actualResult = viewModel.mapAddPriceSuggestionToPriceSuggestionUiModel(testData)
         assertTrue(actualResult.similarProducts.isEmpty())
@@ -1836,34 +1918,34 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when mapping add price suggestion model to ui model expect legit result`() {
         val testData = PriceSuggestionByKeyword(
-                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
-                        suggestedPrice = 8000.0,
-                        suggestedPriceMin = 6000.0,
-                        suggestedPriceMax = 10000.0
-                ),
-                suggestions = listOf(
-                        PriceSuggestionSuggestedPriceGetResponseV2(
-                                productId = "productId",
-                                displayPrice = 2000.0,
-                                imageURL = "imageUrl",
-                                totalSold = 10,
-                                rating = 4.5
-                        )
-                )
-        )
-        val expectedResult = PriceSuggestion(
+            summary = PriceSuggestionSuggestedPriceByKeywordSummary(
                 suggestedPrice = 8000.0,
                 suggestedPriceMin = 6000.0,
-                suggestedPriceMax = 10000.0,
-                similarProducts = listOf(
-                        SimilarProduct(
-                                productId = "productId",
-                                displayPrice = 2000.0,
-                                imageURL = "imageUrl",
-                                totalSold = 10,
-                                rating = 4.5
-                        )
+                suggestedPriceMax = 10000.0
+            ),
+            suggestions = listOf(
+                PriceSuggestionSuggestedPriceGetResponseV2(
+                    productId = "productId",
+                    displayPrice = 2000.0,
+                    imageURL = "imageUrl",
+                    totalSold = 10,
+                    rating = 4.5
                 )
+            )
+        )
+        val expectedResult = PriceSuggestion(
+            suggestedPrice = 8000.0,
+            suggestedPriceMin = 6000.0,
+            suggestedPriceMax = 10000.0,
+            similarProducts = listOf(
+                SimilarProduct(
+                    productId = "productId",
+                    displayPrice = 2000.0,
+                    imageURL = "imageUrl",
+                    totalSold = 10,
+                    rating = 4.5
+                )
+            )
         )
         val actualResult = viewModel.mapAddPriceSuggestionToPriceSuggestionUiModel(testData)
         assertEquals(expectedResult, actualResult)
@@ -1872,36 +1954,36 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when mapping edit price suggestion to ui model expect legit result`() {
         val testData = PriceSuggestionSuggestedPriceGet(
-                suggestedPrice = 8000.0,
-                suggestedPriceMin = 6000.0,
-                suggestedPriceMax = 10000.0,
-                price = 2000.0,
-                title = "title",
-                productRecommendation = listOf(
-                        ProductRecommendationResponse(
-                                productID = "productId",
-                                price = 2000.0,
-                                imageURL = "imageUrl",
-                                sold = 10,
-                                rating = 4.5,
-                                title = "title"
-                        )
+            suggestedPrice = 8000.0,
+            suggestedPriceMin = 6000.0,
+            suggestedPriceMax = 10000.0,
+            price = 2000.0,
+            title = "title",
+            productRecommendation = listOf(
+                ProductRecommendationResponse(
+                    productID = "productId",
+                    price = 2000.0,
+                    imageURL = "imageUrl",
+                    sold = 10,
+                    rating = 4.5,
+                    title = "title"
                 )
+            )
         )
         val expectedResult = PriceSuggestion(
-                suggestedPrice = 8000.0,
-                suggestedPriceMin = 6000.0,
-                suggestedPriceMax = 10000.0,
-                similarProducts = listOf(
-                        SimilarProduct(
-                                productId = "productId",
-                                displayPrice = 2000.0,
-                                imageURL = "imageUrl",
-                                title = "title",
-                                totalSold = 10,
-                                rating = 4.5
-                        )
+            suggestedPrice = 8000.0,
+            suggestedPriceMin = 6000.0,
+            suggestedPriceMax = 10000.0,
+            similarProducts = listOf(
+                SimilarProduct(
+                    productId = "productId",
+                    displayPrice = 2000.0,
+                    imageURL = "imageUrl",
+                    title = "title",
+                    totalSold = 10,
+                    rating = 4.5
                 )
+            )
         )
         val actualResult = viewModel.mapEditPriceSuggestionToPriceSuggestionUiModel(testData)
         assertEquals(expectedResult, actualResult)
@@ -1921,8 +2003,8 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when editing product expect the price suggestion range compiled from productPriceRecommendation`() {
         mProductPriceRecommendation.value = PriceSuggestionSuggestedPriceGet(
-                suggestedPriceMin = 10000.0,
-                suggestedPriceMax = 20000.0
+            suggestedPriceMin = 10000.0,
+            suggestedPriceMax = 20000.0
         )
         val expectedResult = 10000.0 to 20000.0
         val actualResult = viewModel.getProductPriceSuggestionRange(true)
@@ -1932,10 +2014,10 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when adding product expect the price suggestion range compiled from addProductPriceSuggestion`() {
         mAddProductPriceSuggestion.value = PriceSuggestionByKeyword(
-                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
-                        suggestedPriceMin = 10000.0,
-                        suggestedPriceMax = 20000.0
-                )
+            summary = PriceSuggestionSuggestedPriceByKeywordSummary(
+                suggestedPriceMin = 10000.0,
+                suggestedPriceMax = 20000.0
+            )
         )
         val expectedResult = 10000.0 to 20000.0
         val actualResult = viewModel.getProductPriceSuggestionRange(false)
@@ -1986,10 +2068,10 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when product is active, new , and price suggestion is not empty expect price suggestion layout visible`() {
         val isVisible = viewModel.isPriceSuggestionLayoutVisible(
-                isRangeEmpty = false,
-                productStatus = ProductStatus.STATUS_ACTIVE,
-                isNew = true,
-                hasVariant = false
+            isRangeEmpty = false,
+            productStatus = ProductStatus.STATUS_ACTIVE,
+            isNew = true,
+            hasVariant = false
         )
         assertTrue(isVisible)
     }
@@ -1997,10 +2079,10 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when product price suggestion is empty expect hidden price suggestion layout `() {
         val isVisible = viewModel.isPriceSuggestionLayoutVisible(
-                isRangeEmpty = true,
-                productStatus = ProductStatus.STATUS_ACTIVE,
-                isNew = true,
-                hasVariant = false
+            isRangeEmpty = true,
+            productStatus = ProductStatus.STATUS_ACTIVE,
+            isNew = true,
+            hasVariant = false
         )
         assertFalse(isVisible)
     }
@@ -2008,10 +2090,10 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when product is not active expect hidden price suggestion layout `() {
         val isVisible = viewModel.isPriceSuggestionLayoutVisible(
-                isRangeEmpty = false,
-                productStatus = ProductStatus.STATUS_INACTIVE,
-                isNew = true,
-                hasVariant = false
+            isRangeEmpty = false,
+            productStatus = ProductStatus.STATUS_INACTIVE,
+            isNew = true,
+            hasVariant = false
         )
         assertFalse(isVisible)
     }
@@ -2019,10 +2101,10 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when product is second hand expect hidden price suggestion layout`() {
         val isVisible = viewModel.isPriceSuggestionLayoutVisible(
-                isRangeEmpty = false,
-                productStatus = ProductStatus.STATUS_ACTIVE,
-                isNew = false,
-                hasVariant = false
+            isRangeEmpty = false,
+            productStatus = ProductStatus.STATUS_ACTIVE,
+            isNew = false,
+            hasVariant = false
         )
         assertFalse(isVisible)
     }
@@ -2030,10 +2112,10 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `when product has variant expect hidden price suggestion layout`() {
         val isVisible = viewModel.isPriceSuggestionLayoutVisible(
-                isRangeEmpty = false,
-                productStatus = ProductStatus.STATUS_ACTIVE,
-                isNew = true,
-                hasVariant = true
+            isRangeEmpty = false,
+            productStatus = ProductStatus.STATUS_ACTIVE,
+            isNew = true,
+            hasVariant = true
         )
         assertFalse(isVisible)
     }
@@ -2190,7 +2272,35 @@ class AddEditProductDetailViewModelTest {
         assertFalse(viewModel.isSavingPriceAdjustment)
         assertFalse(viewModel.isPriceSuggestionRangeEmpty)
         assertFalse(viewModel.isFreeOfServiceFee)
-        assertEquals(0,viewModel.shopTier)
+        assertEquals(0, viewModel.shopTier)
+    }
+
+    @Test
+    fun `getProductAutoMigratedStatus should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            getProductAutoMigratedStatusUseCase.executeOnBackground()
+        } returns GetProductAutoMigratedStatusResponse(
+            IsProductAutoMigrated(
+                ProductMigrateStatus(isAutoMigrated = true)
+            )
+        )
+        viewModel.getProductAutoMigratedStatus("productId")
+        val result = viewModel.productMigrateStatus.getOrAwaitValue()
+        coVerify {
+            getProductAutoMigratedStatusUseCase.executeOnBackground()
+        }
+        assertTrue(result.isAutoMigrated)
+    }
+
+    @Test
+    fun `getProductAutoMigratedStatus should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+        val expectedErrorMessage = "error happen"
+        coEvery {
+            getProductAutoMigratedStatusUseCase.executeOnBackground()
+        } throws MessageErrorException(expectedErrorMessage)
+        viewModel.getProductAutoMigratedStatus("productId")
+        val resultErrorMessage = viewModel.productMigrateStatusError.getOrAwaitValue()
+        assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(
@@ -2210,7 +2320,7 @@ class AddEditProductDetailViewModelTest {
         negativeKeyword: Boolean,
         errorMessageBlacklisted: String,
         errorMessageTypo: String,
-        errorMessageNegative: String,
+        errorMessageNegative: String
     ) {
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
@@ -2241,8 +2351,8 @@ class AddEditProductDetailViewModelTest {
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {
         return listOf(
-                PictureInputModel(picID = "1", urlOriginal = "local/path/to/image1.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
-                PictureInputModel(picID = "2", urlOriginal = "local/path/to/image2.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
+            PictureInputModel(picID = "1", urlOriginal = "local/path/to/image1.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
+            PictureInputModel(picID = "2", urlOriginal = "local/path/to/image2.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
         )
     }
 
@@ -2253,14 +2363,14 @@ class AddEditProductDetailViewModelTest {
         }
     }
 
-    private fun <T: Any> runValidationAndProvideMessage(provider: KFunction0<String?>, value: String?, funcToCall: () -> T): T {
+    private fun <T : Any> runValidationAndProvideMessage(provider: KFunction0<String?>, value: String?, funcToCall: () -> T): T {
         every { provider() } returns value
         val result = funcToCall.invoke()
         verify { provider() }
         return result
     }
 
-    private fun <T: Any> runValidationAndProvideMessage(
+    private fun <T : Any> runValidationAndProvideMessage(
         provider: KFunction1<Int, String>,
         arg: Int,
         value: String,
@@ -2271,5 +2381,4 @@ class AddEditProductDetailViewModelTest {
         verify { provider(arg) }
         return result
     }
-
 }

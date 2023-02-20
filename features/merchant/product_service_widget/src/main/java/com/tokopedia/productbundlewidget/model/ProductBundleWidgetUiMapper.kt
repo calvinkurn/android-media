@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_STATUS_ACTIVE
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
@@ -73,14 +74,15 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             } else {
                 bundleItem?.minOrder.orZero()
             }
-            val bundlePrice = bundleItem?.getPreviewBundlePrice().orZero()
-            val originalPrice = bundleItem?.getPreviewOriginalPrice().orZero()
+
+            val bundlePrice = bundleItem?.getPreviewBundlePrice().orZero() * minOrder
+            val originalPrice = bundleItem?.getPreviewOriginalPrice().orZero() * minOrder
             val preorder = getPreorderWording(context, it.preorder)
             val productSoldInfo = it.getProductSoldInfo()
 
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, it.bundleItems).apply {
                 this.minOrder = minOrder
-                this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder)
+                this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder.getNumberFormatted())
                 this.bundleId = it.bundleID.toString()
                 this.preOrderInfo = preorder.orEmpty()
                 this.isPreOrder = !preorder.isNullOrBlank()
@@ -94,17 +96,14 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
         bundleInfo: BundleInfo,
         shopInfo: BundleShopUiModel?
     ): List<BundleDetailUiModel> {
-        val bundlePrice = sumOf { it.getPreviewBundlePrice() }
-        val originalPrice = sumOf { it.getPreviewOriginalPrice() }
-        var productCount = minOfOrNull { it.getPreviewMinOrder() }.orZero()
-        if (productCount.isZero()) productCount = MIN_DISPLAYED_PRODUCT_COUNT
+        val bundlePrice = sumOf { it.getMultipliedBundlePrice() }
+        val originalPrice = sumOf { it.getMultipliedOriginalPrice() }
         val preorder = getPreorderWording(context, bundleInfo.preorder)
         val productSoldInfo = bundleInfo.getProductSoldInfo()
 
         return listOf(
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this).apply {
                 this.bundleId = bundleInfo.bundleID.toString()
-                this.minOrder = productCount
                 this.preOrderInfo = preorder.orEmpty()
                 this.isPreOrder = !preorder.isNullOrBlank()
                 this.useProductSoldInfo = productSoldInfo.isNotBlank()
@@ -132,7 +131,8 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
                     productId = it.productID.toString(),
                     productName = it.name,
                     productImageUrl = it.picURL,
-                    hasVariant = it.children.isNotEmpty()
+                    hasVariant = it.children.isNotEmpty(),
+                    productCount = it.getPreviewMinOrder()
                 )
             }
         )
@@ -163,7 +163,6 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
     }
 
     companion object {
-        private const val MIN_DISPLAYED_PRODUCT_COUNT = 1
         private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
         private const val PRODUCT_SOLD_INFO_MIN_THRESHOLD = 1
     }

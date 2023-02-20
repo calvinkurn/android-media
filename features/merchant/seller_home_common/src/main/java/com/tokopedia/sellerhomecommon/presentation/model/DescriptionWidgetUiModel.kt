@@ -7,26 +7,27 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 20/05/20
  */
 
-data class DescriptionWidgetUiModel (
-        override val id: String,
-        override val widgetType: String,
-        override val title: String,
-        override val subtitle: String,
-        override val tooltip: TooltipUiModel?,
-        override val tag: String,
-        override val appLink: String,
-        override val dataKey: String,
-        override val ctaText: String,
-        override val gridSize: Int,
-        override val isShowEmpty: Boolean,
-        override var data: BaseDataUiModel?,
-        override var impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean,
-        override var isLoading: Boolean,
-        override var isFromCache: Boolean,
-        override var isNeedToBeRemoved: Boolean = false,
-        override var showLoadingState: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel
+data class DescriptionWidgetUiModel(
+    override val id: String,
+    override val widgetType: String,
+    override val title: String,
+    override val subtitle: String,
+    override val tooltip: TooltipUiModel?,
+    override val tag: String,
+    override val appLink: String,
+    override val dataKey: String,
+    override val ctaText: String,
+    override val gridSize: Int,
+    override val isShowEmpty: Boolean,
+    override var data: BaseDataUiModel?,
+    override var impressHolder: ImpressHolder = ImpressHolder(),
+    override var isLoaded: Boolean,
+    override var isLoading: Boolean,
+    override var isFromCache: Boolean,
+    override var isNeedToBeRemoved: Boolean = false,
+    override var showLoadingState: Boolean = false,
+    override var emptyState: WidgetEmptyStateUiModel,
+    override var useRealtime: Boolean = false,
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

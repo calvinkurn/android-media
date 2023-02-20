@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_referral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_affiliate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_adult_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_open_bank_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_pay_later"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_register_mitra"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_upgrade_merchant_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+        <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
             android:id="@+id/benefit_apply_for_fund"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

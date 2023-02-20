@@ -2,7 +2,7 @@ package com.tokopedia.feedcomponent.domain.usecase
 
 import com.tokopedia.feedcomponent.data.pojo.mention.GetMentionableUserData
 import com.tokopedia.feedcomponent.domain.mapper.MentionableUserMapper
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toUrlParams
@@ -20,9 +20,9 @@ class GetMentionableUserUseCase @Inject constructor(
         @Named(SEARCH_PROFILE_QUERY) private val query: String,
         private val graphqlUseCase: GraphqlUseCase,
         private val mentionableUserMapper: MentionableUserMapper
-) : UseCase<List<MentionableUserViewModel>>() {
+) : UseCase<List<MentionableUserModel>>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<List<MentionableUserViewModel>> {
+    override fun createObservable(requestParams: RequestParams): Observable<List<MentionableUserModel>> {
         val graphqlRequest = GraphqlRequest(query, GetMentionableUserData::class.java, requestParams.parameters)
 
         graphqlUseCase.clearRequest()

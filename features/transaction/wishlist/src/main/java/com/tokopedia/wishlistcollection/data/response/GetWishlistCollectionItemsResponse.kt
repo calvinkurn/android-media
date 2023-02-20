@@ -67,7 +67,10 @@ data class GetWishlistCollectionItemsResponse(
 		val page: Int = 0,
 
 		@SerializedName("items")
-		val items: List<ItemsItem> = emptyList()
+		val items: List<ItemsItem> = emptyList(),
+
+        @SerializedName("add_wishlist_bulk_config")
+        val addWishlistBulkConfig: AddWishlistBulkConfig = AddWishlistBulkConfig()
 	) {
 		data class Ticker(
 
@@ -424,5 +427,18 @@ data class GetWishlistCollectionItemsResponse(
 				val minimum: String = ""
 			)
 		}
+
+        data class AddWishlistBulkConfig(
+            @SerializedName("max_bulk")
+            val maxBulk: Long = 0L,
+
+            @SerializedName("toaster")
+            val addWishlistBulkToaster: AddWishlistBulkToaster = AddWishlistBulkToaster()
+        ) {
+            data class AddWishlistBulkToaster(
+                @SerializedName("message")
+                val message: String = ""
+            )
+        }
 	}
 }

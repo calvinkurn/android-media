@@ -129,24 +129,26 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     protected open fun convertToImageAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = gson.fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson(item.attachment.attributes,
                 ImageAnnouncementPojo::class.java)
-        val imageAnnouncement = ImageAnnouncementUiModel(
-                messageId = item.msgId.toString(),
-                fromUid = item.senderId.toString(),
+        return ImageAnnouncementUiModel(
+                messageId = item.msgId,
+                fromUid = item.senderId,
                 from = item.senderName,
                 fromRole = item.role,
-                attachmentId = item.attachment?.id ?: "",
-                attachmentType = item.attachment?.type.toString(),
+                attachmentId = item.attachment.id,
+                attachmentType = item.attachment.type.toString(),
                 replyTime = item.replyTime,
                 imageUrl = pojoAttribute.imageUrl,
                 redirectUrl = pojoAttribute.url,
                 isHideBanner = pojoAttribute.isHideBanner,
                 message = item.msg,
                 broadcastBlastId = item.blastId,
-                source = item.source
+                source = item.source,
+                broadcastCtaUrl = pojoAttribute.broadcastCtaUrl,
+                broadcastCtaText = pojoAttribute.broadcastCtaText,
+                broadcastCtaLabel = pojoAttribute.broadcastCtaLabel
         )
-        return imageAnnouncement
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {

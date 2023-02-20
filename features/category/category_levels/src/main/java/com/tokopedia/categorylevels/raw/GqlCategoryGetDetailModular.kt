@@ -41,6 +41,7 @@ const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailMo
         background
         dynamic
         categoryDetail
+        backgroundImageURL
       }
       data{
         ... on CategoryModularChildrenNav{

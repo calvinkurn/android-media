@@ -528,8 +528,8 @@ class RechargeCCViewModelTest {
 
     private fun getMockBankList() : List<RechargeCCBank> {
         val bankList = mutableListOf<RechargeCCBank>()
-        bankList.add(RechargeCCBank("CITIBANK", "https://ecs7.tokopedia.net/img/recharge/operator/esia.png"))
-        bankList.add(RechargeCCBank("VISA", "https://ecs7.tokopedia.net/img/attachment/2019/10/8/8966534/8966534_172ecb33-180b-422a-b694-ffeb82ec95b6.png"))
+        bankList.add(RechargeCCBank("CITIBANK", "https://images.tokopedia.net/img/recharge/operator/esia.png"))
+        bankList.add(RechargeCCBank("VISA", "https://images.tokopedia.net/img/attachment/2019/10/8/8966534/8966534_172ecb33-180b-422a-b694-ffeb82ec95b6.png"))
 
         return bankList
     }

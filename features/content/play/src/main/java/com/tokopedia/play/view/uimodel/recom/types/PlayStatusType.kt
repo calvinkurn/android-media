@@ -7,7 +7,8 @@ package com.tokopedia.play.view.uimodel.recom.types
 enum class PlayStatusType(val value: String) {
     Active("ACTIVE"),
     Freeze("FREEZE"),
-    Banned("BANNED");
+    Banned("BANNED"),
+    Archived("ARCHIVED");
 
     val isFreeze: Boolean
         get() = this == Freeze
@@ -17,6 +18,9 @@ enum class PlayStatusType(val value: String) {
 
     val isActive: Boolean
         get() = this == Active
+
+    val isArchive: Boolean
+        get() = this == Archived
 
     companion object {
 

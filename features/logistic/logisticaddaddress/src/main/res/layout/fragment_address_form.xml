@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:isScrollContainer="false"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 

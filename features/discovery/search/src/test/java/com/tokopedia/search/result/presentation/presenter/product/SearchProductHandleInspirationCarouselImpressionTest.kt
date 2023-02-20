@@ -8,6 +8,9 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
@@ -34,7 +37,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            LAYOUT_INSPIRATION_CAROUSEL_LIST,
             true
         )
         `When inspiration carousel product impressed`(inspirationCarouselProduct)
@@ -51,7 +54,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            LAYOUT_INSPIRATION_CAROUSEL_LIST,
             false
         )
         `When inspiration carousel product impressed`(inspirationCarouselProduct)
@@ -93,7 +96,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
     }
 
     private fun `Given class name`() {
-        every { productListView.className } returns className
+        every { classNameProvider.className } returns className
     }
 
     private fun `Given view already load data`() {
@@ -108,7 +111,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
 
     private fun `Then verify inspiration carousel product top ads impressed`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            productListView.className
+            classNameProvider.className
 
             topAdsUrlHitter.hitImpressionUrl(
                 className,
@@ -123,23 +126,23 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
 
     private fun `Then verify interaction for Inspiration Carousel Product List impression`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            productListView.trackEventImpressionInspirationCarouselListItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselListItem(product)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventImpressionInspirationCarouselGridItem(product)
-            productListView.trackEventImpressionInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselGridItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselChipsItem(product)
         }
     }
 
     private fun `Then verify interaction for Inspiration Carousel Product Grid impression`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            productListView.trackEventImpressionInspirationCarouselGridItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselGridItem(product)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventImpressionInspirationCarouselListItem(product)
-            productListView.trackEventImpressionInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselListItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselChipsItem(product)
         }
     }
 
@@ -147,12 +150,12 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         product: InspirationCarouselDataView.Option.Product
     ) {
         verify {
-            productListView.trackEventImpressionInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselChipsItem(product)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventImpressionInspirationCarouselListItem(product)
-            productListView.trackEventImpressionInspirationCarouselGridItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselListItem(product)
+            inspirationCarouselView.trackEventImpressionInspirationCarouselGridItem(product)
         }
     }
 
@@ -162,7 +165,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
+            LAYOUT_INSPIRATION_CAROUSEL_GRID,
             true
         )
         `When inspiration carousel product impressed`(inspirationCarouselProduct)
@@ -179,7 +182,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
+            LAYOUT_INSPIRATION_CAROUSEL_GRID,
             false
         )
         `When inspiration carousel product impressed`(inspirationCarouselProduct)
@@ -197,7 +200,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+            LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
             true
         )
         `When inspiration carousel product impressed`(inspirationCarouselProduct)
@@ -214,7 +217,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+            LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
             false
         )
         `When inspiration carousel product impressed`(inspirationCarouselProduct)
@@ -275,7 +278,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
     private fun List<Visitable<*>>.findIndexedChipsCarousel(): IndexedValue<InspirationCarouselDataView> {
         val indexedVisitable = withIndex().find {
             it.value is InspirationCarouselDataView
-                    && (it.value as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+                    && (it.value as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
         }!!
 
         return IndexedValue(

@@ -7,7 +7,7 @@
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/Unify_Background"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
+    app:cardElevation="2dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 

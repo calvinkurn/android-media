@@ -22,23 +22,23 @@ object MockDataModel {
                     ImageProduct().apply {
                         productId = "995316316"
                         productName = "Jaring Proyek Safety Jaring Pengaman 1 Roll Polynet"
-                        imageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/7/8/84ec25de-5991-4f33-8190-c7023ed05964.jpg"
+                        imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/7/8/84ec25de-5991-4f33-8190-c7023ed05964.jpg"
                     },
                     ImageProduct().apply {
                         productId = "1055747205"
                         productName = "Jaring Proyek Safety Lebar 2 Meter Kasa Hijau"
-                        imageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/7/8/84ec25de-5991-4f33-8190-c7023ed05964.jpg"
+                        imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/7/8/84ec25de-5991-4f33-8190-c7023ed05964.jpg"
                     },
                     ImageProduct().apply {
                         productId = "995916978"
                         productName = "Jaring Proyek Safety Industri 1 Roll Hijau"
-                        imageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/7/4/c33ab8b6-f447-48be-bebe-7b7eee509681.jpg"
+                        imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/7/4/c33ab8b6-f447-48be-bebe-7b7eee509681.jpg"
                     }
             )
             imageShop = ImageShop().apply {
-                coverEcs = "https://ecs7-p.tokopedia.net/img/cache/750/default_v3-shopnocover.png"
-                sEcs = "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/7/3/9005904/9005904_a29e5016-9359-4763-b7fd-ba7f1fecb9d3.jpg"
-                xsEcs = "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2020/7/3/9005904/9005904_a29e5016-9359-4763-b7fd-ba7f1fecb9d3.jpg"
+                coverEcs = "https://images.tokopedia.net/img/cache/750/default_v3-shopnocover.png"
+                sEcs = "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/7/3/9005904/9005904_a29e5016-9359-4763-b7fd-ba7f1fecb9d3.jpg"
+                xsEcs = "https://images.tokopedia.net/img/cache/100-square/shops-1/2020/7/3/9005904/9005904_a29e5016-9359-4763-b7fd-ba7f1fecb9d3.jpg"
                 xsUrl = "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syO6_HNHsrfbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFHArOopjpHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5HsnaHm4RbpH56_nFo_jFom4NHAnO6_n79fJa631OHAJfb_jpo_jWoArfHaOiofgjb3-xofyhgMusysBjHaNkrcribm-src7i6sJOoiFiy3zwrfo5rM1i6sUfoZdRH_1pH_UpopJaHAjhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAVo8MrF_M2VH1OEgpC6qj1h_92SHJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32Cq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfB6z7Nt3jzSoV29_9zgucoE_uHFHVBkgcBHu7gt_32uPJOI39PqQuJh_jzZQ1Nk19P-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBjh_c2s8JN1_9xoqj7p_uz-P7Y1z3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6qjOO_M2-HJO1e_V6qjjh_jz-H7O1u3BM1_7YUiFiP9oBrBY2gmUEUsJp6AjRopK7UiFiy3hSUstigcuMUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEo_yDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFiPMBBPfuj9RCaQfzOyRzwq3zpUs2Q6_jOHpJfHpJfbAJFo_1RoAraHA1D6_jO6_Jf6_rd997?page=2&cpm_template_req=3&uid=13897784&template_id_used=3&t=lite&src=fav_product"
                 sUrl = "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syO6_HNHsrfbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFHArOopjpHmFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5HsnaHm4RbpH56_nFo_jFom4NHAnO6_n79fJa631OHAJfb_jpo_jWoArfHaOiofgjb3-xofyhgMusysBjHaNkrcribm-src7i6sJOoiFiy3zwrfo5rM1i6sUfoZdRH_1pH_UpopJaHAjhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAVo8MrF_M2VH1OEgpC6qj1h_92SHJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32Cq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfB6z7Nt3jzSoV29_9zgucoE_uHFHVBkgcBHu7gt_32uPJOI39PqQuJh_jzZQ1Nk19P-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBjh_c2s8JN1_9xoqj7p_uz-P7Y1z3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6qjOO_M2-HJO1e_V6qjjh_jz-H7O1u3BM1_7YUiFiP9oBrBY2gmUEUsJp6AjRopK7UiFiy3hSUstigcuMUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEo_yDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFiPMBBPfuj9RCaQfzOyRzwq3zpUs2Q6_jOHpJfHpJfbAJFo_1RoAraHA1D6_jO6_Jf6_rd997?page=2&cpm_template_req=3&uid=13897784&template_id_used=3&t=lite&src=fav_product"
             }

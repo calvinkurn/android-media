@@ -52,5 +52,9 @@
     <string name="ticker_new">Baru</string>
     <string name="content_description_icon_affiliate">icon register affiliate</string>
     <string name="content_description_icon_redirection">icon for redirecting user to register affiliate</string>
+    <string name="ticker_free">Gratis</string>
+    <string name="title_broadcast">Lewat Broadcast</string>
+    <string name="description_broadcast">Sebar promo langsung ke tepat sasaran</string>
+    <string name="content_icon_broadcast">icon broadcast</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,7 +15,7 @@ public class InsuranceData implements Parcelable {
 
     @SerializedName("insurance_price")
     @Expose
-    private int insurancePrice;
+    private double insurancePrice;
     @SerializedName("insurance_type")
     @Expose
     private int insuranceType;
@@ -35,7 +36,7 @@ public class InsuranceData implements Parcelable {
     }
 
     protected InsuranceData(Parcel in) {
-        insurancePrice = in.readInt();
+        insurancePrice = in.readDouble();
         insuranceType = in.readInt();
         insuranceTypeInfo = in.readString();
         insuranceUsedType = in.readInt();
@@ -45,7 +46,7 @@ public class InsuranceData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(insurancePrice);
+        dest.writeDouble(insurancePrice);
         dest.writeInt(insuranceType);
         dest.writeString(insuranceTypeInfo);
         dest.writeInt(insuranceUsedType);
@@ -70,11 +71,11 @@ public class InsuranceData implements Parcelable {
         }
     };
 
-    public int getInsurancePrice() {
+    public double getInsurancePrice() {
         return insurancePrice;
     }
 
-    public void setInsurancePrice(int insurancePrice) {
+    public void setInsurancePrice(double insurancePrice) {
         this.insurancePrice = insurancePrice;
     }
 

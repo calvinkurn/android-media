@@ -60,10 +60,10 @@ interface WebsocketPayloadGenerator {
 
     fun generateImageWsPayload(
         roomMetaData: RoomMetaData,
-        uploadId: String,
-        imageUploadUiModel: ImageUploadUiModel
+        filePath: String,
+        imageUploadUiModel: ImageUploadUiModel,
+        isSecure: Boolean
     ): String
 
     fun generateLocalId(): String
-
 }

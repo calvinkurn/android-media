@@ -9,36 +9,36 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
-import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
-import com.tokopedia.shop.common.util.ShopProductViewGridType
-import com.tokopedia.shop.product.view.viewholder.ErrorNetworkWrapViewHolder
-import com.tokopedia.shop.product.view.viewholder.ShopProductListEmptyViewHolder
-
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.*
+import com.tokopedia.shop.product.view.viewholder.ErrorNetworkWrapViewHolder
+import com.tokopedia.shop.product.view.viewholder.ShopProductListEmptyViewHolder
 
-class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: MembershipStampAdapter.MembershipStampAdapterListener?,
-                                    private val shopProductClickedListener: ShopProductClickedListener?,
-                                    private val shopProductImpressionListener: ShopProductImpressionListener?,
-                                    private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
-                                    private val emptyProductOnClickListener: BaseEmptyViewHolder.Callback?,
-                                    private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
-                                    private val shopProductAddViewHolderListener: ShopProductAddViewHolder.ShopProductAddViewHolderListener?,
-                                    private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
-                                    private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
-                                    private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
-                                    private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?,
-                                    private val shopProductSearchSuggestionListener: ShopProductSearchSuggestionListener?,
-                                    private val isGridSquareLayout: Boolean,
-                                    private val deviceWidth: Int,
-                                    @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
-                                    private val shopTrackType: Int,
-                                    private val isShowTripleDot: Boolean) : BaseAdapterTypeFactory() {
+class ShopProductAdapterTypeFactory(
+    private val membershipStampAdapterListener: MembershipStampAdapter.MembershipStampAdapterListener?,
+    private val shopProductClickedListener: ShopProductClickedListener?,
+    private val shopProductImpressionListener: ShopProductImpressionListener?,
+    private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
+    private val emptyProductOnClickListener: BaseEmptyViewHolder.Callback?,
+    private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
+    private val shopProductAddViewHolderListener: ShopProductAddViewHolder.ShopProductAddViewHolderListener?,
+    private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
+    private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
+    private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
+    private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?,
+    private val shopProductSearchSuggestionListener: ShopProductSearchSuggestionListener?,
+    private val isGridSquareLayout: Boolean,
+    private val deviceWidth: Int,
+    @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
+    private val shopTrackType: Int,
+    private val isShowTripleDot: Boolean
+) : BaseAdapterTypeFactory() {
     private var shopProductAdapter: ShopProductAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 
@@ -79,7 +79,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
     }
 
     fun type(shopProductUiModel: ShopProductUiModel): Int {
-        return when(productCardType) {
+        return when (productCardType) {
             ShopProductViewGridType.SMALL_GRID -> {
                 ShopProductViewHolder.GRID_LAYOUT
             }
@@ -140,7 +140,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         when (type) {
             LoadingShimmeringGridViewHolder.LAYOUT -> return LoadingShimmeringGridViewHolder(parent)
             ShopProductListEmptyViewHolder.LAYOUT -> return ShopProductListEmptyViewHolder(parent, emptyProductOnClickListener)
-            ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent, shopProductsEmptyViewHolderListener)
+            ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent)
             ShopProductTitleEmptyViewHolder.LAYOUT -> return ShopProductTitleEmptyViewHolder(parent)
             ShopProductEmptySearchViewHolder.LAYOUT -> return ShopProductEmptySearchViewHolder(parent, shopProductEmptySearchListener)
             ShopProductEmptyShowcaseViewHolder.LAYOUT -> return ShopProductEmptyShowcaseViewHolder(parent, shopShowcaseEmptySearchListener)
@@ -150,8 +150,15 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductAddViewHolder.LAYOUT -> return ShopProductAddViewHolder(parent, shopProductAddViewHolderListener)
             ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT -> return ShopProductSellerAllEtalaseEmptyViewHolder(parent)
             ShopMerchantVoucherViewHolder.LAYOUT -> return ShopMerchantVoucherViewHolder(parent)
-            ShopProductCarouselViewHolder.LAYOUT -> return ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener,
-                    parent.context.getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED, null)
+            ShopProductCarouselViewHolder.LAYOUT -> return ShopProductCarouselViewHolder(
+                parent,
+                deviceWidth,
+                shopProductClickedListener,
+                shopProductImpressionListener,
+                parent.context.getString(R.string.shop_page_label_featured_product),
+                ShopTrackProductTypeDef.FEATURED,
+                null
+            )
             ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener, shopCarouselSeeAllClickedListener)
             ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type, isShowTripleDot)
             ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
@@ -166,5 +173,4 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             }
         }
     }
-
 }

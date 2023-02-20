@@ -6,12 +6,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kyc_centralized.common.KycProjectInfo
+import com.tokopedia.kyc_centralized.data.model.KycProjectInfo
 import com.tokopedia.kyc_centralized.test.R
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
-import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 class FakeGraphqlRepository @Inject constructor() : GraphqlRepository {

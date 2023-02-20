@@ -51,6 +51,7 @@ public class PackageView extends EditShippingCourierView<Courier,
             packageCheckBox.setViewListener(mainView);
             packageCheckBox.renderData(courier.services.get(serviceIndex), serviceIndex);
             packageCheckBox.setServiceCheckBoxListener(courierIndex);
+            packageCheckBox.setServiceWhitelabelLayout(courier.isWhitelabelService());
             checkBoxHolder.addView(packageCheckBox);
         }
     }

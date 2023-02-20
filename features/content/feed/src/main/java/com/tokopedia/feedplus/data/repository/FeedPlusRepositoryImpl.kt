@@ -1,12 +1,12 @@
 package com.tokopedia.feedplus.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import kotlinx.coroutines.withContext
@@ -21,7 +21,7 @@ class FeedPlusRepositoryImpl @Inject constructor(
     private val getWhitelistUseCase: GetWhiteListNewUseCase
 ) : FeedPlusRepository {
 
-    override suspend fun getWhitelist(): WhitelistQuery = withContext(dispatchers.io) {
+    override suspend fun getWhitelist(): GetCheckWhitelistResponse = withContext(dispatchers.io) {
         getWhitelistUseCase.execute(WHITELIST_ENTRY_POINT)
     }
 

@@ -171,29 +171,29 @@
             >
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btn_product_atc"
+                android:id="@+id/btn_product_first"
                 android:layout_width="@dimen/layout_lvl8"
                 android:layout_height="@dimen/layout_lvl3"
                 android:layout_weight="5"
-                android:text="@string/play_product_atc"
+                tools:text="@string/play_product_atc"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_image"
                 app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
                 app:unifyButtonSize="micro"
-                app:unifyButtonVariant="ghost"
+                tools:unifyButtonVariant="ghost"
                 tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck"
                 />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btn_product_buy"
+                android:id="@+id/btn_product_second"
                 android:layout_width="@dimen/layout_lvl8"
                 android:layout_height="@dimen/layout_lvl3"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_weight="5"
-                android:text="@string/play_product_buy"
-                app:layout_constraintStart_toEndOf="@+id/btn_product_atc"
-                app:layout_constraintTop_toTopOf="@+id/btn_product_atc"
+                tools:text="@string/play_product_buy"
+                app:layout_constraintStart_toEndOf="@+id/btn_product_first"
+                app:layout_constraintTop_toTopOf="@+id/btn_product_first"
                 app:unifyButtonSize="micro"
-                app:unifyButtonType="main"
+                tools:unifyButtonType="main"
                 tools:ignore="TextContrastCheck"
                 />
         </LinearLayout>

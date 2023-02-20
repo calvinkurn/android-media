@@ -54,6 +54,9 @@ class GetWishlistCollectionsBottomSheetUseCase @Inject constructor(
                       label
                       image_url
                       is_contain_product
+                      indicator {
+                        title
+                      }
                     }
                   }
                   additional_section{
@@ -66,6 +69,9 @@ class GetWishlistCollectionsBottomSheetUseCase @Inject constructor(
                       label
                       image_url
                       is_contain_product
+                      indicator {
+                        title
+                      }
                     }
                   }
                   total_collection

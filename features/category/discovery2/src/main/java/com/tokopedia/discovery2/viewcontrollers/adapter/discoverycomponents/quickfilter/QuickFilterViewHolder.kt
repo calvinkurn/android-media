@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -114,12 +115,14 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
         var icon : Drawable? = null
-        when (option.name) {
-            "Official Store" -> {
-                icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
-            }
-            "4 Keatas" -> {
-                icon = getIconUnifyDrawable(itemView.context, IconUnify.STAR_FILLED, MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star))
+        if((fragment.activity as DiscoveryActivity).isFromCategory()) {
+            when (option.name) {
+                "Official Store" -> {
+                    icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
+                }
+                "4 Keatas" -> {
+                    icon = getIconUnifyDrawable(itemView.context, IconUnify.STAR_FILLED, MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star))
+                }
             }
         }
         val item = SortFilterItem(option.name, icon)

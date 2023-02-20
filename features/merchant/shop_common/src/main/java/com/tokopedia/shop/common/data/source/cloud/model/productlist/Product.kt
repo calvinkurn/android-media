@@ -75,7 +75,19 @@ data class Product(
     @Expose
     @SerializedName("isEmptyStock")
     val isEmptyStock: Boolean = false,
+    @Expose
+    @SerializedName("manageProductData")
+    val manageProductData: ManageProductData = ManageProductData()
 ) {
+
+    data class ManageProductData(
+        @Expose
+        @SerializedName("isStockGuaranteed")
+        val isStockGuaranteed: Boolean = false,
+        @Expose
+        @SerializedName("isTobacco")
+        val isTobacco: Boolean = false,
+    )
 
     fun isTopAds(): Boolean {
         return topAds != null && topAds.isApplied()

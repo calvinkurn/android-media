@@ -9,14 +9,14 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import javax.inject.Inject
 
 class ShopModerateRequestStatusUseCase @Inject constructor(
-        private val gqlRepository : GraphqlRepository
+    private val gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ShopModerateRequestData>(gqlRepository) {
 
     override suspend fun executeOnBackground(): ShopModerateRequestData {
         val request = GraphqlRequest(QUERY, ShopModerateRequestData::class.java)
         val gqlResponse = gqlRepository.response(
-                listOf(request),
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+            listOf(request),
+            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         )
         return gqlResponse.getData<ShopModerateRequestData>(ShopModerateRequestData::class.java)
     }
@@ -27,17 +27,15 @@ class ShopModerateRequestStatusUseCase @Inject constructor(
          * Gql query to check shop moderate request status
          */
         private const val QUERY = "query shopModerateRequestStatus() {\n" +
-                "  shopModerateRequestStatus {\n" +
-                "    result {\n" +
-                "      shopID\n" +
-                "      status\n" +
-                "    }\n" +
-                "    error {\n" +
-                "      message\n" +
-                "    }\n" +
-                "  }\n" +
-                "}"
-
+            "  shopModerateRequestStatus {\n" +
+            "    result {\n" +
+            "      shopID\n" +
+            "      status\n" +
+            "    }\n" +
+            "    error {\n" +
+            "      message\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
     }
-
 }

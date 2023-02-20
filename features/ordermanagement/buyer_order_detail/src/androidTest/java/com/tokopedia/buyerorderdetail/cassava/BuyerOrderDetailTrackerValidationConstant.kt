@@ -28,6 +28,8 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val clickSecondaryActionButtonCheckPrescriptionQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_check_prescription.json"
     const val clickFinishOrderOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_confirm_finish.json"
     const val clickRequestComplaintOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_request_complaint.json"
+    const val clickInsuranceWidgetQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_insurance_widget.json"
+    const val impressionInsuranceWidgetQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_impression_insurance_widget.json"
 
     const val orderId = "8176123125"
     const val paymentId = "11824472"

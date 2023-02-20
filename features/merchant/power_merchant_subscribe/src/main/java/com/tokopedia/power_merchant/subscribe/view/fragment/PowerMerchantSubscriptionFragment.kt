@@ -199,10 +199,13 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun showServiceFeeByCategory() {
-        if (childFragmentManager.isStateSaved) return
-
-        val bottomSheet = PMFeeServiceBottomSheet.createInstance()
-        bottomSheet.show(childFragmentManager)
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                Constant.Url.PM_SERVICE_FEE
+            )
+        }
     }
 
     override fun setOnServiceFeeViewBind(view: View) {

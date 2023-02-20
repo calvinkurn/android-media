@@ -125,7 +125,7 @@
               "destination": "Dikirim ke <b>Duren Sawit, Kota Administrasi Jakarta Timur</b>",
               "eTAText": "Tiba dalam 2 jam",
               "errors": [],
-              "icon": "https://ecs7.tokopedia.net/img/pdp/info/icon/courier@3x.png",
+              "icon": "https://images.tokopedia.net/img/pdp/info/icon/courier@3x.png",
               "subtitle": "Kurir lainnya: ",
               "title": "NOW! 2 jam sampai (Bisa Rp0)",
               "totalService": 1
@@ -137,8 +137,8 @@
           }
         ],
         "reputationShop": {
-          "badge": "https://ecs7.tokopedia.net/img/repsys/badges-off.jpg",
-          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg",
+          "badge": "https://images.tokopedia.net/img/repsys/badges-off.jpg",
+          "badgeHD": "https://images.tokopedia.net/img/repsys/badges-off-hd.jpg",
           "score": "0",
           "scoreMap": "0"
         },
@@ -195,7 +195,7 @@
             {
               "awbStatus": 0,
               "code": "gojek",
-              "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "image": "https://images.tokopedia.net/img/kurir-gosend.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,

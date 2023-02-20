@@ -12,7 +12,6 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -20,12 +19,12 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
 import com.tokopedia.selleronboarding.databinding.ActivitySobOnboardingBinding
 import com.tokopedia.selleronboarding.model.*
+import com.tokopedia.selleronboarding.utils.OnboardingConst
 import com.tokopedia.selleronboarding.utils.OnboardingUtils
 import timber.log.Timber
 import kotlin.math.abs
@@ -80,12 +79,6 @@ class SellerOnboardingActivity : BaseActivity() {
         setupButtonClickListener()
 
         binding?.pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
-        NotificationSettingsUtils(applicationContext).sendNotificationPromptEvent()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        NotificationSettingsUtils(applicationContext).checkNotificationPermission(this)
     }
 
     private fun handleAppLink() {
@@ -100,7 +93,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.setImageResource(R.drawable.bg_sob_full)
+            binding?.backgroundSob?.loadImage(OnboardingConst.ImageUrl.BG_THEMATIC_RAMADAN)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
@@ -119,18 +112,8 @@ class SellerOnboardingActivity : BaseActivity() {
                     setSlideIndicator(position)
                     setPreviousButtonVisibility(position)
                     updateNextButtonState(position)
-                    updateHeaderBackground(position)
                 }
             })
-        }
-    }
-
-    private fun updateHeaderBackground(position: Int) {
-        try {
-            val slideItem = slideItems[position]
-            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
-        } catch (e: Exception) {
-            //do nothing
         }
     }
 

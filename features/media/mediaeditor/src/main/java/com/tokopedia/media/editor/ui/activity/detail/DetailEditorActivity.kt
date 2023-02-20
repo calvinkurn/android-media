@@ -5,13 +5,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -22,6 +24,9 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var pickerParam: PickerCacheManager
 
     private val viewModel: DetailEditorViewModel by lazy {
         ViewModelProvider(
@@ -34,16 +39,19 @@ class DetailEditorActivity : BaseEditorActivity() {
     private var editorParam = EditorParam()
     private var editorModel = EditorUiModel()
 
-    override fun onHeaderActionClick() {}
+    override fun onHeaderActionClick() {
+        if (editorIntent.isToolAddLogo()) {
+            fragment?.let {
+                if (!it.isAdded) return@let
+                (fragment as DetailEditorFragment).showAddLogoUploadTips(false)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
-
-        setHeader(
-            getString(getToolEditorText(editorIntent.editorToolType))
-        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -77,6 +85,16 @@ class DetailEditorActivity : BaseEditorActivity() {
             editorParam = it
             viewModel.setEditorParam(it)
         }
+
+        setHeader(
+            getString(getToolEditorText(editorIntent.editorToolType)),
+            rightIcon = if (editorIntent.isToolAddLogo()) IconUnify.INFORMATION else null
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        pickerParam.disposeSubPicker()
     }
 
     override fun initInjector() {

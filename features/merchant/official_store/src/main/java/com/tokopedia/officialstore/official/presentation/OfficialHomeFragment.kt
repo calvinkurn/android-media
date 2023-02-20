@@ -292,7 +292,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreLiveData.observe(viewLifecycleOwner){ dataModel ->
             removeLoading(dataModel.isCache)
             swipeRefreshLayout?.isRefreshing = false
-            adapter?.submitList(dataModel.dataList)
+            adapter?.submitList(dataModel.dataList.toList())
             if(dataModel.dataList.any { it is OfficialBannerDataModel }){
                 bannerPerformanceMonitoring.stopTrace()
             }

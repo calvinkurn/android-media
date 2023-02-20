@@ -45,9 +45,8 @@
     <string name="content_creation_search_bs_item_last_purchase">Terakhir Dibeli</string>
     <string name="content_creation_search_bs_item_wishlist">Wishlist</string>
     <string name="content_creation_search_bs_header_item_shop" tools:ignore="UnusedResources">Toko saya</string>
-    <string name="content_creation_search_coachmark_header">Nge-tag produk dari mana-mana</string>
-    <string name="content_creation_search_coachmark_desc">Kamu bahkan bisa nge-tag dari yang terakhir
-dibeli, Wishlist, dan bahkan produk tokomu.</string>
+    <string name="content_creation_search_coachmark_header">Bisa nge-tag produk pilihanmu</string>
+    <string name="content_creation_search_coachmark_desc">Kamu juga bisa nge-tag dari yang produk yang terakhir dibeli.</string>
     <string name="content_creation_search_shop_item_button_text" tools:ignore="UnusedResources">Lihat Toko</string>
     <string name="content_creation_barang_text">Barang</string>
     <string name="content_creation_toko_text">Toko</string>
@@ -106,6 +105,8 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <!--SWITCHING ACCOUNT-->
     <string name="sa_coach_mark_title">Bisa ganti profil sesukamu, dong~</string>
     <string name="sa_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli buat live di Tokopedia Play!</string>
+    <string name="sa_livestream_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli buat live di Tokopedia Play!</string>
+    <string name="sa_shorts_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli untuk buat konten, lho.</string>
 
     <!--USER PROFILE-->
     <string name="up_webview_template">%s?url=%s</string>
@@ -136,5 +137,4 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="ugc_warning_both_account_live_subtitle">Akhiri Live di perangkat lain jika ingin\nmengambil alih siaran.</string>
     <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
     <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
-
 </resources>

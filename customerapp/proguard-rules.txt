@@ -311,3 +311,43 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keepclassmembers,allowobfuscation class * {
  @com.google.gson.annotations.SerializedName <fields>;
 }
+
+# Modiface
+-keep class com.modiface.mfemakeupkit.** {*;}
+-keep enum com.modiface.mfemakeupkit.** {*;}
+-keep interface com.modiface.mfemakeupkit.** {*;}
+-keepclassmembers class com.modiface.mfemakeupkit.** {
+  private static native <methods>;
+  *;
+}
+
+# Gojek
+# Courier SDK
+-keep class !com.gojek.courier.BuildConfig, com.gojek.courier.** { *; }
+-keepclasseswithmembers class * {
+    @com.gojek.courier.annotation.* <methods>;
+}
+-if interface * { @com.gojek.courier.annotation.* <methods>; }
+-keepclassmembers,allowshrinking,allowobfuscation interface * {
+    @com.gojek.courier.annotation.* <methods>;
+}
+# Conversations Chat SDK
+-keepclassmembers class com.gojek.conversations.babble.** { *; }
+
+-assumenosideeffects class timber.log.Timber {
+    public static void v(...);
+    public static void i(...);
+    public static void w(...);
+    public static void d(...);
+    public static void e(...);
+}
+
+# Startup Initializer
+-keepnames class * extends androidx.startup.Initializer
+# These Proguard rules ensures that ComponentInitializers are are neither shrunk nor obfuscated,
+# and are a part of the primary dex file. This is because they are discovered and instantiated
+# during application startup.
+-keep class * extends androidx.startup.Initializer {
+    # Keep the public no-argument constructor while allowing other methods to be optimized.
+    <init>();
+}

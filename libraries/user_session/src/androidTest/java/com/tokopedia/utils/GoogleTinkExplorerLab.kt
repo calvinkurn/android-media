@@ -10,8 +10,8 @@ import java.security.KeyStore
 
 object GoogleTinkExplorerLab {
 
+    const val PREFERENCE_FILE = "tkpd_master_key_preference"
     private const val DEFAULT_NAME = "default_key"
-    private const val PREFERENCE_FILE = "tkpd_master_key_preference"
     private const val MASTER_KEY_URI = "android-keystore://test_master_keyset"
 
     init {

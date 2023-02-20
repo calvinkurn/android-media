@@ -21,7 +21,7 @@
             "onboarding_ticker": {
               "title": "",
               "message": "Ini halaman terakhir dari proses belanjamu. Pastikan semua sudah benar, ya. :)",
-              "image": "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png",
+              "image": "https://images.tokopedia.net/android/others/beli_langsung_keranjang.png",
               "show_coachmark_link_text": false,
               "coachmark_link_text": ""
             },
@@ -129,7 +129,7 @@
                     "ship_id": 26,
                     "ship_name": "Kurir Rekomendasi",
                     "ship_code": "tkpdexp",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-rekomendasi.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-rekomendasi.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -146,7 +146,7 @@
                     "ship_id": 13,
                     "ship_name": "GrabExpress",
                     "ship_code": "grab",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-grab.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -171,7 +171,7 @@
                     "ship_id": 4,
                     "ship_name": "Pos Indonesia",
                     "ship_code": "pos",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-pos.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -188,7 +188,7 @@
                     "ship_id": 10,
                     "ship_name": "GoSend",
                     "ship_code": "gojek",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-gosend.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -213,7 +213,7 @@
                     "ship_id": 2,
                     "ship_name": "TIKI",
                     "ship_code": "tiki",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-tiki.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -238,7 +238,7 @@
                     "ship_id": 14,
                     "ship_name": "J\u0026T",
                     "ship_code": "jnt",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-jnt.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -255,7 +255,7 @@
                     "ship_id": 1,
                     "ship_name": "JNE",
                     "ship_code": "jne",
-                    "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                    "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
                     "is_dropship_enabled": 0,
                     "ship_prods": [
                       {
@@ -316,7 +316,7 @@
                       "product_invenage_value": 941,
                       "product_switch_invenage": 1,
                       "product_image": {
-                        "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/4/27/6333d0db-e083-4e8b-bd67-9bcf61a0cb37.jpg"
+                        "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/4/27/6333d0db-e083-4e8b-bd67-9bcf61a0cb37.jpg"
                       },
                       "product_notes": "",
                       "product_quantity": 1,
@@ -410,13 +410,13 @@
               "active": 1,
               "gateway_code": "PEMUDA",
               "gateway_name": "GoPay",
-              "image": "https://ecs7.tokopedia.net/img/toppay/pemuda.png",
+              "image": "https://images.tokopedia.net/img/toppay/pemuda.png",
               "description": "Rp 1.000",
               "minimum_amount": 10000,
               "maximum_amount": 11000000,
               "wallet_amount": 1000,
               "fee": 0,
-              "metadata": "{\"success\":true,\"message\":\"\",\"gateway_code\":\"PEMUDA\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"\",\"high_risk_flag\":\"\",\"description\":\"\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/pemuda.png\",\"signature\":\"\",\"customer_name\":\"\",\"customer_email\":\"\",\"user_id\":9067919}",
+              "metadata": "{\"success\":true,\"message\":\"\",\"gateway_code\":\"PEMUDA\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"\",\"high_risk_flag\":\"\",\"description\":\"\",\"image\":\"https://images.tokopedia.net/img/toppay/pemuda.png\",\"signature\":\"\",\"customer_name\":\"\",\"customer_email\":\"\",\"user_id\":9067919}",
               "mdr": 0,
               "credit_card": {
                 "number_of_cards": {

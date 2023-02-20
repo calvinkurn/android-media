@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.util.DateUtil;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
@@ -64,6 +65,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import rx.Observable;
@@ -113,6 +115,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
+    private final String IM_CLICK_ID = "imclickid";
 
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
     private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
@@ -123,6 +126,22 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String EMBRACE_EVENT_NAME = "eventName";
     private static final String EMBRACE_EVENT_ACTION = "eventAction";
     private static final String EMBRACE_EVENT_LABEL = "eventLabel";
+
+    private static String UTM_SOURCE_HOLDER = "";
+    private static String UTM_MEDIUM_HOLDER = "";
+    private static String UTM_CAMPAIGN_HOLDER = "";
+
+    public static void setUTMParamsForSession(Map<String, Object> maps){
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
+            UTM_SOURCE_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_SOURCE)).toString();
+        }
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null) {
+            UTM_MEDIUM_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_MEDIUM)).toString();
+        }
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null) {
+            UTM_CAMPAIGN_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN)).toString();
+        }
+    }
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -994,13 +1013,11 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void sendScreenAuthenticated(String screenName) {
         if (TextUtils.isEmpty(screenName)) return;
-        eventAuthenticate(null);
         sendScreen(screenName, null);
     }
 
     public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
         if (TextUtils.isEmpty(screenName)) return;
-        eventAuthenticate(customDimension);
         sendScreen(screenName, customDimension);
     }
 
@@ -1011,33 +1028,12 @@ public class GTMAnalytics extends ContextAnalytics {
         customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
         customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
         customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
-        eventAuthenticate(customDimension);
         sendScreen(screenName, customDimension);
     }
 
     @Override
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         //no op, only for appsfyler and moengage
-    }
-
-    public void eventAuthenticate(Map<String, String> customDimension) {
-        String afUniqueId = getAfUniqueId(context);
-        UserSessionInterface userSession = new UserSession(context);
-        Map<String, Object> map = DataLayer.mapOf(
-                Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
-                        Authenticated.KEY_USER_SELLER, (userSession.hasShop() ? 1 : 0),
-                        Authenticated.KEY_USER_ID, userSession.getGTMLoginID(),
-                        Authenticated.KEY_SHOP_ID, userSession.getShopId(),
-                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none")
-                ),
-                Authenticated.ANDROID_ID, userSession.getAndroidId(),
-                Authenticated.ADS_ID, userSession.getAdsId(),
-                Authenticated.GA_CLIENT_ID, getClientIDString()
-        );
-        if (customDimension != null && customDimension.size() > 0) {
-            map.putAll(customDimension);
-        }
-        pushEvent(Authenticated.KEY_CD_NAME, map);
     }
 
     private void pushEECommerceInternal(String keyEvent, Bundle bundle) {
@@ -1133,7 +1129,15 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("utmMedium", (String) param.get(AppEventTracking.GTM.UTM_MEDIUM));
         bundle.putString("utmCampaign", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmContent", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
-        bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
+
+        /**
+         * if the utm_term equals {@value IM_CLICK_ID}
+         */
+        if (String.valueOf(param.get(AppEventTracking.GTM.UTM_TERM)).equals(IM_CLICK_ID)) {
+            bundle.putString("utmTerm", DateUtil.getCurrentTime());
+        } else {
+            bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
+        }
 
         pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
     }
@@ -1428,6 +1432,9 @@ public class GTMAnalytics extends ContextAnalytics {
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
+                    it.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
                     pushIris("", it);
                     return true;
                 })

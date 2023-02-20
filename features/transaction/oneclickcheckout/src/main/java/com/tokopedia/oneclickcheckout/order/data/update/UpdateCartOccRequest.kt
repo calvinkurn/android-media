@@ -25,7 +25,7 @@ data class UpdateCartOccRequest(
 
 data class UpdateCartOccCartRequest(
         @SerializedName("cart_id")
-        val cartId: String? = null,
+        val cartId: String = "",
         @SerializedName("quantity")
         val quantity: Int = 1,
         @SerializedName("notes")
@@ -44,12 +44,10 @@ data class UpdateCartOccProfileRequest(
         @SuppressLint("Invalid Data Type")
         @SerializedName("service_id")
         val serviceId: Int = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
-        val shippingId: Int = 0,
-        @SuppressLint("Invalid Data Type")
+        val shippingId: String = "",
         @SerializedName("sp_id")
-        val spId: Int = 0,
+        val spId: String = "",
         @SerializedName("is_free_shipping_selected")
         val isFreeShippingSelected: Boolean = false,
         @SerializedName("tenure_type")

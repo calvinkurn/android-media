@@ -16,10 +16,10 @@ data class MiniCartProductUiModel(
         var productVariantName: String = "",
         var productQtyLeft: String = "",
         var productSlashPriceLabel: String = "",
-        var productOriginalPrice: Long = 0L,
-        var productWholeSalePrice: Long = 0L,
-        var productInitialPriceBeforeDrop: Long = 0L,
-        var productPrice: Long = 0L,
+        var productOriginalPrice: Double = 0.0,
+        var productWholeSalePrice: Double = 0.0,
+        var productInitialPriceBeforeDrop: Double = 0.0,
+        var productPrice: Double = 0.0,
         var productInformation: List<String> = emptyList(),
         var productNotes: String = "",
         var productQty: Int = 0,
@@ -37,9 +37,9 @@ data class MiniCartProductUiModel(
         var bundleId: String = "",
         var bundleGroupId: String = "",
         var bundleName: String = "",
-        var bundlePrice: Long = 0,
+        var bundlePrice: Double = 0.0,
         var bundlePriceFmt: String = "",
-        var bundleOriginalPrice: Long = 0,
+        var bundleOriginalPrice: Double = 0.0,
         var bundleOriginalPriceFmt: String = "",
         var bundleMinOrder: Int = 0,
         var bundleMaxOrder: Int = 0,
@@ -132,7 +132,7 @@ data class MiniCartProductUiModel(
             }
     }
 
-    fun getPrice(): Long {
+    fun getPrice(): Double {
             return if(isBundlingItem) {
                     bundlePrice
             } else {
@@ -140,7 +140,7 @@ data class MiniCartProductUiModel(
             }
     }
 
-    fun getOriginalPrice(): Long {
+    fun getOriginalPrice(): Double {
             return if(isBundlingItem) {
                     bundleOriginalPrice
             } else {

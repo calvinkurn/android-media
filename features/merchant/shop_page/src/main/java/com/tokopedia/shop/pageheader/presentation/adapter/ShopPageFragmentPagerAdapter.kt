@@ -25,8 +25,8 @@ import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
-        private val ctx: Context?,
-        fragment: Fragment
+    private val ctx: Context?,
+    fragment: Fragment
 ) : FragmentStateAdapter(fragment) {
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val ctxRef = WeakReference(ctx)
@@ -34,6 +34,7 @@ internal class ShopPageFragmentPagerAdapter(
     companion object {
         @ColorRes
         private val ICON_COLOR_LIGHT_ENABLE = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+
         @ColorRes
         private val ICON_COLOR_LIGHT = com.tokopedia.unifyprinciples.R.color.Unify_NN900
     }
@@ -184,7 +185,7 @@ internal class ShopPageFragmentPagerAdapter(
         }
     }
 
-    override fun getItemCount(): Int =  listShopPageTabModel.size
+    override fun getItemCount(): Int = listShopPageTabModel.size
 
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
@@ -202,7 +203,7 @@ internal class ShopPageFragmentPagerAdapter(
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
         listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
-            if(shopPageTabModel.tabFragment::class.java == classType){
+            if (shopPageTabModel.tabFragment::class.java == classType) {
                 fragmentPosition = index
             }
         }

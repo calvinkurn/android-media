@@ -78,7 +78,7 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
-                    LayoutInflater.from(parent.context).inflate(ViewHolder.layout, parent, false)
+                LayoutInflater.from(parent.context).inflate(ViewHolder.layout, parent, false)
             )
         }
 
@@ -143,21 +143,19 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
                         val start = viewHolder.tvSubtitle?.left.orZero()
 
                         c.drawRect(
-                                Rect(start, child.top - dividerHeight, parent.width, child.top),
-                                mPaint
+                            Rect(start, child.top - dividerHeight, parent.width, child.top),
+                            mPaint
                         )
                     }
                 }
             }
         }
-
-
     }
 
     data class Action(
-            @DrawableRes val iconRes: Int,
-            @ColorInt val tintColor: Int?,
-            val subtitle: String,
-            val onClick: () -> Unit
+        @DrawableRes val iconRes: Int,
+        @ColorInt val tintColor: Int?,
+        val subtitle: String,
+        val onClick: () -> Unit
     )
 }

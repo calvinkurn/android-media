@@ -2,7 +2,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import io.mockk.*
 import junit.framework.TestCase
@@ -33,12 +36,18 @@ class ShopCardModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+
+        mockkStatic(::getComponent)
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkStatic(::getComponent)
+        unmockkConstructor(URLParser::class)
     }
 
     @Test
@@ -120,6 +129,53 @@ class ShopCardModelTest {
         viewModel.fetchShopCardData()
 
         TestCase.assertEquals(viewModel.getShopList() != null, true)
+    }
+
+    @Test
+    fun `test for fetchShopCardData when loadFirstPageComponents returns false`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        coEvery {
+            shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+
+        viewModel.fetchShopCardData()
+
+        TestCase.assertEquals(viewModel.getShopLoadState().value, true)
+    }
+
+    @Test
+    fun `test for fetchShopCardData when loadFirstPageComponents returns false and list is not empty`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        val componentsItem = ComponentsItem(name = "xyz")
+        val list = ArrayList<ComponentsItem>()
+        list.add(componentsItem)
+        every { viewModel.getShopList() } returns list
+        coEvery {
+            shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+
+        viewModel.fetchShopCardData()
+
+        TestCase.assertEquals(viewModel.syncData.value, true)
+    }
+
+    @Test
+    fun `test for fetchShopCardData when loadFirstPageComponents returns true and list is not empty`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        val componentsItemTemp = ComponentsItem(name = "xyz")
+        val list = ArrayList<ComponentsItem>()
+        list.add(componentsItemTemp)
+        every { viewModel.getShopList() } returns list
+
+        val componentItem1 = mockk<ArrayList<ComponentsItem>>(relaxed = true)
+        every { componentsItem.getComponentsItem() } returns componentItem1
+        coEvery {
+            shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+
+        viewModel.fetchShopCardData()
+
+        TestCase.assertEquals(viewModel.syncData.value, true)
     }
 
     /**************************** end of fetchShopCardData() *******************************************/

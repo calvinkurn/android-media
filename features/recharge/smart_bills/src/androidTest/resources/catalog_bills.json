@@ -6,7 +6,7 @@
           "id": 271,
           "name": "sbm-pulsa",
           "label": "Pulsa",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/2/47231715/47231715_afc8664c-6f97-417a-ae7f-bd7e635eba19.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/2/47231715/47231715_afc8664c-6f97-417a-ae7f-bd7e635eba19.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=1&menu_id=2&template=telcopre&is_add_sbm=true",
           "slug_name": ""
@@ -15,7 +15,7 @@
           "id": 272,
           "name": "sbm-listrik-pln",
           "label": "Listrik PLN",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_ae7e8474-4e34-43d0-848e-dd43dc82dacf.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_ae7e8474-4e34-43d0-848e-dd43dc82dacf.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=3&menu_id=113&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -24,7 +24,7 @@
           "id": 273,
           "name": "sbm-air-pdam",
           "label": "Air PDAM",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_e1b38d55-e8ed-4656-b67c-3f592e4d7ac2.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_e1b38d55-e8ed-4656-b67c-3f592e4d7ac2.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=5&menu_id=120&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -33,7 +33,7 @@
           "id": 274,
           "name": "sbm-telkom",
           "label": "Telkom",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_759e5a52-ecba-4186-a4ef-93863c942c3e.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_759e5a52-ecba-4186-a4ef-93863c942c3e.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=10&menu_id=121&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -42,7 +42,7 @@
           "id": 275,
           "name": "sbm-bpjs",
           "label": "BPJS",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_d750f186-7e87-400b-b9cd-90212404061a.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_d750f186-7e87-400b-b9cd-90212404061a.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=4&menu_id=126&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -51,7 +51,7 @@
           "id": 276,
           "name": "sbm-itk",
           "label": "Internet dan TV Kabel",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_279daeaf-2263-4ea4-bb6d-6c1bfcd3e396.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_279daeaf-2263-4ea4-bb6d-6c1bfcd3e396.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=8&menu_id=154&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -60,7 +60,7 @@
           "id": 277,
           "name": "sbm-pascabayar",
           "label": "Pascabayar",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_159fe6e8-350d-4cf2-9412-54654de73938.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_159fe6e8-350d-4cf2-9412-54654de73938.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=9&menu_id=3&template=telcopost&is_add_sbm=true",
           "slug_name": ""
@@ -69,7 +69,7 @@
           "id": 278,
           "name": "sbm-angsuran",
           "label": "Angsuran Kredit",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_bbc80a92-e1ef-4fd5-a96c-2c58490553d7.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_bbc80a92-e1ef-4fd5-a96c-2c58490553d7.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=7&menu_id=123&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -78,7 +78,7 @@
           "id": 279,
           "name": "sbm-paket-data",
           "label": "Paket Data",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_835475f0-c65a-48b0-b516-41a1514b71f2.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_835475f0-c65a-48b0-b516-41a1514b71f2.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=2&menu_id=2&template=telcopre&is_add_sbm=true",
           "slug_name": ""
@@ -87,7 +87,7 @@
           "id": 280,
           "name": "sbm-gas-pgn",
           "label": "Gas PGN",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_7220d7da-46a5-4771-ac62-6f8209407a39.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_7220d7da-46a5-4771-ac62-6f8209407a39.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=14&menu_id=124&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -96,7 +96,7 @@
           "id": 281,
           "name": "sbm-premi-asuransi",
           "label": "Premi Asuransi",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_6a1fd550-983e-4d4c-8f79-f92225b77288.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_6a1fd550-983e-4d4c-8f79-f92225b77288.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=50&menu_id=122&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -105,7 +105,7 @@
           "id": 282,
           "name": "sbm-properti",
           "label": "Properti",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_cb620697-47a7-4cab-8821-98c5616e718a.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_cb620697-47a7-4cab-8821-98c5616e718a.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=53&menu_id=151&template=general&is_add_sbm=true",
           "slug_name": ""
@@ -114,7 +114,7 @@
           "id": 283,
           "name": "sbm-ovo",
           "label": "OVO",
-          "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_006adefd-bd30-4b8a-b5cb-7b808bbfa67d.png",
+          "icon": "https://images.tokopedia.net/img/cache/100-square/attachment/2021/8/3/47231715/47231715_006adefd-bd30-4b8a-b5cb-7b808bbfa67d.png",
           "style": "",
           "app_link": "tokopedia://digital/form?category_id=48&menu_id=162&template=general&is_add_sbm=true",
           "slug_name": ""

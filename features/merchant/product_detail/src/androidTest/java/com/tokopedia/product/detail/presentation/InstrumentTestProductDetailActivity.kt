@@ -25,7 +25,7 @@ class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestT
     private fun showAddToCartDoneBottomSheet() {
         val addToCartDoneBottomSheet = InstrumentTestAddToCartBottomSheet(this)
         val productName = "Paket HDMI Dongle + HDMI To AV Alat Konverter Dari Hp ke TV Tabung"
-        val productImageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/10/26/13988587/13988587_26632e2e-cb31-4729-8471-f56de2375c4b_806_806"
+        val productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/10/26/13988587/13988587_26632e2e-cb31-4729-8471-f56de2375c4b_806_806"
         val addedProductDataModel = AddToCartDoneAddedProductDataModel(
                 "596843822",
                 productName,

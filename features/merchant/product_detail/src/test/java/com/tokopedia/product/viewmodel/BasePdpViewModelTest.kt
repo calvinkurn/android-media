@@ -1,5 +1,6 @@
 package com.tokopedia.product.viewmodel
 
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
@@ -42,6 +43,8 @@ import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 /**
  * Created by Yehezkiel on 08/06/21
@@ -138,8 +141,21 @@ abstract class BasePdpViewModelTest {
         mockkStatic(GlobalConfig::class)
         mockkObject(ProductDetailServerLogger)
         mockkStatic(TrackApp::class)
-
+        normalizeOs()
         spykViewModel = spyk(viewModel)
+    }
+
+    private fun normalizeOs() {
+        setOS(25)
+    }
+
+    fun setOS(newValue: Any?) {
+        val field = Build.VERSION::class.java.getField("SDK_INT")
+        field.isAccessible = true
+        val modifiersField: Field = Field::class.java.getDeclaredField("modifiers")
+        modifiersField.isAccessible = true
+        modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
+        field.set(null, newValue)
     }
 
     @After

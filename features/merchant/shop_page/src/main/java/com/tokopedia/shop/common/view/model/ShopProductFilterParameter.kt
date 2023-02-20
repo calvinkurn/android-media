@@ -16,7 +16,6 @@ class ShopProductFilterParameter() : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeMap(mapParameter as Map<*, *>?)
-
     }
 
     override fun describeContents(): Int {
@@ -65,7 +64,7 @@ class ShopProductFilterParameter() : Parcelable {
 
     fun getMapDataWithDefaultSortId(): Map<String, String> {
         return mapOf(
-                SORT_PARAM_KEY to DEFAULT_SORT_ID
+            SORT_PARAM_KEY to DEFAULT_SORT_ID
         )
     }
 
@@ -84,5 +83,4 @@ class ShopProductFilterParameter() : Parcelable {
             return arrayOfNulls(size)
         }
     }
-
 }

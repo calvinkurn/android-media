@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PREFIX_CACHE
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -287,6 +288,31 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductPhotos(
+        imagePickerResult: ArrayList<String>,
+        originalImageUrl: ArrayList<String>
+    ) {
+        val cleanResult = clearProductPhotoUrl(imagePickerResult, originalImageUrl)
+        val addressPicture = cleanResult.first
+        val isPictureEdited = cleanResult.second
+        productInputModel.value?.let {
+            val productModel = it
+            val imageUrlOrPathList = addressPicture.mapIndexed { index, urlOrPath ->
+                if (!isPictureEdited[index]) {
+                    // took url from model instead from params because originalUrl in params was edited by media picker
+                    productModel.detailInputModel.pictureList[index].urlOriginal
+                } else {
+                    urlOrPath
+                }
+            }
+            this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
+        }
+    }
+
+    fun saveImageListToDetailInput(imageList: MutableList<String>) {
+        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageList
+    }
+
+    fun updateProductPhotos(
         imageUrlOrPathList: List<String>,
         pictureList: List<PictureInputModel>
     ) {
@@ -338,8 +364,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 mGetProductResult.value = Success(data)
                 mIsLoading.value = false
             }, onError = {
-                mGetProductResult.value = Fail(it)
-            })
+                    mGetProductResult.value = Fail(it)
+                })
         } else {
             authorizeAccess()
         }
@@ -354,8 +380,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 Success(it)
             }
         }, onError = {
-            mGetProductDraftResult.value = Fail(it)
-        })
+                mGetProductDraftResult.value = Fail(it)
+            })
     }
 
     fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
@@ -366,8 +392,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 saveProductDraftUseCase.executeOnBackground()
             }.let { Success(it) }
         }, onError = {
-            saveProductDraftResultMutableLiveData.value = Fail(it)
-        })
+                saveProductDraftResultMutableLiveData.value = Fail(it)
+            })
     }
 
     fun getProductLimitation() {
@@ -377,8 +403,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
             mProductLimitationData.value = Success(result.productAddRule.data)
         }, onError = {
-            mProductLimitationData.value = Fail(it)
-        })
+                mProductLimitationData.value = Fail(it)
+            })
     }
 
     fun validateProductInput(detailInputModel: DetailInputModel): String {
@@ -457,17 +483,20 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 validateProductNameUseCase.executeOnBackground()
             }
             val validationMessages = response.productValidateV3.data.validationResults
-            val validationResult = if (validationMessages.isEmpty())
-                VALIDATION_SUCCESS else VALIDATION_ERROR
+            val validationResult = if (validationMessages.isEmpty()) {
+                VALIDATION_SUCCESS
+            } else {
+                VALIDATION_ERROR
+            }
             val validationException = MessageErrorException(validationMessages.joinToString("\n"))
 
             mValidationResult.value =
                 ValidationResultModel(validationResult, validationException, response.toString())
             mIsLoading.value = false
         }, onError = {
-            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it)
-            mIsLoading.value = false
-        })
+                mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it)
+                mIsLoading.value = false
+            })
     }
 
     fun validateShopLocation(shopId: Int) {
@@ -482,9 +511,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             mLocationValidation.value = Success(shopLocation)
             mIsLoading.value = false
         }, onError = {
-            mLocationValidation.value = Fail(it)
-            mIsLoading.value = false
-        })
+                mLocationValidation.value = Fail(it)
+                mIsLoading.value = false
+            })
     }
 
     fun validateShopIsOnModerated(shopId: Int) {
@@ -495,8 +524,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
             mIsOnModerationMode.value = Success(shopStatus.isOnModerationMode())
         }, onError = {
-            mIsOnModerationMode.value = Fail(it)
-        })
+                mIsOnModerationMode.value = Fail(it)
+            })
     }
 
     fun saveShippingLocation(dataParam: MutableMap<String, Any>) {
@@ -534,9 +563,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             updateSpecificationByAnnotationCategory(result)
             mIsLoading.value = false
         }, onError = {
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-            mIsLoading.value = false
-        })
+                AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+                mIsLoading.value = false
+            })
     }
 
     fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
@@ -562,34 +591,36 @@ class AddEditProductPreviewViewModel @Inject constructor(
         mIsLoading.value = true
         launchCatchError(
             block = {
-                mIsProductManageAuthorized.value = Success(withContext(dispatcher.io) {
-                    if (userSession.isShopOwner) {
-                        true
-                    } else {
-                        val accessId =
-                            when {
-                                isAdding -> AccessId.PRODUCT_ADD
-                                isDuplicate -> AccessId.PRODUCT_DUPLICATE
-                                isEditing.value == true -> AccessId.PRODUCT_EDIT
-                                else -> AccessId.PRODUCT_ADD
+                mIsProductManageAuthorized.value = Success(
+                    withContext(dispatcher.io) {
+                        if (userSession.isShopOwner) {
+                            true
+                        } else {
+                            val accessId =
+                                when {
+                                    isAdding -> AccessId.PRODUCT_ADD
+                                    isDuplicate -> AccessId.PRODUCT_DUPLICATE
+                                    isEditing.value == true -> AccessId.PRODUCT_EDIT
+                                    else -> AccessId.PRODUCT_ADD
+                                }
+                            userSession.shopId.toLongOrZero().let { shopId ->
+                                val canManageProduct = async {
+                                    val requestParams =
+                                        AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
+                                    authorizeAccessUseCase.execute(requestParams)
+                                }
+                                val canEditStock = async {
+                                    val requestParams = AuthorizeAccessUseCase.createRequestParams(
+                                        shopId,
+                                        AccessId.EDIT_STOCK
+                                    )
+                                    authorizeEditStockUseCase.execute(requestParams)
+                                }
+                                canManageProduct.await() && canEditStock.await()
                             }
-                        userSession.shopId.toLongOrZero().let { shopId ->
-                            val canManageProduct = async {
-                                val requestParams =
-                                    AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
-                                authorizeAccessUseCase.execute(requestParams)
-                            }
-                            val canEditStock = async {
-                                val requestParams = AuthorizeAccessUseCase.createRequestParams(
-                                    shopId,
-                                    AccessId.EDIT_STOCK
-                                )
-                                authorizeEditStockUseCase.execute(requestParams)
-                            }
-                            canManageProduct.await() && canEditStock.await()
                         }
                     }
-                })
+                )
             },
             onError = {
                 mIsProductManageAuthorized.value = Fail(it)
@@ -617,4 +648,41 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    /**
+     *  @param imagePickerResult is the list of product photo paths that returned from imagePicker
+     *  @param originalImageUrl is the list of original product photo paths
+     *  @param listModelPhotoProduct is the list of url from model object
+     * This method is for decide whats link should be add to model with the rule is
+     * If imagePicker result is not empty (picture is edited) use the imagePicker result and add true
+     * If imagePicker result is empty (picture is not edited) and originalImageUrl is prefix http use the originalImageUrl and add false
+     * If imagePicker result is empty (picture is not edited) and originalImageUrl is not prefix http use the originalImageUrl and add true
+     * */
+    fun clearProductPhotoUrl(
+        imagePickerResult: ArrayList<String>,
+        originalImageUrl: ArrayList<String>
+    ): Pair<ArrayList<String>, ArrayList<Boolean>> {
+        val resultCleaner = arrayListOf<String>()
+        val isEdited = arrayListOf<Boolean>()
+        imagePickerResult.forEachIndexed { index, uriEditImage ->
+            when {
+                uriEditImage.isNotEmpty() -> {
+                    resultCleaner.add(uriEditImage)
+                    isEdited.add(true)
+                }
+                isPictureFromInternet(originalImageUrl[index]) -> {
+                    resultCleaner.add(originalImageUrl[index])
+                    isEdited.add(false)
+                }
+                else -> {
+                    resultCleaner.add(originalImageUrl[index])
+                    isEdited.add(true)
+                }
+            }
+        }
+        return Pair(resultCleaner, isEdited)
+    }
+
+    private fun isPictureFromInternet(urlOrPath: String): Boolean {
+        return urlOrPath.contains(PREFIX_CACHE)
+    }
 }

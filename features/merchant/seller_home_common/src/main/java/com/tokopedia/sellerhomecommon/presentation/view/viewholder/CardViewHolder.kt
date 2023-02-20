@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.URLSpanNoUnderline
 import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
@@ -25,8 +26,7 @@ import com.tokopedia.unifycomponents.NotificationUnify
  */
 
 class CardViewHolder(
-    itemView: View,
-    private val listener: Listener
+    itemView: View, private val listener: Listener
 ) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
 
     companion object {
@@ -49,9 +49,7 @@ class CardViewHolder(
             notifTagCard.isVisible = isTagVisible
             if (isTagVisible) {
                 notifTagCard.setNotification(
-                    element.tag,
-                    NotificationUnify.TEXT_TYPE,
-                    NotificationUnify.COLOR_TEXT_TYPE
+                    element.tag, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_TEXT_TYPE
                 )
             }
         }
@@ -113,11 +111,10 @@ class CardViewHolder(
         if (!isShown) return
 
         with(binding) {
-            if (element.appLink.isNotBlank()) {
+            if (element.getWidgetAppLink().isNotBlank()) {
                 val selectableItemBg = TypedValue()
                 root.context.theme.resolveAttribute(
-                    android.R.attr.selectableItemBackground,
-                    selectableItemBg, true
+                    android.R.attr.selectableItemBackground, selectableItemBg, true
                 )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
@@ -147,8 +144,8 @@ class CardViewHolder(
             }
 
             root.setOnClickListener {
-                if (element.appLink.isNotBlank()) {
-                    if (RouteManager.route(root.context, element.appLink)) {
+                if (element.getWidgetAppLink().isNotBlank()) {
+                    if (RouteManager.route(root.context, element.getWidgetAppLink())) {
                         listener.sendCardClickTracking(element)
                     }
                 }
@@ -156,7 +153,12 @@ class CardViewHolder(
 
             showCardState(element.data)
             showBadge(element.data?.badgeImageUrl.orEmpty())
+            removeCardValueUnderLine()
         }
+    }
+
+    private fun removeCardValueUnderLine() {
+        URLSpanNoUnderline.stripUnderlines(binding.tvCardValue)
     }
 
     private fun showBadge(badgeUrl: String) {
@@ -171,11 +173,10 @@ class CardViewHolder(
     private fun setupRefreshButton(element: CardWidgetUiModel) {
         with(binding) {
             element.data?.lastUpdated?.let {
-                val shouldShowRefreshButton = it.needToUpdated.orFalse()
-                        && !element.showLoadingState
+                val shouldShowRefreshButton =
+                    it.needToUpdated.orFalse() && !element.showLoadingState
                 val isError = !element.data?.error.isNullOrBlank()
-                icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled)
-                        || isError
+                icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled) || isError
                 icShcRefreshCard.setOnClickListener {
                     refreshWidget(element)
                 }

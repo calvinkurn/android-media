@@ -1,6 +1,5 @@
 package com.tokopedia.talk.analytics
 
-import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -8,70 +7,48 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.filters.LargeTest
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.talk.R
-import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_ITEM_THREAD_MESSAGE_PATH
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX_TAB
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX_THREAD
-import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity
+import com.tokopedia.talk.analytics.util.actionTest
+import com.tokopedia.talk.analytics.util.intendingIntent
+import com.tokopedia.talk.feature.inbox.data.DiscussionInboxResponseWrapper
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxViewHolder
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.user.session.UserSession
-import org.junit.After
+import com.tokopedia.talk.stub.common.utils.Utils
+import com.tokopedia.talk.stub.feature.inbox.presentation.activity.TalkInboxActivityStub
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@LargeTest
-@RunWith(AndroidJUnit4::class)
-class TalkInboxActivityTest {
-
-    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    private val userSession = UserSession(targetContext)
+class TalkInboxActivityTest : TalkCassavaTestFixture() {
 
     @get:Rule
-    var activityRule: IntentsTestRule<TalkInboxActivity> = object : IntentsTestRule<TalkInboxActivity>(TalkInboxActivity::class.java) {
+    var activityRule = IntentsTestRule(
+        TalkInboxActivityStub::class.java,
+        false,
+        false
+    )
 
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            setupGraphqlMockResponse(TalkMockResponse())
-            fakeLogin()
-            additionalLoginInfo()
-        }
-
-        override fun getActivityIntent(): Intent {
-            return TalkInboxActivity.createIntent(targetContext)
-        }
-
-        override fun afterActivityLaunched() {
-            super.afterActivityLaunched()
-            waitForData()
-        }
+    override fun setup() {
+        super.setup()
+        mockResponse()
+        additionalLoginInfo()
+        launchActivity()
     }
 
-    @get:Rule
-    var cassavaRule = CassavaTestRule()
-
-    @After
-    fun tear() {
-        userSession.name = ""
-        userSession.shopId = ""
-        userSession.shopName = ""
-        clearLogin()
+    override fun launchActivity() {
+        val intent = TalkInboxActivityStub.createIntent(context)
+        activityRule.launchActivity(intent)
     }
 
     @Test
     fun validateClickItemThread() {
         actionTest {
+            intendingIntent()
             clickItemThread()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
-            validate(cassavaRule, TALK_ITEM_THREAD_MESSAGE_PATH)
+            validate(cassavaTestRule, TALK_ITEM_THREAD_MESSAGE_PATH)
         }
     }
 
@@ -81,8 +58,7 @@ class TalkInboxActivityTest {
             refreshView()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
-            validate(cassavaRule, TALK_VIEW_INBOX_THREAD)
+            validate(cassavaTestRule, TALK_VIEW_INBOX_THREAD)
         }
     }
 
@@ -92,25 +68,21 @@ class TalkInboxActivityTest {
             swipeAnotherTab()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
-            validate(cassavaRule, TALK_VIEW_INBOX_TAB)
+            validate(cassavaTestRule, TALK_VIEW_INBOX_TAB)
         }
     }
 
     private fun clickItemThread() {
-        pauseTestFor(2000L)
         val viewInteraction = onView(withId(R.id.talkInboxRecyclerView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TalkInboxViewHolder>(0, ViewActions.click()))
     }
 
     private fun swipeAnotherTab() {
-        pauseTestFor(2000L)
         val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(ViewActions.swipeLeft())
     }
 
     private fun refreshView() {
-        pauseTestFor(2000L)
         val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(ViewActions.swipeDown())
     }
@@ -119,5 +91,12 @@ class TalkInboxActivityTest {
         userSession.name = "User Name"
         userSession.shopId = "fakeShopId"
         userSession.shopName = "Shop Name"
+    }
+
+    private fun mockResponse() {
+        graphqlRepositoryStub.createMapResult(
+            DiscussionInboxResponseWrapper::class.java,
+            Utils.parseFromJson<DiscussionInboxResponseWrapper>("mock_response_discussion_inbox.json")
+        )
     }
 }

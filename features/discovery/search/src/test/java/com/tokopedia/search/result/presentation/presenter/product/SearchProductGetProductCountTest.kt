@@ -28,7 +28,7 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
 
     private fun `Then assert view set product count`(productCountText: String) {
         verify {
-            productListView.setProductCount(productCountText)
+            bottomSheetFilterView.setProductCount(productCountText)
         }
     }
 

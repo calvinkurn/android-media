@@ -1,17 +1,13 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
-import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.config.GetBroadcastingConfigurationResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
@@ -22,6 +18,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
@@ -31,7 +28,6 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import java.util.*
 import kotlin.random.Random
 
@@ -39,6 +35,19 @@ import kotlin.random.Random
  * Created by jegul on 21/09/20
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
+
+    override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
+            audioRate = response.broadcasterGetBroadcastingConfig.config.audioRate,
+            bitrateMode = response.broadcasterGetBroadcastingConfig.config.bitrateMode,
+            fps = response.broadcasterGetBroadcastingConfig.config.fps,
+            maxRetry = response.broadcasterGetBroadcastingConfig.config.maxRetry,
+            reconnectDelay = response.broadcasterGetBroadcastingConfig.config.reconnectDelay,
+            videoBitrate = response.broadcasterGetBroadcastingConfig.config.videoBitrate,
+            videoHeight = response.broadcasterGetBroadcastingConfig.config.videoHeight,
+            videoWidth = response.broadcasterGetBroadcastingConfig.config.videoWidth,
+        )
+    }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
@@ -93,6 +102,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
             streamAllowed = true,
+            shortVideoAllowed = true,
             channelStatus = ChannelStatus.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
             durationConfig = DurationConfigUiModel(
@@ -128,7 +138,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 channelId = "1234",
                 title = "Klarifikasi Bisa Tebak Siapa?",
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                coverUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
                 status = ChannelStatus.Draft
         )
@@ -150,15 +160,15 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 id = "1234",
                 title = "Tokopedia PLAY seru!",
                 description = "Nonton siaran seru di Tokopedia PLAY!",
-                imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                imageUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 redirectUrl = "https://beta.tokopedia.com/play/channel/10140",
                 textContent =  "\"testing\"\nYuk, nonton siaran dari MRG Audio di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
                 shortenUrl = true
         )
     }
 
-    override fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean): ChannelSummaryUiModel {
-        return ChannelSummaryUiModel(title, coverUrl, date, duration, isEligiblePostVideo)
+    override fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean, author: ContentAccountUiModel): ChannelSummaryUiModel {
+        return ChannelSummaryUiModel(title, coverUrl, date, duration, isEligiblePostVideo, author)
     }
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel {
@@ -354,7 +364,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         audioBufferTimestamp = 0,
     )
 
-    override fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel> {
+    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
         return emptyList()
     }
 

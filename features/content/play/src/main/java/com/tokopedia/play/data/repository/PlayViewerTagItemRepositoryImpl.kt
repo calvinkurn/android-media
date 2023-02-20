@@ -2,6 +2,9 @@ package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -30,6 +33,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
+    private val atcOccUseCase: AddToCartOccMultiUseCase,
     private val mapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -41,7 +45,12 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         partnerName : String,
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
-            setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId, warehouseId).parameters)
+            setRequestParams(
+                GetProductTagItemSectionUseCase.createParam(
+                    channelId,
+                    warehouseId
+                ).parameters
+            )
         }.executeOnBackground()
 
         val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList)
@@ -174,12 +183,13 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun checkUpcomingCampaign(campaignId: String): Boolean = withContext(dispatchers.io){
-        val response = checkUpcomingCampaignReminderUseCase.apply {
-            setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId.toLongOrZero()).parameters)
-        }.executeOnBackground()
-        return@withContext response.response.isAvailable
-    }
+    override suspend fun checkUpcomingCampaign(campaignId: String): Boolean =
+        withContext(dispatchers.io) {
+            val response = checkUpcomingCampaignReminderUseCase.apply {
+                setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId.toLongOrZero()).parameters)
+            }.executeOnBackground()
+            return@withContext response.response.isAvailable
+        }
 
     override suspend fun subscribeUpcomingCampaign(
         campaignId: String,
@@ -202,5 +212,38 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             else if (shouldRemind != currentStatus) ""
             else response.response.message
         )
+    }
+
+    override suspend fun addProductToCartOcc(
+        id: String,
+        name: String,
+        shopId: String,
+        minQty: Int,
+        price: Double
+    ): String = withContext(dispatchers.io) {
+        try {
+            val response = atcOccUseCase.apply {
+                setParams(
+                    AddToCartOccMultiRequestParams(
+                        carts = listOf(
+                            AddToCartOccMultiCartParam(
+                                productId = id,
+                                shopId = shopId,
+                                quantity = minQty.toString(),
+                                productName = name,
+                                price = price.toString()
+                            ),
+                        ),
+                        userId = userSession.userId,
+                        atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PLAY
+                    )
+                )
+            }.executeOnBackground()
+            if (response.isStatusError()) throw MessageErrorException(response.getAtcErrorMessage())
+            return@withContext response.data.cart.firstOrNull()?.cartId ?: ""
+        } catch (e: Throwable) {
+            if (e is ResponseErrorException) throw MessageErrorException(e.localizedMessage)
+            else throw e
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.sse
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.debugger.SSELogger
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class PlayChannelSSEImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
-    private val context: Context,
+    @ApplicationContext private val context: Context,
 ): PlayChannelSSE {
 
     private var sse: ServerSentEvent? = null

@@ -31,7 +31,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class ShopCampaignThematicWidgetViewHolder (
+class ShopCampaignThematicWidgetViewHolder(
     itemView: View,
     private val listener: ThematicWidgetViewHolder.ThematicWidgetListener,
     private val widgetConfigListener: WidgetConfigListener
@@ -58,7 +58,6 @@ class ShopCampaignThematicWidgetViewHolder (
     private var dynamicHeaderCustomView: ShopCampaignDynamicHeaderCustomView? = null
     private var uiModel: ThematicWidgetUiModel? = null
     private var isFirstAttached: Boolean = true
-    private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
 
     private val adapter by lazy {
         ProductCardAdapter(
@@ -174,7 +173,7 @@ class ShopCampaignThematicWidgetViewHolder (
 
     private fun restoreInstanceStateToLayoutManager() {
         launch {
-            val rvState =  uiModel?.productList?.firstOrNull()?.rvState
+            val rvState = uiModel?.productList?.firstOrNull()?.rvState
             if (null != rvState) {
                 rvProduct?.layoutManager?.onRestoreInstanceState(rvState)
             }

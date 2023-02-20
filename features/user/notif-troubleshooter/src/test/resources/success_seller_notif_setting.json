@@ -3,7 +3,7 @@
     "sellernotif": [
       {
         "section": "Status Transaksi",
-        "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/transaksi_penjualan.png",
+        "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/transaksi_penjualan.png",
         "list_settings": [
           {
             "name": "Pesanan Baru",
@@ -33,7 +33,7 @@
       },
       {
         "section": "Aktivitas",
-        "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/aktivitas.png",
+        "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/aktivitas.png",
         "list_settings": [
           {
             "name": "Broadcast Chat",
@@ -63,7 +63,7 @@
       },
       {
         "section": "Info",
-        "icon": "https://ecs7.tokopedia.net/img/notif-center/notification-settings/info.png",
+        "icon": "https://images.tokopedia.net/img/notif-center/notification-settings/info.png",
         "list_settings": [
           {
             "name": "Tips Berjualan",

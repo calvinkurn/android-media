@@ -28,7 +28,7 @@ class TokomemberMultiTextView @JvmOverloads constructor(context:Context,
     private fun initSetup(context: Context,attrs:AttributeSet?){
         attrs.let {
             attrArray = context.obtainStyledAttributes(it,R.styleable.TokomemberMultiTextView)
-            descriptionTv?.text= attrArray?.getString(R.styleable.TokomemberMultiTextView_descriptionText) ?: ""
+            descriptionTv?.text= attrArray?.getString(R.styleable.TokomemberMultiTextView_tmDescriptionText) ?: ""
             valueTv?.text= attrArray?.getString(R.styleable.TokomemberMultiTextView_valueText) ?: ""
         }
     }

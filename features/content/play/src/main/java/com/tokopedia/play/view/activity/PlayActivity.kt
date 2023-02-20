@@ -11,9 +11,10 @@ import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.PlayInjector
@@ -42,20 +43,22 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
- * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL], [com.tokopedia.play.PLAY_APP_LINK]
+ * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL], [com.tokopedia.play.PLAY_APP_LINK], [com.tokopedia.play.PLAY_RECOMMENDATION_APP_LINK]
  * Query parameters:
  * - source_type: String
  * - source_id: String
  *
  * Example: tokopedia://play/12345?source_type=SHOP&source_id=123
  */
-class PlayActivity : BaseActivity(),
-        PlayNavigation,
-        PlayPiPCoordinator,
-        SwipeContainerViewComponent.DataSource,
-        SwipeContainerViewComponent.Listener,
-        PlayOrientationListener,
-        PlayFullscreenManager {
+@Suppress("LateinitUsage")
+class PlayActivity :
+    BaseActivity(),
+    PlayNavigation,
+    PlayPiPCoordinator,
+    SwipeContainerViewComponent.DataSource,
+    SwipeContainerViewComponent.Listener,
+    PlayOrientationListener,
+    PlayFullscreenManager {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -69,12 +72,15 @@ class PlayActivity : BaseActivity(),
     @Inject
     lateinit var playPreference: PlayPreference
 
+    @Inject
+    lateinit var router: Router
+
     private lateinit var orientationManager: PlaySensorOrientationManager
 
     private lateinit var viewModel: PlayParentViewModel
 
     private val pipAdapter: FloatingWindowAdapter by lifecycleBound(
-            creator = { FloatingWindowAdapter(this) }
+        creator = { FloatingWindowAdapter(this) }
     )
 
     private var systemUiVisibility: Int
@@ -88,12 +94,12 @@ class PlayActivity : BaseActivity(),
 
     private val swipeContainerView by viewComponent(isEagerInit = true) {
         SwipeContainerViewComponent(
-                container = it,
-                rootId = R.id.vp_fragment,
-                fragmentManager = supportFragmentManager,
-                lifecycle = lifecycle,
-                dataSource = this,
-                listener = this
+            container = it,
+            rootId = R.id.vp_fragment,
+            fragmentManager = supportFragmentManager,
+            lifecycle = lifecycle,
+            dataSource = this,
+            listener = this
         )
     }
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
@@ -109,7 +115,10 @@ class PlayActivity : BaseActivity(),
      * Applink
      */
     private val startChannelId: String
-        get() = intent?.data?.lastPathSegment.orEmpty()
+        get() {
+            val lastSegment = intent?.data?.lastPathSegment.orEmpty()
+            return if (lastSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else lastSegment
+        }
 
     val activeFragment: PlayFragment?
         get() = try { swipeContainerView.getActiveFragment() as? PlayFragment } catch (e: Throwable) { null }
@@ -117,7 +126,7 @@ class PlayActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
-        
+
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
@@ -158,7 +167,7 @@ class PlayActivity : BaseActivity(),
         super.onNewIntent(intent)
         val newBundle = intent.extras ?: Bundle()
 
-        newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
+        newBundle.putString(PLAY_KEY_CHANNEL_ID, startChannelId)
         viewModel.setNewChannelParams(newBundle)
     }
 
@@ -206,10 +215,6 @@ class PlayActivity : BaseActivity(),
 
     override fun onShouldLoadNextPage() {
         viewModel.loadNextPage()
-    }
-
-    override fun onSwipeNextPage() {
-        playPreference.setCoachMark(userId = viewModel.userId)
     }
 
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -268,9 +273,14 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
                 }
+                is PageResultState.Archived -> {
+                    pageMonitoring.invalidate()
+                    ivLoading.hide()
+                    fragmentErrorViewOnStateChanged(shouldShow = true)
+                }
             }
 
-            if(it.state !is PageResultState.Upcoming) {
+            if (it.state is PageResultState.Success) {
                 fragmentUpcomingView.safeRelease()
                 swipeContainerView.setChannelIds(it.currentValue)
             }
@@ -278,18 +288,21 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeFirstChannelEvent() {
-        viewModel.observableFirstChannelEvent.observe(this, EventObserver {
-            swipeContainerView.reset()
-            playPreference.setCoachMark(userId = viewModel.userId, isFirstChannel = true)
-        })
+        viewModel.observableFirstChannelEvent.observe(
+            this,
+            EventObserver {
+                swipeContainerView.reset()
+            }
+        )
     }
 
     override fun onBackPressed(isSystemBack: Boolean) {
         val fragment = activeFragment
         if (fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
-                else {
+                if (isSystemBack && orientation.isLandscape) {
+                    onOrientationChanged(ScreenOrientation.Portrait, false)
+                } else {
                     if (isTaskRoot) {
                         gotoHome()
                     } else {
@@ -303,13 +316,14 @@ class PlayActivity : BaseActivity(),
                 gotoHome()
             } else {
                 fragmentUpcomingView.getActiveFragment()?.setResultBeforeFinish()
+                fragmentErrorView.activeFragment?.onBackPressed(startChannelId)
                 supportFinishAfterTransition()
             }
         }
     }
 
     private fun gotoHome() {
-        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        val intent = router.getIntent(this, ApplinkConst.HOME)
         startActivity(intent)
         finish()
     }

@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
 import com.tokopedia.homenav.databinding.HolderHomeNavMenuBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeNavMenuViewHolder(
@@ -28,6 +30,10 @@ class HomeNavMenuViewHolder(
         private const val ID_FINANCE = 49
         private const val ID_HALAL_CORNER = 48
         private const val ID_OTHER_SERVICES = 51
+
+        private const val PADDING_HORIZONTAL = 16
+        private const val PADDING_TOP_EXTRA = 8
+        private const val NO_PADDING = 0
     }
 
     /*
@@ -70,6 +76,12 @@ class HomeNavMenuViewHolder(
     override fun bind(element: HomeNavMenuDataModel) {
         binding?.menuTitle?.text = element.itemTitle
         binding?.menuTitle?.tag = element.id
+
+        if(element.id == ID_HOME) {
+            binding?.root?.setPadding(PADDING_HORIZONTAL.toPx(), PADDING_TOP_EXTRA.toPx(), PADDING_HORIZONTAL.toPx(), NO_PADDING)
+        } else {
+            binding?.root?.setPadding(PADDING_HORIZONTAL.toPx(), NO_PADDING, PADDING_HORIZONTAL.toPx(), NO_PADDING)
+        }
 
         if (element.srcIconId != null) {
             setImageByIconUnify(element)

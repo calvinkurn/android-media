@@ -78,7 +78,6 @@ dependencies {
 
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-    implementation projectOrAar(rootProject.ext.features.people)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)

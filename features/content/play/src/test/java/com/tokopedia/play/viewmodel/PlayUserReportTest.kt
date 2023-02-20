@@ -123,7 +123,7 @@ class PlayUserReportTest {
     @Test
     fun `when submit user report return success`(){
         val expectedResult = ResultState.Success
-        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any()) } returns true
+        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any(), any()) } returns true
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -131,7 +131,7 @@ class PlayUserReportTest {
         )
 
         robot.use {
-            it.viewModel.submitUserReport(1L, "http://", 3L, 2, 5000L, "OKOKOKOKOK")
+            it.viewModel.submitUserReport(mediaUrl = "http://play", reasonId = 1, timestamp = 90L, reportDesc = "hihi")
             val actualValue = it.viewModel.userReportSubmission.value
             actualValue.assertEqualTo(expectedResult)
         }
@@ -139,7 +139,7 @@ class PlayUserReportTest {
 
     @Test
     fun `when submit user report return failed`(){
-        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any()) } returns false
+        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any(), any()) } returns false
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -147,7 +147,7 @@ class PlayUserReportTest {
         )
 
         robot.use {
-            it.viewModel.submitUserReport(1L, "http://", 3L, 2, 5000L, "OKOKOKOKOK")
+            it.viewModel.submitUserReport(mediaUrl = "http://play", reasonId = 1, timestamp = 90L, reportDesc = "hihi")
             val actualValue = it.viewModel.userReportSubmission.value.isFail
             actualValue.assertTrue()
         }

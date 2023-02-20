@@ -151,7 +151,7 @@ class MultiLineGraphViewHolder(
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
-        if (element?.isComparePeriodeOnly == true) {
+        if (element?.isComparePeriodOnly == true) {
             metricsAdapter.items.forEach {
                 it.isSelected = (it == metric)
             }
@@ -743,18 +743,18 @@ class MultiLineGraphViewHolder(
             if (!multiLineEmptyState.isVisible) return
             hideAnimation = multiLineEmptyState.animatePop(ANIMATION_END, ANIMATION_START)
             hideAnimation?.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationRepeat(animation: Animator) {}
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     multiLineEmptyState.gone()
                     hideAnimation?.removeListener(this)
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                     hideAnimation?.removeListener(this)
                 }
 
-                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator) {}
             })
         }
     }

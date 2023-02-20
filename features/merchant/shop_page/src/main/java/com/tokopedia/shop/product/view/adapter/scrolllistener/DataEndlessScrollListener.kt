@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 /**
  * Created by hendry on 16/07/18.
  */
-abstract class DataEndlessScrollListener(layoutManager: RecyclerView.LayoutManager?,
-                                         private val onDataEndlessScrollListener: OnDataEndlessScrollListener) : EndlessRecyclerViewScrollListener(layoutManager) {
+abstract class DataEndlessScrollListener(
+    layoutManager: RecyclerView.LayoutManager?,
+    private val onDataEndlessScrollListener: OnDataEndlessScrollListener
+) : EndlessRecyclerViewScrollListener(layoutManager) {
     interface OnDataEndlessScrollListener {
         fun getEndlessDataSize(): Int
     }

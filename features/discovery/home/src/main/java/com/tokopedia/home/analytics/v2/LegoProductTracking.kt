@@ -128,7 +128,7 @@ object LegoProductTracking : BaseTrackerConst() {
             }
             putParcelableArrayList(Items.KEY, arrayListOf(items))
         }
-        getTracker().sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     fun sendLego4ProductSeeAllClick(channel: ChannelModel) {

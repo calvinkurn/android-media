@@ -11,7 +11,11 @@ data class DoFlashSaleProductSubmissionResponse(
         @SerializedName("product_status")
         val productStatus: List<ProductStatu> = listOf(),
         @SerializedName("response_header")
-        val responseHeader: ResponseHeader = ResponseHeader()
+        val responseHeader: ResponseHeader = ResponseHeader(),
+        @SerializedName("sse_key")
+        val sseKey: String = "",
+        @SerializedName("use_sse")
+        val useSse: Boolean = false
     ) {
         data class ProductStatu(
             @SerializedName("is_success")

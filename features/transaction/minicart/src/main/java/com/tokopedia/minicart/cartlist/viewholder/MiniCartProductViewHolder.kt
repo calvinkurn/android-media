@@ -63,7 +63,10 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         super.onViewRecycled()
         delayChangeQty?.cancel()
         delayChangeNotes?.cancel()
-        qtyTextWatcher = null
+        if (qtyTextWatcher != null) {
+            viewBinding.qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
+            qtyTextWatcher = null
+        }
     }
 
     override fun bind(element: MiniCartProductUiModel) {
@@ -138,8 +141,8 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         with(viewBinding) {
             textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false).removeDecimalSuffix()
 
-            val hasPriceOriginal = element.productOriginalPrice != 0L
-            val hasWholesalePrice = element.productWholeSalePrice != 0L
+            val hasPriceOriginal = element.productOriginalPrice > 0
+            val hasWholesalePrice = element.productWholeSalePrice > 0
             val hasPriceDrop = element.productInitialPriceBeforeDrop > 0 && element.productInitialPriceBeforeDrop > element.productPrice
             val paddingLeft = if(element.isBundlingItem) {
                 itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
@@ -152,7 +155,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 if (element.productSlashPriceLabel.isNotBlank()) {
                     // Slash price
                     renderSlashPriceFromCampaign(element)
-                } else if (element.productInitialPriceBeforeDrop != 0L) {
+                } else if (element.productInitialPriceBeforeDrop > 0) {
                     val wholesalePrice = element.productWholeSalePrice
                     if (wholesalePrice > 0 && wholesalePrice < element.productPrice) {
                         // Wholesale
@@ -161,7 +164,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                         // Price drop
                         renderSlashPriceFromPriceDrop(element)
                     }
-                } else if (element.productWholeSalePrice != 0L) {
+                } else if (element.productWholeSalePrice > 0) {
                     // Wholesale
                     renderSlashPriceFromWholesale(element)
                 }

@@ -29,10 +29,10 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * author by Rafli Syam on 17/02/2021
  */
-class ShopHomeCarouselProductPersonalizationViewHolder (
-        itemView: View,
-        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
-        private val shopHomeListener: ShopHomeListener
+class ShopHomeCarouselProductPersonalizationViewHolder(
+    itemView: View,
+    val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -40,9 +40,9 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         val LAYOUT = R.layout.item_shop_home_product_recommendation_carousel
     }
     private val viewBinding: ItemShopHomeProductRecommendationCarouselBinding? by viewBinding()
-    private var tvCarouselTitle : TextView? = null
-    private var tvCarouselSubTitle : TextView? = null
-    private var recyclerView : CarouselProductCardView? = null
+    private var tvCarouselTitle: TextView? = null
+    private var tvCarouselSubTitle: TextView? = null
+    private var recyclerView: CarouselProductCardView? = null
 
     init {
         initView()
@@ -53,13 +53,13 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         // product list
         val carouselProductList = element.productList.map {
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
-                    shopHomeProductViewModel = it,
-                    isHasATC = isHasATC(element),
-                    isHasOCCButton = (element.name == BUY_AGAIN) || (element.name == REMINDER),
-                    occButtonText = if(isAtcOcc(element.name)) {
-                        itemView.context.getString(R.string.occ_text)
-                    } else "",
-                    element.name
+                shopHomeProductViewModel = it,
+                isHasATC = isHasATC(element),
+                isHasOCCButton = (element.name == BUY_AGAIN) || (element.name == REMINDER),
+                occButtonText = if (isAtcOcc(element.name)) {
+                    itemView.context.getString(R.string.occ_text)
+                } else "",
+                element.name
 
             )
         }
@@ -68,21 +68,21 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         val productAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
             override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
-                        ?: return
+                    ?: return
                 if (element.name == REMINDER) {
                     shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
-                            adapterPosition,
-                            carouselProductCardPosition,
-                            element,
-                            productItem
+                        adapterPosition,
+                        carouselProductCardPosition,
+                        element,
+                        productItem
                     )
                 } else {
                     shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
-                            adapterPosition,
-                            carouselProductCardPosition,
-                            element,
-                            productItem,
-                            isOcc = isAtcOcc(element.name)
+                        adapterPosition,
+                        carouselProductCardPosition,
+                        element,
+                        productItem,
+                        isOcc = isAtcOcc(element.name)
                     )
                 }
             }
@@ -140,7 +140,6 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                         element.name
                     )
                 }
-
             }
 
         val productAddToCartVariantListener =
@@ -154,13 +153,12 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                         ?: return
                     shopHomeCarouselProductListener.onProductAtcVariantClick(productItem)
                 }
-
             }
 
         val productClickListener = object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
-                        ?: return
+                    ?: return
                 when (element.name) {
                     REMINDER -> {
                         shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
@@ -193,7 +191,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         val productImpressionListener = object : CarouselProductCardListener.OnItemImpressedListener {
             override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
-                        ?: return
+                    ?: return
                 when (element.name) {
                     REMINDER -> {
                         shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
@@ -235,14 +233,13 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         }
         recyclerView?.isNestedScrollingEnabled = false
         when (element.name) {
-
             ADD_ONS -> {
                 recyclerView?.bindCarouselProductCardViewGrid(
                     scrollToPosition = getScrollPosition(),
                     productCardModelList = carouselProductList,
-                        carouselProductCardOnItemAddToCartListener = productAddToCartListener,
-                        carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener
+                    carouselProductCardOnItemAddToCartListener = productAddToCartListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener
                 )
             }
 
@@ -260,10 +257,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
 
             BUY_AGAIN -> {
                 recyclerView?.bindCarouselProductCardViewList(
-                        productCardModelList = carouselProductList,
-                        carouselProductCardOnItemAddToCartListener = productAddToCartListener,
-                        carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener
+                    productCardModelList = carouselProductList,
+                    carouselProductCardOnItemAddToCartListener = productAddToCartListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener
                 )
             }
 
@@ -277,23 +274,22 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
                 )
             }
-
         }
         setWidgetImpressionListener(element)
     }
 
     private fun setHeaderSection(element: ShopHomeCarousellProductUiModel) {
         tvCarouselTitle?.text = element.header.title
-        tvCarouselSubTitle?.shouldShowWithAction(element.header.subtitle.isNotEmpty()){
+        tvCarouselSubTitle?.shouldShowWithAction(element.header.subtitle.isNotEmpty()) {
             tvCarouselSubTitle?.text = element.header.subtitle
         }
     }
 
     private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
         itemView.addOnImpressionListener(model.impressHolder) {
-            if(model.name == TRENDING){
+            if (model.name == TRENDING) {
                 shopHomeCarouselProductListener.onCarouselProductPersonalizationTrendingWidgetImpression()
-            }else {
+            } else {
                 shopHomeCarouselProductListener.onCarouselProductWidgetImpression(
                     adapterPosition,
                     model
@@ -309,13 +305,12 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
     }
 
     private fun isAtcOcc(
-            widgetName: String
-    ) : Boolean = widgetName == BUY_AGAIN
+        widgetName: String
+    ): Boolean = widgetName == BUY_AGAIN
 
     private fun isHasATC(
-       element : ShopHomeCarousellProductUiModel?
-    ) : Boolean = (element?.header?.isATC == IS_ATC)
-
+        element: ShopHomeCarousellProductUiModel?
+    ): Boolean = (element?.header?.isATC == IS_ATC)
 
     fun saveScrollPosition() {
         shopHomeListener.getWidgetCarouselPositionSavedState().put(

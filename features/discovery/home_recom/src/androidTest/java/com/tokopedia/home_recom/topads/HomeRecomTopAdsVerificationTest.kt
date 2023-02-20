@@ -18,6 +18,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
+import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -30,7 +31,7 @@ import org.junit.Test
 /**
  * Created by Lukas on 26/07/20.
  */
-
+@TopAdsTest
 class HomeRecomTopAdsVerificationTest {
 
     @get:Rule

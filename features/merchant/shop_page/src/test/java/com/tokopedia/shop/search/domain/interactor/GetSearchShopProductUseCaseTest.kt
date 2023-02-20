@@ -56,8 +56,8 @@ class GetSearchShopProductUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile(UNIVERSE_SEARCH_RESPONSE_JSON_FILE_PATH),
-                JsonObject::class.java
+            getJsonFromFile(UNIVERSE_SEARCH_RESPONSE_JSON_FILE_PATH),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
         val objectType = UniverseSearchResponse::class.java

@@ -30,7 +30,7 @@ class ReviewViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.home_item_review
         private const val FPM_REVIEW = "home_review"
-        private const val cardBg = "https://ecs7.tokopedia.net/android/others/review_home_bg.png"
+        private const val cardBg = "https://images.tokopedia.net/android/others/review_home_bg.png"
         private const val IMAGE_RADIUS = 8
         private const val CARD_REVIEW_CLICK_AT = 5
         private const val CARD_REVIEW_CLICK_DELAY = 0L

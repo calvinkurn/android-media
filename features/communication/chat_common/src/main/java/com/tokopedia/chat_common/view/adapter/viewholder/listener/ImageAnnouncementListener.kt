@@ -7,4 +7,5 @@ import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
  */
 interface ImageAnnouncementListener{
     fun onImageAnnouncementClicked(uiModel : ImageAnnouncementUiModel)
+    fun onCtaBroadcastClicked(uiModel: ImageAnnouncementUiModel)
 }

@@ -23,6 +23,7 @@ class AffiliateCookieHelper @Inject constructor(
     private val checkCookieUseCase: CheckCookieUseCase,
     private val userSession: UserSessionInterface
 ) {
+
     private var affiliateUUID: String = ""
 
     /**
@@ -32,6 +33,7 @@ class AffiliateCookieHelper @Inject constructor(
      * @param[affiliateChannel] required and pass it from url query params
      * @param[affiliatePageDetail] [AffiliatePageDetail]
      * @param[uuid] random UUID generated every time user land on PDP page. (Required for Product)
+     * @param[isATC] mandatory for Direct ATC attribution
      * @param[additionalParam] some additional params of type [AdditionalParam]
      *
      */
@@ -40,7 +42,7 @@ class AffiliateCookieHelper @Inject constructor(
         affiliateChannel: String,
         affiliatePageDetail: AffiliatePageDetail,
         uuid: String = "",
-        additionalParam: List<AdditionalParam> = emptyList(),
+        additionalParam: List<AdditionalParam> = emptyList()
     ) {
         val params = AffiliateCookieParams(
             affiliateUUID,
@@ -50,8 +52,9 @@ class AffiliateCookieHelper @Inject constructor(
             additionalParam
         )
         when (affiliatePageDetail.source) {
-            is AffiliateSdkPageSource.PDP -> {
-                if (affiliateUUID.isNotEmpty()) {
+            is AffiliateSdkPageSource.PDP,
+            is AffiliateSdkPageSource.DirectATC -> {
+                if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId
@@ -60,7 +63,7 @@ class AffiliateCookieHelper @Inject constructor(
             }
             else -> {
                 this.affiliateUUID = params.affiliateUUID
-                if (affiliateUUID.isNotEmpty()) {
+                if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId
@@ -101,5 +104,4 @@ class AffiliateCookieHelper @Inject constructor(
         }
         return productUrl
     }
-
 }

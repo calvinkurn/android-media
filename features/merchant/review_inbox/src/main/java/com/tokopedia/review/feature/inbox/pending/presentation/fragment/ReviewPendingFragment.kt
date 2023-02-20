@@ -76,6 +76,7 @@ class ReviewPendingFragment :
         private const val CAROUSEL_WINNER_TITLE = "Hai, Juara Ulasan"
         const val PARAM_RATING = "rating"
         const val CREATE_REVIEW_REQUEST_CODE = 420
+        const val BULK_CREATE_REVIEW_REQUEST_CODE = 421
         const val INBOX_SOURCE = "inbox"
         const val COACH_MARK_SHOWN = false
         const val PARAM_WRITE_FORM_SOURCE = "source"
@@ -234,6 +235,9 @@ class ReviewPendingFragment :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        if (savedInstanceState == null) {
+            showBulkReviewToasterFromIntent()
+        }
         observeReviewList()
         observeOvoIncentive()
     }
@@ -289,11 +293,20 @@ class ReviewPendingFragment :
                 )
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(
-                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
+                    data?.getStringExtra(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE)
                         ?: getString(R.string.review_pending_invalid_to_review)
                 )
             }
             refresh()
+        } else if (requestCode == BULK_CREATE_REVIEW_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                reviewInboxListener?.reloadCounter()
+                onSuccessCreateReview(
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
+                        ?: getString(R.string.review_create_success_toaster, viewModel.getUserName())
+                )
+                refresh()
+            }
         }
     }
 
@@ -331,7 +344,12 @@ class ReviewPendingFragment :
                 userId = viewModel.getUserId()
             )
         } else {
-            RouteManager.route(context, appLink)
+            val intent = RouteManager.getIntent(context, appLink)
+            if (appLink == ApplinkConst.PRODUCT_BULK_CREATE_REVIEW) {
+                startActivityForResult(intent, BULK_CREATE_REVIEW_REQUEST_CODE)
+            } else {
+                startActivity(intent)
+            }
         }
         ReviewPendingTracking.trackCredibilityCarouselItemClick(position, title, viewModel.getUserId())
     }
@@ -397,6 +415,12 @@ class ReviewPendingFragment :
 
     private fun hideList() {
         binding?.reviewPendingSwipeRefresh?.hide()
+    }
+
+    private fun showBulkReviewToasterFromIntent() {
+        activity?.intent?.extras?.getString(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE)?.let { message ->
+            showToaster(message, getString(R.string.review_oke))
+        }
     }
 
     private fun showFullPageLoading() {

@@ -5,11 +5,24 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXFollowers
+import com.tokopedia.feedcomponent.data.feedrevamp.reversed
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.util.LimitGenerator
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
-import com.tokopedia.kol.feature.postdetail.view.datamodel.*
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.DeleteContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ReportContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.UGCFollowUnfollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.VisitContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.WishlistContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -20,15 +33,17 @@ import javax.inject.Inject
 
 class ContentDetailViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
-    private val repository: ContentDetailRepository,
-): BaseViewModel(dispatcher.main) {
+    private val repository: ContentDetailRepository
+) : BaseViewModel(dispatcher.main) {
 
     var currentCursor = ""
 
+    private val _userProfileFeedPost = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _getCDPPostRecomData = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _likeKolResp = MutableLiveData<ContentDetailResult<LikeContentModel>>()
     private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
+    private val _followUserObservable = MutableLiveData<ContentDetailResult<UGCFollowUnfollowModel>>()
     private val _trackVodVisitContentData = MutableLiveData<ContentDetailResult<VisitContentModel>>()
     private val _atcResp = MutableLiveData<ContentDetailResult<Boolean>>()
     private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
@@ -37,6 +52,14 @@ class ContentDetailViewModel @Inject constructor(
     private val _asgcReminderButtonStatus = MutableLiveData<ContentDetailResult<FeedAsgcCampaignResponseModel>>()
     private val _feedWidgetLatestData = MutableLiveData<Result<FeedWidgetData>>()
 
+    val userProfileFeedPost: LiveData<Result<ContentDetailUiModel>>
+        get() = _userProfileFeedPost
+
+    private var userProfileFeedCurrentPostList = listOf<FeedXCard>()
+        get() = when (val data = userProfileFeedPost.value) {
+            is Success -> data.data.postList
+            else -> emptyList()
+        }
 
     val cDPPostRecomData: LiveData<Result<ContentDetailUiModel>>
         get() = _getCDPPostRecomData
@@ -50,6 +73,9 @@ class ContentDetailViewModel @Inject constructor(
     val followShopObservable: LiveData<ContentDetailResult<ShopFollowModel>>
         get() = _followShopObservable
 
+    val followUserObservable: LiveData<ContentDetailResult<UGCFollowUnfollowModel>>
+        get() = _followUserObservable
+
     val vodViewData: LiveData<ContentDetailResult<VisitContentModel>>
         get() = _trackVodVisitContentData
 
@@ -57,10 +83,10 @@ class ContentDetailViewModel @Inject constructor(
         get() = _atcResp
 
     val reportResponse: LiveData<ContentDetailResult<ReportContentModel>>
-         get() = _reportResponse
+        get() = _reportResponse
 
     val deletePostResp: LiveData<ContentDetailResult<DeleteContentModel>>
-         get() = _deletePostResp
+        get() = _deletePostResp
 
     val observableWishlist: LiveData<ContentDetailResult<WishlistContentModel>>
         get() = _observableWishlist
@@ -74,6 +100,37 @@ class ContentDetailViewModel @Inject constructor(
 
     val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
         get() = _feedWidgetLatestData
+
+    fun fetchUserProfileFeedPost(profileUserID: String, currentPosition: Int = -1, isRefresh: Boolean = false) {
+        launchCatchError(
+            block = {
+                val data = repository.getFeedPosts(
+                    profileUserID,
+                    if (isRefresh) "" else currentCursor,
+                    LimitGenerator.getExpectedLimit(currentPosition)
+                )
+
+                val newPostList = (
+                    if (currentCursor.isEmpty() || isRefresh) {
+                        data.postList
+                    } else {
+                        userProfileFeedCurrentPostList + data.postList
+                    }
+                    ).distinctBy { it.id }
+
+                currentCursor = data.cursor
+                _userProfileFeedPost.value = Success(
+                    data.copy(
+                        postList = newPostList,
+                        cursor = data.cursor
+                    )
+                )
+            },
+            onError = {
+                _userProfileFeedPost.value = Fail(it)
+            }
+        )
+    }
 
     fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
         launchCatchError(block = {
@@ -90,8 +147,8 @@ class ContentDetailViewModel @Inject constructor(
         }
     }
 
-    fun getContentDetail(contentId: String){
-        launchCatchError( block = {
+    fun getContentDetail(contentId: String) {
+        launchCatchError(block = {
             val results = repository.getContentDetail(contentId)
             _getCDPPostFirstPostData.value = Success(results)
         }) {
@@ -100,7 +157,7 @@ class ContentDetailViewModel @Inject constructor(
     }
 
     fun checkUpcomingCampaignInitialReminderStatus(campaignId: Long, rowNumber: Int) {
-       launchCatchError(block = {
+        launchCatchError(block = {
             val data = repository.checkUpcomingCampaign(campaignId = campaignId)
             val reminderStatusRes = if (data) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(campaignId)
             _asgcReminderButtonInitialStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaignId, reminderStatus = reminderStatusRes))
@@ -108,22 +165,33 @@ class ContentDetailViewModel @Inject constructor(
             _asgcReminderButtonInitialStatus.value = ContentDetailResult.Failure(it)
         }
     }
-    fun setUnsetReminder(campaignId: Long, reminderStatus: FeedASGCUpcomingReminderStatus, rowNumber: Int) {
-       launchCatchError(block = {
+    fun setUnsetReminder(campaign: FeedXCampaign, rowNumber: Int) {
+        launchCatchError(block = {
             val data = repository.subscribeUpcomingCampaign(
-                campaignId = campaignId,
-                reminderType = reminderStatus
+                campaignId = campaign.campaignId,
+                reminderType = campaign.reminder
             )
-            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(campaignId)
-            _asgcReminderButtonStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaignId, reminderStatus = reminderStatusRes))
+            if (data.first) {
+                val reminderStatusRes = campaign.reminder.reversed(campaign.campaignId)
+                _asgcReminderButtonStatus.value = ContentDetailResult.Success(
+                    FeedAsgcCampaignResponseModel(
+                        rowNumber = rowNumber,
+                        campaignId = campaign.campaignId,
+                        reminderStatus = reminderStatusRes
+                    )
+                )
+            } else {
+                _asgcReminderButtonStatus.value = ContentDetailResult.Failure(Throwable(data.second))
+            }
         }) {
             _asgcReminderButtonStatus.value = ContentDetailResult.Failure(it)
         }
     }
 
-    fun getContentDetailRecommendation(activityId: String){
+    fun getContentDetailRecommendation(activityId: String, isRefresh: Boolean = false) {
         launchCatchError(block = {
             val result = repository.getContentRecommendation(activityId, currentCursor)
+            result.isPostRefresh = isRefresh
             currentCursor = result.cursor
             _getCDPPostRecomData.value = Success(result)
         }) {
@@ -157,6 +225,37 @@ class ContentDetailViewModel @Inject constructor(
         }
     }
 
+    fun followUnFollowUser(isFollow: Boolean, encryptedUserID: String, currentPosition: Int) {
+        launchCatchError(block = {
+            when (val request = repository.followUnfollowUser(isFollow, encryptedUserID)) {
+                is MutationUiModel.Success -> {
+                    _followUserObservable.value =
+                        ContentDetailResult.Success(
+                            UGCFollowUnfollowModel(
+                                currentPosition = currentPosition,
+                                isFollow = isFollow
+                            )
+                        )
+                    _userProfileFeedPost.value = Success(
+                        ContentDetailUiModel(
+                            postList = userProfileFeedCurrentPostList.map {
+                                it.copy(
+                                    followers = FeedXFollowers(isFollowed = !isFollow)
+                                )
+                            },
+                            cursor = currentCursor
+                        )
+                    )
+                }
+                is MutationUiModel.Error -> throw Throwable(request.message)
+            }
+        }, onError = {
+                _followUserObservable.value = ContentDetailResult.Failure(it) {
+                    followUnFollowUser(isFollow, encryptedUserID, currentPosition)
+                }
+            })
+    }
+
     fun trackVisitChannel(channelId: String, rowNumber: Int) {
         _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
@@ -181,7 +280,7 @@ class ContentDetailViewModel @Inject constructor(
         productId: String,
         productName: String,
         price: String,
-        shopId: String,
+        shopId: String
     ) {
         _atcResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
@@ -205,7 +304,7 @@ class ContentDetailViewModel @Inject constructor(
         positionInFeed: Int,
         contentId: String,
         reasonType: String,
-        reasonMessage: String,
+        reasonMessage: String
     ) {
         launchCatchError(block = {
             val response = repository.reportContent(contentId, reasonType, reasonMessage, positionInFeed)

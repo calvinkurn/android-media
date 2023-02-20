@@ -43,4 +43,12 @@ interface PlayViewerTagItemRepository {
         val isReminded: Boolean,
         val message: String,
     )
+
+    suspend fun addProductToCartOcc(
+        id: String,
+        name: String,
+        shopId: String,
+        minQty: Int,
+        price: Double,
+    ): String
 }

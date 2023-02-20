@@ -27,7 +27,7 @@
             android:layout_margin="@dimen/unify_space_16"
             android:visibility="gone"
             tools:visibility="visible"
-            app:srcCompat="@drawable/ic_video_play_button" />
+            app:srcCompat="@drawable/tm_ic_video_play_button" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/exo_pause"
@@ -37,7 +37,7 @@
             android:layout_margin="@dimen/unify_space_16"
             android:visibility="gone"
             tools:visibility="visible"
-            app:srcCompat="@drawable/ic_video_pause_button" />
+            app:srcCompat="@drawable/tm_ic_video_pause_button" />
     </FrameLayout>
 
     <LinearLayout

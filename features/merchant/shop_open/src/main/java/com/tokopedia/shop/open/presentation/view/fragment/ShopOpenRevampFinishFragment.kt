@@ -38,7 +38,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
     }
 
     companion object {
-        const val LOTTIE_ANIMATION = "https://ecs7.tokopedia.net/android/lottie/merchant/others/REV_Merchant_Onboarding_lottie.json"
+        const val LOTTIE_ANIMATION = "https://images.tokopedia.net/android/lottie/merchant/others/REV_Merchant_Onboarding_lottie.json"
         private const val LOTTIE_ANIMATION_DURATION = 3000L
     }
 

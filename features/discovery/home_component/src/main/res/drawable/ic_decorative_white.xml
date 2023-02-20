@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="vector"
+    android:width="36dp"
+    android:height="36dp"
+    android:viewportWidth="36"
+    android:viewportHeight="36">
+    <group
+        android:name="toped_group"
+        android:pivotX="18"
+        android:pivotY="18"
+        android:scaleX="0"
+        android:scaleY="0">
+        <path
+            android:name="toped"
+            android:fillColor="@color/Unify_Static_White"
+            android:fillType="evenOdd"
+            android:pathData="M 22.589 10 L 24.205 10 C 25.408 10 26.002 10.597 26.002 11.797 L 26.002 19.916 C 25.975 21.536 25.311 23.084 24.156 24.224 C 23.001 25.36 21.443 26 19.821 26 L 11.77 26 C 10.581 26 10 25.419 10 24.23 L 10 11.792 C 10 10.592 10.594 10 11.792 10 L 13.411 10 C 15.98 10 17.298 11.361 17.999 12.5 C 18.7 11.361 20.022 10 22.587 10 L 22.589 10 Z"
+            android:strokeWidth="1" />
+    </group>
+    <group
+        android:name="path_1_group"
+        android:pivotX="6"
+        android:pivotY="18">
+        <path
+            android:name="path_1"
+            android:fillColor="@color/Unify_Static_White"
+            android:pathData="M 5.5 15.6 C 4.837 15.6 4.201 15.864 3.732 16.332 C 3.264 16.801 3 17.437 3 18.1 C 3 18.763 3.264 19.399 3.732 19.868 C 4.201 20.336 4.837 20.6 5.5 20.6 C 6.163 20.6 6.799 20.336 7.268 19.868 C 7.736 19.399 8 18.763 8 18.1 C 8 17.437 7.736 16.801 7.268 16.332 C 6.799 15.864 6.163 15.6 5.5 15.6 Z"
+            android:strokeWidth="1" />
+    </group>
+    <group
+        android:name="path_2_group"
+        android:pivotX="18"
+        android:pivotY="18">
+        <path
+            android:name="path_2"
+            android:fillColor="@color/Unify_Static_White"
+            android:pathData="M 18 14 C 16.94 14 15.921 14.422 15.172 15.172 C 14.422 15.921 14 16.94 14 18 C 14 19.06 14.422 20.079 15.172 20.828 C 15.921 21.578 16.94 22 18 22 C 19.06 22 20.079 21.578 20.828 20.828 C 21.578 20.079 22 19.06 22 18 C 22 16.94 21.578 15.921 20.828 15.172 C 20.079 14.422 19.06 14 18 14 Z"
+            android:strokeWidth="1" />
+    </group>
+    <group
+        android:name="path_3_group"
+        android:pivotX="30"
+        android:pivotY="18">
+        <path
+            android:name="path_3"
+            android:fillColor="@color/Unify_Static_White"
+            android:pathData="M 30.5 15.6 C 29.837 15.6 29.201 15.864 28.732 16.332 C 28.264 16.801 28 17.437 28 18.1 C 28 18.763 28.264 19.399 28.732 19.868 C 29.201 20.336 29.837 20.6 30.5 20.6 C 31.163 20.6 31.799 20.336 32.268 19.868 C 32.736 19.399 33 18.763 33 18.1 C 33 17.437 32.736 16.801 32.268 16.332 C 31.799 15.864 31.163 15.6 30.5 15.6 Z"
+            android:strokeWidth="1" />
+    </group>
+</vector>

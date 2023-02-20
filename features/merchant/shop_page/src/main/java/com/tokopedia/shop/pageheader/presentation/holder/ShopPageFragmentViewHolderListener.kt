@@ -12,8 +12,8 @@ interface ShopPageFragmentViewHolderListener {
     fun onStartLiveStreamingClicked()
     fun saveFirstTimeVisit()
     fun isFirstTimeVisit(): Boolean?
-    fun onSendRequestOpenModerate(optionValue : String)
+    fun onSendRequestOpenModerate(optionValue: String)
     fun onCompleteSendRequestOpenModerate()
-    fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
+    fun onCompleteCheckRequestModerateStatus(moderateStatusResult: ShopModerateRequestResult)
     fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
 }
