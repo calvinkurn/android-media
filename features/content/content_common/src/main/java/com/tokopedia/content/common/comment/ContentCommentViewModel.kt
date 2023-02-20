@@ -32,6 +32,9 @@ class ContentCommentViewModel @AssistedInject constructor(
     val event: Flow<CommentEvent>
         get() = _event
 
+    val userInfo: UserSessionInterface
+        get() = userSession
+
     @AssistedFactory
     interface Factory {
         fun create(@Assisted source: PageSource): ContentCommentViewModel
@@ -131,6 +134,8 @@ class ContentCommentViewModel @AssistedInject constructor(
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
             is CommentAction.DeleteComment -> deleteComment(action.commentId)
             is CommentAction.ReportComment -> reportComment(action.param)
+            CommentAction.EditTextCLicked -> handleEditTextClicked()
+            is CommentAction.ReplyComment -> sendReply(action.comment, action.commentType)
         }
     }
 
@@ -206,6 +211,33 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun removeComment(id: String) {
         _comments.getAndUpdate {
             it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == id })
+        }
+    }
+
+    private fun handleEditTextClicked() {
+        requireLogin { //handle ActivityResult
+            viewModelScope.launch {
+                _event.emit(CommentEvent.ShowKeyboard)
+            }
+        }
+    }
+
+    private fun sendReply(comment: String, commentType: CommentType){
+        viewModelScope.launchCatchError(block = {
+            _event.emit(CommentEvent.HideKeyboard)
+            val result = repo.replyComment(source, commentType, comment)
+            _comments.getAndUpdate {
+                val newList = it.list.toMutableList().apply {
+                    add(1, result)
+                }
+                it.copy(list = newList)
+            }
+        }){
+            _event.emit(
+                CommentEvent.ShowErrorToaster(
+                    message = it,
+                    onClick = { sendReply(comment, commentType) })
+            )
         }
     }
 

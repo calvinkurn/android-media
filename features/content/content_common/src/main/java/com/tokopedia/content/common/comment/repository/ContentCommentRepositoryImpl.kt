@@ -52,7 +52,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
         return@withContext if (!isCommentAllowed) throw MessageErrorException(ERROR_SPAM_MESSAGE)
         else {
             val commenterType =
-                if (userSession.isShopOwner) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
+                if (userSession.isShopOwner) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER //isShopOwner from back end
             val response = postCommentUseCase.apply {
                 setRequestParams(
                     PostCommentUseCase.setParam(

@@ -65,7 +65,7 @@ class PostCommentUseCase @Inject constructor(repo: GraphqlRepository) :
                   user {
                     isKol: iskol
                     id
-                    linkDetail: LinkDetail {
+                    linkDetail {
                       webLink
                       appLink
                       desktopLink

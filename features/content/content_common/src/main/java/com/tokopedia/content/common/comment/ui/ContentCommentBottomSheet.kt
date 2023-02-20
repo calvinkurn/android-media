@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -35,6 +36,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -117,6 +119,14 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
+
+        binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
+        binding.newComment.setOnClickListener {
+            viewModel.submitAction(CommentAction.EditTextCLicked)
+        }
+        binding.viewCommentSend.setOnClickListener {
+            viewModel.submitAction(CommentAction.ReplyComment(binding.newComment.text.toString(), CommentType.Parent))// adjust origin
+        }
     }
 
     private fun observeData() {
@@ -169,6 +179,13 @@ class ContentCommentBottomSheet @Inject constructor(
                     }
                     is CommentEvent.OpenAppLink -> {
                         router.route(context = requireContext(), appLinkPattern = event.appLink)
+                    }
+                    CommentEvent.ShowKeyboard -> {
+                        binding.newComment.requestFocus()
+                        KeyboardHandler.showSoftKeyboard(requireActivity())
+                    }
+                    CommentEvent.HideKeyboard -> {
+                        KeyboardHandler.hideSoftKeyboard(requireActivity())
                     }
                 }
             }

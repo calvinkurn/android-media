@@ -17,4 +17,6 @@ sealed class CommentEvent {
     ) : CommentEvent()
 
     data class OpenAppLink(val appLink: String) : CommentEvent()
+    object ShowKeyboard: CommentEvent()
+    object HideKeyboard: CommentEvent()
 }

@@ -45,8 +45,9 @@
             android:layout_height="@dimen/content_common_space_40"
             app:unify_image_type="circle" />
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.tokopedia.feedcomponent.view.custom.MentionEditText
             android:id="@+id/new_comment"
+            android:hint=""
             android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl4"
             android:layout_gravity="center_vertical"

@@ -13,11 +13,13 @@ sealed class CommentAction {
     object RefreshComment : CommentAction()
     object DismissComment : CommentAction()
 
-    data class ReplyComment(val comment: CommentUiModel.Item) : CommentAction()
+    data class ReplyComment(val comment: String, val commentType: CommentType) : CommentAction()
     data class DeleteComment(val commentId: String) : CommentAction()
     data class ReportComment(
         val param: FeedReportRequestParamModel
     ) : CommentAction()
 
     data class ResultAction(val requestCode: Int) : CommentAction()
+
+    object EditTextCLicked: CommentAction()
 }
