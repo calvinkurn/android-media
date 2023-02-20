@@ -34,9 +34,18 @@ class AppendClientIdTest {
             WebViewHelper.getClientId()
         } returns "123"
         val result = WebViewHelper.appendGAClientIdAsQueryParam(url, context)
-        val expected =
-            "https://js.tokopedia.com?url=https%3A%2F%2Faccounts.tokopedia.com%2Foauth%2Fredirect%3Fredirect_uri%3Dhttps%253A%252F%252Fweb.stage.halodoc.com%252Ftanya-dokter%252Fkonsultasi-resep%253Ftitle%253DChat-Dokter%2526source%253Dtokopedia%2526consultation_id%253D448153%2526_single%253Dtrue%2526redirect_tokopedia%253Dtokopedia%25253A%25252F%25252Fback&appClientId=123"
-        assertEquals(expected, result)
+        val uriResult = Uri.parse(result)
+        assertEquals(uriResult.scheme, "https")
+        assertEquals(uriResult.host, "js.tokopedia.com")
+        val urlQuery = uriResult.getQueryParameter("url")
+        assertEquals(
+            "https://accounts.tokopedia.com/oauth/redirect?redirect_uri=https%3A%2F%2Fweb.stage.halodoc.com%2Ftanya-dokter%2Fkonsultasi-resep%3Ftitle%3DChat-Dokter%26source%3Dtokopedia%26consultation_id%3D448153%26_single%3Dtrue%26redirect_tokopedia%3Dtokopedia%253A%252F%252Fback&appClientId=123",
+            urlQuery
+        )
+        assertEquals(
+            "123",
+            Uri.parse(urlQuery).getQueryParameter("appClientId")
+        )
     }
 
     @Test
