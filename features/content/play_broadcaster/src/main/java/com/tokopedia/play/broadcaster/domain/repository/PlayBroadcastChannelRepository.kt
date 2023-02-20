@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetImageGeneratorPolicyResponse
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
@@ -18,6 +19,8 @@ interface PlayBroadcastChannelRepository {
     suspend fun createChannel(authorId: String, authorType: String): String
 
     suspend fun updateChannelStatus(authorId: String, channelId: String, status: PlayChannelStatusType): String
+
+    suspend fun getImageGeneratorPolicy(): GetImageGeneratorPolicyResponse
 
     suspend fun updateSchedule(
         channelId: String,

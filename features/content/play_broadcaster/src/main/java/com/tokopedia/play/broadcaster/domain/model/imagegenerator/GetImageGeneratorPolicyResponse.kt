@@ -1,0 +1,23 @@
+package com.tokopedia.play.broadcaster.domain.model.imagegenerator
+
+import com.google.gson.annotations.SerializedName
+
+data class GetImageGeneratorPolicyResponse(
+    @SerializedName("imagenerator_policy")
+    val imageGeneratorPolicy: ImaGeneratorPolicy = ImaGeneratorPolicy()
+) {
+
+    data class ImaGeneratorPolicy(
+        @SerializedName("args")
+        val args: List<Arg> = emptyList()
+    )
+
+    data class Arg(
+        @SerializedName("key")
+        val key: String = "",
+        @SerializedName("required")
+        val required: Boolean = false,
+        @SerializedName("type")
+        val type: String = "",
+    )
+}

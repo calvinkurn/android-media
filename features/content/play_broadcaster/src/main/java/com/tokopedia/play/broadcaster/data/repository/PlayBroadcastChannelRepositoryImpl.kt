@@ -7,9 +7,11 @@ import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.domain.model.Config
+import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetImageGeneratorPolicyResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.imagegenerator.GetImageGeneratorPolicyUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
@@ -33,6 +35,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
+    private val getImageGeneratorPolicyUseCase: GetImageGeneratorPolicyUseCase,
 ): PlayBroadcastChannelRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
@@ -83,6 +86,10 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
         return@withContext response.id
+    }
+
+    override suspend fun getImageGeneratorPolicy(): GetImageGeneratorPolicyResponse = withContext(dispatchers.io) {
+        return@withContext getImageGeneratorPolicyUseCase.execute()
     }
 
     override suspend fun updateSchedule(
