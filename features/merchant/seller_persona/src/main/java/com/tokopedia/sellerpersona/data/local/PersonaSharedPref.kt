@@ -22,10 +22,10 @@ class PersonaSharedPref @Inject constructor(
         context.getSharedPreferences(PERSONA_SP, Context.MODE_PRIVATE)
     }
 
+    val isFirstVisit: Boolean
+        get() = sp.getBoolean(KEY_IS_FIRST_VISIT, false)
+
     fun setIsFirstVisit(isFirstVisit: Boolean) {
         sp.edit().putBoolean(KEY_IS_FIRST_VISIT, isFirstVisit).apply()
     }
-
-    val isFirstVisit: Boolean
-        get() = sp.getBoolean(KEY_IS_FIRST_VISIT, false)
 }

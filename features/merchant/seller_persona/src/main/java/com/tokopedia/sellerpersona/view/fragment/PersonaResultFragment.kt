@@ -340,9 +340,8 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                 SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
             }
             tvSpSelectManualType.setOnClickListener {
-                val persona = personaData?.persona
                 val action = PersonaResultFragmentDirections
-                    .actionResultFragmentToSelectTypeFragment(persona)
+                    .actionResultFragmentToSelectTypeFragment(personaData?.persona)
                 it.findNavController().navigate(action)
                 SellerPersonaTracking.sendClickSellerPersonaResultSelectPersonaEvent()
             }
