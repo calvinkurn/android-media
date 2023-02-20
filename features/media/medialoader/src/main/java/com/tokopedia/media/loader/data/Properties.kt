@@ -40,14 +40,18 @@ open class Properties(
     * */
     internal var imageViewSize: Pair<Int, Int> = Pair(0, 0)
 
-    // generated URL have contains ECT param
-    internal var urlHasQualityParam: String = ""
-
     // getting the load time on listener
     internal var loadTime: String = ""
 
     // flag to check wether icon or not
     internal var isIcon = false
+
+    // determine is request secure or not
+    internal var isSecure = false
+
+    fun isSecure(value: Boolean) = apply {
+        isSecure = value
+    }
 
     fun isIcon(value: Boolean) = apply {
         isIcon = value
@@ -55,10 +59,6 @@ open class Properties(
 
     internal fun setImageSize(width: Int, height: Int) = apply {
         this.imageViewSize = Pair(width, height)
-    }
-
-    internal fun setUrlHasQuality(url: String) = apply {
-        this.urlHasQualityParam = url
     }
 
     // to display the image with specific time to delay (ms)
@@ -190,7 +190,6 @@ open class Properties(
         return other is Properties &&
             imageViewSize == other.imageViewSize &&
             isIcon == other.isIcon &&
-            urlHasQualityParam == other.urlHasQualityParam &&
             renderDelay == other.renderDelay &&
             loadTime == other.loadTime &&
             thumbnailUrl == other.thumbnailUrl &&
@@ -220,7 +219,6 @@ open class Properties(
         var result = thumbnailUrl.hashCode()
         result = 3 * result + imageViewSize.hashCode()
         result = 3 * result + isIcon.hashCode()
-        result = 3 * result + urlHasQualityParam.hashCode()
         result = 3 * result + renderDelay.hashCode()
         result = 3 * result + loadTime.hashCode()
         result = 3 * result + blurHash.hashCode()

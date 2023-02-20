@@ -33,7 +33,7 @@ class LoaderGlideModule: AppGlideModule() {
             okHttpClient.addInterceptor(ChuckerInterceptor(context))
         }
         val okHttpLoaderFactory = OkHttpUrlLoader.Factory(okHttpClient.build())
-        registry.replace(String::class.java, InputStream::class.java, AdaptiveImageSizeFactory(context))
+        registry.replace(String::class.java, InputStream::class.java, AdaptiveImageSizeLoader.Factory(context))
         registry.append(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
     }
 

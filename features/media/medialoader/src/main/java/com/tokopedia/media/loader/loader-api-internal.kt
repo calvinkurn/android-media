@@ -8,12 +8,11 @@ import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
 
 @PublishedApi
-internal fun ImageView.call(source: Any?, properties: Properties, isSecure: Boolean = false) {
+internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValid()) {
         try {
             MediaLoaderApi.loadImage(
                 imageView = this,
-                isSecure = isSecure,
                 properties = properties.setSource(source),
             )
         } catch (e: Exception) {

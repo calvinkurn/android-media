@@ -1,3 +1,4 @@
+@file:Suppress("KotlinConstantConditions", "USELESS_IS_CHECK")
 package com.tokopedia.media.loader
 
 import android.content.Context
@@ -5,19 +6,19 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
-import com.tokopedia.media.loader.MediaLoaderApi.headers
+import com.tokopedia.media.loader.MediaLoaderApi.setThumbnailUrl
 import com.tokopedia.media.loader.data.Properties
-import com.tokopedia.media.loader.factory.BitmapFactory
+import com.tokopedia.media.loader.options.CommonOptions
+import com.tokopedia.media.loader.options.PlaceholderOptions
+import com.tokopedia.media.loader.options.TransformationOptions
+import com.tokopedia.media.loader.listener.MediaListenerBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
+import com.tokopedia.media.loader.utils.generateUrl
 
 object MediaLoaderTarget {
-
-    private val bitmap by lazy { BitmapFactory() }
 
     fun <T : View> loadImage(context: Context, properties: Properties, target: MediaTarget<T>) {
         if (target is ImageView && properties.data == null) {
@@ -29,62 +30,42 @@ object MediaLoaderTarget {
         loadImageTarget(context, properties)?.into(target)
     }
 
-    fun loadImage(
-        context: Context,
-        properties: Properties,
-        target: MediaBitmapEmptyTarget<Bitmap>,
-        isSecure: Boolean = false
-    ) {
-        loadImageTarget(context, properties, isSecure)?.into(target)
+    fun loadImage(context: Context, properties: Properties, target: MediaBitmapEmptyTarget<Bitmap>) {
+        loadImageTarget(context, properties)?.into(target)
     }
 
-    private fun loadImageTarget(
-        context: Context,
-        properties: Properties,
-        isSecure: Boolean = false
-    ): GlideRequest<Bitmap>? {
+    private fun loadImageTarget(context: Context, properties: Properties): GlideRequest<Bitmap>? {
         if (properties.data.toString().isEmpty()) return null
-
         if (properties.data !is String) return null
 
-        GlideApp.with(context).asBitmap().also {
+        // startTimeRequest will use for performance tracking
+        val startTimeRequest = System.currentTimeMillis()
 
-            return when (properties.data) {
-                is String -> {
-                    val source = properties.data.toString()
+        GlideApp
+            .with(context)
+            .asBitmap()
+            .apply(CommonOptions.build(properties))
+            .apply(TransformationOptions.build(properties))
+            .apply(PlaceholderOptions.build(context, properties))
+            .apply {
+                // set custom thumbnail
+                setThumbnailUrl(context, properties)
 
-                    properties.setUrlHasQuality(source)
-
-                    bitmap.build(
-                        context = context,
-                        properties = properties,
-                        request = it
-                    ).load(
-                        if (!isSecure) source
-                        else {
-                            GlideUrl(source, LazyHeaders.Builder()
-                                .apply {
-                                    if (isSecure) {
-                                        headers(
-                                            accessToken = properties.accessToken,
-                                            userId = properties.userId
-                                        )
-                                    }
-                                }
-                                .build()
-                            )
-                        }
+                // callback listener
+                listener(
+                    MediaListenerBuilder.callback(
+                        context,
+                        properties,
+                        startTimeRequest
                     )
-                }
-                else -> {
-                    bitmap.build(
-                        context = context,
-                        properties = properties,
-                        request = it
-                    ).load(properties.data)
+                )
+
+                return if (properties.data is String) {
+                    load(properties.generateUrl())
+                } else {
+                    load(properties.data)
                 }
             }
-        }
     }
 
 }

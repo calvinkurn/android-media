@@ -27,9 +27,9 @@ inline fun ImageView.loadSecureImage(
         url,
         Properties()
             .apply(properties)
+            .isSecure(true)
             .userId(userSession.userId)
-            .userSessionAccessToken(userSession.accessToken),
-        isSecure = true
+            .userSessionAccessToken(userSession.accessToken)
     )
 }
 
@@ -52,9 +52,9 @@ fun loadSecureImageWithEmptyTarget(
         Properties()
             .apply(properties)
             .setSource(url)
+            .isSecure(true)
             .userId(userSession.userId)
             .userSessionAccessToken(userSession.accessToken),
-        mediaTarget,
-        isSecure = true
+        mediaTarget
     )
 }

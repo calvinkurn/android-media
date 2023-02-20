@@ -14,37 +14,36 @@ import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dat
 
 object MediaListenerBuilder {
 
-
     fun callback(
-            context: Context,
-            properties: Properties,
-            startTime: Long,
-            listener: MediaListener?,
+        context: Context,
+        properties: Properties,
+        startTime: Long
     ) = object : RequestListener<Bitmap> {
         override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                isFirstResource: Boolean
+            e: GlideException?,
+            model: Any?,
+            target: Target<Bitmap>?,
+            isFirstResource: Boolean
         ): Boolean {
-            listener?.onFailed(e)
-
             val loadTime = (System.currentTimeMillis() - startTime).toString()
+
             MediaLoaderTracker.trackLoadFailed(
                 context = context.applicationContext,
                 url = properties.data.toString(),
                 loadTime = loadTime,
                 exception = e
             )
+
+            properties.loaderListener?.onFailed(e)
             return false
         }
 
         override fun onResourceReady(
-                resource: Bitmap?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
+            resource: Bitmap?,
+            model: Any?,
+            target: Target<Bitmap>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
         ): Boolean {
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
@@ -67,7 +66,7 @@ object MediaListenerBuilder {
                 resource?.adaptiveSizeImageRequest(target)
             }
 
-            listener?.onLoaded(resource, dataSource(dataSource))
+            properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
             return false
         }
     }

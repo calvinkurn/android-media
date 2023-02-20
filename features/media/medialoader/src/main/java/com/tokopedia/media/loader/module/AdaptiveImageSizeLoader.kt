@@ -2,9 +2,7 @@ package com.tokopedia.media.loader.module
 
 import android.content.Context
 import com.bumptech.glide.load.Options
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.ModelCache
-import com.bumptech.glide.load.model.ModelLoader
+import com.bumptech.glide.load.model.*
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader
 import com.tokopedia.media.loader.data.*
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
@@ -32,15 +30,12 @@ class AdaptiveImageSizeLoader constructor(
         isAdaptive = remoteConfig?.getBoolean(KEY_ADAPTIVE_IMAGE)?: false
     }
 
-    override fun handles(model: String): Boolean {
-        Timber.d("medialoader: [Url-handles] ${model.startsWith("https://images.tokopedia.net/") && isAdaptive}")
-        return model.startsWith("https://images.tokopedia.net/") && isAdaptive
-    }
+    override fun handles(model: String) = true
 
     override fun getUrl(model: String, width: Int, height: Int, options: Options?): String {
         val setting = preferences?.qualitySettings()?: 0
 
-        val url = getOrSetEctParam(
+        val url = buildUrl(
             qualitySettings = setting,
             url = model
         )
@@ -50,21 +45,29 @@ class AdaptiveImageSizeLoader constructor(
         return url
     }
 
-    companion object {
-        private const val KEY_ADAPTIVE_IMAGE = "is_adaptive_image_status"
+    private fun isAdaptiveImageSupported(model: String): Boolean {
+        return model.startsWith("https://images.tokopedia.net/") && isAdaptive
     }
 
-    private fun getOrSetEctParam(
-        qualitySettings: Int,
-        url: String
-    ): String {
+    private fun buildUrl(qualitySettings: Int, url: String): String {
+        if (isAdaptiveImageSupported(url).not()) {
+            return url
+        }
+
         val connectionType = when(qualitySettings) {
             LOW_QUALITY_SETTINGS -> LOW_QUALITY // (2g / 3g)
             HIGH_QUALITY_SETTINGS -> HIGH_QUALITY // (4g / wifi)
             else -> NetworkManager.state(context) // adaptive
         }
 
+        /*
+        * by default, our CDN returns a high quality,
+        * if the connection type is not low quality,
+        * then don't add ECT param in the url and
+        * return it as is.
+        * */
         if (connectionType != LOW_QUALITY) return url
+
         return url.addEctParam(connectionType)
     }
 
@@ -76,10 +79,34 @@ class AdaptiveImageSizeLoader constructor(
      * @param connType (connection type)
      */
     private fun String.addEctParam(connType: String): String {
-        return if (hasParam(this)) "$this&$PARAM_ECT=$connType" else "$this?$PARAM_ECT=$connType"
+        return if (hasParam(this)) {
+            "$this&$PARAM_ECT=$connType"
+        } else {
+            "$this?$PARAM_ECT=$connType"
+        }
     }
 
     private fun hasParam(url: String): Boolean {
         return url.contains("?")
+    }
+
+    class Factory(private val context: Context) : ModelLoaderFactory<String, InputStream> {
+
+        private val modelCache = ModelCache<String, GlideUrl?>(500)
+
+        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<String, InputStream> {
+            val loader = multiFactory.build(
+                GlideUrl::class.java,
+                InputStream::class.java
+            )
+
+            return AdaptiveImageSizeLoader(context, loader, modelCache)
+        }
+
+        override fun teardown() = Unit
+    }
+
+    companion object {
+        private const val KEY_ADAPTIVE_IMAGE = "is_adaptive_image_status"
     }
 }
