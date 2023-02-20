@@ -36,6 +36,9 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReminderMessageFragment : BaseDaggerFragment() {
@@ -291,7 +294,8 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         swipeRefreshLayout?.isRefreshing = it
     }
 
-    private val observerSendReminderResult = Observer<Boolean> { success ->
+    private val observerSendReminderResult = Observer<Result<Boolean>> { result ->
+        val success = result is Success && result.data
         if (success) {
             view?.let {
                 Toaster.build(
@@ -303,6 +307,26 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                 ).show()
             }
             refreshData()
+        } else {
+            val message = if (result is Fail) {
+                result.throwable.getErrorMessage(
+                    context,
+                    getString(R.string.review_reminder_snackbar_error)
+                )
+            } else {
+                getString(R.string.review_reminder_snackbar_error)
+            }
+            view?.let {
+                Toaster.build(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.review_reminder_snackbar_error_action)
+                ) {
+                    refreshData()
+                }.show()
+            }
         }
         buttonSend?.isLoading = false
     }
