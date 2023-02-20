@@ -66,6 +66,8 @@ data class PlayPostContentItem(
     val share: Share = Share(),
     @SerializedName("display_type")
     val displayType: String = "",
+    @SerializedName("performanceSummaryPageLink")
+    val performanceSummaryPageLink: String = "",
 ) : BaseItem()
 
 data class Partner(

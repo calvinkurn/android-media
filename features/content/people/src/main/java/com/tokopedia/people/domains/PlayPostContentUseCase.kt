@@ -107,6 +107,7 @@ class PlayPostContentUseCase @Inject constructor(
                         app_link
                         web_link
                         display_type
+                        performanceSummaryPageLink
                       }
                     }
                     hash

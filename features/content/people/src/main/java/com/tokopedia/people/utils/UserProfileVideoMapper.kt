@@ -38,8 +38,6 @@ object UserProfileVideoMapper {
     }
 
     private fun getWidgetItemUiModel(item: PlayPostContentItem, userId: String): PlayWidgetChannelUiModel {
-        // check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
-        val performanceSummaryLink = ""
         val poolType = ""
         val recommendationType = ""
 
@@ -65,7 +63,7 @@ object UserProfileVideoMapper {
             channelType = channelType,
             hasGame = mapHasGame(item.configurations.promoLabels),
             share = mapShare(item),
-            performanceSummaryLink = performanceSummaryLink,
+            performanceSummaryLink = item.performanceSummaryPageLink,
             poolType = poolType,
             recommendationType = recommendationType,
             hasAction = shouldHaveActionMenu(channelType, item.partner.id, userId),
