@@ -8,6 +8,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.ZERO
 
 /**
@@ -23,13 +24,22 @@ class BannerIndicator : LinearLayout {
     )
 
     private val set = AnimatorSet()
+    private var totalBanner = Int.ZERO
+
+    init {
+        this.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+
+    }
 
     private fun addProgressBar(tag: Int) {
         val progressBarTheme = ContextThemeWrapper(context, com.tokopedia.home_component.R.style.IndicatorBanner)
         val progress = ProgressBar(progressBarTheme, null, Int.ZERO)
         progress.tag = tag
         this.addView(progress)
-        animateIndicatorBanner(progress)
+        val layoutParams = progress.layoutParams
+        layoutParams.width = 6f.toDpInt()
+        layoutParams.height = 6f.toDpInt()
+        progress.layoutParams = layoutParams
     }
 
     fun pauseAnimation() {
@@ -41,14 +51,19 @@ class BannerIndicator : LinearLayout {
     }
 
     fun setBannerIndicators(totalBanner: Int) {
+        this.totalBanner = totalBanner
         if (totalBanner > Int.ZERO) {
             for (i in Int.ZERO until totalBanner) {
                 addProgressBar(i)
             }
+            animateIndicatorBanner(this.getChildAt(0) as ProgressBar, Int.ZERO)
         }
     }
 
-    private fun animateIndicatorBanner(progressIndicator: ProgressBar) {
+    private fun animateIndicatorBanner(progressIndicator: ProgressBar, position: Int) {
+        val layoutParams = progressIndicator.layoutParams
+        layoutParams.width = 46f.toDpInt()
+        progressIndicator.layoutParams = layoutParams
         val slideAnimator = ValueAnimator
             .ofInt(0, 100)
             .setDuration(5000)
