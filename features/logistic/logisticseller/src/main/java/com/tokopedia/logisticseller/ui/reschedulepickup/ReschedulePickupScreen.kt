@@ -145,7 +145,7 @@ fun ReschedulePickupScreenLayout(
                 courier = state.value.info.courier,
                 invoice = state.value.info.invoice
             )
-            Divider(thickness = 8.dp)
+            Divider(thickness = 8.dp, color = NestTheme.colors.NN._50)
             InputSectionTitle()
             InputSectionSubtitle(
                 onSubtitleClicked = onSubtitleClicked,
