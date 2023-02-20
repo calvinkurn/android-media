@@ -91,7 +91,7 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
     private fun bindView(view: View) {
         loading = view.findViewById(R.id.loading_search)
         content = view.findViewById(R.id.content)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.recycler_view_template)
         info = view.findViewById(R.id.template_list_info)
         switchTemplate = view.findViewById(R.id.switch_chat_template)
         templateContainer = view.findViewById(R.id.template_container)
