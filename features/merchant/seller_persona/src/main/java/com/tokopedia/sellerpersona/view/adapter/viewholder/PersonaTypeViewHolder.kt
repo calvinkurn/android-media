@@ -47,22 +47,17 @@ class PersonaTypeViewHolder(
     private fun handleClickState(element: PersonaUiModel) {
         with(binding) {
             radioSpPersonaType.isChecked = element.isSelected
-            radioSpPersonaType.setOnCheckedChangeListener { _, isChecked ->
-                element.isSelected = isChecked
-                showBackground(element)
-                listener.onItemClickListener(element)
+            radioSpPersonaType.setOnClickListener {
+                containerSpItemPersonaType.performClick()
             }
 
             containerSpItemPersonaType.setOnClickListener {
-                onItemClicked()
-            }
-        }
-    }
+                if (element.isSelected) return@setOnClickListener
 
-    private fun onItemClicked() {
-        with(binding) {
-            if (!radioSpPersonaType.isChecked) {
-                radioSpPersonaType.isChecked = !radioSpPersonaType.isChecked
+                element.isSelected = true
+                radioSpPersonaType.isChecked = true
+                showBackground(element)
+                listener.onItemClickListener(element)
             }
         }
     }
@@ -106,9 +101,6 @@ class PersonaTypeViewHolder(
             }
             adapter = optionAdapter
 
-            optionAdapter.setOnItemClickListener {
-                onItemClicked()
-            }
             optionAdapter.setItems(element.itemList)
             optionAdapter.isSelected = element.isSelected
             optionAdapter.notifyAdapter()

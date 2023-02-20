@@ -88,13 +88,22 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     private fun setOnApplyButtonClicked() {
         val selectedPersona = personaTypeAdapter.getItems().firstOrNull { it.isSelected }
         selectedPersona?.let { persona ->
+            if (persona.value == args.paramPersona) {
+                activity?.onBackPressedDispatcher?.onBackPressed()
+                return
+            }
+
             binding?.btnSpSelectType?.isLoading = true
             viewModel.setPersona(persona.value)
-            viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
-                when (it) {
-                    is Success -> onSuccessSetPersona(it.data)
-                    is Fail -> onFailingSetPersona()
-                }
+            observePersonaResultOnce()
+        }
+    }
+
+    private fun observePersonaResultOnce() {
+        viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessSetPersona(it.data)
+                is Fail -> onFailingSetPersona()
             }
         }
     }
