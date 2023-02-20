@@ -18,7 +18,7 @@ class DeveloperOptionTypeFactoryImpl(
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
     private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
     private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener
-):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
+) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -60,7 +60,6 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
     override fun type(uiModel: ResetOnBoardingNavigationUiModel): Int = ResetOnBoardingNavigationViewHolder.LAYOUT
     override fun type(uiModel: TranslatorUiModel): Int = TranslatorSettingViewHolder.LAYOUT
-    override fun type(uiModel: AppAuthSecretUiModel): Int = AppAuthSecretViewHolder.LAYOUT
     override fun type(uiModel: SellerAppReviewDebuggingUiModel): Int = SellerAppReviewDebuggingViewHolder.LAYOUT
     override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
     override fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int = PlayWebSocketSseLoggingViewHolder.LAYOUT
@@ -71,7 +70,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)
@@ -113,7 +112,6 @@ class DeveloperOptionTypeFactoryImpl(
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
             ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)
             TranslatorSettingViewHolder.LAYOUT -> TranslatorSettingViewHolder(view)
-            AppAuthSecretViewHolder.LAYOUT -> AppAuthSecretViewHolder(view)
             SellerAppReviewDebuggingViewHolder.LAYOUT -> SellerAppReviewDebuggingViewHolder(view)
             ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
@@ -124,5 +122,4 @@ class DeveloperOptionTypeFactoryImpl(
             else -> super.createViewHolder(view, type)
         }
     }
-
 }
