@@ -193,8 +193,8 @@ open class TopChatViewModel @Inject constructor(
     val attachmentsPreview: LiveData<ArrayList<SendablePreview>?>
         get() = _attachmentsPreview
 
-    private val _roomMetaData = MutableLiveData<RoomMetaData>()
-    val roomMetaData: LiveData<RoomMetaData>
+    private val _roomMetaData = MutableLiveData<RoomMetaData?>()
+    val roomMetaData: LiveData<RoomMetaData?>
         get() = _roomMetaData
 
     var attachProductWarehouseId = "0"
