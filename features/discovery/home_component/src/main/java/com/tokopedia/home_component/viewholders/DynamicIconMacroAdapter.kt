@@ -28,9 +28,13 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     }
 
     override fun onBindViewHolder(holder: DynamicIconMacroItemViewHolder, position: Int) {
+        val isScrollable =
+            if (isRevamp && iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO_REVAMP) true
+            else if (isRevamp && iconList.size <= DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO_REVAMP) false
+            else iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO
         iconList.getOrNull(position)?.let {
             holder
-                .bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO, this.position, type, isCache)
+                .bind(it, isScrollable, this.position, type, isCache)
         }
     }
 
