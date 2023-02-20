@@ -74,7 +74,8 @@ class ShopPageTrackingBuyer(
         shopId: String,
         shopRef: String,
         isFulfillmentExist: Boolean?,
-        isFreeOngkirActive: Boolean?
+        isFreeOngkirActive: Boolean?,
+        sortAndFilterValue: String,
     ): List<Any> {
         val boe: String
         boe = if (isFulfillmentExist!! && isFreeOngkirActive!!) {
@@ -100,7 +101,8 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
                     ShopPageTrackingConstant.DIMENSION_90, shopRef,
-                    ShopPageTrackingConstant.DIMENSION_83, boe
+                    ShopPageTrackingConstant.DIMENSION_83, boe,
+                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue
                 )
             )
             list.add(event)
@@ -116,7 +118,8 @@ class ShopPageTrackingBuyer(
         shopTypeDef: String?,
         loginNonLoginString: String,
         shopId: String,
-        dimension90: String
+        dimension90: String,
+        sortAndFilterValue: String,
     ): List<Any> {
         val list: MutableList<Any> = ArrayList()
         for (i in shopProductUiModelList.indices) {
@@ -133,8 +136,9 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.POSITION, productPosition,
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
-                    ShopPageTrackingConstant.DIMENSION_90, dimension90
-                )
+                    ShopPageTrackingConstant.DIMENSION_90, dimension90,
+                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue,
+                    )
             )
             list.add(event)
         }
@@ -153,7 +157,8 @@ class ShopPageTrackingBuyer(
         selectedEtalaseChipName: String,
         etalaseName: String,
         productPositionStart: Int,
-        shopId: String
+        shopId: String,
+        sortAndFilterValue: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -172,7 +177,8 @@ class ShopPageTrackingBuyer(
                 shopId,
                 customDimensionShopPage.shopRef,
                 customDimensionShopPage.isFulfillmentExist,
-                customDimensionShopPage.isFreeOngkirActive
+                customDimensionShopPage.isFreeOngkirActive,
+                sortAndFilterValue
             )
         )
         return eventMap
@@ -191,7 +197,8 @@ class ShopPageTrackingBuyer(
         productPositionStart: Int,
         shopId: String,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -209,7 +216,8 @@ class ShopPageTrackingBuyer(
                 customDimensionShopPage.shopType,
                 loginNonLoginString,
                 shopId,
-                dimension90Value
+                dimension90Value,
+                sortAndFilterValue
             )
         )
         return eventMap
@@ -227,7 +235,8 @@ class ShopPageTrackingBuyer(
         selectedEtalaseChipName: String,
         etalaseName: String,
         productPositionStart: Int,
-        shopId: String
+        shopId: String,
+        sortAndFilterValue: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -248,7 +257,8 @@ class ShopPageTrackingBuyer(
                     shopId,
                     customDimensionShopPage.shopRef,
                     customDimensionShopPage.isFulfillmentExist,
-                    customDimensionShopPage.isFreeOngkirActive
+                    customDimensionShopPage.isFreeOngkirActive,
+                    sortAndFilterValue
                 )
             )
         )
@@ -268,7 +278,8 @@ class ShopPageTrackingBuyer(
         productPositionStart: Int,
         shopId: String,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -300,7 +311,8 @@ class ShopPageTrackingBuyer(
                     customDimensionShopPage.shopType,
                     loginNonLoginString,
                     shopId,
-                    dimension90Value
+                    dimension90Value,
+                    sortAndFilterValue
                 )
             )
         )
@@ -489,7 +501,8 @@ class ShopPageTrackingBuyer(
         shopId: String,
         isSelectedEtalaseCampaign: Boolean,
         isEtalaseSectionCampaign: Boolean,
-        isUpcoming: Boolean
+        isUpcoming: Boolean,
+        sortAndFilterValue: String = ""
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = if (isSelectedEtalaseCampaign) String.format(ShopPageTrackingConstant.LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) else selectedEtalaseChipName!!
@@ -505,7 +518,8 @@ class ShopPageTrackingBuyer(
             shopProductUiModel,
             etalaseNameTrackerString, etalaseSectionTrackerString,
             productPosStart,
-            shopId
+            shopId,
+            sortAndFilterValue
         )
         sendDataLayerEvent(event)
     }
@@ -524,7 +538,8 @@ class ShopPageTrackingBuyer(
         keyword: String,
         etalaseType: Int,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String = ""
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign, isUpcoming, selectedEtalaseChipName, etalaseType)
@@ -546,7 +561,8 @@ class ShopPageTrackingBuyer(
             productPosStart,
             shopId,
             shopName,
-            navSource
+            navSource,
+            sortAndFilterValue
         )
         sendDataLayerEvent(event)
     }
@@ -617,7 +633,8 @@ class ShopPageTrackingBuyer(
         shopId: String,
         isSelectedEtalaseCampaign: Boolean,
         isEtalaseSectionCampaign: Boolean,
-        isUpcoming: Boolean
+        isUpcoming: Boolean,
+        sortAndFilterValue: String = ""
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = if (isSelectedEtalaseCampaign) String.format(ShopPageTrackingConstant.LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) else selectedEtalaseChipName!!
@@ -633,7 +650,8 @@ class ShopPageTrackingBuyer(
             shopProductUiModel,
             etalaseNameTrackerString, etalaseSectionTrackerString,
             productPosStart,
-            shopId
+            shopId,
+            sortAndFilterValue
         )
         sendDataLayerEvent(event)
     }
@@ -652,7 +670,8 @@ class ShopPageTrackingBuyer(
         keyword: String,
         etalaseType: Int,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String = ""
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign, isUpcoming, selectedEtalaseChipName, etalaseType)
@@ -668,7 +687,8 @@ class ShopPageTrackingBuyer(
             etalaseSection, productPosStart,
             shopId,
             shopName,
-            navSource
+            navSource,
+            sortAndFilterValue
         )
         sendDataLayerEvent(event)
     }

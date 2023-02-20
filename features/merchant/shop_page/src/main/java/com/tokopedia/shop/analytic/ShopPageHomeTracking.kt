@@ -62,6 +62,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_118
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_38
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_40
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_45
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_61
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_80
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81
@@ -482,7 +483,7 @@ class ShopPageHomeTracking(
         widgetName: String,
         widgetOption: Int,
         customDimensionShopPage: CustomDimensionShopPageAttribution,
-
+        sortAndFilterValue: String = ""
     ) {
         val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
         val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, layoutId, widgetNameEventValue)
@@ -507,7 +508,8 @@ class ShopPageHomeTracking(
                     widgetNameEventValue,
                     widgetOption,
                     isLogin,
-                    customDimensionShopPage
+                    customDimensionShopPage,
+                    sortAndFilterValue
                 )
             )
         )
@@ -527,7 +529,8 @@ class ShopPageHomeTracking(
         widgetId: String,
         widgetName: String,
         widgetOption: Int,
-        customDimensionShopPage: CustomDimensionShopPageAttribution
+        customDimensionShopPage: CustomDimensionShopPageAttribution,
+        sortAndFilterValue: String = ""
     ) {
         val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
         val eventAction = joinDash(CLICK_PRODUCT, HOME_TAB, layoutId, widgetNameEventValue)
@@ -561,7 +564,8 @@ class ShopPageHomeTracking(
                         widgetNameEventValue,
                         widgetOption,
                         isLogin,
-                        customDimensionShopPage
+                        customDimensionShopPage,
+                        sortAndFilterValue
                     )
                 )
             )
@@ -1027,7 +1031,8 @@ class ShopPageHomeTracking(
         widgetNameEventValue: String,
         widgetOption: Int,
         isLogin: Boolean,
-        customDimensionShopPage: CustomDimensionShopPageAttribution
+        customDimensionShopPage: CustomDimensionShopPageAttribution,
+        sortAndFilterValue: String
     ): Map<String, Any> {
         val listEventValue = createProductListValue(
             isLogin,
@@ -1057,7 +1062,11 @@ class ShopPageHomeTracking(
             DIMENSION_79 to customDimensionShopPage.shopId.orEmpty(),
             DIMENSION_90 to customDimensionShopPage.shopRef.orEmpty(),
             DIMENSION_83 to boe
-        )
+        ).apply {
+            if (sortAndFilterValue.isNotEmpty()) {
+                put(DIMENSION_61, sortAndFilterValue)
+            }
+        }
     }
 
     private fun createProductListValue(

@@ -282,6 +282,7 @@ object ShopPageTrackingConstant {
     const val DIMENSION_87 = "dimension87"
     const val DIMENSION_117 = "dimension117"
     const val DIMENSION_118 = "dimension118"
+    const val DIMENSION_61 = "dimension61"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val ITEM_LIST = "item_list"
 
@@ -328,6 +329,7 @@ object ShopPageTrackingConstant {
     const val SHOP_AFFILIATE = "affiliate"
     const val SHOP_NOT_AFFILIATE = "not affiliate"
     const val FESTIVITY = "festivity"
+    const val NULL_VALUE = "null"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"

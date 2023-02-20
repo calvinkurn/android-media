@@ -2341,7 +2341,8 @@ open class ShopPageHomeFragment :
                     shopRef,
                     shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
                     shopHomeProductViewModel.isShowFreeOngkir
-                )
+                ),
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
             )
             goToPDP(it.productUrl)
         }
@@ -2375,7 +2376,8 @@ open class ShopPageHomeFragment :
                     shopRef,
                     shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
                     shopHomeProductViewModel.isShowFreeOngkir
-                )
+                ),
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
             )
         }
     }

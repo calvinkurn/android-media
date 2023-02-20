@@ -973,7 +973,8 @@ class ShopPageProductListResultFragment :
                 keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -1026,7 +1027,8 @@ class ShopPageProductListResultFragment :
                 keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
-                navSource
+                navSource,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(

@@ -432,7 +432,8 @@ class ShopPageProductListFragment :
                     shopId,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductUiModel.isUpcoming
+                    shopProductUiModel.isUpcoming,
+                    shopProductFilterParameter?.getListFilterForTracking().orEmpty()
                 )
                 ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(
                     isOwner,
@@ -510,7 +511,8 @@ class ShopPageProductListFragment :
                 shopId,
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                shopProductUiModel.isUpcoming
+                shopProductUiModel.isUpcoming,
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
             )
             ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.impressionProductList(
                 isOwner,
