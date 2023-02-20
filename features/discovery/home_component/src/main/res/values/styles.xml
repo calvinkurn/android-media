@@ -4,7 +4,9 @@
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/bg_progress_banner</item>
         <item name="android:layout_height">6dp</item>
-        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_width">6dp</item>
         <item name="maxWidth">48dp</item>
+        <item name="android:layout_marginStart">2dp</item>
+        <item name="android:layout_marginEnd">2dp</item>
     </style>
 </resources>

@@ -1,12 +1,11 @@
 package com.tokopedia.home_component.viewholders
 
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -91,6 +89,7 @@ class BannerRevampViewHolder(
         })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
         try {
             isUsingDotsAndInfiniteScroll = element.enableDotsAndInfiniteScroll
@@ -104,7 +103,20 @@ class BannerRevampViewHolder(
                 lastPagePosition = if (isUsingDotsAndInfiniteScroll) Integer.MAX_VALUE else size - 1
                 drawIndicators(binding!!.indicatorLayout, 0, it.channelGrids.size)
                 try {
-                    initBanner(it.convertToBannerItemModel(), element.dimenMarginTop, element.dimenMarginBottom, element.cardInteraction)
+                    val banners = it.convertToBannerItemModel()
+                    binding?.bannerIndicator?.setBannerIndicators(banners.size)
+                    binding?.rvBannerRevamp?.setOnTouchListener { _, motionEvent ->
+                        when (motionEvent?.action) {
+                            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                                binding?.bannerIndicator?.continueAnimation()
+                            }
+                            MotionEvent.ACTION_DOWN -> {
+                                binding?.bannerIndicator?.pauseAnimation()
+                            }
+                        }
+                        true
+                    }
+                    initBanner(banners, element.dimenMarginTop, element.dimenMarginBottom, element.cardInteraction)
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()
                 }
@@ -129,7 +141,7 @@ class BannerRevampViewHolder(
         bind(element)
     }
 
-    fun scrollTo(position: Int) {
+    private fun scrollTo(position: Int) {
         val resources = itemView.context.resources
         val width = resources.displayMetrics.widthPixels
         val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
