@@ -45,11 +45,11 @@ class TdnCarouselAdapter(
     }
 
     override fun onBindViewHolder(holder: TdnCarouselViewHolder, position: Int) {
-        if (shopAdsProductItemList.isNotEmpty()) holder.bind(shopAdsProductItemList[position % shopAdsProductItemList.size])
+        holder.bind(shopAdsProductItemList[position])
     }
 
     override fun getItemCount(): Int {
-        return if (isUsingInfiniteScroll && shopAdsProductItemList.size > Int.ONE) Integer.MAX_VALUE else shopAdsProductItemList.size
+        return shopAdsProductItemList.size
     }
 
     fun setList(list: List<TopAdsImageViewModel>) {

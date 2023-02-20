@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
@@ -78,6 +79,7 @@ class TdnCarouselView : BaseCustomView, CoroutineScope {
         if (widgetType != TYPE_VERTICAL_CAROUSEL) {
             isAutoScrollEnabled = model?.isAutoScrollEnabled ?: false
             scrollTransitionDuration = model?.scrollDuration?.toLong() ?: 0L
+            lastPagePosition = if (topAdsImageViewModel.isNotEmpty()) topAdsImageViewModel.size - Int.ONE else INITIAL_PAGE_POSITION
             val snapHelper: SnapHelper = PagerSnapHelper()
             tdnRv.onFlingListener = null
             snapHelper.attachToRecyclerView(tdnRv)
