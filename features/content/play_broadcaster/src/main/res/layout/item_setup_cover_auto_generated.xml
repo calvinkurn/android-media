@@ -6,6 +6,16 @@
     android:layout_height="340dp"
     app:rcl_cornerRadius="@dimen/layout_lvl1">
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_cover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unify_image_type="rect" />
+
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/rb_selected_auto_generated_cover"
         android:layout_width="32dp"
