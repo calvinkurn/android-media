@@ -9,13 +9,16 @@ import com.tokopedia.content.common.report_content.model.FeedReportRequestParamM
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedTabsUseCase
+import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
+import com.tokopedia.feedplus.presentation.model.ContentCreationItem
+import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -23,24 +26,50 @@ import javax.inject.Inject
  */
 class FeedMainViewModel @Inject constructor(
     private val feedTabsUseCase: FeedTabsUseCase,
-    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
+    private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     private val _feedTabs = MutableLiveData<Result<FeedTabsModel>>()
-    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val feedTabs: LiveData<Result<FeedTabsModel>>
         get() = _feedTabs
+
+    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
 
+    private val _feedCreateContentBottomSheetData = MutableLiveData<Result<List<ContentCreationTypeItem>>>()
+    val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
+        get() = _feedCreateContentBottomSheetData
+
     fun fetchFeedTabs() {
-        launchCatchError(dispatchers.main, block = {
-            val response = withContext(dispatchers.io) { feedTabsUseCase.executeOnBackground() }
-            _feedTabs.value = (Success(MapperFeedTabs.transform(response.feedTabs)))
+        launchCatchError(dispatchers.io, block = {
+            feedXHeaderUseCase.setRequestParams(
+                FeedXHeaderUseCase.createParam()
+            )
+            val response = feedXHeaderUseCase.executeOnBackground()
+            _feedTabs.postValue(Success(MapperFeedTabs.transform(response.feedXHeaderData)))
+            handleCreationData(
+                MapperFeedTabs.getCreationBottomSheetData(
+                    response.feedXHeaderData
+                )
+            )
         }) {
-            _feedTabs.value = Fail(it)
+            _feedTabs.postValue(Fail(it))
+            _feedCreateContentBottomSheetData.postValue(Fail(it))
         }
+    }
+
+    private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
+        val authorUserdata = creationDataList.find { it.type == CreatorType.USER }
+        val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
+        val authorShopdata = creationDataList.find { it.type == CreatorType.SHOP }
+        val authorShopdataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
+
+        val creatorList =
+            (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
+                (authorShopdataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
+        _feedCreateContentBottomSheetData.postValue(Success(creatorList))
     }
 
     fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {

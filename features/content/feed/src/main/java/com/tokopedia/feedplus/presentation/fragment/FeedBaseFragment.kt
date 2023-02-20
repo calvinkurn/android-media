@@ -13,10 +13,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
+import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,7 +36,8 @@ import javax.inject.Inject
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedBaseFragment : BaseDaggerFragment() {
+class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
+
     private var binding: FragmentFeedBaseBinding? = null
 
     @Inject
@@ -37,6 +45,7 @@ class FeedBaseFragment : BaseDaggerFragment() {
     private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
 
     private var adapter: FeedPagerAdapter? = null
+    private var creationItemList: List<ContentCreationTypeItem> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,22 +56,45 @@ class FeedBaseFragment : BaseDaggerFragment() {
         return binding?.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         feedMainViewModel.fetchFeedTabs()
-        feedMainViewModel.feedTabs.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> initView(it.data)
-                is Fail -> {
+        observeFeedTabData()
+        observeCreateContentBottomSheetData()
+    }
 
+    private fun observeFeedTabData() {
+        feedMainViewModel.feedTabs.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> initView(it.data)
+                    is Fail -> Toast.makeText(
+                        requireContext(),
+                        it.throwable.localizedMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-        })
+        )
+    }
+
+    private fun observeCreateContentBottomSheetData() {
+        feedMainViewModel.feedCreateContentBottomSheetData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        creationItemList = it.data
+                    }
+                    is Fail -> Toast.makeText(
+                        requireContext(),
+                        it.throwable.localizedMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
     }
 
     override fun onDestroyView() {
@@ -83,15 +115,15 @@ class FeedBaseFragment : BaseDaggerFragment() {
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    onChangeTab(position)
-                }
-            })
+                    OnPageChangeCallback() {
+                    override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                    ) {
+                        onChangeTab(position)
+                    }
+                })
 
             var firstTabData: FeedDataModel? = null
             var secondTabData: FeedDataModel? = null
@@ -124,7 +156,7 @@ class FeedBaseFragment : BaseDaggerFragment() {
             }
 
             if (data.meta.showMyProfile && data.meta.profilePhotoUrl.isNotEmpty()) {
-                it.feedUserProfileImage.loadImage(data.meta.profilePhotoUrl)
+                it.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
                 it.feedUserProfileImage.setOnClickListener { _ ->
                     RouteManager.route(it.root.context, data.meta.profileApplink)
                 }
@@ -178,7 +210,13 @@ class FeedBaseFragment : BaseDaggerFragment() {
     }
 
     private fun onCreatePostClicked() {
-        Toast.makeText(context, "Create Post Clicked", Toast.LENGTH_SHORT).show()
+        activity?.let {
+            val creationBottomSheet = FeedContentCreationTypeBottomSheet
+                .getFragment(it.supportFragmentManager, it.classLoader)
+            creationBottomSheet.setListener(this)
+            creationBottomSheet.setData(creationItemList)
+            creationBottomSheet.show(it.supportFragmentManager)
+        }
     }
 
     private fun onNavigateToLive() {
@@ -187,6 +225,41 @@ class FeedBaseFragment : BaseDaggerFragment() {
 
     private fun onNavigateToProfile() {
         Toast.makeText(context, "Navigate to Profile", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
+        when (creationTypeItem.type) {
+            CreateContentType.CREATE_LIVE -> {
+                RouteManager.route(
+                    requireContext(),
+                    ApplinkConst.PLAY_BROADCASTER
+                )
+            }
+            CreateContentType.CREATE_POST -> {
+                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                intent.putExtra(
+                    BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
+                intent.putExtra(
+                    BundleData.MAX_MULTI_SELECT_ALLOWED,
+                    BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
+                )
+                intent.putExtra(
+                    BundleData.TITLE,
+                    getString(R.string.feed_post_sebagai)
+                )
+                intent.putExtra(
+                    BundleData.APPLINK_FOR_GALLERY_PROCEED,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
+                startActivity(intent)
+            }
+
+            CreateContentType.CREATE_SHORT_VIDEO -> {
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
+            }
+        }
     }
 
     companion object {
