@@ -21,7 +21,7 @@ class BannerRevampChannelAdapter(
 
     override fun onBindViewHolder(holder: BannerRevampChannelImageViewHolder, position: Int) {
         val index = position % itemList.size
-        if (position != -1 && index > 0) {
+        if (position != RecyclerView.NO_POSITION) {
             holder.bind(itemList[index])
         }
     }
