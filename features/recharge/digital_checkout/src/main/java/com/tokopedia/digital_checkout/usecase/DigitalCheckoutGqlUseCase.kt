@@ -1,6 +1,6 @@
 package com.tokopedia.digital_checkout.usecase
 
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -26,7 +26,10 @@ import javax.inject.Inject
     DigitalCheckoutGqlUseCase.QUERY_NAME_RECHARGE_CHECKOUT,
     DigitalCheckoutGqlUseCase.QUERY_RECHARGE_CHECKOUT
 )
-class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+class DigitalCheckoutGqlUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+    private val gson: Gson
+) :
     GraphqlUseCase<RechargeCheckoutResponse.Response>(graphqlRepository) {
 
     init {
@@ -39,8 +42,6 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         requestCheckoutParams: DigitalCheckoutDataParameter,
         digitalIdentifierParams: RequestBodyIdentifier
     ) {
-        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-
         val requestParams = RechargeCheckoutRequest(
             voucherCode = requestCheckoutParams.voucherCode,
             transactionAmount = requestCheckoutParams.transactionAmount.toLong(),
@@ -55,12 +56,12 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
             createSubscription = requestCheckoutParams.isSubscriptionChecked,
             fintechProducts = requestCheckoutParams.crossSellProducts.map {
                 var checkoutMetadata = gson.toJson(it.value.product)
-                val checkoutType = object: TypeToken<HashMap<String, Any>>(){}.type
+                val checkoutType = object : TypeToken<HashMap<String, Any>>() {}.type
                 val checkoutMetadataJson = gson.fromJson<HashMap<String, Any>>(checkoutMetadata, checkoutType)
 
                 if (it.value.isSubscription) {
                     val additionalMetadata = gson.toJson(it.value.additionalMetadata)
-                    val additionalType = object: TypeToken<JsonElement>(){}.type
+                    val additionalType = object : TypeToken<JsonElement>() {}.type
                     val additionalMetadataJson = gson.fromJson<JsonElement>(additionalMetadata, additionalType)
 
                     val jsonObject = gson.fromJson(additionalMetadataJson.asJsonPrimitive.asString, JsonObject::class.java)

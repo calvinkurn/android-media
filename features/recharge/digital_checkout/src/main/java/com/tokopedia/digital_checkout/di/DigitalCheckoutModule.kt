@@ -1,6 +1,8 @@
 package com.tokopedia.digital_checkout.di
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
@@ -35,8 +37,10 @@ class DigitalCheckoutModule {
     @Provides
     @DigitalCheckoutScope
     @DigitalCartCheckoutQualifier
-    fun provideDigitalCheckoutInterceptor(akamaiBotInterceptor: AkamaiBotInterceptor,
-                                          digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
+    fun provideDigitalCheckoutInterceptor(
+        akamaiBotInterceptor: AkamaiBotInterceptor,
+        digitalInterceptor: DigitalInterceptor
+    ): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)
         listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
@@ -52,8 +56,10 @@ class DigitalCheckoutModule {
     @Provides
     @DigitalCheckoutScope
     @DigitalCartCheckoutQualifier
-    fun provideCheckoutRestRepository(@DigitalCartCheckoutQualifier interceptors: ArrayList<Interceptor>,
-                                      @ApplicationContext context: Context): RestRepository {
+    fun provideCheckoutRestRepository(
+        @DigitalCartCheckoutQualifier interceptors: ArrayList<Interceptor>,
+        @ApplicationContext context: Context
+    ): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
@@ -62,4 +68,8 @@ class DigitalCheckoutModule {
     @DigitalCheckoutScope
     @Provides
     fun provideDigitalAnalytics(): DigitalAnalytics = DigitalAnalytics()
+
+    @DigitalCheckoutScope
+    @Provides
+    fun provideGson(): Gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
 }

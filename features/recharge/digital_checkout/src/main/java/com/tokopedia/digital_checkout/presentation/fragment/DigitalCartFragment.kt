@@ -112,6 +112,9 @@ class DigitalCartFragment :
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var gson: Gson
+
     @Suppress("LateinitUsage")
     private lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
 
@@ -697,11 +700,11 @@ class DigitalCartFragment :
     private fun getCollectionPointData(fintechProduct: FintechProduct): CollectionPointMetadata {
         try {
             var map: Map<String, Any> = hashMapOf()
-            map = Gson().fromJson(fintechProduct.crossSellMetadata, map.javaClass)
+            map = gson.fromJson(fintechProduct.crossSellMetadata, map.javaClass)
 
             val metadataKey = map[KEY_METADATA]
             if (metadataKey != null && metadataKey.toString().length > Int.ZERO) {
-                val metadata = Gson().fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
+                val metadata = gson.fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
                 if (metadata.collectionPointId.isNotEmpty() && metadata.collectionPointVersion.isNotEmpty()) {
                     return metadata
                 }
