@@ -10,6 +10,11 @@ object BuyerPartialOrderFulfillmentTracker {
         TrackApp.getInstance().gtm
     }
 
+    private fun sendGeneralEvent(event: Map<String, String>) {
+        // pof release no need hit tracker, so we adjust in next release along to tracker revamp in bom detail
+        // tracker.sendGeneralEvent(event)
+    }
+
     fun eventClickTotalAvailableItemPof() {
         val event = mapOf(
             TrackAppUtils.EVENT to
@@ -25,7 +30,7 @@ object BuyerPartialOrderFulfillmentTracker {
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
                 BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
-        tracker.sendGeneralEvent(event)
+        sendGeneralEvent(event)
     }
 
     fun eventClickEstimateIconInPopupPof() {
@@ -43,7 +48,7 @@ object BuyerPartialOrderFulfillmentTracker {
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
                 BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
-        tracker.sendGeneralEvent(event)
+        sendGeneralEvent(event)
     }
 
     fun eventClickTermsAndConditionsInPopupPof() {
@@ -61,7 +66,7 @@ object BuyerPartialOrderFulfillmentTracker {
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
                 BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
-        tracker.sendGeneralEvent(event)
+        sendGeneralEvent(event)
     }
 
     fun eventClickRejectOrderInPopupPof() {
@@ -79,7 +84,7 @@ object BuyerPartialOrderFulfillmentTracker {
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
                 BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
-        tracker.sendGeneralEvent(event)
+        sendGeneralEvent(event)
     }
 
     fun eventClickConfirmationInPopupPof() {
@@ -97,7 +102,7 @@ object BuyerPartialOrderFulfillmentTracker {
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
                 BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
-        tracker.sendGeneralEvent(event)
+        sendGeneralEvent(event)
     }
 
     fun eventClickBackInPopupPofCancel() {
@@ -115,7 +120,7 @@ object BuyerPartialOrderFulfillmentTracker {
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
                 BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
-        tracker.sendGeneralEvent(event)
+        sendGeneralEvent(event)
     }
 
     fun eventClickCancellationInPopupPofCancel() {
@@ -133,6 +138,6 @@ object BuyerPartialOrderFulfillmentTracker {
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
                 BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE
         )
-        tracker.sendGeneralEvent(event)
+        sendGeneralEvent(event)
     }
 }
