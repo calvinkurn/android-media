@@ -131,6 +131,13 @@ class ContentCommentViewModel @AssistedInject constructor(
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
             is CommentAction.DeleteComment -> deleteComment(action.commentId)
             is CommentAction.ReportComment -> reportComment(action.param)
+            CommentAction.RequestReportAction -> {
+                requireLogin {
+                    viewModelScope.launch {
+                        _event.emit(CommentEvent.OpenReportEvent)
+                    }
+                }
+            }
             else -> {}
         }
     }
@@ -190,16 +197,14 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun reportComment(
         param: FeedReportRequestParamModel,
     ) {
-        requireLogin {
-            viewModelScope.launchCatchError(block = {
-                repo.reportComment(param)
-            }) {
-                _event.emit(
-                    CommentEvent.ShowErrorToaster(
-                        message = it,
-                        onClick = { reportComment(param) })
-                )
-            }
+        viewModelScope.launchCatchError(block = {
+            repo.reportComment(param)
+        }) {
+            _event.emit(
+                CommentEvent.ShowErrorToaster(
+                    message = it,
+                    onClick = { reportComment(param) })
+            )
         }
     }
 

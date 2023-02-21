@@ -20,4 +20,6 @@ sealed class CommentAction {
     ) : CommentAction()
 
     data class ResultAction(val requestCode: Int) : CommentAction()
+
+    object RequestReportAction: CommentAction()
 }

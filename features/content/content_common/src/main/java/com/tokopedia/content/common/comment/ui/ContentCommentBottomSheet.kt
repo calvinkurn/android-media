@@ -168,6 +168,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     is CommentEvent.OpenAppLink -> {
                         router.route(context = requireContext(), appLinkPattern = event.appLink)
                     }
+                    CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
                 }
             }
         }
@@ -203,7 +204,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onLongClicked(item: CommentUiModel.Item) {
         sheetMenu.setListener(this@ContentCommentBottomSheet)
-        sheetMenu.setData(getMenuItems(item.isOwner), item.id)
+        sheetMenu.setData(getMenuItems(item), item.id)
         sheetMenu.show(childFragmentManager)
     }
 
@@ -243,7 +244,7 @@ class ContentCommentBottomSheet @Inject constructor(
             FeedMenuIdentifier.DELETE -> {
                 viewModel.submitAction(CommentAction.DeleteComment(contentId))
             }
-            FeedMenuIdentifier.LAPORKAN -> sheetMenu.showReportLayoutWhenLaporkanClicked()
+            FeedMenuIdentifier.LAPORKAN -> viewModel.submitAction(CommentAction.RequestReportAction)
         }
     }
 
@@ -258,8 +259,8 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun getMenuItems(isOwner: Boolean): List<FeedMenuItem> = buildList {
-        if (isOwner)
+    private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
+        if (item.isOwner)
             add(
                 FeedMenuItem(
                     name = getString(R.string.content_common_menu_delete),
@@ -270,7 +271,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     type = FeedMenuIdentifier.DELETE
                 )
             )
-        else
+        if (item.isReportAllowed && !item.isOwner)
             add(
                 FeedMenuItem(
                     drawable = getIconUnifyDrawable(

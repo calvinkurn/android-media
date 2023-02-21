@@ -49,6 +49,7 @@ class CommentUiModelMapper @Inject constructor() {
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
             isOwner = comment.isCommentOwner,
+            isReportAllowed = comment.allowReport,
         )
     }
 
