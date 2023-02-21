@@ -141,7 +141,7 @@ fun Fragment.getRunnable(action: () -> Unit): Runnable {
     }
 }
 
-private const val MAX_IMAGE_PIXEL_DRAW = 25000000 // 25 million pixel
 fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
-    return (width * height) >= MAX_IMAGE_PIXEL_DRAW
+    val imagePxDrawThreshold = 25_000_000 // 25 million pixel
+    return (width * height) >= imagePxDrawThreshold
 }

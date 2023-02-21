@@ -1198,9 +1198,11 @@ class DetailEditorFragment @Inject constructor(
         return if (checkBitmapSizeOverflow(source.width.toFloat(), source.height.toFloat())) {
             var newImageHeight = 0f
             var newImageWidth = source.width.toFloat()
+            val sourceWidth = source.width
+            val sourceHeight = source.height
             do {
                 newImageWidth *= SCALED_DOWN_VALUE
-                newImageHeight = (newImageWidth / source.width) * source.height
+                newImageHeight = (newImageWidth / sourceWidth) * sourceHeight
             } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
 
             return Bitmap.createScaledBitmap(
