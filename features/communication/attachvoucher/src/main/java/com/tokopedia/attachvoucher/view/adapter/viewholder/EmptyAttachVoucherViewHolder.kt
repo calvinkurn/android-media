@@ -27,7 +27,7 @@ class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyMo
 
     private fun bindButtonClick() {
         binding?.btnCreateVoucher?.setOnClickListener {
-            RouteManager.route(it.context, ApplinkConst.SellerApp.SELLER_MVC_SHOP_CREATE)
+            RouteManager.route(it.context, ApplinkConst.SellerApp.CREATE_VOUCHER)
         }
     }
 
