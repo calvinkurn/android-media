@@ -59,7 +59,9 @@ fun CampaignListScreen(
     onToolbarBackIconPressed: () -> Unit
 ) {
 
-    Surface(modifier = Modifier.background(NestNN.light._0).fillMaxSize()) {
+    Surface(modifier = Modifier
+        .background(NestNN.light._0)
+        .fillMaxSize()) {
         Column {
             Toolbar(
                 title = stringResource(id = R.string.active_campaign_list),
@@ -291,7 +293,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
 
 
             NestTypography(
-                text = campaign.startTime,
+                text = stringResource(id = R.string.campaign_time_template, campaign.startTime),
                 modifier = Modifier.constrainAs(campaignStartTime) {
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
@@ -320,7 +322,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
             )
 
             NestTypography(
-                text = campaign.endTime,
+                text = stringResource(id = R.string.campaign_time_template, campaign.endTime),
                 modifier = Modifier.constrainAs(campaignEndTime) {
                     top.linkTo(campaignStartTime.top)
                     bottom.linkTo(campaignStartTime.bottom)
