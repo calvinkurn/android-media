@@ -146,6 +146,12 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         }
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        listener = null
+        startActivityResult = null
+    }
+
     private fun setup(context: Context, attrs: AttributeSet?) {
         val view = View.inflate(context, R.layout.customview_product_bundle_widget, this)
         val rvBundles: RecyclerView = view.findViewById(R.id.rv_bundles)
