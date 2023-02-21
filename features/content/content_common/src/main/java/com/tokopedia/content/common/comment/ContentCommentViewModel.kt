@@ -141,6 +141,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
             is CommentAction.DeleteComment -> deleteComment(action.isFromToaster)
+            is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
             CommentAction.RequestReportAction -> {
                 requireLogin {
@@ -198,16 +199,29 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun deleteComment(isFromToaster: Boolean) {
-        if (!isFromToaster) removeComment() else addComment()
-        viewModelScope.launchCatchError(block = {
-            val result = repo.deleteComment(_selectedComment.value.first.id)
-            if (result) {
+        fun removeComment() {
+            _comments.getAndUpdate {
+                it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })
+            }
+        }
+
+        if (!isFromToaster) {
+            removeComment()
+            viewModelScope.launch {
                 _event.emit(
                     CommentEvent.ShowSuccessToaster(onClick = {
                         deleteComment(isFromToaster = true)
                     })
                 )
             }
+        } else {
+            addComment()
+        }
+    }
+
+    private fun deleteComment() {
+        viewModelScope.launchCatchError(block = {
+            repo.deleteComment(_selectedComment.value.first.id)
         }) {
             _event.emit(
                 CommentEvent.ShowErrorToaster(message = it) {
@@ -229,12 +243,6 @@ class ContentCommentViewModel @AssistedInject constructor(
                     onClick = { reportComment(param) }
                 )
             )
-        }
-    }
-
-    private fun removeComment() {
-        _comments.getAndUpdate {
-            it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })
         }
     }
 

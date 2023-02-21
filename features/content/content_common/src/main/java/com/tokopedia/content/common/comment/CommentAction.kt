@@ -15,6 +15,7 @@ sealed class CommentAction {
 
     data class ReplyComment(val comment: CommentUiModel.Item) : CommentAction()
     data class DeleteComment(val isFromToaster: Boolean) : CommentAction()
+    object PermanentRemoveComment : CommentAction()
     data class ReportComment(
         val param: FeedReportRequestParamModel
     ) : CommentAction()

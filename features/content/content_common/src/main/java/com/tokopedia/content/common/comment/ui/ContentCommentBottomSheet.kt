@@ -155,7 +155,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     is CommentEvent.ShowSuccessToaster -> {
                         val toaster = Toaster.build(
                             requireView().rootView,
-                            text = event.message.orEmpty(),
+                            text = getString(R.string.comment_delete_kembali),
                             actionText = getString(R.string.comment_delete_undo),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = { event.onClick }
@@ -163,7 +163,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         toaster.show()
 
                         toaster.view.addOneTimeGlobalLayoutListener {
-                            if (!isVisible) viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
+                            if (!isVisible) viewModel.submitAction(CommentAction.PermanentRemoveComment)
                         }
                     }
                     is CommentEvent.ShowErrorToaster -> {
