@@ -4,6 +4,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
+import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -16,9 +17,6 @@ class TodoWidgetComponentCallback(
     val homeCategoryListener: HomeCategoryListener,
     val homeRevampViewModel: HomeRevampViewModel
 ) : TodoWidgetComponentListener {
-    companion object {
-        private const val ZERO_PRODUCT_ID = "0"
-    }
 
     override fun onTodoCardClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
     }
@@ -32,4 +30,7 @@ class TodoWidgetComponentCallback(
     override fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
     }
 
+    override fun refreshTodowidget(element: TodoWidgetListDataModel) {
+        homeRevampViewModel.getTodoWidgetRefresh()
+    }
 }

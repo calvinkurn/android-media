@@ -11,7 +11,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
- * Created by dhaba
+ * Created by frenzel
  */
 class TodoWidgetItemViewHolder(
     view: View
@@ -36,21 +36,21 @@ class TodoWidgetItemViewHolder(
             }
             titleTodoWidget.text = element.title
 
-            if(element.dueDate.isNotEmpty()) {
+            if (element.dueDate.isNotEmpty()) {
                 dueDateTodoWidget.visible()
                 dueDateTodoWidget.text = element.dueDate
             } else {
                 dueDateTodoWidget.gone()
             }
 
-            if(element.description.isNotEmpty()) {
+            if (element.contextInfo.isNotEmpty()) {
                 descTodoWidget.visible()
-                descTodoWidget.text = element.description
+                descTodoWidget.text = element.contextInfo
             } else {
                 descTodoWidget.gone()
             }
 
-            if(element.price.isNotEmpty()) {
+            if (element.price.isNotEmpty()) {
                 priceTodoWidget.visible()
                 priceTodoWidget.text = element.price
             } else {

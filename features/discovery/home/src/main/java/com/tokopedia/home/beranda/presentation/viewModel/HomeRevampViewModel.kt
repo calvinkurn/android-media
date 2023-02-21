@@ -11,19 +11,7 @@ import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomePlayUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomePopularKeywordUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeBuWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.*
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
@@ -46,10 +34,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
-import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -90,7 +75,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
-    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>
+    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
+    private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -555,6 +541,22 @@ open class HomeRevampViewModel @Inject constructor(
                 updateWidget(
                     homeMissionWidgetUseCase.get()
                         .onMissionWidgetRefresh(missionWidgetListDataModel),
+                    position
+                )
+            }
+        }
+    }
+
+    fun getTodoWidgetRefresh() {
+        findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
+            launch {
+                updateWidget(
+                    todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
+                    position
+                )
+                updateWidget(
+                    homeTodoWidgetUseCase.get()
+                        .onTodoWidgetRefresh(todoWidgetListDataModel),
                     position
                 )
             }

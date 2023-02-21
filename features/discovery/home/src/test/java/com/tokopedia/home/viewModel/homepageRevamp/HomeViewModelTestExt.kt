@@ -38,6 +38,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendatio
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggestedRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
@@ -168,7 +169,8 @@ fun createHomeDynamicChannelUseCase(
     homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
     homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
     homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true),
-    homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true)
+    homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true),
+    homeTodoWidgetRepository: HomeTodoWidgetRepository = mockk(relaxed = true)
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
@@ -198,7 +200,8 @@ fun createHomeDynamicChannelUseCase(
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
         homeChooseAddressRepository = homeChooseAddressRepository,
         userSessionInterface = homeUserSessionInterface,
-        homeMissionWidgetRepository = homeMissionWidgetRepository
+        homeMissionWidgetRepository = homeMissionWidgetRepository,
+        homeTodoWidgetRepository = homeTodoWidgetRepository
     )
 }
 

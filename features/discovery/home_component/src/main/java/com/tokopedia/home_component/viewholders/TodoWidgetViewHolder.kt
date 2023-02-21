@@ -85,18 +85,23 @@ class TodoWidgetViewHolder(
                 CarouselTodoWidgetDataModel(
                     id = todoWidget.id,
                     title = todoWidget.title,
+                    dataSource = todoWidget.dataSource,
                     dueDate = todoWidget.dueDate,
-                    description = todoWidget.description,
+                    contextInfo = todoWidget.contextInfo,
                     imageUrl = todoWidget.imageUrl,
                     price = todoWidget.price,
                     slashedPrice = todoWidget.slashedPrice,
-                    recommendationType = todoWidget.recommendationType,
-                    buType = todoWidget.buType,
+                    discountPercentage = todoWidget.discountPercentage,
                     todoWidgetComponentListener = todoWidgetComponentListener,
                     cardApplink = todoWidget.cardApplink,
                     ctaApplink = todoWidget.ctaApplink,
+                    ctaMode = todoWidget.ctaMode,
+                    ctaType = todoWidget.ctaType,
+                    ctaText = todoWidget.ctaText,
+                    feParam = todoWidget.feParam,
                     channel = element.channelModel,
-                    verticalPosition = adapterPosition
+                    verticalPosition = adapterPosition,
+                    isCarousel = element.todoWidgetList.size > 1
                 )
             )
         }

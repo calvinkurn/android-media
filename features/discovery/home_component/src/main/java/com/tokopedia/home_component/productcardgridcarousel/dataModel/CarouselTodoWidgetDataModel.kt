@@ -12,19 +12,24 @@ import com.tokopedia.kotlin.model.ImpressHolder
 class CarouselTodoWidgetDataModel(
     val id: Long = 0L,
     val title: String = "",
+    val dataSource: String = "",
     val dueDate: String = "",
-    val description: String = "",
+    val contextInfo: String = "",
     val price: String = "",
     val slashedPrice: String = "",
+    val discountPercentage: String = "",
     val cardApplink: String = "",
+    val ctaType: String = "",
+    val ctaMode: String = "",
+    val ctaText: String = "",
     val ctaApplink: String = "",
     val imageUrl: String = "",
-    val recommendationType: String = "",
-    val buType: String = "",
+    val feParam: String = "",
     val todoWidgetComponentListener: TodoWidgetComponentListener,
     val channel: ChannelModel,
     val verticalPosition: Int = 0,
     val cardInteraction: Boolean = false,
+    val isCarousel: Boolean = false
 ) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)
