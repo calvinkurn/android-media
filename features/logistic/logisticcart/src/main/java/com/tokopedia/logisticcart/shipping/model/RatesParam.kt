@@ -197,7 +197,7 @@ data class RatesParam(
         var cartData: String = ""
             private set
 
-        fun isCorner(is_corner: Boolean) = apply { this.isCorner = if (is_corner) 1 else 0 }
+        fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
 
         fun codHistory(history: Int) = apply { this.userHistory = history }
 
@@ -209,7 +209,7 @@ data class RatesParam(
 
         fun isOcc(isOcc: Boolean) = apply { this.occ = if (isOcc) "1" else "0" }
 
-        fun cartData(cart_data: String) = apply { this.cartData = cart_data }
+        fun cartData(cartData: String) = apply { this.cartData = cartData }
 
         fun build() = RatesParam(this)
     }
