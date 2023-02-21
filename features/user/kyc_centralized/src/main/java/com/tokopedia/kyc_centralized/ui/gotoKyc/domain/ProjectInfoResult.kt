@@ -7,7 +7,6 @@ sealed class ProjectInfoResult(
     val dataSource: String = "",
     val listReason: List<String> = emptyList(),
     val isAccountLinked: Boolean? = null,
-    val isKtpAlreadyTaken: Boolean? = null,
     val throwable: Throwable? = null
 ) {
     class TokoKyc() : ProjectInfoResult()
@@ -16,9 +15,8 @@ sealed class ProjectInfoResult(
         dataSource = dataSource,
         listReason = listReason
     )
-    class Progressive() : ProjectInfoResult()
-    class NonProgressive(isAccountLinked: Boolean, isKtpAlreadyTaken: Boolean) : ProjectInfoResult(
-        isAccountLinked = isAccountLinked, isKtpAlreadyTaken = isKtpAlreadyTaken
+    class NotVerified(isAccountLinked: Boolean) : ProjectInfoResult(
+        isAccountLinked = isAccountLinked
     )
     class Failed(throwable: Throwable) : ProjectInfoResult(throwable = throwable)
 }

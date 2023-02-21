@@ -43,15 +43,10 @@ class ProjectInfoUseCase @Inject constructor(
                 ProjectInfoResult.TokoKyc()
             } else {
                 if (status == NOT_VERIFIED) {
-                    if (dataSource == KYCConstant.GotoDataSource.GOTO_PROGRESSIVE) {
-                        ProjectInfoResult.Progressive()
-                    } else {
-                        ProjectInfoResult.NonProgressive(
-                            isAccountLinked = accountLinkingStatus == ACCOUNT_LINKED,
-                            //TODO("please change this value if BE already provide")
-                            isKtpAlreadyTaken = false
-                        )
-                    }
+                    ProjectInfoResult.NotVerified(
+                        isAccountLinked = accountLinkingStatus == ACCOUNT_LINKED,
+                        //TODO("please change this value if BE already provide")
+                    )
                 } else {
                     ProjectInfoResult.StatusSubmission(
                         status = status,

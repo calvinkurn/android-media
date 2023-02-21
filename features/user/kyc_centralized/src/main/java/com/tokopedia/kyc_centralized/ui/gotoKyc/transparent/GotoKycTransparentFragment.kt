@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
@@ -20,7 +19,6 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.RouterFragment
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -55,7 +53,7 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
 
     private fun validationParameter(projectId: String?, source: String?) {
         if (projectId?.toIntOrNull() == null) {
-            showToaster(getString(R.string.goto_kyc_transparent_something_wrong))
+            //TODO: set toaster why activity finish
             activity?.finish()
         } else {
             //set value project id
@@ -87,17 +85,8 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
                 is ProjectInfoResult.StatusSubmission -> {
                     gotoStatusSubmission(parameter)
                 }
-                is ProjectInfoResult.Progressive -> {
-                    showProgressiveBottomSheet(
-                        source = viewModel.source
-                    )
-                }
-                is ProjectInfoResult.NonProgressive -> {
-                    showNonProgressiveBottomSheet(
-                        source = viewModel.source,
-                        isAccountLinked = it.isAccountLinked == true,
-                        isKtpTaken = false
-                    )
+                is ProjectInfoResult.NotVerified -> {
+                    //TODO: hit API eligibility
                 }
                 is ProjectInfoResult.Failed -> {
                     val message = it.throwable?.getMessage(requireContext())

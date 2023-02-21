@@ -259,6 +259,5 @@
     <string name="goto_kyc_onboard_progressive_item_title">KTP di GoPay</string>
     <string name="goto_kyc_onboard_progressive_tokopedia_care">Bukan KTP kamu? Hubungi Tokopedia Care</string>
     <string name="goto_kyc_onboard_progressive_tokopedia_care_spannable">Hubungi Tokopedia Care</string>
-    <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
 
 </resources>
