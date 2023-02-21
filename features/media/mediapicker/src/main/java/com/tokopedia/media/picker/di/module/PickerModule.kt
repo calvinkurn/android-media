@@ -8,6 +8,10 @@ import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl
 import com.tokopedia.media.picker.data.repository.*
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.ui.publisher.PickerEventBusImpl
+import com.tokopedia.media.picker.utils.internal.NetworkStateManager
+import com.tokopedia.media.picker.utils.internal.NetworkStateManagerImpl
+import com.tokopedia.media.picker.utils.internal.ResourceManager
+import com.tokopedia.media.picker.utils.internal.ResourceManagerImpl
 import dagger.Binds
 import dagger.Module
 
@@ -45,4 +49,12 @@ abstract class PickerModule {
     @Binds
     @ActivityScope
     abstract fun provideBitmapConverterRepository(repository: BitmapConverterRepositoryImpl): BitmapConverterRepository
+
+    @Binds
+    @ActivityScope
+    abstract fun provideNetworkStateManager(manager: NetworkStateManagerImpl): NetworkStateManager
+
+    @Binds
+    @ActivityScope
+    abstract fun provideResourceManager(manager: ResourceManagerImpl): ResourceManager
 }

@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -91,6 +92,12 @@ class Utils {
         const val RPC_FILTER_KEY = "rpc_"
         const val DARK_MODE = "dark_mode"
         const val DEFAULT_ENCODING = "UTF-8"
+
+        private val setOfKeysToNotSendToShare = mutableSetOf(
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID,
+            DiscoveryActivity.CHANNEL,
+            DiscoveryActivity.QUERY_PARENT
+        )
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -334,7 +341,7 @@ class Utils {
             var isAllKeyNullOrEmpty = true
             val queryString = StringBuilder()
             queryParameterMap?.forEach { (key, value) ->
-                if (!value.isNullOrEmpty()) {
+                if (!value.isNullOrEmpty() && !setOfKeysToNotSendToShare.contains(key)) {
                     isAllKeyNullOrEmpty = false
                     if (queryString.isNotEmpty()) {
                         queryString.append('&')
@@ -455,6 +462,10 @@ class Utils {
             return (selectedSort != null && selectedFilters != null) &&
                 (selectedSort?.isNotEmpty() == true ||
                     selectedFilters?.isNotEmpty() == true)
+        }
+
+        fun generateRandomUUID(): String {
+            return UUID.randomUUID().toString()
         }
 
         fun getTargetComponentOfFilter(components: ComponentsItem): ComponentsItem? {

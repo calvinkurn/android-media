@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.notifications.common.CMConstant.GtmTrackerEvents
 import com.tokopedia.notifications.settings.NotificationGeneralPromptSharedPreferences
@@ -151,7 +152,7 @@ class NotificationSettingsGtmEvents constructor(
             val diffTimeInterval = currentTimeStamp - lastShownTimeStamp
             dataMap[GtmTrackerEvents.KEY_USER_ID_NEW] = userId
             dataMap[GtmTrackerEvents.KEY_SHOP_ID_NEW] = userSession.shopId
-            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = userSession.adsId
+            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = DeviceInfo.getAdsId(context)
             dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_NAME] = JOURNEY
             dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_ID] = ZERO
             dataMap[GtmTrackerEvents.KEY_EVENT_REFRESH_SOURCE] = HOMEPAGE
@@ -213,15 +214,17 @@ class NotificationSettingsGtmEvents constructor(
         } else {
             sharedPreference.getInt(FREQ_KEY_GENERAL_PROMPT, 0)
         }
+
+        val adsId = DeviceInfo.getAdsId(context)
         val eventLabel =
-            "$frequency - $userId - ${userSession.adsId} - ${IrisSession(context).getSessionId()}"
+            "$frequency - $userId - adsId - ${IrisSession(context).getSessionId()}"
         val map = TrackAppUtils.gtmData(
             event,
             eventCategory,
             eventAction,
             eventLabel
         )
-        map[GtmTrackerEvents.KEY_DEVICE_ID] = userSession.adsId
+        map[GtmTrackerEvents.KEY_DEVICE_ID] = adsId
         map[GtmTrackerEvents.KEY_TRACKER_ID] = trackerId
         map[GtmTrackerEvents.KEY_BUSINESS_UNIT] = GtmTrackerEvents.VALUE_BUSINESS_UNIT
         map[GtmTrackerEvents.KEY_CURRENT_SITE] = GtmTrackerEvents.VALUE_CURRENT_SITE
