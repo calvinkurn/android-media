@@ -94,6 +94,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER_STORE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MY_COUPON
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_NOTIFICATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_PRIVACY_ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_RETRY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_REVIEW_THIS_APP
@@ -441,6 +442,20 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ACCOUNT_SETTING_SECTION,
                 LABEL_ACCOUNT_SECURITY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun eventClickAccountSettingPrivacyAccount() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_PRIVACY_ACCOUNT
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE

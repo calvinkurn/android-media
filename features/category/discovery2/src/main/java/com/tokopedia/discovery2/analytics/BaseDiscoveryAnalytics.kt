@@ -4,6 +4,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
@@ -71,7 +72,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackQuickCouponApply(clickCouponData: ClickCouponData) {}
     open fun trackQuickCouponPhoneVerified() {}
     open fun trackQuickCouponPhoneVerifyCancel() {}
-    open fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, campaignId: String = "", variantId: String = "", shopID: String = "") {}
+    open fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, paramsForOpenScreen: ParamsForOpenScreen) {}
     open fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int, eventAction: String = "") {}
     open fun trackUnifyTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int, eventAction: String = "") {}
     open fun trackCarouselBannerImpression(banners: List<DataItem>, componentType: String) {}

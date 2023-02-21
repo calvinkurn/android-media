@@ -156,6 +156,7 @@ import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBu
 import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -242,6 +243,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
+import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -3624,15 +3626,53 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showAddToCartDoneBottomSheet(cartId: String) {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        val context = context ?: return
-        PostAtcHelper.start(
-            context,
-            productInfo.basic.productID,
-            cartId = cartId,
-            pageSource = PostAtcHelper.Source.PDP,
-            layoutId = productInfo.basic.postAtcLayout.layoutId
-        )
+        val isNewPostATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
+        if (isNewPostATC) {
+            val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+            val context = context ?: return
+            PostAtcHelper.start(
+                context,
+                productInfo.basic.productID,
+                cartId = cartId,
+                pageSource = PostAtcHelper.Source.PDP,
+                layoutId = productInfo.basic.postAtcLayout.layoutId
+            )
+        } else {
+            showOldPostATC(cartId)
+        }
+    }
+
+    private fun showOldPostATC(cartId: String) {
+        viewModel.getDynamicProductInfoP1?.let {
+            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
+            val productName = it.getProductName
+            val productImageUrl = it.data.getFirstProductImage()
+            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
+                it.basic.productID,
+                productName,
+                productImageUrl,
+                it.data.variant.isVariant,
+                it.basic.getShopId(),
+                viewModel.getBebasOngkirDataByProductId().imageURL,
+                cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
+            )
+            val bundleData = Bundle()
+            bundleData.putParcelable(
+                AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL,
+                addedProductDataModel
+            )
+            addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.setDismissListener {
+                shouldShowCartAnimation = true
+                updateCartNotification()
+            }
+            fragmentManager?.let {
+                addToCartDoneBottomSheet.show(
+                    it,
+                    AddToCartDoneBottomSheet::class.simpleName
+                )
+            }
+        }
     }
 
     override fun openShipmentClickedBottomSheet(
@@ -4429,7 +4469,7 @@ open class DynamicProductDetailFragment :
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         val secondAppLink = ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context,secondAppLink,productId)
+            RouteManager.route(context, secondAppLink, productId)
         } else {
             if (secondAppLink.isEmpty()) {
                 goToPdpSellerApp()
