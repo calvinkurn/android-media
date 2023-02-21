@@ -100,7 +100,7 @@ class AddPhoneViewModelTest {
         val result = viewModel.addPhoneResponse.getOrAwaitValue()
         assertThat(result, instanceOf(Fail::class.java))
         assertThat((result as Fail).throwable, instanceOf(RuntimeException::class.java))
-        coVerify(atLeast = 1){ userProfileUpdateUseCase(any()) }
+        coVerify(atLeast = 1) { userProfileUpdateUseCase(any()) }
     }
 
     @Test
@@ -157,8 +157,11 @@ class AddPhoneViewModelTest {
         val result = viewModel.userValidateResponse.getOrAwaitValue()
         assertThat(result, instanceOf(Fail::class.java))
         assertThat((result as Fail).throwable, instanceOf(MessageErrorException::class.java))
-        assertEquals(userValidatePojo.userProfileValidate.message, (result as Fail).throwable.message)
-        coVerify(atLeast = 1){ userProfileValidateUseCase(any()) }
+        assertEquals(
+            userValidatePojo.userProfileValidate.message,
+            (result as Fail).throwable.message
+        )
+        coVerify(atLeast = 1) { userProfileValidateUseCase(any()) }
     }
 
     @Test
@@ -174,7 +177,7 @@ class AddPhoneViewModelTest {
         val result = viewModel.userValidateResponse.getOrAwaitValue()
         assertThat(result, instanceOf(Fail::class.java))
         assertThat((result as Fail).throwable, instanceOf(RuntimeException::class.java))
-        coVerify(atLeast = 1){ userProfileValidateUseCase(any()) }
+        coVerify(atLeast = 1) { userProfileValidateUseCase(any()) }
     }
 
 }

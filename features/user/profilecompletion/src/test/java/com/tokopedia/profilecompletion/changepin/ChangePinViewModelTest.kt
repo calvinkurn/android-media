@@ -86,21 +86,21 @@ class ChangePinViewModelTest {
     @Before
     fun setUp() {
         viewModel = ChangePinViewModel(
-                validatePinUseCase,
-                validatePinV2UseCase,
-                checkPinUseCase,
-                checkPin2FaUseCase,
-                resetPinUseCase,
-                resetPinV2UseCase,
-                resetPin2FaUseCase,
-                changePinUseCase,
-                updatePinV2UseCase,
-                checkPinV2UseCase,
-                userSession,
-                checkPinHashV2UseCase,
-                generatePublicKeyUseCase,
-                pinPreference,
-                CoroutineTestDispatchersProvider
+            validatePinUseCase,
+            validatePinV2UseCase,
+            checkPinUseCase,
+            checkPin2FaUseCase,
+            resetPinUseCase,
+            resetPinV2UseCase,
+            resetPin2FaUseCase,
+            changePinUseCase,
+            updatePinV2UseCase,
+            checkPinV2UseCase,
+            userSession,
+            checkPinHashV2UseCase,
+            generatePublicKeyUseCase,
+            pinPreference,
+            CoroutineTestDispatchersProvider
         )
         mockkObject(RsaUtils)
     }
@@ -151,7 +151,8 @@ class ChangePinViewModelTest {
     @Test
     fun `on Error Reset Pin message not empty`() {
         /* When */
-        resetPinResponse.data.errorAddChangePinData = listOf(ErrorAddChangePinData(message = "Error"))
+        resetPinResponse.data.errorAddChangePinData =
+            listOf(ErrorAddChangePinData(message = "Error"))
 
         coEvery { resetPinUseCase(any()) } returns resetPinResponse
 
@@ -160,9 +161,15 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.resetPinResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
-        Assert.assertEquals(resetPinResponse.data.errorAddChangePinData[0].message, (result as Fail).throwable.message)
-        coVerify (atLeast = 1){ resetPinUseCase(any()) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(MessageErrorException::class.java)
+        )
+        Assert.assertEquals(
+            resetPinResponse.data.errorAddChangePinData[0].message,
+            (result as Fail).throwable.message
+        )
+        coVerify(atLeast = 1) { resetPinUseCase(any()) }
     }
 
     @Test
@@ -177,8 +184,11 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.resetPinResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
-        coVerify (atLeast = 1){ resetPinUseCase(any()) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(RuntimeException::class.java)
+        )
+        coVerify(atLeast = 1) { resetPinUseCase(any()) }
     }
 
     @Test
@@ -234,8 +244,11 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.checkPinResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
-        coVerify (atLeast = 1){ checkPinUseCase(any()) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(RuntimeException::class.java)
+        )
+        coVerify(atLeast = 1) { checkPinUseCase(any()) }
     }
 
     @Test
@@ -291,8 +304,11 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.validatePinResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
-        coVerify (atLeast = 1){ validatePinUseCase(any()) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(RuntimeException::class.java)
+        )
+        coVerify(atLeast = 1) { validatePinUseCase(any()) }
     }
 
     @Test
@@ -334,9 +350,15 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.changePinResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
-        Assert.assertEquals(changePinPojo.data.errorAddChangePinData[0].message, (result as Fail).throwable.message)
-        coVerify (atLeast = 1){ changePinUseCase(any()) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(MessageErrorException::class.java)
+        )
+        Assert.assertEquals(
+            changePinPojo.data.errorAddChangePinData[0].message,
+            (result as Fail).throwable.message
+        )
+        coVerify(atLeast = 1) { changePinUseCase(any()) }
     }
 
     @Test
@@ -351,8 +373,11 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.changePinResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
-        coVerify (atLeast = 1){ changePinUseCase(any()) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(RuntimeException::class.java)
+        )
+        coVerify(atLeast = 1) { changePinUseCase(any()) }
     }
 
     val validateToken = "abc123"
@@ -363,7 +388,7 @@ class ChangePinViewModelTest {
         /* When */
         checkPinPojo.data.valid = true
 
-        coEvery { checkPin2FaUseCase(any()) }returns checkPinPojo
+        coEvery { checkPin2FaUseCase(any()) } returns checkPinPojo
 
         viewModel.checkPin2FA(pin, validateToken, userId)
 
@@ -411,8 +436,11 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.checkPinResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
-        coVerify (atLeast = 1){ checkPin2FaUseCase(any()) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(RuntimeException::class.java)
+        )
+        coVerify(atLeast = 1) { checkPin2FaUseCase(any()) }
     }
 
     var resetPinData = ChangePin2FAData()
@@ -479,13 +507,16 @@ class ChangePinViewModelTest {
         /* Then */
         val result = viewModel.resetPin2FAResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(MessageErrorException::class.java)
+        )
         Assert.assertEquals(resetPin2FaPojo.data.error, (result as Fail).throwable.message)
-        coVerify (atLeast = 1){ resetPin2FaUseCase(any()) }
+        coVerify(atLeast = 1) { resetPin2FaUseCase(any()) }
     }
 
     @Test
-    fun `isNeedHash - success` () {
+    fun `isNeedHash - success`() {
         val pinStatusData = PinStatusData(isNeedHash = true)
         val pinStatusResponse = PinStatusResponse(pinStatusData)
 
@@ -496,7 +527,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `validatePinV2 - true` () {
+    fun `validatePinV2 - true`() {
         val validatePinV2Data = ValidatePinV2Data(valid = true)
         val validatePinV2Response = ValidatePinV2Response(validatePinV2Data)
 
@@ -515,7 +546,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `validatePinV2 - exception` () {
+    fun `validatePinV2 - exception`() {
 
         val keydata = KeyData(hash = "abc123")
         val generateKeyPojo = GenerateKeyPojo(keydata)
@@ -560,7 +591,8 @@ class ChangePinViewModelTest {
         val data = AddChangePinData(success = false)
         val response = UpdatePinV2Response(data)
 
-        response.mutatePinV2data.errorAddChangePinData = listOf(ErrorAddChangePinData(message = errMsg))
+        response.mutatePinV2data.errorAddChangePinData =
+            listOf(ErrorAddChangePinData(message = errMsg))
 
         val hashedPin = "abc1234b"
 
@@ -575,7 +607,10 @@ class ChangePinViewModelTest {
         viewModel.changePinV2("", "")
 
         val result = viewModel.changePinResponse.getOrAwaitValue()
-        Assert.assertEquals(response.mutatePinV2data.errorAddChangePinData[0].message, (result as Fail).throwable.message)
+        Assert.assertEquals(
+            response.mutatePinV2data.errorAddChangePinData[0].message,
+            (result as Fail).throwable.message
+        )
     }
 
     @Test
@@ -632,7 +667,8 @@ class ChangePinViewModelTest {
         val data = AddChangePinData(success = false)
         val response = ResetPinV2Response(data)
 
-        response.mutatePinV2data.errorAddChangePinData = listOf(ErrorAddChangePinData(message = "error"))
+        response.mutatePinV2data.errorAddChangePinData =
+            listOf(ErrorAddChangePinData(message = "error"))
 
         /* When */
         coEvery { resetPinV2UseCase(any()) } returns response
@@ -671,7 +707,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `validate pin v2 success` () {
+    fun `validate pin v2 success`() {
 
         val data = ValidatePinV2Data()
         val response = ValidatePinV2Response(data)
@@ -691,7 +727,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `validate pin v2 throw exception` () {
+    fun `validate pin v2 throw exception`() {
         /* When */
         coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
 
@@ -702,7 +738,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `check pin v2 success` () {
+    fun `check pin v2 success`() {
         val data = CheckPinV2Data(valid = true)
         val response = CheckPinV2Response(data)
 
@@ -721,7 +757,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `check pin v2 has error msg` () {
+    fun `check pin v2 has error msg`() {
         val data = CheckPinV2Data(valid = false, errorMessage = "error")
         val response = CheckPinV2Response(data)
 
@@ -740,7 +776,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `check pin v2 throw exception` () {
+    fun `check pin v2 throw exception`() {
         /* When */
         coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
 
@@ -751,7 +787,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `check pin v2 other errors` () {
+    fun `check pin v2 other errors`() {
         val data = CheckPinV2Data(valid = false)
         val response = CheckPinV2Response(data)
 
@@ -770,7 +806,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `validate pin mediator need hash` () {
+    fun `validate pin mediator need hash`() {
         val pinData = PinStatusData(isNeedHash = true)
         val pinResp = PinStatusResponse(pinData)
 
@@ -798,7 +834,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `validate pin mediator need no hash` () {
+    fun `validate pin mediator need no hash`() {
         val data = PinStatusData(isNeedHash = false)
         val resp = PinStatusResponse(data)
         val pin = "123456"
@@ -821,7 +857,7 @@ class ChangePinViewModelTest {
     }
 
     @Test
-    fun `validate pin mediator throw exception` () {
+    fun `validate pin mediator throw exception`() {
         coEvery { checkPinHashV2UseCase(any()) } throws mockThrowable
 
         viewModel.validatePinMediator(pin)

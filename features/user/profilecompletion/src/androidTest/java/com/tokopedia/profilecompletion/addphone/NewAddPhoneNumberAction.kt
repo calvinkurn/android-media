@@ -8,7 +8,6 @@ import com.tokopedia.profilecompletion.common.helper.inputTextThenCloseKeyboard
 import com.tokopedia.profilecompletion.common.helper.isDisplayed
 import com.tokopedia.profilecompletion.common.helper.isEnable
 import com.tokopedia.profilecompletion.common.helper.isTextDisplayed
-import com.tokopedia.profilecompletion.common.helper.typingTextOn
 
 const val INVALID_VALIDATE_PHONE_NUMBER = "081212121212"
 const val INVALID_UPDATE_PHONE_NUMBER = "081313131313"
@@ -39,7 +38,7 @@ fun isViewFailedOtpDisplayed() {
 fun isErrorFieldEmpty() {
     inputTextThenCloseKeyboard(InputType.TYPE_CLASS_PHONE, "0821")
     clearText(InputType.TYPE_CLASS_PHONE)
-    isTextDisplayed( "Wajib diisi.")
+    isTextDisplayed("Wajib diisi.")
 }
 
 fun isErrorFieldPhoneTooShort() {

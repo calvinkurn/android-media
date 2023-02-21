@@ -99,9 +99,12 @@ class ChangePinViewModel @Inject constructor(
 
     fun validatePinMediator(pin: String) {
         launchCatchError(block = {
-            val param = PinStatusParam(id = userSession.userId, type = SessionConstants.CheckPinType.USER_ID.value)
+            val param = PinStatusParam(
+                id = userSession.userId,
+                type = SessionConstants.CheckPinType.USER_ID.value
+            )
             val needHash = checkPinHashV2UseCase(param).data.isNeedHash
-            if(needHash) {
+            if (needHash) {
                 validatePinV2(pin)
             } else {
                 validatePin(pin)
@@ -138,7 +141,8 @@ class ChangePinViewModel @Inject constructor(
     fun validatePinV2(pin: String) {
         launchCatchError(block = {
             val keyData = getPublicKey()
-            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
+            val encryptedPin =
+                RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
             hash = keyData.hash
             val param = ValidatePinV2Param(
                 pin = encryptedPin,
@@ -193,7 +197,8 @@ class ChangePinViewModel @Inject constructor(
     fun checkPinV2(pin: String) {
         launchCatchError(block = {
             val keyData = getPublicKey()
-            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
+            val encryptedPin =
+                RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
             hash = keyData.hash
             val checkPinParam = CheckPinV2Param(encryptedPin, keyData.hash)
             val checkPinResult = checkPinV2UseCase(checkPinParam).data
@@ -213,6 +218,7 @@ class ChangePinViewModel @Inject constructor(
             mutableCheckPinV2Response.value = Fail(it)
         })
     }
+
     fun resetPin2FA(userId: String, validateToken: String) {
         val params = mapOf(
             ProfileCompletionQueryConstant.PARAM_USER_ID to userId.toIntOrZero(),
@@ -230,7 +236,8 @@ class ChangePinViewModel @Inject constructor(
                     mutableResetPin2FAResponse.value = Success(response.data)
                 }
                 response.data.error.isNotEmpty() ->
-                    mutableResetPin2FAResponse.value = Fail(MessageErrorException(response.data.error))
+                    mutableResetPin2FAResponse.value =
+                        Fail(MessageErrorException(response.data.error))
                 else -> mutableResetPin2FAResponse.value = Fail(RuntimeException())
             }
         }, onError = {
@@ -252,7 +259,7 @@ class ChangePinViewModel @Inject constructor(
         )
 
         launchCatchError(block = {
-             val response = resetPinUseCase(params)
+            val response = resetPinUseCase(params)
 
             when {
                 response.data.success -> mutableResetPinResponse.value = Success(response.data)
@@ -275,7 +282,8 @@ class ChangePinViewModel @Inject constructor(
             val result = resetPinV2UseCase(param).mutatePinV2data
             when {
                 result.success -> mutableResetPinResponse.value = Success(result)
-                result.errorAddChangePinData.isNotEmpty() -> mutableResetPinResponse.value = Fail(MessageErrorException(result.errorAddChangePinData[0].message))
+                result.errorAddChangePinData.isNotEmpty() -> mutableResetPinResponse.value =
+                    Fail(MessageErrorException(result.errorAddChangePinData[0].message))
                 else -> mutableResetPinResponse.value = Fail(RuntimeException())
             }
         }, onError = {
@@ -313,8 +321,10 @@ class ChangePinViewModel @Inject constructor(
     fun changePinV2(pin: String, pinOld: String) {
         launchCatchError(block = {
             val keyData = getPublicKey()
-            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
-            val encryptedOldPin = RsaUtils.encryptWithSalt(pinOld, keyData.key, salt = OtpConstant.PIN_V2_SALT)
+            val encryptedPin =
+                RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
+            val encryptedOldPin =
+                RsaUtils.encryptWithSalt(pinOld, keyData.key, salt = OtpConstant.PIN_V2_SALT)
 
             hash = keyData.hash
 
@@ -329,7 +339,8 @@ class ChangePinViewModel @Inject constructor(
             when {
                 result.success -> mutableChangePinResponse.value = Success(result)
                 result.errorAddChangePinData.isNotEmpty() && result.errorAddChangePinData[0].message.isNotEmpty() -> {
-                    mutableChangePinResponse.value = Fail(MessageErrorException(result.errorAddChangePinData[0].message))
+                    mutableChangePinResponse.value =
+                        Fail(MessageErrorException(result.errorAddChangePinData[0].message))
                 }
                 else -> mutableChangePinResponse.value = Fail(RuntimeException())
             }

@@ -74,11 +74,14 @@ class ChangeNameViewModelTest {
         viewModel.changePublicName(name)
 
         /* Then */
-        val  result = viewModel.changeNameResponse.getOrAwaitValue()
+        val result = viewModel.changeNameResponse.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(MessageErrorException::class.java)
+        )
         assertEquals(changeNamePojo.data.errors[0], (result as Fail).throwable.message)
-        coVerify (atLeast = 1){ changeNameUseCase(any()) }
+        coVerify(atLeast = 1) { changeNameUseCase(any()) }
     }
 
     @Test
@@ -96,7 +99,12 @@ class ChangeNameViewModelTest {
 
     @Test
     fun `on get user profile - is allowed change name`() {
-        val mockResponse = UserProfileRoleData(ProfileRoleData(isAllowedChangeName = true, chancesChangeName = "10"))
+        val mockResponse = UserProfileRoleData(
+            ProfileRoleData(
+                isAllowedChangeName = true,
+                chancesChangeName = "10"
+            )
+        )
 
         coEvery { userProfileRoleUseCase(Unit) } returns mockResponse
 

@@ -55,14 +55,15 @@ class ProfileInfoViewModelTest {
 
     private var profilePict = "https://tokopedia.com/test-profile-info.jpg"
     private var uploadId = "abc123"
+
     @Before
     fun setUp() {
         viewModel = ProfileInfoViewModel(
-                userProfileCompletionUseCase,
-                uploader,
-                saveProfilePictureUseCase,
-                userSessionInterface,
-                CoroutineTestDispatchersProvider
+            userProfileCompletionUseCase,
+            uploader,
+            saveProfilePictureUseCase,
+            userSessionInterface,
+            CoroutineTestDispatchersProvider
         )
     }
 
@@ -76,7 +77,10 @@ class ProfileInfoViewModelTest {
         /* Then */
         val result = viewModel.userProfileInfo.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Success::class.java))
-        assertEquals(userSessionInterface.profilePicture, userProfileInfoData.profileCompletionData.profilePicture)
+        assertEquals(
+            userSessionInterface.profilePicture,
+            userProfileInfoData.profileCompletionData.profilePicture
+        )
     }
 
     @Test
@@ -89,12 +93,15 @@ class ProfileInfoViewModelTest {
         /* Then */
         val result = viewModel.userProfileInfo.getOrAwaitValue()
         Assert.assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
-        Assert.assertThat((result as Fail).throwable, CoreMatchers.instanceOf(Throwable::class.java))
-        coVerify (atLeast = 1){ userProfileCompletionUseCase(Unit) }
+        Assert.assertThat(
+            (result as Fail).throwable,
+            CoreMatchers.instanceOf(Throwable::class.java)
+        )
+        coVerify(atLeast = 1) { userProfileCompletionUseCase(Unit) }
     }
 
     @Test
-    fun `on upload success` () {
+    fun `on upload success`() {
         val mockUploadSuccess = mockk<UploadResult.Success>()
         val innerData = SaveProfilePictureInnerData(imageUrl = profilePict, isSuccess = 1)
         val mockSaveSuccess = SaveProfilePictureResponse(
@@ -115,7 +122,7 @@ class ProfileInfoViewModelTest {
     }
 
     @Test
-    fun `on upload failed` () {
+    fun `on upload failed`() {
         val errMsg = "errors"
         val mockUploadError = mockk<UploadResult.Error>()
 

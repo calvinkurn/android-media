@@ -8,9 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.profilecompletion.addphone.view.fragment.NewAddPhoneFragment
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
-import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 class NewAddPhoneActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 

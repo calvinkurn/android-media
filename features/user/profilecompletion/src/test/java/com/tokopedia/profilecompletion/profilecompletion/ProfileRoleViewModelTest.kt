@@ -67,6 +67,6 @@ class ProfileRoleViewModelTest {
         val result = viewModel.userProfileRole.getOrAwaitValue()
         assertThat(result, CoreMatchers.instanceOf(Fail::class.java))
         assertEquals((result as Fail).throwable, mockThrowable)
-        coVerify(atLeast = 1){ profileRoleUseCase(Unit) }
+        coVerify(atLeast = 1) { profileRoleUseCase(Unit) }
     }
 }

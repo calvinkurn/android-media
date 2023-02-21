@@ -30,7 +30,8 @@ class NewAddPhoneGenerateIdTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = createProfileCompletionComponent(applicationContext.applicationContext)
+        val fakeBaseComponent =
+            createProfileCompletionComponent(applicationContext.applicationContext)
 
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)

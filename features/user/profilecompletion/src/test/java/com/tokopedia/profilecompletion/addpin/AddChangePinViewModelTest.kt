@@ -3,7 +3,12 @@ package com.tokopedia.profilecompletion.addpin
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.addpin.data.*
+import com.tokopedia.profilecompletion.addpin.data.AddPinPojo
+import com.tokopedia.profilecompletion.addpin.data.CheckPinPojo
+import com.tokopedia.profilecompletion.addpin.data.ErrorAddChangePinData
+import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinPojo
+import com.tokopedia.profilecompletion.addpin.data.StatusPinPojo
+import com.tokopedia.profilecompletion.addpin.data.ValidatePinPojo
 import com.tokopedia.profilecompletion.addpin.data.usecase.CreatePinV2UseCase
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changepin.data.model.CreatePinV2Response
@@ -25,7 +30,12 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
@@ -57,6 +67,7 @@ class AddChangePinViewModelTest {
     val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
 
     lateinit var viewModel: AddChangePinViewModel
+
     @Before
     fun setUp() {
         viewModel = AddChangePinViewModel(
@@ -85,6 +96,7 @@ class AddChangePinViewModelTest {
     val getStatusPinPojo = StatusPinPojo()
     val validatePinPojo = ValidatePinPojo()
     val skipOtpPinPojo = SkipOtpPinPojo()
+
     @Test
     fun `on Success Add Pin`() {
         /* When */
@@ -132,7 +144,7 @@ class AddChangePinViewModelTest {
             addPinPojo.data.errorAddChangePinData[0].message,
             (result as Fail).throwable.message
         )
-        coVerify (atLeast = 1) { createPinUseCase(any()) }
+        coVerify(atLeast = 1) { createPinUseCase(any()) }
     }
 
     @Test
@@ -151,7 +163,7 @@ class AddChangePinViewModelTest {
             (result as Fail).throwable,
             CoreMatchers.instanceOf(RuntimeException::class.java)
         )
-        coVerify (atLeast = 1) { createPinUseCase(any()) }
+        coVerify(atLeast = 1) { createPinUseCase(any()) }
     }
 
     @Test
@@ -214,7 +226,7 @@ class AddChangePinViewModelTest {
             (result as Fail).throwable,
             CoreMatchers.instanceOf(RuntimeException::class.java)
         )
-        coVerify (atLeast = 1) { checkPinUseCase(any()) }
+        coVerify(atLeast = 1) { checkPinUseCase(any()) }
     }
 
     @Test
@@ -266,7 +278,7 @@ class AddChangePinViewModelTest {
             getStatusPinPojo.data.errorMessage,
             (result as Fail).throwable.message
         )
-        coVerify (atLeast = 1) { statusPinUseCase(Unit) }
+        coVerify(atLeast = 1) { statusPinUseCase(Unit) }
     }
 
     @Test
@@ -329,7 +341,7 @@ class AddChangePinViewModelTest {
             (result as Fail).throwable,
             CoreMatchers.instanceOf(RuntimeException::class.java)
         )
-        coVerify (atLeast = 1) { validatePinUseCase(any()) }
+        coVerify(atLeast = 1) { validatePinUseCase(any()) }
     }
 
     @Test
@@ -390,16 +402,16 @@ class AddChangePinViewModelTest {
         val mockResponse = CreatePinV2Response(mockData)
 
         /* When */
-		coEvery { pinPreference.getTempPin() } returns "123456"
+        coEvery { pinPreference.getTempPin() } returns "123456"
         coEvery { createPinV2UseCase(any()) } returns mockResponse
 
         viewModel.addPinV2("")
 
         /* Then */
         verify {
-			pinPreference.getTempPin()
-			pinPreference.clearTempPin()
-		}
+            pinPreference.getTempPin()
+            pinPreference.clearTempPin()
+        }
         val result = viewModel.mutatePin.getOrAwaitValue()
         assertEquals(Success(mockData), result)
     }
@@ -441,7 +453,7 @@ class AddChangePinViewModelTest {
     @Test
     fun `check pin v2 - success`() {
         val hashedPin = "abc1234b"
-		val pinToken = "abc12"
+        val pinToken = "abc12"
 
         val checkPinData = CheckPinV2Data(valid = true, pinToken = pinToken)
         val checkPinV2Response = CheckPinV2Response(checkPinData)
@@ -462,9 +474,9 @@ class AddChangePinViewModelTest {
         val result = viewModel.checkPinV2Response.getOrAwaitValue()
         assertTrue((result as Success).data.valid)
         verify {
-			pinPreference.clearTempPin()
-			pinPreference.setTempPin(pinToken)
-		}
+            pinPreference.clearTempPin()
+            pinPreference.setTempPin(pinToken)
+        }
         assertEquals(checkPinV2Response.data, result.data)
     }
 
