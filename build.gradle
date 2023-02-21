@@ -64,9 +64,19 @@ if (hasProperty('buildScan')) {
     }
 }
 
+apply plugin: "org.jetbrains.dokka"
+
 apply from: 'buildproj.gradle'
-apply from: 'dokka.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
+
+def whitelist = [
+        "medialoader",
+        "mediauploader"
+]
+
+configure(subprojects.findAll {whitelist.contains(it.name)  }) {
+    apply from: rootProject.file('dokka.gradle')
+}
 
 //Installing Git Hooks
 task installGitHooks {

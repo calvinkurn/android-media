@@ -1,5 +1,3 @@
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
-
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
@@ -18,12 +16,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-    }
-}
-
-tasks.withType(DokkaTaskPartial.class) {
-    dokkaSourceSets.configureEach {
-        includes.from("module.md")
     }
 }
 

@@ -1,24 +1,70 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.7.20"
+    }
+}
 
-def sampleModuleWhitelist = [
-        "medialoader",
-        "mediauploader"
-]
+apply plugin: "org.jetbrains.dokka"
+
+import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
 
 def dirName = "tkpd-docs"
 
-subprojects {
-    def projectName = it.name
+tasks.withType(DokkaMultiModuleTask).configureEach {
+    outputDirectory = rootProject.file(dirName)
+    failOnWarning.set(true)
 
-    if (sampleModuleWhitelist.contains(projectName)) {
-        apply plugin: 'org.jetbrains.dokka'
+    String baseConfiguration = """
+            {
+                "customAssets": ["${file("dokka-templates/assets/logo-icon.svg")}"],
+                "customStyleSheets": ["${file("dokka-templates/logo-styles.css")}"],
+                "footerMessage": "(c) 2023 Tokopedia Android Engineering Team"
+            }
+        """
+
+    pluginsMapConfiguration.set(["org.jetbrains.dokka.base.DokkaBase": baseConfiguration])
+
+    dokkaSourceSets.configureEach {
+        documentedVisibilities.set([
+                DokkaConfiguration.Visibility.PUBLIC,
+                DokkaConfiguration.Visibility.PROTECTED
+        ])
+
+        perPackageOption {
+            matchingRegex.set(".*internal.*")
+            suppress.set(true)
+        }
     }
+}
 
-    project.afterEvaluate {
-        if (project.tasks.findByName("dokkaHtml") != null) {
-            tasks.named("dokkaHtml") {
+subprojects {
+    afterEvaluate {
+        if (tasks.findByName('dokkaHtmlPartial') == null) {
+            // If dokka isn't enabled on this module, skip
+            return
+        }
 
-                dokkaHtmlPartial {
-                    outputDirectory.set(file(dirName))
+        tasks.named('dokkaHtmlPartial') {
+            dokkaSourceSets.configureEach {
+                reportUndocumented.set(true)
+                skipEmptyPackages.set(true)
+                skipDeprecated.set(true)
+                jdkVersion.set(8)
+
+                // Add Android SDK packages
+                noAndroidSdkLink.set(false)
+
+                // AndroidX + Kotlin docs
+                externalDocumentationLink {
+                    url.set(new URL("https://developer.android.com/reference/"))
+                    packageListUrl.set(new URL("https://developer.android.com/reference/androidx/package-list"))
+                }
+                externalDocumentationLink {
+                    url.set(new URL("https://developer.android.com/reference/kotlin/"))
+                    packageListUrl.set(new URL("https://developer.android.com/reference/kotlin/androidx/package-list"))
                 }
             }
         }
