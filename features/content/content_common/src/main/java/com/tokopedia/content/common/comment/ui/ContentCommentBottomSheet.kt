@@ -158,7 +158,7 @@ class ContentCommentBottomSheet @Inject constructor(
                             text = getString(R.string.comment_delete_kembali),
                             actionText = getString(R.string.comment_delete_undo),
                             duration = Toaster.LENGTH_LONG,
-                            clickListener = { event.onClick }
+                            clickListener = { viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = true)) }
                         )
                         toaster.show()
 

@@ -7,8 +7,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentUiModel
  */
 sealed class CommentEvent {
     data class ShowSuccessToaster(
-        val message: String? = null,
-        val onClick: (CommentUiModel.Item) -> Unit?
+        val message: String? = null
     ) : CommentEvent()
 
     data class ShowErrorToaster(

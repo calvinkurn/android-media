@@ -211,9 +211,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             removeComment()
             viewModelScope.launch {
                 _event.emit(
-                    CommentEvent.ShowSuccessToaster(onClick = {
-                        deleteComment(isFromToaster = true)
-                    })
+                    CommentEvent.ShowSuccessToaster()
                 )
             }
         } else {
