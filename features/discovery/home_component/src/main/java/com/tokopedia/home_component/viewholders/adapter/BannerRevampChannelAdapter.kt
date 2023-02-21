@@ -33,7 +33,7 @@ class BannerRevampChannelAdapter(
 class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel) {
-        itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl(item.url)
+        itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl("https://images.pexels.com/videos/5818973/background-videos-little-star-night-night-sky-5818973.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500")
         itemView.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
