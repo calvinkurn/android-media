@@ -122,7 +122,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
-import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_EXISTING
 import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_REDIRECTION
 import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
 import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
@@ -885,13 +884,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                     arrayListProducts,
                                     _atcVerticalCategory,
                                     result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
-                                )
-                                UohAnalytics.sendClickBeliLagiButtonEvent(
-                                    EVENT_LABEL_CART_EXISTING,
-                                    arrayListProducts,
-                                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString(),
-                                    userSession.userId,
-                                    _atcVerticalCategory
                                 )
                             } else if (_buttonAction == GQL_MP_ATC_REDIRECTION) {
                                 UohAnalytics.sendClickBeliLagiButtonEvent(
