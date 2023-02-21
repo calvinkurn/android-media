@@ -41,7 +41,6 @@ android {
         defaultVersionCode = 000000001;
         defaultVersionName = "0.1";
     }
-    compileSdkVersion 32
     useLibrary 'org.apache.http.legacy'
     lintOptions {
         checkReleaseBuilds false
@@ -66,8 +65,9 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
         }
     }
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion rootProject.ext.minSdkVersion
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.sellerapp"
