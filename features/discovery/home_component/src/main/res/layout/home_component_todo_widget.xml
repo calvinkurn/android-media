@@ -49,16 +49,8 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:layout_width="188dp"
-                android:layout_height="8dp"
-                app:loader_type="rect"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="18dp"/>
-
             <include
-                layout="@layout/home_component_mission_widget_shimmering" />
+                layout="@layout/home_component_todo_widget_shimmering" />
 
         </LinearLayout>
 
