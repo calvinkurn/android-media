@@ -149,7 +149,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         performLibraryInitialisation();
         initResourceDownloadManager();
-        connectTokoChat(false);
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -198,6 +197,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initDataStoreMigration();
         initRefreshProfileWorker();
         initSeamlessLoginWorker();
+        connectTokoChat(false);
         return true;
     }
 
