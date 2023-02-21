@@ -12,8 +12,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class BannerRevampChannelAdapter(
     private var itemList: List<BannerItemModel>,
-    private val bannerItemListener: BannerItemListener,
-    private val isUsingInfiniteScroll: Boolean = false
+    private val bannerItemListener: BannerItemListener
 ) : RecyclerView.Adapter<BannerRevampChannelImageViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerRevampChannelImageViewHolder {
         return BannerRevampChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_banner_revamp_channel_item, parent, false), bannerItemListener)
@@ -27,7 +26,7 @@ class BannerRevampChannelAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (isUsingInfiniteScroll && itemList.size > 1) Integer.MAX_VALUE else itemList.size
+        return itemList.size
     }
 }
 
@@ -40,7 +39,7 @@ class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerIte
                 MotionEvent.ACTION_DOWN -> {
                     listener.onLongPress()
                 }
-                MotionEvent.ACTION_UP -> {
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     listener.onRelease()
                 }
             }

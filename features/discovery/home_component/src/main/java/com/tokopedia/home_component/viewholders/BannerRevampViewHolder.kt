@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -29,10 +30,7 @@ import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +53,6 @@ class BannerRevampViewHolder(
     private var isCache = true
     private var layoutManager = LinearLayoutManager(itemView.context)
 
-    private var isUsingDotsAndInfiniteScroll: Boolean = false
     private var scrollTransitionDuration: Long = 5000L
 
     private val masterJob = Job()
@@ -66,25 +63,15 @@ class BannerRevampViewHolder(
 
     // set to true if you want to activate auto-scroll
     private var isAutoScroll = true
-    private var autoScrollState = STATE_PAUSED
     private var currentPagePosition = INITIAL_PAGE_POSITION
     private var lastPagePosition = Integer.MAX_VALUE
-
-    private fun autoScrollLauncher() = launch(coroutineContext) {
-        if (autoScrollState == STATE_RUNNING) {
-            delay(scrollTransitionDuration)
-            autoScrollCoroutine()
-        }
-    }
 
     init {
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewDetachedFromWindow(p0: View) {
-                pauseAutoScroll()
             }
 
             override fun onViewAttachedToWindow(p0: View) {
-                resumeAutoScroll()
             }
         })
     }
@@ -92,31 +79,25 @@ class BannerRevampViewHolder(
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
         try {
-            isUsingDotsAndInfiniteScroll = element.enableDotsAndInfiniteScroll
             scrollTransitionDuration = element.scrollTransitionDuration
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
             channelModel?.let { it ->
                 this.isCache = element.isCache
-                val size = it.channelGrids.size
-                lastPagePosition = if (isUsingDotsAndInfiniteScroll) Integer.MAX_VALUE else size - 1
-                drawIndicators(binding!!.indicatorLayout, 0, it.channelGrids.size)
                 try {
                     val banners = it.convertToBannerItemModel()
                     binding?.bannerIndicator?.setBannerIndicators(banners.size)
-                    binding?.rvBannerRevamp?.setOnTouchListener { _, motionEvent ->
-                        when (motionEvent?.action) {
-                            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                                binding?.bannerIndicator?.continueAnimation()
-                            }
-                            MotionEvent.ACTION_DOWN -> {
-                                binding?.bannerIndicator?.pauseAnimation()
-                            }
+                    binding?.bannerIndicator?.setBannerListener(object : BannerIndicatorListener {
+                        override fun onChangePosition(position: Int) {
+                            scrollTo(position)
                         }
-                        true
-                    }
-                    initBanner(banners, element.dimenMarginTop, element.dimenMarginBottom, element.cardInteraction)
+
+                        override fun getCurrentPosition(position: Int) {
+
+                        }
+                    })
+                    initBanner(banners)
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()
                 }
@@ -130,9 +111,8 @@ class BannerRevampViewHolder(
         if (!element.isCache) {
             itemView.addOnImpressionListener(holder = element, onView = {
                 element.channelModel?.let {
-                    bannerListener?.onChannelBannerImpressed(it, adapterPosition)
+                    bannerListener?.onChannelBannerImpressed(it, absoluteAdapterPosition)
                 }
-                setScrollListener()
             })
         }
     }
@@ -145,55 +125,23 @@ class BannerRevampViewHolder(
         val resources = itemView.context.resources
         val width = resources.displayMetrics.widthPixels
         val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
-        if (isUsingDotsAndInfiniteScroll) {
-            pauseAutoScroll()
-            binding?.rvBannerRevamp?.smoothScrollBy(width - paddings, 0, autoScrollInterpolator, FLING_DURATION)
+        if (position == Int.ZERO) {
+            binding?.rvBannerRevamp?.smoothScrollToPosition(position)
         } else {
-            pauseAutoScroll()
-            if (position == 0) {
-                binding?.rvBannerRevamp?.smoothScrollToPosition(position)
-            } else {
-                binding?.rvBannerRevamp?.smoothScrollBy(width - paddings, 0, null, FLING_DURATION_OLD)
-            }
+            binding?.rvBannerRevamp?.smoothScrollBy(width - paddings, 0, null, FLING_DURATION_OLD)
         }
     }
 
-    private fun autoScrollCoroutine() {
-        if (isAutoScroll) {
-            val nextPagePosition = if (currentPagePosition >= lastPagePosition) {
-                0
-            } else {
-                currentPagePosition + 1
-            }
-
-            scrollTo(nextPagePosition)
-        }
-    }
-
-    private fun resumeAutoScroll() {
-        if (autoScrollState == STATE_PAUSED) {
-            autoScrollState = STATE_RUNNING
-            autoScrollLauncher()
-        }
-    }
-
-    private fun pauseAutoScroll() {
-        if (autoScrollState == STATE_RUNNING) {
-            masterJob.cancelChildren()
-            autoScrollState = STATE_PAUSED
-        }
-    }
-
-    private fun getLayoutManager(list: List<BannerItemModel>): LinearLayoutManager {
+    private fun getLayoutManager(): LinearLayoutManager {
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         return layoutManager
     }
 
-    private fun initBanner(list: List<BannerItemModel>, dimenMarginTop: Int, dimenMarginBottom: Int, cardInteraction: Boolean) {
+    private fun initBanner(list: List<BannerItemModel>) {
         binding?.rvBannerRevamp?.clearOnScrollListeners()
 
         if (list.size > 1) {
-            val snapHelper: SnapHelper = if (isUsingDotsAndInfiniteScroll) CubicBezierSnapHelper(itemView.context) else PagerSnapHelper()
+            val snapHelper: SnapHelper = CubicBezierSnapHelper(itemView.context)
             binding?.rvBannerRevamp?.let {
                 it.onFlingListener = null
                 snapHelper.attachToRecyclerView(it)
@@ -203,31 +151,9 @@ class BannerRevampViewHolder(
         val layoutParams = binding?.rvBannerRevamp?.layoutParams as ConstraintLayout.LayoutParams
         binding?.rvBannerRevamp?.layoutParams = layoutParams
 
-        binding?.rvBannerRevamp?.layoutManager = getLayoutManager(list)
-        val adapter = BannerRevampChannelAdapter(list, this, isUsingDotsAndInfiniteScroll)
+        binding?.rvBannerRevamp?.layoutManager = getLayoutManager()
+        val adapter = BannerRevampChannelAdapter(list, this)
         binding?.rvBannerRevamp?.adapter = adapter
-    }
-
-    private fun setScrollListener() {
-        binding?.rvBannerRevamp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                when (newState) {
-                    RecyclerView.SCROLL_STATE_IDLE -> {
-                        onPageDragStateChanged(false)
-                        currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                        channelModel?.let {
-                            val dotsPosition = currentPagePosition % (channelModel?.channelGrids?.size ?: 0)
-                            drawIndicators(binding?.indicatorLayout!!, dotsPosition, it.channelGrids.size)
-                        }
-                        resumeAutoScroll()
-                    }
-                    RecyclerView.SCROLL_STATE_DRAGGING -> {
-                        onPageDragStateChanged(true)
-                        pauseAutoScroll()
-                    }
-                }
-            }
-        })
     }
 
     override fun onImpressed(position: Int) {
@@ -251,53 +177,12 @@ class BannerRevampViewHolder(
     }
 
     override fun onLongPress() {
-        pauseAutoScroll()
+        binding?.bannerIndicator?.pauseAnimation()
+        // no-op
     }
 
     override fun onRelease() {
-        resumeAutoScroll()
-    }
-
-    private fun onPageDragStateChanged(isDrag: Boolean) {
-        bannerListener?.onPageDragStateChanged(isDrag)
-    }
-
-    private fun drawIndicators(viewGroup: ViewGroup, currentPage: Int, totalSize: Int) {
-        if (isUsingDotsAndInfiniteScroll) {
-            viewGroup.visible()
-            if (viewGroup.childCount > 0) {
-                viewGroup.removeAllViews()
-            }
-
-            val params = LinearLayout.LayoutParams(
-                DOTS_SIZE.toDpInt(),
-                DOTS_SIZE.toDpInt()
-            )
-            params.setMargins(
-                DOTS_MARGIN.toDpInt(),
-                MARGIN_ZERO,
-                DOTS_MARGIN.toDpInt(),
-                MARGIN_ZERO
-            )
-
-            for (i in 0 until totalSize) {
-                viewGroup.addView(
-                    AppCompatImageView(viewGroup.context).apply {
-                        layoutParams = params
-                        background = GradientDrawable().apply {
-                            shape = GradientDrawable.OVAL
-                            if (currentPage == i) {
-                                setColor(ContextCompat.getColor(context, RUnify.color.Unify_GN500))
-                            } else {
-                                setColor(ContextCompat.getColor(context, RUnify.color.Unify_NN200))
-                            }
-                        }
-                    }
-                )
-            }
-        } else {
-            viewGroup.gone()
-        }
+        binding?.bannerIndicator?.continueAnimation()
     }
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
@@ -317,12 +202,7 @@ class BannerRevampViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner_revamp
-        private const val STATE_RUNNING = 0
-        private const val STATE_PAUSED = 1
         private const val INITIAL_PAGE_POSITION = 0
-        private const val MARGIN_ZERO = 0
-        private const val DOTS_SIZE = 6f
-        private const val DOTS_MARGIN = 2f
         private val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
         private val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
         private const val FLING_DURATION = 600

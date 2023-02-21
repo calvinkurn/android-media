@@ -8,8 +8,12 @@ import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by dhaba
@@ -31,12 +35,20 @@ class BannerIndicator : LinearLayout {
 
     }
 
+    private var listener: BannerIndicatorListener? = null
+
+    fun setBannerListener(listener: BannerIndicatorListener) {
+        this.listener = listener
+    }
+
     private fun addProgressBar(tag: Int) {
         val progressBarTheme = ContextThemeWrapper(context, com.tokopedia.home_component.R.style.IndicatorBanner)
         val progress = ProgressBar(progressBarTheme, null, Int.ZERO)
         progress.tag = tag
         this.addView(progress)
-        val layoutParams = progress.layoutParams
+        val layoutParams = progress.layoutParams as LayoutParams
+        layoutParams.marginStart = 2f.toDpInt()
+        layoutParams.marginEnd = 2f.toDpInt()
         layoutParams.width = 6f.toDpInt()
         layoutParams.height = 6f.toDpInt()
         progress.layoutParams = layoutParams
@@ -56,7 +68,7 @@ class BannerIndicator : LinearLayout {
             for (i in Int.ZERO until totalBanner) {
                 addProgressBar(i)
             }
-            animateIndicatorBanner(this.getChildAt(0) as ProgressBar, Int.ZERO)
+            animateIndicatorBanner(this.getChildAt(Int.ZERO) as ProgressBar, Int.ZERO)
         }
     }
 
@@ -70,9 +82,34 @@ class BannerIndicator : LinearLayout {
         slideAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             progressIndicator.progress = value
+            if (value >= 100) {
+                val nextTransition = if (position != totalBanner - Int.ZERO) {
+                    position + Int.ONE
+                } else {
+                    Int.ZERO
+                }
+                listener?.onChangePosition(nextTransition)
+                minimizeIndicatorBanner(progressIndicator)
+            }
         }
         set.play(slideAnimator)
         set.interpolator = LinearInterpolator()
         set.start()
+    }
+
+    private fun minimizeIndicatorBanner(progressIndicator: ProgressBar) {
+        progressIndicator.progress = Int.ZERO
+        val slideAnimator = ValueAnimator
+            .ofInt(46, 6)
+            .setDuration(600)
+        slideAnimator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            progressIndicator.layoutParams?.width = value.toPx()
+            progressIndicator.requestLayout()
+        }
+        val hideAnimatorSet = AnimatorSet()
+        hideAnimatorSet.play(slideAnimator)
+        hideAnimatorSet.interpolator = LinearInterpolator()
+        hideAnimatorSet.start()
     }
 }
