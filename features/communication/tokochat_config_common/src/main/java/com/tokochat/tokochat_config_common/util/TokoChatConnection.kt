@@ -1,6 +1,7 @@
 package com.tokochat.tokochat_config_common.util
 
 import android.content.Context
+import android.util.Log
 import com.gojek.conversations.ConversationsRepository
 import com.gojek.courier.AppEvent.AppLogout
 import com.gojek.courier.CourierConnection
@@ -36,6 +37,8 @@ object TokoChatConnection {
 
         injectTokoChatConfigComponent(context)
 
+        Log.d("TOKOCHAT-INIT", "after inject")
+
         /**
          * If from login, fetch the AB test first
          * We need it in here because the callback from fetch won't be called in login page
@@ -52,12 +55,19 @@ object TokoChatConnection {
         // If user does not login or
         // If rollence turned off or seller app or
         // has been initialized, return
+        Log.d("TOKOCHAT-INIT", "Initialize before IF")
+        Log.d("TOKOCHAT-INIT", "is login : ${UserSession(context).isLoggedIn}")
+        Log.d("TOKOCHAT-INIT", "is active : ${isTokoChatActive()}")
+        Log.d("TOKOCHAT-INIT", "has init : $hasBeenInitialized")
         if (!UserSession(context).isLoggedIn || !isTokoChatActive() || hasBeenInitialized) return
 
+        Log.d("TOKOCHAT-INIT", "Initialize after IF")
         // Initialize Courier Connection
         courierConnection = tokoChatConfigComponent?.getCourierConnection()
 
+        Log.d("TOKOCHAT-INIT", "courier connection: $courierConnection")
         if (courierConnection != null) {
+            Log.d("TOKOCHAT-INIT", "Init convo repo")
             tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
         }
 
@@ -78,6 +88,7 @@ object TokoChatConnection {
             override fun onComplete(remoteConfig: RemoteConfig?) {
                 GlobalScope.launch {
                     withContext(Dispatchers.Main) {
+                        Log.d("TOKOCHAT-INIT", "FETCH AB")
                         initializeCourierConnection(context)
                     }
                 }
