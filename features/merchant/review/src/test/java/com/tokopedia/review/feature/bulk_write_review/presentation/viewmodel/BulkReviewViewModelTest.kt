@@ -2318,4 +2318,55 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                 )
             }
         }
+
+    @Test
+    fun `onCancelBadRatingCategoryBottomSheet should enqueue expected toaster when no bad rating category selected`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingBulkReviewBadRatingCategoryBottomSheetUiState {
+                runCollectingBadRatingCategoryBottomSheetToasterQueue { toasterQueue ->
+                    val reviewItem = getFirstReviewItem()
+                    val expectedToaster = CreateReviewToasterUiModel(
+                        message = ResourceProvider.getMessageBadRatingReasonReasonMustBeSelected(),
+                        actionText = ResourceProvider.getCtaOke(),
+                        duration = Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_ERROR,
+                        payload = Unit
+                    )
+
+                    doSuccessGetInitialData()
+                    // change rating to bad rating to show the bad rating category bottom sheet
+                    viewModel.onRatingChanged(reviewItem.inboxID, 2)
+
+                    // dismiss the text area bottom sheet with empty text (no text typed on the bottom sheet)
+                    viewModel.onCancelBadRatingCategoryBottomSheet()
+                    assertEquals(expectedToaster, toasterQueue.last())
+                }
+            }
+        }
+
+    @Test
+    fun `onCancelBadRatingCategoryBottomSheet should not enqueue toaster when any bad rating category selected`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingBulkReviewBadRatingCategoryBottomSheetUiState {
+                runCollectingBadRatingCategoryBottomSheetToasterQueue { toasterQueue ->
+                    val reviewItem = getFirstReviewItem()
+                    val badRatingCategory = getBadRatingCategory()
+
+                    doSuccessGetInitialData()
+                    // change rating to bad rating to show the bad rating category bottom sheet
+                    viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                    // select first bad rating category
+                    viewModel.onBadRatingCategorySelectionChanged(
+                        position = Int.ZERO,
+                        badRatingCategoryID = badRatingCategory.id,
+                        reason = badRatingCategory.description,
+                        selected = true
+                    )
+
+                    // dismiss the text area bottom sheet with empty text (no text typed on the bottom sheet)
+                    viewModel.onCancelBadRatingCategoryBottomSheet()
+                    assertTrue(toasterQueue.isEmpty())
+                }
+            }
+        }
 }

@@ -50,7 +50,6 @@ import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
-import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
@@ -330,7 +329,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
-        registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
     }
@@ -410,6 +408,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
     private void initDevMonitoringTools(){
         DevMonitoring devMonitoring = new DevMonitoring(SellerMainApplication.this);
+        devMonitoring.initANRWatcher();
         devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
     }
 

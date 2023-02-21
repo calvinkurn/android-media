@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
@@ -24,18 +23,19 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
+import com.tokopedia.product.addedit.databinding.FragmentAddEditProductDraftBinding
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.presentation.adapter.ProductDraftListAdapter
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener
 import com.tokopedia.product.addedit.draft.presentation.viewmodel.AddEditProductDraftViewModel
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.tracking.ProductDraftTracking
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListener {
@@ -45,27 +45,26 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         const val SCREEN_NAME_ADD_PRODUCT = "/add-product"
         const val REQUEST_CODE_ADD_PRODUCT = 9003
         const val FIRST_INDEX = 0
+        const val NO_POSITION = -1
 
         @JvmStatic
         fun newInstance() = AddEditProductDraftFragment()
     }
 
-    private var loaderUnify: LoaderUnify? = null
-    private var frameLayout: ViewGroup? = null
-    private var emptyLayout: ViewGroup? = null
-    private var geDraft: GlobalError? = null
-    private var rvDraft: RecyclerView? = null
-
     @Inject
     lateinit var viewModel: AddEditProductDraftViewModel
 
-    private var tvEmptyTitle: TextView? = null
-    private var tvEmptyContent: TextView? = null
-    private var btnAddProduct: Button? = null
+    private var binding by autoClearedNullable<FragmentAddEditProductDraftBinding>()
     private var userSession: UserSessionInterface? = null
     private var draftListAdapter: ProductDraftListAdapter? = null
     private var mMenu: Menu? = null
-    private var deletePosition = -1
+    private var deletePosition = NO_POSITION
+
+    // view references from item_empty_list layout
+    // need base_list lib to enable view binding to remove these references
+    private var tvEmptyTitle: TextView? = null
+    private var tvEmptyContent: TextView? = null
+    private var btnAddProduct: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,12 +75,13 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setup(view)
+        binding?.run { setup(this) }
         observer()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_draft, container, false)
+        binding = FragmentAddEditProductDraftBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -91,7 +91,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_ADD_PRODUCT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     ProductDraftTracking.sendScreenProductDraft(screenName, SCREEN_NAME_ADD_PRODUCT)
@@ -102,7 +102,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.item_label_add_product -> {
                 val intent = AddEditProductPreviewActivity.createInstance(context)
                 startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
@@ -112,12 +112,12 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
             }
             R.id.item_delete_all_draft -> {
                 val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.AppCompatAlertDialogStyle)
-                        .setMessage(getString(R.string.label_draft_menu_delete_all_draft_dialog_message))
-                        .setNegativeButton(getString(R.string.label_cancel_button_on_dialog)) { _, _ -> }
-                        .setPositiveButton(getString(R.string.label_delete_button_on_dialog)) { _, _ ->
-                            viewModel.deleteAllProductDraft()
-                            displayLoader()
-                        }
+                    .setMessage(getString(R.string.label_draft_menu_delete_all_draft_dialog_message))
+                    .setNegativeButton(getString(R.string.label_cancel_button_on_dialog)) { _, _ -> }
+                    .setPositiveButton(getString(R.string.label_delete_button_on_dialog)) { _, _ ->
+                        viewModel.deleteAllProductDraft()
+                        displayLoader()
+                    }
                 val dialog = alertDialogBuilder.create()
                 dialog.show()
             }
@@ -144,14 +144,14 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
             getString(R.string.label_draft_delete_draft_dialog_has_product_name_message, productName)
         }
         val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.AppCompatAlertDialogStyle)
-                .setMessage(MethodChecker.fromHtml(message))
-                .setNegativeButton(getString(R.string.label_cancel)) { _, _ -> }
-                .setPositiveButton(getString(R.string.label_delete_button_on_dialog)) { _, _ ->
-                    viewModel.deleteProductDraft(draftId)
-                    deletePosition = position
-                    ProductDraftTracking.sendProductDraftClick(ProductDraftTracking.DELETE_DRAFT)
-                    displayLoader()
-                }
+            .setMessage(MethodChecker.fromHtml(message))
+            .setNegativeButton(getString(R.string.label_cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.label_delete_button_on_dialog)) { _, _ ->
+                viewModel.deleteProductDraft(draftId)
+                deletePosition = position
+                ProductDraftTracking.sendProductDraftClick(ProductDraftTracking.DELETE_DRAFT)
+                displayLoader()
+            }
         val dialog = alertDialogBuilder.create()
         dialog.show()
     }
@@ -161,7 +161,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         activity?.findViewById<HeaderUnify>(R.id.toolbar_draft)?.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 overflowIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-            }else{
+            } else {
                 overflowIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
 
@@ -171,17 +171,13 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         }
     }
 
-    private fun setup(view: View) {
+    private fun setup(binding: FragmentAddEditProductDraftBinding) {
         setFragmentToUnifyBgColor()
 
-        tvEmptyTitle = view.findViewById(com.tokopedia.baselist.R.id.text_view_empty_title_text)
-        tvEmptyContent = view.findViewById(com.tokopedia.baselist.R.id.text_view_empty_content_text)
-        btnAddProduct = view.findViewById(com.tokopedia.baselist.R.id.button_add_promo)
-        loaderUnify = view.findViewById(R.id.loaderUnify)
-        frameLayout = view.findViewById(R.id.frameLayout)
-        emptyLayout = view.findViewById(R.id.emptyLayout)
-        geDraft = view.findViewById(R.id.geDraft)
-        rvDraft = view.findViewById(R.id.rvDraft)
+        val emptyLayout = binding.emptyLayout
+        tvEmptyTitle = emptyLayout.findViewById(com.tokopedia.baselist.R.id.text_view_empty_title_text)
+        tvEmptyContent = emptyLayout.findViewById(com.tokopedia.baselist.R.id.text_view_empty_content_text)
+        btnAddProduct = emptyLayout.findViewById(com.tokopedia.baselist.R.id.button_add_promo)
 
         tvEmptyTitle?.text = getString(R.string.label_draft_product_empty)
         tvEmptyContent?.hide()
@@ -198,23 +194,23 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
         }
 
         draftListAdapter = ProductDraftListAdapter(this)
-        rvDraft?.adapter = draftListAdapter
-        rvDraft?.layoutManager = LinearLayoutManager(context)
+        binding.rvDraft.adapter = draftListAdapter
+        binding.rvDraft.layoutManager = LinearLayoutManager(context)
         displayLoader()
     }
 
     private fun observer() {
         observe(viewModel.drafts) {
             dismissLoader()
-            when(it) {
+            when (it) {
                 is Success -> {
-                    geDraft?.hide()
+                    binding?.geDraft?.hide()
                     draftListAdapter?.setDrafts(it.data)
                     displayEmptyListLayout()
                 }
                 is Fail -> {
-                    rvDraft?.hide()
-                    geDraft?.apply {
+                    binding?.rvDraft?.hide()
+                    binding?.geDraft?.apply {
                         setType(GlobalError.SERVER_ERROR)
                         setActionClickListener {
                             viewModel.getAllProductDraft()
@@ -228,7 +224,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
 
         observe(viewModel.deleteDraft) {
             dismissLoader()
-            when(it) {
+            when (it) {
                 is Success -> {
                     draftListAdapter?.deleteDraft(deletePosition)
                     displayEmptyListLayout()
@@ -241,8 +237,8 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
 
         observe(viewModel.deleteAllDraft) {
             dismissLoader()
-            frameLayout?.let { toasterParent ->
-                when(it) {
+            binding?.frameLayout?.let { toasterParent ->
+                when (it) {
                     is Success -> {
                         Toaster.build(
                             toasterParent,
@@ -268,25 +264,25 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     }
 
     private fun displayLoader() {
-        loaderUnify?.show()
-        rvDraft?.hide()
-        geDraft?.hide()
+        binding?.loaderUnify?.show()
+        binding?.rvDraft?.hide()
+        binding?.geDraft?.hide()
     }
 
     private fun dismissLoader() {
-        loaderUnify?.hide()
-        rvDraft?.show()
+        binding?.loaderUnify?.hide()
+        binding?.rvDraft?.show()
     }
 
     private fun displayEmptyListLayout() {
         draftListAdapter?.isDraftEmpty()?.let { isEmpty ->
             if (isEmpty) {
-                emptyLayout?.show()
-                rvDraft?.hide()
+                binding?.emptyLayout?.show()
+                binding?.rvDraft?.hide()
                 mMenu?.findItem(R.id.item_delete_all_draft)?.isVisible = false
             } else {
-                rvDraft?.show()
-                emptyLayout?.hide()
+                binding?.rvDraft?.show()
+                binding?.emptyLayout?.hide()
                 mMenu?.findItem(R.id.item_delete_all_draft)?.isVisible = true
             }
         }
