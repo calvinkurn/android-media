@@ -95,7 +95,6 @@
 /features/merchant/favorite/                            @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
-/features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/merchant/product_service_widget/              @tokopedia/android-minionken-dev
 /features/merchant/product_manage_item/                 @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
