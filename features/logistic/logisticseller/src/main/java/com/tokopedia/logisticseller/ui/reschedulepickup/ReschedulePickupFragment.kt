@@ -29,19 +29,19 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst
-import com.tokopedia.logisticseller.databinding.FragmentReschedulePickupBinding
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleDetailModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.databinding.FragmentReschedulePickupBinding
 import com.tokopedia.logisticseller.di.DaggerReschedulePickupComponent
 import com.tokopedia.logisticseller.di.ReschedulePickupComponent
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleDayBottomSheet
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleReasonBottomSheet
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleTimeBottomSheet
-import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupResultDialog
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupLoadingDialog
+import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.ReschedulePickupResultDialog
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,8 +50,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet.ChooseTimeListener,
-    RescheduleDayBottomSheet.ChooseDayListener, RescheduleReasonBottomSheet.ChooseReasonListener {
+class ReschedulePickupFragment :
+    BaseDaggerFragment(),
+    RescheduleTimeBottomSheet.ChooseTimeListener,
+    RescheduleDayBottomSheet.ChooseDayListener,
+    RescheduleReasonBottomSheet.ChooseReasonListener {
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -111,7 +114,11 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
                     bindDataWithView(it.data)
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showEmptyState(activity, binding?.rootView, this::getInitialData)
+                    NetworkErrorHelper.showEmptyState(
+                        activity,
+                        binding?.rootView,
+                        this::getInitialData
+                    )
                 }
             }
         })
@@ -120,11 +127,21 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             loadingDialog?.dismiss()
             when (it) {
                 is Success -> {
-                    val message = if (it.data.success) getString(R.string.template_success_reschedule_pickup, it.data.etaPickup) else it.data.message
+                    val message = if (it.data.success) {
+                        getString(
+                            R.string.template_success_reschedule_pickup,
+                            it.data.etaPickup
+                        )
+                    } else {
+                        it.data.message
+                    }
                     showResultDialog(message, it.data.success)
                 }
                 is Fail -> {
-                    showErrorToaster(ErrorHandler.getErrorMessage(context, it.throwable), this::saveRescheduleDetail)
+                    showErrorToaster(
+                        ErrorHandler.getErrorMessage(context, it.throwable),
+                        this::saveRescheduleDetail
+                    )
                 }
             }
         })
@@ -148,7 +165,8 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         binding?.let {
             it.invoiceOrderDetail.text = data.invoice
             it.courierOrderDetail.text = data.courierName
-            val rescheduleGuide = context?.let { ctx -> HtmlLinkHelper(ctx, data.ticker).spannedString }
+            val rescheduleGuide =
+                context?.let { ctx -> HtmlLinkHelper(ctx, data.ticker).spannedString }
             rescheduleGuide?.let { guide -> it.tipsReschedulePickup.description = guide }
 
             showSubtitle(requireContext(), it.subtitleReschedulePickup, data.appLink)
@@ -194,7 +212,11 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         loadingDialog?.show()
         val chosenReason = binding?.etReason?.editText?.text.toString()
         val otherReason = binding?.etReasonDetail?.editText?.text.toString()
-        val reason = if (chosenReason == OTHER_REASON_RESCHEDULE) { otherReason } else chosenReason
+        val reason = if (chosenReason == OTHER_REASON_RESCHEDULE) {
+            otherReason
+        } else {
+            chosenReason
+        }
         val dayChosen = day?.day
         val timeChosen = time
         if (dayChosen != null && timeChosen != null) {
@@ -203,21 +225,30 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     }
 
     private fun openDaySelectionBottomSheet(daysOption: List<RescheduleDayOptionModel>) {
-        RescheduleDayBottomSheet(daysOption, this).show(parentFragmentManager)
+        RescheduleDayBottomSheet().apply {
+            setDayOptions(daysOption)
+            setListener(this@ReschedulePickupFragment)
+        }.show(parentFragmentManager)
     }
 
     private fun openTimeSelectionBottomSheet(timeOption: List<RescheduleTimeOptionModel>) {
-        RescheduleTimeBottomSheet(timeOption, this).show(parentFragmentManager)
+        RescheduleTimeBottomSheet().apply {
+            setTimeOptions(timeOption)
+            setListener(this@ReschedulePickupFragment)
+        }.show(parentFragmentManager)
     }
 
     private fun openReasonSelectionBottomSheet(reasonOption: List<RescheduleReasonOptionModel>) {
-        RescheduleReasonBottomSheet(reasonOption, this).show(parentFragmentManager)
+        RescheduleReasonBottomSheet().apply {
+            setOptions(reasonOption)
+            setListener(this@ReschedulePickupFragment)
+        }.show(parentFragmentManager)
     }
 
     private fun showSubtitle(context: Context, textView: TextView?, appLink: String) {
         val onSubtitleClicked: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                RouteManager.route(context, ApplinkConst.WEBVIEW.plus("?url=${appLink}"))
+                RouteManager.route(context, ApplinkConst.WEBVIEW.plus("?url=$appLink"))
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -265,7 +296,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         }
     }
 
-    private fun setResultDialogListener(isSuccess: Boolean) : ReschedulePickupResultDialog.ReschedulePickupResultDialogListener {
+    private fun setResultDialogListener(isSuccess: Boolean): ReschedulePickupResultDialog.ReschedulePickupResultDialogListener {
         return object : ReschedulePickupResultDialog.ReschedulePickupResultDialogListener {
             override fun onClickDialog() {
                 super.onClickDialog()
@@ -282,7 +313,6 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     private fun setWrapperWatcherOtherReason(wrapper: TextInputLayout): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -303,7 +333,6 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             }
 
             override fun afterTextChanged(text: Editable) {
-
             }
         }
     }
@@ -328,9 +357,12 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         val otherReason = binding?.etReasonDetail?.editText?.text.toString()
         val isReasonValid = if (chosenReason == OTHER_REASON_RESCHEDULE) {
             otherReason.length in OTHER_REASON_MIN_CHAR..OTHER_REASON_MAX_CHAR
-        } else chosenReason.isNotEmpty()
+        } else {
+            chosenReason.isNotEmpty()
+        }
 
-        binding?.btnReschedulePickup?.isEnabled = (day != null) && (time != null) && (chosenReason.isNotEmpty()) && (isReasonValid)
+        binding?.btnReschedulePickup?.isEnabled =
+            (day != null) && (time != null) && (chosenReason.isNotEmpty()) && (isReasonValid)
     }
 
     private fun showErrorToaster(
@@ -409,7 +441,10 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         fun newInstance(bundle: Bundle): ReschedulePickupFragment {
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {
-                    putString(LogisticSellerConst.PARAM_ORDER_ID, bundle.getString(LogisticSellerConst.PARAM_ORDER_ID))
+                    putString(
+                        LogisticSellerConst.PARAM_ORDER_ID,
+                        bundle.getString(LogisticSellerConst.PARAM_ORDER_ID)
+                    )
                 }
             }
         }

@@ -1,17 +1,16 @@
 package com.tokopedia.tokopedianow.wishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.tokopedianow.common.domain.model.AddToWishListResponse
-import com.tokopedia.tokopedianow.common.domain.model.RemoveFromWishListResponse
-import com.tokopedia.tokopedianow.common.domain.usecase.AddToWishlistUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.RemoveFromWishlistUseCase
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowWishlistViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
@@ -22,19 +21,19 @@ abstract class TokoNowWishlistViewModelTestFixture {
     val rule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var addToWishlistUseCase: AddToWishlistUseCase
+    lateinit var addToWishlistUseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
-    lateinit var removeFromWishlistUseCase: RemoveFromWishlistUseCase
+    lateinit var removeFromWishlistUseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     protected lateinit var viewModel : TokoNowWishlistViewModel
 
-    protected fun onAddToWishlist_thenReturn(response: AddToWishListResponse) {
+    protected fun onAddToWishlist_thenReturn(response: Result<AddToWishlistV2Response.Data.WishlistAddV2>) {
         coEvery {
-            addToWishlistUseCase.execute(any(), any())
+            addToWishlistUseCase.executeOnBackground()
         } returns response
     }
 
@@ -44,9 +43,9 @@ abstract class TokoNowWishlistViewModelTestFixture {
         } throws error
     }
 
-    protected fun onRemoveFromWishlist_thenReturn(response: RemoveFromWishListResponse) {
+    protected fun onRemoveFromWishlist_thenReturn(response: Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>) {
         coEvery {
-            removeFromWishlistUseCase.execute(any(), any())
+            removeFromWishlistUseCase.executeOnBackground()
         } returns response
     }
 

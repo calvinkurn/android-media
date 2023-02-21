@@ -94,6 +94,9 @@ enum class ComponentNames(val componentName: String) {
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
 
+    // Promo Featured Products - CLP
+    CLPFeaturedProducts("featured-product"),
+
     //Topads Headline View
     TopadsHeadlineView("topads"),
 

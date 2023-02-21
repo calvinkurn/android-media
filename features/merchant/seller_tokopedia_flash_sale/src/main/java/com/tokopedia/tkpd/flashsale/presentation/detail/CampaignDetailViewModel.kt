@@ -12,7 +12,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.tkpd.flashsale.presentation.detail.helper.ProductCriteriaHelper
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.mapper.FlashSaleMonitorSubmitProductSseMapper
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
@@ -28,6 +27,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.Ong
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.helper.ProductCriteriaHelper
 import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
@@ -38,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -102,7 +101,6 @@ class CampaignDetailViewModel @Inject constructor(
     private var isTriggeredFromDelete = false
 
     sealed class UiEffect {
-        object ShowGlobalError : UiEffect()
         object ShowIneligibleAccessWarning : UiEffect()
         object OnSseOpen : UiEffect()
         data class OnProductSseSubmissionProgress(
@@ -148,17 +146,16 @@ class CampaignDetailViewModel @Inject constructor(
                 val sellerEligibility = sellerEligibilityDeferred.await()
                 val isEligibleUsingFeature = sellerEligibility.isEligibleUsingFeature()
 
-                    val result = getFlashSaleDetailForSellerUseCase.execute(
-                        campaignId = campaignId
-                    )
-                    campaignStatus = result.status
-                    tabName = result.tabName
-                    _campaign.postValue(Success(result))
+                val result = getFlashSaleDetailForSellerUseCase.execute(
+                    campaignId = campaignId
+                )
+                campaignStatus = result.status
+                tabName = result.tabName
+                _campaign.postValue(Success(result))
 
                 if (!isEligibleUsingFeature) {
                     _uiEffect.emit(UiEffect.ShowIneligibleAccessWarning)
                 }
-
             },
             onError = { error ->
                 _campaign.postValue(Fail(error))
@@ -205,8 +202,13 @@ class CampaignDetailViewModel @Inject constructor(
                     )
                 )
                 _submittedProductVariant.postValue(
-                    ProductCheckingResultMapper.map(result.productList, displayProductSold,
-                        fallbackProductImage, getTabName()))
+                    ProductCheckingResultMapper.map(
+                        result.productList,
+                        displayProductSold,
+                        fallbackProductImage,
+                        getTabName()
+                    )
+                )
             },
             onError = { error ->
                 _error.postValue(error)
@@ -271,15 +273,15 @@ class CampaignDetailViewModel @Inject constructor(
         val timelineData: MutableList<TimelineStepModel> = mutableListOf()
         val submissionDatePeriod =
             "${flashSale.submissionStartDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
-                flashSale.submissionEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            flashSale.submissionEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
             }"
         val selectionProcessDatePeriod =
             "${flashSale.reviewStartDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
-                flashSale.reviewEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            flashSale.reviewEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
             }"
         val activePromotionDatePeriod =
             "${flashSale.startDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
-                flashSale.endDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            flashSale.endDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
             }"
         val registerPeriodTimelineData = TimelineStepModel(
             REGISTER_PERIOD_TITLE,
@@ -586,29 +588,32 @@ class CampaignDetailViewModel @Inject constructor(
     }
 
     fun getFlashSaleSubmissionProgress(flashSaleId: String) {
-        launchCatchError(dispatchers.io,
-        block = {
-            val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse(
-                flashSaleId
-            )
-            if(flashSaleSubmissionProgress.isOpenSse) {
-                _uiEffect.emit(UiEffect.OnSseOpen)
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse(
+                    flashSaleId
+                )
+                if (flashSaleSubmissionProgress.isOpenSse) {
+                    _uiEffect.emit(UiEffect.OnSseOpen)
+                }
             }
-        }){ }
+        ) { }
     }
 
     private suspend fun getFlashSaleProductSubmissionProgressResponse(campaignId: String): FlashSaleProductSubmissionProgress {
-        return getFlashSaleProductSubmissionProgressUseCase.execute(GetFlashSaleProductSubmissionProgressUseCase.Param(
-            campaignId,
-            checkProgress = true
-        ))
+        return getFlashSaleProductSubmissionProgressUseCase.execute(
+            GetFlashSaleProductSubmissionProgressUseCase.Param(
+                campaignId,
+                checkProgress = true
+            )
+        )
     }
 
     fun listenToOpenedSse(campaignId: String) {
         launchCatchError(dispatchers.io, {
             monitorProductSubmitSse(campaignId)
         }) {
-
         }
     }
 
@@ -625,13 +630,12 @@ class CampaignDetailViewModel @Inject constructor(
                             _uiEffect.emit(
                                 UiEffect.OnProductSseSubmissionProgress(sseResult)
                             )
-                            if(sseResult.status != FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS){
+                            if (sseResult.status != FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS) {
                                 closeSse()
                             }
                         }
                     }
                     is SSEStatus.Close -> {
-
                     }
                 }
             }
@@ -656,7 +660,6 @@ class CampaignDetailViewModel @Inject constructor(
                     )
                 )
             }
-
         }) {}
     }
 
@@ -664,5 +667,4 @@ class CampaignDetailViewModel @Inject constructor(
         val param = DoFlashSaleProductSubmitAcknowledgeUseCase.Param(campaignId.toLongOrZero())
         return doFlashSaleProductSubmitAcknowledgeUseCase.execute(param)
     }
-
 }

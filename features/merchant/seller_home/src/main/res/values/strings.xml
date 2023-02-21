@@ -227,4 +227,8 @@
     <string name="text_badge_new">Baru</string>
     <string name="sah_new_other_tokomember">TokoMember</string>
 
+    <!-- Wear Os -->
+    <string name="wearos_install_popup_title">Install Wear App</string>
+    <string name="wearos_install_popup_install">Install</string>
+    <string name="wearos_install_popup_later">Not Now</string>
 </resources>

@@ -9,7 +9,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
-import com.tokopedia.chatbot.view.fragment.ChatBotCsatFragment
 import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition

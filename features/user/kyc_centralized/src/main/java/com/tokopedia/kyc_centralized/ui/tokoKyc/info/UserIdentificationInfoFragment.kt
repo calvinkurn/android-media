@@ -246,7 +246,6 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         }
         viewBinding?.button?.buttonVariant = GHOST
         viewBinding?.button?.visibility = View.VISIBLE
-        viewBinding?.button?.setOnClickListener(onGoToAccountSettingButton(KycStatus.PENDING))
         analytics?.eventViewPendingPage()
     }
 
