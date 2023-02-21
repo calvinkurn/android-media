@@ -414,6 +414,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL = "41211"
         const val TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION = "41201"
         const val TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK = "41202"
+        const val TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION = "41203"
     }
 
     object Key {

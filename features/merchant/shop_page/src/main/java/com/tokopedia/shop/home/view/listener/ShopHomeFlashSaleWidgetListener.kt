@@ -22,7 +22,8 @@ interface ShopHomeFlashSaleWidgetListener {
     fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int
+        position: Int,
+        parentPosition: Int
     )
 
     fun onProductAtcNonVariantQuantityEditorChanged(

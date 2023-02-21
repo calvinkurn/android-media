@@ -49,7 +49,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                 it,
                 object : ViewHintListener {
                     override fun onViewHint() {
-                        listener.onFlashSaleProductImpression(it, fsUiModel, ShopUtil.getActualPositionFromIndex(adapterPosition))
+                        listener.onFlashSaleProductImpression(it, fsUiModel, ShopUtil.getActualPositionFromIndex(adapterPosition), parentPosition)
                     }
                 }
             )

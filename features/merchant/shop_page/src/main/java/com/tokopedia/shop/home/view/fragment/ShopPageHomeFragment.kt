@@ -3403,19 +3403,24 @@ open class ShopPageHomeFragment :
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.impressionCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage,
-                HOME_TAB
-            )
+            if(!isOwner){
+                shopPageHomeTracking.onImpressionCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                        shopHomeNewProductLaunchCampaignUiModel.isFestivity,
+                        shopHomeProductViewModel?.id.orEmpty(),
+                        shopHomeProductViewModel?.name.orEmpty(),
+                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                    )
+                )
+            }
         }
     }
 
@@ -3537,8 +3542,30 @@ open class ShopPageHomeFragment :
     override fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int
-    ) {}
+        position: Int,
+        parentPosition: Int
+    ) {
+        flashSaleUiModel?.data?.firstOrNull()?.let {
+            if(!isOwner){
+                shopPageHomeTracking.onImpressionCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        position,
+                        flashSaleUiModel.widgetMasterId,
+                        flashSaleUiModel.isFestivity,
+                        shopHomeProductUiModel.id,
+                        shopHomeProductUiModel.name,
+                        shopHomeProductUiModel.displayedPrice
+                    )
+                )
+            }
+        }
+    }
 
     override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
         context?.run {

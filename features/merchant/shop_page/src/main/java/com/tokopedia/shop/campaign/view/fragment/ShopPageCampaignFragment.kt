@@ -386,7 +386,8 @@ class ShopPageCampaignFragment :
     override fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int
+        position: Int,
+        parentPosition: Int
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             shopHomeProductUiModel.id.orEmpty(),

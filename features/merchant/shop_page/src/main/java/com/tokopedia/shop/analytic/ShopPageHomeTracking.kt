@@ -180,6 +180,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
@@ -1657,48 +1658,49 @@ class ShopPageHomeTracking(
         )
     }
 
-    fun impressionCampaignNplProduct(
-        isOwner: Boolean,
-        statusCampaign: String,
-        productName: String,
-        productId: String,
-        productPrice: String,
-        shopName: String,
-        verticalPosition: Int,
-        horizontalPosition: Int,
-        isLogin: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage,
-        tabSource: String
+    fun onImpressionCampaignWidgetProduct(
+        trackerModel: ShopHomeCampaignWidgetProductTrackerModel
     ) {
-        val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, tabSource, getCampaignNplTrackerCampaignType(statusCampaign))
-        val eventMap = createMap(
-            PRODUCT_VIEW,
-            getShopPageCategory(isOwner),
-            eventAction,
-            "",
-            customDimensionShopPage
-        )
-        val listEventValue = createCampaignNplProductListValue(
-            verticalPosition,
-            statusCampaign,
-            customDimensionShopPage.shopId.orEmpty(),
-            isLogin
-        )
-        eventMap[ECOMMERCE] = mutableMapOf(
-            CURRENCY_CODE to IDR,
-            IMPRESSIONS to mutableListOf(
-                createCampaignNplProductItemMap(
-                    productName,
-                    productId,
-                    productPrice,
-                    shopName,
-                    listEventValue,
-                    horizontalPosition,
-                    customDimensionShopPage
-                )
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
             )
-        )
-        sendDataLayerEvent(eventMap)
+            var itemList = joinDash("$SHOPPAGE $widgetPosition", campaignId, campaignName, statusCampaign, widgetMasterId)
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+                itemList = joinDash(itemList, FESTIVITY)
+            }
+            val eventBundle = Bundle().apply {
+                putString(EVENT, VIEW_ITEM_LIST)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putString(ITEM_LIST, itemList)
+                putParcelableArrayList(
+                    PROMOTIONS,
+                    arrayListOf(
+                        createCampaignProductItems(
+                            position,
+                            productId,
+                            productName,
+                            productPrice,
+                            itemList
+                        )
+                    )
+                )
+                putString(PRODUCT_ID, productId)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+        }
     }
 
     private fun createCampaignNplProductListValue(verticalPosition: Int, statusCampaign: String, shopId: String, isLogin: Boolean): String {
