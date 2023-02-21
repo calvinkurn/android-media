@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_0_5F
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_16
@@ -28,6 +29,7 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraF
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.BaseUserIdentificationStepperFragment
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,8 +49,18 @@ class UserIdentificationFormFaceFragment :
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+    private var analytics: UserIdentificationCommonAnalytics? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        projectId = activity?.intent?.getIntExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, -1) ?: -1
+
+        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycType)
+
         analytics?.eventViewSelfiePage(isKycSelfie)
         initObserver()
     }

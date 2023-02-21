@@ -1,10 +1,13 @@
 package com.tokopedia.liveness.analytics
 
+import com.tokopedia.liveness.utils.LivenessSharedPreference
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
-class LivenessDetectionAnalytics @Inject constructor() {
+class LivenessDetectionAnalytics @Inject constructor(
+    private val livenessSharedPreference: LivenessSharedPreference
+) {
 
     private object Event {
         const val CLICK_ACCOUNT = "clickAccount"
@@ -61,7 +64,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelTwo} $projectID - ${getKycType(projectID)}"
+                "${Label.labelTwo} $projectID - ${getKycType()}"
         ), "2629")
     }
 
@@ -79,7 +82,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelThree} $projectID - ${getKycType(projectID)}"
+                "${Label.labelThree} $projectID - ${getKycType()}"
         ), "2629")
     }
 
@@ -97,7 +100,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelFour} $projectID - ${getKycType(projectID)}"
+                "${Label.labelFour} $projectID - ${getKycType()}"
         ), "2629")
     }
 
@@ -124,7 +127,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelFive} $projectID - ${getKycType(projectID)}"
+                "${Label.labelFive} $projectID - ${getKycType()}"
         ), "2629")
     }
 
@@ -151,7 +154,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelSix} $projectID - ${getKycType(projectID)}"
+                "${Label.labelSix} $projectID - ${getKycType()}"
         ), "2629")
     }
 
@@ -178,7 +181,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelSeven} $projectID - ${getKycType(projectID)}"
+                "${Label.labelSeven} $projectID - ${getKycType()}"
         ), "2629")
     }
 
@@ -187,7 +190,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_COBA_LAGI,
-                "${Label.labelTimeout} - $projectID - ${getKycType(projectID)}"
+                "${Label.labelTimeout} - $projectID - ${getKycType()}"
         ), "2656")
     }
 
@@ -196,7 +199,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
             Event.CLICK_ACCOUNT,
             Category.KYC_LIVENESS_FAILED_PAGE,
             Action.CLICK_ON_BUTTON_COBA_LAGI,
-            "${Label.labelConnectionTimeout} - $projectID - ${getKycType(projectID)}"
+            "${Label.labelConnectionTimeout} - $projectID - ${getKycType()}"
         ), "2656")
     }
 
@@ -205,7 +208,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelTimeout} - $projectID - ${getKycType(projectID)}"
+                "${Label.labelTimeout} - $projectID - ${getKycType()}"
         ), "2657")
     }
 
@@ -214,30 +217,20 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelConnectionTimeout} - $projectID - ${getKycType(projectID)}"
+                "${Label.labelConnectionTimeout} - $projectID - ${getKycType()}"
         ), "2657")
     }
 
     private fun getLabel(projectID: String, isSuccess: Boolean, message: String = ""): String {
         return if (isSuccess) {
-            "success - $projectID - ${getKycType(projectID)}"
+            "success - $projectID - ${getKycType()}"
         } else {
-            "fail - $message - $projectID - ${getKycType(projectID)}"
+            "fail - $message - $projectID - ${getKycType()}"
         }
     }
 
-    private fun getKycType(projectID: String): String {
-        val projectIdAlaCarte = listOf(
-            PROJECT_ID_HOME_CREDIT,
-            PROJECT_ID_CO_BRAND_CC,
-            PROJECT_ID_GO_CICIL,
-            OFFICIAL_STORE_PROJECT_ID
-        )
-        return if (projectIdAlaCarte.contains(projectID)) {
-            TYPE_ALA_CARTE
-        } else {
-            TYPE_CKYC
-        }
+    private fun getKycType(): String {
+        return livenessSharedPreference.getStringCache(KEY_SHARED_PREFERENCE_KYC_TYPE)
     }
 
     private fun track(data: MutableMap<String, Any>, trackerId: String) {
@@ -248,12 +241,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
     }
 
     companion object {
-        private const val PROJECT_ID_HOME_CREDIT = "16"
-        private const val PROJECT_ID_CO_BRAND_CC = "18"
-        private const val PROJECT_ID_GO_CICIL = "21"
-        private const val OFFICIAL_STORE_PROJECT_ID = "23"
-        private const val TYPE_ALA_CARTE = "ala carte"
-        private const val TYPE_CKYC = "ckyc"
+        private const val KEY_SHARED_PREFERENCE_KYC_TYPE = "kyc_type"
 
         const val BUSINESS_UNIT = "businessUnit"
         const val USER_PLATFORM = "user platform"

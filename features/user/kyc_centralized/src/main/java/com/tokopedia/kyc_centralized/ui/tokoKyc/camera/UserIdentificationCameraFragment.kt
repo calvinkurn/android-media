@@ -22,7 +22,9 @@ import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
 import com.tokopedia.kyc_centralized.databinding.FragmentCameraFocusViewBinding
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -31,11 +33,16 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
 /**
  * @author by alvinatin on 12/11/18.
  */
 class UserIdentificationCameraFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+
     private var viewBinding by autoClearedNullable<FragmentCameraFocusViewBinding>()
     private var imagePath: String = ""
     private var mCaptureNativeSize: Size? = null
@@ -46,7 +53,7 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String = ""
     override fun initInjector() {
-
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +61,11 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
         if (arguments != null) {
             viewMode = arguments?.getInt(ARG_VIEW_MODE, 1) ?: 1
         }
+        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
         analytics = UserIdentificationCommonAnalytics
             .createInstance(
-                activity?.intent?.getIntExtra(PARAM_PROJECT_ID, 1) ?: 1
+                activity?.intent?.getIntExtra(PARAM_PROJECT_ID, 1) ?: 1,
+                kycType
             )
     }
 

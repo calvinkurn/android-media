@@ -29,6 +29,7 @@ import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoBinding
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
@@ -69,6 +70,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     }
     private val viewModel by lazy { viewModelFragmentProvider.get(UserIdentificationViewModel::class.java) }
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,6 +84,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        kycSharedPreference.saveStringCache(
+            key = KYCConstant.SharedPreference.KEY_KYC_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_TYPE_CKYC
+        )
+
         if (arguments != null) {
             isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER) ?: false
             projectId = arguments?.getInt(PARAM_PROJECT_ID) ?: KYCConstant.KYC_PROJECT_ID
@@ -89,7 +99,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         if (isSourceSeller) {
             goToFormActivity()
         }
-        analytics = createInstance(projectId)
+        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+        analytics = createInstance(projectId, kycType)
     }
 
     override fun getScreenName(): String = ""

@@ -16,17 +16,23 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_SHO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
 
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationInfoSimpleBinding>()
     private var projectId = 0
@@ -46,6 +52,11 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        kycSharedPreference.saveStringCache(
+            key = KYCConstant.SharedPreference.KEY_KYC_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_TYPE_ALA_CARTE
+        )
+
         activity?.intent?.data?.let {
             projectId = it.getQueryParameter(PARAM_PROJECT_ID).toIntOrZero()
             showWrapperLayout = it.getQueryParameter(PARAM_SHOW_INTRO).toBoolean()
@@ -147,7 +158,9 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String = TAG
-    override fun initInjector() {}
+    override fun initInjector() {
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
+    }
 
     companion object {
         private const val TAG = "UserIdentificationInfoSimpleFragment"

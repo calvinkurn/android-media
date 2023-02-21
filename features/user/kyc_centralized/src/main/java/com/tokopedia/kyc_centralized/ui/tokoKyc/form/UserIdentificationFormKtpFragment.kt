@@ -7,23 +7,28 @@ import android.view.Gravity
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_0_5F
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_16
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_ZERO
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.BaseUserIdentificationStepperFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
+import javax.inject.Inject
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -34,8 +39,18 @@ class UserIdentificationFormKtpFragment :
 
     private var permissionCheckerHelper = PermissionCheckerHelper()
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+    private var analytics: UserIdentificationCommonAnalytics? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        projectId = activity?.intent?.getIntExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, -1) ?: -1
+
+        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycType)
+
         analytics?.eventViewKtpPage()
     }
 
@@ -151,6 +166,8 @@ class UserIdentificationFormKtpFragment :
         }
     }
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
+    }
     override fun encryptImage() {}
 }
