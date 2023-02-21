@@ -343,14 +343,6 @@ object DeeplinkMapperMerchant {
         return (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT)
     }
 
-    fun isCreateVoucherProductApplink(deeplink: String): Boolean {
-        return deeplink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT)
-    }
-
-    fun isVoucherProductDetailApplink(deeplink: String): Boolean {
-        return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_PRODUCT_DETAIL)
-    }
-
     fun isSellerShopFlashSaleApplink(deeplink: String): Boolean {
         val path = Uri.parse(deeplink).path.orEmpty()
         val removedPathLink = if (path.isEmpty()) {

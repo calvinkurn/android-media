@@ -535,13 +535,14 @@ public interface ApplinkConst {
         String WEBVIEW = "sellerapp://webview";
 
         String CAMPAIGN_LIST = "sellerapp://campaign-list";
-
+        String VOUCHER_LIST = "sellerapp://voucher-list";
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
+        String CREATE_VOUCHER = "sellerapp://create-voucher";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
