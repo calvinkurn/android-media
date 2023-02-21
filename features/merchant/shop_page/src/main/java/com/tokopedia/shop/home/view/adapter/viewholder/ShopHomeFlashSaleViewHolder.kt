@@ -329,10 +329,7 @@ class ShopHomeFlashSaleViewHolder(
         if (isOngoing) {
             flashSaleReminderView?.hide()
         } else {
-            flashSaleReminderView?.apply {
-                radius = NOTIFY_ME_WRAPPER_BORDER_RADIUS.dpToPx()
-                show()
-            }
+            flashSaleReminderView?.show()
         }
     }
 

@@ -24,8 +24,9 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        // 12 + 12 + 4 + 8 + 4 + 12 + 12
-        private const val PADDING_AND_MARGIN = 64
+        // leftMargin + rightMargin + middleMargin
+        // 12 + 12 + 2
+        private const val PADDING_AND_MARGIN = 26
         private const val TWO = 2
         private val paddingOffset = 6f.dpToPx()
     }
@@ -35,7 +36,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     private var productCardBigGrid: ProductCardGridView? = itemView.findViewById(R.id.fs_product_card_big_grid)
 
     init {
-        adjustProductCardWidth(false)
+        adjustProductCardWidth()
         setupClickListener(listener)
         setupImpressionListener(listener)
     }
@@ -146,9 +147,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         }
     }
 
-    @Suppress("SameParameterValue")
-    private fun adjustProductCardWidth(isTablet: Boolean) {
-        val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN) / TWO
-        if (!isTablet) { productCardBigGrid?.layoutParams = ViewGroup.LayoutParams(productCardWidth, ViewGroup.LayoutParams.WRAP_CONTENT) }
+    private fun adjustProductCardWidth() {
+        val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO
+        productCardBigGrid?.layoutParams = ViewGroup.LayoutParams(productCardWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 }
