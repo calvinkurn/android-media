@@ -150,7 +150,9 @@ object DeepLinkHandler {
             //Seller Home
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME) -> {
                 val uri = intent.data
-                if (uri != null) {
+                if (uri == null) {
+                    callback(PageFragment(FragmentType.HOME))
+                } else {
                     val toasterMessage = uri.getQueryParameter(
                         SellerHomeApplinkConst.TOASTER_MESSAGE
                     ).orEmpty()
@@ -166,8 +168,6 @@ object DeepLinkHandler {
                             sellerHomeData = sellerHomeData
                         )
                     )
-                } else {
-                    callback(PageFragment(FragmentType.HOME))
                 }
             }
 
