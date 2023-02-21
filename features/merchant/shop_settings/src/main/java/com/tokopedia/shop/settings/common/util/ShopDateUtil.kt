@@ -11,7 +11,6 @@ import java.util.*
  */
 val DEFAULT_LOCALE = Locale("in", "ID")
 const val FORMAT_DAY_DATE = "EEE, dd MMM yyyy"
-const val FORMAT_DATE = "dd MMM yyyy"
 const val FORMAT_DATE_TIME = "dd MMM yyyy, 'pukul' HH:mm"
 const val OS_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssZ"
 const val DEFAULT_TIME = 1000L
@@ -42,11 +41,6 @@ fun toReadableString(format: String, dateUTC: Date): String {
     } catch (e: Exception) {
         return dateUTC.toString()
     }
-
-}
-
-fun toReadableString(format: String, unixTimeSecondsUTC: String): String {
-    return toReadableString(format, unixTimeSecondsUTC.toLong())
 }
 
 fun toReadableString(format: String, unixTimeSecondsUTC: Long): String {
@@ -67,7 +61,6 @@ fun toDate(year: Int, month: Int, dayOfMonth: Int): Date {
     } catch (e: Exception) {
         return currentDate
     }
-
 }
 
 fun unixToDate(unixTimeMs: Long): Date {
@@ -76,7 +69,6 @@ fun unixToDate(unixTimeMs: Long): Date {
     } catch (e: Exception) {
         return currentDate
     }
-
 }
 
 fun dateFormatToBeReadable(date: String, datePattern: String, outputPattern: String): String? {

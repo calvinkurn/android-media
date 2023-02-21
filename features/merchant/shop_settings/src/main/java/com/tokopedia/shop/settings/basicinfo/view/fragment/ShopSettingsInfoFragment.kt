@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
@@ -30,7 +29,6 @@ import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.util.OperationalHoursUtil
@@ -40,8 +38,14 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActiv
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.common.util.*
-import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
+import com.tokopedia.shop.settings.common.util.FORMAT_DAY_DATE
+import com.tokopedia.shop.settings.common.util.NavigationController
+import com.tokopedia.shop.settings.common.util.OS_FORMAT_DATE
+import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
+import com.tokopedia.shop.settings.common.util.ShopTypeDef
+import com.tokopedia.shop.settings.common.util.dateFormatToBeReadable
+import com.tokopedia.shop.settings.common.util.getNavigationResult
+import com.tokopedia.shop.settings.common.util.removeNavigationResult
 import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
 import com.tokopedia.shop.settings.databinding.FragmentShopSettingsInfoBinding
 import com.tokopedia.unifycomponents.Toaster
@@ -50,7 +54,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
 import java.util.*
 import javax.inject.Inject
 
@@ -79,7 +82,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var bottomSheet: MenuBottomSheet? = null
     private var snackbar: Snackbar? = null
-    private var shopId: String = "0"     // 67726 for testing
+    private var shopId: String = "0" // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
     private var isShopClosedBySchedule: Boolean = false
@@ -119,83 +122,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentShopSettingsInfoBinding.inflate(inflater, container, false)
         return binding?.root as View
-    }
-
-    private fun showShopStatusManageMenu() {
-        shopBasicDataModel?.let { shopBasicDataModel ->
-            val itemList = ArrayList<String>()
-            if (shopBasicDataModel.isOpen) {
-                if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
-                    itemList.add(getString(R.string.schedule_your_shop_close))
-                } else {
-                    itemList.add(getString(R.string.change_schedule))
-                    itemList.add(getString(R.string.remove_schedule))
-                }
-                itemList.add(getString(R.string.label_close_shop_now))
-            } else {
-                itemList.add(getString(R.string.change_schedule))
-                itemList.add(getString(R.string.label_open_shop_now))
-            }
-            bottomSheet = MenuBottomSheet.newInstance(itemList)
-            bottomSheet?.setTitle(getString(R.string.shop_settings_manage_status))
-            bottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
-                override fun onItemMenuClicked(text: String, position: Int) {
-                    itemMenuClicked(text, position)
-                }
-
-                override fun itemMenuSize(): Int = itemList.size
-
-            })
-            bottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
-        }
-    }
-
-    private fun itemMenuClicked(text: String, position: Int) {
-        bottomSheet?.dismiss()
-        when(text) {
-            getString(R.string.label_close_shop_now) -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
-            }
-            getString(R.string.remove_schedule) -> {
-                activity?.let { it ->
-                    DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                        setTitle(getString(R.string.remove_schedule))
-                        setDescription(getString(R.string.remove_schedule_message))
-                        setPrimaryCTAText(getString(R.string.action_delete))
-                        setSecondaryCTAText(getString(R.string.label_cancel))
-                        setPrimaryCTAClickListener {
-                            //remove schedule
-                            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                            shopSettingsInfoViewModel.updateShopSchedule(
-                                    action = if (shopBasicDataModel!!.isClosed) ShopScheduleActionDef.CLOSED else ShopScheduleActionDef.OPEN,
-                                    closeNow = false,
-                                    closeStart = "",
-                                    closeEnd = "",
-                                    closeNote = ""
-                            )
-                            dismiss()
-                        }
-                        setSecondaryCTAClickListener { dismiss() }
-                        show()
-                    }
-                }
-            }
-            getString(R.string.label_open_shop_now) -> {
-                // open now
-                showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                shopSettingsInfoViewModel.updateShopSchedule(
-                        action = ShopScheduleActionDef.OPEN,
-                        closeNow = false,
-                        closeStart = "",
-                        closeEnd = "",
-                        closeNote = ""
-                )
-
-            }
-            else -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, shopBasicDataModel?.isClosed ?: false) }
-            }
-        }
     }
 
     private fun showLoading() {
@@ -257,58 +183,64 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeShopInfoData() {
-        shopSettingsInfoViewModel.shopInfoData.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                val shopInfoData = it.data
-                shopBadge = shopInfoData.goldOS.badge
-                isShopClosedBySchedule = shopInfoData.closedInfo.closeDetail.status == ShopStatusDef.CLOSED
+        shopSettingsInfoViewModel.shopInfoData.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it is Success) {
+                    val shopInfoData = it.data
+                    shopBadge = shopInfoData.goldOS.badge
+                    isShopClosedBySchedule = shopInfoData.closedInfo.closeDetail.status == ShopStatusDef.CLOSED
+                }
             }
-        })
+        )
     }
 
     private fun observeShopOperationalHourList() {
-        shopSettingsInfoViewModel.shopOperationalHourList.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    var operationalHourList = it.data.getShopOperationalHoursList?.data
-                    if (operationalHourList?.isEmpty().orTrue()) {
-                        operationalHourList = OperationalHoursUtil.generateDefaultOpsHourList()
-                    }
-                    val todayOrdinalDayOfWeek = OperationalHoursUtil.getOrdinalDate(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
-                    operationalHourList?.get(todayOrdinalDayOfWeek-1)?.let { opsHour ->
-                        val opsHourText = OperationalHoursUtil.generateDatetime(
-                            opsHour.startTime,
-                            opsHour.endTime,
-                            opsHour.status
-                        )
-                        tvShopStatus?.text = if (opsHourText == OperationalHoursUtil.HOLIDAY_CAN_ATC || opsHourText == OperationalHoursUtil.HOLIDAY_CANNOT_ATC) {
-                            opsHourText.trim()
-                        } else if (opsHourText == OperationalHoursUtil.ALL_DAY) {
-                            val opsHourTextParts = opsHourText.split(" ").toMutableList().apply {
-                                remove(first())
-                            }
-                            getString(
-                                R.string.shop_settings_info_operational_hours,
-                                opsHourTextParts.joinToString(" ").trim()
+        shopSettingsInfoViewModel.shopOperationalHourList.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        var operationalHourList = it.data.getShopOperationalHoursList?.data
+                        if (operationalHourList?.isEmpty().orTrue()) {
+                            operationalHourList = OperationalHoursUtil.generateDefaultOpsHourList()
+                        }
+                        val todayOrdinalDayOfWeek = OperationalHoursUtil.getOrdinalDate(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
+                        operationalHourList?.get(todayOrdinalDayOfWeek - 1)?.let { opsHour ->
+                            val opsHourText = OperationalHoursUtil.generateDatetime(
+                                opsHour.startTime,
+                                opsHour.endTime,
+                                opsHour.status
                             )
-                        } else {
-                            getString(
-                                R.string.shop_settings_info_operational_hours,
+                            tvShopStatus?.text = if (opsHourText == OperationalHoursUtil.HOLIDAY_CAN_ATC || opsHourText == OperationalHoursUtil.HOLIDAY_CANNOT_ATC) {
                                 opsHourText.trim()
-                            )
+                            } else if (opsHourText == OperationalHoursUtil.ALL_DAY) {
+                                val opsHourTextParts = opsHourText.split(" ").toMutableList().apply {
+                                    remove(first())
+                                }
+                                getString(
+                                    R.string.shop_settings_info_operational_hours,
+                                    opsHourTextParts.joinToString(" ").trim()
+                                )
+                            } else {
+                                getString(
+                                    R.string.shop_settings_info_operational_hours,
+                                    opsHourText.trim()
+                                )
+                            }
                         }
                     }
-                }
-                is Fail -> {
-                    view?.let { view ->
-                        snackbar = Toaster.build(view, getString(R.string.error_get_shop_operational_hour_list), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                        snackbar?.show()
+                    is Fail -> {
+                        view?.let { view ->
+                            snackbar = Toaster.build(view, getString(R.string.error_get_shop_operational_hour_list), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar?.show()
+                        }
+                        ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                        ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
-                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
-                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
-        })
+        )
     }
 
     override fun onPause() {
@@ -365,12 +297,15 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeUpdateScheduleData() {
-        shopSettingsInfoViewModel.updateScheduleResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessUpdateShopSchedule(it.data)
-                is Fail -> onErrorUpdateShopSchedule(it.throwable)
+        shopSettingsInfoViewModel.updateScheduleResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessUpdateShopSchedule(it.data)
+                    is Fail -> onErrorUpdateShopSchedule(it.throwable)
+                }
             }
-        })
+        )
     }
 
     private fun observeShopStatus() {
@@ -409,56 +344,62 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeShopBasicData() {
-        shopSettingsInfoViewModel.shopBasicData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    hideLoading()
-                    val shopBasicData = it.data
+        shopSettingsInfoViewModel.shopBasicData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        hideLoading()
+                        val shopBasicData = it.data
 
-                    // Update userSession
-                    val shopName: String = shopBasicData.name ?: ""
-                    val shopAvatar = shopBasicData.logo ?: ""
-                    userSession.shopName = shopName
-                    userSession.shopAvatar = shopAvatar
+                        // Update userSession
+                        val shopName: String = shopBasicData.name ?: ""
+                        val shopAvatar = shopBasicData.logo ?: ""
+                        userSession.shopName = shopName
+                        userSession.shopAvatar = shopAvatar
 
-                    shopBasicDataModel = shopBasicData.apply {
-                        name = MethodChecker.fromHtml(name).toString()
-                        domain = MethodChecker.fromHtml(domain).toString()
-                        description = MethodChecker.fromHtml(description).toString()
-                        tagline = MethodChecker.fromHtml(tagline).toString()
+                        shopBasicDataModel = shopBasicData.apply {
+                            name = MethodChecker.fromHtml(name).toString()
+                            domain = MethodChecker.fromHtml(domain).toString()
+                            description = MethodChecker.fromHtml(description).toString()
+                            tagline = MethodChecker.fromHtml(tagline).toString()
+                        }
+                    }
+                    is Fail -> {
+                        onErrorGetShopBasicData(it.throwable)
                     }
                 }
-                is Fail -> {
-                    onErrorGetShopBasicData(it.throwable)
-                }
             }
-        })
+        )
     }
 
     private fun observeOsMerchantData() {
-        shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    it.data.let { osData ->
-                        val errMessage = osData.messageError
-                        val isOS = osData.data.isOfficial
-                        val expiration = osData.data.expiredDate
+        shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        it.data.let { osData ->
+                            val errMessage = osData.messageError
+                            val isOS = osData.data.isOfficial
+                            val expiration = osData.data.expiredDate
 
-                        if (errMessage.isEmpty() && isOS) {
-                            showOfficialStore(dateFormatToBeReadable(expiration, OS_FORMAT_DATE, FORMAT_DAY_DATE) ?: "") // Set userSession isOS?
+                            if (errMessage.isEmpty() && isOS) {
+                                showOfficialStore(dateFormatToBeReadable(expiration, OS_FORMAT_DATE, FORMAT_DAY_DATE) ?: "") // Set userSession isOS?
+                            }
                         }
                     }
-                }
-                is Fail -> {
-                    view?.let { view ->
-                        snackbar = Toaster.build(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                        snackbar?.show()
+                    is Fail -> {
+                        view?.let { view ->
+                            snackbar = Toaster.build(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar?.show()
+                        }
+                        ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                        ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
-                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
-                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
-        })
+        )
     }
 
     override fun onResume() {
@@ -469,32 +410,35 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private fun loadShopBasicData() {
         showLoading()
         shopSettingsInfoViewModel.getShopData(
-                shopId,
-                includeOS = false
+            shopId,
+            includeOS = false
         )
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(REQUEST_EDIT_BASIC_INFO)?.observe(viewLifecycleOwner, Observer { bundle ->
-            bundle?.let { data ->
-                data.getString(EXTRA_MESSAGE)?.apply {
-                    if (this.isNotBlank()) {
-                        view?.let {
-                            snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                            snackbar?.show()
+        getNavigationResult(REQUEST_EDIT_BASIC_INFO)?.observe(
+            viewLifecycleOwner,
+            Observer { bundle ->
+                bundle?.let { data ->
+                    data.getString(EXTRA_MESSAGE)?.apply {
+                        if (this.isNotBlank()) {
+                            view?.let {
+                                snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                                snackbar?.show()
+                            }
                         }
                     }
                 }
+                removeNavigationResult(REQUEST_EDIT_BASIC_INFO)
             }
-            removeNavigationResult(REQUEST_EDIT_BASIC_INFO)
-        })
+        )
     }
 
     override fun initInjector() {
         DaggerShopSettingsComponent.builder()
-                .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
@@ -509,7 +453,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             }
 
             val logoUrl = shopBasicData.logo
-            //avoid crash in ImageUnify when image url is returned as base64
+            // avoid crash in ImageUnify when image url is returned as base64
             try {
                 if (ivShopLogo?.context?.isValidGlideContext() == true) {
                     if (TextUtils.isEmpty(logoUrl)) {
@@ -518,7 +462,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         ImageHandler.LoadImage(ivShopLogo, logoUrl)
                     }
                 }
-            }catch (e: Exception) {}
+            } catch (e: Exception) {}
 
             if (shopBasicData.tagline.isNullOrBlank()) {
                 tvShopSloganTitle?.visibility = View.GONE
@@ -544,8 +488,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     val startDate = Date(shopBasicData.closeSchedule.toLongOrZero() * 1000L)
                     val endDate = Date(shopBasicData.closeUntil.toLongOrZero() * 1000L)
                     tvShopStatus?.text = getString(
-                            R.string.shop_settings_info_holiday_text,
-                            OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate, isShortDateFormat = true)
+                        R.string.shop_settings_info_holiday_text,
+                        OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate, isShortDateFormat = true)
                     )
                 } else {
                     // shop shop closed by weekly operational, then get operational hour list

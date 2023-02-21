@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.dialog.DialogUnify
@@ -63,9 +62,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.Calendar
-import java.util.TimeZone
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -158,8 +155,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     setShopHolidayScheduleStatusMessage = data?.extras?.getString(
-                            ShopSettingsSetOperationalHoursFragment.EXTRA_SET_OPS_HOUR_RESPONSE_KEY,
-                            getString(R.string.shop_operational_success_update_operational_hours)
+                        ShopSettingsSetOperationalHoursFragment.EXTRA_SET_OPS_HOUR_RESPONSE_KEY,
+                        getString(R.string.shop_operational_success_update_operational_hours)
                     ) ?: getString(R.string.shop_operational_success_update_operational_hours)
                     setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
                     isNeedToShowToaster = true
@@ -187,9 +184,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     override fun getComponent(): ShopSettingsComponent? {
         return activity?.run {
             DaggerShopSettingsComponent
-                    .builder()
-                    .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
+                .builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
         }
     }
 
@@ -289,8 +286,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // set click listener for icon edit ops hour
         icEditOperationalHour?.setOnClickListener {
             startActivityForResult(
-                    Intent(context, ShopSettingsSetOperationalHoursActivity::class.java),
-                    REQUEST_CODE_SET_OPS_HOUR
+                Intent(context, ShopSettingsSetOperationalHoursActivity::class.java),
+                REQUEST_CODE_SET_OPS_HOUR
             )
         }
 
@@ -314,10 +311,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         }
 
         // setup holiday ticker
-        autoChatTicker?.setHtmlDescription(getString(
+        autoChatTicker?.setHtmlDescription(
+            getString(
                 R.string.shop_operational_hour_ticker_description_auto_chat,
                 getString(R.string.shop_operational_hour_ticker_auto_chat_reply)
-        ))
+            )
+        )
         autoChatTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (linkUrl == getString(R.string.shop_operational_hour_ticker_auto_chat_reply)) {
@@ -329,9 +328,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         })
 
         // setup nested scroll listener
-        containerScroller?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
-            headerOpsHour?.isShowShadow = scrollY.isMoreThanZero()
-        })
+        containerScroller?.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                headerOpsHour?.isShowShadow = scrollY.isMoreThanZero()
+            }
+        )
     }
 
     private fun setupToolbar() {
@@ -343,11 +344,14 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             }
             rightIcons?.get(0)?.setOnClickListener {
                 // go to seller education page
-                RouteManager.route(context, String.format(
+                RouteManager.route(
+                    context,
+                    String.format(
                         WEBVIEW_APPLINK_FORMAT,
                         ApplinkConst.WEBVIEW,
                         getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
-                ))
+                    )
+                )
             }
             isShowShadow = false
         }
@@ -362,7 +366,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     }
 
     private fun observeLiveData() {
-
         // observe get shop operational hours list data
         observe(shopSettingsOperationalHoursViewModel.shopSettingsOperationalHoursListUiModel) { result ->
             if (result is Success) {
@@ -399,10 +402,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 // update UI for operational hours list section
                 val opsHourList = opsHourListUiModel.operationalHourList
                 rvOpsHourListAdapter?.updateOpsHourList(opsHourList)
-                autoChatTicker?.showWithCondition(isShopClosed || isShouldShowHolidaySchedule || opsHourList.any {
-                    // show ticker when shop closed or contains holiday in a week
-                    it.startTime == it.endTime
-                })
+                autoChatTicker?.showWithCondition(
+                    isShopClosed || isShouldShowHolidaySchedule || opsHourList.any {
+                        // show ticker when shop closed or contains holiday in a week
+                        it.startTime == it.endTime
+                    }
+                )
 
                 // show toaster if refresh after set shop holiday schedule
                 if (isNeedToShowToaster || isNeedToShowOpenShopToaster) {
@@ -456,7 +461,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
             }
         }
-
     }
 
     private fun getInitialData() {
@@ -467,7 +471,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun deleteShopHolidaySchedule() {
         // delete upcoming/ongoing holiday schedule
         shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
-                action = ShopScheduleActionDef.ABORT
+            action = ShopScheduleActionDef.ABORT
         )
         isNeedToShowToaster = true
     }
@@ -475,7 +479,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun openShopNow() {
         // open shop immediately when seller is ongoing holiday period.
         shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
-                action = ShopScheduleActionDef.OPEN
+            action = ShopScheduleActionDef.OPEN
         )
         isNeedToShowOpenShopToaster = isShopOnScheduledHoliday
     }
@@ -483,10 +487,10 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun setShopHolidaySchedule(startDate: Date, endDate: Date) {
         // create or edit for upcoming shop holiday schedule
         shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
-                action = ShopScheduleActionDef.CLOSED,
-                closeStart = startDate.time.toString(),
-                closeEnd = endDate.time.toString(),
-                closeNow = DateUtils.isToday(startDate.time)
+            action = ShopScheduleActionDef.CLOSED,
+            closeStart = startDate.time.toString(),
+            closeEnd = endDate.time.toString(),
+            closeNow = DateUtils.isToday(startDate.time)
         )
         isNeedToShowToaster = true
     }
@@ -496,8 +500,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         shopIsOnHolidayContainer?.shouldShowWithAction(isHolidayBySchedule) {
             // set "sampai" end date text
             shopIsOnHolidayEndDateText?.text = getString(
-                    R.string.shop_operational_hour_is_on_holiday_until,
-                    OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = false)
+                R.string.shop_operational_hour_is_on_holiday_until,
+                OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = false)
             )
 
             // set open shop button
@@ -514,9 +518,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     }
 
     private fun initCalendarRangeView(
-            minDate: Date,
-            maxDate: Date,
-            isActionEdit: Boolean
+        minDate: Date,
+        maxDate: Date,
+        isActionEdit: Boolean
     ) {
         // init calendar range view
         calendarUnify?.apply {
@@ -529,10 +533,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     } else {
                         selectedStartDate
                     }
-                    init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.RANGE).withSelectedDates(listOf(
+                    init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.RANGE).withSelectedDates(
+                        listOf(
                             actualMinimalDate,
                             selectedEndDate
-                    ))
+                        )
+                    )
                 }
                 setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
@@ -622,18 +628,22 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             isChooseStartDate = true
             val bottomSheetEditView = getHolidayDatePickerBottomSheetView().apply {
                 // set text field for existing start date
-                startDateTextField?.textFieldInput?.setText(getString(
+                startDateTextField?.textFieldInput?.setText(
+                    getString(
                         R.string.shop_operational_hour_selected_holiday_date_text,
                         OperationalHoursUtil.toSimpleIndonesianDayFormat(selectedStartDate),
                         OperationalHoursUtil.toIndonesianDateFormat(selectedStartDate, isRequireSimpleFormat = true, isShowYear = false)
-                ))
+                    )
+                )
 
                 // set text field for existing end date
-                endDateTextField?.textFieldInput?.setText(getString(
+                endDateTextField?.textFieldInput?.setText(
+                    getString(
                         R.string.shop_operational_hour_selected_holiday_date_text,
                         OperationalHoursUtil.toSimpleIndonesianDayFormat(selectedEndDate),
                         OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = true, isShowYear = false)
-                ))
+                    )
+                )
             }
             holidayBottomSheet = BottomSheetUnify().apply {
                 setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
@@ -676,11 +686,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun onSelectedHolidayStartDate(date: Date) {
         selectedStartDate = OperationalHoursUtil.setDefaultServerTimeForSelectedDate(date)
         startDateTextField?.textFieldInput?.apply {
-            setText(getString(
+            setText(
+                getString(
                     R.string.shop_operational_hour_selected_holiday_date_text,
                     OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
                     OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
-            ))
+                )
+            )
             isFocusable = false
             isFocusableInTouchMode = false
         }
@@ -695,11 +707,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun onSelectedHolidayEndDate(date: Date) {
         selectedEndDate = OperationalHoursUtil.setDefaultServerTimeForSelectedDate(date)
         endDateTextField?.textFieldInput?.apply {
-            setText(getString(
+            setText(
+                getString(
                     R.string.shop_operational_hour_selected_holiday_date_text,
                     OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
                     OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
-            ))
+                )
+            )
             clearFocus()
             isFocusable = false
             isFocusableInTouchMode = false
@@ -710,8 +724,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         if (isActionEdit) {
             selectedStartDate = existingStartDate
             selectedEndDate = existingEndDate
-        }
-        else {
+        } else {
             selectedStartDate = tomorrowDate
             selectedEndDate = tomorrowDate
         }
@@ -720,70 +733,70 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun showConfirmDialogForDataChanged() {
         // confirm dialog for detect any changes
         buildConfirmDialog(
-                dialogTitle = getString(R.string.shop_operational_hour_dialog_data_change_title),
-                dialogDescription = getString(R.string.shop_operational_hour_dialog_data_change_holiday_description),
-                ctaPrimaryText = getString(R.string.action_delete),
-                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
-                primaryCTAListener = {
-                    holidayBottomSheet?.dismiss()
-                },
-                secondaryCTAListener = {}
+            dialogTitle = getString(R.string.shop_operational_hour_dialog_data_change_title),
+            dialogDescription = getString(R.string.shop_operational_hour_dialog_data_change_holiday_description),
+            ctaPrimaryText = getString(R.string.action_delete),
+            ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
+            primaryCTAListener = {
+                holidayBottomSheet?.dismiss()
+            },
+            secondaryCTAListener = {}
         )?.show()
     }
 
     private fun showConfirmDialogForSaveHolidaySchedule(startDate: Date, endDate: Date) {
         // confirm dialog to save shop holiday
         buildConfirmDialog(
-                dialogTitle = getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_title),
-                dialogDescription = getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_desc),
-                ctaPrimaryText = getString(R.string.label_save),
-                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
-                primaryCTAListener = {
-                    holidayBottomSheet?.dismiss()
-                    showLoader()
-                    setShopHolidaySchedule(startDate, endDate)
-                },
-                secondaryCTAListener = {}
+            dialogTitle = getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_title),
+            dialogDescription = getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_desc),
+            ctaPrimaryText = getString(R.string.label_save),
+            ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
+            primaryCTAListener = {
+                holidayBottomSheet?.dismiss()
+                showLoader()
+                setShopHolidaySchedule(startDate, endDate)
+            },
+            secondaryCTAListener = {}
         )?.show()
     }
 
     private fun showConfirmDialogForDeleteHolidaySchedule() {
         // confirm dialog to delete shop holiday
         buildConfirmDialog(
-                dialogTitle = getString(R.string.shop_operational_hour_delete_holiday_schedule_dialog_title),
-                dialogDescription = getString(R.string.shop_operational_hour_delete_holiday_schedule_dialog_desc),
-                ctaPrimaryText = getString(R.string.action_delete),
-                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
-                primaryCTAListener = {
-                    showLoader()
-                    deleteShopHolidaySchedule()
-                },
-                secondaryCTAListener = {}
+            dialogTitle = getString(R.string.shop_operational_hour_delete_holiday_schedule_dialog_title),
+            dialogDescription = getString(R.string.shop_operational_hour_delete_holiday_schedule_dialog_desc),
+            ctaPrimaryText = getString(R.string.action_delete),
+            ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
+            primaryCTAListener = {
+                showLoader()
+                deleteShopHolidaySchedule()
+            },
+            secondaryCTAListener = {}
         )?.show()
     }
 
     private fun showConfirmDialogForOpenShopNow() {
         // confirm dialog to open shop now and abort ongoing holiday
         buildConfirmDialog(
-                dialogTitle = getString(R.string.shop_operational_hour_abort_shop_holiday_dialog_title),
-                dialogDescription = getString(R.string.shop_operational_hour_abort_shop_holiday_dialog_desc),
-                ctaPrimaryText = getString(R.string.label_open_shop),
-                ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
-                primaryCTAListener = {
-                    showLoader()
-                    openShopNow()
-                },
-                secondaryCTAListener = {}
+            dialogTitle = getString(R.string.shop_operational_hour_abort_shop_holiday_dialog_title),
+            dialogDescription = getString(R.string.shop_operational_hour_abort_shop_holiday_dialog_desc),
+            ctaPrimaryText = getString(R.string.label_open_shop),
+            ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
+            primaryCTAListener = {
+                showLoader()
+                openShopNow()
+            },
+            secondaryCTAListener = {}
         )?.apply { show() }
     }
 
     private fun buildConfirmDialog(
-            dialogTitle: String,
-            dialogDescription: String,
-            ctaPrimaryText: String,
-            ctaSecondaryText: String,
-            primaryCTAListener: () -> Unit,
-            secondaryCTAListener: () -> Unit
+        dialogTitle: String,
+        dialogDescription: String,
+        ctaPrimaryText: String,
+        ctaSecondaryText: String,
+        primaryCTAListener: () -> Unit,
+        secondaryCTAListener: () -> Unit
     ): DialogUnify? {
         return context?.let { ctx ->
             DialogUnify(ctx, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
