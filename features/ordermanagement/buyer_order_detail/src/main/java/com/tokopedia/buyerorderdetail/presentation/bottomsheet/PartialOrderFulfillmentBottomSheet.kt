@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerPartialOrderFulfillmentTracker
 import com.tokopedia.buyerorderdetail.databinding.PartialOrderFulfillmentBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
@@ -25,6 +26,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiMod
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -171,21 +173,27 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess) {
-                        setupAfterPofSuccess()
+                        setupAfterPofSuccess(it.data.message)
                     } else {
-                        showToasterError()
+                        showToasterError(it.data.message)
                     }
                 }
                 is Fail -> {
-                    showToasterError()
+                    val message = context?.let { ctx ->
+                        ErrorHandler.getErrorMessage(ctx, it.throwable)
+                    }?.let { msg ->
+                        msg.ifBlank {
+                            context?.getString(R.string.buyer_order_detail_pof_error_request)
+                        }
+                    }.orEmpty()
+                    showToasterError(message)
                 }
             }
         }
     }
 
-    private fun setupAfterPofSuccess() {
+    private fun setupAfterPofSuccess(message: String) {
         activity?.let {
-            val message = it.getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_success_message)
             val intent = it.intent?.apply {
                 putExtra(
                     ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE,
@@ -243,11 +251,8 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
         }
     }
 
-    private fun showToasterError() {
-        val message =
-            context?.getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_error_request)
-
-        if (message?.isNotBlank() == true) {
+    private fun showToasterError(message: String) {
+        if (message.isNotBlank()) {
             view?.run {
                 Toaster.build(
                     view = this,

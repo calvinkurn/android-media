@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-
 import com.google.gson.annotations.SerializedName
 
 data class ApprovePartialOrderFulfillmentResponse(
@@ -10,5 +9,7 @@ data class ApprovePartialOrderFulfillmentResponse(
 
 data class ApprovePartialOrderFulfillment(
     @SerializedName("success")
-    val success: Int = 0
+    val success: Int = 0,
+    @SerializedName("message")
+    val message: String = ""
 )

@@ -100,7 +100,7 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
         approvePartialOrderFulfillment: ApprovePartialOrderFulfillment
     ): ApprovePartialOrderFulfillmentUiModel {
         val isSuccess = approvePartialOrderFulfillment.success == Int.ONE
-        return ApprovePartialOrderFulfillmentUiModel(isSuccess)
+        return ApprovePartialOrderFulfillmentUiModel(isSuccess, approvePartialOrderFulfillment.message)
     }
 
     fun mapToRejectPartialOrderFulfillmentUiModel(
