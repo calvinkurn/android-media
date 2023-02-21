@@ -80,9 +80,7 @@ class ContentCommentBottomSheet @Inject constructor(
         ContentThreeDotsMenuBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader
-        ).apply {
-            setListener(this@ContentCommentBottomSheet)
-        }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -204,6 +202,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {
+        sheetMenu.setListener(this@ContentCommentBottomSheet)
         sheetMenu.setData(getMenuItems(item.isOwner), item.id)
         sheetMenu.show(childFragmentManager)
     }

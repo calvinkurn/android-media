@@ -192,8 +192,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     ) {
         requireLogin {
             viewModelScope.launchCatchError(block = {
-                val result = repo.reportComment(param)
-                if (result) removeComment(param.contentId)
+                repo.reportComment(param)
             }) {
                 _event.emit(
                     CommentEvent.ShowErrorToaster(
