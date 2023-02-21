@@ -5,7 +5,15 @@ import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
-import com.tokopedia.logisticCommon.data.response.*
+import com.tokopedia.logisticCommon.data.response.AddAddressResponse
+import com.tokopedia.logisticCommon.data.response.DataAddAddress
+import com.tokopedia.logisticCommon.data.response.DefaultAddressData
+import com.tokopedia.logisticCommon.data.response.GetDefaultAddressResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
+import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -70,14 +78,14 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Get Default Address Success`() {
-        coEvery { repo.getDefaultAddress(any()) } returns GetDefaultAddressResponse()
+        coEvery { repo.getDefaultAddress(any(), true) } returns GetDefaultAddressResponse()
         addressFormViewModel.getDefaultAddress("address")
         verify { defaultAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Default Address Fail`() {
-        coEvery { repo.getDefaultAddress(any()) } throws defaultThrowable
+        coEvery { repo.getDefaultAddress(any(), true) } throws defaultThrowable
         addressFormViewModel.getDefaultAddress("address")
         verify { defaultAddressObserver.onChanged(match { it is Fail }) }
     }
@@ -98,14 +106,14 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Get Address Detail Data Success`() {
-        coEvery { repo.getAddressDetail(any(), any()) } returns KeroGetAddressResponse.Data()
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data()
         addressFormViewModel.getAddressDetail(addressId)
         verify { detailAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Address Detail Data Fail`() {
-        coEvery { repo.getAddressDetail(any(), any()) } throws defaultThrowable
+        coEvery { repo.getAddressDetail(any(), any(), true) } throws defaultThrowable
         addressFormViewModel.getAddressDetail(addressId)
         verify { detailAddressObserver.onChanged(match { it is Fail }) }
     }
