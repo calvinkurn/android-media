@@ -29,6 +29,7 @@ import com.tokopedia.internal_review.common.InternalReviewUtils
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
@@ -251,7 +252,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             when (result) {
                 is Success -> {
                     menuSettingAdapter?.showSuccessAccessMenus(result.data)
-                    menuSettingViewModel.checkShopSettingAccess()
+                    menuSettingViewModel.getShopLocEligible(userSession.shopId.toLongOrZero())
                 }
                 is Fail -> {
                     menuSettingAdapter?.removeLoading()
