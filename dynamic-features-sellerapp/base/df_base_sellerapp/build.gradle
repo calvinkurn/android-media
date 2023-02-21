@@ -62,6 +62,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.sellerMvcCreation)
+
 	implementation projectOrAar(rootProject.ext.features.shopDiscount)
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
