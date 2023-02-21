@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -62,36 +61,34 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun observeFeedTabData() {
         feedMainViewModel.feedTabs.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> initView(it.data)
-                    is Fail -> Toast.makeText(
-                        requireContext(),
-                        it.throwable.localizedMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is Success -> initView(it.data)
+                is Fail -> Toast.makeText(
+                    requireContext(),
+                    it.throwable.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        )
+        }
     }
 
     private fun observeCreateContentBottomSheetData() {
         feedMainViewModel.feedCreateContentBottomSheetData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        creationItemList = it.data
-                    }
-                    is Fail -> Toast.makeText(
-                        requireContext(),
-                        it.throwable.localizedMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is Success -> {
+                    creationItemList = it.data
                 }
+                is Fail -> Toast.makeText(
+                    requireContext(),
+                    it.throwable.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        )
+        }
     }
 
     override fun onDestroyView() {
@@ -108,7 +105,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun initView(data: FeedTabsModel) {
         binding?.let {
-            adapter = FeedPagerAdapter(requireActivity(), data.data)
+            adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
@@ -256,6 +253,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             CreateContentType.CREATE_SHORT_VIDEO -> {
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }
+            else -> {}
         }
     }
 
