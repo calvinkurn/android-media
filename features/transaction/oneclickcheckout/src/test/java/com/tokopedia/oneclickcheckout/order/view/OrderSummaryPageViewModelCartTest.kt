@@ -21,7 +21,9 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentTicker
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
@@ -1373,7 +1375,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1434,7 +1436,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1462,6 +1464,69 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 selectedTenure = 2,
                 availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true)
+            ),
+            orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData
+        )
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `GoCicil Installment Options Success With Matching Selected Term & Ticker`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000.0)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true, maximumAmount = 1000000, walletAmount = 1000000,
+            walletData = OrderPaymentWalletAdditionalData(
+                walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))
+            )
+        )
+
+        val option1 = GoCicilInstallmentOption(
+            isActive = true,
+            installmentTerm = 2
+        )
+        val option2 = GoCicilInstallmentOption(
+            isActive = true,
+            installmentTerm = 3
+        )
+        val option3 = GoCicilInstallmentOption(
+            isActive = true,
+            installmentTerm = 4
+        )
+        val tickerMessage = "tickerMessage"
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(ticker = GoCicilInstallmentTicker(tickerMessage), installmentOptions = listOf(option1, option2, option3))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(
+            OrderTotal(
+                OrderCost(
+                    1500.0,
+                    1000.0,
+                    500.0,
+                    installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
+                    totalItemPriceAndShippingFee = 1500.0,
+                    totalPriceWithoutDiscountsAndPaymentFees = 1500.0,
+                    totalPriceWithoutPaymentFees = 1500.0,
+                    isInstallment = true
+                ),
+                OccButtonState.NORMAL,
+                OccButtonType.PAY
+            ),
+            orderSummaryPageViewModel.orderTotal.value
+        )
+        assertEquals(
+            OrderPaymentGoCicilData(
+                selectedTenure = 2,
+                availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
+                selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true),
+                tickerMessage = tickerMessage
             ),
             orderSummaryPageViewModel.orderPayment.value.walletData.goCicilData
         )
@@ -1498,7 +1563,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = true
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1562,7 +1627,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = false
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1626,7 +1691,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = false
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1797,7 +1862,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), true)
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), "", true)
 
         // Then
         coVerify(inverse = true) {
@@ -1824,7 +1889,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), false)
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), "", false)
 
         // Then
         coVerify(inverse = true) {

@@ -23,6 +23,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
@@ -35,6 +36,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
@@ -738,19 +740,37 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
-    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
+    fun chooseInstallment(
+        selectedInstallmentTerm: OrderPaymentGoCicilTerms,
+        installmentList: List<OrderPaymentGoCicilTerms>,
+        tickerMessage: String,
+        isSilent: Boolean
+    ) {
         launch(executorDispatchers.immediate) {
             val walletData = orderPayment.value.walletData
-            val newWalletData = walletData.copy(goCicilData = walletData.goCicilData.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
+            val newWalletData = walletData.copy(
+                goCicilData = walletData.goCicilData.copy(
+                    selectedTerm = selectedInstallmentTerm,
+                    availableTerms = installmentList,
+                    tickerMessage = tickerMessage
+                )
+            )
             orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
             calculateTotal(skipDynamicFee = true)
             if (isSilent) {
                 return@launch
             }
             orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
-            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value) ?: return@launch
+            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
+                orderCart,
+                orderProfile.value,
+                orderShipment.value,
+                orderPayment.value
+            ) ?: return@launch
             param = param.copy(
-                skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                    orderShipment.value
+                ),
                 source = SOURCE_UPDATE_OCC_PAYMENT
             )
             // ignore result, result is important only in final update
@@ -1080,6 +1100,16 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
+    fun generateGoCicilInstallmentRequest(orderCost: OrderCost): GoCicilInstallmentRequest {
+        return paymentProcessor.get().generateGoCicilInstallmentRequest(
+            orderPayment.value,
+            userSession.userId,
+            orderCost,
+            orderCart,
+            orderProfile.value,
+            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel)
+        )
+    }
     private suspend fun adjustGoCicilFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
             orderCart,
@@ -1106,13 +1136,25 @@ class OrderSummaryPageViewModel @Inject constructor(
                 )
                 return
             }
-            val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart, orderProfile.value)
+            val result = paymentProcessor.get().getGopayAdminFee(
+                generateGoCicilInstallmentRequest(orderCost),
+                orderPayment.value
+            )
             if (result != null) {
-                chooseInstallment(result.first, result.second, !result.third)
+                chooseInstallment(
+                    result.selectedInstallment,
+                    result.installmentList,
+                    result.tickerMessage,
+                    !result.shouldUpdateCart
+                )
                 return
             } else {
                 val newWalletData = orderPayment.value.walletData
-                orderPayment.value = orderPayment.value.copy(walletData = newWalletData.copy(goCicilData = newWalletData.goCicilData.copy(availableTerms = emptyList())))
+                orderPayment.value = orderPayment.value.copy(
+                    walletData = newWalletData.copy(
+                        goCicilData = newWalletData.goCicilData.copy(availableTerms = emptyList())
+                    )
+                )
                 globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
             }
         }

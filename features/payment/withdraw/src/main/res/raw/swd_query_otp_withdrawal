@@ -52,6 +52,12 @@ mutation richieSubmitWithdrawal(
    amount
    adminFee
    withdrawalNote
+   title
+   description
+   header
+   ctaLink
+   ctaWording
+   image
    joinPromptMessageResponse{
        title
        desc
