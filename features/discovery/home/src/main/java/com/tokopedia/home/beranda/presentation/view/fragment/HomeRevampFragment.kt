@@ -55,6 +55,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -201,7 +202,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -1023,6 +1023,7 @@ open class HomeRevampFragment :
         super.onPause()
         adapter?.onPausePlayWidget(shouldPausePlay)
         adapter?.onPauseBanner()
+        getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
