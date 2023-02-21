@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -48,21 +48,16 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    private lateinit var feedMainViewModel: FeedMainViewModel
-    private lateinit var feedMenuSheet: FeedThreeDotsMenuBottomSheet
+    private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
+    private lateinit var feedMenuSheet: FeedThreeDotsMenuBottomSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.run {
-            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-            feedMainViewModel = viewModelProvider.get(FeedMainViewModel::class.java)
-        }
 
         arguments?.let {
             data = it.getParcelable(ARGUMENT_DATA)
@@ -98,8 +93,9 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
             reportResponse.observe(lifecycleOwner) {
                 when (it) {
                     is Success -> {
-                        if (::feedMenuSheet.isInitialized)
+                        if (::feedMenuSheet.isInitialized) {
                             feedMenuSheet.setFinalView()
+                        }
                     }
                     is Fail -> Toast.makeText(context, "Laporkan fail", Toast.LENGTH_SHORT).show()
                 }
@@ -143,7 +139,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         }
     }
 
-
     private fun initView() {
         binding?.let {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -159,18 +154,15 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
                     FeedModel(text = "Post 2"),
                     FeedModel(text = "Post 3"),
                     FeedModel(text = "Post 4"),
-                    FeedModel(text = "Post 5"),
+                    FeedModel(text = "Post 5")
                 )
             )
-
-//            it.tvTest.text = data?.title ?: ""
         }
     }
 
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         const val REQUEST_REPORT_POST_LOGIN = 1201
-
 
         fun createFeedFragment(data: FeedDataModel): FeedFragment =
             FeedFragment().also {
@@ -197,7 +189,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         }
     }
 
-    private fun getMenuItemData() : List<FeedMenuItem> {
+    private fun getMenuItemData(): List<FeedMenuItem> {
         val items = arrayListOf<FeedMenuItem>()
 
         items.add(
@@ -210,7 +202,9 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         items.add(
             FeedMenuItem(
                 drawable = getIconUnifyDrawable(
-                    requireContext(), IconUnify.WARNING, MethodChecker.getColor(
+                    requireContext(),
+                    IconUnify.WARNING,
+                    MethodChecker.getColor(
                         context,
                         R.color.Unify_RN500
                     )
@@ -220,11 +214,10 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
             )
         )
         return items
-
     }
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
-        when(feedMenuItem.type){
+        when (feedMenuItem.type) {
             FeedMenuIdentifier.LAPORKAN -> {
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
@@ -235,7 +228,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
-                //TODO add code for clear mode
+                // TODO add code for clear mode
                 Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
             }
         }
