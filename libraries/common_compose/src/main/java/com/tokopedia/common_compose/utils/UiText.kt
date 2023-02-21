@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles
+package com.tokopedia.common_compose.utils
 
 import android.content.Context
 import androidx.annotation.StringRes
