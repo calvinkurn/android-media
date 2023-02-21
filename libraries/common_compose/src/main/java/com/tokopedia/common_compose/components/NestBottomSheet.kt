@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles
+package com.tokopedia.common_compose.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,15 +14,17 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestBottomSheet(
     title: String,
-    onClosePressed: () -> Unit,
     modifier: Modifier = Modifier,
     closeButtonColor: Color = Color.Gray,
+    onClosePressed: () -> Unit,
     content: @Composable() () -> Unit
 ) {
     Column {
@@ -53,4 +55,12 @@ fun NestBottomSheetShape(): RoundedCornerShape {
         bottomEnd = 0.dp,
         bottomStart = 0.dp
     )
+}
+
+@Preview
+@Composable
+fun NestBottomSheetPreview() {
+    NestBottomSheet(title = "bottom sheet title", onClosePressed = {}) {
+        NestTypography(text = "sample text")
+    }
 }
