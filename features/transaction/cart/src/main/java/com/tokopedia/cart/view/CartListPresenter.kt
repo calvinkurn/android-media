@@ -2072,7 +2072,9 @@ class CartListPresenter @Inject constructor(
                         description = response.bundleBottomSheet.description,
                         bottomTicker = response.bundleBottomSheet.bottomTicker,
                         bundleIds = cartShopHolderData.productUiModelList
-                            .filter { it.isSelected }.flatMap { it.bundleIds }
+                            .filter { it.isSelected && !it.isBundlingItem }
+                            .flatMap { it.bundleIds }
+                            .distinct()
                     )
                 cartShopHolderData.cartShopGroupTicker.hasSeenTicker = false
                 if (response.ticker.text.isBlank()) {
