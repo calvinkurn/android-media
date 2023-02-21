@@ -83,10 +83,7 @@ class ShopHomeCarousellProductViewHolder(
                 show()
                 text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
                 setOnClickListener {
-                    if (!isEtalaseCarousel())
-                        shopHomeCarouselProductListener.onCtaClicked(shopHomeCarousellProductUiModel)
-                    else
-                        shopHomeCarouselProductListener.onCarouselProductShowcaseCtaClicked(shopHomeCarousellProductUiModel)
+                    shopHomeCarouselProductListener.onCtaClicked(shopHomeCarousellProductUiModel)
                 }
             } else {
                 hide()

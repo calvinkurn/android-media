@@ -71,7 +71,7 @@ object ShopPageTrackingConstant {
     const val SORT_PRODUCT = "sort product"
     const val CLICK_SETTING = "click setting"
     const val CLICK_SHOP_PROFILE = "click shop profile"
-    const val CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s"
+    const val CLICK_CTA_SEE_ALL = "click lihat semua"
     const val VIEW_WIDGET_BROADCAST = "view widget broadcast"
     const val CLICK_WIDGET_BROADCAST = "click widget broadcast"
     const val CLICK_CLOSE_FILTER = "click close filter"
@@ -409,6 +409,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_SHOP_PAGE_OPEN_SCREEN = "21750"
         const val TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR = "41209"
         const val TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR = "41210"
+        const val TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL = "41211"
     }
 
     object Key {

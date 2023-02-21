@@ -51,7 +51,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC_BUTTON_FLASH_SALE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_NAME
@@ -182,6 +182,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
@@ -213,10 +214,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_REMINDER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WISHLIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITHOUT_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITH_CART
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
-import com.tokopedia.shop.analytic.model.ProductShopDecorationTrackerDataModel
+import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
@@ -1045,25 +1043,25 @@ class ShopPageHomeTracking(
         )
     }
 
-    fun clickCta(
-        layoutId: String,
-        widgetName: String,
-        widgetId: String,
-        appLink: String,
-        shopId: String,
-        shopType: String,
-        isOwner: Boolean
-    ) {
-        val eventMap = mapOf(
-            EVENT to CLICK_SHOP_PAGE,
-            EVENT_CATEGORY to getShopPageCategory(isOwner),
-            EVENT_ACTION to String.format(CLICK_VIEW_ALL_PRODUCT, layoutId, widgetName),
-            EVENT_LABEL to "$widgetId - $appLink",
-            SHOP_ID to shopId,
-            SHOP_TYPE to shopType,
-            PAGE_TYPE to SHOPPAGE
-        )
-        sendDataLayerEvent(eventMap)
+    fun clickCta(trackerModel: ShopHomeCarouselProductWidgetClickCtaTrackerModel) {
+        with(trackerModel) {
+            var eventLabel = widgetMasterId
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to CLICK_PG,
+                EVENT_ACTION to CLICK_CTA_SEE_ALL,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_LABEL to eventLabel,
+                TRACKER_ID to TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to shopId,
+                USER_ID to userId
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+        }
     }
 
     private fun createDisplayWidgetPromotionsItemMap(
@@ -2105,27 +2103,6 @@ class ShopPageHomeTracking(
             SHOP_NAME to shopName,
             SHOP_TYPE to customDimensionShopPage.shopType.orEmpty()
         )
-    }
-
-    fun clickCtaCarouselProductShowcase(
-        etalaseId: String,
-        appLink: String,
-        shopId: String,
-        shopType: String,
-        isOwner: Boolean
-    ) {
-        val eventMap = mapOf(
-            EVENT to CLICK_SHOP_PAGE,
-            EVENT_CATEGORY to getShopPageCategory(isOwner),
-            EVENT_ACTION to String.format(CLICK_VIEW_ALL_PRODUCT, etalaseId, ETALASE_WIDGET),
-            EVENT_LABEL to "$etalaseId - $appLink",
-            BUSINESS_UNIT to PHYSICAL_GOODS,
-            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            SHOP_ID to shopId,
-            SHOP_TYPE to shopType,
-            PAGE_TYPE to SHOPPAGE
-        )
-        sendDataLayerEvent(eventMap)
     }
 
     fun onImpressionShopHomeWidget(

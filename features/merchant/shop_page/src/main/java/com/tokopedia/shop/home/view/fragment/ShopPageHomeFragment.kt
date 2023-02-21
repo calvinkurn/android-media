@@ -3028,19 +3028,6 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onCarouselProductShowcaseCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
-        shopPageHomeTracking.clickCtaCarouselProductShowcase(
-            etalaseId = shopHomeCarouselProductUiModel?.header?.etalaseId.orEmpty(),
-            appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
-            shopId = shopId,
-            shopType = customDimensionShopPage.shopType.orEmpty(),
-            isOwner = isOwner
-        )
-        context?.let {
-            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
-        }
-    }
-
     override fun onCarouselProductWidgetImpression(
         adapterPosition: Int,
         model: ShopHomeCarousellProductUiModel
@@ -3086,13 +3073,12 @@ open class ShopPageHomeFragment :
 
     override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
         shopPageHomeTracking.clickCta(
-            layoutId = shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-            widgetName = shopHomeCarouselProductUiModel?.header?.title.toString(),
-            widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
-            appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
-            shopId = shopId,
-            shopType = customDimensionShopPage.shopType.orEmpty(),
-            isOwner = isOwner
+            ShopPageHomeTrackingMapper.mapToShopHomeCarouselProductWidgetClickCtaTrackerModel(
+                shopId,
+                userId,
+                shopHomeCarouselProductUiModel?.widgetMasterId.orEmpty(),
+                shopHomeCarouselProductUiModel?.isFestivity.orFalse()
+            )
         )
 
         context?.let {
