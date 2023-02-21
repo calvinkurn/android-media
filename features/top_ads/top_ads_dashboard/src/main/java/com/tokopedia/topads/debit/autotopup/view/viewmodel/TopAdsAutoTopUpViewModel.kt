@@ -14,20 +14,12 @@ import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.OS
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_ADVANCED
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_EXPERT
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_ULTIMATE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.RM
 import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.TkpdProducts
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveSelectionUseCase
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsTopUpCreditUseCase
 import com.tokopedia.topads.debit.autotopup.data.extensions.selectedPrice
 import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,15 +31,14 @@ import javax.inject.Inject
 class TopAdsAutoTopUpViewModel @Inject constructor(
     private val useCase: GraphqlUseCase<TkpdProducts>,
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
-    private val topAdsTopUpCreditUseCase: TopAdsTopUpCreditUseCase,
     private val saveSelectionUseCase: TopAdsSaveSelectionUseCase,
-    private val  userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface,
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
-    val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
     val statusSaveSelection: MutableLiveData<SavingAutoTopUpState> = MutableLiveData()
-    val topAdsTopUpCreditData: MutableLiveData<Result<TopAdsShopTierShopGradeData.ShopInfoByID.Result>> = MutableLiveData()
     private val _isUserWhitelisted: MutableLiveData<Result<Boolean>> = MutableLiveData()
     val isUserWhitelisted: LiveData<Result<Boolean>> = _isUserWhitelisted
     fun getAutoTopUpStatusFull() {
@@ -69,25 +60,16 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         whiteListedUserUseCase.executeQuerySafeMode(
             onSuccess = {
                 it.data.forEach { data ->
-                    if (data.featureName == IS_TOP_UP_CREDIT_NEW_UI) _isUserWhitelisted.value =
-                        Success(true)
+                    if (data.featureName == IS_TOP_UP_CREDIT_NEW_UI) {
+                        _isUserWhitelisted.value =
+                            Success(true)
+                    }
                 }
             },
             onError = {
                 _isUserWhitelisted.value = Fail(it)
             }
         )
-    }
-    fun getManualTopAdsCreditList() {
-        topAdsTopUpCreditUseCase.setParams()
-        topAdsTopUpCreditUseCase.execute({ data ->
-            if (data.shopInfoByID.result.isNotEmpty()){
-                topAdsTopUpCreditData.value = Success(data.shopInfoByID.result.first())
-            }
-        },
-            {
-                it.printStackTrace()
-            })
     }
 
     fun saveSelection(isActive: Boolean, selectedItem: AutoTopUpItem, frequency: String = DEFAULT_TOP_UP_FREQUENCY.toString()) {
@@ -106,26 +88,28 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
                     throw ResponseErrorException(data.response.errors)
                 }
             }
-
         }, {
             statusSaveSelection.value = ResponseSaving(false, it)
         })
-
     }
 
     @GqlQuery("CategoryList", TKPD_PRODUCT)
     fun populateCreditList(onSuccess: ((CreditResponse) -> Unit)) {
-        val params = mapOf(ParamObject.SHOP_id to userSession.shopId,
-                ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
+        val params = mapOf(
+            ParamObject.SHOP_id to userSession.shopId,
+            ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH
+        )
         useCase.setTypeClass(TkpdProducts::class.java)
         useCase.setRequestParams(params)
         useCase.setGraphqlQuery(CategoryList())
-        useCase.execute({
-            onSuccess(it.tkpdProduct.creditResponse)
-        }
-                , {
-            it.printStackTrace()
-        })
+        useCase.execute(
+            {
+                onSuccess(it.tkpdProduct.creditResponse)
+            },
+            {
+                it.printStackTrace()
+            }
+        )
     }
 
     fun getAutoTopUpCreditList(
@@ -147,42 +131,10 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
 
     fun getCreditItemDataList(
         credit: List<DataCredit>?,
-        data: TopAdsShopTierShopGradeData.ShopInfoByID.Result
+        bonus: Float
     ): MutableList<TopUpCreditItemData> {
         val nominalList = mutableListOf<TopUpCreditItemData>()
-
-        when (data.goldOS.shopTier) {
-            RM -> {
-                nominalList.clear()
-                nominalList.addAll(createCreditList(credit, 0.0f))
-
-            }
-            PM -> {
-                nominalList.clear()
-                nominalList.addAll(createCreditList(credit, 1.5f))
-            }
-            OS -> {
-                nominalList.clear()
-                nominalList.addAll(createCreditList(credit, 3.5f))
-            }
-            PM_PRO -> {
-                when (data.goldOS.shopGrade) {
-                    PM_PRO_ADVANCED -> {
-                        nominalList.clear()
-                        nominalList.addAll(createCreditList(credit, 2.0f))
-                    }
-                    PM_PRO_EXPERT -> {
-                        nominalList.clear()
-                        nominalList.addAll(createCreditList(credit, 2.5f))
-                    }
-                    PM_PRO_ULTIMATE -> {
-                        nominalList.clear()
-                        nominalList.addAll(createCreditList(credit, 3.0f))
-                    }
-                }
-
-            }
-        }
+        nominalList.addAll(createCreditList(credit, bonus))
         return nominalList
     }
 
@@ -214,7 +166,9 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         credit.forEach {
             val clicked = if (isAutoTopUpActive) {
                 it.id == id
-            } else false
+            } else {
+                false
+            }
             nominalList.add(
                 TopUpCreditItemData(
                     it.priceFmt,
@@ -230,12 +184,11 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         autoTopUpFrequencySelected: Int,
         productPrice: String?
     ): Long {
-        return if (productPrice!=null){
+        return if (productPrice != null) {
             autoTopUpFrequencySelected * Utils.convertMoneyToValue(productPrice).toLong()
-        }else{
+        } else {
             0L
         }
-
     }
 
     fun getAutoTopUpCreditHistoryData(data: AutoTopUpStatus): Triple<String, String, Pair<String, Int>> {
@@ -252,9 +205,9 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         autoTopUpNominalList: MutableList<TopUpCreditItemData>
     ): Pair<MutableList<TopUpCreditItemData>, Int> {
         var selectedIndex = -1
-        autoTopUpNominalList.forEachIndexed {index, item->
+        autoTopUpNominalList.forEachIndexed { index, item ->
             item.clicked = false
-            if (item.productPrice == productPrice){
+            if (item.productPrice == productPrice) {
                 item.clicked = true
                 selectedIndex = index
             }
@@ -271,8 +224,8 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
     }
 
     companion object {
-        const val TKPD_PRODUCT = """query topadsGetTkpdProduct(${'$'}shop_id: String!, ${'$'}source: String!) {
-  topadsGetTkpdProduct(shop_id: ${'$'}shop_id, source: ${'$'}source) {
+        const val TKPD_PRODUCT = """query topadsGetTkpdProductV2(${'$'}shop_id: String!, ${'$'}source: String!) {
+  topadsGetTkpdProductV2(shop_id: ${'$'}shop_id, source: ${'$'}source) {
     data {
       credit {
         product_id
