@@ -38,9 +38,11 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
                     }
 
                     override fun onCompleted() {
+                        /* no-op */
                     }
 
                     override fun onError(e: Throwable?) {
+                        /* no-op */
                     }
                 })
             )
