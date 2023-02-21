@@ -131,6 +131,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
             is CommentAction.DeleteComment -> deleteComment(action.commentId)
             is CommentAction.ReportComment -> reportComment(action.param)
+            else -> {}
         }
     }
 
@@ -142,7 +143,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                         .copy(isExpanded = !item.isExpanded) else item
                 }
                     .toMutableList().apply {
-                        removeIf { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
+                        removeAll { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
                     }
                 it.copy(list = newList)
             }
