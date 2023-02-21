@@ -8,17 +8,6 @@ data class ImageGeneratorArgs(
     val productAmount: String,
 ) {
 
-    fun generateImage(): String {
-//        val host = "https://imagenerator-staging.tokopedia.com" //staging
-        val host = "https://imagenerator.tokopedia.com" //prod
-        val sourceId = "LScDrk"
-        val path = "v2/preview"
-        val previewImage =
-            "$host/$path/$sourceId?background_color=$backgroundColor&shop_logo=$logo&" +
-                "product_amount=$productAmount&product_image_1=$productUrl1"
-        return if (productAmount == "2") "$previewImage&product_image_2=$productUrl2" else previewImage
-    }
-
     fun getArg(): List<Map<String, String>> {
         val args = mutableListOf<Map<String, String>>()
         args.add(mapOf("key" to "background_color", "value" to backgroundColor))
