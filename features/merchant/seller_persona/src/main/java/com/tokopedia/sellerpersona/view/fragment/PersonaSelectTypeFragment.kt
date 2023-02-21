@@ -158,8 +158,8 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     private fun showErrorState() {
         binding?.run {
             dismissLoadingState()
-            dividerSpSelectType.visible()
-            btnSpSelectType.visible()
+            dividerSpSelectType.gone()
+            btnSpSelectType.gone()
             errorViewPersonaSelectType.visible()
             errorViewPersonaSelectType.setOnActionClicked {
                 fetchPersonaList()
