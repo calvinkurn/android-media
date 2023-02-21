@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.comment
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -199,6 +200,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun deleteComment(isFromToaster: Boolean) {
+        Log.d("sukses", isFromToaster.toString())
         fun removeComment() {
             _comments.getAndUpdate {
                 it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })

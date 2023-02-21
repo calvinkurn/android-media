@@ -20,8 +20,6 @@ sealed class CommentAction {
         val param: FeedReportRequestParamModel
     ) : CommentAction()
 
-    data class ResultAction(val requestCode: Int) : CommentAction()
-
     object RequestReportAction : CommentAction()
 
     data class SelectComment(val comment: CommentUiModel.Item) : CommentAction()
