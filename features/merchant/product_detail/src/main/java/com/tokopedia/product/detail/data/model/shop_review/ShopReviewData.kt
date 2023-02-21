@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.data.model.review_list
+package com.tokopedia.product.detail.data.model.shop_review
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

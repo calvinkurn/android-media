@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.review_list.asUiModel
+import com.tokopedia.product.detail.data.model.shop_review.asUiModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
