@@ -10,8 +10,7 @@ import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE

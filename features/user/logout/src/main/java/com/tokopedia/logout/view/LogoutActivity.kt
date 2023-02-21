@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -60,9 +61,9 @@ import javax.inject.Inject
  * @created 29-01-2020
  *
  * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.LOGOUT]
- * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME]
+ * @param : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME]
  * default is 'true', set 'false' if you wan get activity result
- * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY]
+ * @param : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY]
  * default is 'false', set 'true' if you just wan to clear data only
  */
 
@@ -91,9 +92,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     override fun getComponent(): LogoutComponent {
         return DaggerLogoutComponent.builder()
-                .baseComponent((application as BaseMainApplication).baseAppComponent)
-                .context(this)
-                .build()
+            .baseComponent((application as BaseMainApplication).baseAppComponent)
+            .context(this)
+            .build()
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,27 +145,29 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun initObservable() {
-        logoutViewModel.logoutResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    clearData()
-                }
-                is Fail -> {
-                    hideLoading()
-                    processingError(it)
+        logoutViewModel.logoutResult.observe(
+            this,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        clearData()
+                    }
+                    is Fail -> {
+                        hideLoading()
+                        processingError(it)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun processingError(it: Fail) {
         val errorMessage = it.throwable.message.toString()
-        if(isByPassClearData(errorMessage)) {
+        if (isByPassClearData(errorMessage)) {
             clearData()
         } else {
             showErrorDialog(errorMessage)
         }
-
     }
 
     private fun isByPassClearData(errorMessage: String): Boolean {
@@ -187,6 +190,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun clearData() {
         hideLoading()
+        disconnectTokoChat()
         clearStickyLogin()
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
@@ -231,7 +235,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearDataStore() {
-        if(dataStorePreference.isDataStoreEnabled()) {
+        if (dataStorePreference.isDataStoreEnabled()) {
             GlobalScope.launch {
                 try {
                     userSessionDataStore.clearDataStore()
@@ -266,7 +270,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearStickyLogin() {
-        val stickyPref =  applicationContext.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
+        val stickyPref = applicationContext.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
         stickyPref.edit().clear().apply()
     }
 
@@ -285,7 +289,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 putString(KEY_PROFILE_PICTURE, encryptedProfilePicture).apply()
             }
         } catch (e: Exception) {
-            //skip save login reminder data
+            // skip save login reminder data
         }
     }
 
@@ -315,7 +319,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         try {
             WebView(applicationContext).clearCache(true)
             val cookieManager: CookieManager
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 CookieSyncManager.createInstance(this)
                 cookieManager = CookieManager.getInstance()
                 cookieManager.removeAllCookie()
@@ -324,6 +328,12 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 cookieManager.removeAllCookies {}
             }
         } catch (ignored: Exception) {}
+    }
+
+    private fun disconnectTokoChat() {
+        if (application is AbstractionRouter) {
+            (application as AbstractionRouter).disconnectTokoChat()
+        }
     }
 
     companion object {

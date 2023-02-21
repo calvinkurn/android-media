@@ -24,6 +24,7 @@ public interface LinkerConstants {
     String NOW = "tokopedia://now/{content}";
     String NOW_RECIPE = "tokopedia://now/recipe/detail/{id}";
     String WISHLIST_COLLECTION = "tokopedia://wishlist/collection/{id}";
+    String NOW_HOME = "tokopedia://now";
     String WEBVIEW = "tokopedia://webview?{content}";
     String APPLINKS = "tokopedia";
     String WEB_DOMAIN = "https://www.tokopedia.com/";
@@ -42,6 +43,8 @@ public interface LinkerConstants {
     String REGEX_APP_LINK = "\\{.*?\\} ?";
     String TOKOPEDIA_SCHEME = "tokopedia://";
     String QUERY_PARAM_SEPARATOR = "\\?";
+
+    String QUERY_KEY_REFERRAL_CODE = "referralcode";
 
     String ID = "id";
     String PRICE = "price";

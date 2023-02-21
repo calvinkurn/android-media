@@ -14,6 +14,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navi
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
@@ -85,4 +87,6 @@ interface UIWidgetComponent {
     fun inject(shopCardInfiniteViewModel: ShopCardInfiniteViewModel)
     fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
     fun inject(productBundlingViewModel: ProductBundlingViewModel)
+    fun inject(contentCardViewModel: ContentCardViewModel)
+    fun inject(contentCardItemViewModel: ContentCardItemViewModel)
 }

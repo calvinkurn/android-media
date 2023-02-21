@@ -2,6 +2,11 @@ if (!rootProject.ext.debugToolsEnabled) {
     // it has already set false, because default is true
     return
 }
+if (project.hasProperty('debugToolsDisabled')?: false) {
+    rootProject.ext.debugToolsEnabled = false
+    println("Debug tools set false based on debugToolsDisabled Parameter")
+    return
+}
 if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
     rootProject.ext.debugToolsEnabled = true
     println("Debug tools set true based on buildType Parameter")

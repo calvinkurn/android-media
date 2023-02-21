@@ -17,17 +17,16 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.getAnalyticValidator
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
-import com.tokopedia.loginregister.utils.LoginSocmedTestHelper
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
+import com.tokopedia.loginregister.utils.LoginSocmedTestHelper
 import com.tokopedia.test.application.annotations.CassavaTest
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -190,7 +189,7 @@ class LoginActivityTest: LoginBase() {
     }
 
     private fun clickRegisterBottom(){
-        Espresso.onView(Matchers.allOf(withId(R.id.register_button), ViewMatchers.withContentDescription(R.string.content_desc_register_button_phone)))
+        Espresso.onView(CoreMatchers.allOf(withId(R.id.register_button), ViewMatchers.withContentDescription(R.string.content_desc_register_button_phone)))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(click())
     }

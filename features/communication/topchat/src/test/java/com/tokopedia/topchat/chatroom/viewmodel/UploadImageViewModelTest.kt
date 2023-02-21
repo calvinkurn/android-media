@@ -14,7 +14,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.lang.IllegalStateException
 
-class UploadImageViewModelTest: BaseTopChatViewModelTest() {
+class UploadImageViewModelTest : BaseTopChatViewModelTest() {
 
     val imageUpload = ImageUploadUiModel.Builder().build()
 
@@ -42,14 +42,14 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
         // Given
         val wsPayload = "image"
         disableUploadByService()
-        every { uploadImageUseCase.upload(imageUpload, captureLambda(), any()) } answers {
-            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
-            onSuccess.invoke("123", imageUpload)
+        every { uploadImageUseCase.upload(imageUpload, captureLambda(), any(), any()) } answers {
+            val onSuccess = lambda<(String, ImageUploadUiModel, Boolean) -> Unit>()
+            onSuccess.invoke("123", imageUpload, true)
         }
-        every { payloadGenerator .generateImageWsPayload(any(), any(), any()) } returns wsPayload
+        every { payloadGenerator.generateImageWsPayload(any(), any(), any(), any()) } returns wsPayload
 
         // When
-        viewModel.startUploadImages(imageUpload)
+        viewModel.startUploadImages(imageUpload, true)
 
         // Then
         assertEquals(viewModel.previewMsg.value, imageUpload)
@@ -63,13 +63,13 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
         // Given
         val error = IllegalStateException()
         disableUploadByServiceByError()
-        every { uploadImageUseCase.upload(imageUpload, any(), captureLambda()) } answers {
+        every { uploadImageUseCase.upload(imageUpload, any(), captureLambda(), any()) } answers {
             val onError = lambda<(Throwable, ImageUploadUiModel) -> Unit>()
             onError.invoke(error, imageUpload)
         }
 
         // When
-        viewModel.startUploadImages(imageUpload)
+        viewModel.startUploadImages(imageUpload, true)
 
         // Then
         assertEquals(viewModel.errorSnackbar.value, error)
@@ -83,8 +83,8 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
         every { DeviceInfo.getModelName() } returns ""
 
         // When
-        viewModel.startUploadImages(imageUpload)
-        viewModel.startUploadImages(imageUpload)
+        viewModel.startUploadImages(imageUpload, true)
+        viewModel.startUploadImages(imageUpload, true)
 
         // Then
         assertEquals(UploadImageChatService.dummyMap.size, 1)

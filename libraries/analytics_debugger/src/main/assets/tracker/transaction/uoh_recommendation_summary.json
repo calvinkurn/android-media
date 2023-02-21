@@ -3,7 +3,6 @@
   "query": [
     {
       "businessUnit": "order management",
-      "clientId": ".*",
       "eventCategory": "my purchase list - mp",
       "currentSite": "tokopediamarketplace",
       "item_list": "/my_purchase_list - rekomendasi untuk anda .*",

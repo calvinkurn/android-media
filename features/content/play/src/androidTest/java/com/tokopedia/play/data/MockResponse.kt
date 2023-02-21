@@ -41,14 +41,14 @@ const val RESPONSE_MOCK_CHANNEL_DETAIL_LIVE = """
                       "id": "6496952",
                       "type": "shop",
                       "name": "RAVPower Official Store",
-                      "thumbnail_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/12/26/6496952/6496952_9cd123f1-53fa-4a14-ae74-25aaafe3e982.png",
-                      "badge_url": "https://ecs7.tokopedia.net/img/official_store/badge_os.png"
+                      "thumbnail_url": "https://images.tokopedia.net/img/cache/215-square/shops-1/2019/12/26/6496952/6496952_9cd123f1-53fa-4a14-ae74-25aaafe3e982.png",
+                      "badge_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                     },
                     "video": {
                       "id": "6453",
                       "orientation": "vertical",
                       "type": "live",
-                      "cover_url": "https://ecs7.tokopedia.net/img/jJtrdn/2020/8/10/d8bff2c4-7ff9-4482-9e71-3c62ae25c826.jpg",
+                      "cover_url": "https://images.tokopedia.net/img/jJtrdn/2020/8/10/d8bff2c4-7ff9-4482-9e71-3c62ae25c826.jpg",
                       "stream_source": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                       "autoplay": true,
                       "buffer_control": {
@@ -147,14 +147,14 @@ const val RESPONSE_MOCK_CHANNEL_DETAIL_VOD = """
                       "id": "41129297",
                       "type": "tokopedia",
                       "name": "Tokopedia Play",
-                      "thumbnail_url": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2019/5/27/41129297/41129297_c075146d-2b07-4c7f-a4c6-fbd42d26d7ef.png",
+                      "thumbnail_url": "https://images.tokopedia.net/img/cache/100-square/user-1/2019/5/27/41129297/41129297_c075146d-2b07-4c7f-a4c6-fbd42d26d7ef.png",
                       "badge_url": ""
                     },
                     "video": {
                       "id": "6453",
                       "orientation": "horizontal",
                       "type": "vod",
-                      "cover_url": "https://ecs7.tokopedia.net/img/jJtrdn/2020/8/10/d8bff2c4-7ff9-4482-9e71-3c62ae25c826.jpg",
+                      "cover_url": "https://images.tokopedia.net/img/jJtrdn/2020/8/10/d8bff2c4-7ff9-4482-9e71-3c62ae25c826.jpg",
                       "stream_source": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                       "autoplay": true,
                       "buffer_control": {
@@ -263,7 +263,7 @@ const val RESPONSE_MOCK_PINNED_PRODUCT = """
                     {
                       "id": "632305096",
                       "name": "RAVPower Mini Powerbank 10000mAH with PD18W + QC3.0 Black [RP-PB194]",
-                      "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/11/72048583/72048583_6847377e-ad8b-4fac-b451-25f013b73b63_1000_1000",
+                      "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/11/72048583/72048583_6847377e-ad8b-4fac-b451-25f013b73b63_1000_1000",
                       "shop_id": "6496952",
                       "original_price": 799000,
                       "original_price_formatted": "Rp 799.000",
@@ -282,7 +282,7 @@ const val RESPONSE_MOCK_PINNED_PRODUCT = """
                     {
                       "id": "15240013",
                       "name": "Indomie Soto Lamongan",
-                      "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                      "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
                       "shop_id": "479887",
                       "original_price": 60000,
                       "original_price_formatted": "Rp 60.000",
@@ -306,7 +306,7 @@ const val RESPONSE_MOCK_PINNED_PRODUCT = """
                       "title": " ",
                       "subtitle": "min. pembelian ",
                       "voucher_type": 1,
-                      "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/4/5480066/5480066_4a86d259-d8ce-4501-a1d8-17803320bc35",
+                      "voucher_image": "https://images.tokopedia.net/img/attachment/2018/10/4/5480066/5480066_4a86d259-d8ce-4501-a1d8-17803320bc35",
                       "voucher_image_square": "",
                       "voucher_quota": 100,
                       "voucher_finish_time": "2018-12-07T23:30:00Z"
@@ -318,8 +318,8 @@ const val RESPONSE_MOCK_PINNED_PRODUCT = """
                       "title": " ",
                       "subtitle": "min. pembelian ",
                       "voucher_type": 1,
-                      "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_eb6e74a3-1ad9-4fd8-a17f-19d3197bb869",
-                      "voucher_image_square": "https://ecs7.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_c3171bd3-1b75-4b46-a451-9228273072ca",
+                      "voucher_image": "https://images.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_eb6e74a3-1ad9-4fd8-a17f-19d3197bb869",
+                      "voucher_image_square": "https://images.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_c3171bd3-1b75-4b46-a451-9228273072ca",
                       "voucher_quota": 100,
                       "voucher_finish_time": "2020-03-17T00:30:00Z"
                     },
@@ -330,7 +330,7 @@ const val RESPONSE_MOCK_PINNED_PRODUCT = """
                       "title": " ",
                       "subtitle": "min. pembelian ",
                       "voucher_type": 3,
-                      "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
+                      "voucher_image": "https://images.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
                       "voucher_image_square": "",
                       "voucher_quota": 100,
                       "voucher_finish_time": "2018-12-05T23:30:00Z"
@@ -342,7 +342,7 @@ const val RESPONSE_MOCK_PINNED_PRODUCT = """
                       "title": " ",
                       "subtitle": "min. pembelian ",
                       "voucher_type": 3,
-                      "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
+                      "voucher_image": "https://images.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
                       "voucher_image_square": "",
                       "voucher_quota": 100,
                       "voucher_finish_time": "2018-12-05T23:30:00Z"
@@ -354,7 +354,7 @@ const val RESPONSE_MOCK_PINNED_PRODUCT = """
                       "title": " ",
                       "subtitle": "min. pembelian ",
                       "voucher_type": 3,
-                      "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
+                      "voucher_image": "https://images.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
                       "voucher_image_square": "",
                       "voucher_quota": 100,
                       "voucher_finish_time": "2018-12-05T23:30:00Z"
@@ -392,8 +392,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                           "productVariantOptionID": 47372627,
                           "variantUnitValueID": 2,
                           "picture": {
-                            "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-                            "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+                            "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+                            "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
                           }
                         },
                         {
@@ -402,8 +402,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                           "productVariantOptionID": 47372625,
                           "variantUnitValueID": 5,
                           "picture": {
-                            "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-                            "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+                            "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+                            "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
                           }
                         },
                         {
@@ -412,8 +412,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                           "productVariantOptionID": 47372626,
                           "variantUnitValueID": 18,
                           "picture": {
-                            "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-                            "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+                            "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+                            "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
                           }
                         },
                         {
@@ -422,8 +422,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                           "productVariantOptionID": 47372629,
                           "variantUnitValueID": 16,
                           "picture": {
-                            "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-                            "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+                            "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+                            "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
                           }
                         },
                         {
@@ -432,8 +432,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                           "productVariantOptionID": 47372624,
                           "variantUnitValueID": 9,
                           "picture": {
-                            "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-                            "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+                            "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+                            "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
                           }
                         },
                         {
@@ -442,8 +442,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                           "productVariantOptionID": 47372628,
                           "variantUnitValueID": 6,
                           "picture": {
-                            "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-                            "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+                            "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+                            "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
                           }
                         }
                       ]
@@ -490,8 +490,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                         "alwaysAvailable": false
                       },
                       "picture": {
-                        "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-                        "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+                        "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+                        "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
                       }
                     },
                     {
@@ -534,8 +534,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                         "alwaysAvailable": false
                       },
                       "picture": {
-                        "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-                        "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+                        "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+                        "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
                       }
                     },
                     {
@@ -578,8 +578,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                         "alwaysAvailable": false
                       },
                       "picture": {
-                        "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-                        "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+                        "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+                        "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
                       }
                     },
                     {
@@ -622,8 +622,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                         "alwaysAvailable": false
                       },
                       "picture": {
-                        "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-                        "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+                        "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+                        "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
                       }
                     },
                     {
@@ -666,8 +666,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                         "alwaysAvailable": false
                       },
                       "picture": {
-                        "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-                        "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+                        "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+                        "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
                       }
                     },
                     {
@@ -710,8 +710,8 @@ const val RESPONSE_MOCK_PRODUCT_VARIANT = """
                         "alwaysAvailable": false
                       },
                       "picture": {
-                        "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-                        "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+                        "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+                        "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
                       }
                     }
                   ]

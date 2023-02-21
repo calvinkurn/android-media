@@ -19,14 +19,11 @@ private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
 const val FEED_TYPE_TAB_MENU = "tabMenu"
 private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
 private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"
-private const val WIDGET_LIVE ="live"
-const val WIDGET_UPCOMING ="upcoming"
-private const val FEED_SEE_MORE_LIVE_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=${WIDGET_LIVE}"
-private const val FEED_SEE_MORE_UPCOMING_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=${WIDGET_UPCOMING}"
-private const val  UPCOMING_WIDGET_TITLE = "Nantikan live seru lainnya!"
-private const val  LIVE_WIDGET_TITLE = "Lagi Live, nih!"
+private const val WIDGET_LIVE = "live"
+const val WIDGET_UPCOMING = "upcoming"
+private const val FEED_SEE_MORE_LIVE_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_LIVE"
+private const val FEED_SEE_MORE_UPCOMING_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_UPCOMING"
 private const val GIVEAWAY = "GIVEAWAY"
-
 
 object FeedPlayVideoTabMapper {
 
@@ -45,11 +42,9 @@ object FeedPlayVideoTabMapper {
         meta: PlayPagingProperties,
         position: Int = 0,
         shopId: String,
-        playWidgetPreference: PlayWidgetPreference,
+        playWidgetPreference: PlayWidgetPreference
     ): List<PlayFeedUiModel> {
-
         val list = mutableListOf<PlayFeedUiModel>()
-
 
         playSlotList.forEach { playSlot ->
             when (playSlot.type) {
@@ -71,11 +66,7 @@ object FeedPlayVideoTabMapper {
                     list.add(
                         PlaySlotTabMenuUiModel(
                             playSlot.items.mapIndexed { index, playSlotItem ->
-                                PlaySlotTabMenuUiModel.Item(
-                                    playSlotItem.id, playSlotItem.label, playSlotItem.icon_url,
-                                    playSlotItem.group, playSlotItem.source_type,
-                                    playSlotItem.source_id, playSlotItem.slug_id, index == position
-                                )
+                                mapPlayTabData(playSlotItem, index == position)
                             }
                         )
                     )
@@ -102,22 +93,32 @@ object FeedPlayVideoTabMapper {
         return list
     }
 
-    private fun getWidgetUiModel(
-        playSlot: PlaySlot, meta: PlayPagingProperties,
-        shopId: String,
-        playWidgetPreference: PlayWidgetPreference,
-    ): PlayWidgetUiModel {
+    private fun mapPlayTabData(playSlotItem: PlaySlotItems, isSelected: Boolean) = PlaySlotTabMenuUiModel.Item(
+        playSlotItem.id,
+        playSlotItem.label,
+        playSlotItem.icon_url,
+        playSlotItem.group,
+        playSlotItem.source_type,
+        playSlotItem.source_id,
+        playSlotItem.slug_id,
+        isSelected
+    )
 
+    private fun getWidgetUiModel(
+        playSlot: PlaySlot,
+        meta: PlayPagingProperties,
+        shopId: String,
+        playWidgetPreference: PlayWidgetPreference
+    ): PlayWidgetUiModel {
         val item = playSlot.items.firstOrNull() ?: return PlayWidgetUiModel.Empty
 
-        //check these values
+        // check these values
 
         val autoRefresh = false
         val autoRefreshTimer: Long = 0
 
-        //till here
+        // till here
         val actionLink = if (PlayWidgetChannelType.getByValue(playSlot.items.first().air_time) == PlayWidgetChannelType.Upcoming) FEED_SEE_MORE_UPCOMING_APP_LINK else FEED_SEE_MORE_LIVE_APP_LINK
-
 
         return PlayWidgetUiModel(
             title = playSlot.title,
@@ -125,26 +126,34 @@ object FeedPlayVideoTabMapper {
             actionAppLink = actionLink,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
-                autoRefresh, autoRefreshTimer, playWidgetPreference.getAutoPlay(meta.is_autoplay), AUTO_PLAY_AMOUNT,
-                meta.max_autoplay_in_cell, MAX_AUTO_PLAY_WIFI_DURATION, BUSINESS_WIDGET_POSITION
+                autoRefresh,
+                autoRefreshTimer,
+                playWidgetPreference.getAutoPlay(meta.is_autoplay),
+                AUTO_PLAY_AMOUNT,
+                meta.max_autoplay_in_cell,
+                MAX_AUTO_PLAY_WIFI_DURATION,
+                BUSINESS_WIDGET_POSITION
             ),
             background = PlayWidgetBackgroundUiModel(
-                "", item.appLink, item.webLink, emptyList(), ""
+                "",
+                item.appLink,
+                item.webLink,
+                emptyList(),
+                ""
             ),
             getWidgetItemUiModel(playSlot.items, shopId)
         )
     }
 
     private fun getWidgetItemUiModel(items: List<PlaySlotItems>, shopId: String): List<PlayWidgetItemUiModel> {
-
-        //check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
+        // check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
         val performanceSummaryLink = ""
         val poolType = ""
         val recommendationType = ""
 
         val channelTypeTransitionPrev = ""
         val channelTypeTransitionNext = ""
-        //till here
+        // till here
 
         val list = mutableListOf<PlayWidgetItemUiModel>()
 
@@ -164,8 +173,10 @@ object FeedPlayVideoTabMapper {
                     reminderType = getReminderType(item.configurations.reminder.isSet),
                     partner = PlayWidgetPartnerUiModel(item.partner.id, MethodChecker.fromHtml(item.partner.name).toString()),
                     video = PlayWidgetVideoUiModel(
-                        item.video.id, item.is_live,
-                        item.video.cover_url, item.video.stream_source
+                        item.video.id,
+                        item.is_live,
+                        item.video.cover_url,
+                        item.video.stream_source
                     ),
                     channelType = channelType,
                     hasGame = mapHasGame(item.configurations.promoLabels),
@@ -173,7 +184,7 @@ object FeedPlayVideoTabMapper {
                     performanceSummaryLink = performanceSummaryLink,
                     poolType = poolType,
                     recommendationType = recommendationType,
-                    hasAction = shouldHaveActionMenu(channelType,item.partner.id, shopId),
+                    hasAction = shouldHaveActionMenu(channelType, item.partner.id, shopId),
                     channelTypeTransition = PlayWidgetChannelTypeTransition(
                         PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                         PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
@@ -190,6 +201,6 @@ object FeedPlayVideoTabMapper {
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, shopId: String): Boolean {
         return channelType == PlayWidgetChannelType.Vod &&
-                shopId == partnerId
+            shopId == partnerId
     }
 }

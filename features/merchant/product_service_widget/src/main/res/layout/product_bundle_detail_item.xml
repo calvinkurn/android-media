@@ -36,7 +36,8 @@
         app:layout_constraintLeft_toRightOf="@id/riv_product_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_variant_empty"
-        app:typographyType="body_2"
+        app:typographyType="paragraph_2"
+        android:textColor="@color/Unify_NN950"
         tools:text="iPhone XR Garansi Resmi Apple \nIndonesia IBOX" />
 
     <com.tokopedia.product_bundle.common.customview.SpinnerView

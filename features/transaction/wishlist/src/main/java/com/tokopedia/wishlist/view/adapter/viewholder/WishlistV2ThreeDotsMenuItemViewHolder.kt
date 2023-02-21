@@ -8,6 +8,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistV2ThreeDotsMenuItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_ADD_ITEM_TO_COLLECTION
+import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_ADD_WISHLIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_CHECK_SHOP
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_CHECK_SIMILAR_PRODUCT
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_DELETE_WISHLIST
@@ -15,8 +16,10 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_LABEL_BARU
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_SHARE_LINK_PRODUCT
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 
-class WishlistV2ThreeDotsMenuItemViewHolder (private val binding: BottomsheetWishlistV2ThreeDotsMenuItemBinding,
-                                             private val listener: WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener?) : RecyclerView.ViewHolder(binding.root) {
+class WishlistV2ThreeDotsMenuItemViewHolder(
+    private val binding: BottomsheetWishlistV2ThreeDotsMenuItemBinding,
+    private val listener: WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener?
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(wishlistItem: WishlistV2UiModel.Item, additionalButtonsItem: WishlistV2UiModel.Item.Buttons.AdditionalButtonsItem) {
         when (additionalButtonsItem.action) {
             MENU_CHECK_SIMILAR_PRODUCT -> {
@@ -48,6 +51,12 @@ class WishlistV2ThreeDotsMenuItemViewHolder (private val binding: BottomsheetWis
             MENU_DELETE_WISHLIST -> {
                 binding.run {
                     menuIcon.setImage(IconUnify.DELETE)
+                    menuLabel.gone()
+                }
+            }
+            MENU_ADD_WISHLIST -> {
+                binding.run {
+                    menuIcon.setImage(IconUnify.HEART)
                     menuLabel.gone()
                 }
             }

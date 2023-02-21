@@ -26,7 +26,7 @@ object PlayMerchantVoucherSocketResponse {
                     voucher_code: "123",
                     voucher_finish_time: "$expiredDate",
                     voucher_id: 1,
-                    voucher_image: "https://ecs7.tokopedia.net/img/attachment/2018/10/4/5480066/5480066_b0036e26-6b16-4afa-a8a3-c14faf9832e0",
+                    voucher_image: "https://images.tokopedia.net/img/attachment/2018/10/4/5480066/5480066_b0036e26-6b16-4afa-a8a3-c14faf9832e0",
                     voucher_image_square: "",
                     voucher_name: "test date",
                     voucher_quota: $quota,

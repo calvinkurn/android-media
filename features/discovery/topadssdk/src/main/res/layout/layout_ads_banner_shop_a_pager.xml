@@ -79,7 +79,7 @@
             android:orientation="horizontal"
             android:layout_marginStart="8dp"
             android:layout_marginTop="6dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/shop_image"
             app:layout_constraintTop_toBottomOf="@id/shop_name"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -103,21 +103,6 @@
             tools:text="Follow"
             tools:visibility="visible"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/topAdsFlashSaleTimerPrefixText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:text="@string/topads_sdk_sale_ends_in"
-            android:visibility="gone"
-            android:gravity="end"
-            app:layout_constraintBottom_toBottomOf="@id/topAdsFlashSaleTimer"
-            app:layout_constraintEnd_toStartOf="@+id/topAdsFlashSaleTimer"
-            app:layout_constraintStart_toEndOf="@id/linearLayoutMerchantVoucher"
-            app:layout_constraintTop_toTopOf="@+id/topAdsFlashSaleTimer"
-            app:typographyType="display_3"
-            tools:visibility="visible" />
-
         <com.tokopedia.unifycomponents.timer.TimerUnifySingle
             android:id="@+id/topAdsFlashSaleTimer"
             android:layout_width="wrap_content"
@@ -128,7 +113,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/linearLayoutMerchantVoucher"
             app:timer_unify_single_showClockIcon="true"
-            app:timer_unify_single_textWidth="full_radius"
+            app:timer_unify_single_textWidth="wrap"
+            app:timer_unify_single_text="@string/topads_sdk_sale_ends_in"
             app:timer_unify_single_type="auto"
             app:timer_unify_single_variant="main"
             tools:visibility="visible" />

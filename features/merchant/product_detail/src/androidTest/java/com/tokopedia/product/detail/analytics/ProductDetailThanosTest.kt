@@ -18,8 +18,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
@@ -86,7 +86,6 @@ class ProductDetailThanosTest {
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         InstrumentationAuthHelper.clearUserSession()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         val intent = ProductDetailActivity.createIntent(targetContext,
             ProductDetailActivityTest.PRODUCT_ID
         )
@@ -112,7 +111,7 @@ class ProductDetailThanosTest {
     @Test
     fun tracker_journey_id_56() {
         actionTest {
-//            fakeLogin()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         } assertTest {
             assertIsLoggedIn(targetContext, true)
             waitFor()

@@ -1,7 +1,5 @@
 package com.tokopedia.kol.feature.report.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.data.raw.GQL_MUTATION_SEND_REPORT
 import com.tokopedia.feedcomponent.domain.model.report.entity.SendReportResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -16,8 +14,8 @@ import javax.inject.Inject
  */
 @Deprecated("please use com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase")
 class SendReportUseCase @Inject constructor(
-        @ApplicationContext private val context: Context,
-        private val graphqlUseCase: GraphqlUseCase) : UseCase<SendReportResponse>() {
+        private val graphqlUseCase: GraphqlUseCase,
+) : UseCase<SendReportResponse>() {
 
     override fun createObservable(params: RequestParams?): Observable<SendReportResponse> {
         val query = GQL_MUTATION_SEND_REPORT

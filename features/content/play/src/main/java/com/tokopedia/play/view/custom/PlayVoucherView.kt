@@ -61,13 +61,8 @@ class PlayVoucherView : FrameLayout {
             R.string.play_product_voucher_header_desc, voucherSize.toString()
         )
 
-    fun setupListener(listener: Listener) {
+    fun setupListener(listener: Listener?) {
         mListener = listener
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        mListener = null
     }
 
     interface Listener {

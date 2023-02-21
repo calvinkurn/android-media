@@ -1,5 +1,7 @@
 package com.tokopedia.sellerapp;
 
+import static com.tokopedia.applink.RouteManager.SELLER_APP_APPLINK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,7 +37,6 @@ import java.util.ArrayList;
 
 public class SplashScreenActivity extends SplashScreen {
 
-    private boolean isApkTempered;
     private static String KEY_AUTO_LOGIN = "is_auto_login";
 
     private UserSessionInterface userSession;
@@ -45,18 +46,7 @@ public class SplashScreenActivity extends SplashScreen {
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
                 .start(this.getApplication());
         setUserIdNewRelic();
-        isApkTempered = false;
-        try {
-            getResources().getDrawable(R.drawable.launch_screen);
-        } catch (Exception e) {
-            isApkTempered = true;
-            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
-        }
         super.onCreate(savedInstanceState);
-        if (isApkTempered) {
-            startActivity(new Intent(this, FallbackActivity.class));
-            finish();
-        }
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
@@ -74,7 +64,7 @@ public class SplashScreenActivity extends SplashScreen {
      * handle/forward app link redirection from customer app to seller app
      */
     private boolean handleAppLink(UserSessionInterface userSession) {
-        Uri uri = getIntent().getData();
+        Uri uri = getIntent().getParcelableExtra(SELLER_APP_APPLINK);
         if (null != uri) {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
@@ -107,9 +97,6 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
-        if (isApkTempered) {
-            return;
-        }
 
         if (userSession == null) {
             userSession = new UserSession(this);
@@ -164,21 +151,4 @@ public class SplashScreenActivity extends SplashScreen {
         return intent;
     }
 
-    @Override
-    protected RemoteConfig.Listener getRemoteConfigListener() {
-        return new RemoteConfig.Listener() {
-            @Override
-            public void onComplete(RemoteConfig remoteConfig) {
-                LogManager logManager = LogManager.instance;
-                if (logManager != null) {
-                    logManager.refreshConfig();
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        };
-    }
 }

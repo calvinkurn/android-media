@@ -778,6 +778,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     ) {
         keyword shouldBe inspirationCarouselOption.title
         subtitle shouldBe inspirationCarouselOption.subtitle
+        iconSubtitle shouldBe inspirationCarouselOption.iconSubtitle
         applink shouldBe inspirationCarouselOption.applink
         cardButton.applink shouldBe inspirationCarouselOption.cardButton.applink
         cardButton.title shouldBe inspirationCarouselOption.cardButton.title
@@ -836,6 +837,10 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         }
 
         componentId shouldBe inspirationCarouselProduct.componentId
+        stockBarDataView.stock shouldBe inspirationCarouselProduct.stockBar.stock
+        stockBarDataView.originalStock shouldBe inspirationCarouselProduct.stockBar.originalStock
+        stockBarDataView.percentageValue shouldBe inspirationCarouselProduct.stockBar.percentageValue
+        stockBarDataView.color shouldBe inspirationCarouselProduct.stockBar.color
     }
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {

@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
+import com.tokopedia.loginfingerprint.utils.crypto.KeyPairManager
 import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,6 +53,17 @@ class LoginFingerprintSettingModule(val context: Context) {
     fun provideRsaSignatureUtils(): RsaSignatureUtils?  {
         return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             RsaSignatureUtils()
+        }
+        else null
+    }
+
+    @LoginFingerprintSettingScope
+    @Provides
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Nullable
+    fun provideKeyPairManager(@LoginFingerprintContext context: Context): KeyPairManager?  {
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            KeyPairManager(context)
         }
         else null
     }

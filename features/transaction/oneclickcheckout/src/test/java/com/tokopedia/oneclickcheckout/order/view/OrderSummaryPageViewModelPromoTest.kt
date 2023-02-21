@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -80,8 +81,12 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
         val promoCode = "123"
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(codes = listOf(promoCode),
-                voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode))))
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            lastApply = LastApplyUiModel(
+                codes = listOf(promoCode),
+                voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode))
+            )
+        )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
 
         // When
@@ -115,8 +120,11 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val promoCode = "123"
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(
-                voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode), LastApplyVoucherOrdersItemUiModel(code = promoCode))))
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            lastApply = LastApplyUiModel(
+                voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode), LastApplyVoucherOrdersItemUiModel(code = promoCode))
+            )
+        )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
@@ -146,12 +154,39 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         // Then
-        assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
-                orders = listOf(OrdersItem(shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                        shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
-        assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
-                orders = listOf(Order(isChecked = true, shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                        shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
+        assertEquals(
+            ValidateUsePromoRequest(
+                isSuggested = 0,
+                skipApply = 0,
+                cartType = "occmulti",
+                state = "checkout",
+                orders = listOf(
+                    OrdersItem(
+                        shippingId = helper.firstCourierFirstDuration.productData.shipperId,
+                        spId = helper.firstCourierFirstDuration.productData.shipperProductId,
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
+                        productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId.toLongOrZero()))
+                    )
+                )
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            PromoRequest(
+                cartType = "occmulti",
+                state = "checkout",
+                orders = listOf(
+                    Order(
+                        isChecked = true,
+                        shippingId = helper.firstCourierFirstDuration.productData.shipperId,
+                        spId = helper.firstCourierFirstDuration.productData.shipperProductId,
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
+                        product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))
+                    )
+                )
+            ),
+            promoRequest
+        )
         assertEquals(0, bboCodes.size)
     }
 
@@ -161,9 +196,15 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK", errorCode = "200")
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(
+            PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+                ),
+                globalSuccess = true
+            ),
+            status = "OK", errorCode = "200"
+        )
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
@@ -178,14 +219,44 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         // Then
-        assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
-                orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
-                        codes = mutableListOf(helper.logisticPromo.promoCode), shippingPrice = 2000.0,
-                        shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
-        assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
-                orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
+        assertEquals(
+            ValidateUsePromoRequest(
+                isSuggested = 0,
+                skipApply = 0,
+                cartType = "occmulti",
+                state = "checkout",
+                orders = listOf(
+                    OrdersItem(
+                        shippingId = helper.logisticPromo.shipperId,
+                        spId = helper.logisticPromo.shipperProductId,
+                        freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
                         codes = mutableListOf(helper.logisticPromo.promoCode),
-                        shopId = helper.orderData.cart.shop.shopId, product_details = listOf(ProductDetail(helper.product.productId, helper.product.orderQuantity))))), promoRequest)
+                        shippingPrice = 2000.0,
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
+                        productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId.toLongOrZero()))
+                    )
+                )
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            PromoRequest(
+                cartType = "occmulti",
+                state = "checkout",
+                orders = listOf(
+                    Order(
+                        isChecked = true,
+                        shippingId = helper.logisticPromo.shipperId,
+                        spId = helper.logisticPromo.shipperProductId,
+                        freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
+                        codes = mutableListOf(helper.logisticPromo.promoCode),
+                        shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
+                        product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))
+                    )
+                )
+            ),
+            promoRequest
+        )
         assertEquals(1, bboCodes.size)
     }
 
@@ -321,18 +392,67 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Validate Use Promo Red State Released And Has newGlobalEvent`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        val promoCode = "abc"
+        val errorMessage = "error message"
+        val response = ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                codes = listOf(promoCode),
+                messageUiModel = MessageUiModel(state = "red"),
+                additionalInfoUiModel = AdditionalInfoUiModel(
+                    errorDetailUiModel = ErrorDetailUiModel(
+                        message = errorMessage
+                    )
+                )
+            )
+        )
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+        }
+        assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OccGlobalEvent.ToasterInfo(errorMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Validate Use Promo Benefit Decreased`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
-        val response = ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green"), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 10),
-                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))))
+        val response = ValidateUsePromoRevampUiModel(
+            status = "OK", errorCode = "200",
+            promoUiModel = PromoUiModel(
+                codes = listOf(promoCode),
+                messageUiModel = MessageUiModel(state = "green"),
+                benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 10),
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))
+            )
+        )
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
-        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = PromoUiModel(messageUiModel = MessageUiModel(state = "green"), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 1000),
-                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(
+            promoUiModel = PromoUiModel(
+                messageUiModel = MessageUiModel(state = "green"),
+                benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 1000),
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))
+            )
+        )
 
         // When
         orderSummaryPageViewModel.validateUsePromo()
@@ -386,10 +506,12 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify {
-            checkoutOccUseCase.executeSuspend(match {
-                val globalCode = it.carts.promos.first()
-                globalCode.code == promoCode && globalCode.type == "global" && it.carts.data.first().shopProducts.first().promos.isEmpty()
-            })
+            checkoutOccUseCase.executeSuspend(
+                match {
+                    val globalCode = it.carts.promos.first()
+                    globalCode.code == promoCode && globalCode.type == "global" && it.carts.data.first().shopProducts.first().promos.isEmpty()
+                }
+            )
         }
     }
 
@@ -414,10 +536,12 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify {
-            checkoutOccUseCase.executeSuspend(match {
-                val voucherCode = it.carts.data.first().shopProducts.first().promos.first()
-                voucherCode.code == promoCode && voucherCode.type == promoType && it.carts.promos.isEmpty()
-            })
+            checkoutOccUseCase.executeSuspend(
+                match {
+                    val voucherCode = it.carts.data.first().shopProducts.first().promos.first()
+                    voucherCode.code == promoCode && voucherCode.type == promoType && it.carts.promos.isEmpty()
+                }
+            )
         }
     }
 
@@ -429,10 +553,16 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        val lastResponse = ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
+        val lastResponse = ValidateUsePromoRevampUiModel(
+            status = "OK", errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
                         messageUiModel = MessageUiModel(state = "green")
-                ))))
+                    )
+                )
+            )
+        )
         val response = AkamaiErrorException("")
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws response
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
@@ -585,7 +715,6 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertTrue(orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
-
     }
 
     @Test
@@ -626,7 +755,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         assertTrue(orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
     }
 
-    //case
+    // case
     // apply bo
     @Test
     fun `Apply Bbo promo with same code with order logistic promo voucher code`() {
@@ -642,7 +771,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green"),
+                        messageUiModel = MessageUiModel(state = "green")
                     )
                 )
             )
@@ -674,7 +803,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green"),
+                        messageUiModel = MessageUiModel(state = "green")
                     )
                 )
             )
@@ -705,7 +834,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green"),
+                        messageUiModel = MessageUiModel(state = "green")
                     )
                 )
             )
@@ -736,7 +865,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green"),
+                        messageUiModel = MessageUiModel(state = "green")
                     )
                 )
             )
@@ -768,7 +897,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red"),
+                        messageUiModel = MessageUiModel(state = "red")
                     )
                 )
             )
@@ -783,7 +912,6 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             orderSummaryPageViewModel.orderShipment.value.logisticPromoViewModel!!.promoCode
         )
         assertTrue(orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.AdjustShippingToaster)
-
     }
 
     @Test
@@ -911,7 +1039,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // When
         orderSummaryPageViewModel.validateBboStacking()
         // Then
-        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.AdjustShippingToaster)
+        assertTrue(orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.AdjustShippingToaster)
     }
 
     @Test
@@ -928,7 +1056,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // When
         orderSummaryPageViewModel.validateBboStacking()
         // Then
-        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+        assertTrue(orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
     }
 
     @Test
@@ -962,7 +1090,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // When
         orderSummaryPageViewModel.validateBboStacking()
         // Then
-        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+        assertTrue(orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
     }
 
     // no promo bo
@@ -1003,7 +1131,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green"),
+                        messageUiModel = MessageUiModel(state = "green")
                     )
                 )
             )
@@ -1027,7 +1155,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // When
         orderSummaryPageViewModel.validateBboStacking()
         // Then
-        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+        assertTrue(orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
     }
 
     @Test

@@ -35,10 +35,12 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListTickerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
@@ -86,6 +88,7 @@ class ChatItemListViewModel @Inject constructor(
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val operationalInsightUseCase: GetOperationalInsightUseCase,
+    private val getChatListTickerUseCase: GetChatListTickerUseCase,
     private val sharedPref: SharedPreferences,
     private val userSession: UserSessionInterface,
     private val abTestPlatform: AbTestPlatform,
@@ -129,6 +132,10 @@ class ChatItemListViewModel @Inject constructor(
     private val _chatOperationalInsight = MutableLiveData<Result<ShopChatTicker>>()
     val chatOperationalInsight: LiveData<Result<ShopChatTicker>>
         get()= _chatOperationalInsight
+
+    private val _chatListTicker = MutableLiveData<Result<ChatListTickerResponse.ChatListTicker>>()
+    val chatListTicker: LiveData<Result<ChatListTickerResponse.ChatListTicker>>
+        get()= _chatListTicker
 
     private var getChatAdminAccessJob: Job? = null
 
@@ -397,6 +404,15 @@ class ChatItemListViewModel @Inject constructor(
             }
         }, onError = {
             _chatOperationalInsight.value = Fail(it)
+        })
+    }
+
+    fun getChatListTicker() {
+        launchCatchError(block =  {
+            val response = getChatListTickerUseCase(Unit).chatlistTicker
+            _chatListTicker.value = Success(response)
+        }, onError = {
+            _chatListTicker.value = Fail(it)
         })
     }
 

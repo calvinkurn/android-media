@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.data.feedrevamp
 
-
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -11,7 +11,7 @@ data class FeedXCard(
     @SerializedName("__typename")
     var typename: String = "",
 
-    //FeedXCardBanners Data Type
+    // FeedXCardBanners Data Type
     @SerializedName("id")
     var id: String = "",
     @SerializedName("publishedAt")
@@ -27,7 +27,7 @@ data class FeedXCard(
     @SerializedName("detailScore")
     var detailScore: List<FeedXScore> = emptyList(),
 
-    //FeedXCardTopAds Data Type
+    // FeedXCardTopAds Data Type
     @SerializedName("promos")
     var promos: List<String> = emptyList(),
     @SerializedName("author")
@@ -35,13 +35,15 @@ data class FeedXCard(
     @SerializedName("items")
     var items: List<FeedXCardDataItem> = emptyList(),
 
-    //FeedXCardPlaceHolder Data Type
+    // FeedXCardPlaceHolder Data Type
     @SerializedName("type")
     var type: String = "",
 
-    //FeedXCardProductsHighlight Data Type
+    // FeedXCardProductsHighlight Data Type
     @SerializedName("products")
     var products: List<FeedXProduct> = emptyList(),
+    @SerializedName("hasVoucher")
+    var hasVoucher: Boolean = false,
     @SerializedName("subTitle")
     var subTitle: String = "",
     @SerializedName("totalProducts")
@@ -65,11 +67,11 @@ data class FeedXCard(
     @SerializedName("followers", alternate = ["fol"])
     var followers: FeedXFollowers = FeedXFollowers(),
     @SerializedName("maximumDiscountPercentage")
-    var maxDiscPercent:Int = 0,
+    var maxDiscPercent: Int = 0,
     @SerializedName("maximumDiscountPercentageFmt")
     var maximumDisPercentFmt: String = "",
 
-    //FeedXCardPost Data Type
+    // FeedXCardPost Data Type
     @SerializedName("appLink")
     var appLink: String = "",
     @SerializedName("webLink")
@@ -93,29 +95,27 @@ data class FeedXCard(
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
     val impressHolder: ImpressHolder = ImpressHolder(),
-    //Active carousel index
-    var lastCarouselIndex : Int = 0,
+    // Active carousel index
+    var lastCarouselIndex: Int = 0,
     var isAsgcColorChangedAsPerWidgetColor: Boolean = false,
-    //Topads
+    // Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
     val adId: String = "",
-    val adClickUrl:String="",
-    val adViewUrl:String="",
+    val adClickUrl: String = "",
+    val adViewUrl: String = "",
     val cpmData: CpmData = CpmData(),
     val listProduct: List<Product> = listOf(),
 
-   //FeedXCardPlay data type
+    // FeedXCardPlay data type
     @SerializedName("playChannelID")
     var playChannelID: String = "",
     @SerializedName("mediaRatio")
     var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
     @SerializedName("views")
-    var views: FeedXViews = FeedXViews(),
+    var views: FeedXViews = FeedXViews()
 
-
-
-    ) : ImpressHolder() {
+) : ImpressHolder() {
 
     val isTypeProductHighlight: Boolean
         get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
@@ -123,15 +123,18 @@ data class FeedXCard(
     val isTypeVOD: Boolean
         get() = typename == TYPE_FEED_X_CARD_VOD
     val isTypeLongVideo: Boolean
-        get() =  media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO
+        get() = media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO
     val isTypeSgcVideo: Boolean
-        get() =  media.isNotEmpty() && media.first().type == TYPE_VIDEO
+        get() = media.isNotEmpty() && media.first().type == TYPE_VIDEO
     val isTypeSGC: Boolean
-        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() && media.first().type != TYPE_LONG_VIDEO
+        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() &&
+            media.first().type != TYPE_LONG_VIDEO && author.type == AUTHOR_SGC
+    val isTypeUGC: Boolean
+        get() = typename == TYPE_FEED_X_CARD_POST && author.type == AUTHOR_UGC
     val useASGCNewDesign: Boolean
         get() = mods.contains(USE_ASGC_NEW_DESIGN)
     val isASGCDiscountToko: Boolean
-         get() = type == ASGC_DISCOUNT_TOKO
+        get() = type == ASGC_DISCOUNT_TOKO
     val contentScore
         get() = detailScore.filter { feedXScore ->
             feedXScore.isContentScore
@@ -142,9 +145,10 @@ data class FeedXCard(
             typename = typename,
             id = id,
             type = type,
+            hasVoucher = hasVoucher,
             playChannelID = playChannelID,
             mediaRatio = mediaRatio,
-            author = author,
+            author = author.copy(name = MethodChecker.fromHtml(this.author.name).toString()),
             title = title,
             totalProducts = totalProducts,
             products = products,
@@ -192,5 +196,7 @@ data class FeedXCard(
 
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
+        private const val AUTHOR_SGC = 2
+        private const val AUTHOR_UGC = 3
     }
 }

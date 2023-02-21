@@ -10,6 +10,7 @@ import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
@@ -27,8 +28,7 @@ class ProductCarouselUiComponent(
 ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
-        binding,
-        object : ProductCarouselUiView.Listener {
+        binding, object : ProductCarouselUiView.Listener {
             override fun onProductImpressed(
                 view: ProductCarouselUiView,
                 productMap: Map<PlayProductUiModel.Product, Int>
@@ -44,18 +44,12 @@ class ProductCarouselUiComponent(
                 bus.emit(Event.OnClicked(product, position))
             }
 
-            override fun onAtcClicked(
+            override fun onTransactionClicked(
                 view: ProductCarouselUiView,
-                product: PlayProductUiModel.Product
+                product: PlayProductUiModel.Product,
+                action: ProductAction
             ) {
-                bus.emit(Event.OnAtcClicked(product))
-            }
-
-            override fun onBuyClicked(
-                view: ProductCarouselUiView,
-                product: PlayProductUiModel.Product
-            ) {
-                bus.emit(Event.OnBuyClicked(product))
+                bus.emit(Event.OnTransactionClicked(product, action))
             }
         }
     )
@@ -125,7 +119,6 @@ class ProductCarouselUiComponent(
         data class OnUpdated(val productMap: Map<PlayProductUiModel.Product, Int>) : Event
         data class OnClicked(val product: PlayProductUiModel.Product, val position: Int) : Event
 
-        data class OnAtcClicked(val product: PlayProductUiModel.Product) : Event
-        data class OnBuyClicked(val product: PlayProductUiModel.Product) : Event
+        data class OnTransactionClicked(val product: PlayProductUiModel.Product, val action: ProductAction) : Event
     }
 }

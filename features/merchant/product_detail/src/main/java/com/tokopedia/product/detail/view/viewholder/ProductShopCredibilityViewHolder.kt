@@ -1,11 +1,13 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewStub
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -18,9 +20,11 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE
 import com.tokopedia.product.detail.databinding.ItemShopCredibilityBinding
+import com.tokopedia.product.detail.databinding.ViewCredibilityTickerBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityShimmeringBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.inflateWithBinding
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -42,6 +46,7 @@ class ProductShopCredibilityViewHolder(
     private val itemBinding = ItemShopCredibilityBinding.bind(view)
     private var mainBinding: ViewShopCredibilityBinding? = null
     private var shimmeringBinding: ViewShopCredibilityShimmeringBinding? = null
+    private var tickerBinding: ViewCredibilityTickerBinding? = null
 
     private val context = view.context
 
@@ -52,6 +57,7 @@ class ProductShopCredibilityViewHolder(
         itemBinding.shopCredibilityShimmering.setOnInflateListener { _, view ->
             shimmeringBinding = ViewShopCredibilityShimmeringBinding.bind(view)
         }
+
         itemBinding.shopCredibilityShimmering.inflate()
     }
 
@@ -94,7 +100,12 @@ class ProductShopCredibilityViewHolder(
                 listener.gotoShopDetail(componentTracker)
             }
 
-            setupTicker(element.tickerDataResponse, componentTracker, this)
+            setupTicker(
+                tickerType = element.getTickerType(),
+                tickerDataResponse = element.tickerDataResponse,
+                componentTrackDataModel = componentTracker,
+                binding = this
+            )
 
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onShopCredibilityImpressed(element.shopWarehouseCount, componentTracker)
@@ -134,11 +145,57 @@ class ProductShopCredibilityViewHolder(
     }
 
     private fun setupTicker(
+        tickerType: String,
         tickerDataResponse: List<ShopInfo.TickerDataResponse>,
         componentTrackDataModel: ComponentTrackDataModel,
         binding: ViewShopCredibilityBinding
     ) {
-        binding.shopCredibilityInfoTicker.showIfWithBlock(tickerDataResponse.isNotEmpty()) {
+        if (tickerDataResponse.isEmpty()) {
+            binding.shopCredibilityTickerStub.hide()
+            return
+        }
+
+        binding.shopCredibilityTickerStub.inflateWithBinding {
+            tickerBinding = ViewCredibilityTickerBinding.bind(it)
+        }
+
+        if (tickerType == ProductShopCredibilityDataModel.TIPS_TYPE) {
+            renderTips(tickerDataResponse, componentTrackDataModel)
+        } else {
+            renderTicker(tickerDataResponse, componentTrackDataModel)
+        }
+    }
+
+    private fun renderTips(
+        tickerDataResponse: List<ShopInfo.TickerDataResponse>,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        tickerBinding?.shopCredibilityInfoTicker?.hide()
+        tickerBinding?.shopCredibilityInfoTips?.run {
+            show()
+            val data = tickerDataResponse.first()
+
+            titleView.showIfWithBlock(data.title.isNotEmpty()) {
+                text = data.title
+            }
+
+            descriptionView.showIfWithBlock(data.message.isNotEmpty()) {
+                val htmlString = HtmlLinkHelper(context, generateHtml(data.message, data.link))
+                text = htmlString.spannedString
+                setOnClickListener {
+                    listener.onShopTickerClicked(data, componentTrackDataModel)
+                }
+            }
+        }
+    }
+
+    private fun renderTicker(
+        tickerDataResponse: List<ShopInfo.TickerDataResponse>,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        tickerBinding?.shopCredibilityInfoTips?.hide()
+        tickerBinding?.shopCredibilityInfoTicker?.run {
+            show()
             val data = tickerDataResponse.first()
 
             listener.onShopTickerImpressed(data, componentTrackDataModel)

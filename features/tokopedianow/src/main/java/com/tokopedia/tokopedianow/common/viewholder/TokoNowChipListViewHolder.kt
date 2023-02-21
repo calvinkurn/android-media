@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.adapter.TokoNowChipListAdapter
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChipListAdapterTypeFactory
-import com.tokopedia.tokopedianow.common.decroation.ChipListDecoration
+import com.tokopedia.tokopedianow.common.decoration.ChipListDecoration
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecyclerViewBinding

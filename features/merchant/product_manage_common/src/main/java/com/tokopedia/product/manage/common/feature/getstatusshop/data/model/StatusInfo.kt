@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.common.feature.getstatusshop.data.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 data class StatusInfo(
     @SerializedName("shopStatus")
@@ -20,7 +21,7 @@ data class StatusInfo(
     }
 
     fun isOnModerationMode(): Boolean {
-        val status = shopStatus.toIntOrZero()
+        val status = shopStatus.toIntSafely()
         return status == ON_MODERATED_STAGE || status == ON_MODERATED_PERMANENTLY
     }
 }

@@ -33,6 +33,8 @@
     <string name="picker_permission_camera">Aktifkan akses kamera</string>
     <string name="picker_permission_microphone">Aktifkan akses mikrofon</string>
     <string name="picker_permission_gallery">Aktifkan akses galeri</string>
+    <string name="picker_permission_images">Aktifkan akses foto</string>
+    <string name="picker_permission_videos">Aktifkan akses video</string>
 
 <!--    message-->
     <string name="picker_page_source_not_found">[Dev] PageSource not found, please add your own on PickerParam builder.</string>

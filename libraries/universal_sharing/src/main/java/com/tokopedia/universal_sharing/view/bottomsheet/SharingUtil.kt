@@ -122,6 +122,126 @@ class SharingUtil {
             return bitmap
         }
 
+        fun executeShopPageShareIntent(shareModel: ShareModel, linkerShareData: LinkerShareResult?, activity: Activity?, view: View?, shareStringContainer: String){
+            try {
+                var shareImageFileUri: Uri? = null
+                if(!TextUtils.isEmpty(shareModel.savedImageFilePath)) {
+                    shareImageFileUri = MethodChecker.getUri(activity, File(shareModel.savedImageFilePath))
+                    shareModel.appIntent?.clipData = ClipData.newRawUri("", shareImageFileUri)
+                    shareModel.appIntent?.removeExtra(Intent.EXTRA_STREAM)
+                    shareModel.appIntent?.removeExtra(Intent.EXTRA_TEXT)
+                }
+
+                var shareString = shareStringContainer
+                when (shareModel) {
+                    is ShareModel.CopyLink -> {
+                        linkerShareData?.url?.let {
+                            if (activity != null) {
+                                ClipboardHandler().copyToClipboard(activity, it)
+                            }
+                        }
+                        view.let {
+                            if (it != null) {
+                                Toaster.build(view = it, text = copyLinkToastString,actionText = actionBtnTxt).show()
+                            }
+                        }
+                    }
+                    is ShareModel.Instagram, is ShareModel.Facebook -> {
+                        if(shareModel.shareOnlyLink){
+                            shareString = linkerShareData?.url.toString()
+                        }
+                        if (activity != null) {
+                            ClipboardHandler().copyToClipboard(
+                                activity, shareString)
+                        }
+
+                        if(shareModel.shareOnlyLink) {
+                            activity?.startActivity(shareModel.appIntent?.apply {
+                                setDataAndType(shareImageFileUri, "image/*")
+                                if(shareImageFileUri != null) {
+                                    putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                                }
+                                putExtra(Intent.EXTRA_TITLE, shareString)
+                            })
+                        }
+                        else{
+                            activity?.startActivity(shareModel.appIntent?.apply {
+                                putExtra(Intent.EXTRA_TEXT, shareString)
+                            })
+                        }
+                    }
+                    is ShareModel.Email -> {
+                        activity?.startActivity(shareModel.appIntent?.apply {
+                            if(shareImageFileUri != null) {
+                                putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                            }
+                            type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                            if(shareModel.shareOnlyLink){
+                                shareString = linkerShareData?.url.toString()
+                            }
+                            putExtra(Intent.EXTRA_TEXT, shareString)
+                            putExtra(Intent.EXTRA_SUBJECT, shareModel.subjectName)
+                        })
+                    }
+                    is ShareModel.Others -> {
+                        activity?.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+                            if(shareModel.shareOnlyLink){
+                                if(shareImageFileUri != null){
+                                    putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                                }
+                                type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                                shareString = linkerShareData?.url ?: ""
+                            }
+                            else{
+                                type = UniversalShareBottomSheet.MimeType.TEXT.type
+                            }
+                            putExtra(Intent.EXTRA_TEXT, shareString)
+                        }, activity.getString(R.string.label_to_social_media_text)))
+                    }
+                    is ShareModel.Whatsapp -> {
+                        activity?.startActivity(shareModel.appIntent?.apply {
+                            type = UniversalShareBottomSheet.MimeType.TEXT.type
+                            putExtra(Intent.EXTRA_TEXT, shareString)
+                        })
+                    }
+                    is ShareModel.Line -> {
+                        activity?.startActivity(shareModel.appIntent?.apply {
+                            putExtra(Intent.EXTRA_TEXT, shareString)
+                        })
+                    }
+                    is ShareModel.Telegram -> {
+                        activity?.startActivity(shareModel.appIntent?.apply {
+                            type = UniversalShareBottomSheet.MimeType.ALL.type
+                            putExtra(Intent.EXTRA_TEXT, shareString)
+                        })
+                    }
+                    is ShareModel.Twitter -> {
+                        activity?.startActivity(shareModel.appIntent?.apply {
+                            type = UniversalShareBottomSheet.MimeType.TEXT.type
+                            putExtra(Intent.EXTRA_TEXT, shareString)
+                        })
+                    }
+                    else -> {
+                        activity?.startActivity(shareModel.appIntent?.apply {
+                            if(shareImageFileUri != null) {
+                                putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                            }
+                            type = UniversalShareBottomSheet.MimeType.IMAGE.type
+                            if(shareModel.shareOnlyLink){
+                                shareString = linkerShareData?.url ?: ""
+                            }
+                            putExtra(Intent.EXTRA_TEXT, shareString)
+                        })
+                    }
+                }
+            }catch (ex: Exception){
+                if(ex.localizedMessage != null) {
+                    val errorMap = mapOf("type" to "crashLog", "reason" to (ex.localizedMessage))
+                    logError(errorMap)
+                }
+            }
+        }
+
         fun executeShareIntent(shareModel: ShareModel, linkerShareData: LinkerShareResult?, activity: Activity?, view: View?, shareStringContainer: String){
            try {
                var shareImageFileUri: Uri? = null
@@ -256,6 +376,7 @@ class SharingUtil {
                }
            }
         }
+
         fun logError(messageMap: Map<String, String>){
             ServerLogger.log(Priority.P2, "SHARING_CRASH", messageMap)
         }

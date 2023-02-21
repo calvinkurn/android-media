@@ -18,6 +18,8 @@ import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.event.Event
 import dagger.assisted.Assisted
@@ -36,8 +38,9 @@ import javax.inject.Inject
  */
 class PlayCoverSetupViewModel @AssistedInject constructor(
     @Assisted productList: List<ProductUiModel>,
-    @Assisted("authorId") private val authorId: String,
+    @Assisted("account") val account: ContentAccountUiModel,
     @Assisted("channelId") private val channelId: String,
+    @Assisted("pageSource") val pageSource: PlayBroPageSource,
     private val hydraConfigStore: HydraConfigStore,
     private val dispatcher: CoroutineDispatchers,
     private val setupDataStore: PlayBroadcastSetupDataStore,
@@ -51,8 +54,9 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             productList: List<ProductUiModel>,
-            @Assisted("authorId") authorId: String,
+            @Assisted("account") account: ContentAccountUiModel,
             @Assisted("channelId") channelId: String,
+            @Assisted("pageSource") pageSource: PlayBroPageSource,
         ): PlayCoverSetupViewModel
     }
 
@@ -122,7 +126,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             uploadImageAndUpdateCoverState()
 
-            val result = setupDataStore.uploadSelectedCover(authorId, channelId)
+            val result = setupDataStore.uploadSelectedCover(account.id, channelId)
             if (result is NetworkResult.Success) _observableUploadCoverEvent.value = result.map { Event(Unit) }
             else if (result is NetworkResult.Fail) throw result.error
         }) {

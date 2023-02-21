@@ -21,7 +21,7 @@ class BrizziCardObjectMapper @Inject constructor() {
                 attributesEmoneyInquiry = AttributesEmoneyInquiry(
                         BUTTON_TEXT,
                         brizziCardObject.cardNumber,
-                        "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
+                        "https://images.tokopedia.net/img/recharge/operator/brizzi.png",
                         brizziCardObject.balance.toInt(),
                         "",
                         1,

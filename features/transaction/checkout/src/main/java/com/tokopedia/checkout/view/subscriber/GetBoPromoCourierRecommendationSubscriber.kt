@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
+import rx.subjects.PublishSubject
 import timber.log.Timber
 
 class GetBoPromoCourierRecommendationSubscriber(
@@ -22,7 +23,8 @@ class GetBoPromoCourierRecommendationSubscriber(
     private val shippingCourierConverter: ShippingCourierConverter,
     private val shipmentCartItemModel: ShipmentCartItemModel,
     private val isTradeInDropOff: Boolean,
-    private val isForceReloadRates: Boolean
+    private val isForceReloadRates: Boolean,
+    private val logisticPromoDonePublisher: PublishSubject<Boolean>?
 ) : Subscriber<ShippingRecommendationData?>() {
 
     override fun onCompleted() {}
@@ -32,10 +34,12 @@ class GetBoPromoCourierRecommendationSubscriber(
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
-        view.logOnErrorLoadCourier(e, itemPosition)
+        view.logOnErrorLoadCourier(e, itemPosition, promoCode)
+        logisticPromoDonePublisher?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+        var errorReason = "rates invalid data"
         if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.listLogisticPromo.isNotEmpty()) {
             val logisticPromo =
                 shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == promoCode && !it.disabled }
@@ -67,8 +71,10 @@ class GetBoPromoCourierRecommendationSubscriber(
                                         MessageErrorException(
                                             shippingCourierUiModel.productData.error?.errorMessage
                                         ),
-                                        itemPosition
+                                        itemPosition,
+                                        promoCode
                                     )
+                                    logisticPromoDonePublisher?.onCompleted()
                                     return
                                 } else {
                                     shippingCourierUiModel.isSelected = true
@@ -92,13 +98,18 @@ class GetBoPromoCourierRecommendationSubscriber(
                         }
                     }
                 }
+            } else {
+                errorReason = "promo not found"
             }
+        } else {
+            errorReason = "rates empty data"
         }
         presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
-        view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
+        view.logOnErrorLoadCourier(MessageErrorException(errorReason), itemPosition, promoCode)
+        logisticPromoDonePublisher?.onCompleted()
     }
 
     private fun generateCourierItemData(
@@ -107,7 +118,7 @@ class GetBoPromoCourierRecommendationSubscriber(
         logisticPromoUiModel: LogisticPromoUiModel
     ): CourierItemData {
         val courierItemData =
-            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel, shippingRecommendationData)
 
         courierItemData.apply {
             logPromoMsg = logisticPromoUiModel.disableText

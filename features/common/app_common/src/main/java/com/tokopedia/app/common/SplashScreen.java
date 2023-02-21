@@ -24,6 +24,7 @@ import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -47,18 +48,11 @@ import java.util.Map;
  */
 public class SplashScreen extends AppCompatActivity {
 
-    public static final int DATABASE_VERSION = 7;
-    public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
-
-    protected View decorView;
-
     protected RemoteConfig remoteConfig;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        resetAllDatabaseFlag();
         WeaveInterface remoteConfigWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -66,7 +60,7 @@ public class SplashScreen extends AppCompatActivity {
                 return fetchRemoteConfig();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, RemoteConfigKey.ENABLE_ASYNC_REMOTECONF_FETCH, getApplicationContext(), true);
+        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
     }
 
     @NotNull
@@ -76,18 +70,31 @@ public class SplashScreen extends AppCompatActivity {
         return true;
     }
 
-    protected RemoteConfig.Listener getRemoteConfigListener(){
-        return null;
+    private RemoteConfig.Listener getRemoteConfigListener() {
+        return new RemoteConfig.Listener() {
+            @Override
+            public void onComplete(RemoteConfig remoteConfig) {
+                LogManager logManager = LogManager.instance;
+                if (logManager != null) {
+                    logManager.refreshConfig();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        };
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
         WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
+                boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
                 return executeMoveToHomeFlow(status);
             }
         };
@@ -96,8 +103,8 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     @NotNull
-    private boolean executeMoveToHomeFlow(boolean status){
-        if(!status){
+    private boolean executeMoveToHomeFlow(boolean status) {
+        if (!status) {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "splash_screen");
             messageMap.put("fingerprint", Build.FINGERPRINT);
@@ -125,30 +132,6 @@ public class SplashScreen extends AppCompatActivity {
         Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
         startActivity(intent);
         finish();
-    }
-
-    private void resetAllDatabaseFlag() {
-        LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + DATABASE_VERSION);
-        if (!flagDB.getBoolean("reset_db_flag", false)) {
-            LocalCacheHandler.clearCache(this, SHIPPING_CITY_DURATION_STORAGE);
-        }
-
-        flagDB.putBoolean("reset_db_flag", true);
-        flagDB.applyEditor();
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
     }
 
     @NotNull

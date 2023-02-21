@@ -19,7 +19,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-11T10:35:05.283668397+07:00",
               "paymentDateStr": "11 Nov 2020",
@@ -31,7 +31,7 @@
               "products": [
                 {
                   "title": "product 17",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -119,7 +119,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-11T10:33:48.127187696+07:00",
               "paymentDateStr": "11 Nov 2020",
@@ -131,7 +131,7 @@
               "products": [
                 {
                   "title": "product 17",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
                   "inline1": {
                     "label": "2 barang",
                     "textColor": "",
@@ -227,7 +227,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-10T20:36:46.048790034+07:00",
               "paymentDateStr": "10 Nov 2020",
@@ -239,7 +239,7 @@
               "products": [
                 {
                   "title": "Produk 1 (Karpet)",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -310,7 +310,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-10T20:11:04.76931309+07:00",
               "paymentDateStr": "10 Nov 2020",
@@ -322,7 +322,7 @@
               "products": [
                 {
                   "title": "Produk 1 (Karpet)",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -393,7 +393,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-10T15:06:26.064611473+07:00",
               "paymentDateStr": "10 Nov 2020",
@@ -405,7 +405,7 @@
               "products": [
                 {
                   "title": "Produk 1 (Karpet)",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -476,7 +476,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-10T14:20:48.903370753+07:00",
               "paymentDateStr": "10 Nov 2020",
@@ -488,7 +488,7 @@
               "products": [
                 {
                   "title": "Produk 1 (Karpet)",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -559,7 +559,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-10T02:59:28.080842408+07:00",
               "paymentDateStr": "10 Nov 2020",
@@ -571,7 +571,7 @@
               "products": [
                 {
                   "title": "Produk 1 (Karpet)",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -642,7 +642,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-10T00:26:06.035480225+07:00",
               "paymentDateStr": "10 Nov 2020",
@@ -654,7 +654,7 @@
               "products": [
                 {
                   "title": "barang variant wholesale cashback - Hitam",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2018/9/10/20203036/20203036_b7c88010-f957-479b-88f0-a8d614096f9b_800_800.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2018/9/10/20203036/20203036_b7c88010-f957-479b-88f0-a8d614096f9b_800_800.jpg",
                   "inline1": {
                     "label": "3 barang",
                     "textColor": "",
@@ -725,7 +725,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
               "paymentDateStr": "9 Nov 2020",
@@ -737,7 +737,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -825,7 +825,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
               "paymentDateStr": "9 Nov 2020",
@@ -837,7 +837,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -908,7 +908,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
               "paymentDateStr": "9 Nov 2020",
@@ -920,7 +920,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1008,7 +1008,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
               "paymentDateStr": "9 Nov 2020",
@@ -1020,7 +1020,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1091,7 +1091,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T19:02:34.667329629+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1103,7 +1103,7 @@
               "products": [
                 {
                   "title": "product 17",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1174,7 +1174,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1186,7 +1186,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1249,7 +1249,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1261,7 +1261,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1332,7 +1332,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1344,7 +1344,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1432,7 +1432,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1444,7 +1444,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1515,7 +1515,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1527,7 +1527,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1615,7 +1615,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1627,7 +1627,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",
@@ -1715,7 +1715,7 @@
                 "webTypeLink": "ROUTER_LINK"
               },
               "upstream": "MARKETPLACE",
-              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLogo": "https://images.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
               "verticalLabel": "Belanja",
               "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
               "paymentDateStr": "5 Nov 2020",
@@ -1727,7 +1727,7 @@
               "products": [
                 {
                   "title": "action figure jinbe",
-                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
                   "inline1": {
                     "label": "1 barang",
                     "textColor": "",

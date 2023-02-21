@@ -65,6 +65,11 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     is_free_shipping: IsFreeShipping
                     is_toko_now: IsTokoNow
                     is_pinned: IsPinned
+                    available_buttons: AvailableButtons {
+                        text
+                        color
+                        button_type: buttonType
+                    }
                   }
                 }
                 vouchers{

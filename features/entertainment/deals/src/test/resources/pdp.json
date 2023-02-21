@@ -21,10 +21,10 @@
       "genre": " ",
       "duration": "0",
       "seo_url": "voucher-kfc-rp-100000-16051",
-      "image_web": "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
-      "thumbnail_web": "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
-      "image_app": "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
-      "thumbnail_app": "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
+      "image_web": "https://images.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
+      "thumbnail_web": "https://images.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
+      "image_app": "https://images.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
+      "thumbnail_app": "https://images.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg",
       "seatmap_image": "",
       "location": "",
       "app_url": "tokopedia://deals/voucher-kfc-rp-100000-16051",
@@ -91,7 +91,7 @@
           "is_thumbnail": 0,
           "type": "image",
           "description": "Image",
-          "url": "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef-lala.jpg",
+          "url": "https://images.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef-lala.jpg",
           "client": "",
           "status": 1,
           "created_at": "",
@@ -7065,15 +7065,15 @@
       "recommendation_url": "https://booking.tokopedia.com/v1/api/s/deal?child_category_ids=25",
       "brand": {
         "title": "KFC",
-        "featured_image": "https://ecs7.tokopedia.net/img/qfBCeS/2021/6/21/5aed1324-159a-4b1f-a7be-7635684161e2.png",
-        "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/qfBCeS/2021/6/21/5aed1324-159a-4b1f-a7be-7635684161e2.png",
+        "featured_image": "https://images.tokopedia.net/img/qfBCeS/2021/6/21/5aed1324-159a-4b1f-a7be-7635684161e2.png",
+        "featured_thumbnail_image": "https://images.tokopedia.net/img/qfBCeS/2021/6/21/5aed1324-159a-4b1f-a7be-7635684161e2.png",
         "city_name": ""
       },
       "category": [
         {
           "id": "25",
           "title": "Makanan",
-          "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+          "media_url": "https://images.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
           "url": "makanan"
         }
       ],

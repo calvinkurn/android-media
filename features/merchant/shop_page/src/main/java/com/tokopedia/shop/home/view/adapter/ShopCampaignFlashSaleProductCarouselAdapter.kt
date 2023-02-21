@@ -17,6 +17,7 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
 
     var flashSaleUiModel: ShopHomeFlashSaleUiModel? = null
     var flashSaleProductList: List<ShopHomeProductUiModel> = listOf()
+    var measureListener: HeightMeasureListener? = null
 
     companion object {
         private const val SINGLE_PRODUCT = 1
@@ -72,10 +73,16 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
                 val productCardBigGridViewHolder =
                     holder as ShopHomeFlashSaleProductCardBigGridViewHolder
                 productCardBigGridViewHolder.bindData(uiModel = flashSaleProductList[position], fsUiModel = flashSaleUiModel)
+                productCardBigGridViewHolder.getHeightOfImageProduct { height ->
+                    measureListener?.setHeightListener(height)
+                }
             }
             else -> {
                 val productCardGridViewHolder = holder as ShopHomeFlashSaleProductCardGridViewHolder
                 productCardGridViewHolder.bindData(uiModel = flashSaleProductList[position], fsUiModel = flashSaleUiModel)
+                productCardGridViewHolder.getHeightOfImageProduct { height ->
+                    measureListener?.setHeightListener(height)
+                }
             }
         }
     }
@@ -91,5 +98,9 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
 
     fun setFsUiModel(flashSaleUiModel: ShopHomeFlashSaleUiModel) {
         this.flashSaleUiModel = flashSaleUiModel
+    }
+
+    fun setHeightMeasureListener(listener: HeightMeasureListener) {
+        measureListener = listener
     }
 }

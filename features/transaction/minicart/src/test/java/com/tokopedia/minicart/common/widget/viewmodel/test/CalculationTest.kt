@@ -80,8 +80,8 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.isFirstLoad == true)
-        assert(viewModel.miniCartChatListBottomSheetUiModel.value?.isFirstLoad == true)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.isFirstLoad)
+        assert(viewModel.miniCartChatListBottomSheetUiModel.value!!.isFirstLoad)
     }
 
     @Test
@@ -98,13 +98,13 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.needToCalculateAfterLoad == false)
+        assert(!viewModel.miniCartListBottomSheetUiModel.value!!.needToCalculateAfterLoad)
     }
 
     @Test
     fun `WHEN change quantity and calculate product THEN total price should be calculated correctly`() {
         //given
-        val expectedTotalPrice = 8000L
+        val expectedTotalPrice = 8000.0
         val productId = "1920796612"
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
@@ -115,7 +115,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductPrice == expectedTotalPrice)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartWidgetUiModel.totalProductPrice == expectedTotalPrice)
     }
 
     @Test
@@ -132,7 +132,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount == expectedTotalProductCount)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartWidgetUiModel.totalProductCount == expectedTotalProductCount)
     }
 
     @Test
@@ -158,7 +158,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount == expectedTotalProductCount)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartWidgetUiModel.totalProductCount == expectedTotalProductCount)
     }
 
     @Test
@@ -184,7 +184,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount == expectedTotalProductCount)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartWidgetUiModel.totalProductCount == expectedTotalProductCount)
     }
 
     @Test
@@ -201,13 +201,13 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartSummaryTransactionUiModel?.qty ?: 0 == expectedTotalProductCount)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartSummaryTransactionUiModel.qty == expectedTotalProductCount)
     }
 
     @Test
     fun `WHEN change quantity and calculate product THEN total value on summary transaction be calculated correctly`() {
         //given
-        val expectedTotalValue = 6000L
+        val expectedTotalValue = 6000.0
         val productId = "1920796612"
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
@@ -218,13 +218,13 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartSummaryTransactionUiModel?.totalValue ?: 0 == expectedTotalValue)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartSummaryTransactionUiModel.totalValue == expectedTotalValue)
     }
 
     @Test
     fun `WHEN change quantity and calculate product THEN payment total on summary transaction be calculated correctly`() {
         //given
-        val expectedPaymentTotal = 6000L
+        val expectedPaymentTotal = 6000.0
         val productId = "1920796612"
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
@@ -235,13 +235,13 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartSummaryTransactionUiModel?.paymentTotal ?: 0 == expectedPaymentTotal)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartSummaryTransactionUiModel.paymentTotal == expectedPaymentTotal)
     }
 
     @Test
     fun `WHEN change quantity and calculate product with slash price THEN discount value on summary transaction be calculated correctly`() {
         //given
-        val expectedDiscountTotal = 1500L
+        val expectedDiscountTotal = 1500.0
         val productId = "1925675638"
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideGetMiniCartListSuccessWithSlashPrice()
@@ -252,13 +252,13 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartSummaryTransactionUiModel?.discountValue ?: 0 == expectedDiscountTotal)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartSummaryTransactionUiModel.discountValue == expectedDiscountTotal)
     }
 
     @Test
     fun `WHEN change quantity and calculate product with slash price THEN payment total on summary transaction be calculated correctly`() {
         //given
-        val expectedPaymentTotal = 1500L
+        val expectedPaymentTotal = 1500.0
         val productId = "1925675638"
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideGetMiniCartListSuccessWithSlashPrice()
@@ -269,13 +269,13 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartSummaryTransactionUiModel?.paymentTotal ?: 0 == expectedPaymentTotal)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartSummaryTransactionUiModel.paymentTotal == expectedPaymentTotal)
     }
 
     @Test
     fun `WHEN change quantity and calculate product with slash price THEN total value on summary transaction be calculated correctly`() {
         //given
-        val expectedTotalVALUE = 3000L
+        val expectedTotalVALUE = 3000.0
         val productId = "1925675638"
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideGetMiniCartListSuccessWithSlashPrice()
@@ -286,7 +286,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartSummaryTransactionUiModel?.totalValue ?: 0 == expectedTotalVALUE)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.miniCartSummaryTransactionUiModel.totalValue == expectedTotalVALUE)
     }
 
     // Test wholesale variant case
@@ -294,7 +294,7 @@ class CalculationTest {
     fun `WHEN change quantity and calculate wholesale product and eligible for wholesale THEN wholesale price should be set accordingly`() {
         //given
         val productId = "1894482358"
-        val expectedWholesalePrice = 200L
+        val expectedWholesalePrice = 200.0
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideGetMiniCartListSuccessWithWholesaleVariant()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
@@ -304,14 +304,14 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartProductUiModelByProductId(productId)?.productWholeSalePrice == expectedWholesalePrice)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartProductUiModelByProductId(productId)!!.productWholeSalePrice == expectedWholesalePrice)
     }
 
     @Test
     fun `WHEN change quantity and calculate wholesale product and not eligible for wholesale THEN wholesale price should be set accordingly`() {
         //given
         val productId = "1894482358"
-        val expectedWholesalePrice = 0L
+        val expectedWholesalePrice = 0.0
         val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideGetMiniCartListSuccessWithWholesaleVariant()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
@@ -323,7 +323,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartProductUiModelByProductId(productId)?.productWholeSalePrice == expectedWholesalePrice)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartProductUiModelByProductId(productId)!!.productWholeSalePrice == expectedWholesalePrice)
     }
 
     // Test overweight case
@@ -340,7 +340,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() != null)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartTickerWarningUiModel() != null)
     }
 
     @Test
@@ -357,7 +357,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel()?.warningMessage?.contains(overWeight) == true)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartTickerWarningUiModel()!!.warningMessage.contains(overWeight))
     }
 
     @Test
@@ -375,7 +375,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() == null)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartTickerWarningUiModel() == null)
     }
 
     @Test
@@ -394,7 +394,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel()?.warningMessage?.contains(overWeight) == true)
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartTickerWarningUiModel()!!.warningMessage.contains(overWeight))
     }
 
     @Test
@@ -410,8 +410,8 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        val miniCartTickerWarningUiModel = viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() ?: MiniCartTickerWarningUiModel()
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.indexOf(miniCartTickerWarningUiModel) == 0)
+        val miniCartTickerWarningUiModel = viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartTickerWarningUiModel() ?: MiniCartTickerWarningUiModel()
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.visitables.indexOf(miniCartTickerWarningUiModel) == 0)
     }
 
     @Test
@@ -427,8 +427,8 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        val miniCartTickerWarningUiModel = viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() ?: MiniCartTickerWarningUiModel()
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.indexOf(miniCartTickerWarningUiModel) == 1)
+        val miniCartTickerWarningUiModel = viewModel.miniCartListBottomSheetUiModel.value!!.getMiniCartTickerWarningUiModel() ?: MiniCartTickerWarningUiModel()
+        assert(viewModel.miniCartListBottomSheetUiModel.value!!.visitables.indexOf(miniCartTickerWarningUiModel) == 1)
     }
 
 }

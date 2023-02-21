@@ -2,4 +2,5 @@
 <resources>
     <color name="affiliate_dms_divider">#ededed</color>
     <color name="affiliate_dms_promo_bg">#C0F7F0</color>
+    <color name="affiliate_dms_education_tutorial_cover_bg">#19B3AE</color>
 </resources>

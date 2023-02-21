@@ -16,7 +16,7 @@ public class City implements Parcelable {
 
     @SerializedName("city_id")
     @Expose
-    public Integer cityId;
+    public long cityId;
     @SerializedName("districts")
     @Expose
     public List<District> districts;
@@ -42,7 +42,7 @@ public class City implements Parcelable {
     }
 
     protected City(Parcel in) {
-        this.cityId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.cityId = (Long) in.readValue(Long.class.getClassLoader());
         this.districts = in.createTypedArrayList(District.CREATOR);
         this.cityName = in.readString();
     }

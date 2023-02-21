@@ -19,7 +19,7 @@ class RetainedComponentDelegate<T>(
         if (value != null) return value
 
         val factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return componentCreator() as T
             }
         }

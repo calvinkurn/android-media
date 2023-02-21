@@ -84,4 +84,5 @@
     <string name="tm_quota_progress_text">Kupon terpakai</string>
     <string name="tm_current_release_text_1">"Pengeluaran saat ini"</string>
     <string name="tm_current_release_text_2">Dipotong dari transaksi selesai</string>
+    <string name="tm_vip_coupon_ticker_text">Biar mudah &amp; cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!</string>
 </resources>

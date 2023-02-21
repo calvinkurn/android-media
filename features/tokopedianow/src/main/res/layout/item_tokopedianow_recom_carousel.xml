@@ -13,12 +13,5 @@
     <com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
         android:id="@+id/tokoNowSearchCategoryRecomCarousel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
-
-    <com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
-        android:id="@+id/realTimeRecommendationCarousel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

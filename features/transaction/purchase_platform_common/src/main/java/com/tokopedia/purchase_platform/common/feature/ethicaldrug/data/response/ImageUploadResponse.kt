@@ -12,5 +12,9 @@ data class ImageUploadResponse (
     @SerializedName("checkout_id")
     var checkoutId: String = "",
     @SerializedName("front_end_validation")
-    var frontEndValidation: Boolean = false
+    var frontEndValidation: Boolean = false,
+    @SerializedName("consultation_flow")
+    var consultationFlow: Boolean = false,
+    @SerializedName("rejected_wording")
+    var rejectedWording: String = ""
 )

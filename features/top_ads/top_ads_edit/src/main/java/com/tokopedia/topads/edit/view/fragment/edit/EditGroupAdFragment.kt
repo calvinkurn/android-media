@@ -61,7 +61,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var validation2 = true
     private var validation3 = true
     private var currentBudget = 0
-    private var groupId: Int? = 0
+    private var groupId: String? = "0"
     private var priceDaily = 0.0F
     private var groupName: String = ""
     private var currentAutoBidState = ""
@@ -172,7 +172,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setObservers()
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
-            groupId = arguments?.getString(GROUP_ID)?.toInt()
+            groupId = arguments?.getString(GROUP_ID)
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
         setToggleCheckedListener()
@@ -314,7 +314,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
+        viewModel.getGroupInfo(groupId ?: "0", this::onSuccessGroupInfo)
     }
 
     override fun onAttach(context: Context) {

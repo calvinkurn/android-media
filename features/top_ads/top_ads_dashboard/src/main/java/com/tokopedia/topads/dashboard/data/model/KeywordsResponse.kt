@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class KeywordsResponse(
 
-        @field:SerializedName("GetTopadsDashboardKeywords")
+        @field:SerializedName("GetTopadsDashboardKeywordsV3")
         val getTopadsDashboardKeywords: GetTopadsDashboardKeywords = GetTopadsDashboardKeywords()
 ) {
     data class GetTopadsDashboardKeywords(
@@ -36,7 +36,7 @@ data class KeywordsResponse(
                 val statTotalSpent: String = "",
 
                 @field:SerializedName("keyword_id")
-                val keywordId: Int = 0,
+                val keywordId: String = "",
 
                 @field:SerializedName("stat_total_ctr")
                 val statTotalCtr: String = "",
@@ -48,7 +48,7 @@ data class KeywordsResponse(
                 val statTotalClick: String = "",
 
                 @field:SerializedName("keyword_price_bid")
-                val keywordPriceBid: Int = 0,
+                val keywordPriceBid: Float = 0f,
 
                 @field:SerializedName("stat_total_sold")
                 val statTotalSold: String = "",

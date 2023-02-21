@@ -15,6 +15,7 @@ import com.tokopedia.search.result.product.wishlist.Wishlistable
 data class BroadMatchDataView(
     val keyword: String = "",
     val subtitle: String = "",
+    val iconSubtitle: String = "",
     val url: String = "",
     val applink: String = "",
     val isAppendTitleInTokopedia: Boolean = false,
@@ -112,6 +113,7 @@ data class BroadMatchDataView(
         ) = BroadMatchDataView(
             keyword = option.title,
             subtitle = option.subtitle,
+            iconSubtitle = option.iconSubtitle,
             applink = option.applink,
             carouselOptionType = CarouselOptionType.of(type, option),
             broadMatchItemDataViewList = option.product.mapIndexed { index, product ->

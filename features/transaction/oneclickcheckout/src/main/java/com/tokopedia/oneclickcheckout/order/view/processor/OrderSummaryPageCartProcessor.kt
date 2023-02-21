@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -14,7 +15,16 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Com
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
+import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EpharmacyPrescriptionDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
@@ -126,7 +136,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                                     it.cartId,
                                     it.orderQuantity,
                                     it.notes,
-                                    it.productId.toString()
+                                it.productId
                             )
                     )
                 }
@@ -151,10 +161,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             val profile = UpdateCartOccProfileRequest(
                     gatewayCode = orderProfile.payment.gatewayCode,
                     metadata = metadata,
-                    addressId = orderProfile.address.addressId.toString(),
-                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
-                    shippingId = orderShipment.getRealShipperId(),
-                    spId = orderShipment.getRealShipperProductId(),
+                    addressId = orderProfile.address.addressId,
+                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
+                    shippingId = orderShipment.getRealShipperId().toString(),
+                    spId = orderShipment.getRealShipperProductId().toString(),
                     isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
                     tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
                     optionId = selectedGoCicilTerm?.optionId ?: ""

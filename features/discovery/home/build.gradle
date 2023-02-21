@@ -30,10 +30,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
-        freeCompilerArgs += [
-                "-Xopt-in=kotlin.RequiresOptIn",
-                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-        ]
     }
 
     defaultConfig {
@@ -182,7 +178,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.uiautomator
     androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress)

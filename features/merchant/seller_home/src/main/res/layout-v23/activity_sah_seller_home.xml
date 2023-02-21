@@ -20,6 +20,15 @@
         android:minHeight="?attr/actionBarSize"
         app:unify_header_is_show_back_button="false" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progressBarContainerSah"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:loader_type="circular"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/sahContainer"
         android:layout_width="match_parent"

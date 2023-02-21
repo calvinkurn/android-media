@@ -29,7 +29,8 @@ data class ProductInputModel (
         // when click back pressed in add mode
         var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE){NO_DATA},
         var itemSold: Int = 0, // count of successful item transaction
-        var isDataChanged: Boolean = false
+        var isDataChanged: Boolean = false,
+        var isDuplicate: Boolean = false
 ) : Parcelable {
         @IgnoredOnParcel
         var lastVariantData = ProductVariantInputModel()

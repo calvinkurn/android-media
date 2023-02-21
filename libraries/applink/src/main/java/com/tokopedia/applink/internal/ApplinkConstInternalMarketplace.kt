@@ -50,6 +50,7 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_AR = "$INTERNAL_MARKETPLACE/productar/{product_id}/"
 
     const val PRODUCT_DETAIL_EDUCATIONAL = "$INTERNAL_MARKETPLACE/product-edu/{type}/"
+    const val POST_ATC = "$INTERNAL_MARKETPLACE/post-atc/{productId}/"
 
     // AtcVariantActivity
     @JvmField
@@ -85,6 +86,9 @@ object ApplinkConstInternalMarketplace {
 
     // CreateReviewActivity
     const val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+
+    // BulkReviewActivity
+    const val BULK_CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/bulk-create/"
 
     // EditReviewActivity
     const val EDIT_REVIEW = "$INTERNAL_MARKETPLACE/product-review/edit/{reputation_id}/{product_id}/"
@@ -194,6 +198,9 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
+    // TopchatReportWebViewActivity
+    const val TOPCHAT_REPORT = "$INTERNAL_MARKETPLACE/chat/report"
+
     // BubbleChatActivationActivity
     const val TOPCHAT_BUBBLE_ACTIVATION = "${INTERNAL_MARKETPLACE}/bubble-activation"
 
@@ -202,8 +209,6 @@ object ApplinkConstInternalMarketplace {
 
     // MembershipDetailActivity
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
-
-    const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
     //AdminInvitationConfirmationActivity
     @JvmField

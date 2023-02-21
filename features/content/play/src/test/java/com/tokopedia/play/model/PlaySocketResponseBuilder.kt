@@ -41,7 +41,7 @@ class PlaySocketResponseBuilder {
                  "title":"Cashback 7%",
                  "subtitle":"min. pembelian 200rb",
                  "voucher_type":3,
-                 "voucher_image":"https://ecs7.tokopedia.net/img/official_store/promoos/default-cashback.jpg",
+                 "voucher_image":"https://images.tokopedia.net/img/official_store/promoos/default-cashback.jpg",
                  "voucher_image_square":"",
                  "voucher_quota":300,
                  "voucher_finish_time":"2021-08-31T23:59:00Z",
@@ -60,8 +60,8 @@ class PlaySocketResponseBuilder {
                  "title":"Cashback 5%",
                  "subtitle":"min. pembelian 200rb",
                  "voucher_type":3,
-                 "voucher_image":"https://ecs7.tokopedia.net/img/BTJGre/2021/8/12/509a34ac-1ee5-4bd2-b3e3-437f1b66a142.jpg",
-                 "voucher_image_square":"https://ecs7.tokopedia.net/img/nNLhqY/2021/8/12/65b16fdd-e93f-4d59-b78f-f535be9e19b7.jpg",
+                 "voucher_image":"https://images.tokopedia.net/img/BTJGre/2021/8/12/509a34ac-1ee5-4bd2-b3e3-437f1b66a142.jpg",
+                 "voucher_image_square":"https://images.tokopedia.net/img/nNLhqY/2021/8/12/65b16fdd-e93f-4d59-b78f-f535be9e19b7.jpg",
                  "voucher_quota":100,
                  "voucher_finish_time":"2021-08-31T23:30:00Z",
                  "voucher_code":"LORELR6PLN",
@@ -101,7 +101,7 @@ class PlaySocketResponseBuilder {
                             {
                                 "id": "15240013",
                                 "name": "Indomie Soto Lamongan",
-                                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
                                 "shop_id": "479887",
                                 "original_price": 60000,
                                 "original_price_formatted": "Rp 60.000",
@@ -136,7 +136,7 @@ class PlaySocketResponseBuilder {
                             {
                                 "id": "15240013",
                                 "name": "Indomie Soto Lamongan",
-                                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
                                 "shop_id": "479887",
                                 "original_price": 60000,
                                 "original_price_formatted": "Rp 60.000",
@@ -171,7 +171,7 @@ class PlaySocketResponseBuilder {
                             {
                                 "id": "15240013",
                                 "name": "Indomie Soto Lamongan",
-                                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
+                                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
                                 "shop_id": "479887",
                                 "original_price": 60000,
                                 "original_price_formatted": "Rp 60.000",
@@ -235,4 +235,31 @@ class PlaySocketResponseBuilder {
     )
 
     fun buildQuiz(): WebSocketResponse = gson.fromJson(channelQuizActive, WebSocketResponse::class.java)
+
+    private val freezeStatus = """
+        "type":"FREEZE",
+        "data":{
+          "channel_id": "12269",
+          "is_freeze":true,
+          "timestamp":1592392273000
+        }
+    """.trimIndent()
+
+    private val bannedStatus = """
+        "type": "BANNED",
+        "data": {
+          "channel_id": "12665,
+          "user": {
+            "id": 1,
+            "name: "",
+            "image": ""
+          },
+          "is_banned": true,
+          "timestamp": 1579064126000
+        }
+    """.trimIndent()
+
+    fun buildFreeze(): WebSocketResponse = gson.fromJson(freezeStatus, WebSocketResponse::class.java)
+
+    fun buildBanned(): WebSocketResponse = gson.fromJson(bannedStatus, WebSocketResponse::class.java)
 }

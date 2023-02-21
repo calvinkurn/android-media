@@ -2,7 +2,7 @@ package com.tokopedia.people.viewmodel.followerfollowing
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.Success
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowerListModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowingListModelBuilder
@@ -37,6 +37,14 @@ class FollowerFollowingViewModelTest {
     private val mockException = commonBuilder.buildException()
     private val mockFollowerList = followerListBuilder.buildModel()
     private val mockFollowingList = followingListBuilder.buildModel()
+
+    private val mockNextCursor = "asdf"
+    private val mockFollowerListWithCursor = followerListBuilder.buildModel(cursor = mockNextCursor)
+    private val mockFollowingListWithCursor = followingListBuilder.buildModel(cursor = mockNextCursor)
+
+    private val mockFollowerListEmptyWithCursor = followerListBuilder.buildModel(size = 0, cursor = mockNextCursor)
+    private val mockFollowingListEmptyListWithCursor = followingListBuilder.buildModel(size = 0, cursor = mockNextCursor)
+
     private val mockSuccess = mutationBuilder.buildSuccess()
     private val mockError = mutationBuilder.buildError()
     private val mockErrorWithoutMessage = mutationBuilder.buildError("")
@@ -76,6 +84,30 @@ class FollowerFollowingViewModelTest {
     }
 
     @Test
+    fun `when user load follower list but the list is empty & has next cursor, it should re-hit the gql`() {
+        robot.start {
+            coEvery { repo.getFollowerList(any(), "", any()) } returns mockFollowerListEmptyWithCursor
+            coEvery { repo.getFollowerList(any(), mockNextCursor, any()) } returns mockFollowerList
+            getFollowers()
+
+            val result = robot.viewModel.profileFollowersListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowerList)
+        }
+    }
+
+    @Test
+    fun `when user load follower list, the list is not empty  & has next cursor, it should not re-hit the gql`() {
+        robot.start {
+            coEvery { repo.getFollowerList(any(), "", any()) } returns mockFollowerListWithCursor
+            coEvery { repo.getFollowerList(any(), mockNextCursor, any()) } returns mockFollowerList
+            getFollowers()
+
+            val result = robot.viewModel.profileFollowersListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowerListWithCursor)
+        }
+    }
+
+    @Test
     fun `when user load following list successfully, it should emit the data`() {
         robot.start {
             getFollowings()
@@ -93,6 +125,30 @@ class FollowerFollowingViewModelTest {
 
             val throwable = robot.viewModel.followersErrorLiveData.getOrAwaitValue()
             throwable equalTo mockException
+        }
+    }
+
+    @Test
+    fun `when user load following list but the list is empty & has next cursor, it should re-hit the gql`() {
+        robot.start {
+            coEvery { repo.getFollowingList(any(), "", any()) } returns mockFollowingListEmptyListWithCursor
+            coEvery { repo.getFollowingList(any(), mockNextCursor, any()) } returns mockFollowingList
+            getFollowings()
+
+            val result = robot.viewModel.profileFollowingsListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowingList)
+        }
+    }
+
+    @Test
+    fun `when user load following list, the list is not empty & has next cursor, it should not re-hit the gql`() {
+        robot.start {
+            coEvery { repo.getFollowingList(any(), "", any()) } returns mockFollowingListWithCursor
+            coEvery { repo.getFollowingList(any(), mockNextCursor, any()) } returns mockFollowingList
+            getFollowings()
+
+            val result = robot.viewModel.profileFollowingsListLiveData.getOrAwaitValue()
+            result equalTo Success(mockFollowingListWithCursor)
         }
     }
 

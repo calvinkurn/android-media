@@ -15,4 +15,5 @@ interface ViewUpdater {
     fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>)
     fun requestRelayout()
     fun backToTop()
+    fun scrollToPosition(position: Int)
 }

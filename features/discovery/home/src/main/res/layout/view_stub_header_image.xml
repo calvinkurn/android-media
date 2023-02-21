@@ -9,7 +9,7 @@
     <View
         android:id="@+id/header_background_home"
         android:layout_width="match_parent"
-        android:layout_height="214dp"
+        android:layout_height="400dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -15,8 +15,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_ONE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_TWO

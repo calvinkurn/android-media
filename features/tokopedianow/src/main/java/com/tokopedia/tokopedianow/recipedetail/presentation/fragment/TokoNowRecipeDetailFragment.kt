@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +27,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
@@ -113,6 +116,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBottomMarginWhenSoftKeyboardAppeared(view)
         showLoading()
         setRecipeData()
         setupToolbarHeader()
@@ -199,6 +203,21 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     override fun getProductTracker() = productAnalytics
 
     override fun getTracker() = analytics
+
+    private fun setBottomMarginWhenSoftKeyboardAppeared(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { mView, windowInsets ->
+            val imeHeight = windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+
+            mView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                this?.bottomMargin = imeHeight
+            }
+
+            /**
+             * Return CONSUMED, so window insets not to keep being passed down to descendant views.
+             */
+            WindowInsetsCompat.CONSUMED
+        }
+    }
 
     private fun setRecipeData() {
         activity?.intent?.data?.let {
@@ -475,7 +494,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
         val message = data.errorMessage.joinToString(separator = ", ")
-        val actionText = getString(R.string.tokopedianow_lihat)
+        val actionText = getString(R.string.tokopedianow_toaster_see)
         showToaster(message = message, actionText = actionText, onClickAction = {
             trackClickSeeAddToCartToaster()
             showMiniCartBottomSheet()
@@ -499,7 +518,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
                 R.string.tokopedianow_recipe_success_add_bookmark,
                 data.recipeTitle
             ),
-            actionText = getString(R.string.tokopedianow_lihat),
+            actionText = getString(R.string.tokopedianow_toaster_see),
             onClickAction = {
                 goToRecipeBookmark()
             }

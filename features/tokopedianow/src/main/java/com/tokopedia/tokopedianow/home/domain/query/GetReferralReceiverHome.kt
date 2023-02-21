@@ -24,6 +24,10 @@ internal object GetReferralReceiverHome: GqlQueryInterface {
             reward {
                 maxReward
             }
+            benefits {
+                title
+                description
+            }
           }
         }
         """.trimIndent()

@@ -417,7 +417,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         private const val LANDING_PICT_URL =
-            "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+            "https://images.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
         private const val URL_DELETED_SHOP =
             "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
 

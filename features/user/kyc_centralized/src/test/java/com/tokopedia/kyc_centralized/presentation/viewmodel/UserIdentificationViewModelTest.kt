@@ -2,10 +2,10 @@ package com.tokopedia.kyc_centralized.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
+import com.tokopedia.kyc_centralized.domain.GetProjectInfoUseCase
+import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationViewModel
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.data.model.KycUserProjectInfoPojo
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -24,13 +24,13 @@ class UserIdentificationViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getUserProjectInfoUseCase: GetUserProjectInfoUseCase = mockk(relaxed = true)
+    private val getProjectInfoUseCase: GetProjectInfoUseCase = mockk(relaxed = true)
     private val userProjectInfoObservable: Observer<Result<KycUserProjectInfoPojo>> = mockk(relaxed = true)
     private lateinit var viewModel: UserIdentificationViewModel
 
     @Before fun setup() {
         viewModel = UserIdentificationViewModel(
-                getUserProjectInfoUseCase,
+                getProjectInfoUseCase,
                 CoroutineTestDispatchersProvider
         )
         viewModel.userProjectInfo.observeForever(userProjectInfoObservable)
@@ -44,7 +44,7 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase(any())
+            getProjectInfoUseCase(any())
         } returns expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)
@@ -60,7 +60,7 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase(any())
+            getProjectInfoUseCase(any())
         } throws expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)

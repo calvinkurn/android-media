@@ -11,7 +11,7 @@ import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -152,9 +152,9 @@ class FeedMultipleImageView @JvmOverloads constructor(
             }
 
 
-            private fun mapTrackingData(trackList: List<Tracking>): List<TrackingViewModel> {
+            private fun mapTrackingData(trackList: List<Tracking>): List<TrackingModel> {
                 return trackList.map {
-                    TrackingViewModel(
+                    TrackingModel(
                             it.clickURL,
                             it.viewURL,
                             it.type,
@@ -190,7 +190,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
         fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                              redirectLink: String, isSingleItem: Boolean)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
 
     private fun RecyclerView.setItemDecoration(itemDecoration: RecyclerView.ItemDecoration) {

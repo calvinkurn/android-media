@@ -36,6 +36,7 @@
     <string name="courier_title">Kurir</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
+    <string name="title_other_toppers">Toppers lain juga lihat ini, lho!</string>
     <string name="new_installment_template">Cicilan mulai dari %s</string>
     <string name="pdp_label_cart_count_max">99+</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
@@ -111,9 +112,7 @@
     <string name="product_detail_discussion_title">Diskusi Paling Membantu</string>
     <string name="product_detail_discussion_see_all">Lihat Semua (%d)</string>
     <string name="product_detail_discussion_no_answers">Bantu Jawab</string>
-    <string name="product_detail_discussion_empty_subtitle">Punya Pertanyaan?</string>
-    <string name="product_detail_discussion_empty_description">Tanya aja langsung tentang barang ini di Diskusi.</string>
-    <string name="product_detail_discussion_empty_button">Tanya Sekarang</string>
+    <string name="product_detail_discussion_empty_description">Tanya soal produk ini di Diskusi, yuk!</string>
     <string name="product_detail_discussion_total_answers">%d jawaban lainnya</string>
     <string name="product_detail_discussion_seller_label">Penjual</string>
     <string name="product_detail_discussion_local_load_title">Diskusi gagal ditampilkan</string>
@@ -124,7 +123,7 @@
     <string name="product_detail_ask_discussion_label">Tanya di Diskusi</string>
 
     <!--Ticker-->
-    <string name="ticker_href_builder">&lt;a href="#"&gt;%s&lt;/a&gt;</string>
+    <string name="ticker_href_builder">&lt;b&gt;&lt;a href="#"&gt;%s&lt;/a&gt;&lt;/b&gt;</string>
 
     <!--New Shop Info-->
     <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
@@ -199,5 +198,9 @@
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
     <string name="pdp_general_info_see">Lihat</string>
     <string name="text_info_shop_moderated">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
+
+    <string name="pdp_selly_time_format">&#160;• %s</string>
+    <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
+    <string name="pdp_selly_button_collapse">Jadwal Lainnya</string>
 
 </resources>

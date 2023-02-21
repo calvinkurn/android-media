@@ -3,13 +3,12 @@ package com.tokopedia.topchat.chatroom.view.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.attachcommon.data.ResultProduct
@@ -31,7 +30,7 @@ import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.utils.time.RfcDateTimeParser
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 @UiTest
@@ -1547,7 +1546,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putExtra(ApplinkConst.Chat.INVOICE_DATE, " 6 May 2021")
             putExtra(
                 ApplinkConst.Chat.INVOICE_IMAGE_URL,
-                "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg"
+                "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg"
             )
             putExtra(
                 ApplinkConst.Chat.INVOICE_URL,

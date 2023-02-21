@@ -3,7 +3,7 @@ package com.tokopedia.feed_shop.presenter
 import android.content.Context
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.createpost.common.domain.usecase.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -889,7 +889,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
     @Test
     fun `add post tag item success should call onAddToCartSuccess`() {
-        val mockCartData = DataModel(success = 1, productId = 12345)
+        val mockCartData = DataModel(success = 1, productId = "12345")
         every {
             atcUseCase.execute(any(), any())
         } answers {

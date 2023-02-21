@@ -19,16 +19,19 @@ class GetBundleInfoUseCase @Inject constructor(
 
     companion object {
         private const val ERROR_INVALID_BUNDLE = "ERROR_INVALID_BUNDLE"
+        private const val SORT_BY_BENEFIT = "benefit"
+        private const val SORT_BY_PREORDER = "preorder"
         private const val PARAM_BUNDLES = "bundles"
         private const val PARAM_SQUAD = "squad"
         private const val PARAM_USE_CASE = "usecase"
         private const val PARAM_REQUEST_DATA = "requestData"
         private const val PARAM_PRODUCT_DATA = "productData"
         private const val PARAM_TYPE = "type"
+        private const val PARAM_SORT_BY = "sortBy"
         private val query =
             """ 
-            query getBundleInfo( ${'$'}bundles: [Bundle], ${'$'}squad: String, ${'$'}usecase: String, ${'$'}requestData: RequestData, ${'$'}productData: ProductData, ${'$'}type: Int) {
-                GetBundleInfo(bundles: ${'$'}bundles, squad: ${'$'}squad, usecase: ${'$'}usecase, requestData: ${'$'}requestData, productData: ${'$'}productData, type: ${'$'}type) {
+            query getBundleInfo( ${'$'}bundles: [Bundle], ${'$'}squad: String, ${'$'}usecase: String, ${'$'}requestData: RequestData, ${'$'}productData: ProductData, ${'$'}type: Int, ${'$'}sortBy: [String]) {
+                GetBundleInfo(bundles: ${'$'}bundles, squad: ${'$'}squad, usecase: ${'$'}usecase, requestData: ${'$'}requestData, productData: ${'$'}productData, type: ${'$'}type, sortBy: ${'$'}sortBy) {
                     error {
                         messages
                         reason
@@ -48,7 +51,7 @@ class GetBundleInfoUseCase @Inject constructor(
                         originalQuota
                         maxOrder
                         bundleStats {
-                            Sold
+                            SoldItem
                         }
                         shopInformation {
                             ShopName
@@ -122,7 +125,8 @@ class GetBundleInfoUseCase @Inject constructor(
         requestData: RequestData,
         productData: ProductData,
         bundleIdList: List<Bundle>,
-        type: Int? = null
+        type: Int? = null,
+        activateSorting: Boolean = false
     ) {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_BUNDLES, bundleIdList)
@@ -130,6 +134,8 @@ class GetBundleInfoUseCase @Inject constructor(
         requestParams.putString(PARAM_USE_CASE, usecase)
         requestParams.putObject(PARAM_REQUEST_DATA, requestData)
         requestParams.putObject(PARAM_PRODUCT_DATA, productData)
+        requestParams.putObject(PARAM_SORT_BY,
+            if (activateSorting) listOf(SORT_BY_BENEFIT, SORT_BY_PREORDER) else emptyList())
         type?.let { requestParams.putInt(PARAM_TYPE, it) }
         params = requestParams.parameters
     }

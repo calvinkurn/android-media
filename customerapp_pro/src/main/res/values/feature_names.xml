@@ -43,7 +43,7 @@
     <string name="title_setting_profile">Data Diri</string>
     <string name="title_profile_completion">Lengkapi Profil</string>
     <string name="title_change_gender">Tambah Jenis Kelamin</string>
-    <string name="title_add_phone">Tambah Nomor Ponsel</string>
+    <string name="add_phone_title_add_phone">Tambah Nomor Ponsel</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
     <string name="title_change_pin">Ubah PIN Tokopedia</string>

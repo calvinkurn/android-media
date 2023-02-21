@@ -30,8 +30,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
+import com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity.Companion.getCallingIntent
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
@@ -349,7 +349,7 @@ class VideoDetailFragment :
 
                 } else {
                     startActivityForResult(
-                        KolCommentNewActivity.getCallingIntent(
+                        ContentCommentActivity.getCallingIntent(
                             requireActivity(),
                             id.toIntOrZero(),
                             0,
@@ -447,7 +447,7 @@ class VideoDetailFragment :
                         String.format(
                             "%s",
                             desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                     )
                 }
             shareText.setOnClickListener {
@@ -455,7 +455,7 @@ class VideoDetailFragment :
                         String.format(
                                 "%s",
                                 desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                 )
             }
 

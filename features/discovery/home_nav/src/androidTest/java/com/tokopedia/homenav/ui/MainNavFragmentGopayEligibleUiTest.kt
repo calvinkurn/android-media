@@ -4,21 +4,23 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.homenav.mock.MainNavMockResponseConfig
+import com.tokopedia.homenav.test.R
 import com.tokopedia.homenav.ui.MainNavMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.homenav.view.activity.HomeNavActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.homenav.test.R
-import org.hamcrest.Matchers.allOf
 
 /**
  * Created by devarafikry on 02/07/21.

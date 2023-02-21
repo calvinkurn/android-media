@@ -84,7 +84,6 @@ open class SearchTestFixtures {
                 getMiniCartListSimplifiedUseCase,
                 cartService,
                 getWarehouseUseCase,
-                getRecommendationUseCase,
                 setUserPreferenceUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,

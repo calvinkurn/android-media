@@ -21,19 +21,18 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
 import com.tokopedia.deals.pdp.mock.DealsPDPGQLMockResponse
 import com.tokopedia.deals.pdp.rule.DealsIdlingResourceTestRule
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
-import com.tokopedia.graphql.GraphqlCacheManager
-import com.tokopedia.test.application.annotations.UiTest
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.deals.test.R
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -136,9 +135,9 @@ class DealsPDPActivityTest {
 
     inner class NestedScrollViewExtension(scrolltoAction: ViewAction = ViewActions.scrollTo()) : ViewAction by scrolltoAction {
         override fun getConstraints(): Matcher<View> {
-            return Matchers.allOf(
+            return CoreMatchers.allOf(
                 ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-                ViewMatchers.isDescendantOfA(Matchers.anyOf(ViewMatchers.isAssignableFrom(NestedScrollView::class.java),
+                ViewMatchers.isDescendantOfA(CoreMatchers.anyOf(ViewMatchers.isAssignableFrom(NestedScrollView::class.java),
                     ViewMatchers.isAssignableFrom(ScrollView::class.java),
                     ViewMatchers.isAssignableFrom(HorizontalScrollView::class.java),
                     ViewMatchers.isAssignableFrom(ListView::class.java))))

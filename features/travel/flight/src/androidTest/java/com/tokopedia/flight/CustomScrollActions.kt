@@ -10,11 +10,14 @@ import androidx.core.widget.NestedScrollView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.util.HumanReadables
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 
 /**
@@ -25,7 +28,7 @@ object CustomScrollActions {
     fun nestedScrollTo(): ViewAction? {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
-                return Matchers.allOf(
+                return CoreMatchers.allOf(
                         isDescendantOfA(isAssignableFrom(NestedScrollView::class.java)),
                         withEffectiveVisibility(Visibility.VISIBLE))
             }

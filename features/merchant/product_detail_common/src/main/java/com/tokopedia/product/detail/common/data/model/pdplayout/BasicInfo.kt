@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.Etalase
+import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.product.Stats
 import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 
@@ -88,7 +89,10 @@ data class BasicInfo(
         val defaultMediaUrl: String = "",
         @SerializedName("shopMultilocation")
         @Expose
-        val productMultilocation: ProductMultilocation = ProductMultilocation()
+        val productMultilocation: ProductMultilocation = ProductMultilocation(),
+        @SerializedName("postATCLayout")
+        @Expose
+        val postAtcLayout: PostAtcLayout = PostAtcLayout()
 ) {
     fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull()
             ?: DEFAULT_PRICE_MINIMUM_SHIPPING

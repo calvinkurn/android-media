@@ -26,6 +26,8 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
 import java.util.HashMap;
 
+import timber.log.Timber;
+
 public class MigratedUserSession {
     public static final String suffix = "_v2";
     protected Context context;
@@ -209,6 +211,7 @@ public class MigratedUserSession {
     }
 
     private String decryptString(String message, String keyName) {
+        Timber.i("decrypting %s with key %s", message, keyName);
         try {
 	    /*
             Check PII data from SET, if keyName is PII data decrypt with aead (tink)
@@ -220,6 +223,7 @@ public class MigratedUserSession {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
+            Timber.e(e);
             if(e instanceof InvalidProtocolBufferException ||
                     e instanceof GeneralSecurityException ||
                     e instanceof KeyStoreException ||
@@ -230,7 +234,7 @@ public class MigratedUserSession {
             // Check for backup value
             String backupValue = EncoderDecoder.Decrypt(getBackupPiiData(keyName), UserSession.KEY_IV);
             if(!backupValue.isEmpty()) {
-                logUserSessionEvent("decrypt_string_exception_with_backup", e);
+                logUserSessionEventWithKey("decrypt_string_exception_with_backup", keyName, e);
                 return backupValue;
             } else {
                 return "";
@@ -285,6 +289,16 @@ public class MigratedUserSession {
         return true;
     }
 
+    private void logUserSessionEventWithKey(String method, String keyName, @Nullable Exception e) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("method", method);
+        data.put("pref_key_name", keyName);
+        if(e != null) {
+            data.put("error", Log.getStackTraceString(e));
+        }
+        ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
+    }
+
     private void logUserSessionEvent(String method, @Nullable Exception e) {
         HashMap<String, String> data = new HashMap<>();
         data.put("method", method);
@@ -311,9 +325,11 @@ public class MigratedUserSession {
             String oldValue = internalGetString(prefName, keyName, defValue);
 
             if (oldValue != null && !oldValue.equals(defValue)) {
+                Timber.d("cleaning %s", oldValue);
                 internalCleanKey(prefName, keyName);
                 internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
+                logUserSessionEventWithKey("migrate_from_v1", keyName, null);
                 return oldValue;
             }
 

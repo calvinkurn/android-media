@@ -92,7 +92,8 @@ sealed class ProductMenuUiModel(
         R.string.product_manage_create_product_coupon,
         IconUnify.DISCOUNT,
         PRODUCT_COUPON_END_DATE,
-        product
+        product,
+        product.isShopModerate
     )
 
     override fun type(typeFactory: ProductMenuAdapterFactory): Int {

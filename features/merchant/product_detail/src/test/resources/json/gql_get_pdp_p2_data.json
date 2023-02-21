@@ -255,7 +255,7 @@
               "destination": "Dikirim ke <b>Ujung Pandang, Kota Makassar</b>",
               "eTAText": "Estimasi tiba 22 - 25 Sep",
               "errors": [],
-              "icon": "https://ecs7.tokopedia.net/img/pdp/info/icon/courier@3x.png",
+              "icon": "https://images.tokopedia.net/img/pdp/info/icon/courier@3x.png",
               "subtitle": "Kurir lainnya: ",
               "title": "Tersedia Bebas Ongkir",
               "totalService": 3
@@ -276,8 +276,8 @@
           "totalReviewTextAndImage": "169"
         },
         "reputationShop": {
-          "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-4.gif",
-          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/diamond-4-hd.gif",
+          "badge": "https://images.tokopedia.net/img/repsys/diamond-4.gif",
+          "badgeHD": "https://images.tokopedia.net/img/repsys/diamond-4-hd.gif",
           "score": "315.545",
           "scoreMap": "19"
         },
@@ -295,29 +295,29 @@
                 "description": "",
                 "imageAttachmentID": 45016337,
                 "reviewID": 454917261,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/8/17/4990714b-5e3a-48c2-8dbd-806658cea14d.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/8/17/4990714b-5e3a-48c2-8dbd-806658cea14d.jpg"
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/8/17/4990714b-5e3a-48c2-8dbd-806658cea14d.jpg",
+                "uriThumbnail": "https://images.tokopedia.net/img/cache/100-square/bjFkPX/2021/8/17/4990714b-5e3a-48c2-8dbd-806658cea14d.jpg"
               },
               {
                 "description": "",
                 "imageAttachmentID": 31471687,
                 "reviewID": 333237415,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/22/8f11f945-8175-42b2-a05a-d60a41cfce9c.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/22/8f11f945-8175-42b2-a05a-d60a41cfce9c.jpg"
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/2/22/8f11f945-8175-42b2-a05a-d60a41cfce9c.jpg",
+                "uriThumbnail": "https://images.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/22/8f11f945-8175-42b2-a05a-d60a41cfce9c.jpg"
               },
               {
                 "description": "",
                 "imageAttachmentID": 31471686,
                 "reviewID": 333237415,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/22/2f40dac3-663a-4910-8bb5-d93fcd75c05c.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/22/2f40dac3-663a-4910-8bb5-d93fcd75c05c.jpg"
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/2/22/2f40dac3-663a-4910-8bb5-d93fcd75c05c.jpg",
+                "uriThumbnail": "https://images.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/22/2f40dac3-663a-4910-8bb5-d93fcd75c05c.jpg"
               },
               {
                 "description": "",
                 "imageAttachmentID": 30359106,
                 "reviewID": 323405951,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg"
+                "uriLarge": "https://images.tokopedia.net/img/cache/600/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg",
+                "uriThumbnail": "https://images.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg"
               }
             ],
             "videos": [
@@ -338,7 +338,7 @@
                 "reviewId": 333237415,
                 "reviewer": {
                   "fullName": "a***s",
-                  "profilePicture": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+                  "profilePicture": "https://images.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
                   "url": "",
                   "userID": 0
                 },
@@ -357,7 +357,7 @@
                 "reviewId": 323405951,
                 "reviewer": {
                   "fullName": "V***a",
-                  "profilePicture": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+                  "profilePicture": "https://images.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
                   "url": "",
                   "userID": 0
                 },
@@ -376,7 +376,7 @@
                 "reviewId": 454917261,
                 "reviewer": {
                   "fullName": "T***i",
-                  "profilePicture": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+                  "profilePicture": "https://images.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
                   "url": "",
                   "userID": 0
                 },
@@ -465,7 +465,7 @@
             {
               "awbStatus": 0,
               "code": "anteraja",
-              "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+              "image": "https://images.tokopedia.net/img/kurir-anteraja.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -501,7 +501,7 @@
             {
               "awbStatus": 0,
               "code": "lion",
-              "image": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+              "image": "https://images.tokopedia.net/img/kurir-lionparcel.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -521,7 +521,7 @@
             {
               "awbStatus": 0,
               "code": "grab",
-              "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+              "image": "https://images.tokopedia.net/img/kurir-grab.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -549,7 +549,7 @@
             {
               "awbStatus": 0,
               "code": "jnt",
-              "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+              "image": "https://images.tokopedia.net/img/kurir-jnt.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -569,7 +569,7 @@
             {
               "awbStatus": 0,
               "code": "gojek",
-              "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "image": "https://images.tokopedia.net/img/kurir-gosend.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -597,7 +597,7 @@
             {
               "awbStatus": 0,
               "code": "custom_1261882_1261882",
-              "image": "https://ecs7.tokopedia.net/img/kurir-custom.png",
+              "image": "https://images.tokopedia.net/img/kurir-custom.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -617,7 +617,7 @@
             {
               "awbStatus": 0,
               "code": "sicepat",
-              "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+              "image": "https://images.tokopedia.net/img/kurir-sicepat.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,
@@ -669,7 +669,7 @@
             {
               "awbStatus": 0,
               "code": "jne",
-              "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+              "image": "https://images.tokopedia.net/img/kurir-jne.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,

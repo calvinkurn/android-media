@@ -46,8 +46,6 @@ object ShopScoreConstant {
     const val SPEED_SENDING_ORDERS_URL =
         "https://www.tokopedia.com/help/article/batas-waktu-respon-pesanan-dan-konfirmasi-pengiriman"
 
-    const val IC_FREE_SHIPPING_BENEFIT_URL =
-        "https://images.tokopedia.net/img/android/shop_score/ic_free_shipping_benefit.png"
     const val IC_PROMOTION_BENEFIT_URL =
         "https://images.tokopedia.net/img/android/shop_score/ic_promotion_benefit.png"
     const val IC_PM_PRO_BADGE_BENEFIT_URL =
@@ -58,8 +56,6 @@ object ShopScoreConstant {
     const val BG_ORANGE_TIMER =
         "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
-    const val PM_PRO_BENEFIT_URL_1 =
-        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_1@3x.png"
     const val PM_PRO_BENEFIT_URL_2 =
         "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_2@3x.png"
     const val PM_PRO_BENEFIT_URL_3 =

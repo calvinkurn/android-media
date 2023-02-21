@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestSta
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
+import com.tokopedia.kotlin.model.ImpressHolder
 
 object OrderInsuranceUiStateMapper {
 
@@ -73,7 +74,8 @@ object OrderInsuranceUiStateMapper {
             is GetInsuranceDetailRequestState.Complete.Success -> {
                 mapOnGetInsuranceDetailSuccess(
                     buyerOrderDetailData,
-                    getInsuranceDetailRequestState.result
+                    getInsuranceDetailRequestState.result,
+                    currentState
                 )
             }
             is GetInsuranceDetailRequestState.Complete.Error -> {
@@ -98,9 +100,10 @@ object OrderInsuranceUiStateMapper {
 
     private fun mapOnGetInsuranceDetailSuccess(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
+        currentState: OrderInsuranceUiState
     ): OrderInsuranceUiState {
-        return mapOnDataReady(buyerOrderDetailData, insuranceDetailData)
+        return mapOnDataReady(buyerOrderDetailData, insuranceDetailData, currentState)
     }
 
     private fun mapOnGetInsuranceDetailError(): OrderInsuranceUiState {
@@ -119,10 +122,11 @@ object OrderInsuranceUiStateMapper {
 
     private fun mapOnDataReady(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
+        currentState: OrderInsuranceUiState
     ): OrderInsuranceUiState {
         return OrderInsuranceUiState.HasData.Showing(
-            mapOrderInsurance(buyerOrderDetailData, insuranceDetailData)
+            mapOrderInsurance(buyerOrderDetailData, insuranceDetailData, currentState)
         )
     }
 
@@ -132,13 +136,19 @@ object OrderInsuranceUiStateMapper {
 
     private fun mapOrderInsurance(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
+        currentState: OrderInsuranceUiState
     ): OrderInsuranceUiModel {
         return OrderInsuranceUiModel(
             logoUrl = insuranceDetailData?.orderConfig?.icon?.banner.orEmpty(),
             title = insuranceDetailData?.orderConfig?.wording?.id?.bannerTitle.orEmpty(),
             subtitle = insuranceDetailData?.orderConfig?.wording?.id?.bannerSubtitle.orEmpty(),
             appLink = insuranceDetailData?.orderConfig?.redirection.orEmpty(),
+            impressHolder = if (currentState is OrderInsuranceUiState.HasData) {
+                currentState.data.impressHolder
+            } else {
+                ImpressHolder()
+            },
             trackerData = mapTrackerData(buyerOrderDetailData)
         )
     }

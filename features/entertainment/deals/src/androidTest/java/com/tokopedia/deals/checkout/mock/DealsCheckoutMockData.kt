@@ -14,10 +14,10 @@ object DealsCheckoutMockData {
         return ProductDetailData(
             id = "297498",
             displayName = "Voucher Haagen Dazs Rp 100.000 (Penawaran Spesial)",
-            imageApp = "https://ecs7.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
+            imageApp = "https://images.tokopedia.net/img/banner/2020/3/19/51998951/51998951_8b4dd7a9-d39e-403b-8edf-1a7dc53f9e22.jpg",
             brand = Brand(
                 title = "Haagen-Dazs",
-                featuredImage = "https://ecs7.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
+                featuredImage = "https://images.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
                 seoUrl = "haagen-dazs-1522"
             ),
             saleEndDate = "1672801200",
@@ -77,7 +77,7 @@ object DealsCheckoutMockData {
                         productAppUrl = "tokopedia://deals/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603",
                         webAppUrl = "https://www.tokopedia.com/deals/i/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603/",
                         productWebUrl = "https://www.tokopedia.com/deals/i/voucher-haagen-dazs-rp-100000-penawaran-spesial-28603/",
-                        productImage = "https://ecs7.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
+                        productImage = "https://images.tokopedia.net/img/cache/300-square/qfBCeS/2020/10/19/dc67c938-6fbe-4eb8-ae39-a2b6c2d05e16.jpg",
                         flagId = "1025",
                         packageId = "0",
                         orderTraceId = "b705bd82-9e7c-414d-5dfe-98aed52a0db6",

@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -31,6 +32,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
@@ -48,6 +50,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             pageEndPoint,
                             it.nextPageKey,
                             it.recomQueryProdId,
+                            paramWithoutRpc,
                             it.userAddressData),
                     pageEndPoint, it.name)
             it.showVerticalLoader = productListData.isNotEmpty()
@@ -66,6 +69,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
 
     suspend fun getProductCardsUseCase(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
@@ -83,6 +87,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             pageEndPoint,
                             component1.nextPageKey,
                             component1.recomQueryProdId,
+                            paramWithoutRpc,
                             component.userAddressData),
                     pageEndPoint,
                     component1.name)
@@ -105,6 +110,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
 
     suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         component?.let {
             it.properties?.let { properties ->
                 if (properties.limitProduct && properties.limitNumber.toIntOrZero() == it.getComponentsItem()?.size) return false
@@ -123,14 +129,16 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             pageEndPoint,
                             it.nextPageKey,
                             it.recomQueryProdId,
+                            paramWithoutRpc,
                             it.userAddressData),
                     pageEndPoint,
                     it.name)
             component.nextPageKey = nextPage
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
-            updatePaginatedData(productListData,it)
-            if(it.properties?.tokonowATCActive == true)
+            updatePaginatedData(productListData, it)
+            if (it.properties?.tokonowATCActive == true) {
                 Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
+            }
             (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             return true
         }
@@ -147,6 +155,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      pageEndPoint: String,
                                      nextPageKey : String?,
                                      recomProdId: String?,
+                                     queryParameterMapWithoutRpc: Map<String, String>?,
                                      userAddressData: LocalCacheModel?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
@@ -199,6 +208,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
         if (!recomProdId.isNullOrEmpty())
             queryParameterMap[RPC_PRODUCT_ID] = recomProdId
+        queryParameterMapWithoutRpc?.let {
+            queryParameterMap.putAll(it)
+        }
         return queryParameterMap
     }
 

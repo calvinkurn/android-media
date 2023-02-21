@@ -8,12 +8,14 @@ data class ProductBottomSheetData(
     val shopId: String,
     val postType: String,
     val isFollowed: Boolean,
+    val hasVoucher: Boolean,
     val positionInFeed: Int,
     val playChannelId: String,
     val shopName:String,
     val mediaType: String,
     val saleType: String,
-    val saleStatus: String
+    val saleStatus: String,
+    val authorType: String
 ) {
     val isFlashSaleToko: Boolean
         get() = saleType == ASGC_FLASH_SALE_TOKO

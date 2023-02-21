@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
+    android:background="@color/Unify_NN50"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:id="@+id/reply_box"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="0dp"
+        app:card_type="border"
+        app:card_background_color="@color/Unify_NN50"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/attachment_container">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/reply_box_text"
+            android:gravity="start"
+            app:typographyWeight="reguler"
+            tools:text="Testing Text"
+            app:typographyType="display_2"
+            android:textColor="@color/Unify_NN400"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"/>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <FrameLayout
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:id="@+id/attachment_container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/reply_box"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_oval_transparent">
+
+        <ImageView
+            android:id="@+id/iv_chat_menu"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@null"
+            app:srcCompat="@drawable/ic_add_attachment_chatbot" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/send_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@null"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/reply_box"
+        app:srcCompat="@drawable/ic_chatbot_send_deactivated" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

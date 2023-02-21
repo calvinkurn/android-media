@@ -4,14 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icon_shop"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:layout_marginStart="12dp"
         android:visibility="gone"
+        android:layout_marginStart="4dp"
         app:unify_image_corner_radius="0"
         app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +22,7 @@
         android:id="@+id/tv_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="4dp"
         android:visibility="gone"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toEndOf="@id/icon_shop"
@@ -40,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        android:layout_marginStart="12dp" />
+        android:layout_marginStart="4dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bundle_name"
@@ -52,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
         app:typographyType="display_3"
         android:textColor="@color/Unify_NN600"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="4dp"
         />
 
     <com.tokopedia.unifyprinciples.Typography

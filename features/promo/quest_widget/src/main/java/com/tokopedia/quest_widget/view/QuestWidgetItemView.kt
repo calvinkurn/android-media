@@ -235,19 +235,19 @@ class QuestWidgetItemView @JvmOverloads constructor(
         animator.startDelay = 1000
         animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
         animator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 completion?.let {
                     it()
                 }
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
 
         })
@@ -277,20 +277,20 @@ class QuestWidgetItemView @JvmOverloads constructor(
         animator.startDelay = 1000
         animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
         animator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 iconContainer.hide()
                 completion?.let {
                     it()
                 }
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
         })
         animator.start()
@@ -320,17 +320,17 @@ class QuestWidgetItemView @JvmOverloads constructor(
         animator.startDelay = 1000
         animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
         animator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 scaleDownIconProgress(icon, iconContainer, completion)
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
 
         })
@@ -360,20 +360,20 @@ class QuestWidgetItemView @JvmOverloads constructor(
         animator.startDelay = 1000
         animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
         animator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 iconContainer.hide()
                 completion?.let {
                     it()
                 }
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
         })
         animator.start()
@@ -405,16 +405,16 @@ class QuestWidgetItemView @JvmOverloads constructor(
             animationTopToCenter
         )
         animator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
         })
         animator.start()

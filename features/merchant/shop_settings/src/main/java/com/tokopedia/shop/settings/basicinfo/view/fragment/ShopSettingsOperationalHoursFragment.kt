@@ -316,12 +316,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // setup holiday ticker
         autoChatTicker?.setHtmlDescription(getString(
                 R.string.shop_operational_hour_ticker_description_auto_chat,
-                getString(R.string.shop_operational_hour_ticker_description_auto_chat_dummy_url)
+                getString(R.string.shop_operational_hour_ticker_auto_chat_reply)
         ))
         autoChatTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (linkUrl == getString(R.string.shop_operational_hour_ticker_description_auto_chat_dummy_url)) {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
+                if (linkUrl == getString(R.string.shop_operational_hour_ticker_auto_chat_reply)) {
+                    RouteManager.route(context, ApplinkConst.TOKOPEDIA_CHAT_AUTO_REPLY_SETTINGS)
                 }
             }
 

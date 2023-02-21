@@ -113,7 +113,7 @@
         android:visibility="gone"
         app:unifyEmptyStateTitle="Kupon yang kamu cari nggak ditemukan"
         app:unifyEmptyStateDescription="Coba ulangi pencarian dengan kata kunci atau filter lain, ya."
-        app:unifyEmptyStateImageUrl="https://ecs7.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
         app:unifyEmptyStateOrientation="horizontal"
         app:unifyEmptyStateType="section"
         app:layout_constraintStart_toStartOf="parent"

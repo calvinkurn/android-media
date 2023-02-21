@@ -9,7 +9,7 @@ import com.tokopedia.play.util.PlayCastHelper
 import java.lang.Exception
 
 class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
-    override fun onReceiveOtherAction(context: Context?, actionName: String?, data: Intent?) {
+    override fun onReceiveOtherAction(context: Context?, actionName: String, data: Intent) {
         super.onReceiveOtherAction(context, actionName, data)
         context?.let {
             if(actionName == PlayCastNotificationAction.ACTION_OPEN_PLAY) {

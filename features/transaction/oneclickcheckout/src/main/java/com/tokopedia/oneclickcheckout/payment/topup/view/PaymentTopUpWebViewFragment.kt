@@ -103,7 +103,7 @@ class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
                 domStorageEnabled = true
                 builtInZoomControls = false
                 displayZoomControls = true
-                setAppCacheEnabled(true)
+//                setAppCacheEnabled(true)
             }
             webView.webViewClient = OvoTopUpWebViewClient()
             webSettings?.mediaPlaybackRequiresUserGesture = false

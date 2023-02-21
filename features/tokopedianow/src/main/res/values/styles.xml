@@ -16,11 +16,6 @@
         <item name="cornerSize">49%</item>
     </style>
 
-    <style name="roundedCornerImageDisplay">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">12dp</item>
-    </style>
-
     <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>

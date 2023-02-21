@@ -20,7 +20,7 @@ class DFRemoteConfig {
                     }
                 }
             }
-            return dfConfig?: DFConfig()
+            return dfConfig ?: DFConfig()
         }
     }
 }

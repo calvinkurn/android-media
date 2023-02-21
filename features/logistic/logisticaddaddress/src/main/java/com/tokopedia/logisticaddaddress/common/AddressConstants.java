@@ -54,6 +54,7 @@ public class AddressConstants {
     public static final String EXTRA_IS_NULL_ZIPCODE = "EXTRA_IS_NULL_ZIPCODE";
     public static final String EXTRA_DISTRICT_NAME = "EXTRA_DISTRICT_NAME";
     public static final String EXTRA_KOTA_KECAMATAN = "EXTRA_KOTA_KECAMATAN";
+    public static final String EXTRA_GMS_AVAILABILITY = "EXTRA_GMS_AVAILABILITY";
     public static final String EXTRA_NEGATIVE_FULL_FLOW = "EXTRA_NEGATIVE_FULL_FLOW";
     public static final String EXTRA_FROM_ADDRESS_FORM = "EXTRA_FROM_ADDRESS_FORM";
     public static final String EXTRA_FROM_PINPOINT = "EXTRA_FROM_PINPOINT";
@@ -88,4 +89,20 @@ public class AddressConstants {
 
     public static final int GPS_REQUEST = 108;
     public static final String SCREEN_NAME_USER_NEW = "/user/address/create";
+
+    // Lite Pinpoint
+    public static final String KEY_DISTRICT_ID = "KEY_DISTRICT_ID";
+    public static final String KEY_LAT_ID = "KEY_LAT_ID";
+    public static final String KEY_LONG_ID = "KEY_LONG_ID";
+    public static final String KEY_CURRENT_LOC = "KEY_CURRENT_LOC";
+    public static final String KEY_LOCATION_PASS = "KEY_LOCATION_PASS";
+    public static final String KEY_ADDRESS_DATA = "KEY_ADDRESS_DATA";
+    public static final String KEY_SOURCE_PINPOINT = "KEY_SOURCE_PINPOINT";
+    public static final String PARAM_LAT = "lat";
+    public static final String PARAM_LONG = "lng";
+    public static final String PARAM_TRACKER = "trackerId";
+    public static final String PARAM_TRACKER_LABEL = "label";
+    public static final String PARAM_DISTRICT_ID = "districtId";
+    public static final String PARAM_CURRENT_LOC = "currentLoc";
+    public static final String PARAM_SOURCE = "source" ;
 }

@@ -4,13 +4,18 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.domain.model.Shop
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
@@ -33,7 +38,10 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         val rtrItemList = listOf(
             RecommendationItem(
                 productId = 5,
-                name = "Tahu Bulat"
+                shopId = 5,
+                name = "Tahu Bulat",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                appUrl = "tokopedia://product/detail/1"
             )
         )
 
@@ -47,14 +55,18 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 id = channelId,
                 layout = "top_carousel_tokonow",
                 header = Header(
+                    id = "5",
                     name = "Lagi Diskon",
+                    applink = "tokopedia://now",
                     serverTimeUnix = 0
                 ),
                 grids = listOf(
                     Grid(
                         id = "2",
+                        shop = Shop(shopId = "5"),
+                        parentProductId = "0",
                         imageUrl = "https://tokopedia.com/image.jpg",
-                        categoryBreadcrumbs = "Sayur"
+                        categoryBreadcrumbs = "Bahan Masak/Sayur"
                     )
                 ),
                 widgetParam = rtrWidgetParam
@@ -69,26 +81,39 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.addProductToCart(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
 
-        val recomItemList = listOf(
-            RecommendationItem(
-                productId = 2,
-                categoryBreadcrumbs = "Sayur",
-                imageUrl = "https://tokopedia.com/image.jpg",
-                isRecomProductShowVariantAndCart = true,
-                price = "0",
-                position = 1,
-                quantity = 1
+        val productList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                shopId = "5",
+                shopType = "pm",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "2",
+                    imageUrl = "https://tokopedia.com/image.jpg",
+                    isVariant = false,
+                    price = "0",
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
         )
 
-        val recomWidget = RecommendationWidget(
-            title = "Lagi Diskon",
-            recommendationItemList = recomItemList
-        )
-
-        val rtrWidget = RecommendationWidget(
-            title = "",
-            recommendationItemList = rtrItemList
+        val rtrProductList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                shopId = "5",
+                appLink = "tokopedia://product/detail/1",
+                headerName = "Lagi Diskon",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "5",
+                    name = "Tahu Bulat",
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
+                ),
+                parentId = "0"
+            )
         )
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
@@ -97,18 +122,37 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             parentProductId = productId,
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",
-            widget = rtrWidget,
+            productList = rtrProductList,
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
+        )
+
+        val seeMoreUiModel = TokoNowSeeMoreCardCarouselUiModel(
+            id = "5",
+            headerName = "Lagi Diskon",
+            appLink = "tokopedia://now"
+        )
+
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
+            title = "Lagi Diskon",
+            subTitle = "",
+            ctaText = "",
+            ctaTextLink = "tokopedia://now",
+            expiredTime = "",
+            serverTimeOffset = 0,
+            backColor = ""
         )
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
-            recomWidget = recomWidget,
-            realTimeRecom = realTimeRecom
+            title = "Lagi Diskon",
+            productList = productList,
+            seeMoreModel = seeMoreUiModel,
+            headerModel = headerUiModel,
+            realTimeRecom = realTimeRecom,
         )
 
         val homeLayoutItems = listOf(
@@ -143,8 +187,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         val rtrItemList = listOf(
             RecommendationItem(
                 productId = 5,
+                parentID = 2,
+                shopId = 2,
                 name = "Tahu Bulat",
-                quantity = 2
+                quantity = 2,
+                categoryBreadcrumbs = "Bahan Masak/Sayur"
             )
         )
 
@@ -164,13 +211,19 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 grids = listOf(
                     Grid(
                         id = "2",
+                        parentProductId = "3",
+                        shop = Shop(shopId = "5"),
+                        price = "2000",
                         imageUrl = "https://tokopedia.com/image.jpg",
-                        categoryBreadcrumbs = "Sayur"
+                        categoryBreadcrumbs = "Bahan Masak/Sayur"
                     ),
                     Grid(
                         id = "5",
+                        parentProductId = "7",
+                        shop = Shop(shopId = "2"),
+                        price = "3000",
                         imageUrl = "https://tokopedia.com/image_5.jpg",
-                        categoryBreadcrumbs = "Daging"
+                        categoryBreadcrumbs = "Bahan Masak/Daging"
                     )
                 ),
                 widgetParam = rtrWidgetParam
@@ -186,35 +239,55 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         viewModel.addProductToCart(channelId, "2", 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
         viewModel.addProductToCart(channelId, "5", 2, "1", TokoNowLayoutType.PRODUCT_RECOM)
 
-        val recomItemList = listOf(
-            RecommendationItem(
-                productId = 2,
-                categoryBreadcrumbs = "Sayur",
-                imageUrl = "https://tokopedia.com/image.jpg",
-                isRecomProductShowVariantAndCart = true,
-                price = "0",
-                position = 1,
-                quantity = 1
+        val productList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                parentId = "3",
+                shopId = "5",
+                shopType = "pm",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "2",
+                    imageUrl = "https://tokopedia.com/image.jpg",
+                    price = "2000",
+                    orderQuantity = 1,
+                    isVariant = true,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                )
             ),
-            RecommendationItem(
-                productId = 5,
-                categoryBreadcrumbs = "Daging",
-                imageUrl = "https://tokopedia.com/image_5.jpg",
-                isRecomProductShowVariantAndCart = true,
-                price = "0",
-                position = 2,
-                quantity = 2
+            TokoNowProductCardCarouselItemUiModel(
+                parentId = "7",
+                shopId = "2",
+                shopType = "pm",
+                categoryBreadcrumbs = "Bahan Masak/Daging",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "5",
+                    imageUrl = "https://tokopedia.com/image_5.jpg",
+                    price = "3000",
+                    orderQuantity = 2,
+                    isVariant = true,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                )
             )
         )
 
-        val recomWidget = RecommendationWidget(
-            title = "Lagi Diskon",
-            recommendationItemList = recomItemList
-        )
-
-        val rtrWidget = RecommendationWidget(
-            title = "",
-            recommendationItemList = rtrItemList
+        val rtrProductList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                parentId = "2",
+                shopId = "2",
+                headerName = "Lagi Diskon",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "5",
+                    name = "Tahu Bulat",
+                    orderQuantity = 2,
+                    isVariant = true,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
+                )
+            )
         )
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
@@ -223,17 +296,36 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             parentProductId = "5",
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",
-            widget = rtrWidget,
+            productList = rtrProductList,
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.REFRESH,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
+        )
+
+        val seeMoreUiModel = TokoNowSeeMoreCardCarouselUiModel(
+            id = "",
+            headerName = "Lagi Diskon",
+            appLink = ""
+        )
+
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
+            title = "Lagi Diskon",
+            subTitle = "",
+            ctaText = "",
+            ctaTextLink = "",
+            expiredTime = "",
+            serverTimeOffset = 0,
+            backColor = ""
         )
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
-            recomWidget = recomWidget,
+            title = "Lagi Diskon",
+            productList = productList,
+            seeMoreModel = seeMoreUiModel,
+            headerModel = headerUiModel,
             realTimeRecom = realTimeRecom
         )
 
@@ -261,6 +353,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
     @Test
     fun `given empty real time recom response when refreshRealTimeRecommendation should map latest real time recom data`() {
+        val productId = "2"
         val channelId = "1001"
         val rtrEnabled = true
         val rtrPageName = "rtr_default"
@@ -269,7 +362,9 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         val rtrItemList = listOf(
             RecommendationItem(
                 productId = 5,
-                name = "Tahu Bulat"
+                shopId = 5,
+                name = "Tahu Bulat",
+                categoryBreadcrumbs = "Bahan Masak/Sayur"
             )
         )
 
@@ -288,19 +383,18 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 id = channelId,
                 layout = "top_carousel_tokonow",
                 header = Header(
+                    id = "5",
                     name = "Lagi Diskon",
+                    applink = "tokopedia://now",
                     serverTimeUnix = 0
                 ),
                 grids = listOf(
                     Grid(
                         id = "2",
+                        shop = Shop(shopId = "5"),
+                        parentProductId = "0",
                         imageUrl = "https://tokopedia.com/image.jpg",
-                        categoryBreadcrumbs = "Sayur"
-                    ),
-                    Grid(
-                        id = "5",
-                        imageUrl = "https://tokopedia.com/image_5.jpg",
-                        categoryBreadcrumbs = "Daging"
+                        categoryBreadcrumbs = "Bahan Masak/Sayur"
                     )
                 ),
                 widgetParam = rtrWidgetParam
@@ -313,61 +407,83 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, "2", 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
 
         onGetRecommendation_thenReturn(emptyRtrWidgetListResponse)
 
-        viewModel.refreshRealTimeRecommendation(channelId, "5", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.refreshRealTimeRecommendation(channelId, productId, TokoNowLayoutType.PRODUCT_RECOM)
 
-        val recomItemList = listOf(
-            RecommendationItem(
-                productId = 2,
-                categoryBreadcrumbs = "Sayur",
-                imageUrl = "https://tokopedia.com/image.jpg",
-                isRecomProductShowVariantAndCart = true,
-                price = "0",
-                position = 1,
-                quantity = 1
-            ),
-            RecommendationItem(
-                productId = 5,
-                categoryBreadcrumbs = "Daging",
-                imageUrl = "https://tokopedia.com/image_5.jpg",
-                isRecomProductShowVariantAndCart = true,
-                price = "0",
-                position = 2,
-                quantity = 0
+        val productList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                shopId = "5",
+                shopType = "pm",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "2",
+                    imageUrl = "https://tokopedia.com/image.jpg",
+                    isVariant = false,
+                    price = "0",
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
         )
 
-        val recomWidget = RecommendationWidget(
-            title = "Lagi Diskon",
-            recommendationItemList = recomItemList
+        val rtrProductList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                shopId = "5",
+                headerName = "Lagi Diskon",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "5",
+                    name = "Tahu Bulat",
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true,
+                    needToChangeMaxLinesName = true
+                ),
+                parentId = "0"
+            )
         )
 
-        val rtrWidget = RecommendationWidget(
-            title = "",
-            recommendationItemList = rtrItemList
-        )
-
-        val latestRealTimeRecom = HomeRealTimeRecomUiModel(
+        val realTimeRecom = HomeRealTimeRecomUiModel(
             channelId = channelId,
             headerName = "Lagi Diskon",
-            parentProductId = "2",
+            parentProductId = productId,
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",
-            widget = rtrWidget,
+            productList = rtrProductList,
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
+        )
+
+        val seeMoreUiModel = TokoNowSeeMoreCardCarouselUiModel(
+            id = "5",
+            headerName = "Lagi Diskon",
+            appLink = "tokopedia://now"
+        )
+
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
+            title = "Lagi Diskon",
+            subTitle = "",
+            ctaText = "",
+            ctaTextLink = "tokopedia://now",
+            expiredTime = "",
+            serverTimeOffset = 0,
+            backColor = ""
         )
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
-            recomWidget = recomWidget,
-            realTimeRecom = latestRealTimeRecom
+            title = "Lagi Diskon",
+            productList = productList,
+            seeMoreModel = seeMoreUiModel,
+            headerModel = headerUiModel,
+            realTimeRecom = realTimeRecom,
         )
 
         val homeLayoutItems = listOf(
@@ -385,7 +501,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRealTimeRecommendationCalled(
             pageName = rtrPageName,
-            productId = listOf("5")
+            productId = listOf(productId)
         )
 
         viewModel.homeLayoutList
@@ -397,13 +513,15 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         val productId = "2"
         val channelId = "1001"
         val rtrEnabled = false
-        val rtrPageName = "rtr_default"
-        val rtrWidgetParam = "?rtr_interaction=false&rtr_pagename=rtr_default"
+        val rtrPageName = "rtr_pagename"
+        val rtrWidgetParam = "?rtr_interaction=false&rtr_pagename=rtr_pagename"
 
         val rtrItemList = listOf(
             RecommendationItem(
                 productId = 5,
-                name = "Tahu Bulat"
+                shopId = 5,
+                name = "Tahu Bulat",
+                categoryBreadcrumbs = "Bahan Masak/Sayur"
             )
         )
 
@@ -417,14 +535,18 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 id = channelId,
                 layout = "top_carousel_tokonow",
                 header = Header(
+                    id = "5",
                     name = "Lagi Diskon",
+                    applink = "tokopedia://now",
                     serverTimeUnix = 0
                 ),
                 grids = listOf(
                     Grid(
                         id = "2",
+                        shop = Shop(shopId = "5"),
+                        parentProductId = "0",
                         imageUrl = "https://tokopedia.com/image.jpg",
-                        categoryBreadcrumbs = "Sayur"
+                        categoryBreadcrumbs = "Bahan Masak/Sayur"
                     )
                 ),
                 widgetParam = rtrWidgetParam
@@ -437,23 +559,24 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "5", TokoNowLayoutType.PRODUCT_RECOM)
 
-        val recomItemList = listOf(
-            RecommendationItem(
-                productId = 2,
-                categoryBreadcrumbs = "Sayur",
-                imageUrl = "https://tokopedia.com/image.jpg",
-                isRecomProductShowVariantAndCart = true,
-                price = "0",
-                position = 1,
-                quantity = 1
+        val productList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                shopId = "5",
+                shopType = "pm",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "2",
+                    imageUrl = "https://tokopedia.com/image.jpg",
+                    isVariant = false,
+                    price = "0",
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
-        )
-
-        val recomWidget = RecommendationWidget(
-            title = "Lagi Diskon",
-            recommendationItemList = recomItemList
         )
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
@@ -462,17 +585,37 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             parentProductId = "",
             productImageUrl = "",
             category = "",
-            widget = null,
+            productList = emptyList(),
             enabled = rtrEnabled,
             pageName = rtrPageName,
-            carouselState = RecommendationCarouselData.STATE_LOADING,
+            widgetState = RealTimeRecomWidgetState.IDLE,
+            carouselState = TokoNowProductRecommendationState.LOADING,
             type = TokoNowLayoutType.PRODUCT_RECOM
+        )
+
+        val seeMoreUiModel = TokoNowSeeMoreCardCarouselUiModel(
+            id = "5",
+            headerName = "Lagi Diskon",
+            appLink = "tokopedia://now"
+        )
+
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
+            title = "Lagi Diskon",
+            subTitle = "",
+            ctaText = "",
+            ctaTextLink = "tokopedia://now",
+            expiredTime = "",
+            serverTimeOffset = 0,
+            backColor = ""
         )
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
-            recomWidget = recomWidget,
-            realTimeRecom = realTimeRecom
+            title = "Lagi Diskon",
+            productList = productList,
+            seeMoreModel = seeMoreUiModel,
+            headerModel = headerUiModel,
+            realTimeRecom = realTimeRecom,
         )
 
         val homeLayoutItems = listOf(
@@ -538,18 +681,19 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
     }
 
     @Test
-    fun `given real time recommendation when removeRealTimeRecommendation should map real time recom widget null`() {
-        val rtrWidget = null
+    fun `given real time recommendation when removeRealTimeRecommendation should map real time recom product list empty`() {
         val productId = "2"
         val channelId = "1001"
         val rtrEnabled = true
-        val rtrPageName = "rtr_default"
-        val rtrWidgetParam = "?rtr_interaction=true&rtr_pagename=rtr_default"
+        val rtrPageName = "rtr_pagename"
+        val rtrWidgetParam = "?rtr_interaction=true&rtr_pagename=rtr_pagename"
 
         val rtrItemList = listOf(
             RecommendationItem(
                 productId = 5,
-                name = "Tahu Bulat"
+                shopId = 5,
+                name = "Tahu Bulat",
+                categoryBreadcrumbs = "Bahan Masak/Sayur"
             )
         )
 
@@ -563,14 +707,18 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 id = channelId,
                 layout = "top_carousel_tokonow",
                 header = Header(
+                    id = "5",
                     name = "Lagi Diskon",
+                    applink = "tokopedia://now",
                     serverTimeUnix = 0
                 ),
                 grids = listOf(
                     Grid(
                         id = "2",
+                        shop = Shop(shopId = "5"),
+                        parentProductId = "0",
                         imageUrl = "https://tokopedia.com/image.jpg",
-                        categoryBreadcrumbs = "Sayur"
+                        categoryBreadcrumbs = "Bahan Masak/Sayur"
                     )
                 ),
                 widgetParam = rtrWidgetParam
@@ -583,44 +731,64 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "5", TokoNowLayoutType.PRODUCT_RECOM)
         viewModel.removeRealTimeRecommendation(channelId, TokoNowLayoutType.PRODUCT_RECOM)
 
-        val recomItemList = listOf(
-            RecommendationItem(
-                productId = 2,
-                categoryBreadcrumbs = "Sayur",
-                imageUrl = "https://tokopedia.com/image.jpg",
-                isRecomProductShowVariantAndCart = true,
-                price = "0",
-                position = 1,
-                quantity = 1
+        val productList = listOf(
+            TokoNowProductCardCarouselItemUiModel(
+                shopId = "5",
+                shopType = "pm",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = TokoNowProductCardViewUiModel(
+                    productId = "2",
+                    imageUrl = "https://tokopedia.com/image.jpg",
+                    isVariant = false,
+                    price = "0",
+                    orderQuantity = 1,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                ),
+                parentId = "0"
             )
-        )
-
-        val recomWidget = RecommendationWidget(
-            title = "Lagi Diskon",
-            recommendationItemList = recomItemList
         )
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
             channelId = channelId,
             headerName = "Lagi Diskon",
-            parentProductId = productId,
+            parentProductId = "2",
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",
-            widget = rtrWidget,
+            productList = emptyList(),
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
+        )
+
+        val seeMoreUiModel = TokoNowSeeMoreCardCarouselUiModel(
+            id = "5",
+            headerName = "Lagi Diskon",
+            appLink = "tokopedia://now"
+        )
+
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
+            title = "Lagi Diskon",
+            subTitle = "",
+            ctaText = "",
+            ctaTextLink = "tokopedia://now",
+            expiredTime = "",
+            serverTimeOffset = 0,
+            backColor = ""
         )
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
-            recomWidget = recomWidget,
-            realTimeRecom = realTimeRecom
+            title = "Lagi Diskon",
+            productList = productList,
+            seeMoreModel = seeMoreUiModel,
+            headerModel = headerUiModel,
+            realTimeRecom = realTimeRecom,
         )
 
         val homeLayoutItems = listOf(
@@ -658,7 +826,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
     @Test
     fun `given getRealTimeRecom null when refresh real time recom should NOT call get recommendation use case`() {
         viewModel.refreshRealTimeRecommendation("1", "2", TokoNowLayoutType.PRODUCT_RECOM)
-        
+
         verifyGetRealTimeRecommendationNotCalled(pageName = "rtr_tokonow", listOf("2"))
     }
 

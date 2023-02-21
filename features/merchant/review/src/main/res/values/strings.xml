@@ -151,6 +151,7 @@
     <string name="review_refresh">Refresh</string>
     <string name="review_toaster_page_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
     <string name="review_oke">Oke</string>
+    <string name="review_cancel">Batal</string>
     <string name="review_back_to_home">Ke Homepage</string>
 
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>

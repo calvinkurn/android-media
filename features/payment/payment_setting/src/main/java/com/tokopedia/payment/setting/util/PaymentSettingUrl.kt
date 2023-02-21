@@ -9,4 +9,4 @@ var PAYMENT_SETTING_URL = when (TokopediaUrl.getInstance().TYPE) {
 }
 
 const val GET_IFRAME_ADD_CC_URL = "v2/ccregister/iframe"
-const val PAYMENT_IMAGE_HOST = "https://ecs7.tokopedia.net/img/toppay/"
+const val PAYMENT_IMAGE_HOST = "https://images.tokopedia.net/img/toppay/"

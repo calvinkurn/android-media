@@ -1,9 +1,14 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
+import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -575,10 +580,11 @@ object ShopPageHomeMapper {
     ): List<ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem> {
         return data.map {
             val isRemindMe =
-                if (!isLoggedIn && it.statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase())
+                if (!isLoggedIn && it.statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
                     false
-                else
+                } else {
                     null
+                }
             ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem(
                 it.campaignId,
                 it.name,
@@ -590,6 +596,7 @@ object ShopPageHomeMapper {
                 it.timeCounter,
                 it.totalNotify,
                 it.totalNotifyWording,
+                it.voucherWording,
                 mapToDynamicRule(it.dynamicRule),
                 mapCampaignListBanner(it.listBanner),
                 mapCampaignListProduct(it.statusCampaign, it.listProduct),
@@ -627,9 +634,12 @@ object ShopPageHomeMapper {
     private fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule): ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule {
         return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
             dynamicRule.descriptionHeader,
-            ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
-                dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty()
-            )
+            dynamicRule.dynamicRoleData.map {
+                ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
+                    ruleID = it.ruleID,
+                    isActive = it.isActive
+                )
+            }
         )
     }
 
@@ -648,8 +658,10 @@ object ShopPageHomeMapper {
                 imageUrl300 = ""
                 productUrl = it.urlApps
                 if (statusCampaign.toLowerCase() == StatusCampaign.ONGOING.statusCampaign.toLowerCase()) {
-                    stockLabel = it.stockWording.title
-                    stockSoldPercentage = it.stockSoldPercentage.toInt()
+                    val stockSoldPercentage = it.stockSoldPercentage.toInt()
+                    val showStockBar = it.showStockBar
+                    stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
+                    this.stockSoldPercentage = stockSoldPercentage
                 }
                 hideGimmick = it.hideGimmick
                 labelGroupList =
@@ -983,8 +995,17 @@ object ShopPageHomeMapper {
                 ShopPageWidgetLayoutUiModel(
                     it.widgetId,
                     it.widgetMasterId,
+                    it.header.title,
                     it.widgetType,
-                    it.widgetName
+                    it.widgetName,
+                    ShopPageHeaderUiModel(
+                        data = it.header.data.map {
+                            ShopPageHeaderDataUiModel(
+                                linkType = it.linkType,
+                                linkID = it.linkID
+                            )
+                        }
+                    )
                 )
             }
         )
@@ -1004,7 +1025,13 @@ object ShopPageHomeMapper {
                     ShopLayoutWidget.Widget(
                         widgetID = it.widgetId,
                         type = it.widgetType,
-                        name = it.widgetName
+                        name = it.widgetName,
+                        header = ShopLayoutWidget.Widget.Header(
+                            title = it.widgetTitle
+                        ),
+                        data = it.header.data.map { headerDataUiModel ->
+                            ShopLayoutWidget.Widget.Data(bundleGroupId = headerDataUiModel.linkID.toString())
+                        }
                     ),
                     myShop,
                     isLoggedIn,
@@ -1036,5 +1063,31 @@ object ShopPageHomeMapper {
             ?: shopProductResponse.maximumOrder.takeIf { !it.isZero() }
             ?: shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() }
             ?: shopProductResponse.stock
+    }
+
+    fun mapToShopHomeProductBundleDetailUiModel(bundleDetailUiModel: BundleDetailUiModel): ShopHomeProductBundleDetailUiModel {
+        return ShopHomeProductBundleDetailUiModel(
+            bundleId = bundleDetailUiModel.bundleId,
+            originalPrice = bundleDetailUiModel.originalPrice,
+            displayPrice = bundleDetailUiModel.displayPrice,
+            displayPriceRaw = bundleDetailUiModel.displayPriceRaw,
+            discountPercentage = bundleDetailUiModel.discountPercentage,
+            isPreOrder = bundleDetailUiModel.isPreOrder,
+            isProductsHaveVariant = bundleDetailUiModel.products.firstOrNull()?.hasVariant ?: false,
+            preOrderInfo = bundleDetailUiModel.preOrderInfo,
+            savingAmountWording = bundleDetailUiModel.savingAmountWording,
+            minOrder = bundleDetailUiModel.minOrder,
+            minOrderWording = bundleDetailUiModel.minOrderWording,
+            isSelected = bundleDetailUiModel.isSelected
+        )
+    }
+
+    fun mapToShopHomeBundleProductUiModel(bundleProductUiModel: BundleProductUiModel): ShopHomeBundleProductUiModel {
+        return ShopHomeBundleProductUiModel(
+            productId = bundleProductUiModel.productId,
+            productName = bundleProductUiModel.productName,
+            productImageUrl = bundleProductUiModel.productImageUrl,
+            productAppLink = bundleProductUiModel.productAppLink
+        )
     }
 }

@@ -1,18 +1,23 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
+import android.content.Context
+import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingDriverSectionBinding
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
+import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingDriverSectionBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverInformationAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
+import com.tokopedia.unifycomponents.NotificationUnify
 
 class DriverSectionViewHolder(
     view: View,
@@ -22,6 +27,9 @@ class DriverSectionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_driver_section
+
+        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 0.9f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.45f
     }
 
     private val binding = ItemTokofoodOrderTrackingDriverSectionBinding.bind(itemView)
@@ -31,7 +39,8 @@ class DriverSectionViewHolder(
             setDriverName(element.name)
             setDriverPhotoUrl(element.photoUrl)
             setLicensePlatNumber(element.licensePlateNumber)
-            setupDriverCall()
+            setupDriverCall(element.isCallable)
+            setupDriverChat(element.isEnableChat, element.goFoodOrderNumber, element.badgeCounter)
             setupDriverInformationAdapter(element.driverInformationList)
         }
     }
@@ -50,7 +59,17 @@ class DriverSectionViewHolder(
                     binding.setLicensePlatNumber(newItem.licensePlateNumber)
                 }
                 if (oldItem.isCallable != newItem.isCallable) {
-                    binding.setupDriverCall()
+                    binding.setupDriverCall(newItem.isCallable)
+                }
+                if (oldItem.isEnableChat != newItem.isEnableChat ||
+                    oldItem.goFoodOrderNumber != newItem.goFoodOrderNumber ||
+                    oldItem.badgeCounter != newItem.badgeCounter
+                ) {
+                    binding.setupDriverChat(
+                        newItem.isEnableChat,
+                        newItem.goFoodOrderNumber,
+                        newItem.badgeCounter
+                    )
                 }
             }
         }
@@ -70,18 +89,86 @@ class DriverSectionViewHolder(
         tvOrderTrackingDriverPlatNumber.text = platNumber
     }
 
-    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall() {
+    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isCallable: Boolean) {
         icDriverCall.run {
-            isClickable = true
+            var (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isCallable)
+            callIconColor = if (callIconColor != Int.ZERO) callIconColor else null
+
+            isClickable = isClickableCall
+            setImage(IconUnify.CALL, callIconColor, callIconColor)
+
+            if (isClickableCall) {
+                setOnClickListener {
+                    listener.onClickDriverCall()
+                }
+            }
+        }
+    }
+
+    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverChat(
+        isEnableChat: Boolean,
+        goFoodOrderNumber: String,
+        badgeCounter: Int?
+    ) {
+        icDriverChat.run {
+            if (isShowDriverChat()) {
+                if (badgeCounter == null || badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
+                    notificationRef.hide()
+                } else {
+                    notificationRef.show()
+                    setNotifXY(
+                        ICON_DEFAULT_PERCENTAGE_X_POSITION,
+                        ICON_DEFAULT_PERCENTAGE_Y_POSITION
+                    )
+
+                    notificationRef.setNotification(
+                        notif = badgeCounter.toString(),
+                        notificationType = NotificationUnify.COUNTER_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                    )
+
+                    notificationGravity = Gravity.TOP or Gravity.END
+                }
+
+                var (isClickableCall, chatIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
+                chatIconColor = if (chatIconColor != Int.ZERO) chatIconColor else null
+
+                isClickable = isClickableCall
+
+                val drawable = getIconUnifyDrawable(
+                    context = context,
+                    iconId = IconUnify.CHAT,
+                    assetColor = chatIconColor
+                )
+
+                imageDrawable = drawable
+
+                if (isClickableCall) {
+                    setOnClickListener {
+                        listener.onClickDriverChat(goFoodOrderNumber, badgeCounter.orZero().toString())
+                    }
+                }
+            } else {
+                hide()
+            }
+        }
+    }
+
+    private fun getIsEnableAndColorIcons(context: Context, isEnable: Boolean): Pair<Boolean, Int?> {
+        return if (isEnable) {
             val nn900Color =
-                ContextCompat.getColor(
-                    root.context,
+                MethodChecker.getColor(
+                    context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN900
                 )
-            setImage(IconUnify.CALL, nn900Color, nn900Color)
-            setOnClickListener {
-                listener.onClickDriverCall()
-            }
+            Pair(true, nn900Color)
+        } else {
+            val nn300Color =
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN300
+                )
+            Pair(false, nn300Color)
         }
     }
 
@@ -100,7 +187,19 @@ class DriverSectionViewHolder(
         }
     }
 
+    private fun isShowDriverChat(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_TOKOCHAT,
+                ""
+            ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+        } catch (e: Exception) {
+            true
+        }
+    }
+
     interface Listener {
         fun onClickDriverCall()
+        fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String)
     }
 }

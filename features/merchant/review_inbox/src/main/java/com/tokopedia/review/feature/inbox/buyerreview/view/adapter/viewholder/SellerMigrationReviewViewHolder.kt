@@ -13,7 +13,7 @@ class SellerMigrationReviewViewHolder(
 ) : AbstractViewHolder<SellerMigrationReviewModel>(view) {
 
     companion object {
-        const val SELLER_MIGRATION_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/seller_migration_review_viewholder.png"
+        const val SELLER_MIGRATION_IMAGE_URL = "https://images.tokopedia.net/android/others/seller_migration_review_viewholder.png"
         val LAYOUT: Int = R.layout.item_seller_migration_review
     }
 

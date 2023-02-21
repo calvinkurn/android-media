@@ -2,7 +2,9 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.productcard.ATCNonVariantListener
@@ -14,6 +16,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.unifycomponents.dpToPx
 
 class ShopHomeFlashSaleProductCardBigGridViewHolder(
     itemView: View,
@@ -24,6 +27,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         // 12 + 12 + 4 + 8 + 4 + 12 + 12
         private const val PADDING_AND_MARGIN = 64
         private const val TWO = 2
+        private val paddingOffset = 6f.dpToPx()
     }
 
     private var uiModel: ShopHomeProductUiModel? = null
@@ -90,6 +94,20 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
+    }
+
+    fun getHeightOfImageProduct(action: (Int) -> Unit){
+        val productImageView = productCardBigGrid?.getProductImageView()
+        val viewTreeObserver: ViewTreeObserver? = productImageView?.viewTreeObserver
+        if (viewTreeObserver?.isAlive.orFalse()) {
+            viewTreeObserver?.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    action(productImageView.height + paddingOffset.toInt())
+                }
+            })
+        }
     }
 
     private fun setProductImpressionListener(

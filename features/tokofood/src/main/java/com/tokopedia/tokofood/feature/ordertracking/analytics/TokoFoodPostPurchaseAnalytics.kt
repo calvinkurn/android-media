@@ -12,7 +12,6 @@ import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-
 /**
  * Post Purchase
  * https://mynakama.tokopedia.com/datatracker/requestdetail/3059
@@ -25,14 +24,16 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
     fun viewOrderDetailPage(shopId: String) {
         val mapData = mapOf(
             TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.OPEN_SCREEN,
+            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE,
+            TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.VIEW_TOKOFOOD_ORDER_DETAIL_PAGE,
             TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.PHYSICAL_GOODS,
             TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
             TokoFoodAnalyticsConstants.IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
-            TokoFoodAnalyticsConstants.SCREEN_NAME to TokoFoodAnalyticsConstants.ORDER_DETAIL_PAGE,
+            TokoFoodAnalyticsConstants.SCREEN_NAME to TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE,
             TokoFoodAnalyticsConstants.SHOP_ID to shopId,
             TokoFoodAnalyticsConstants.USER_ID to userSession.userId
         )
-        tracking.sendGeneralEvent(mapData)
+        tracking.sendScreenAuthenticated(TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE, mapData)
     }
 
     fun clickCallDriverIcon(orderId: String, shopId: String) {
@@ -73,6 +74,19 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
             TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
             TokoFoodAnalyticsConstants.SHOP_ID to shopId,
             TokoFoodAnalyticsConstants.USER_ID to userSession.userId
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickChatIcon(orderStatus: String, orderId: String, channelId: String, source: String, role: String, unReadChatCounter: String) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.CLICK_CHAT_FROM_ORDER_DETAIL,
+            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOCHAT_ORDER_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$orderStatus - $orderId - $channelId - $source - $role $unReadChatCounter",
+            TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.COMMUNICATION,
+            TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+            TokoFoodAnalyticsConstants.TRACKER_ID to TokoFoodAnalyticsConstants.TRACKER_ID_39065
         )
         tracking.sendGeneralEvent(mapData)
     }
@@ -120,7 +134,8 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
                     merchantData.merchantName
                 )
                 putString(
-                    AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE, ""
+                    AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE,
+                    ""
                 )
             }
             bundleList.add(itemBundle)
@@ -146,7 +161,8 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
                 TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE
             )
             putParcelableArrayList(
-                AddToCartExternalAnalytics.EE_VALUE_ITEMS, bundleList
+                AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+                bundleList
             )
             putString(TokoFoodAnalyticsConstants.SHOP_ID, merchantData.merchantId)
             putString(TokoFoodAnalyticsConstants.USER_ID, userSession.userId)

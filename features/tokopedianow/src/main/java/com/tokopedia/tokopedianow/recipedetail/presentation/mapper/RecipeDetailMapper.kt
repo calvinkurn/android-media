@@ -118,9 +118,17 @@ object RecipeDetailMapper {
             val position = index + 1
             if (position > MAX_LABEL_COUNT) {
                 val otherLabelCount = (response.tags.count() - MAX_LABEL_COUNT).toString()
-                TagUiModel(tag = otherLabelCount, shouldFormatTag = true)
+                TagUiModel(
+                    tag = otherLabelCount,
+                    shouldFormatTag = true,
+                    shouldUseStaticBackgroundColor = false
+                )
             } else {
-                TagUiModel(tag = tag.name, shouldFormatTag = false)
+                TagUiModel(
+                    tag = tag.name,
+                    shouldFormatTag = false,
+                    shouldUseStaticBackgroundColor = false
+                )
             }
         }
 

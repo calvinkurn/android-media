@@ -39,7 +39,6 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisonNewDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.*
@@ -65,7 +64,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -88,13 +86,14 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-
-class CatalogDetailPageFragment : Fragment(),
-        HasComponent<CatalogComponent>, CatalogDetailListener,
-        ShareBottomsheetListener,
-        ScreenShotListener,
-        PermissionListener,
-        CatalogAnimationListener {
+class CatalogDetailPageFragment :
+    Fragment(),
+    HasComponent<CatalogComponent>,
+    CatalogDetailListener,
+    ShareBottomsheetListener,
+    ScreenShotListener,
+    PermissionListener,
+    CatalogAnimationListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,31 +107,30 @@ class CatalogDetailPageFragment : Fragment(),
     @Inject
     lateinit var sharedViewModel: CatalogDetailProductListingViewModel
 
-    private val widgetTrackingSet =  HashSet<String>()
+    private val widgetTrackingSet = HashSet<String>()
 
     private var catalogUiUpdater: CatalogUiUpdater = CatalogUiUpdater(mutableMapOf())
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
     private var catalogId: String = ""
     private var catalogUrl: String = ""
-    private var catalogName : String = ""
-    private var catalogBrand : String = ""
-    private var catalogDepartmentId : String = ""
-    private var catalogImages  =  arrayListOf<CatalogImage>()
+    private var catalogName: String = ""
+    private var catalogBrand: String = ""
+    private var catalogDepartmentId: String = ""
+    private var catalogImages = arrayListOf<CatalogImage>()
     private var comparisonCatalogId: String = ""
     private var recommendedCatalogId: String = ""
-
 
     private var navToolbar: NavToolbar? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
 
     private var catalogPageRecyclerView: NestedRecyclerView? = null
-    private var catalogLinearLayoutManager : CatalogLinearLayoutManager? = null
-    private var shimmerLayout : ScrollView? = null
-    private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
-    private var mToBottomLayout : LinearLayout? = null
-    private var mProductsCountText : Typography? = null
-    private var mToTopLayout : LinearLayout ? = null
+    private var catalogLinearLayoutManager: CatalogLinearLayoutManager? = null
+    private var shimmerLayout: ScrollView? = null
+    private var mBottomSheetBehavior: BottomSheetBehavior<FrameLayout>? = null
+    private var mToBottomLayout: LinearLayout? = null
+    private var mProductsCountText: Typography? = null
+    private var mToTopLayout: LinearLayout ? = null
 
     private lateinit var userSession: UserSession
 
@@ -140,17 +138,20 @@ class CatalogDetailPageFragment : Fragment(),
 
     private val catalogDetailAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
-                .build()
-        CatalogDetailAdapter(requireActivity(),this,catalogId,asyncDifferConfig, catalogAdapterFactory
+            .build()
+        CatalogDetailAdapter(
+            requireActivity(),
+            this,
+            catalogId,
+            asyncDifferConfig,
+            catalogAdapterFactory
         )
     }
 
     var isBottomSheetOpen = false
-    private var lastDetachedItemPosition : Int = 0
-    private var lastAttachItemPosition : Int = 0
+    private var lastDetachedItemPosition: Int = 0
+    private var lastAttachItemPosition: Int = 0
     private var isScrollDownButtonClicked = false
-
-    private var isNewComparison = false
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -168,14 +169,16 @@ class CatalogDetailPageFragment : Fragment(),
         return DaggerCatalogComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_catalog_detail_page, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRollence()
         injectComponents()
         initViews(view)
         if (arguments != null) {
@@ -185,7 +188,7 @@ class CatalogDetailPageFragment : Fragment(),
             userSession = UserSession(observer)
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
-            catalogDetailPageViewModel.getProductCatalog(catalogId,comparisonCatalogId,userSession.userId,CatalogConstant.DEVICE)
+            catalogDetailPageViewModel.getProductCatalog(catalogId, comparisonCatalogId, userSession.userId, CatalogConstant.DEVICE)
             catalogDetailPageViewModel.fetchProductListing(CatalogUtil.getProductsParams(catalogId))
             showShimmer()
         }
@@ -196,7 +199,7 @@ class CatalogDetailPageFragment : Fragment(),
         setUpAnimationViews()
     }
 
-    private fun injectComponents(){
+    private fun injectComponents() {
         component.inject(this)
         activity?.let { observer ->
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
@@ -208,9 +211,9 @@ class CatalogDetailPageFragment : Fragment(),
         mToBottomLayout?.apply {
             setOnClickListener {
                 isScrollDownButtonClicked = true
-                val userPressedLastTopPosition = if((catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == RecyclerView.NO_POSITION){
+                val userPressedLastTopPosition = if ((catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == RecyclerView.NO_POSITION) {
                     (catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                }else {
+                } else {
                     (catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
                 }
                 catalogLinearLayoutManager?.scrollToBottom(userPressedLastTopPosition)
@@ -218,7 +221,10 @@ class CatalogDetailPageFragment : Fragment(),
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_FLOATING_BUTTON_PRODUCT,
-                    "$catalogName - $catalogId",userSession.userId,catalogId)
+                    "$catalogName - $catalogId",
+                    userSession.userId,
+                    catalogId
+                )
                 slideDownMoreProductsView()
             }
         }
@@ -230,24 +236,16 @@ class CatalogDetailPageFragment : Fragment(),
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_FLOATING_BUTTON_LAST_SCROLL,
-                    "$catalogName - $catalogId",userSession.userId,catalogId)
+                    "$catalogName - $catalogId",
+                    userSession.userId,
+                    catalogId
+                )
                 slideUpMoreProductsView()
             }
         }
     }
 
-    private fun initRollence() {
-        isNewComparison =
-            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                CatalogConstant.CATALOG_COMPARISON,
-                ""
-            )) {
-                CatalogConstant.CATALOG_COMPARISON -> true
-                else -> false
-            }
-    }
-
-    private fun initViews(parentView : View) {
+    private fun initViews(parentView: View) {
         shimmerLayout = view?.findViewById(R.id.shimmer_layout)
         activity?.let {
             cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
@@ -262,39 +260,48 @@ class CatalogDetailPageFragment : Fragment(),
     private fun setUpUniversalShare() {
         context?.let {
             screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
-                    it,
-                    this,
-                    this,
-                    addFragmentLifecycleObserver = true,
-                    permissionListener = this
+                it,
+                this,
+                this,
+                addFragmentLifecycleObserver = true,
+                permissionListener = this
             )
         }
     }
 
-    private fun setUpBottomSheet(){
+    private fun setUpBottomSheet() {
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogName,catalogId,
-                catalogUrl,catalogDepartmentId,catalogBrand),
-                CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG).commit()
+            R.id.bottom_sheet_fragment_container,
+            CatalogPreferredProductsBottomSheet.newInstance(
+                catalogName,
+                catalogId,
+                catalogUrl,
+                catalogDepartmentId,
+                catalogBrand
+            ),
+            CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG
+        ).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
-        mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+        mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     isBottomSheetOpen = false
-                }
-                else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                } else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     isBottomSheetOpen = true
-                }else if (newState == BottomSheetBehavior.STATE_DRAGGING){
-                    if(!isBottomSheetOpen){
+                } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    if (!isBottomSheetOpen) {
                         CatalogDetailAnalytics.sendEvent(
-                                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                                "$catalogName - $catalogId",userSession.userId,catalogId)
+                            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                            CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                            "$catalogName - $catalogId",
+                            userSession.userId,
+                            catalogId
+                        )
                     }
                 }
             }
@@ -302,41 +309,36 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun setObservers() {
-        catalogDetailPageViewModel.getCatalogResponseData().observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    it.data.listOfComponents.forEach { component ->
-                        catalogUiUpdater.updateModel(component)
-                        if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
-                            recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
-                        }else if(component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()){
-                            recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
+        catalogDetailPageViewModel.getCatalogResponseData().observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        it.data.listOfComponents.forEach { component ->
+                            catalogUiUpdater.updateModel(component)
+                            if (component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()) {
+                                recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
+                            }
                         }
 
+                        catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
+                        fullSpecificationDataModel = it.data.fullSpecificationDataModel
+                        catalogImages = catalogUiUpdater.productInfoMap?.images ?: arrayListOf()
+                        catalogName = catalogUiUpdater.productInfoMap?.productName ?: ""
+                        catalogBrand = catalogUiUpdater.productInfoMap?.productBrand ?: ""
+                        catalogDepartmentId = catalogUiUpdater.productInfoMap?.departmentId ?: ""
+                        if (comparisonCatalogId.isNotBlank()) {
+                            recommendedCatalogId = catalogUiUpdater.productInfoMap?.comparisonInfoCatalogId ?: ""
+                        }
+                        updateUi()
+                        setCatalogUrlForTracking()
                     }
-                    if (isNewComparison) {
-                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON)
-                    } else {
-                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON_NEW)
+                    is Fail -> {
+                        onError(it.throwable)
                     }
-                    catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
-                    fullSpecificationDataModel = it.data.fullSpecificationDataModel
-                    catalogImages = catalogUiUpdater.productInfoMap?.images ?: arrayListOf()
-                    catalogName = catalogUiUpdater.productInfoMap?.productName ?: ""
-                    catalogBrand = catalogUiUpdater.productInfoMap?.productBrand ?: ""
-                    catalogDepartmentId = catalogUiUpdater.productInfoMap?.departmentId ?: ""
-                    if(comparisonCatalogId.isNotBlank()){
-                        recommendedCatalogId = catalogUiUpdater.productInfoMap?.comparisonInfoCatalogId ?: ""
-                    }
-                    updateUi()
-                    setCatalogUrlForTracking()
-                }
-                is Fail -> {
-                    onError(it.throwable)
                 }
             }
-
-        })
+        )
 
         observerProductCount()
         observerSharedProductCount()
@@ -358,13 +360,13 @@ class CatalogDetailPageFragment : Fragment(),
         })
     }
 
-    private fun setProductCountText(productCount : Int) {
-        if(productCount == CatalogConstant.ZERO_VALUE){
+    private fun setProductCountText(productCount: Int) {
+        if (productCount == CatalogConstant.ZERO_VALUE) {
             mProductsCountText?.text = getString(
                 com.tokopedia.catalog.R.string.catalog_product_count_view_text_empty
             )
             mToBottomLayout?.hide()
-        }else {
+        } else {
             mProductsCountText?.text = getString(
                 com.tokopedia.catalog.R.string.catalog_product_count_view_text,
                 productCount
@@ -374,19 +376,19 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun setCatalogUrlForTracking() {
         activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
-            if(fragment is CatalogPreferredProductsBottomSheet){
-                fragment.setData(catalogName,catalogUrl,catalogId,catalogDepartmentId,catalogBrand)
+            if (fragment is CatalogPreferredProductsBottomSheet) {
+                fragment.setData(catalogName, catalogUrl, catalogId, catalogDepartmentId, catalogBrand)
             }
         }
     }
-
 
     private fun onError(e: Throwable) {
         shimmerLayout?.hide()
         catalogPageRecyclerView?.hide()
         bottom_sheet_fragment_container.hide()
-        if (e is UnknownHostException
-                || e is SocketTimeoutException) {
+        if (e is UnknownHostException ||
+            e is SocketTimeoutException
+        ) {
             global_error.setType(GlobalError.NO_CONNECTION)
         } else {
             global_error.setType(GlobalError.SERVER_ERROR)
@@ -398,7 +400,7 @@ class CatalogDetailPageFragment : Fragment(),
             shimmerLayout?.show()
             bottom_sheet_fragment_container.show()
             global_error.hide()
-            catalogDetailPageViewModel.getProductCatalog(catalogId,comparisonCatalogId,userSession.userId,CatalogConstant.DEVICE)
+            catalogDetailPageViewModel.getProductCatalog(catalogId, comparisonCatalogId, userSession.userId, CatalogConstant.DEVICE)
         }
     }
 
@@ -407,21 +409,24 @@ class CatalogDetailPageFragment : Fragment(),
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                    IconBuilder()
-                            .addIcon(IconList.ID_SHARE) {
-                                generateCatalogShareData(catalogId,true)
-                            }
-                            .addIcon(IconList.ID_CART) {}
-                            .addIcon(IconList.ID_NAV_GLOBAL) {}
+                IconBuilder()
+                    .addIcon(IconList.ID_SHARE) {
+                        generateCatalogShareData(catalogId, true)
+                    }
+                    .addIcon(IconList.ID_CART) {}
+                    .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             setupSearchbar(listOf(HintData(context.getString(R.string.catalog_nav_bar_search_hint))))
             setBadgeCounter(IconList.ID_CART, getCartCounter())
             setOnBackButtonClickListener {
                 CatalogDetailAnalytics.sendEvent(
-                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                        CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                        CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
-                        "$catalogName - $catalogId",userSession.userId,catalogId)
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
+                    "$catalogName - $catalogId",
+                    userSession.userId,
+                    catalogId
+                )
                 activity?.onBackPressed()
             }
             show()
@@ -432,14 +437,16 @@ class CatalogDetailPageFragment : Fragment(),
         return cartLocalCacheHandler?.getInt(CatalogConstant.TOTAL_CART_CACHE_KEY, 0).orZero()
     }
 
-    private fun showShimmer(){
-        if(catalogUiUpdater.mapOfData.size ?: 0 == 0)
+    private fun showShimmer() {
+        if (catalogUiUpdater.mapOfData.size ?: 0 == 0) {
             shimmerLayout?.show()
+        }
     }
 
-    private fun hideShimmer(){
-        if(catalogUiUpdater.mapOfData.size ?: 0 > 0)
+    private fun hideShimmer() {
+        if (catalogUiUpdater.mapOfData.size ?: 0 > 0) {
             shimmerLayout?.hide()
+        }
     }
 
     private fun updateUi() {
@@ -471,7 +478,7 @@ class CatalogDetailPageFragment : Fragment(),
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if(dy > CatalogLinearLayoutManager.MINIMUM_SCROLL_FOR_ANIMATION.toPx()){
+                    if (dy > CatalogLinearLayoutManager.MINIMUM_SCROLL_FOR_ANIMATION.toPx()) {
                         slideUpMoreProductsView()
                     }
                 }
@@ -481,7 +488,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun slideUpMoreProductsView() {
-        if(sharedViewModel.mProductCount.value != 0 && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.VISIBLE){
+        if (sharedViewModel.mProductCount.value != 0 && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.VISIBLE) {
             val slideUp: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
             mToBottomLayout?.startAnimation(slideUp)
             mToBottomLayout?.visibility = View.VISIBLE
@@ -490,13 +497,13 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun slideDownMoreProductsView() {
-        if(sharedViewModel.mProductCount.value != 0  && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.INVISIBLE) {
+        if (sharedViewModel.mProductCount.value != 0 && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.INVISIBLE) {
             mToBottomLayout?.startAnimation(catalogLinearLayoutManager?.getProductCountViewSlideDownAnimation())
             mToBottomLayout?.visibility = View.INVISIBLE
         }
     }
 
-    private fun slideUpToTopView(){
+    private fun slideUpToTopView() {
         mToTopLayout?.startAnimation(catalogLinearLayoutManager?.getSlideUpAnimation())
         mToTopLayout?.visibility = View.VISIBLE
     }
@@ -506,32 +513,41 @@ class CatalogDetailPageFragment : Fragment(),
         mToTopLayout?.visibility = View.INVISIBLE
     }
 
-    private fun viewMoreClicked(openPage : String, jumpToFullSpecIndex : Int = 0) {
-        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogName , catalogId,
-                catalogUiUpdater.productInfoMap?.description ?: "",
-                fullSpecificationDataModel.fullSpecificationsList
-                ,openPage,jumpToFullSpecIndex
+    private fun viewMoreClicked(openPage: String, jumpToFullSpecIndex: Int = 0) {
+        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
+            catalogName,
+            catalogId,
+            catalogUiUpdater.productInfoMap?.description ?: "",
+            fullSpecificationDataModel.fullSpecificationsList,
+            openPage,
+            jumpToFullSpecIndex
         )
         catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
 
     private fun generateCatalogShareData(catalogId: String, isUniversalShare: Boolean = false) {
         val linkerShareData = linkerDataMapper(catalogId)
-        onCatalogShareButtonClicked(isUniversalShare,linkerShareData)
+        onCatalogShareButtonClicked(isUniversalShare, linkerShareData)
     }
 
-    private fun onCatalogShareButtonClicked(isUniversalShare : Boolean = false, linkerShareData : LinkerShareData) {
-        if(isUniversalShare){
-            CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(catalogId,userSession.userId)
+    private fun onCatalogShareButtonClicked(isUniversalShare: Boolean = false, linkerShareData: LinkerShareData) {
+        if (isUniversalShare) {
+            CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(catalogId, userSession.userId)
             showUniversalShareBottomSheet(catalogImages)
-        }else {
+        } else {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
-                    "$catalogName - $catalogId", userSession.userId,catalogId)
-            CatalogUtil.shareData(requireActivity(), linkerShareData.linkerData.description,
-                    linkerShareData.linkerData.uri)
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
+                "$catalogName - $catalogId",
+                userSession.userId,
+                catalogId
+            )
+            CatalogUtil.shareData(
+                requireActivity(),
+                linkerShareData.linkerData.description,
+                linkerShareData.linkerData.uri
+            )
         }
     }
 
@@ -539,29 +555,35 @@ class CatalogDetailPageFragment : Fragment(),
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
 
-    private fun showUniversalShareBottomSheet(catalogImages : ArrayList<CatalogImage>  ) {
+    private fun showUniversalShareBottomSheet(catalogImages: ArrayList<CatalogImage>) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CatalogDetailPageFragment)
             setUtmCampaignData(
-                    CatalogConstant.CATALOG,
-                    if(UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) "0"
-                    else UserSession(this@CatalogDetailPageFragment.context).userId,
-                    catalogId,
-                    CatalogConstant.CATALOG_SHARE
+                CatalogConstant.CATALOG,
+                if (UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) {
+                    "0"
+                } else {
+                    UserSession(this@CatalogDetailPageFragment.context).userId
+                },
+                catalogId,
+                CatalogConstant.CATALOG_SHARE
             )
             setMetaData(
-                    "${CatalogConstant.KATALOG} $catalogName",
-                    catalogImages.firstOrNull()?.imageURL ?: "",
-                    "",
-                    CatalogUtil.getImagesFromCatalogImages(catalogImages)
+                "${CatalogConstant.KATALOG} $catalogName",
+                catalogImages.firstOrNull()?.imageURL ?: "",
+                "",
+                CatalogUtil.getImagesFromCatalogImages(catalogImages)
             )
             setOgImageUrl(catalogImages.firstOrNull()?.imageURL ?: "")
         }
-        universalShareBottomSheet?.show(requireActivity().supportFragmentManager,
-                this@CatalogDetailPageFragment, screenshotDetector)
+        universalShareBottomSheet?.show(
+            requireActivity().supportFragmentManager,
+            this@CatalogDetailPageFragment,
+            screenshotDetector
+        )
         shareType = UniversalShareBottomSheet.getShareBottomSheetType()
-        if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
-            CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(catalogId,userSession.userId)
+        if (UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
+            CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(catalogId, userSession.userId)
         }
     }
 
@@ -576,69 +598,75 @@ class CatalogDetailPageFragment : Fragment(),
                 ogImageUrl = shareModel.ogImgUrl
             }
         }
-        if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
-            CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(shareModel.channel ?: "",catalogId,userSession.userId)
-        }else  {
-            CatalogUniversalShareAnalytics.sharingChannelScreenShotSelectedGTM(shareModel.channel ?: "",catalogId,userSession.userId)
+        if (UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
+            CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(shareModel.channel ?: "", catalogId, userSession.userId)
+        } else {
+            CatalogUniversalShareAnalytics.sharingChannelScreenShotSelectedGTM(shareModel.channel ?: "", catalogId, userSession.userId)
         }
 
         LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+            LinkerUtils.createShareRequest(
+                0, linkerShareData,
+                object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        context?.resources?.getString(com.tokopedia.catalog.R.string.catalog_share_string,
-                            catalogName,linkerShareData?.url)?.let { shareString ->
-                                SharingUtil.executeShareIntent(
-                                    shareModel,
-                                    linkerShareData,
-                                    activity,
-                                    view,
-                                    shareString
-                                )
+                        context?.resources?.getString(
+                            com.tokopedia.catalog.R.string.catalog_share_string,
+                            catalogName,
+                            linkerShareData?.url
+                        )?.let { shareString ->
+                            SharingUtil.executeShareIntent(
+                                shareModel,
+                                linkerShareData,
+                                activity,
+                                view,
+                                shareString
+                            )
                             universalShareBottomSheet?.dismiss()
                         }
                     }
 
                     override fun onError(linkerError: LinkerError?) {
                         universalShareBottomSheet?.dismiss()
-                        generateCatalogShareData(catalogId,false)
+                        generateCatalogShareData(catalogId, false)
                     }
-                })
+                }
+            )
         )
     }
 
     override fun onCloseOptionClicked() {
-        if(UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET){
-            CatalogUniversalShareAnalytics.dismissShareBottomSheetGTM(catalogId,userSession.userId)
-        }else  {
-            CatalogUniversalShareAnalytics.userClosesScreenShotBottomSheetGTM(catalogId,userSession.userId)
+        if (UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
+            CatalogUniversalShareAnalytics.dismissShareBottomSheetGTM(catalogId, userSession.userId)
+        } else {
+            CatalogUniversalShareAnalytics.userClosesScreenShotBottomSheetGTM(catalogId, userSession.userId)
         }
         universalShareBottomSheet?.dismiss()
     }
 
     override fun screenShotTaken() {
-        CatalogUniversalShareAnalytics.userTakenScreenShotGTM(catalogId,userSession.userId)
+        CatalogUniversalShareAnalytics.userTakenScreenShotGTM(catalogId, userSession.userId)
         showUniversalShareBottomSheet(catalogImages)
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
     override fun permissionAction(action: String, label: String) {
-        CatalogUniversalShareAnalytics.allowPopupGTM(label,catalogId,userSession.userId)
+        CatalogUniversalShareAnalytics.allowPopupGTM(label, catalogId, userSession.userId)
     }
 
     private fun linkerDataMapper(catalogId: String): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = catalogId
         linkerData.type = LinkerData.CATALOG_TYPE
-        linkerData.name = getString(com.tokopedia.catalog.R.string.catalog_share_link_name,catalogName)
-        linkerData.uri  = CatalogUtil.getShareURI(catalogUrl)
+        linkerData.name = getString(com.tokopedia.catalog.R.string.catalog_share_link_name, catalogName)
+        linkerData.uri = CatalogUtil.getShareURI(catalogUrl)
         linkerData.description = getString(com.tokopedia.catalog.R.string.catalog_share_link_description)
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
@@ -649,34 +677,39 @@ class CatalogDetailPageFragment : Fragment(),
     private fun showImage(currentItem: Int) {
         catalogUiUpdater.run {
             productInfoMap?.let {
-                if(catalogUiUpdater.productInfoMap?.images?.isNotEmpty() == true){
-                    context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogName,catalogId , currentItem, catalogUiUpdater.productInfoMap!!.images!!))
+                if (catalogUiUpdater.productInfoMap?.images?.isNotEmpty() == true) {
+                    context?.startActivity(CatalogGalleryActivity.newIntent(context, catalogName, catalogId, currentItem, catalogUiUpdater.productInfoMap!!.images!!))
                 }
             }
         }
     }
 
-
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
         showImage(position)
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-                "$catalogName - $catalogId",userSession.userId,catalogId)
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
+            "$catalogName - $catalogId",
+            userSession.userId,
+            catalogId
+        )
     }
 
-    override fun onViewMoreSpecificationsClick(topModel : TopSpecificationsComponentData?) {
+    override fun onViewMoreSpecificationsClick(topModel: TopSpecificationsComponentData?) {
         CatalogDetailAnalytics.sendEvent(
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-            "$catalogName - $catalogId",userSession.userId,catalogId)
+            "$catalogName - $catalogId",
+            userSession.userId,
+            catalogId
+        )
         var positionInFullSpecs = 0
         topModel?.let { safeTopModel ->
             fullSpecificationDataModel.fullSpecificationsList.forEachIndexed {
                     index, fullSpecificationsComponentData ->
-                if(safeTopModel.key == fullSpecificationsComponentData.name){
+                if (safeTopModel.key == fullSpecificationsComponentData.name) {
                     positionInFullSpecs = index
                 }
             }
@@ -687,21 +720,29 @@ class CatalogDetailPageFragment : Fragment(),
     override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_VIDEO_WIDGET,
-                    "$catalogName - $catalogId",userSession.userId,catalogId)
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_VIDEO_WIDGET,
+                "$catalogName - $catalogId",
+                userSession.userId,
+                catalogId
+            )
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                    == YouTubeInitializationResult.SUCCESS) {
-                catalogVideo.url?.let {videoUrl ->
+                == YouTubeInitializationResult.SUCCESS
+            ) {
+                catalogVideo.url?.let { videoUrl ->
                     // Sending only one video so selectedIndex to be 0 always
-                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl) , 0))
+                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl), 0))
                 }
             } else {
                 // Handle if user didn't have any apps to open Youtube * Usually rooted phone
                 try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(CatalogConstant.URL_YOUTUBE + catalogVideo.videoId)))
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(CatalogConstant.URL_YOUTUBE + catalogVideo.videoId)
+                        )
+                    )
                 } catch (e: Throwable) {
                 }
             }
@@ -711,11 +752,14 @@ class CatalogDetailPageFragment : Fragment(),
     override fun comparisonCatalogClicked(comparisonCatalogId: String) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                    "origin: $catalogName - $catalogId - destination: $comparisonCatalogId",userSession.userId,catalogId)
-            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisonCatalogId}")
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
+                "origin: $catalogName - $catalogId - destination: $comparisonCatalogId",
+                userSession.userId,
+                catalogId
+            )
+            RouteManager.route(it, "${CatalogConstant.CATALOG_URL}$comparisonCatalogId")
         }
     }
 
@@ -724,11 +768,20 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
-            "catalog page: $catalogId | catalog comparison: ${comparisonCatalog?.id ?: ""}",userSession.userId,catalogId)
+            "catalog page: $catalogId | catalog comparison: ${comparisonCatalog?.id ?: ""}",
+            userSession.userId,
+            catalogId
+        )
 
-        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
-            catalogBrand, catalogDepartmentId, recommendedCatalogId,
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
+        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(
+            catalogName,
+            catalogId,
+            catalogBrand,
+            catalogDepartmentId,
+            recommendedCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        )
         catalogComparisonBottomSheet.show(childFragmentManager, "")
     }
 
@@ -737,12 +790,21 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
-            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",userSession.userId,catalogId,
-            CatalogDetailAnalytics.TrackerId.OPEN_BOTTOMSHEET)
+            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",
+            userSession.userId,
+            catalogId,
+            CatalogDetailAnalytics.TrackerId.OPEN_BOTTOMSHEET
+        )
 
-        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
-            catalogBrand, catalogDepartmentId, recommendedCatalogId,
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
+        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(
+            catalogName,
+            catalogId,
+            catalogBrand,
+            catalogDepartmentId,
+            recommendedCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        )
         catalogComparisonBottomSheet.show(childFragmentManager, "")
     }
 
@@ -752,9 +814,12 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK,
-                "catalog page: $catalogId | next catalog page: $comparisonCatalogId", userSession.userId, catalogId,
-                CatalogDetailAnalytics.TrackerId.CLICK_NEXT_CATALOG_PAGE)
-            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisonCatalogId}")
+                "catalog page: $catalogId | next catalog page: $comparisonCatalogId",
+                userSession.userId,
+                catalogId,
+                CatalogDetailAnalytics.TrackerId.CLICK_NEXT_CATALOG_PAGE
+            )
+            RouteManager.route(it, "${CatalogConstant.CATALOG_URL}$comparisonCatalogId")
         }
     }
 
@@ -763,8 +828,11 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK,
-            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
-            CatalogDetailAnalytics.TrackerId.CLICK_DROP_UP_BUTTON)
+            "$catalogName - $catalogId - tabName: $tabName",
+            userSession.userId,
+            catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_UP_BUTTON
+        )
     }
 
     override fun accordionDropDown(tabName: String?) {
@@ -772,14 +840,17 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK,
-            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
-            CatalogDetailAnalytics.TrackerId.CLICK_DROP_DOWN_BUTTON)
+            "$catalogName - $catalogId - tabName: $tabName",
+            userSession.userId,
+            catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_DOWN_BUTTON
+        )
     }
 
     override fun changeComparison(comparedCatalogId: String) {
         comparisonCatalogId = comparedCatalogId
         recommendedCatalogId = comparedCatalogId
-        catalogDetailPageViewModel.getProductCatalog(catalogId,comparedCatalogId,userSession.userId,CatalogConstant.DEVICE)
+        catalogDetailPageViewModel.getProductCatalog(catalogId, comparedCatalogId, userSession.userId, CatalogConstant.DEVICE)
     }
 
     override fun readMoreReviewsClicked(catalogId: String) {
@@ -787,34 +858,59 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_ON_LIHAT_SEMUA_REVIEW,
-            "$catalogName - $catalogId",userSession.userId,catalogId)
-        val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
-            "","","",
-            CatalogComponentBottomSheet.ORIGIN_ALL_REVIEWS,this)
+            "$catalogName - $catalogId",
+            userSession.userId,
+            catalogId
+        )
+        val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(
+            catalogName,
+            catalogId,
+            "",
+            "",
+            "",
+            CatalogComponentBottomSheet.ORIGIN_ALL_REVIEWS,
+            this
+        )
         catalogAllReviewBottomSheet.show(childFragmentManager, "")
     }
 
     override fun onReviewImageClicked(
         position: Int,
         items: ArrayList<CatalogImage>,
-        reviewId : String,
+        reviewId: String,
         isFromBottomSheet: Boolean
     ) {
-        if(isFromBottomSheet){
+        if (isFromBottomSheet) {
             CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_LIST_REVIEW,
-                "$catalogName - $catalogId - $reviewId",userSession.userId,catalogId)
-        }else {
+                "$catalogName - $catalogId - $reviewId",
+                userSession.userId,
+                catalogId
+            )
+        } else {
             CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_REVIEW,
-                "$catalogName - $catalogId - $reviewId",userSession.userId,catalogId)
+                "$catalogName - $catalogId - $reviewId",
+                userSession.userId,
+                catalogId
+            )
         }
-        context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogName, catalogId , position, items,
-            showBottomGallery = false,showNumbering = true, reviewId))
+        context?.startActivity(
+            CatalogGalleryActivity.newIntent(
+                context,
+                catalogName,
+                catalogId,
+                position,
+                items,
+                showBottomGallery = false,
+                showNumbering = true,
+                reviewId
+            )
+        )
     }
 
     override fun hideFloatingLayout() {
@@ -829,10 +925,13 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewMoreDescriptionClick() {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
-                "$catalogName - $catalogId",userSession.userId,catalogId)
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
+            "$catalogName - $catalogId",
+            userSession.userId,
+            catalogId
+        )
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 
@@ -842,8 +941,9 @@ class CatalogDetailPageFragment : Fragment(),
         adapterPosition: Int
     ) {
         val uniqueTrackingKey = "$widgetImpressionActionName-$adapterPosition"
-        if(!widgetTrackingSet.contains(uniqueTrackingKey)){
-            CatalogDetailAnalytics.sendImpressionEventInQueue(trackingQueue,
+        if (!widgetTrackingSet.contains(uniqueTrackingKey)) {
+            CatalogDetailAnalytics.sendImpressionEventInQueue(
+                trackingQueue,
                 CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
                 widgetImpressionActionName,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
@@ -861,8 +961,9 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun sendWidgetTrackEvent(actionName: String) {
-        if(!widgetTrackingSet.contains(actionName)){
-            CatalogDetailAnalytics.sendEvent(CatalogDetailAnalytics.EventKeys.EVENT_VIEW_PG_IRIS,
+        if (!widgetTrackingSet.contains(actionName)) {
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_VIEW_PG_IRIS,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 actionName,
                 "$catalogName - $catalogId",
@@ -873,7 +974,7 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    fun onBackPressed(){
+    fun onBackPressed() {
         isBottomSheetOpen = false
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
@@ -892,14 +993,14 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun setLastDetachedItemPosition(adapterPosition: Int) {
         super.setLastDetachedItemPosition(adapterPosition)
-        if(!isScrollDownButtonClicked){
+        if (!isScrollDownButtonClicked) {
             lastDetachedItemPosition = adapterPosition
         }
     }
 
     override fun setLastAttachItemPosition(adapterPosition: Int) {
         super.setLastDetachedItemPosition(adapterPosition)
-        if(!isScrollDownButtonClicked){
+        if (!isScrollDownButtonClicked) {
             lastAttachItemPosition = adapterPosition
         }
     }

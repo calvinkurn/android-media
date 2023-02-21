@@ -77,7 +77,8 @@ object Utils {
 
     //this bubble will be shown within sellerapp, OS version 11/above, and if rollence enabled
     fun isBubbleChatEnabled() =
-        GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && getIsBubbleChatRollenceEnabled()
+        GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+            && getIsBubbleChatRollenceEnabled() && getShouldBubbleChatEnabled()
 
     private fun getIsBubbleChatRollenceEnabled(): Boolean {
         return try {
@@ -87,6 +88,10 @@ object Utils {
         } catch (e: Exception) {
             true
         }
+    }
+
+    fun getShouldBubbleChatEnabled(): Boolean {
+        return true
     }
 
     fun Activity?.isFromBubble(): Boolean {

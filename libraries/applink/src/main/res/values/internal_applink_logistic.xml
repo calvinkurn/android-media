@@ -16,6 +16,7 @@
 
     <string name="path_manage_address" translatable="false">/manageaddress/</string>
     <string name="path_tnc_webview_logistic" translatable="false">/logistictnc</string>
+    <string name="path_pinpoint_webview" translatable="false">/pin-point-picker-result</string>
 
     <string name="path_proof_of_delivery" translatable="false">/shipping/pod/.*</string>
 

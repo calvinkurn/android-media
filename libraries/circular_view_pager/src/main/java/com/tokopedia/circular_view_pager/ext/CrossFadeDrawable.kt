@@ -96,14 +96,12 @@ class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) :
     }
 
     override fun setColorFilter(@Nullable colorFilter: ColorFilter?) {}
-    override fun onBoundsChange(bounds: Rect?) {
+    override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        if (previousDrawable != null && bounds!= null) {
+        if (previousDrawable != null) {
             previousDrawable?.bounds = bounds
         }
-        if (bounds!= null) {
-            currentDrawable.bounds = bounds
-        }
+        currentDrawable.bounds = bounds
     }
 
     override fun getIntrinsicWidth(): Int {

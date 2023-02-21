@@ -2,8 +2,8 @@ package com.tokopedia.people.di
 
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.analytic.tracker.UserProfileTrackerImpl
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.data.UserProfileRepositoryImpl
-import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapperImpl
 import dagger.Binds

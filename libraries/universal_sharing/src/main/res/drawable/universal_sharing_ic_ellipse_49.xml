@@ -1,3 +1,3 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="50dp" android:height="50dp" android:viewportWidth="50" android:viewportHeight="50">
-    <path android:strokeWidth="1" android:pathData="M1 25a24 24 0 1 1 48 0 24 24 0 1 1-48 0" android:fillColor="@color/Unify_N0" android:strokeColor="@color/Unify_N100"/>
+    <path android:strokeWidth="1" android:pathData="M1 25a24 24 0 1 1 48 0 24 24 0 1 1-48 0" android:fillColor="@color/Unify_NN0" android:strokeColor="@color/Unify_NN100"/>
 </vector>

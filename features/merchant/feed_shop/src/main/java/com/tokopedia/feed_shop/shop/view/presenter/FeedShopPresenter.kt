@@ -2,7 +2,7 @@ package com.tokopedia.feed_shop.shop.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.createpost.common.domain.usecase.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -31,14 +31,14 @@ import javax.inject.Inject
  * @author by yfsx on 08/05/19.
  */
 class FeedShopPresenter @Inject constructor(
-        private val getDynamicFeedFirstUseCase: GetFeedShopFirstUseCase,
-        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-        private val likeKolPostUseCase: LikeKolPostUseCase,
-        private val deletePostUseCase: DeletePostUseCase,
-        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-        private val atcUseCase: AddToCartUseCase,
-        private val sendTopAdsUseCase: SendTopAdsUseCase
+    private val getDynamicFeedFirstUseCase: GetFeedShopFirstUseCase,
+    private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+    private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+    private val likeKolPostUseCase: LikeKolPostUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
+    private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+    private val atcUseCase: AddToCartUseCase,
+    private val sendTopAdsUseCase: SendTopAdsUseCase
 ) :
         BaseDaggerPresenter<FeedShopContract.View>(),
         FeedShopContract.Presenter {

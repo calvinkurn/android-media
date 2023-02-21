@@ -11,6 +11,7 @@ import java.util.*
 @Parcelize
 data class ConfigurationUiModel(
     val streamAllowed: Boolean,
+    val shortVideoAllowed: Boolean,
     val channelId: String,
     val channelStatus: ChannelStatus,
     val durationConfig: DurationConfigUiModel,

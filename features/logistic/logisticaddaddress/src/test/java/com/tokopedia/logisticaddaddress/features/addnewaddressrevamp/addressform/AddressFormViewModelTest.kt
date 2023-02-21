@@ -82,7 +82,6 @@ class AddressFormViewModelTest {
         verify { defaultAddressObserver.onChanged(match { it is Fail }) }
     }
 
-
     @Test
     fun `Save Address Data Success`() {
         coEvery { repo.saveAddress(any(), any()) } returns AddAddressResponse()
@@ -154,5 +153,13 @@ class AddressFormViewModelTest {
         addressFormViewModel.source = ManageAddressSource.TOKONOW.source
         addressFormViewModel.saveEditAddress(saveAddressDataModel)
         verify { editAddressObserver.onChanged(match { it is Success }) }
+    }
+
+    @Test
+    fun `verify set gms availability flag is correct`() {
+        val gmsAvailable = true
+        addressFormViewModel.isGmsAvailable = gmsAvailable
+
+        Assert.assertEquals(addressFormViewModel.isGmsAvailable, gmsAvailable)
     }
 }

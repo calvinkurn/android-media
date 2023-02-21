@@ -70,6 +70,9 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val CAMPAIGN_ID= "campaign_id"
         const val VARIANT_ID= "variant_id"
         const val SHOP_ID= "shop_id"
+        const val QUERY_PARENT= "query"
+        const val AFFILIATE_UNIQUE_ID = "aff_unique_id"
+        const val CHANNEL = "channel"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -225,3 +228,4 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
 }
+

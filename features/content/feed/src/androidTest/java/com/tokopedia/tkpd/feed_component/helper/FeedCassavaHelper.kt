@@ -4,7 +4,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.cassava.core.Status
 import com.tokopedia.analyticsdebugger.cassava.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.core.containsPairOf
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
