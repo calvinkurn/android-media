@@ -302,12 +302,6 @@ class ContentCommentBottomSheet @Inject constructor(
         Toast.LENGTH_LONG
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode != Activity.RESULT_OK) return
-
-        viewModel.submitAction(CommentAction.ResultAction(requestCode))
-    }
-
     interface EntrySource {
         fun getPageSource(): PageSource
     }
