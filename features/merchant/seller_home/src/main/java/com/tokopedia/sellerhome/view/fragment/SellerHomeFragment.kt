@@ -1469,40 +1469,44 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun handlePersonaStatus(personaStatus: Int) {
+        when (personaStatus) {
+            STATUS_PERSONA_NOT_ROLLED_OUT -> {
+                sharedPref.setPersonaEntryPointVisibility(
+                    userSession.userId,
+                    shouldVisible = false
+                )
+            }
+            STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
+                showPersonaBottomSheet(personaStatus)
+                sharedPref.setPersonaEntryPointVisibility(
+                    userSession.userId, shouldVisible = true
+                )
+            }
+            STATUS_PERSONA_SHOW_POPUP -> {
+                sharedPref.setPersonaEntryPointVisibility(
+                    userSession.userId,
+                    shouldVisible = true
+                )
+            }
+        }
+    }
+
+    private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
-            when (personaStatus) {
-                STATUS_PERSONA_NOT_ROLLED_OUT -> {
-                    sharedPref.setPersonaEntryPointVisibility(
-                        userSession.userId,
-                        shouldVisible = false
-                    )
-                }
-                STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
-                    val btmSheet = SellerPersonaBottomSheet.newInstance()
-                    val shouldShowBottomSheet =
-                        !it.isFinishing && !btmSheet.isAdded && sharedPref.shouldShowPersonaHomePopup(
-                            userSession.userId
-                        )
-                    if (shouldShowBottomSheet) {
-                        runCatching {
-                            btmSheet.setOnDismissListener {
-                                sharedPref.markPersonaHomePopupShown(userSession.userId)
-                                if (personaStatus == STATUS_PERSONA_INACTIVE) {
-                                    showPersonaToaster()
-                                }
-                            }
-                            btmSheet.show(childFragmentManager)
+            val btmSheet = SellerPersonaBottomSheet.newInstance()
+            val shouldShowBottomSheet =
+                !it.isFinishing && !btmSheet.isAdded && sharedPref.shouldShowPersonaHomePopup(
+                    userSession.userId
+                )
+            if (shouldShowBottomSheet) {
+                runCatching {
+                    btmSheet.setOnDismissListener {
+                        sharedPref.markPersonaHomePopupShown(userSession.userId)
+                        if (personaStatus == STATUS_PERSONA_INACTIVE) {
+                            showPersonaToaster()
                         }
                     }
-                    sharedPref.setPersonaEntryPointVisibility(
-                        userSession.userId, shouldVisible = true
-                    )
-                }
-                STATUS_PERSONA_SHOW_POPUP -> {
-                    sharedPref.setPersonaEntryPointVisibility(
-                        userSession.userId,
-                        shouldVisible = true
-                    )
+                    btmSheet.show(childFragmentManager)
                 }
             }
         }
