@@ -5,10 +5,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
-/**
- * Exclude cross_sell_metadata from serialization in [DigitalCheckoutGqlUseCase]
- * by not annotating it with @Expose
- * */
 @Parcelize
 data class FintechProduct(
     @SerializedName("id")
@@ -52,6 +48,7 @@ data class FintechProduct(
     var operatorName: String = "",
 
     @SerializedName("cross_sell_metadata")
+    @Expose
     var crossSellMetadata: String = ""
 ) : Parcelable {
 

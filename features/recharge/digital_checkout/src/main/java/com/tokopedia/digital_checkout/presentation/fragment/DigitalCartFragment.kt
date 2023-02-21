@@ -381,9 +381,6 @@ class DigitalCartFragment :
         val subscriptionProduct = cartInfo.attributes.fintechProduct.firstOrNull {
             it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
         }
-        subscriptionProduct?.let {
-            renderConsentWidget(it)
-        }
         renderMyBillsLayout(cartInfo)
 
         binding?.let {
@@ -451,6 +448,11 @@ class DigitalCartFragment :
             showPromoTicker()
 
             it.checkoutBottomViewWidget.setCheckoutButtonListener {
+                if (it.checkoutBottomViewWidget.isCrossSellConsentVisible()) {
+                    viewModel.updateSubscriptionMetadata(
+                        it.checkoutBottomViewWidget.getCrossSellConsentPayload()
+                    )
+                }
                 viewModel.proceedToCheckout(
                     getDigitalIdentifierParam(),
                     remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
@@ -683,17 +685,15 @@ class DigitalCartFragment :
         )
         binding?.run {
             if (isChecked) {
-                binding?.checkoutBottomViewWidget?.showCrossSellConsentIfAvailable()
+                renderConsentWidget(fintechProduct)
+                checkoutBottomViewWidget.showCrossSellConsentIfAvailable()
+                checkoutBottomViewWidget.isCheckoutButtonEnabled = !checkoutBottomViewWidget.isNeedConsent()
             } else {
-                binding?.checkoutBottomViewWidget?.hideCrossSellConsentIfAvailable()
-            }
-            val consentPayload = if (checkoutBottomViewWidget.isCrossSellConsentVisible()) {
-                checkoutBottomViewWidget.getCrossSellConsentPayload()
-            } else {
-                ""
+                checkoutBottomViewWidget.hideCrossSellConsentIfAvailable()
+                checkoutBottomViewWidget.isCheckoutButtonEnabled = true
             }
 
-            viewModel.onSubscriptionChecked(fintechProduct, isChecked, consentPayload)
+            viewModel.onSubscriptionChecked(fintechProduct, isChecked)
         }
     }
 

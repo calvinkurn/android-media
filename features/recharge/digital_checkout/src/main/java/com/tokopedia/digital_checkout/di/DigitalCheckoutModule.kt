@@ -2,7 +2,6 @@ package com.tokopedia.digital_checkout.di
 
 import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
@@ -71,5 +70,5 @@ class DigitalCheckoutModule {
 
     @DigitalCheckoutScope
     @Provides
-    fun provideGson(): Gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+    fun provideGson(): Gson = Gson()
 }

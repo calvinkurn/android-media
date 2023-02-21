@@ -118,9 +118,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
             setOnFailedGetCollectionListener {
                 isCheckoutButtonEnabled = false
             }
-            setOnNeedConsentListener { isNeedConsent ->
-                isCheckoutButtonEnabled = !isNeedConsent
-            }
             isConsentAvailable = consentCollectionParam.collectionId.isNotEmpty()
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
         }
@@ -184,6 +181,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
 
     fun hideCrossSellConsentIfAvailable() {
         if (isConsentAvailable) binding.viewUserConsentWidget.hide()
+    }
+
+    fun isNeedConsent(): Boolean {
+        return binding.viewUserConsentWidget.isNeedConsent()
     }
 
     fun isCrossSellConsentVisible(): Boolean {

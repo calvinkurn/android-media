@@ -323,12 +323,18 @@ class DigitalCartViewModel @Inject constructor(
 
     fun onSubscriptionChecked(
         fintechProduct: FintechProduct,
-        isChecked: Boolean,
-        consentPayload: String
+        isChecked: Boolean
     ) {
-        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, true, consentPayload)
+        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, true)
         updateRequestCheckoutParamWithCrossSellData(digitalCrossSellData, isChecked)
         requestCheckoutParam.isSubscriptionChecked = isChecked
+    }
+
+    fun updateSubscriptionMetadata(additionalMetadata: String) {
+        val subscriptionProduct = requestCheckoutParam.crossSellProducts.values.firstOrNull {
+            it.isSubscription
+        }
+        subscriptionProduct?.additionalMetadata = additionalMetadata
     }
 
     fun onFintechProductChecked(
@@ -336,7 +342,7 @@ class DigitalCartViewModel @Inject constructor(
         isChecked: Boolean,
         inputPrice: Double?
     ) {
-        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, false, "")
+        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, false)
         updateRequestCheckoutParamWithCrossSellData(digitalCrossSellData, isChecked)
         updateTotalPriceWithFintechProduct(inputPrice)
         updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)

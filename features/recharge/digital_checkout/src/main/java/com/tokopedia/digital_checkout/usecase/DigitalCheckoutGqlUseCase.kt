@@ -69,6 +69,8 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
                         checkoutMetadataJson[key] = jsonObject.get(key)
                     }
                 }
+
+                checkoutMetadataJson.remove(KEY_CROSS_SELL_METADATA)
                 checkoutMetadata = gson.toJson(checkoutMetadataJson)
                 RechargeCheckoutFintechProduct(
                     transactionType = it.value.product.transactionType,
@@ -90,6 +92,7 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
     companion object {
         private const val PARAMS_KEY = "request"
         private const val RECHARGE_MODULE_NAME = "recharge"
+        private const val KEY_CROSS_SELL_METADATA = "cross_sell_metadata"
 
         const val QUERY_NAME_RECHARGE_CHECKOUT = "RechargeCheckoutQuery"
         const val QUERY_RECHARGE_CHECKOUT = """
