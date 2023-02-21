@@ -386,6 +386,7 @@ object ShopPageTrackingConstant {
         const val IMPRESSION_PERSONALIZATION_TRENDING_WIDGET = "widget impression - home - trending"
         const val IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM = "product list impression - home - trending"
         const val CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "click product - home - trending"
+        const val CAMPAIGN_WIDGET_IMPRESSION = "campaign widget impression"
     }
 
     object EventCategory {
@@ -410,6 +411,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR = "41209"
         const val TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR = "41210"
         const val TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL = "41211"
+        const val TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION = "41201"
     }
 
     object Key {

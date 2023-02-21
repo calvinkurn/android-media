@@ -72,13 +72,13 @@ class ShopHomeFlashSaleViewHolder(
     init {
         setupClickListener(listener)
         setupProductCardCarouselView(productCarouselView)
-        setupWidgetImpressionListener(uiModel)
     }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.totalProduct.orZero()
+        setupWidgetImpressionListener(uiModel)
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
         setupFlashSaleCountDownTimer(element)

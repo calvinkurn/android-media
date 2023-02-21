@@ -3583,21 +3583,8 @@ open class ShopPageHomeFragment :
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             val statusCampaign = it.statusCampaign
-            val selectedBannerType = when (statusCampaign.toLowerCase()) {
-                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
-                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
-                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
-                else -> ""
-            }
-            val selectedBanner = it.bannerList.firstOrNull {
-                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
-            }
-            val isSeeCampaign =
-                if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
-                    it.totalNotifyWording.isNotEmpty()
-                } else {
-                    null
-                }
+            val campaignId = it.campaignId
+            val campaignName = it.name
             sendShopHomeWidgetImpressionTracker(
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
                 shopHomeNewProductLaunchCampaignUiModel.name,
@@ -3606,31 +3593,42 @@ open class ShopPageHomeFragment :
                 shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
                 shopHomeNewProductLaunchCampaignUiModel.isFestivity
             )
-            shopPageHomeTracking.impressionCampaignNplWidget(
-                it.statusCampaign,
-                shopId,
-                ShopUtil.getActualPositionFromIndex(position),
-                isSeeCampaign,
-                selectedBanner?.imageId.orEmpty(),
-                selectedBanner?.imageUrl ?: "",
-                customDimensionShopPage,
-                isOwner
-            )
+            if(!isOwner) {
+                shopPageHomeTracking.impressionShopHomeCampaignWidget(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetImpressionTrackerModel(
+                        shopId,
+                        userId,
+                        campaignId,
+                        campaignName,
+                        statusCampaign,
+                        position,
+                        shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                        shopHomeNewProductLaunchCampaignUiModel.isFestivity
+                    )
+                )
+            }
         }
     }
 
     override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
         model.data?.firstOrNull()?.let { itemFlashSale ->
             val campaignId = itemFlashSale.campaignId
+            val campaignName = itemFlashSale.name
             val statusCampaign = itemFlashSale.statusCampaign
-            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
-                campaignId = campaignId,
-                statusCampaign = statusCampaign,
-                shopId = shopId,
-                userId = userId,
-                position = position,
-                isOwner = isOwner
-            )
+            if(!isOwner) {
+                shopPageHomeTracking.impressionShopHomeCampaignWidget(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetImpressionTrackerModel(
+                        shopId,
+                        userId,
+                        campaignId,
+                        campaignName,
+                        statusCampaign,
+                        position,
+                        model.widgetMasterId,
+                        model.isFestivity
+                    )
+                )
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.analytic
 
 import com.tokopedia.shop.analytic.model.ProductShopDecorationTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopHomeCampaignWidgetImpressionTrackerModel
 import com.tokopedia.shop.analytic.model.ShopHomeCarouselProductWidgetClickCtaTrackerModel
 
 object ShopPageHomeTrackingMapper {
@@ -41,6 +42,28 @@ object ShopPageHomeTrackingMapper {
         return ShopHomeCarouselProductWidgetClickCtaTrackerModel(
             shopId = shopId,
             userId = userId,
+            widgetMasterId = widgetMasterId,
+            isFestivity = isFestivity
+        )
+    }
+
+    fun mapToShopHomeCampaignWidgetImpressionTrackerModel(
+        shopId: String,
+        userId: String,
+        campaignId: String,
+        campaignName: String,
+        statusCampaign: String,
+        position: Int,
+        widgetMasterId: String,
+        isFestivity: Boolean
+    ): ShopHomeCampaignWidgetImpressionTrackerModel {
+        return ShopHomeCampaignWidgetImpressionTrackerModel(
+            shopId = shopId,
+            userId = userId,
+            campaignId = campaignId,
+            campaignName = campaignName,
+            statusCampaign = statusCampaign,
+            position = position,
             widgetMasterId = widgetMasterId,
             isFestivity = isFestivity
         )

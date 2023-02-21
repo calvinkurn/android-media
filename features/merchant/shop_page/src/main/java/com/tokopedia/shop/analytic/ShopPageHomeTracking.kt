@@ -83,6 +83,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
@@ -176,6 +177,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
@@ -1368,36 +1370,52 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
-    fun impressionCampaignFlashSaleWidget(
-        campaignId: String,
-        statusCampaign: String,
-        shopId: String,
-        userId: String,
-        position: Int,
-        isOwner: Boolean
+    fun impressionShopHomeCampaignWidget(
+        trackerModel: ShopHomeCampaignWidgetImpressionTrackerModel
     ) {
-        val ecommerce = mutableMapOf(
-            PROMO_VIEW to mutableMapOf(
-                PROMOTIONS to listOf(
-                    createEcommerceFlashSaleItemMap(
-                        creative = statusCampaign,
-                        id = campaignId,
-                        name = FLASH_SALE.replace(" ", "_"),
-                        position = position
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
+            )
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+            }
+            val eventBundle = Bundle().apply {
+                putString(EVENT, VIEW_ITEM)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_IMPRESSION)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putParcelableArrayList(
+                    PROMOTIONS,
+                    arrayListOf(
+                        createCampaignWidgetPromotionItem(
+                            position,
+                            campaignId,
+                            campaignName
+                        )
                     )
                 )
-            )
-        )
-        val eventMap = createFlashSaleTrackerMap(
-            eventName = PROMO_VIEW,
-            eventAction = joinSpace(FLASH_SALE, IMPRESSION),
-            eventCategory = getShopPageCategory(isOwner),
-            eventLabel = "",
-            shopId = shopId,
-            userId = userId,
-            ecommerceMap = ecommerce
-        )
-        sendDataLayerEvent(eventMap)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
+        }
+    }
+
+    private fun createCampaignWidgetPromotionItem(position: Int, campaignId: String, campaignName: String): Bundle {
+        return Bundle().apply {
+            putString(CREATIVE_NAME, "")
+            putString(CREATIVE_SLOT, (position + 1).toString())
+            putString(ITEM_ID, campaignId)
+            putString(ITEM_NAME, campaignName)
+        }
     }
 
     fun onClickReminderButtonFlashSaleWidget(
