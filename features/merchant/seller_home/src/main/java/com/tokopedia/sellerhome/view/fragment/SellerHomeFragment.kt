@@ -2023,12 +2023,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 viewBgShopStatus.loadImage(imageUrl) {
                     listener(onSuccess = { _, _ ->
                         viewBgShopStatus.visible()
-                        viewBgShopStatus.requestLayout()
+                        setHomeBackgroundRatio()
                     })
                 }
             } catch (e: Exception) {
                 viewBgShopStatus.hide()
             }
+        }
+    }
+
+    private fun setHomeBackgroundRatio() {
+        binding?.run {
+            viewBgShopStatus.layoutParams.height = (viewBgShopStatus.measuredWidth * SellerHomeConst.HOME_BACKGROUND_RATIO).toInt()
+            viewBgShopStatus.requestLayout()
         }
     }
 
