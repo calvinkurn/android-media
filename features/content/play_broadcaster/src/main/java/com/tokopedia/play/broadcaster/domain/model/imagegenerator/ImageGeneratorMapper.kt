@@ -8,7 +8,10 @@ class ImageGeneratorMapper(
     private val authorLogo: String,
 ) {
 
+    // expected to be hardcoded with this order
+    // ("blue", "red", "turquoise", "purple", "orange", "green")
     private val backgroundList = listOf("blue", "red", "turquoise", "purple", "orange", "green")
+
     private val productAmount: Int
         get() = getProductImageUrl().size
     private val productUrl1: String
