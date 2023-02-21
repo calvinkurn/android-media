@@ -321,30 +321,30 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     ) { menuList, title, cover, productSectionList, schedule ->
         menuList.map {
 
-            when (it.menuId) {
-                DynamicPreparationMenu.TITLE -> {
+            when (it.menu) {
+                DynamicPreparationMenu.Menu.Title -> {
                     it.copy(isChecked = isTitleMenuChecked)
                 }
-                DynamicPreparationMenu.PRODUCT -> {
+                DynamicPreparationMenu.Menu.Product -> {
                     it.copy(
                         isChecked = productSectionList.isNotEmpty(),
                         isEnabled = isTitleMenuChecked,
                     )
                 }
-                DynamicPreparationMenu.COVER -> {
+                DynamicPreparationMenu.Menu.Cover -> {
                     it.copy(
                         isChecked = cover.croppedCover is CoverSetupState.Cropped.Uploaded &&
                             (cover.croppedCover.coverImage.toString().isNotEmpty() || !cover.croppedCover.localImage?.toString().isNullOrEmpty()),
                         isEnabled = isTitleMenuChecked,
                     )
                 }
-                DynamicPreparationMenu.SCHEDULE -> {
+                DynamicPreparationMenu.Menu.Schedule -> {
                     it.copy(
                         isChecked = schedule.schedule is BroadcastScheduleUiModel.Scheduled,
                         isEnabled = isTitleMenuChecked,
                     )
                 }
-                DynamicPreparationMenu.FACE_FILTER -> {
+                DynamicPreparationMenu.Menu.FaceFilter -> {
                     /** TODO: handle isChecked */
                     it.copy(
                         isEnabled = isTitleMenuChecked,

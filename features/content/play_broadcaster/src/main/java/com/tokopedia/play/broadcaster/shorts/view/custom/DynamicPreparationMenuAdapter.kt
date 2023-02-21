@@ -15,15 +15,15 @@ class DynamicPreparationMenuAdapter(
     }
 
     override fun areItemsTheSame(
-        oldItem: DynamicPreparationMenuAdapter.Item,
-        newItem: DynamicPreparationMenuAdapter.Item
+        oldItem: Item,
+        newItem: Item
     ): Boolean {
-        return oldItem.data.menuId == newItem.data.menuId
+        return oldItem.data.menu.id == newItem.data.menu.id
     }
 
     override fun areContentsTheSame(
-        oldItem: DynamicPreparationMenuAdapter.Item,
-        newItem: DynamicPreparationMenuAdapter.Item
+        oldItem: Item,
+        newItem: Item
     ): Boolean {
         return oldItem == newItem
     }

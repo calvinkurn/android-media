@@ -188,6 +188,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         super.onDestroyView()
 
         coachMark?.dismissCoachMark()
+        binding.preparationMenu.dismissCoachMark()
         coachMark = null
 
         _binding = null
@@ -376,6 +377,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 setOnAccountClickListener {
                     analytic.onClickAccountDropdown()
                     coachMark?.dismissCoachMark()
+                    binding.preparationMenu.dismissCoachMark()
 
                     showAccountBottomSheet()
                 }
@@ -423,29 +425,28 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupListener() {
         binding.apply {
             preparationMenu.setOnMenuClickListener {
-                when(it.menuId) {
-                    DynamicPreparationMenu.TITLE -> {
+                when(it.menu) {
+                    DynamicPreparationMenu.Menu.Title -> {
                         analytic.clickSetupTitleMenu()
                         showTitleForm(true)
                     }
-                    DynamicPreparationMenu.COVER -> {
+                    DynamicPreparationMenu.Menu.Cover -> {
                         analytic.clickSetupCoverMenu()
                         showCoverForm(true)
                     }
-                    DynamicPreparationMenu.PRODUCT -> {
+                    DynamicPreparationMenu.Menu.Product -> {
                         analytic.clickSetupProductMenu()
 
                         childFragmentManager.beginTransaction()
                             .add(ProductSetupFragment::class.java, null, null)
                             .commit()
                     }
-                    DynamicPreparationMenu.SCHEDULE -> {
+                    DynamicPreparationMenu.Menu.Schedule -> {
                         eventBus.emit(Event.ClickSetSchedule)
                     }
-                    DynamicPreparationMenu.FACE_FILTER -> {
-
+                    DynamicPreparationMenu.Menu.FaceFilter -> {
+                        /** TODO: handle this */
                     }
-                    else -> {}
                 }
             }
             formTitle.setListener(this@PlayBroadcastPreparationFragment)
@@ -725,6 +726,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if(prevState == state) return
 
         binding.preparationMenu.submitMenu(state)
+
+        if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter) &&
+            parentViewModel.isTitleMenuChecked
+        ) {
+            binding.preparationMenu.showCoachMark(
+                DynamicPreparationMenu.Menu.FaceFilter,
+                getString(R.string.play_broadcaster_face_filter_coachmark_title),
+                getString(R.string.play_broadcaster_face_filter_coachmark_description)
+            )
+            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter)
+        }
     }
 
     private fun renderCover(
@@ -910,7 +922,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
-        if (!isShow) coachMark?.dismissCoachMark()
+        if (!isShow) {
+            coachMark?.dismissCoachMark()
+            binding.preparationMenu.dismissCoachMark()
+        }
         binding.groupPreparationMain.showWithCondition(isShow)
     }
 

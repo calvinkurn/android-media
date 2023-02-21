@@ -5,7 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.broadcaster.databinding.ViewDynamicPreparationMenuBinding
+import com.tokopedia.play.broadcaster.R
 
 /**
  * Created By : Jonathan Darwin on November 09, 2022
@@ -25,6 +29,8 @@ class DynamicPreparationMenuView : FrameLayout {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    private val coachMark: CoachMark2 = CoachMark2(context)
 
     private val binding = ViewDynamicPreparationMenuBinding.inflate(
         LayoutInflater.from(context),
@@ -61,6 +67,37 @@ class DynamicPreparationMenuView : FrameLayout {
             )
         }
         adapter.setItemsAndAnimateChanges(finalMenuList)
+    }
+
+    fun showCoachMark(
+        menu: DynamicPreparationMenu.Menu,
+        title: String,
+        subtitle: String
+    ) {
+        binding.rvMenu.addOneTimeGlobalLayoutListener {
+            val menuIdx = adapter.getItems().indexOfFirst {
+                it.data.menu.id == menu.id
+            }
+            if(menuIdx == -1) return@addOneTimeGlobalLayoutListener
+
+            val holder = binding.rvMenu.findViewHolderForAdapterPosition(menuIdx)
+            holder?.let {
+                val coachMarkItem = arrayListOf(
+                    CoachMark2Item(
+                        it.itemView.findViewById(R.id.ic_menu),
+                        title,
+                        subtitle,
+                        CoachMark2.POSITION_TOP,
+                    )
+                )
+
+                coachMark.showCoachMark(coachMarkItem)
+            }
+        }
+    }
+
+    fun dismissCoachMark() {
+        coachMark.dismissCoachMark()
     }
 
     fun setOnMenuClickListener(onClick: (DynamicPreparationMenu) -> Unit) {

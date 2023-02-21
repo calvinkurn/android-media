@@ -7,7 +7,7 @@ import com.tokopedia.play.broadcaster.R
  * Created By : Jonathan Darwin on November 09, 2022
  */
 data class DynamicPreparationMenu(
-    val menuId: String,
+    val menu: Menu,
     val iconId: Int,
     val textResId: Int,
     val isMandatory: Boolean,
@@ -15,15 +15,18 @@ data class DynamicPreparationMenu(
     val isEnabled: Boolean,
 ) {
 
+    enum class Menu(val id: String) {
+        Title("TITLE"),
+        Cover("COVER"),
+        Product("PRODUCT"),
+        Schedule("SCHEDULE"),
+        FaceFilter("FACE_FILTER"),
+    }
+
     companion object {
-        const val TITLE = "TITLE"
-        const val COVER = "COVER"
-        const val SCHEDULE = "SCHEDULE"
-        const val PRODUCT = "PRODUCT"
-        const val FACE_FILTER = "FACE_FILTER"
 
         fun createTitle(isMandatory: Boolean) = DynamicPreparationMenu(
-            menuId = TITLE,
+            menu = Menu.Title,
             iconId = IconUnify.TEXT,
             textResId = R.string.play_bro_title_label,
             isMandatory = isMandatory,
@@ -32,7 +35,7 @@ data class DynamicPreparationMenu(
         )
 
         fun createCover(isMandatory: Boolean) = DynamicPreparationMenu(
-            menuId = COVER,
+            menu = Menu.Cover,
             iconId = IconUnify.IMAGE,
             textResId = R.string.play_bro_cover_label,
             isMandatory = isMandatory,
@@ -41,7 +44,7 @@ data class DynamicPreparationMenu(
         )
 
         fun createProduct(isMandatory: Boolean) = DynamicPreparationMenu(
-            menuId = PRODUCT,
+            menu = Menu.Product,
             iconId = IconUnify.PRODUCT,
             textResId = R.string.play_bro_product_label,
             isMandatory = isMandatory,
@@ -50,7 +53,7 @@ data class DynamicPreparationMenu(
         )
 
         fun createSchedule(isMandatory: Boolean) = DynamicPreparationMenu(
-            menuId = SCHEDULE,
+            menu = Menu.Schedule,
             iconId = IconUnify.CALENDAR_TIME,
             textResId = R.string.play_bro_schedule_label,
             isMandatory = isMandatory,
@@ -59,7 +62,7 @@ data class DynamicPreparationMenu(
         )
 
         fun createFaceFilter(isMandatory: Boolean) = DynamicPreparationMenu(
-            menuId = FACE_FILTER,
+            menu = Menu.FaceFilter,
             iconId = IconUnify.SMILE,
             textResId = R.string.play_bro_face_filter_label,
             isMandatory = isMandatory,
