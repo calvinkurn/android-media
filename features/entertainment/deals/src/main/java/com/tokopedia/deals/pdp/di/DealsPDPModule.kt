@@ -50,7 +50,7 @@ class DealsPDPModule {
     fun provideInterceptors(
         tkpdOldAuthInterceptor: TkpdOldAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor
     ): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)

@@ -167,7 +167,10 @@ class PlayActivity :
         super.onNewIntent(intent)
         val newBundle = intent.extras ?: Bundle()
 
-        newBundle.putString(PLAY_KEY_CHANNEL_ID, startChannelId)
+        val lastSegment = intent.data?.lastPathSegment.orEmpty()
+        val newSegment = if (lastSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else lastSegment
+
+        newBundle.putString(PLAY_KEY_CHANNEL_ID, newSegment)
         viewModel.setNewChannelParams(newBundle)
     }
 

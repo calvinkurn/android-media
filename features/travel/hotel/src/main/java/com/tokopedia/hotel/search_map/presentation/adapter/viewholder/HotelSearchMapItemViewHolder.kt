@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.HotelUtils.Companion.getImageToLoad
 import com.tokopedia.hotel.databinding.ItemPropertySearchResultHorizontalBinding
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.data.model.PropertyPrice
@@ -15,7 +16,7 @@ import com.tokopedia.media.loader.loadImage
 class HotelSearchMapItemViewHolder(val binding: ItemPropertySearchResultHorizontalBinding) : AbstractViewHolder<Property>(binding.root) {
     override fun bind(element: Property) {
         with(binding) {
-            image.loadImage(element.image.firstOrNull()?.urlMax300 ?: "")
+            image.loadImage(element.getImageToLoad(binding.root.context))
             title.text = element.name
 
             if (element.review.score == 0f) {

@@ -162,5 +162,17 @@ data class Ticker(
 
     @SerializedName("message")
     @Expose
-    val message: String = ""
+    val message: String = "",
+
+    @SerializedName("color")
+    @Expose
+    val color: String = "",
+
+    @SerializedName("link")
+    @Expose
+    val link: String = "",
+
+    @SerializedName("action")
+    @Expose
+    val action: String = ""
 )
