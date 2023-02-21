@@ -305,7 +305,13 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 viewModel.findFocusedReviewItemVisitable()?.let { (index, _) ->
                     binding?.rvBulkReviewItems?.smoothSnapToPosition(index, SNAP_TO_START)
                 }
-                if (imeInsets.bottom.isZero()) clearViewFocus()
+                // Only clear focus when not in multi window mode because in multi window mode
+                // imeInsets.bottom always return zero when keyboard is lower than the app window
+                // which cause an issue where the TextArea will always lose it's focus and user can't
+                // type the testimony
+                activity?.let { activity ->
+                    if (imeInsets.bottom.isZero() && !activity.isInMultiWindowMode) clearViewFocus()
+                }
                 insets
             }
         }
