@@ -46,8 +46,7 @@ fun NestSearchBar(
     BasicTextField(
         modifier = modifier
             .height(36.dp)
-            .border(0.5.dp, borderColor, RoundedCornerShape(8.dp))
-        ,
+            .border(0.5.dp, borderColor, RoundedCornerShape(8.dp)),
         value = text,
         onValueChange = { newText ->
             onTextChanged(newText)
@@ -70,7 +69,7 @@ fun NestSearchBar(
                     tint = searchIconColor
                 )
 
-                Spacer(modifier = Modifier.width(6.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
 
                 Box(Modifier.weight(1f)) {
 
