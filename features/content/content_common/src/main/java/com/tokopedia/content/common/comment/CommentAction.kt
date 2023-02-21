@@ -14,12 +14,14 @@ sealed class CommentAction {
     object DismissComment : CommentAction()
 
     data class ReplyComment(val comment: CommentUiModel.Item) : CommentAction()
-    data class DeleteComment(val commentId: String) : CommentAction()
+    data class DeleteComment(val isFromToaster: Boolean) : CommentAction()
     data class ReportComment(
         val param: FeedReportRequestParamModel
     ) : CommentAction()
 
     data class ResultAction(val requestCode: Int) : CommentAction()
 
-    object RequestReportAction: CommentAction()
+    object RequestReportAction : CommentAction()
+
+    data class SelectComment(val comment: CommentUiModel.Item) : CommentAction()
 }
