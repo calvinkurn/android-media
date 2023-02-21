@@ -128,6 +128,8 @@ object ShopPageTrackingConstant {
     const val CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION = "product impression"
     const val CAMPAIGN_TAB_PRODUCT_CLICK_EVENT_ACTION = "click product card"
     const val SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX = "click search box"
+    const val PRODUCT_LIST_IMPRESSION_SHOP_DECOR = "product list impression - shop decor"
+    const val CLICK_PRODUCT_SHOP_DECOR = "click product - shop decor"
 
     // label
     const val CLICK_SHARE = "click share"
@@ -405,6 +407,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35968"
         const val TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35967"
         const val TRACKER_SHOP_PAGE_OPEN_SCREEN = "21750"
+        const val TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR = "41209"
+        const val TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR = "41210"
     }
 
     object Key {

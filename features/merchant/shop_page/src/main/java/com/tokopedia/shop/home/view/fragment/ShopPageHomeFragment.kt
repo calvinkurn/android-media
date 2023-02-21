@@ -83,6 +83,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPageHomeTrackingMapper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
@@ -2803,30 +2804,23 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
                 shopHomeCarousellProductUiModel?.isFestivity.orFalse()
             )
-            shopPageHomeTracking.clickProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                ShopUtil.getActualPositionFromIndex(itemPosition),
-                shopHomeCarousellProductUiModel?.widgetId ?: "",
-                shopHomeCarousellProductUiModel?.header?.title ?: "",
-                shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id,
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
+            if(!isOwner) {
+                shopPageHomeTracking.clickProductShopDecoration(
+                    ShopPageHomeTrackingMapper.mapToProductShopDecorationTrackerDataModel(
+                        shopId,
+                        userId,
+                        it.name,
+                        it.id,
+                        it.displayedPrice,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeCarousellProductUiModel?.name.orEmpty(),
+                        shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
+                        shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                    )
                 )
-            )
+            }
             goToPDP(it.productUrl)
         }
     }
@@ -2838,30 +2832,23 @@ open class ShopPageHomeFragment :
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
-            shopPageHomeTracking.impressionProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                ShopUtil.getActualPositionFromIndex(itemPosition),
-                shopHomeCarousellProductUiModel?.widgetId ?: "",
-                shopHomeCarousellProductUiModel?.header?.title ?: "",
-                shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id.orEmpty(),
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
+            if (!isOwner) {
+                shopPageHomeTracking.impressionProductShopDecoration(
+                    ShopPageHomeTrackingMapper.mapToProductShopDecorationTrackerDataModel(
+                        shopId,
+                        userId,
+                        it.name,
+                        it.id,
+                        it.displayedPrice,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeCarousellProductUiModel?.name.orEmpty(),
+                        shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
+                        shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                    )
                 )
-            )
+            }
         }
     }
 
