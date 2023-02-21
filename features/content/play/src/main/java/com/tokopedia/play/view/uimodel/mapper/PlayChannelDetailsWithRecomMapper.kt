@@ -39,6 +39,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
             val partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton)
+            val channelType = getChannelType(it.isLive, it.airTime)
 
             PlayChannelData(
                 id = it.id,
@@ -56,7 +57,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 ),
                 partnerInfo = partnerInfo,
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
-                channelReportInfo = mapChannelReportInfo(it.id, partnerInfo, it.performanceSummaryPageLink, extraParams),
+                channelReportInfo = mapChannelReportInfo(it.id, partnerInfo, channelType, it.performanceSummaryPageLink, extraParams),
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -110,12 +111,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapChannelReportInfo(
         channelId: String,
         partnerInfo: PlayPartnerInfo,
+        channelType: PlayChannelType,
         performanceSummaryPageLink: String,
         extraParams: ExtraParams
     ) = PlayChannelReportUiModel(
         shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
         sourceType = extraParams.sourceType,
-        performanceSummaryPageLink = mapPerformanceSummaryPageLink(partnerInfo, performanceSummaryPageLink),
+        performanceSummaryPageLink = mapPerformanceSummaryPageLink(partnerInfo, channelType, performanceSummaryPageLink),
     )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
@@ -317,10 +319,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapPerformanceSummaryPageLink(
         partnerInfo: PlayPartnerInfo,
+        channelType: PlayChannelType,
         performanceSummaryPageLink: String
     ): String {
-        return if(partnerInfo.type == PartnerType.Buyer && partnerInfo.id.toString() == userSession.userId)
-            performanceSummaryPageLink
+        return if(partnerInfo.type == PartnerType.Buyer &&
+            partnerInfo.id.toString() == userSession.userId &&
+            channelType == PlayChannelType.VOD
+        ) performanceSummaryPageLink
         else ""
     }
 
