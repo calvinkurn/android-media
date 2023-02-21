@@ -1,4 +1,0 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="16dp" android:height="16dp" android:viewportWidth="16" android:viewportHeight="16">
-    <path android:pathData="M8 2.665c2.933 0 5.333 2.4 5.333 5.334 0 2.933-2.4 5.333-5.333 5.333-2.933 0-5.333-2.4-5.333-5.333 0-2.934 2.4-5.334 5.333-5.334zm0-1.333c-3.667 0-6.667 3-6.667 6.667 0 3.666 3 6.666 6.667 6.666s6.667-3 6.667-6.666c0-3.667-3-6.667-6.667-6.667z" android:fillColor="#3A6E70"/>
-    <path android:pathData="M8 4.668v3.333h2.667" android:strokeLineJoin="round" android:strokeWidth="1.5" android:strokeColor="#3A6E70" android:strokeLineCap="round"/>
-</vector>

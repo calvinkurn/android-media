@@ -538,7 +538,7 @@ public interface ApplinkConst {
         String VOUCHER_LIST = "sellerapp://voucher-list";
         String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
         String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
-        String VOUCHER_PRODUCT_LIST = "sellerapp://voucher-product-list";
+
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
         String VOUCHER_PRODUCT_DETAIL = "sellerapp://voucher-product-detail";
         String CAMPAIGN_LIST = "sellerapp://campaign-list";

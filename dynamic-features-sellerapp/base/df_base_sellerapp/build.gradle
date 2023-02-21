@@ -114,7 +114,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
-    implementation projectOrAar(rootProject.ext.features.voucherCreation)
     implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerTokopediaFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerSearch)
