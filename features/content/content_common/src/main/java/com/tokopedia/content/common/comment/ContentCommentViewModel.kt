@@ -120,6 +120,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.LoadNextPage -> updateQuery(action.commentType)
             CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
+            else -> {}
         }
     }
 
@@ -131,7 +132,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                         .copy(isExpanded = !item.isExpanded) else item
                 }
                     .toMutableList().apply {
-                        removeIf { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
+                        removeAll { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
                     }
                 it.copy(list = newList)
             }

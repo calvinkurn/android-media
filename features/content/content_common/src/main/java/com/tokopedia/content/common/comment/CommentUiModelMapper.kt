@@ -54,10 +54,12 @@ class CommentUiModelMapper @Inject constructor() {
     private fun convertTime(date: String): String {
         val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
         val diff = DateUtil.getCurrentCalendar().time.time - convert.time
+        val minute = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS)
         val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
         val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
 
-        return if (hour < 1) {
+        return if (minute < 1) LESS_THAN_1MIN
+        else if (hour < 1) {
             LESS_THAN_1HOUR
         } else if (hour < 24) LESS_THAN_1DAY
         else if (day in 1..5) LESS_THAN_1DAY_5DAY
