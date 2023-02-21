@@ -69,6 +69,7 @@ object TokoChatConnection {
         if (courierConnection != null) {
             Log.d("TOKOCHAT-INIT", "Init convo repo")
             tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
+            Log.d("TOKOCHAT-INIT", "repo: ${tokoChatConfigComponent?.getTokoChatRepository()}")
         }
 
         // Set initialization status to success
