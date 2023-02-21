@@ -12,12 +12,10 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ShopTickerType
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
@@ -73,14 +71,10 @@ class NewShopPageFragmentHeaderViewHolder(
         chooseAddressWidget?.hide()
     }
 
-    fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
+    fun setupChooseAddressWidget(isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = true
-            val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
-                ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
-                true
-            )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
+            if (isRollOutUser && !isMyShop) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 chooseAddressWidgetBottomShadow?.show()
@@ -374,7 +368,8 @@ class NewShopPageFragmentHeaderViewHolder(
     }
 
     fun updateShopName(shopName: String) {
-        if (shopName.isNotEmpty())
+        if (shopName.isNotEmpty()) {
             shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
+        }
     }
 }
