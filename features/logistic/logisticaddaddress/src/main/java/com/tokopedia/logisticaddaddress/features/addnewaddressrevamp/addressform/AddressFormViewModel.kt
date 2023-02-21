@@ -64,7 +64,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun getAddressDetail(addressId: String) {
         viewModelScope.launch {
             try {
-                val addressDetail = repo.getAddressDetail(addressId, getSourceValue())
+                val addressDetail = repo.getAddressDetail(addressId, getSourceValue(), needToTrack = true)
                 _addressDetail.value = Success(addressDetail)
             } catch (e: Throwable) {
                 _addressDetail.value = Fail(e)
@@ -75,7 +75,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun getDefaultAddress(source: String) {
         viewModelScope.launch {
             try {
-                val defaultAddress = repo.getDefaultAddress(source)
+                val defaultAddress = repo.getDefaultAddress(source, needToTrack = true)
                 _defaultAddress.value = Success(defaultAddress.response.data)
             } catch (e: Throwable) {
                 _defaultAddress.value = Fail(e)
