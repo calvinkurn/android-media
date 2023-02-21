@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,53 +60,58 @@ fun NestTicker(
         color = style.backgroundColor,
         border = BorderStroke(1.dp, style.strokeColor)
     ) {
-        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
 
-            Column(
-                modifier = Modifier.weight(0.5f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = "Information Icon",
-                    tint = style.iconColor
-                )
-            }
+            Icon(
+                modifier = Modifier.size(19.dp),
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "Information Icon",
+                tint = style.iconColor
+            )
 
+            Spacer(modifier = Modifier.weight(0.1f))
 
             Column(
                 modifier = Modifier.weight(4f),
                 verticalArrangement = Arrangement.Center
             ) {
-                if (title.isNotEmpty()) {
+                if (title.isNotEmpty() && description.isNotEmpty()) {
                     NestTypography(
                         text = title.toString(),
                         textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
                     )
-                }
-
-                if (description.isNotEmpty()) {
                     NestTypography(
                         text = description.toString(),
                         textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
                     )
+                } else if (title.isNotEmpty() && description.isEmpty()) {
+                    NestTypography(
+                        text = title.toString(),
+                        textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
+                    )
+                } else if (title.isEmpty() && description.isNotEmpty()) {
+                    NestTypography(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = description.toString(),
+                        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
+                    )
+
                 }
+
             }
 
-            Column(
-                modifier = Modifier.weight(0.5f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Close,
-                    modifier = Modifier
-                        .size(19.dp)
-                        .clickable { onDismissed() },
-                    contentDescription = "Close Icon",
-                    tint = style.closeIconColor
-                )
-            }
+            Spacer(modifier = Modifier.weight(0.1f))
+
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                modifier = Modifier
+                    .weight(0.25f)
+                    .size(19.dp)
+                    .clickable { onDismissed() },
+                contentDescription = "Close Icon",
+                tint = style.closeIconColor
+            )
+
 
         }
     }
