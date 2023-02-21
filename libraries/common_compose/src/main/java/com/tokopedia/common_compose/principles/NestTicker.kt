@@ -71,34 +71,11 @@ fun NestTicker(
 
             Spacer(modifier = Modifier.weight(0.1f))
 
-            Column(
+            TickerTextContent(
                 modifier = Modifier.weight(4f),
-                verticalArrangement = Arrangement.Center
-            ) {
-                if (title.isNotEmpty() && description.isNotEmpty()) {
-                    NestTypography(
-                        text = title.toString(),
-                        textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
-                    )
-                    NestTypography(
-                        text = description.toString(),
-                        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
-                    )
-                } else if (title.isNotEmpty() && description.isEmpty()) {
-                    NestTypography(
-                        text = title.toString(),
-                        textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
-                    )
-                } else if (title.isEmpty() && description.isNotEmpty()) {
-                    NestTypography(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = description.toString(),
-                        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
-                    )
-
-                }
-
-            }
+                title = title.toString(),
+                description = description.toString()
+            )
 
             Spacer(modifier = Modifier.weight(0.1f))
 
@@ -117,6 +94,77 @@ fun NestTicker(
     }
 
 }
+
+@Composable
+private fun TickerTextContent(modifier: Modifier = Modifier, title: String, description: String) {
+    if (title.isNotEmpty() && description.isNotEmpty()) {
+        TitleWithDescription(
+            modifier = modifier,
+            title = title,
+            description = description
+        )
+    } else if (title.isNotEmpty() && description.isEmpty()) {
+        TitleOnly(modifier = modifier, title = title)
+    } else if (title.isEmpty() && description.isNotEmpty()) {
+        DescriptionOnly(
+            modifier = modifier,
+            description = description
+        )
+    }
+}
+
+@Composable
+private fun TitleWithDescription(
+    modifier: Modifier = Modifier,
+    title: String,
+    description: String
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        NestTypography(
+            text = title,
+            textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
+        )
+
+        NestTypography(
+            text = description,
+            textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
+        )
+
+    }
+}
+
+@Composable
+private fun TitleOnly(modifier: Modifier = Modifier, title: String) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center
+    ) {
+        NestTypography(
+            text = title,
+            textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
+        )
+    }
+}
+
+@Composable
+private fun DescriptionOnly(modifier: Modifier = Modifier, description: String) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center
+    ) {
+        NestTypography(
+            text = description,
+            textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
+        )
+    }
+
+}
+
+
 
 
 data class TickerColor(
