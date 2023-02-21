@@ -2,21 +2,12 @@ package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
-import android.view.MotionEvent
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.animation.PathInterpolatorCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.*
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
@@ -25,7 +16,6 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
@@ -35,11 +25,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.unifyprinciples.R as RUnify
 
 class BannerRevampViewHolder(
     itemView: View,
@@ -60,11 +46,6 @@ class BannerRevampViewHolder(
         get() = masterJob + Dispatchers.Main
 
     private var channelModel: ChannelModel? = null
-
-    // set to true if you want to activate auto-scroll
-    private var isAutoScroll = true
-    private var currentPagePosition = INITIAL_PAGE_POSITION
-    private var lastPagePosition = Integer.MAX_VALUE
 
     init {
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -94,7 +75,6 @@ class BannerRevampViewHolder(
                         }
 
                         override fun getCurrentPosition(position: Int) {
-
                         }
                     })
                     initBanner(banners)
@@ -114,7 +94,43 @@ class BannerRevampViewHolder(
                     bannerListener?.onChannelBannerImpressed(it, absoluteAdapterPosition)
                 }
             })
+            setScrollListener()
         }
+    }
+
+    private var isFromDrag = false
+    private fun setScrollListener() {
+        binding?.rvBannerRevamp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+//                binding?.bannerIndicator?.pauseAnimation()
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                when (newState) {
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        if (isFromDrag) {
+                            val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                            Log.d("dhabalog", "position $currentPagePosition")
+                            if (currentPagePosition != RecyclerView.NO_POSITION) {
+                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
+                                isFromDrag = false
+                            }
+                        }
+                    }
+                    RecyclerView.SCROLL_STATE_DRAGGING -> {
+                        isFromDrag = true
+//                        onPageDragStateChanged(true)
+//                        pauseAutoScroll()
+                    }
+                    RecyclerView.SCROLL_STATE_SETTLING -> {
+                        val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+//                        binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
+                    }
+                }
+            }
+        })
+        binding?.rvBannerRevamp?.computeHorizontalScrollOffset()
     }
 
     override fun bind(element: BannerRevampDataModel, payloads: MutableList<Any>) {
@@ -138,8 +154,6 @@ class BannerRevampViewHolder(
     }
 
     private fun initBanner(list: List<BannerItemModel>) {
-        binding?.rvBannerRevamp?.clearOnScrollListeners()
-
         if (list.size > 1) {
             val snapHelper: SnapHelper = CubicBezierSnapHelper(itemView.context)
             binding?.rvBannerRevamp?.let {
