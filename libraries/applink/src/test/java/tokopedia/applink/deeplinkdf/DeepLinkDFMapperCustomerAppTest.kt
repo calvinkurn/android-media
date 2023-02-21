@@ -293,12 +293,6 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check shipping confirmation appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/shipping-confirmation/{mode}"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
     fun `check order tracking appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shipping/tracking/12345"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)

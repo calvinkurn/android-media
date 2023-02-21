@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.helper
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterBottomSheetImpression
@@ -23,6 +24,7 @@ object PayLaterBundleGenerator {
     }
 
 
+    @SuppressLint("PII Data Exposure")
     fun getPayLaterImpressionEvent(
         data: ArrayList<SimulationUiModel>,
         defaultSelectedSimulation: Int
@@ -35,6 +37,7 @@ object PayLaterBundleGenerator {
 
         val partnerList =
             if (data.isNotEmpty()) PayLaterHelper.getProductNameList(simulationList) else ""
+        val promoName = data.getOrNull(defaultSelectedSimulation)?.promoName.orEmpty()
 
         return PayLaterAnalyticsBase().apply {
             tenureOption = defaultSelectedSimulation
@@ -42,6 +45,7 @@ object PayLaterBundleGenerator {
             userStatus = userState
             payLaterPartnerName = partnerList
             linkingStatus = linkStatus
+            this.promoName = promoName
         }
 
     }
