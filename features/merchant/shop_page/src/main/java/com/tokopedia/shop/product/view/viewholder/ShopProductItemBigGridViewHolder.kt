@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductBigGridBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -27,16 +28,27 @@ class ShopProductItemBigGridViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.item_shop_newproduct_big_grid
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
     private val viewBinding: ItemShopNewproductBigGridBinding? by viewBinding()
     private val productCard: ProductCardGridView? = viewBinding?.productCard
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
+        val stockBarLabel = shopProductUiModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
             shopProductUiModel = shopProductUiModel,
             isWideContent = true,
             isShowThreeDots = isShowTripleDot
+        ).copy(
+            stockBarLabelColor = stockBarLabelColor
         )
         productCard?.setProductModel(productCardModel)
         productCard?.setThreeDotsOnClickListener {

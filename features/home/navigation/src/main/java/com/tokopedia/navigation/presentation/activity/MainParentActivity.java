@@ -202,11 +202,13 @@ public class MainParentActivity extends BaseActivity implements
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
-    public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
-    private static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
     public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
     private static final String NOTIFICATION_USER_SETTING_KEY = "isUserSettingSent";
+
+    public static final String UOH_PAGE = "UohListFragment";
+
+    public static final String WISHLIST_COLLECTION_PAGE = "WishlistCollectionFragment";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -783,23 +785,13 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
 
-        if (useWishlistCollectionRollence() && useRemoteConfigWishlistCollection()) {
-            Bundle bundleWishlistCollection = getIntent().getExtras();
-            if (bundleWishlistCollection == null) {
-                bundleWishlistCollection = new Bundle();
-            }
-            bundleWishlistCollection.putString(PARAM_ACTIVITY_WISHLIST_COLLECTION, PARAM_HOME);
-            bundleWishlistCollection.putString("WishlistCollectionFragment", MainParentActivity.class.getSimpleName());
-            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, bundleWishlistCollection));
-        } else {
-            Bundle bundleWishlist = getIntent().getExtras();
-            if (bundleWishlist == null) {
-                bundleWishlist = new Bundle();
-            }
-            bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
-            bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
-            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
+        Bundle bundleWishlistCollection = getIntent().getExtras();
+        if (bundleWishlistCollection == null) {
+            bundleWishlistCollection = new Bundle();
         }
+        bundleWishlistCollection.putString(PARAM_ACTIVITY_WISHLIST_COLLECTION, PARAM_HOME);
+        bundleWishlistCollection.putString(WISHLIST_COLLECTION_PAGE, MainParentActivity.class.getSimpleName());
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, bundleWishlistCollection));
 
         Bundle bundleUoh = getIntent().getExtras();
         if (bundleUoh == null) {
@@ -807,31 +799,10 @@ public class MainParentActivity extends BaseActivity implements
         }
         bundleUoh.putString(UOH_SOURCE_FILTER_KEY, "");
         bundleUoh.putString(PARAM_ACTIVITY_ORDER_HISTORY, PARAM_HOME);
-        bundleUoh.putString("UohListFragment", MainParentActivity.class.getSimpleName());
+        bundleUoh.putString(UOH_PAGE, MainParentActivity.class.getSimpleName());
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
 
         return fragmentList;
-    }
-
-    private boolean useWishlistCollectionRollence() {
-        boolean isWishlistCollection;
-        try {
-            isWishlistCollection = getAbTestPlatform().getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.EXPERIMENT_VARIANT).equals(RollenceKey.EXPERIMENT_VARIANT);
-        } catch (Exception e) {
-            isWishlistCollection = true;
-        }
-        return isWishlistCollection;
-    }
-
-    private boolean useRemoteConfigWishlistCollection() {
-        return remoteConfig.get().getBoolean(ENABLE_WISHLIST_COLLECTION);
-    }
-
-    private AbTestPlatform getAbTestPlatform() {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = new RemoteConfigInstance(getApplication());
-        }
-        return remoteConfigInstance.getABTestPlatform();
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

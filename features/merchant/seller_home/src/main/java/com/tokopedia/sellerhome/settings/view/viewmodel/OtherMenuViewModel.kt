@@ -237,6 +237,7 @@ class OtherMenuViewModel @Inject constructor(
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
         getIsShowTagCentralizePromo()
+        getShopPeriodType()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {

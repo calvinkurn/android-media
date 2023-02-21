@@ -30,6 +30,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUST
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_SHOW_OLD_FLOW
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
@@ -37,6 +39,7 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.RewardPendingInfoBottomSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.CardUnify
@@ -71,14 +74,20 @@ class TopAdsCreditHistoryFragment :
     internal var startDate: Date? = null
     internal var endDate: Date? = null
     private var datePickerIndex = DATE_PICKER_DEFAULT_INDEX
+    private var isAutoTopUpActive: Boolean = false
+    private var isAutoTopUpSelected: Boolean = false
+    private var creditPerformance: String = ""
+    private var topUpUCount: Int = 0
+    private var autoTopUpBonus: Double = 0.0
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 1
         private const val PARAM_IS_FROM_SELECTION = "is_from_selection"
-        fun createInstance(isFromSelection: Boolean = false, datePickerIndex: Int) =
+        fun createInstance(isFromSelection: Boolean = false, showAutoTopUpOldFlow: Boolean = true, datePickerIndex: Int) =
             TopAdsCreditHistoryFragment().apply {
                 arguments = Bundle().also {
                     it.putBoolean(PARAM_IS_FROM_SELECTION, isFromSelection)
+                    it.putBoolean(IS_SHOW_OLD_FLOW, showAutoTopUpOldFlow)
                     it.putInt(PARAM_DATE_PICKER_INDEX, datePickerIndex)
                 }
             }
@@ -107,23 +116,23 @@ class TopAdsCreditHistoryFragment :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.creditsHistory.observe(viewLifecycleOwner, {
+        viewModel.creditsHistory.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetCredit(it.data)
                 is Fail -> onErrorGetCredit(it.throwable)
             }
-        })
-        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner, {
+        }
+        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner){
             when (it) {
                 is Success -> onSuccessGetAutoTopUpStatus(it.data)
                 is Fail -> {
                 }
             }
-        })
+        }
 
-        viewModel.creditAmount.observe(viewLifecycleOwner, {
+        viewModel.creditAmount.observe(viewLifecycleOwner) {
             creditAmount?.text = it
-        })
+        }
 
         viewModel.expiryDateHiddenTrial.observe(viewLifecycleOwner) {
             val rewardValue = it.toIntOrZero()
@@ -134,8 +143,15 @@ class TopAdsCreditHistoryFragment :
                 } else {
                     View.GONE
                 }
+        }
 
-
+        viewModel.getAutoTopUpDefaultSate.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                isAutoTopUpActive = it.data.isAutoTopUp
+                isAutoTopUpSelected = it.data.isAutoTopUpSelected
+                creditPerformance = it.data.creditPerformance
+                topUpUCount = it.data.countTopUp
+            }
         }
     }
 
@@ -151,6 +167,8 @@ class TopAdsCreditHistoryFragment :
                 }
             ))
         }
+        autoTopUpBonus = data.statusBonus
+        isAutoTopUpActive = data.status == ACTIVE_STATUS
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -200,6 +218,7 @@ class TopAdsCreditHistoryFragment :
         viewModel.getShopDeposit()
         viewModel.getAutoTopUpStatus()
         viewModel.loadPendingReward()
+        viewModel.getSelectedTopUpType()
     }
 
     private fun initView() {
@@ -220,16 +239,36 @@ class TopAdsCreditHistoryFragment :
         }
         addCredit?.setOnClickListener {
             TopadsTopupTracker.clickTambahKreditHistoryPage()
-            startActivityForResult(
-                Intent(context, TopAdsAddCreditActivity::class.java),
-                REQUEST_CODE_ADD_CREDIT
-            )
+            chooseFlow()
         }
         hariIni?.setOnClickListener {
             showBottomSheet()
         }
         view?.findViewById<ImageUnify>(R.id.iconPendingRewardInfo)?.setOnClickListener {
             RewardPendingInfoBottomSheet().show(childFragmentManager, "")
+        }
+    }
+
+    private fun chooseFlow() {
+        if (isShowAutoTopUpOldFlow()) {
+            startActivityForResult(
+                Intent(context, TopAdsAddCreditActivity::class.java),
+                REQUEST_CODE_ADD_CREDIT
+            )
+        } else {
+            startActivityForResult(
+                Intent(context, TopAdsCreditTopUpActivity::class.java).also {
+                    it.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, isAutoTopUpActive)
+                    it.putExtra(
+                        TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED,
+                        isAutoTopUpSelected
+                    )
+                    it.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, creditPerformance)
+                    it.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, topUpUCount)
+                    it.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, autoTopUpBonus)
+                },
+                REQUEST_CODE_TOP_UP_CREDIT
+            )
         }
     }
 
@@ -325,7 +364,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_ADD_CREDIT && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_ADD_CREDIT || requestCode == REQUEST_CODE_TOP_UP_CREDIT && resultCode == Activity.RESULT_OK) {
             viewModel.getShopDeposit()
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
             sendResultIntentOk()
@@ -375,5 +414,9 @@ class TopAdsCreditHistoryFragment :
         }
         setDateRangeText(TopAdsDashboardConstant.CUSTOM_DATE)
         loadData(0)
+    }
+
+    private fun isShowAutoTopUpOldFlow(): Boolean {
+        return arguments?.getBoolean(IS_SHOW_OLD_FLOW, true) ?: true
     }
 }

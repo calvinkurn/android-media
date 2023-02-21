@@ -21,6 +21,7 @@ object ApplinkConstInternalTopAds {
 
     //credit
     const val TOPADS_BUY_CREDIT = "${INTERNAL_TOPADS}/buy"
+    const val TOP_ADS_ADD_CREDIT = "${INTERNAL_TOPADS}/add-credit"
 
     const val TOPADS_HISTORY_CREDIT = "${INTERNAL_TOPADS}/history-credit"
 

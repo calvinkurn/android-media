@@ -25,6 +25,7 @@ class CheckCookieUseCase @Inject constructor(
                 CheckAffiliateCookieRequest.PageDetail(
                     param.affiliatePageDetail.pageId,
                     param.affiliatePageDetail.source.getType(),
+                    param.affiliatePageDetail.pageName,
                     param.affiliatePageDetail.siteId,
                     param.affiliatePageDetail.verticalId,
                     param.affiliateUUID
@@ -34,14 +35,14 @@ class CheckCookieUseCase @Inject constructor(
         )
     }
 
-   internal suspend fun checkAffiliateCookie(
-       param: AffiliateCookieParams,
-       deviceId: String
-   ): CheckAffiliateCookieResponse {
+    internal suspend fun checkAffiliateCookie(
+        param: AffiliateCookieParams,
+        deviceId: String
+    ): CheckAffiliateCookieResponse {
         return commonAffiliateRepository.getGQLData(
             GQL_Check_Cookie,
             CheckAffiliateCookieResponse::class.java,
-            createRequestParam(param,deviceId)
+            createRequestParam(param, deviceId)
         )
     }
 }

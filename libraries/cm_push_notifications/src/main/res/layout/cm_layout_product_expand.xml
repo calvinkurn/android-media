@@ -11,13 +11,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="64dp">
 
         <LinearLayout
             android:id="@+id/ll_expandedProductView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:baselineAligned="false"
             android:weightSum="10">
@@ -35,14 +35,14 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
                     android:contentDescription="@null"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitStart" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/ll_content"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_weight="5">
 
@@ -167,7 +167,7 @@
                     android:layout_height="32dp"
                     android:layout_marginTop="8dp"
                     android:paddingBottom="2dp"
-                    android:layout_alignParentBottom="true">
+                    android:layout_below="@id/widget_review">
 
                     <Button
                         android:id="@+id/btn_icon"
@@ -181,9 +181,9 @@
                         android:id="@+id/btn_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/btn_icon"
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
-                        android:layout_toEndOf="@+id/btn_icon"
                         android:textColor="@color/Unify_Static_White"
                         android:textSize="14sp"
                         android:textStyle="bold"
