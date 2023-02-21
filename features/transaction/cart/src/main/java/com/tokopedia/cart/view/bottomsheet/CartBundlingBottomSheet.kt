@@ -69,6 +69,9 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderContent(data: CartBundlingBottomSheetData) {
+        if (data.bundleIds.isEmpty()) {
+            dismiss()
+        }
         setTitle(data.title)
         context?.let {
             binding?.descriptionLabel?.text = HtmlLinkHelper(it, data.description).spannedString
