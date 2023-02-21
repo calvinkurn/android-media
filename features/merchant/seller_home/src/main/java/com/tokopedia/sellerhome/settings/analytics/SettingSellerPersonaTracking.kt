@@ -18,7 +18,6 @@ object SettingSellerPersonaTracking {
     private const val CLICK_PG = "clickPG"
 
     fun sendSettingsClickSellerPersonaEvent() {
-        println("Tracker : sendSettingsClickSellerPersonaEvent")
         Tracker.Builder()
             .setEvent(CLICK_PG)
             .setEventAction(SETTINGS_CLICK_SELLER_PERSONA)
