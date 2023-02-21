@@ -20,15 +20,13 @@ import dagger.Component
     ),
     dependencies = arrayOf(BaseAppComponent::class)
 )
-interface
-ChatbotComponent {
+interface ChatbotComponent {
 
     fun inject(chatbotFragment: ChatbotFragment)
 
     fun inject(contactUsMigrationActivity: ContactUsMigrationActivity)
 
-    fun inject(chatbotProvideRatingFragment : ChatBotProvideRatingFragment)
+    fun inject(chatbotProvideRatingFragment: ChatBotProvideRatingFragment)
 
     fun inject(chatbotOnboardingActivity: ChatbotOnboardingActivity)
-
 }
