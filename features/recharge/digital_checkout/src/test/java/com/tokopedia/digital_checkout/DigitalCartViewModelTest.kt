@@ -13,6 +13,7 @@ import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRI
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.request.DigitalCrossSellData
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
@@ -873,15 +874,21 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
             crossSellProducts = hashMapOf(
-                "First" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = "dummy icon url"
-                    )
+                "First" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = "dummy icon url"
+                        )
+                    ),
+                    isSubscription = false
                 ),
-                "Second" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = ""
-                    )
+                "Second" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = ""
+                        )
+                    ),
+                    isSubscription = false
                 )
             )
         )
@@ -974,15 +981,21 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = true,
             crossSellProducts = hashMapOf(
-                "First" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = "dummy icon url"
-                    )
+                "First" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = "dummy icon url"
+                        )
+                    ),
+                    isSubscription = false
                 ),
-                "Second" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = ""
-                    )
+                "Second" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = ""
+                        )
+                    ),
+                    isSubscription = false
                 )
             )
         )
@@ -1004,15 +1017,21 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
             crossSellProducts = hashMapOf(
-                "First" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = "dummy icon url"
-                    )
+                "First" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = "dummy icon url"
+                        )
+                    ),
+                    isSubscription = false
                 ),
-                "Second" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = ""
-                    )
+                "Second" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = ""
+                        )
+                    ),
+                    isSubscription = false
                 )
             )
         )
@@ -1035,15 +1054,21 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
             crossSellProducts = hashMapOf(
-                "First" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = "dummy icon url"
-                    )
+                "First" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = "dummy icon url"
+                        )
+                    ),
+                    isSubscription = false
                 ),
-                "Second" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = ""
-                    )
+                "Second" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = ""
+                        )
+                    ),
+                    isSubscription = false
                 )
             )
         )
@@ -1069,15 +1094,21 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
             crossSellProducts = hashMapOf(
-                "First" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = "dummy icon url"
-                    )
+                "First" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = "dummy icon url"
+                        )
+                    ),
+                    isSubscription = false
                 ),
-                "Second" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = ""
-                    )
+                "Second" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = ""
+                        )
+                    ),
+                    isSubscription = false
                 )
             )
         )
@@ -1105,15 +1136,21 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
             crossSellProducts = hashMapOf(
-                "First" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = "dummy icon url"
-                    )
+                "First" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = "dummy icon url"
+                        )
+                    ),
+                    isSubscription = false
                 ),
-                "Second" to FintechProduct(
-                    info = FintechProduct.FintechProductInfo(
-                        iconUrl = ""
-                    )
+                "Second" to DigitalCrossSellData(
+                    product = FintechProduct(
+                        info = FintechProduct.FintechProductInfo(
+                            iconUrl = ""
+                        )
+                    ),
+                    isSubscription = false
                 )
             )
         )
@@ -1342,10 +1379,10 @@ class DigitalCartViewModelTest {
 
         // then
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
                 ?: 0.0
         val fintechName =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.transactionType
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.transactionType
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
             it.title == fintechName
         }
@@ -1405,7 +1442,7 @@ class DigitalCartViewModelTest {
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
             ?: 0.0
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
                 ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
@@ -1439,7 +1476,7 @@ class DigitalCartViewModelTest {
         // then
         // if fintech product checked, update total price
         val fintechPrice =
-            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.fintechAmount
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
                 ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == userInputPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
@@ -1453,7 +1490,7 @@ class DigitalCartViewModelTest {
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         digitalCartViewModel.onFintechProductChecked(fintechProduct, false, userInputPrice)
-        digitalCartViewModel.onSubscriptionChecked(true)
+        digitalCartViewModel.onSubscriptionChecked(fintechProduct, true)
 
         // then
         // if fintech product checked, update total price
@@ -1639,5 +1676,43 @@ class DigitalCartViewModelTest {
         assert(promoDigitalModel.categoryName == "Angsuran Kredit")
         assert(promoDigitalModel.operatorName == "JTrust Olympindo Multi Finance")
         assert(promoDigitalModel.price == 12500L)
+    }
+
+    @Test
+    fun updateSubscriptionMetadata_shouldUpdateSubscriptionProductMetadata() {
+        // given
+        val fintechProduct = FintechProduct(tierId = "tokopedia")
+        val additionalMetadata = "{\"tokopedia\":\"langganan\"}"
+        digitalCartViewModel.onSubscriptionChecked(fintechProduct, true)
+
+        // when
+        digitalCartViewModel.updateSubscriptionMetadata(additionalMetadata)
+
+        // then
+        val subscriptionProduct = digitalCartViewModel.requestCheckoutParam.crossSellProducts.values.firstOrNull {
+            it.isSubscription
+        }
+        assert(subscriptionProduct?.product?.tierId == "tokopedia")
+        assert(subscriptionProduct?.additionalMetadata == additionalMetadata)
+    }
+
+    @Test
+    fun updateSubscriptionMetadata_whenNoSubscriptionChecked_shouldNotUpdateAnyProductMetadata() {
+        // given
+        val fintechProduct = FintechProduct(tierId = "tokopedia")
+        val fintechProduct2 = FintechProduct(tierId = "tokopedia2")
+        val additionalMetadata = "{\"tokopedia\":\"langganan\"}"
+
+        digitalCartViewModel.onFintechProductChecked(fintechProduct, true, 0.0)
+        digitalCartViewModel.onFintechProductChecked(fintechProduct2, true, 0.0)
+
+        // when
+        digitalCartViewModel.updateSubscriptionMetadata(additionalMetadata)
+
+        // then
+        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.size == 2)
+        digitalCartViewModel.requestCheckoutParam.crossSellProducts.values.forEach {
+            assert(it.additionalMetadata == "")
+        }
     }
 }
