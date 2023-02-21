@@ -1,14 +1,11 @@
 package com.tokopedia.login_helper.presentation
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.widget.Toast
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.login_helper.R
+import com.tokopedia.login_helper.presentation.fragment.LoginHelperFragment
 
-class LoginHelperActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(com.tokopedia.login_helper.R.layout.activity_login_helper)
-        Toast.makeText(this,"TATAKAE", Toast.LENGTH_LONG).show()
-    }
+class LoginHelperActivity: BaseSimpleActivity() {
+    override fun getNewFragment() = LoginHelperFragment.newInstance()
+    override fun getLayoutRes() = R.layout.activity_login_helper
+    override fun getParentViewResourceID() = R.id.container
 }
