@@ -22,6 +22,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWi
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.utils.resources.isDarkMode
 
 class AttachedInvoiceViewHolder(
         itemView: View,
@@ -40,24 +41,24 @@ class AttachedInvoiceViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+            ViewUtil.getShadowColorViewHolder(itemView.context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+            ViewUtil.getShadowColorViewHolder(itemView.context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,

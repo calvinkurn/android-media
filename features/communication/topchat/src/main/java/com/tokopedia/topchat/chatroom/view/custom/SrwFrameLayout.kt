@@ -146,7 +146,7 @@ class SrwFrameLayout : FrameLayout {
     private fun initBackground() {
         bgExpanded = ViewUtil.generateBackgroundWithShadow(
             this,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             topLeftRadius = getTopLeftRadius(),
             topRightRadius = getTopRightRadius(),
             bottomLeftRadius = R.dimen.dp_topchat_20,
@@ -187,7 +187,7 @@ class SrwFrameLayout : FrameLayout {
 
     private fun getStrokeColor(): Int {
         return if (isSrwBubble) {
-            com.tokopedia.unifyprinciples.R.color.Unify_Background
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0
         } else {
             com.tokopedia.unifyprinciples.R.color.Unify_NN50
         }

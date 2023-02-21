@@ -73,12 +73,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
           this,
-          com.tokopedia.unifyprinciples.R.color.Unify_Background,
+          com.tokopedia.unifyprinciples.R.color.Unify_NN0,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
           com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+          ViewUtil.getShadowColorViewHolder(context),
           R.dimen.dp_topchat_2,
           R.dimen.dp_topchat_1,
           Gravity.CENTER
@@ -241,12 +241,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
             bgSender = ViewUtil.generateBackgroundWithShadow(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+                ViewUtil.getShadowColorViewHolder(context),
                 R.dimen.dp_topchat_2,
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER,
