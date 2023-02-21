@@ -39,6 +39,9 @@
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
     <string name="product_manage_ticker_description_format" tools:ignore="UnusedResources"><![CDATA[%s <a href="\"%s\"" target="_blank">%s</a>]]></string>
 
+    <string name="product_manage_shop_moderated_ticker_title" tools:ignore="UnusedResources">Pengaturan produk belum bisa dilakukan</string>
+    <string name="product_manage_shop_moderated_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan sementara. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
+    <string name="product_manage_shop_moderated_permanent_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan permanen. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
     <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
     <string name="product_manage_campaign_count">%d Promosi</string>

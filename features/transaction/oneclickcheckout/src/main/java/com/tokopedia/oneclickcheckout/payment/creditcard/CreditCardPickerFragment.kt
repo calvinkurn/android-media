@@ -17,10 +17,10 @@ import android.webkit.WebViewClient
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.oneclickcheckout.common.utils.generateAppVersionForPayment
 import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentMethodBinding
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -87,7 +87,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                 "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
                 "signature=${getUrlEncoded(additionalData.signature)}&" +
                 "callback_url=${getUrlEncoded(additionalData.callbackUrl)}&" +
-                "version=${getUrlEncoded("android-${GlobalConfig.VERSION_NAME}")}"
+                "version=${getUrlEncoded(generateAppVersionForPayment())}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {

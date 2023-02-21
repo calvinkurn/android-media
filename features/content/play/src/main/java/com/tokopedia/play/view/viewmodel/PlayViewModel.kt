@@ -182,8 +182,8 @@ class PlayViewModel @AssistedInject constructor(
     private val _userReportItems = MutableStateFlow(PlayUserReportUiModel.Empty)
     val userReportItems: StateFlow<PlayUserReportUiModel.Loaded> = _userReportItems
 
-    private val _userReportSubmission = MutableStateFlow<ResultState>(ResultState.Loading)
-    val userReportSubmission: StateFlow<ResultState> = _userReportSubmission
+    private val _userReportSubmission = MutableStateFlow(PlayUserSubmissionUiModel.Empty)
+    val userReportSubmission: StateFlow<PlayUserSubmissionUiModel> = _userReportSubmission
 
     /**
      * Data State
@@ -1097,6 +1097,7 @@ class PlayViewModel @AssistedInject constructor(
                 _isBottomSheetsShown.update { false }
             }
             EmptyPageWidget -> handleEmptyExplore()
+            is SelectReason -> handleSelectedReason(action.reasonId)
         }
     }
 
@@ -2725,7 +2726,7 @@ class PlayViewModel @AssistedInject constructor(
         reportDesc: String
     ) {
         viewModelScope.launchCatchError(block = {
-            _userReportSubmission.value = ResultState.Loading
+            _userReportSubmission.update { it.copy(state = ResultState.Loading) }
             val isSuccess = repo.submitReport(
                 channelId = channelId.toLongOrZero(),
                 partnerId = partnerId.orZero(),
@@ -2736,12 +2737,12 @@ class PlayViewModel @AssistedInject constructor(
                 mediaUrl = mediaUrl
             )
             if (isSuccess) {
-                _userReportSubmission.value = ResultState.Success
+                _userReportSubmission.update { it.copy(state = ResultState.Success) }
             } else {
                 throw Exception()
             }
         }) { err ->
-            _userReportSubmission.value = ResultState.Fail(err)
+            _userReportSubmission.update { it.copy(state = ResultState.Fail(err)) }
         }
     }
 
@@ -2969,6 +2970,13 @@ class PlayViewModel @AssistedInject constructor(
         val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
         val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)
         handleClickChip(_exploreWidget.value.chips.items[finalPosition])
+    }
+
+    private fun handleSelectedReason(id: Int) {
+        val selected = _userReportItems.value.reasoningList.filterIsInstance<PlayUserReportReasoningUiModel.Reasoning>().find {  it.reasoningId == id }
+        _userReportSubmission.update {
+            it.copy(selectedReasoning = selected)
+        }
     }
 
     private fun cancelJob(identifier: String) {

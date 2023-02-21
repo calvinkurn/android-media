@@ -7,7 +7,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewItemDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewResponseDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ShopDataDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.VideoAttachmentDomain
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
@@ -66,19 +65,23 @@ open class GetInboxReputationDetailSubscriber constructor(
     }
 
     private fun convertToInboxReputationDetailItemViewModel(
-        reviewDomain: ReviewDomain, itemDomain: ReviewItemDomain
+        reviewDomain: ReviewDomain,
+        itemDomain: ReviewItemDomain
     ): Visitable<*> {
-        val reviewMediaThumbnail = convertToReviewMediaThumbnail(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments, itemDomain.reviewId)
+        val reviewMediaThumbnail = convertToReviewMediaThumbnail(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments, itemDomain.feedbackID)
         return InboxReputationDetailItemUiModel(
             reviewDomain.reputationId,
             itemDomain.productData.productId,
             itemDomain.productData.productName,
             itemDomain.productData.productImageUrl,
             itemDomain.productData.productImageUrl,
-            itemDomain.reviewData.reviewId,
+            itemDomain.reviewData.feedbackID,
             reviewDomain.userData.fullName,
-            if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1)) itemDomain.reviewData
-                .reviewCreateTime.dateTimeFmt1 else itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1,
+            if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime)) {
+                itemDomain.reviewData.reviewCreateTime
+            } else {
+                itemDomain.reviewData.reviewUpdateTime
+            },
             reviewMediaThumbnail,
             convertToPreloadedDetailedReviewMedia(reviewMediaThumbnail),
             itemDomain.reviewData.reviewMessage,
@@ -90,14 +93,12 @@ open class GetInboxReputationDetailSubscriber constructor(
             viewListener.tab,
             convertToReviewResponseViewModel(
                 reviewDomain.shopData,
-                itemDomain.reviewData.reviewResponse
+                itemDomain.reviewData.responseMessage,
+                itemDomain.reviewData.responseTime
             ),
             itemDomain.reviewData.isReviewAnonymity,
             itemDomain.productData.productStatus == PRODUCT_IS_DELETED,
-            !TextUtils.isEmpty(
-                itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1
-            ),
-            reviewDomain.shopData.shopName,
+            !TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime),
             reviewDomain.userData.userId,
             itemDomain.productData.productStatus == PRODUCT_IS_BANNED,
             itemDomain.productData.productStatus,
@@ -107,11 +108,12 @@ open class GetInboxReputationDetailSubscriber constructor(
 
     private fun convertToReviewResponseViewModel(
         shopData: ShopDataDomain,
-        reviewResponse: ReviewResponseDomain
+        responseMessage: String,
+        responseTime: String
     ): ReviewResponseUiModel {
         return ReviewResponseUiModel(
-            reviewResponse.responseMessage,
-            reviewResponse.responseCreateTime.dateTimeFmt1,
+            responseMessage,
+            responseTime,
             shopData.shopName
         )
     }

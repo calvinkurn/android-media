@@ -392,7 +392,9 @@ class FeedPlusContainerFragment :
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         coachMarkManager?.dismissAllCoachMark()
         coachMarkManager = null
-        onboardingCoachmark.dismiss()
+        if (::onboardingCoachmark.isInitialized) {
+            onboardingCoachmark.dismiss()
+        }
         super.onDestroy()
     }
 
@@ -446,7 +448,9 @@ class FeedPlusContainerFragment :
             isOnboardingCoachmarkAlreadyShown = false
             hideAllFab()
             coachMarkManager?.dismissAllCoachMark()
-            onboardingCoachmark.dismiss()
+            if (::onboardingCoachmark.isInitialized) {
+                onboardingCoachmark.dismiss()
+            }
         }
         if (isVisibleToUser && !isOnboardingCoachmarkAlreadyShown) {
             showOnboardingStepsCoachmark(
@@ -921,12 +925,14 @@ class FeedPlusContainerFragment :
         )
 
         isOnboardingCoachmarkAlreadyShown = true
-        onboardingCoachmark.showFeedOnboardingCoachmark(
-            anchorMap,
-            this,
-            shouldShowShortVideoCoachmark,
-            shouldShowUserProfileCoachmark
-        )
+        if (::onboardingCoachmark.isInitialized) {
+            onboardingCoachmark.showFeedOnboardingCoachmark(
+                anchorMap,
+                this,
+                shouldShowShortVideoCoachmark,
+                shouldShowUserProfileCoachmark
+            )
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
