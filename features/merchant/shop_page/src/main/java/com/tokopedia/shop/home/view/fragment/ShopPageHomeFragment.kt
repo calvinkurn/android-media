@@ -3072,14 +3072,16 @@ open class ShopPageHomeFragment :
     }
 
     override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
-        shopPageHomeTracking.clickCta(
-            ShopPageHomeTrackingMapper.mapToShopHomeCarouselProductWidgetClickCtaTrackerModel(
-                shopId,
-                userId,
-                shopHomeCarouselProductUiModel?.widgetMasterId.orEmpty(),
-                shopHomeCarouselProductUiModel?.isFestivity.orFalse()
+        if(!isOwner) {
+            shopPageHomeTracking.clickCta(
+                ShopPageHomeTrackingMapper.mapToShopHomeCarouselProductWidgetClickCtaTrackerModel(
+                    shopId,
+                    userId,
+                    shopHomeCarouselProductUiModel?.widgetMasterId.orEmpty(),
+                    shopHomeCarouselProductUiModel?.isFestivity.orFalse()
+                )
             )
-        )
+        }
 
         context?.let {
             RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
