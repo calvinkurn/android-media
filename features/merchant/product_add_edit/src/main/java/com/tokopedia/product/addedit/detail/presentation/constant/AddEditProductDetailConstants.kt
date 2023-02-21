@@ -35,7 +35,6 @@ class AddEditProductDetailConstants {
         const val MAX_PREORDER_DAYS = 90
         const val MAX_PREORDER_WEEKS = 13
         const val MAX_SPECIFICATION_COUNTER = 5
-        const val EXTRA_RESULT_STATUS = "extra_result_status"
 
         // request key for set fragment result
         const val REQUEST_KEY_ADD_MODE = "request_key_add_mode"

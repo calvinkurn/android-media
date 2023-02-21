@@ -7,7 +7,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProductCategoryAdapter
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
@@ -15,12 +18,12 @@ import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class AddEditProductCategoryViewHolder(
-        itemView: View,
-        private val listener: CategoryItemViewHolderListener,
-        private val categories: List<CategoryUiModel>?,
-        private val categoryAdapter: AddEditProductCategoryAdapter,
-        private val resultCategories: MutableList<CategoryUiModel>
-): RecyclerView.ViewHolder(itemView) {
+    itemView: View,
+    private val listener: CategoryItemViewHolderListener,
+    private val categories: List<CategoryUiModel>?,
+    private val categoryAdapter: AddEditProductCategoryAdapter,
+    private val resultCategories: MutableList<CategoryUiModel>
+) : RecyclerView.ViewHolder(itemView) {
 
     private var itemCategory: LinearLayout? = itemView.findViewById(R.id.itemCategory)
     private var tvCategoryNameParent: Typography? = itemView.findViewById(R.id.tvCategoryNameParent)
@@ -84,8 +87,12 @@ class AddEditProductCategoryViewHolder(
     private fun checkCategorySelected(category: CategoryUiModel) {
         itemView.run {
             if (!category.isSelected) {
-                tvCategoryNameParent?.setTextColor(ContextCompat.getColor(context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                tvCategoryNameParent?.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700
+                    )
+                )
                 rvLevelCategory?.hide()
                 spacingLevelCategory?.hide()
                 ivCategoryParent?.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_down)
@@ -120,12 +127,12 @@ class AddEditProductCategoryViewHolder(
     private fun setIndentation(level: Int) {
         val resources = itemView.context?.resources ?: return
         val marginStart = level *
-                resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.dp_16) +
-                LEADING_MARGIN_START
+            resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.dp_16) +
+            LEADING_MARGIN_START
         val params = LinearLayout.LayoutParams(
-                Int.ZERO,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                WEIGHT_ITEM_VIEW
+            Int.ZERO,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            WEIGHT_ITEM_VIEW
         )
 
         params.marginStart = marginStart.toInt()

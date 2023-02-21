@@ -4,8 +4,6 @@ import android.content.Context
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
-import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClickWithoutScreen
-import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductImpression
 
 object ProductAddShippingTracking {
     const val SCREEN = "/addproductpage - shipping"
@@ -20,28 +18,15 @@ object ProductAddShippingTracking {
         sendAddProductClick(SCREEN, shopId, "click back on shipping detail page")
     }
 
-    fun clickCancelChangeWeight(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click cancel change weight")
-    }
-
-    fun uploadImageFailed(userId: String, errorName: String) {
-        sendAddProductImpression(userId, "impression add product error", "validation error - (Upload Image) $errorName")
-    }
-
-    fun redirectToShopPage(context: Context, shopId: String) {
-        sendAddProductIris(context, shopId, "impression add product - shop page")
-    }
-
-    fun redirectToDraftPage(context: Context, shopId: String) {
-        sendAddProductIris(context, shopId, "impression add product - product draft page")
-    }
-
     private fun sendAddProductIris(context: Context, shopId: String, action: String, label: String = "") {
         IrisAnalytics.getInstance(context).saveEvent(
-            createEventMap(EVENT_ADD_PRODUCT_IRIS,
+            createEventMap(
+                EVENT_ADD_PRODUCT_IRIS,
                 CAT_SHOP_PAGE_SELLER,
                 action,
-                "", mapOf(KEY_SHOP_ID to shopId)))
+                "",
+                mapOf(KEY_SHOP_ID to shopId)
+            )
+        )
     }
-
 }

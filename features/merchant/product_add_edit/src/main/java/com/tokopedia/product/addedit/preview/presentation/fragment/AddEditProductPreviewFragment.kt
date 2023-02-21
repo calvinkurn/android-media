@@ -37,7 +37,16 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
@@ -58,9 +67,20 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
-import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.common.util.NavigationController
+import com.tokopedia.product.addedit.common.util.Rollence
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.animateCollapse
+import com.tokopedia.product.addedit.common.util.animateExpand
+import com.tokopedia.product.addedit.common.util.getNavigationResult
+import com.tokopedia.product.addedit.common.util.hideCoachmarkWhenTouchOutside
+import com.tokopedia.product.addedit.common.util.removeNavigationResult
+import com.tokopedia.product.addedit.common.util.setDefaultMaxWidth
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
@@ -149,7 +169,6 @@ import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment :
     AddEditProductFragment(),
@@ -205,7 +224,6 @@ class AddEditProductPreviewFragment :
 
     // promotion
     private var editProductPromotionLayout: ViewGroup? = null
-    private var editProductPromotionButton: Typography? = null
 
     // product status
     private var editProductStatusLayout: ViewGroup? = null

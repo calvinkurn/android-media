@@ -10,7 +10,7 @@ import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipmentInfoBottomSheet: TabletAdaptiveBottomSheet() {
+class ShipmentInfoBottomSheet : TabletAdaptiveBottomSheet() {
 
     private var bottomSheetState: Int = 1
 
@@ -68,8 +68,5 @@ class ShipmentInfoBottomSheet: TabletAdaptiveBottomSheet() {
 
     companion object {
         val SHIPMENT_ON_DEMAND_STATE = 1
-        val SHIPMENT_CONVENTIONAL_STATE = 2
     }
-
 }
-
