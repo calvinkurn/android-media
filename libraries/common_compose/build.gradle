@@ -36,6 +36,7 @@ dependencies {
     api rootProject.ext.composeDependencies.composeUiTooling
     api rootProject.ext.composeDependencies.composePreview
     implementation rootProject.ext.composeDependencies.composeCoil
+    implementation rootProject.ext.unifyDependencies.icons
 
     // need androidx.core for androidx.core.view.*
     implementation rootProject.ext.supportLibDependencies.design
