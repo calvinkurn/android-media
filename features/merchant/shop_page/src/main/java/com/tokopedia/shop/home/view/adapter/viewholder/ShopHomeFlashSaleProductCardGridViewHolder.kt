@@ -10,6 +10,7 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
@@ -19,7 +20,8 @@ import com.tokopedia.unifycomponents.dpToPx
 
 class ShopHomeFlashSaleProductCardGridViewHolder(
     itemView: View,
-    private val listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener,
+    private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var uiModel: ShopHomeProductUiModel? = null
@@ -38,7 +40,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                 it,
                 object : ViewHintListener {
                     override fun onViewHint() {
-                        listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+                        listener.onFlashSaleProductImpression(it, fsUiModel, ShopUtil.getActualPositionFromIndex(adapterPosition))
                     }
                 }
             )
@@ -131,7 +133,8 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                     listener.onFlashSaleProductClicked(
                         model = productModel,
                         widgetModel = widgetModel,
-                        position = adapterPosition
+                        position = ShopUtil.getActualPositionFromIndex(adapterPosition),
+                        parentPosition = parentPosition
                     )
                 }
             }

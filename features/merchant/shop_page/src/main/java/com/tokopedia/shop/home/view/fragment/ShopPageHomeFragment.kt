@@ -3372,19 +3372,24 @@ open class ShopPageHomeFragment :
             shopHomeNewProductLaunchCampaignUiModel.isFestivity
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCampaignNplProduct(
-                isOwner,
-                it.statusCampaign,
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(parentPosition),
-                itemPosition,
-                isLogin,
-                customDimensionShopPage,
-                HOME_TAB
-            )
+            if(!isOwner){
+                shopPageHomeTracking.clickCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        itemPosition,
+                        shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+                        shopHomeNewProductLaunchCampaignUiModel.isFestivity,
+                        shopHomeProductViewModel?.id.orEmpty(),
+                        shopHomeProductViewModel?.name.orEmpty(),
+                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                    )
+                )
+            }
         }
         shopHomeProductViewModel?.let {
             goToPDP(it.productUrl)
@@ -3505,7 +3510,27 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int) {
+        widgetModel.data?.firstOrNull()?.let {
+            if(!isOwner){
+                shopPageHomeTracking.clickCampaignWidgetProduct(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        parentPosition,
+                        position,
+                        widgetModel.widgetMasterId,
+                        widgetModel.isFestivity,
+                        model.id,
+                        model.name,
+                        model.displayedPrice
+                    )
+                )
+            }
+        }
         goToPDP(model.productUrl)
     }
 

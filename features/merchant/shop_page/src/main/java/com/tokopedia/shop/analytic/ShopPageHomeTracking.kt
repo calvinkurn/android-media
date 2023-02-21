@@ -84,6 +84,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
@@ -178,6 +179,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
@@ -1412,7 +1414,7 @@ class ShopPageHomeTracking(
     private fun createCampaignWidgetPromotionItem(position: Int, campaignId: String, campaignName: String): Bundle {
         return Bundle().apply {
             putString(CREATIVE_NAME, "")
-            putString(CREATIVE_SLOT, (position + 1).toString())
+            putString(CREATIVE_SLOT, position.toString())
             putString(ITEM_ID, campaignId)
             putString(ITEM_NAME, campaignName)
         }
@@ -1734,50 +1736,68 @@ class ShopPageHomeTracking(
         )
     }
 
-    fun clickCampaignNplProduct(
-        isOwner: Boolean,
-        statusCampaign: String,
-        productName: String,
-        productId: String,
-        productPrice: String,
-        shopName: String,
-        verticalPosition: Int,
-        horizontalPosition: Int,
-        isLogin: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage,
-        tabSource: String
+    fun clickCampaignWidgetProduct(
+        trackerModel: ShopHomeCampaignWidgetProductTrackerModel
     ) {
-        val eventAction = joinDash(CLICK_PRODUCT, tabSource, getCampaignNplTrackerCampaignType(statusCampaign))
-        val eventMap = createMap(
-            PRODUCT_CLICK,
-            getShopPageCategory(isOwner),
-            eventAction,
-            productId,
-            customDimensionShopPage
-        )
-        val listEventValue = createCampaignNplProductListValue(
-            verticalPosition,
-            statusCampaign,
-            customDimensionShopPage.shopId.orEmpty(),
-            isLogin
-        )
-        eventMap[ECOMMERCE] = mutableMapOf(
-            CLICK to mutableMapOf(
-                ACTION_FIELD to mutableMapOf(LIST to listEventValue),
-                PRODUCTS to mutableListOf(
-                    createCampaignNplProductItemMap(
-                        productName,
-                        productId,
-                        productPrice,
-                        shopName,
-                        listEventValue,
-                        horizontalPosition,
-                        customDimensionShopPage
+        with(trackerModel) {
+            var eventLabel = joinDash(
+                shopId,
+                campaignId,
+                campaignName,
+                statusCampaign,
+                widgetMasterId
+            )
+            var itemList = joinDash("$SHOPPAGE $widgetPosition", campaignId, campaignName, statusCampaign, widgetMasterId)
+            if (isFestivity) {
+                eventLabel = joinDash(eventLabel, FESTIVITY)
+                itemList = joinDash(itemList, FESTIVITY)
+            }
+            val eventBundle = Bundle().apply {
+                putString(EVENT, SELECT_CONTENT)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK)
+                putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+                putString(EVENT_LABEL, eventLabel)
+                putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK)
+                putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+                putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+                putString(ITEM_LIST, itemList)
+                putParcelableArrayList(
+                    PROMOTIONS,
+                    arrayListOf(
+                        createCampaignProductItems(
+                            position,
+                            productId,
+                            productName,
+                            productPrice,
+                            itemList
+                        )
                     )
                 )
-            )
-        )
-        sendDataLayerEvent(eventMap)
+                putString(PRODUCT_ID, productId)
+                putString(SHOP_ID, shopId)
+                putString(USER_ID, userId)
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+        }
+    }
+
+    private fun createCampaignProductItems(
+        position: Int,
+        productId: String,
+        productName: String,
+        productDisplayedPrice: String,
+        itemListValue: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, itemListValue)
+            putInt(INDEX, position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, productId)
+            putString(ITEM_NAME, productName)
+            putString(ITEM_VARIANT, "")
+            putString(PRICE, formatPrice(productDisplayedPrice))
+        }
     }
 
     fun clickProductListToggle(

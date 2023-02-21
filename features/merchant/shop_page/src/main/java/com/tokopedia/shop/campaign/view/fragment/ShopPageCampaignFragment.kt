@@ -369,7 +369,7 @@ class ShopPageCampaignFragment :
         )
     }
 
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int) {
         shopCampaignTabTracker.clickCampaignTabProduct(
             model.id.orEmpty(),
             model.name.orEmpty(),

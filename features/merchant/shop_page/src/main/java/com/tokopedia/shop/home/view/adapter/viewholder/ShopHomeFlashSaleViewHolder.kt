@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.HeightMeasureListener
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
@@ -75,6 +76,7 @@ class ShopHomeFlashSaleViewHolder(
     }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
+        productCarouselAdapter.parentPosition = ShopUtil.getActualPositionFromIndex(adapterPosition)
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.totalProduct.orZero()
@@ -153,7 +155,7 @@ class ShopHomeFlashSaleViewHolder(
     private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel?) {
         uiModel?.data?.firstOrNull()?.let {
             itemView.addOnImpressionListener(uiModel.impressHolder) {
-                listener.onFlashSaleWidgetImpressed(uiModel, adapterPosition)
+                listener.onFlashSaleWidgetImpressed(uiModel, ShopUtil.getActualPositionFromIndex(adapterPosition))
             }
         }
     }

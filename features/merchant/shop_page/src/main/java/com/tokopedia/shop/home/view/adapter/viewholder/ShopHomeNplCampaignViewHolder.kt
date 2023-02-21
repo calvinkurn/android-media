@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
@@ -179,7 +180,7 @@ class ShopHomeNplCampaignViewHolder(
             ShopCampaignCarouselProductAdapterTypeFactory(
                 model,
                 shopHomeCampaignNplWidgetListener,
-                adapterPosition
+                ShopUtil.getActualPositionFromIndex(adapterPosition)
             )
         )
         rvProductCarousel?.apply {
@@ -336,7 +337,7 @@ class ShopHomeNplCampaignViewHolder(
     private fun setWidgetImpressionListener(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
             itemView.addOnImpressionListener(model.impressHolder) {
-                shopHomeCampaignNplWidgetListener.onImpressionCampaignNplWidget(adapterPosition, model)
+                shopHomeCampaignNplWidgetListener.onImpressionCampaignNplWidget(ShopUtil.getActualPositionFromIndex(adapterPosition), model)
             }
         }
     }
