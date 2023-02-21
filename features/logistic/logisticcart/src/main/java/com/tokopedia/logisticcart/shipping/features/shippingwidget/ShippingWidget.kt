@@ -312,12 +312,12 @@ class ShippingWidget : ConstraintLayout {
     fun setLabelSelectedShippingCourier(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             val courierName = "${selectedCourierItemData.name} (${
-            removeDecimalSuffix(
-                convertPriceValueToIdrFormat(
-                    selectedCourierItemData.shipperPrice,
-                    false
+                removeDecimalSuffix(
+                    convertPriceValueToIdrFormat(
+                        selectedCourierItemData.shipperPrice,
+                        false
+                    )
                 )
-            )
             })"
 
             if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
@@ -546,12 +546,12 @@ class ShippingWidget : ConstraintLayout {
             }
             if (selectedCourierItemData.estimatedTimeDelivery != null) {
                 val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${
-                removeDecimalSuffix(
-                    convertPriceValueToIdrFormat(
-                        selectedCourierItemData.shipperPrice,
-                        false
+                    removeDecimalSuffix(
+                        convertPriceValueToIdrFormat(
+                            selectedCourierItemData.shipperPrice,
+                            false
+                        )
                     )
-                )
                 })"
                 val htmlLinkHelper = HtmlLinkHelper(labelSelectedFreeShipping.context, titleText)
                 labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString

@@ -169,15 +169,15 @@ class ShippingScheduleWidget : ConstraintLayout {
                     ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
                 scheduleSlotBottomSheet?.apply {
                     setListener(object :
-                            ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
-                            override fun onChooseTimeListener(timeId: Long, dateId: String) {
-                                scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
-                                    scheduleDate = dateId,
-                                    timeslotId = timeId
-                                )
-                                mListener?.onChangeScheduleDelivery(it)
-                            }
-                        })
+                        ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
+                        override fun onChooseTimeListener(timeId: Long, dateId: String) {
+                            scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
+                                scheduleDate = dateId,
+                                timeslotId = timeId
+                            )
+                            mListener?.onChangeScheduleDelivery(it)
+                        }
+                    })
                     setOnDismissListener {
                         scheduleSlotBottomSheet = null
                     }
