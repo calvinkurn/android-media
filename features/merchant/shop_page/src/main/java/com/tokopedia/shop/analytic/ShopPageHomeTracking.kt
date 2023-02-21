@@ -85,6 +85,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHAS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
@@ -1676,7 +1677,7 @@ class ShopPageHomeTracking(
             }
             val eventBundle = Bundle().apply {
                 putString(EVENT, VIEW_ITEM_LIST)
-                putString(EVENT_ACTION, CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK)
+                putString(EVENT_ACTION, CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION)
                 putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
                 putString(EVENT_LABEL, eventLabel)
                 putString(TRACKER_ID, TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION)

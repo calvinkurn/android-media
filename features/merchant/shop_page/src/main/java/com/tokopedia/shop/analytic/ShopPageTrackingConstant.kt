@@ -388,6 +388,7 @@ object ShopPageTrackingConstant {
         const val CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "click product - home - trending"
         const val CAMPAIGN_WIDGET_IMPRESSION = "campaign widget impression"
         const val CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK = "campaign widget - product card click"
+        const val CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION = "campaign widget - product card impression"
     }
 
     object EventCategory {
