@@ -39,8 +39,6 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     init {
         adjustProductCardWidth()
-        setupClickListener(listener)
-        setupImpressionListener(listener)
     }
 
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
@@ -85,6 +83,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
         this.fsUiModel = fsUiModel
+        setupClickListener(listener)
+        setupImpressionListener(listener)
         productCardBigGrid?.applyCarousel()
         productCardBigGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(

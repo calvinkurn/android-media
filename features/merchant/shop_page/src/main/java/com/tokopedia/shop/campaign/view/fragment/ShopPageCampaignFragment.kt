@@ -469,7 +469,8 @@ class ShopPageCampaignFragment :
 
     override fun onClickCampaignBannerAreaNplWidget(
         model: ShopHomeNewProductLaunchCampaignUiModel,
-        widgetPosition: Int
+        widgetPosition: Int,
+        position: Int
     ) {
         shopCampaignTabTracker.clickShopBannerWidget(
             shopId,

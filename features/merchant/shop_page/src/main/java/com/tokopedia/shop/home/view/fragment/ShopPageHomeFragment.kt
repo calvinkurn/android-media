@@ -3451,12 +3451,19 @@ open class ShopPageHomeFragment :
         context?.run {
             if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
                 model.data?.firstOrNull()?.let { flashSaleItem ->
-                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
-                        statusCampaign = flashSaleItem.statusCampaign,
-                        shopId = shopId,
-                        userId = userId,
-                        isOwner = isOwner
-                    )
+                    if(!isOwner){
+                        shopPageHomeTracking.clickCtaSeeAllCampaignWidget(
+                            ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
+                                shopId,
+                                userId,
+                                flashSaleItem.campaignId,
+                                flashSaleItem.name,
+                                flashSaleItem.statusCampaign,
+                                model.widgetMasterId,
+                                model.isFestivity
+                            )
+                        )
+                    }
                 }
                 RouteManager.route(this, model.header.ctaLink)
             }
@@ -3491,6 +3498,21 @@ open class ShopPageHomeFragment :
                 shopHomeAdapter.showNplRemindMeLoading(campaignId)
                 handleClickRemindMe(model)
             } else {
+                model.data?.firstOrNull()?.let {
+                    if(!isOwner){
+                        shopPageHomeTracking.clickReminderCampaignWidget(
+                            ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickRemindMeTrackerModel(
+                                shopId,
+                                userId,
+                                it.campaignId,
+                                it.name,
+                                it.statusCampaign,
+                                model.widgetMasterId,
+                                model.isFestivity
+                            )
+                        )
+                    }
+                }
                 setNplRemindMeClickedCampaignId(campaignId)
                 redirectToLoginPage()
             }
@@ -3506,12 +3528,21 @@ open class ShopPageHomeFragment :
                 setFlashSaleRemindMeClickedCampaignId(campaignId)
                 redirectToLoginPage()
             }
-            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
-                campaignId = campaignId,
-                shopId = shopId,
-                userId = userId,
-                isOwner = isOwner
-            )
+            model.data?.firstOrNull()?.let {
+                if(!isOwner){
+                    shopPageHomeTracking.clickReminderCampaignWidget(
+                        ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickRemindMeTrackerModel(
+                            shopId,
+                            userId,
+                            it.campaignId,
+                            it.name,
+                            it.statusCampaign,
+                            model.widgetMasterId,
+                            model.isFestivity
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -3599,11 +3630,19 @@ open class ShopPageHomeFragment :
 
     override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
-            shopPageHomeTracking.clickCtaCampaignNplWidget(
-                isOwner,
-                it.statusCampaign,
-                customDimensionShopPage
-            )
+            if(!isOwner){
+                shopPageHomeTracking.clickCtaSeeAllCampaignWidget(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        model.widgetMasterId,
+                        model.isFestivity
+                    )
+                )
+            }
             context?.let { context ->
                 // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
                 val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
@@ -3617,9 +3656,24 @@ open class ShopPageHomeFragment :
 
     override fun onClickCampaignBannerAreaNplWidget(
         model: ShopHomeNewProductLaunchCampaignUiModel,
-        widgetPosition: Int
+        widgetPosition: Int,
+        position: Int
     ) {
         model.data?.firstOrNull()?.let {
+            if (!isOwner) {
+                shopPageHomeTracking.clickBannerWidgetCampaign(
+                    ShopPageHomeTrackingMapper.mapToShopHomeCampaignWidgetClickBannerTrackerModel(
+                        shopId,
+                        userId,
+                        it.campaignId,
+                        it.name,
+                        it.statusCampaign,
+                        model.widgetMasterId,
+                        model.isFestivity,
+                        position
+                    )
+                )
+            }
             context?.let { context ->
                 val appLink = model.header.ctaLink
                 if (appLink.isNotEmpty()) {

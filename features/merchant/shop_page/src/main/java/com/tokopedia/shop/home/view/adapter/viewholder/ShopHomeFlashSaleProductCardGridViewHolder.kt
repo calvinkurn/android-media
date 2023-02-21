@@ -29,11 +29,6 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
     private var productCardGrid: ProductCardGridView? = itemView.findViewById(R.id.fs_product_card_grid)
     private val paddingOffset = 6f.dpToPx()
 
-    init {
-        setupClickListener(listener)
-        setupImpressionListener(listener)
-    }
-
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
         uiModel?.let {
             productCardGrid?.setImageProductViewHintListener(
@@ -50,6 +45,8 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
         this.fsUiModel = fsUiModel
+        setupClickListener(listener)
+        setupImpressionListener(listener)
         productCardGrid?.applyCarousel()
         productCardGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(

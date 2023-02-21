@@ -389,6 +389,9 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_WIDGET_IMPRESSION = "campaign widget impression"
         const val CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK = "campaign widget - product card click"
         const val CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION = "campaign widget - product card impression"
+        const val CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL = "click Lihat Semua widget campaign"
+        const val CAMPAIGN_WIDGET_CLICK_REMINDER = "click Ingatkan widget campaign"
+        const val CAMPAIGN_WIDGET_CLICK_BANNER = "click banner widget campaign"
     }
 
     object EventCategory {
@@ -416,6 +419,9 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION = "41201"
         const val TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK = "41202"
         const val TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION = "41203"
+        const val TRACKER_ID_CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL = "41204"
+        const val TRACKER_ID_CAMPAIGN_WIDGET_CLICK_REMINDER = "41205"
+        const val TRACKER_ID_CAMPAIGN_WIDGET_CLICK_BANNER = "41206"
     }
 
     object Key {

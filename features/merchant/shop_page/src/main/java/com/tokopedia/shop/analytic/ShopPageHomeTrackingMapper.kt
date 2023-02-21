@@ -1,9 +1,6 @@
 package com.tokopedia.shop.analytic
 
-import com.tokopedia.shop.analytic.model.ProductShopDecorationTrackerDataModel
-import com.tokopedia.shop.analytic.model.ShopHomeCampaignWidgetImpressionTrackerModel
-import com.tokopedia.shop.analytic.model.ShopHomeCampaignWidgetProductTrackerModel
-import com.tokopedia.shop.analytic.model.ShopHomeCarouselProductWidgetClickCtaTrackerModel
+import com.tokopedia.shop.analytic.model.*
 
 object ShopPageHomeTrackingMapper {
     fun mapToProductShopDecorationTrackerDataModel(
@@ -97,6 +94,68 @@ object ShopPageHomeTrackingMapper {
             productId = productId,
             productName = productName,
             productPrice = productPrice
+        )
+    }
+
+    fun mapToShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
+        shopId: String,
+        userId: String,
+        campaignId: String,
+        campaignName: String,
+        statusCampaign: String,
+        widgetMasterId: String,
+        isFestivity: Boolean
+    ): ShopHomeCampaignWidgetClickCtaSeeAllTrackerModel {
+        return ShopHomeCampaignWidgetClickCtaSeeAllTrackerModel(
+            shopId = shopId,
+            userId = userId,
+            campaignId = campaignId,
+            campaignName = campaignName,
+            statusCampaign = statusCampaign,
+            widgetMasterId = widgetMasterId,
+            isFestivity = isFestivity
+        )
+    }
+
+    fun mapToShopHomeCampaignWidgetClickRemindMeTrackerModel(
+        shopId: String,
+        userId: String,
+        campaignId: String,
+        campaignName: String,
+        statusCampaign: String,
+        widgetMasterId: String,
+        isFestivity: Boolean
+    ): ShopHomeCampaignWidgetClickReminderTrackerModel {
+        return ShopHomeCampaignWidgetClickReminderTrackerModel(
+            shopId = shopId,
+            userId = userId,
+            campaignId = campaignId,
+            campaignName = campaignName,
+            statusCampaign = statusCampaign,
+            widgetMasterId = widgetMasterId,
+            isFestivity = isFestivity
+        )
+    }
+
+    fun mapToShopHomeCampaignWidgetClickBannerTrackerModel(
+        shopId: String,
+        userId: String,
+        campaignId: String,
+        campaignName: String,
+        statusCampaign: String,
+        widgetMasterId: String,
+        isFestivity: Boolean,
+        position: Int
+    ): ShopHomeCampaignWidgetClickBannerTrackerModel {
+        return ShopHomeCampaignWidgetClickBannerTrackerModel(
+            shopId = shopId,
+            userId = userId,
+            campaignId = campaignId,
+            campaignName = campaignName,
+            statusCampaign = statusCampaign,
+            widgetMasterId = widgetMasterId,
+            isFestivity = isFestivity,
+            position = position
         )
     }
 }

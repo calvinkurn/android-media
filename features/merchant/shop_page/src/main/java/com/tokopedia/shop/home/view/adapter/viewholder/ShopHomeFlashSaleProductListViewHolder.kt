@@ -24,11 +24,6 @@ class ShopHomeFlashSaleProductListViewHolder(
     private var fsUiModel: ShopHomeFlashSaleUiModel? = null
     private var productCardList: ProductCardListView? = itemView.findViewById(R.id.fs_product_card_list)
 
-    init {
-        setupClickListener(listener)
-        setupImpressionListener(listener)
-    }
-
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
         uiModel?.let {
             productCardList?.setImageProductViewHintListener(
@@ -45,6 +40,8 @@ class ShopHomeFlashSaleProductListViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
         this.fsUiModel = fsUiModel
+        setupClickListener(listener)
+        setupImpressionListener(listener)
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
             hasThreeDots = false,
