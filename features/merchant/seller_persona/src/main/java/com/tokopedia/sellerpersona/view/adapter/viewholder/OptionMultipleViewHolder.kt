@@ -26,6 +26,7 @@ class OptionMultipleViewHolder(
 
     override fun bind(element: BaseOptionUiModel.QuestionOptionMultipleUiModel) {
         with(binding) {
+            cbSpMultipleOption.setOnCheckedChangeListener(null)
             cbSpMultipleOption.isChecked = element.isSelected
             tvSpMultipleOption.text = element.title
 

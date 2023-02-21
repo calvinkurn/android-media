@@ -52,8 +52,9 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
         private val binding: ItemQuestionnairePagerBinding
     ) : ViewHolder(binding.root), BaseOptionViewHolder.Listener {
 
-        private val optionAdapter by lazy {
-            OptionsAdapter(this)
+        private val optionAdapter by lazy { OptionsAdapter(this) }
+        private val questionnaireLayoutManager = object : LinearLayoutManager(itemView.context) {
+            override fun canScrollHorizontally(): Boolean = false
         }
 
         override fun onOptionItemSelectedListener(option: BaseOptionUiModel) {
@@ -83,9 +84,7 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
 
         private fun showOptions(page: QuestionnairePagerUiModel) {
             with(binding.rvSpQuestionOptions) {
-                layoutManager = object : LinearLayoutManager(context) {
-                    override fun canScrollHorizontally(): Boolean = false
-                }
+                layoutManager = questionnaireLayoutManager
                 adapter = optionAdapter
 
                 post {
