@@ -105,9 +105,9 @@ class DtHomeFragment :
         private const val SHARE_LINK_TITLE = "Dilayani Tokopedia | Tokopedia"
         private const val SHARE_LINK_URL = "https://www.tokopedia.com/dilayani-tokopedia"
         private const val SHARE_LINK_THUMBNAIL_IMAGE =
-            "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+            "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
         private const val SHARE_LINK_OG_IMAGE =
-            "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+            "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
         private const val SHARE_LINK_PAGE_NAME = "DilayaniTokopedia"
     }
 
