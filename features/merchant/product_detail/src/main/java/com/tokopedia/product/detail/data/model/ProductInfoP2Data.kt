@@ -166,7 +166,7 @@ data class ProductInfoP2Data(
     @Expose
     val customInfoTitle: List<CustomInfoTitle> = emptyList(),
 
-    @SerializedName("socialProof")
+    @SerializedName("socialProofComponent")
     @Expose
     val socialProof: List<SocialProofData> = emptyList(),
 
