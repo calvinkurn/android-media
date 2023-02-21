@@ -33,7 +33,7 @@ fun NestButton(
         NestTypography(
             text,
             textStyle = NestTheme.typography.display1.copy(
-                color = NestTheme.colors.NN._0,
+                color = if (enabled) NestTheme.colors.NN._0 else NestTheme.colors.NN._400,
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(vertical = 8.dp),

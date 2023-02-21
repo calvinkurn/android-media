@@ -34,6 +34,7 @@ fun NestTextField(
             enabled = enabled,
             isError = isError,
             colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = NestTheme.colors.NN._300,
                 focusedBorderColor = NestTheme.colors.GN._500,
                 errorBorderColor = NestTheme.colors.RN._500
             ),
