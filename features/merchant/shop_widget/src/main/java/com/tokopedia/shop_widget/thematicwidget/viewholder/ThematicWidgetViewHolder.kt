@@ -324,15 +324,14 @@ class ThematicWidgetViewHolder (
         override fun onProductCardClickListener(product: ProductCardUiModel) {
             listener.onProductCardThematicWidgetClickListener(
                 product = product,
-                campaignId = uiModel?.campaignId.orEmpty(),
-                campaignName = uiModel?.name.orEmpty(),
+                thematicWidgetUiModel = uiModel,
                 position = bindingAdapterPosition
             )
         }
 
         override fun onProductCardImpressListener(product: ProductCardUiModel) {
             trackerProductsModel.add(product)
-            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel)
         }
     }
 
@@ -340,15 +339,14 @@ class ThematicWidgetViewHolder (
         override fun onProductCardClickListener(product: ProductCardUiModel) {
             listener.onProductCardThematicWidgetClickListener(
                 product = product,
-                campaignId = uiModel?.campaignId.orEmpty(),
-                campaignName = uiModel?.name.orEmpty(),
+                thematicWidgetUiModel = uiModel,
                 position = bindingAdapterPosition
             )
         }
 
         override fun onProductCardImpressListener(product: ProductCardUiModel) {
             trackerProductsModel.add(product)
-            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel)
         }
     }
 
@@ -364,8 +362,8 @@ class ThematicWidgetViewHolder (
 
     interface ThematicWidgetListener {
         fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int)
-        fun onProductCardThematicWidgetImpressListener(products: List<ProductCardUiModel>, position: Int, campaignId: String, campaignName: String, campaignTitle: String = "")
-        fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, campaignId: String, campaignName: String, position: Int, campaignTitle: String = "")
+        fun onProductCardThematicWidgetImpressListener(products: List<ProductCardUiModel>, position: Int, thematicWidgetUiModel: ThematicWidgetUiModel?)
+        fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, thematicWidgetUiModel: ThematicWidgetUiModel?, position: Int)
         fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?)

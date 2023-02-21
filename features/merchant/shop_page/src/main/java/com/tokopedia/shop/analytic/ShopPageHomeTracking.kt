@@ -2576,13 +2576,18 @@ class ShopPageHomeTracking(
         campaignId: String,
         shopId: String,
         userId: String,
-        position: Int
+        position: Int,
+        isFestivity: Boolean
     ) {
+        var eventLabel = joinDash(shopId, campaignId, campaignName)
+        if(isFestivity){
+            eventLabel = joinDash(eventLabel, FESTIVITY)
+        }
         val bundle = getBaseCampaignBundle(
             event = VIEW_ITEM,
             action = THEMATIC_WIDGET_IMPRESSION,
             category = SHOP_PAGE_BUYER,
-            label = joinDash(shopId, campaignId, campaignName),
+            label = eventLabel,
             userId = userId,
             shopId = shopId
         ).apply {
@@ -2605,13 +2610,18 @@ class ShopPageHomeTracking(
         campaignName: String,
         shopId: String,
         userId: String,
-        products: List<ProductCardUiModel>
+        products: List<ProductCardUiModel>,
+        isFestivity: Boolean
     ) {
+        var eventLabel = joinDash(shopId, campaignId, campaignName)
+        if(isFestivity){
+            eventLabel = joinDash(eventLabel, FESTIVITY)
+        }
         val bundle = getBaseCampaignBundle(
             event = VIEW_ITEM_LIST,
             action = THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION,
             category = SHOP_PAGE_BUYER,
-            label = joinDash(shopId, campaignId, campaignName),
+            label = eventLabel,
             userId = userId,
             shopId = shopId
         ).apply {
@@ -2637,13 +2647,18 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String,
         product: ProductCardUiModel,
-        position: Int
+        position: Int,
+        isFestivity: Boolean
     ) {
+        var eventLabel = joinDash(shopId, campaignId, campaignName)
+        if(isFestivity){
+            eventLabel = joinDash(eventLabel, FESTIVITY)
+        }
         val bundle = getBaseCampaignBundle(
             event = SELECT_CONTENT,
             action = THEMATIC_WIDGET_PRODUCT_CARD_CLICK,
             category = SHOP_PAGE_BUYER,
-            label = joinDash(shopId, campaignId, campaignName),
+            label = eventLabel,
             userId = userId,
             shopId = shopId
         ).apply {

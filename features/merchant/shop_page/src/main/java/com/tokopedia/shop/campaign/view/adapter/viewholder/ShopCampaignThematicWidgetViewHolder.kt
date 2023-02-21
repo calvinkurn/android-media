@@ -210,10 +210,8 @@ class ShopCampaignThematicWidgetViewHolder(
         override fun onProductCardClickListener(product: ProductCardUiModel) {
             listener.onProductCardThematicWidgetClickListener(
                 product = product,
-                campaignId = uiModel?.campaignId.orEmpty(),
-                campaignName = uiModel?.name.orEmpty(),
+                thematicWidgetUiModel = uiModel,
                 position = bindingAdapterPosition,
-                campaignTitle = uiModel?.header?.title.orEmpty()
             )
         }
 
@@ -221,9 +219,7 @@ class ShopCampaignThematicWidgetViewHolder(
             listener.onProductCardThematicWidgetImpressListener(
                 listOf(product),
                 bindingAdapterPosition,
-                uiModel?.campaignId.orEmpty(),
-                uiModel?.name.orEmpty(),
-                uiModel?.header?.title.orEmpty()
+                uiModel
             )
         }
     }
@@ -232,10 +228,8 @@ class ShopCampaignThematicWidgetViewHolder(
         override fun onProductCardClickListener(product: ProductCardUiModel) {
             listener.onProductCardThematicWidgetClickListener(
                 product = product,
-                campaignId = uiModel?.campaignId.orEmpty(),
-                campaignName = uiModel?.name.orEmpty(),
+                thematicWidgetUiModel = uiModel,
                 position = bindingAdapterPosition,
-                campaignTitle = uiModel?.header?.title.orEmpty()
             )
         }
 
@@ -243,9 +237,7 @@ class ShopCampaignThematicWidgetViewHolder(
             listener.onProductCardThematicWidgetImpressListener(
                 listOf(product),
                 bindingAdapterPosition,
-                uiModel?.campaignId.orEmpty(),
-                uiModel?.name.orEmpty(),
-                uiModel?.header?.title.orEmpty()
+                uiModel
             )
         }
     }

@@ -504,19 +504,17 @@ class ShopPageCampaignFragment :
         override fun onProductCardThematicWidgetImpressListener(
             products: List<ProductCardUiModel>,
             position: Int,
-            campaignId: String,
-            campaignName: String,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?
         ) {
             products.firstOrNull()?.let {
                 shopCampaignTabTracker.impressionCampaignTabProduct(
                     it.id.orEmpty(),
                     it.name.orEmpty(),
                     it.displayedPrice.toLongOrZero(),
-                    campaignName,
+                    thematicWidgetUiModel?.name.orEmpty(),
                     shopId,
                     userId,
-                    campaignTitle,
+                    thematicWidgetUiModel?.header?.title.orEmpty(),
                     ShopUtil.getActualPositionFromIndex(position)
                 )
             }
@@ -524,19 +522,17 @@ class ShopPageCampaignFragment :
 
         override fun onProductCardThematicWidgetClickListener(
             product: ProductCardUiModel,
-            campaignId: String,
-            campaignName: String,
-            position: Int,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?,
+            position: Int
         ) {
             shopCampaignTabTracker.clickCampaignTabProduct(
                 product.id.orEmpty(),
                 product.name.orEmpty(),
                 product.displayedPrice.toLongOrZero(),
-                campaignName,
+                thematicWidgetUiModel?.name.orEmpty(),
                 shopId,
                 userId,
-                campaignTitle,
+                thematicWidgetUiModel?.header?.title.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(position)
             )
             RouteManager.route(context, product.productUrl)

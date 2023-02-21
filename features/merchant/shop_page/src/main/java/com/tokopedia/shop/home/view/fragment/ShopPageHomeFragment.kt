@@ -4263,40 +4263,39 @@ open class ShopPageHomeFragment :
                 campaignId = model.campaignId,
                 shopId = shopId,
                 userId = userId,
-                position = position
+                position = position,
+                isFestivity = model.isFestivity
             )
         }
 
         override fun onProductCardThematicWidgetImpressListener(
             products: List<ProductCardUiModel>,
             position: Int,
-            campaignId: String,
-            campaignName: String,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?
         ) {
             shopPageHomeTracking.impressionProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId = campaignId,
+                campaignName = thematicWidgetUiModel?.name.orEmpty(),
+                campaignId = thematicWidgetUiModel?.campaignId.orEmpty(),
                 shopId = shopId,
                 userId = userId,
-                products = products
+                products = products,
+                isFestivity = thematicWidgetUiModel?.isFestivity.orFalse()
             )
         }
 
         override fun onProductCardThematicWidgetClickListener(
             product: ProductCardUiModel,
-            campaignId: String,
-            campaignName: String,
-            position: Int,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?,
+            position: Int
         ) {
             shopPageHomeTracking.clickProductCardThematicWidgetCampaign(
-                campaignName = campaignName,
-                campaignId = campaignId,
+                campaignName = thematicWidgetUiModel?.name.orEmpty(),
+                campaignId = thematicWidgetUiModel?.campaignId.orEmpty(),
                 shopId = shopId,
                 userId = userId,
                 product = product,
-                position = position
+                position = position,
+                isFestivity = thematicWidgetUiModel?.isFestivity.orFalse()
             )
             goToPDP(product.productUrl.orEmpty())
         }
