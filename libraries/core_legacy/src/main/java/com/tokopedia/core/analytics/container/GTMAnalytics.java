@@ -5,6 +5,7 @@ import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_SLO
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST_NAME;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
@@ -1044,6 +1045,10 @@ public class GTMAnalytics extends ContextAnalytics {
 
         switch (keyEvent.toLowerCase()) {
             case PRODUCTVIEW:
+                String itemListString = bundle.getString(FirebaseAnalytics.Param.ITEM_LIST);
+                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))){
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, itemListString);
+                }
                 keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
                 break;
             case PROMOCLICK:
@@ -1193,24 +1198,29 @@ public class GTMAnalytics extends ContextAnalytics {
         try {
             switch (eventName) {
                 // https://tokopedia.atlassian.net/browse/AN-36119
+                // view_item -> view_promotion
                 case FirebaseAnalytics.Event.VIEW_ITEM:
                     Bundle bundleGA4 = createBundleGA4BundleViewPromotion(bundle);
                     if (bundleGA4 != null) {
                         fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundleGA4);
                     }
                     break;
+                // select_content -> select_promotion / select_item
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
                     sendBundleGA4BundleClick(fa, bundle);
                     break;
+                // checkout_progress -> begin_checkout
                 case FirebaseAnalytics.Event.CHECKOUT_PROGRESS:
                     // https://tokopedia.atlassian.net/browse/AN-36179
                     // https://tokopedia.atlassian.net/browse/AN-36180
                     fa.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
                     break;
+                // view_search_results -> view_item_list
                 case FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS:
                     // https://tokopedia.atlassian.net/browse/AN-36125
                     createBundleGA4BundleViewItemList(fa, bundle);
                     break;
+                // ecommerce_purchase -> purchase
                 case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
                     // https://tokopedia.atlassian.net/browse/AN-36181
                     fa.logEvent(FirebaseAnalytics.Event.PURCHASE, bundle);
@@ -1279,11 +1289,13 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private Bundle createBundleGA4BundleViewPromotion(Bundle oriBundle) {
         Object promotions = oriBundle.get(KEY_PROMOTIONS);
         if (promotions != null) {
             List promotionList = (List) promotions;
             ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
+            String firstItemList = "";
             for (int i = 0, size = promotionList.size(); i < size; i++) {
                 Bundle bundlePromotion = ((Bundle) promotionList.get(i));
                 String itemId = bundlePromotion.getString(ITEM_ID);
@@ -1295,12 +1307,18 @@ public class GTMAnalytics extends ContextAnalytics {
                 String itemName = bundlePromotion.getString(ITEM_NAME);
                 if (itemName != null) {
                     newBundle.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+                    if (TextUtils.isEmpty(firstItemList)) {
+                        firstItemList = itemName;
+                    }
                 }
                 promotionsGA4.add(newBundle);
             }
             Bundle ecommerceBundleGA4 = new Bundle();
             copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
             ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
+            if (TextUtils.isEmpty(ecommerceBundleGA4.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))) {
+                ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, firstItemList);
+            }
             return ecommerceBundleGA4;
         } else {
             return null;
