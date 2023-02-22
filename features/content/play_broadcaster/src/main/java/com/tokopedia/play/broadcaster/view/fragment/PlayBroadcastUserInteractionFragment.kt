@@ -16,6 +16,7 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -45,9 +46,9 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
+import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.ProductIconView
 import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
@@ -96,7 +97,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
-    private val iconProduct: ProductIconView by detachableView(R.id.icon_product)
+    private val iconProduct: PlayBroIconWithGreenDotView by detachableView(R.id.icon_product)
+    private val icFaceFilter: PlayBroIconWithGreenDotView by detachableView(R.id.ic_face_filter)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
@@ -329,6 +331,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     titleChannel = parentViewModel.channelTitle
                 )
             }
+        }
+
+        icFaceFilter.setOnClickListener {
+            /** TODO: handle this */
+        }
+
+        lifecycleScope.launch {
+            delay(3000)
+            icFaceFilter.isShowDot = true
+
+            delay(1000)
+
+            icFaceFilter.isShowDot = false
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {

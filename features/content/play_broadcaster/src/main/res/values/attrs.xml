@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PlayBroIconWithGreenDotView">
+        <attr name="is_show_dot" format="boolean"/>
+        <attr format="enum" name="icon_id">
+            <enum name="PRODUCT" value="0"/>
+            <enum name="SMILE" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>
