@@ -147,7 +147,7 @@ class DetailEditorActivity : BaseEditorActivity() {
     companion object {
         private const val CACHE_EDITOR_INTENT_DATA = "intent_data.editor_detail"
         private const val CACHE_EDITOR_INTENT_MODEL = "intent_data.editor_model"
-        private const val CACHE_EDITOR_PARAM = "intent_data.editor_detail"
+        private const val CACHE_EDITOR_PARAM = "intent_data.editor_param"
 
         const val PARAM_EDITOR_DETAIL = "param.editor_detail"
         const val PARAM_EDITOR_MODEL = "param.editor.model"
