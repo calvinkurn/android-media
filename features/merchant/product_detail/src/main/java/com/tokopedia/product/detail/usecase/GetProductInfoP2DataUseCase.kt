@@ -388,6 +388,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   link
                 }
                 isScheduled
+                boBadge {
+                  imageURL
+                  isUsingPadding
+                }
               }
               boMetadata
               productMetadata {
