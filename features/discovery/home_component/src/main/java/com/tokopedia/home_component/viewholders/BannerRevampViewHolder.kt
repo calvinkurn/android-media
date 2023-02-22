@@ -47,6 +47,7 @@ class BannerRevampViewHolder(
 
     private var channelModel: ChannelModel? = null
     private var totalBanner = 0
+    private var currentPosition: Int = 0
 
     init {
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -113,9 +114,10 @@ class BannerRevampViewHolder(
                     RecyclerView.SCROLL_STATE_IDLE -> {
                         if (isFromDrag) {
                             val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                            currentPosition = currentPagePosition
                             Log.d("dhabalog", "position $currentPagePosition")
                             if (currentPagePosition != RecyclerView.NO_POSITION) {
-                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition % totalBanner)
+                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
                                 isFromDrag = false
                             }
                         }

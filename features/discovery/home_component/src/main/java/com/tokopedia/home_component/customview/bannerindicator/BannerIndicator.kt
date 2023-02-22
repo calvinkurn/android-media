@@ -115,11 +115,12 @@ class BannerIndicator : LinearLayout {
             val value = animation.animatedValue as Int
             progressIndicator.progress = value
             if (value >= 100) {
-                val nextTransition = if (position != totalBanner - Int.ONE) {
-                    position + Int.ONE
-                } else {
-                    Int.ZERO
-                }
+//                val nextTransition = if (position != totalBanner - Int.ONE) {
+//                    position + Int.ONE
+//                } else {
+//                    Int.ZERO
+//                }
+                val nextTransition = position + Int.ONE
                 listener?.onChangePosition(nextTransition)
                 android.os.Handler(Looper.getMainLooper()).postDelayed(
                     {
@@ -127,7 +128,7 @@ class BannerIndicator : LinearLayout {
                         bannerAnimator.removeAllUpdateListeners()
                         minimizeIndicatorBanner(progressIndicator)
                         maximizeAnimator(
-                            this.getChildAt(nextTransition) as ProgressBar,
+                            this.getChildAt(nextTransition % totalBanner) as ProgressBar,
                             nextTransition
                         )
                     },
@@ -160,14 +161,15 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.removeAllListeners()
         bannerAnimatorSet.cancel()
         bannerAnimator.removeAllUpdateListeners()
+        val indicatorPosition = position % totalBanner
         if (position == currentPosition) {
-            this.getChildAt(position)?.let {
-                animateIndicatorBanner(it as ProgressBar, position)
+            this.getChildAt(indicatorPosition)?.let {
+                animateIndicatorBanner(it as ProgressBar, indicatorPosition)
             }
         } else {
-            minimizeIndicatorBanner(this.getChildAt(currentPosition) as ProgressBar)
-            this.getChildAt(position)?.let {
-                maximizeAnimator(it as ProgressBar, position)
+            minimizeIndicatorBanner(this.getChildAt(currentPosition % totalBanner) as ProgressBar)
+            this.getChildAt(indicatorPosition)?.let {
+                maximizeAnimator(it as ProgressBar, indicatorPosition)
             }
         }
     }
