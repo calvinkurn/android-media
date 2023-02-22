@@ -62,7 +62,6 @@ class BannerRevampViewHolder(
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
         try {
-            scrollTransitionDuration = element.scrollTransitionDuration
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
