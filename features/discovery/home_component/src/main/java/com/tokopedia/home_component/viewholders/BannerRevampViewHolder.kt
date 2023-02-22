@@ -219,7 +219,7 @@ class BannerRevampViewHolder(
         private const val INITIAL_PAGE_POSITION = 0
         private val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
         private val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
-        private const val FLING_DURATION = 600
+        const val FLING_DURATION = 600
         private const val FLING_DURATION_OLD = 300
     }
 

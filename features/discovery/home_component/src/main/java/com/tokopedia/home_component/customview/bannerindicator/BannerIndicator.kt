@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.toPx
@@ -66,6 +67,7 @@ class BannerIndicator : LinearLayout {
     }
 
     fun setBannerIndicators(totalBanner: Int) {
+        this.removeAllViews()
         this.totalBanner = totalBanner
         if (totalBanner > Int.ZERO) {
             for (i in Int.ZERO until totalBanner) {
@@ -78,7 +80,7 @@ class BannerIndicator : LinearLayout {
     private fun maximizeAnimator(progressIndicator: ProgressBar, position: Int) {
         val maximizeAnimator = ValueAnimator
             .ofInt(6, 46)
-            .setDuration(500)
+            .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
         maximizeAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             progressIndicator.layoutParams?.width = value.toPx()
@@ -140,7 +142,7 @@ class BannerIndicator : LinearLayout {
         progressIndicator.progress = Int.ZERO
         val minimizeAnimator = ValueAnimator
             .ofInt(46, 6)
-            .setDuration(500)
+            .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
         minimizeAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             progressIndicator.layoutParams?.width = value.toPx()
