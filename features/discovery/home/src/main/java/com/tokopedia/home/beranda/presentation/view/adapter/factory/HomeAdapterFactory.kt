@@ -58,28 +58,7 @@ import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
 import com.tokopedia.home_component.listener.VpsWidgetListener
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
-import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
-import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
-import com.tokopedia.home_component.viewholders.CueWidgetCategoryViewHolder
-import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerSixAutoViewHolder
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
-import com.tokopedia.home_component.viewholders.Lego4AutoBannerViewHolder
-import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
-import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
-import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
-import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
-import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
-import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
-import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
-import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
-import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
+import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -390,6 +369,10 @@ class HomeAdapterFactory(
         return MixLeftPaddingComponentViewHolder.LAYOUT
     }
 
+    override fun type(bannerRevampDataModel: BannerRevampDataModel): Int {
+        return BannerRevampViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -604,6 +587,9 @@ class HomeAdapterFactory(
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
+            BannerRevampViewHolder.LAYOUT ->
+                viewHolder =
+                    BannerRevampViewHolder(view, bannerComponentListener, homeComponentListener)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
                     MixLeftPaddingComponentViewHolder(
