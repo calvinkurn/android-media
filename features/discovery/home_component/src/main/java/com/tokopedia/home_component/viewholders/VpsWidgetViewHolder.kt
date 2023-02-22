@@ -31,6 +31,7 @@ class VpsWidgetViewHolder (itemView: View,
         val LAYOUT = R.layout.global_dc_vps_widget
     }
     private val binding: GlobalDcVpsWidgetBinding? by viewBinding()
+    private val recyclerView by lazy { binding?.recycleList }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(itemView.context, VpsWidgetTabletConfiguration.getSpanCount(itemView.context)) }
     private val adapter: VpsWidgetAdapter by lazy { VpsWidgetAdapter(vpsWidgetListener, adapterPosition, isCacheData) }
 
@@ -68,7 +69,7 @@ class VpsWidgetViewHolder (itemView: View,
     }
 
     private fun initView(element: VpsDataModel) {
-        initRV()
+        recyclerView?.layoutManager = layoutManager
         initItems(element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
@@ -77,16 +78,11 @@ class VpsWidgetViewHolder (itemView: View,
         }
     }
 
-    private fun initRV() {
-        parentRecyclerViewPool?.let { binding?.homeComponentVpsRv?.setRecycledViewPool(parentRecyclerViewPool) }
-        binding?.homeComponentVpsRv?.layoutManager = layoutManager
-    }
-
     private fun initItems(element: VpsDataModel) {
         adapter.addData(element)
-        binding?.homeComponentVpsRv?.adapter = adapter
+        recyclerView?.adapter = adapter
         adapter.notifyDataSetChanged()
-        if (binding?.homeComponentVpsRv?.itemDecorationCount == 0)
-            binding?.homeComponentVpsRv?.addItemDecoration(VpsWidgetSpacingItemDecoration())
+        if (recyclerView?.itemDecorationCount == 0)
+            recyclerView?.addItemDecoration(VpsWidgetSpacingItemDecoration())
     }
 }
