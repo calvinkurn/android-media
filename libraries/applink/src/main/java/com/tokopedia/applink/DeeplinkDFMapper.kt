@@ -264,6 +264,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
                     || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
+            add(DFP({ it.startsWithPattern(PLAY_SHORTS)
+                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_SHORTS) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_shorts))
             add(DFP({
                 it.startsWith(ApplinkConstInternalGlobal.IMAGE_PICKER) ||
                         it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
@@ -734,6 +736,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
+            add(DFP({ it.startsWithPattern(PLAY_SHORTS) }, DF_BASE_SELLER_APP, R.string.applink_title_play_shorts))
 
             // Logistic
             add(DFP({ it.startsWith(SELLER_COD_ACTIVATION) }, DF_BASE_SELLER_APP, R.string.path_shop_setting_cod_activation))
