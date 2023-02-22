@@ -34,8 +34,8 @@ import com.tokopedia.common_compose.components.NestBottomSheetShape
 import com.tokopedia.common_compose.components.NestTextField
 import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.principles.AppBar
 import com.tokopedia.common_compose.principles.NestButton
+import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTicker
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -92,7 +92,13 @@ fun ReschedulePickupScreen(
         }
     }
 
-    Scaffold(topBar = { AppBar(title = stringResource(id = R.string.title_reschedule_pickup_activity), navigationClick = onPressBack) }) {
+    Scaffold(topBar = {
+        NestHeader(
+            title = stringResource(id = R.string.title_reschedule_pickup_activity),
+            showBackIcon = true,
+            onBackIconPressed = onPressBack
+        )
+    }) {
         ModalBottomSheetLayout(
             sheetShape = NestBottomSheetShape(),
             sheetState = sheetState,
