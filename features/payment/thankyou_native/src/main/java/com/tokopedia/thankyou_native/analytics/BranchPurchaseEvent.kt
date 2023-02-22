@@ -34,7 +34,9 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         shopOrder: ShopOrder
     ) {
         val goPayEventList = thanksPageData.paymentDetails?.filter {
-            it.gatewayCode == GATEWAY_CODE_PEMUDA || it.gatewayCode == GATEWAY_CODE_PEMUDA_PAYLATER
+            it.gatewayCode == GATEWAY_CODE_PEMUDA ||
+            it.gatewayCode == GATEWAY_CODE_PEMUDA_PAYLATER ||
+            it.gatewayCode == GATEWAT_CODE_PEMUDA_CICIL
         }
         goPayEventList?.forEach { paymentDetail ->
             val linkerCommerceData = LinkerCommerceData()
@@ -118,6 +120,6 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
     companion object {
         const val GATEWAY_CODE_PEMUDA = "PEMUDA"
         const val GATEWAY_CODE_PEMUDA_PAYLATER = "PEMUDAPAYLATER"
-
+        const val GATEWAT_CODE_PEMUDA_CICIL = "PEMUDACICIL"
     }
 }

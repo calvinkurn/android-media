@@ -1076,7 +1076,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickInputCode() {
         if (promoInputBottomSheet == null) {
-            promoInputBottomSheet = PromoInputBottomSheet()
+            promoInputBottomSheet = PromoInputBottomSheet().apply {
+                setOnDismissListener {
+                    promoInputBottomSheet = null
+                }
+            }
         }
         viewModel.promoInputUiModel.value?.let {
             promoInputBottomSheet?.show(parentFragmentManager, "", it, this)
