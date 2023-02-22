@@ -61,4 +61,10 @@ dependencies {
 
     // Feed
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+
+    // Core
+    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
+
+    // Media
+    implementation projectOrAar(rootProject.ext.features.mediaeditor)
 }

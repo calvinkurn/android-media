@@ -22,7 +22,6 @@
 
     <string name="applink_title_play" translatable="false">Play</string>
     <string name="applink_title_play_broadcaster" translatable="false">Play Broadcaster</string>
-    <string name="applink_title_play_shorts" translatable="false">Play Shorts</string>
 
     <string name="host_play" translatable="false">play</string>
     <string name="host_kol_youtube" translatable="false">kolyoutube</string>
