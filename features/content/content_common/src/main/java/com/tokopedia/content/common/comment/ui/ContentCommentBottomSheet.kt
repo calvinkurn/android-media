@@ -130,10 +130,10 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.rvComment.addOnScrollListener(scrollListener)
 
         binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
-        binding.newComment.setOnClickListener {
+        binding.viewCommentSend.setOnClickListener {
             viewModel.submitAction(CommentAction.EditTextCLicked)
         }
-        binding.viewCommentSend.setOnClickListener {
+        binding.ivCommentSend.setOnClickListener {
             viewModel.submitAction(CommentAction.ReplyComment(binding.newComment.text.toString(), CommentType.Parent))// adjust origin
         }
         Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.unify_space_48)
