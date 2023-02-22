@@ -30,19 +30,19 @@ import com.tokopedia.topads.common.analytics.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
-import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
-import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
-import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
-import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.common.data.util.TopAdsEditUtils
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
 import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
+import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
+import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
@@ -74,14 +74,14 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
-import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.BidSwitchManualBudgetBottomSheet
-import com.tokopedia.unifycomponents.setCounter
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifyprinciples.Typography
 import java.util.HashMap
 import javax.inject.Inject
@@ -108,29 +108,29 @@ private const val BID_TYPE_SEARCH = "search"
 private const val BID_TYPE_BROWSE = "browse"
 class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener, ChangePlacementFilter {
 
-    private var switchAutoBidLayout : TopadsAutoBidSwitchPartialLayout ?= null
-    private var swipeRefreshLayout : SwipeRefreshLayout ?= null
-    private var viewPagerFrag : ViewPager ?= null
-    private var appBarLayout2 : AppBarLayout ?= null
-    private var collapsingToolbar2 : CollapsingToolbarLayout ?= null
-    private var headerToolbar : HeaderUnify ?= null
-    private var graphLayout : CardUnify ?= null
-    private var topadsDashboardContent : LinearLayout ?= null
-    private var tabLayout : TabsUnify ?= null
-    private var editPancarianBudget : IconUnify ?= null
-    private var editRekomendasiBudget : IconUnify ?= null
-    private var perClickRekomendasi : Typography ?= null
-    private var budgetperclickRekomendasi : Typography ?= null
-    private var biayaRekommendasi : Typography ?= null
-    private var biayaPencarian : Typography ?= null
-    private var pager : ViewPager ?= null
-    private var perClick : Typography ?= null
-    private var budgetPerClick : Typography ?= null
-    private var btnSwitch : SwitchUnify ?= null
-    private var txtGroupName : Typography ?= null
-    private var dailyBudgetSpent : Typography ?= null
-    private var dailyBudget : Typography ?= null
-    private var dailyBudgetProgressBar : ProgressBarUnify ?= null
+    private var switchAutoBidLayout: TopadsAutoBidSwitchPartialLayout ? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout ? = null
+    private var viewPagerFrag: ViewPager ? = null
+    private var appBarLayout2: AppBarLayout ? = null
+    private var collapsingToolbar2: CollapsingToolbarLayout ? = null
+    private var headerToolbar: HeaderUnify ? = null
+    private var graphLayout: CardUnify ? = null
+    private var topadsDashboardContent: LinearLayout ? = null
+    private var tabLayout: TabsUnify ? = null
+    private var editPancarianBudget: IconUnify ? = null
+    private var editRekomendasiBudget: IconUnify ? = null
+    private var perClickRekomendasi: Typography ? = null
+    private var budgetperclickRekomendasi: Typography ? = null
+    private var biayaRekommendasi: Typography ? = null
+    private var biayaPencarian: Typography ? = null
+    private var pager: ViewPager ? = null
+    private var perClick: Typography ? = null
+    private var budgetPerClick: Typography ? = null
+    private var btnSwitch: SwitchUnify ? = null
+    private var txtGroupName: Typography ? = null
+    private var dailyBudgetSpent: Typography ? = null
+    private var dailyBudget: Typography ? = null
+    private var dailyBudgetProgressBar: ProgressBarUnify ? = null
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
@@ -148,8 +148,12 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     private var placementType: Int = 0
     private val bidSwitchManualBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
-        BidSwitchManualBudgetBottomSheet(maxSuggestKeyword, minSuggestKeyword, suggestedBid,
-            ::onSaveClickedInManualBottomSheet)
+        BidSwitchManualBudgetBottomSheet(
+            maxSuggestKeyword,
+            minSuggestKeyword,
+            suggestedBid,
+            ::onSaveClickedInManualBottomSheet
+        )
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
@@ -158,7 +162,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     @set: Inject
-    var trackerImpl: TopAdsGroupDetailTrackerImpl?= null
+    var trackerImpl: TopAdsGroupDetailTrackerImpl? = null
 
     override fun loadChildStatisticsData() {
         loadData()
@@ -166,23 +170,28 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     override fun renderGraph(position: Int) {
-        when(position) {
+        when (position) {
             0 -> {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                    CLICK_GRAPH_SECTOR_1, dataStatistic?.summary?.clickSum.toString())
+                    CLICK_GRAPH_SECTOR_1,
+                    dataStatistic?.summary?.clickSum.toString()
+                )
             }
             1 -> {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                    CLICK_GRAPH_SECTOR_2, dataStatistic?.summary?.impressionSumFmt.toString())
+                    CLICK_GRAPH_SECTOR_2,
+                    dataStatistic?.summary?.impressionSumFmt.toString()
+                )
             }
             2 -> {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                    CLICK_GRAPH_SECTOR_3, dataStatistic?.summary?.costSumFmt.toString())
+                    CLICK_GRAPH_SECTOR_3,
+                    dataStatistic?.summary?.costSumFmt.toString()
+                )
             }
         }
         currentStatisticsFragment?.showLineGraph(dataStatistic)
     }
-
 
     override fun handleDateClick(customDateText: String) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_DATE_FILTER, customDateText)
@@ -212,7 +221,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         val list: MutableList<FragmentTabItem> = mutableListOf()
         tabLayout?.getUnifyTabLayout()?.removeAllTabs()
         tabLayout?.addNewTab(PRODUK)
-        if(autoBidStatus.isEmpty()) {
+        if (autoBidStatus.isEmpty()) {
             tabLayout?.addNewTab(KATA_KUNCI)
             tabLayout?.addNewTab(NEG_KATA_KUNCI)
             tabLayout?.customTabMode = TabLayout.MODE_FIXED
@@ -254,7 +263,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
             setOnClickListener {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
-                    CLICK_GROUP_EDIT_ICON, "")
+                    CLICK_GROUP_EDIT_ICON,
+                    ""
+                )
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                     putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                     putExtra(TopAdsDashboardConstant.GROUPID, groupId)
@@ -263,38 +274,45 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
             }
         }
-        appBarLayout2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
-            when {
-                offset == 0 -> {
-                    if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
-                        onStateChanged(TopAdsProductIklanFragment.State.EXPANDED)
+        appBarLayout2?.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+                when {
+                    offset == 0 -> {
+                        if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
+                            onStateChanged(TopAdsProductIklanFragment.State.EXPANDED)
+                        }
+                        mCurrentState = TopAdsProductIklanFragment.State.EXPANDED
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.EXPANDED
-                }
-                abs(offset) >= appBarLayout.totalScrollRange -> {
-                    if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
-                        onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED)
+                    abs(offset) >= appBarLayout.totalScrollRange -> {
+                        if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
+                            onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED)
+                        }
+                        mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED
-                }
-                else -> {
-                    if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
-                        onStateChanged(TopAdsProductIklanFragment.State.IDLE)
+                    else -> {
+                        if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
+                            onStateChanged(TopAdsProductIklanFragment.State.IDLE)
+                        }
+                        mCurrentState = TopAdsProductIklanFragment.State.IDLE
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.IDLE
                 }
             }
-        })
+        )
 
         editPancarianBudget?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                EDIT_BIAYA_PENCERIAN, "")
+                EDIT_BIAYA_PENCERIAN,
+                ""
+            )
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(false))
             sheet.show(supportFragmentManager, "")
             sheet.onSaved = { bid, pos ->
                 saveBidData(
-                    bid, BID_TYPE_SEARCH, dailyBudget = TopAdsEditUtils.calculateDailyBudget(
-                        bid.toIntSafely(), rekommendedBid.toIntSafely()
+                    bid,
+                    BID_TYPE_SEARCH,
+                    dailyBudget = TopAdsEditUtils.calculateDailyBudget(
+                        bid.toIntSafely(),
+                        rekommendedBid.toIntSafely()
                     )
                 )
             }
@@ -302,24 +320,28 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
         editRekomendasiBudget?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                EDIT_BIAYA_REKOMENDASI, ""
+                EDIT_BIAYA_REKOMENDASI,
+                ""
             )
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(true))
             sheet.show(supportFragmentManager, "")
             sheet.onSaved = { bid, pos ->
                 saveBidData(
-                    bid, BID_TYPE_BROWSE, dailyBudget = TopAdsEditUtils.calculateDailyBudget(
-                        searchBid.toIntSafely(), bid.toIntSafely()
+                    bid,
+                    BID_TYPE_BROWSE,
+                    dailyBudget = TopAdsEditUtils.calculateDailyBudget(
+                        searchBid.toIntSafely(),
+                        bid.toIntSafely()
                     )
                 )
             }
         }
 
-        tabLayout?.getUnifyTabLayout()?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        tabLayout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                when(tab?.position) {
+                when (tab?.position) {
                     CONST_0 -> {
                         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_TAB_PRODUK, "")
                     }
@@ -328,7 +350,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                     }
                     CONST_2 -> {
                         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                            CLICK_TAB_NEG_KATA_KUNCI, "")
+                            CLICK_TAB_NEG_KATA_KUNCI,
+                            ""
+                        )
                     }
                 }
             }
@@ -340,9 +364,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             it.onCheckBoxStateChanged = { isAutomatic ->
                 if (isAutomatic) {
                     saveBidStateChangedData(true)
-                }
-                else {
-                    //changing switch state to automatic, will be changing to manual if user saves bid in bottom sheet
+                } else {
+                    // changing switch state to automatic, will be changing to manual if user saves bid in bottom sheet
                     switchAutoBidLayout?.switchToAutomatic()
                     bidSwitchManualBottomSheet.show(supportFragmentManager, "")
                 }
@@ -356,15 +379,18 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun saveBidStateChangedData(
-        isAutomatic: Boolean, suggestedBid: String = "",
-        bidPencarian: String = "", bidRecomendasi: String = "",
+        isAutomatic: Boolean,
+        suggestedBid: String = "",
+        bidPencarian: String = "",
+        bidRecomendasi: String = ""
     ) {
         viewModel.changeBidState(
-            isAutomatic, groupId.toIntOrZero(),
+            isAutomatic,
+            groupId.toIntOrZero(),
             suggestedBid.toFloatOrZero(),
             bidPencarian.toFloatOrZero(),
             bidRecomendasi.toFloatOrZero(),
-            dailyBudgetSpent?.text == TopAdsDashboardConstant.TIDAK_DIBATASI
+            dailyBudgetSpent?.text.toString()
         ) {
             loadData()
         }
@@ -372,7 +398,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private fun onSaveClickedInManualBottomSheet(bidPencarian: String, bidRecomendasi: String) {
         switchAutoBidLayout?.switchToManual()
-        saveBidStateChangedData(false,suggestedBid,bidPencarian,bidRecomendasi)
+        saveBidStateChangedData(false, suggestedBid, bidPencarian, bidRecomendasi)
     }
 
     private fun initView() {
@@ -409,8 +435,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             dataMap["groupName"] = groupName
             dataMap[GROUPID] = groupId
             dataMap[NAME_EDIT] = true
-            if (priceDaily != 0.0F)
+            if (priceDaily != 0.0F) {
                 dataMap[DAILY_BUDGET] = dailyBudget.toString()
+            }
             if (this.bidType == BID_TYPE_BROWSE) {
                 bidTypeData?.clear()
                 bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))
@@ -428,11 +455,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH, suggestedBid.toFloat()),
             GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE, suggestedBid.toFloat())
         )
-        val dataKey = HashMap<String,Any?>()
+        val dataKey = HashMap<String, Any?>()
         dataKey[ParamObject.SUGGESTION_BID_SETTINGS] = settings
         viewModel.topAdsCreated(dataMap, dataKey, ::onSuccesGroupEdit, ::onErrorGroupEdit)
     }
-
 
     private fun onSuccesGroupEdit() {
         val successMessage = if (bidType == BID_TYPE_SEARCH) {
@@ -462,8 +488,14 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private fun loadData() {
         viewModel.getGroupInfo(resources, groupId ?: "0", GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
-        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo,
-            groupId ?: "0", placementType)
+        viewModel.getTopAdsStatistic(
+            startDate!!,
+            endDate!!,
+            selectedStatisticType,
+            ::onSuccesGetStatisticsInfo,
+            groupId ?: "0",
+            placementType
+        )
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
@@ -479,7 +511,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         biayaRekommendasi?.visibility = View.VISIBLE
         biayaPencarian?.text = getString(R.string.topads_dash_biaya_pencarian)
 
-        if(data.strategies.isNotEmpty()) {
+        if (data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
             switchAutoBidLayout?.switchToAutomatic()
             perClick?.visibility = View.GONE
@@ -494,16 +526,14 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             autoBidStatus = ""
             perClick?.visibility = View.VISIBLE
             data.bidSettings?.forEach {
-                if(it.bidType.equals(PRODUCT_SEARCH)) {
+                if (it.bidType.equals(PRODUCT_SEARCH)) {
                     budgetPerClick?.text = "Rp " + it.priceBid?.toInt()
                     searchBid = it.priceBid
-                } else if(it.bidType.equals(PRODUCT_BROWSE)) {
+                } else if (it.bidType.equals(PRODUCT_BROWSE)) {
                     budgetperclickRekomendasi?.text = "Rp " + it.priceBid?.toInt()
                     rekommendedBid = it.priceBid
                 }
-
             }
-
         }
         txtGroupName?.text = groupName
         btnSwitch?.setOnCheckedChangeListener(null)
@@ -531,7 +561,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         viewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE, this::onSuccessSuggestion)
     }
 
-
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         data.firstOrNull()?.let {
             minSuggestKeyword = it.minBid
@@ -540,21 +569,19 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
     }
 
-
-    private fun prepareBundle(forRekomenDasi : Boolean): Bundle {
+    private fun prepareBundle(forRekomenDasi: Boolean): Bundle {
         val bundle = Bundle()
         bundle.putString(MAX_BID, maxSuggestKeyword)
         bundle.putString(MIN_BID, minSuggestKeyword)
         bundle.putString(SUGGESTION_BID, suggestedBid)
-        if(forRekomenDasi) {
+        if (forRekomenDasi) {
             bundle.putString(
                 KEYWORD_NAME,
                 getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_rekomendasi)
             )
             bundle.putString(DAILY_BUDGET, budgetperclickRekomendasi?.text.toString().removeCommaRawString())
             bundle.putBoolean(FROM_REKOMENDASI, true)
-        }
-        else {
+        } else {
             bundle.putString(
                 KEYWORD_NAME,
                 getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
@@ -574,9 +601,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_GROUP_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK) {
                 setResult(Activity.RESULT_OK)
-                loadData()
+            }
+            loadData()
         }
     }
 
@@ -587,8 +615,14 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo,
-            groupId ?: "0", placementType)
+        viewModel.getTopAdsStatistic(
+            startDate!!,
+            endDate!!,
+            selectedStatisticType,
+            ::onSuccesGetStatisticsInfo,
+            groupId ?: "0",
+            placementType
+        )
     }
 
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
@@ -604,12 +638,12 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).baseAppComponent).build()
-
+        (application as BaseMainApplication).baseAppComponent
+    ).build()
 
     private fun initInjector() {
         DaggerTopAdsDashboardComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     fun setProductCount(size: Int) {
@@ -630,7 +664,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             isChecked -> {
                 viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId ?: "0"), resources)
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                    CLICK_TOGGLE_ON, "")
+                    CLICK_TOGGLE_ON,
+                    ""
+                )
             }
             else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId ?: "0"), resources)
         }
@@ -641,6 +677,3 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         loadStatisticsData()
     }
 }
-
-
-
