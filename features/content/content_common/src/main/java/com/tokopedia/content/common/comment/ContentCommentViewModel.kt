@@ -233,7 +233,8 @@ class ContentCommentViewModel @AssistedInject constructor(
         param: FeedReportRequestParamModel
     ) {
         viewModelScope.launchCatchError(block = {
-            repo.reportComment(param)
+            val result = repo.reportComment(param)
+            if (result) _event.emit(CommentEvent.ReportSuccess)
         }) {
             _event.emit(
                 CommentEvent.ShowErrorToaster(

@@ -175,8 +175,9 @@ class ContentCommentBottomSheet @Inject constructor(
                         toaster.show()
                     }
                     is CommentEvent.ShowErrorToaster -> {
+                        val view = if(sheetMenu.isVisible) sheetMenu.requireView().rootView else requireView().rootView
                         Toaster.build(
-                            requireView().rootView,
+                            view,
                             text = event.message.message.orEmpty(),
                             actionText = getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
@@ -189,6 +190,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         router.route(context = requireContext(), appLinkPattern = event.appLink)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
+                    CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
                 }
             }
         }

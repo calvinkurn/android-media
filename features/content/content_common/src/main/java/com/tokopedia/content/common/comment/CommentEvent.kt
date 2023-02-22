@@ -15,4 +15,6 @@ sealed class CommentEvent {
 
     data class OpenAppLink(val appLink: String) : CommentEvent()
     object OpenReportEvent : CommentEvent()
+
+    object ReportSuccess : CommentEvent()
 }
