@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_routerFragment_to_statusSubmissionFragment"
             app:destination="@id/statusSubmissionFragment" />
+        <action
+            android:id="@+id/action_routerFragment_to_bridgingAccountLinkingFragment"
+            app:destination="@id/bridgingAccountLinkingFragment" />
     </fragment>
 
     <fragment
@@ -20,6 +23,19 @@
         <argument
             android:name="parameter"
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionParam"/>
+    </fragment>
+    <fragment
+        android:id="@+id/bridgingAccountLinkingFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingFragment"
+        android:label="BridgingAccountLinkingFragment" >
+        <argument
+            android:name="is_done_gopay"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="hint_name_ktp"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
 
 </navigation>
