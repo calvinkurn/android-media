@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class Creation(
     @SerializedName("isActive")
-    var isActive: Boolean? = null,
+    val isActive: Boolean = false,
     @SerializedName("image")
-    var image: String? = null,
+    val image: String = "",
     @SerializedName("authors")
-    var authors: ArrayList<Authors> = arrayListOf(),
+    val authors: List<Authors> = emptyList(),
     @SerializedName("__typename")
-    var _typename: String? = null
+    val _typename: String = ""
 )

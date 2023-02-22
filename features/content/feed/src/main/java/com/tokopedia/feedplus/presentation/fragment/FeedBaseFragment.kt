@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -23,8 +23,12 @@ import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -33,13 +37,15 @@ import javax.inject.Inject
 class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
 
     private var binding: FragmentFeedBaseBinding? = null
+    @Inject
+    internal lateinit var userSession: UserSessionInterface
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
 
     private var adapter: FeedPagerAdapter? = null
-    private var creationItemList: List<ContentCreationTypeItem> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,36 +69,49 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun observeFeedTabData() {
         feedMainViewModel.feedTabs.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> initView(it.data)
-                    is Fail -> Toast.makeText(
-                        requireContext(),
-                        it.throwable.localizedMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is Success -> initView(it.data)
+                is Fail -> Toast.makeText(
+                    requireContext(),
+                    it.throwable.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        )
+        }
     }
 
     private fun observeCreateContentBottomSheetData() {
         feedMainViewModel.feedCreateContentBottomSheetData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        creationItemList = it.data
-                    }
-                    is Fail -> Toast.makeText(
-                        requireContext(),
-                        it.throwable.localizedMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is Success -> {
+                    feedMainViewModel.creationItemList = it.data
                 }
+                is Fail -> Toast.makeText(
+                    requireContext(),
+                    it.throwable.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (userSession.isLoggedIn) {
+            binding?.let {
+                it.btnFeedCreatePost.visible()
+                it.feedUserProfileImage.visible()
+            }
+        } else {
+            binding?.let {
+                it.btnFeedCreatePost.gone()
+                it.feedUserProfileImage.gone()
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -180,7 +199,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             val creationBottomSheet = FeedContentCreationTypeBottomSheet
                 .getFragment(it.supportFragmentManager, it.classLoader)
             creationBottomSheet.setListener(this)
-            creationBottomSheet.setData(creationItemList)
+            creationBottomSheet.setData(feedMainViewModel.creationItemList)
             creationBottomSheet.show(it.supportFragmentManager)
         }
     }
@@ -225,11 +244,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
                 )
                 startActivity(intent)
+                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+
             }
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }
+            else -> {}
         }
     }
 }

@@ -86,7 +86,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val TAG = "FeedAccountTypeBottomSheet"
+        private const val TAG = "FeedContentCreationTypeBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,

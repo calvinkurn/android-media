@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName
 data class UserProfile(
 
     @SerializedName("isShown")
-    var isShown: Boolean? = null,
+    val isShown: Boolean = false,
     @SerializedName("image")
-    var image: String? = null,
+    val image: String = "",
     @SerializedName("weblink")
-    var weblink: String? = null,
+    val weblink: String = "",
     @SerializedName("applink")
-    var applink: String? = null,
+    val applink: String = "",
     @SerializedName("__typename")
-    var _typename: String? = null
+    val _typename: String = ""
 
 )
