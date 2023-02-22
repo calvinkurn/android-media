@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 
 object VisitableMapper {
 
-    fun MutableList<HomeLayoutItemUiModel>.updateItemById(id: String?, block: () -> HomeLayoutItemUiModel?) {
+    fun MutableList<HomeLayoutItemUiModel?>.updateItemById(id: String?, block: () -> HomeLayoutItemUiModel?) {
         getItemIndex(id)?.let { index ->
             block.invoke()?.let { item ->
                 removeAt(index)
@@ -18,8 +18,8 @@ object VisitableMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.getItemIndex(visitableId: String?): Int? {
-        return firstOrNull { it.layout?.getVisitableId() == visitableId }?.let { indexOf(it) }
+    fun MutableList<HomeLayoutItemUiModel?>.getItemIndex(visitableId: String?): Int? {
+        return firstOrNull { it?.layout?.getVisitableId() == visitableId }?.let { indexOf(it) }
     }
 
     fun Visitable<*>.getVisitableId(): String? {

@@ -45,6 +45,7 @@ class GQLGetProductListUseCase @Inject constructor(
         private const val PARAM_FILTER = "filter"
         private const val PARAM_SORT = "sort"
         private const val PARAM_EXTRA_INFO = "extraInfo"
+        private const val PARAM_PAGE_SOURCE = "pageSource"
 
         /**
          * Create request params for GetProductList GQL
@@ -71,7 +72,7 @@ class GQLGetProductListUseCase @Inject constructor(
             warehouseId: String? = null,
             filterOptions: List<FilterOption>? = null,
             sortOption: SortOption? = null,
-            extraInfoOptions: List<ExtraInfo>? = null
+            extraInfoOptions: List<ExtraInfo>? = null,
         ): RequestParams {
             return RequestParams().apply {
                 putString(PARAM_SHOP_ID, shopId)
@@ -94,6 +95,8 @@ class GQLGetProductListUseCase @Inject constructor(
                     val extraInfoParams = extraInfo.map { it.value }
                     putObject(PARAM_EXTRA_INFO, extraInfoParams)
                 }
+
+                putString(PARAM_PAGE_SOURCE, "manage_product")
             }
         }
     }

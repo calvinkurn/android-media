@@ -113,7 +113,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     protected lateinit var viewModel : TokoNowHomeViewModel
 
     private val privateHomeLayoutItemList by lazy {
-        viewModel.getPrivateField<MutableList<HomeLayoutItemUiModel>>("homeLayoutItemList")
+        viewModel.getPrivateField<MutableList<HomeLayoutItemUiModel?>>("homeLayoutItemList")
     }
 
     @Before
@@ -484,7 +484,7 @@ abstract class TokoNowHomeViewModelTestFixture {
         }
     }
 
-    protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel) {
+    protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel?) {
         privateHomeLayoutItemList.add(item)
     }
 

@@ -6,7 +6,7 @@ import com.tokopedia.loginfingerprint.data.model.*
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
-import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
+import com.tokopedia.loginfingerprint.utils.crypto.KeyPairManager
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +31,7 @@ class SettingFingerprintViewModelTest {
         mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val rsaSignatureUtils = mockk<Lazy<RsaSignatureUtils?>>(relaxed = true)
+    val keyPairManager = mockk<Lazy<KeyPairManager?>>(relaxed = true)
 
     private var checkFingerprintObserver =
         mockk<Observer<Result<CheckFingerprintResult>>>(relaxed = true)
@@ -55,7 +55,7 @@ class SettingFingerprintViewModelTest {
             userSession,
             registerFingerprintUseCase,
             removeFingerprintUseCase,
-            rsaSignatureUtils,
+            keyPairManager,
             checkFingerprintToggleStatusUseCase,
             fingerprintPreferenceManager
         )
@@ -116,17 +116,19 @@ class SettingFingerprintViewModelTest {
         val response = RegisterFingerprintPojo(data)
 
         coEvery {
-            rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any())
+            keyPairManager.get()?.generateFingerprintSignature(any(), any())
         } returns SignatureData("abc", "123")
-        coEvery { rsaSignatureUtils.get()?.getPublicKey() } returns "abc123"
 
         coEvery { registerFingerprintUseCase.invoke(any()) } returns response
+        coEvery {
+            keyPairManager.get()?.createAndStoreNewKey()
+        } returns "new_key_testing"
 
         viewModel.registerFingerprint()
 
         /* Then */
         coVerify {
-            rsaSignatureUtils.get()
+            keyPairManager.get()
                 ?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
             navigateSuccessRegister.onChanged(any())
         }
@@ -136,7 +138,7 @@ class SettingFingerprintViewModelTest {
     fun `on Error Register Fingerprint`() {
 
         val error = Throwable("error")
-        coEvery { rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any()) } throws error
+        coEvery { keyPairManager.get()?.generateFingerprintSignature(any(), any()) } throws error
 
         viewModel.registerFingerprint()
 
@@ -149,15 +151,18 @@ class SettingFingerprintViewModelTest {
     @Test
     fun `on Error Register Fingerprint - public key empty`() {
         coEvery {
-            rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any())
+            keyPairManager.get()?.generateFingerprintSignature(any(), any())
         } returns SignatureData("abc", "123")
-        coEvery { rsaSignatureUtils.get()?.getPublicKey() } returns ""
+
+        coEvery {
+            keyPairManager.get()?.createAndStoreNewKey()
+        } returns ""
 
         viewModel.registerFingerprint()
 
         /* Then */
         verify {
-            errorMessageRegister.onChanged("Terjadi Kesalahan, Silahkan coba lagi")
+            keyPairManager.get()?.removeKeys()
         }
     }
 
@@ -169,9 +174,12 @@ class SettingFingerprintViewModelTest {
         val response = RegisterFingerprintPojo(data)
 
         coEvery {
-            rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any())
+            keyPairManager.get()?.generateFingerprintSignature(any(), any())
         } returns SignatureData("abc", "123")
-        coEvery { rsaSignatureUtils.get()?.getPublicKey() } returns "abc123"
+
+        coEvery {
+            keyPairManager.get()?.createAndStoreNewKey()
+        } returns "new_key_testing"
 
         coEvery { registerFingerprintUseCase.invoke(any()) } returns response
 
@@ -190,9 +198,12 @@ class SettingFingerprintViewModelTest {
         val response = RegisterFingerprintPojo(data)
 
         coEvery {
-            rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any())
+            keyPairManager.get()?.generateFingerprintSignature(any(), any())
         } returns SignatureData("abc", "123")
-        coEvery { rsaSignatureUtils.get()?.getPublicKey() } returns "abc123"
+
+        coEvery {
+            keyPairManager.get()?.createAndStoreNewKey()
+        } returns "new_key_testing"
 
         coEvery { registerFingerprintUseCase.invoke(any()) } returns response
 
@@ -211,6 +222,7 @@ class SettingFingerprintViewModelTest {
         val response = RemoveFingerprintPojo(data)
 
         coEvery { removeFingerprintUseCase.invoke(Unit) } returns response
+        every { keyPairManager.get()?.removeKeys() } returns Unit
 
         viewModel.removeFingerprint()
 

@@ -298,6 +298,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         url
                     }
                     customvideo_url
+                    parent_id
                 }
                 shop{
                     id

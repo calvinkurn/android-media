@@ -36,6 +36,7 @@ class TapcashBalanceViewModelTest {
     private lateinit var emptyByteNfc: ByteArray
     private lateinit var challangeResultSuccess: ByteArray
     private lateinit var challangeResultFail: ByteArray
+    private lateinit var challangeResultEmpty: ByteArray
 
     val challangeResult = "895EEC0E771D3A369000"
     val challangeFail = "6A80"
@@ -64,6 +65,7 @@ class TapcashBalanceViewModelTest {
         emptyByteNfc = byteArrayOf()
         challangeResultSuccess = NFCUtils.stringToByteArrayRadix(challangeResult)
         challangeResultFail = NFCUtils.stringToByteArrayRadix(challangeFail)
+        challangeResultEmpty = NFCUtils.stringToByteArrayRadix("")
         tapcashBalanceViewModel = spyk(TapcashBalanceViewModel(graphqlRepository, Dispatchers.Unconfined))
     }
 
@@ -80,6 +82,19 @@ class TapcashBalanceViewModelTest {
         //given
         initSuccessData()
         every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultFail
+
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_EmptyChallange() {
+        //given
+        initSuccessData()
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultEmpty
 
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")

@@ -1,22 +1,23 @@
 package com.tokopedia.editshipping.ui.customproductlogistic
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
-import com.tokopedia.logisticCommon.data.model.CPLProductModel
+import com.tokopedia.editshipping.util.EditShippingConstant.KURIR_REKOMENDASI_SHIPPER_ID
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 
 class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
     RecyclerView.Adapter<CPLItemViewHolder>() {
 
-    var cplItem = mutableListOf<ShipperCPLModel>()
+    private val cplItem = mutableListOf<ShipperCPLModel>()
 
     interface CPLItemAdapterListener {
-        fun onCheckboxItemClicked()
+        fun onShipperCheckboxClicked(shipperId: Long, check: Boolean)
+        fun onShipperProductCheckboxClicked(spId: Long, check: Boolean)
+        fun onWhitelabelServiceCheckboxClicked(spIds: List<Long>, check: Boolean)
     }
-
-    var shipperServices = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CPLItemViewHolder {
         val binding = ItemShippingEditorCardBinding.inflate(
@@ -35,69 +36,36 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         return cplItem.size
     }
 
+    fun getWhitelabelServicePosition(): Int {
+        for (i in cplItem.indices) {
+            if (cplItem[i].isWhitelabel) {
+                return i
+            }
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    fun getFirstNormalServicePosition(): Int {
+        for (i in cplItem.indices) {
+            if (!cplItem[i].isWhitelabel && cplItem[i].shipperId != KURIR_REKOMENDASI_SHIPPER_ID.toLong()) {
+                return i
+            }
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun addData(data: List<ShipperCPLModel>) {
         cplItem.clear()
         cplItem.addAll(data)
         notifyDataSetChanged()
     }
 
-    fun setProductIdsActivated(data: CPLProductModel) {
-        cplItem.forEach { courier ->
-            data.shipperServices.forEach {
-                val cplItemModel = courier.shipperProduct.find { data ->
-                    data.shipperProductId == it
-                }
-                if (cplItemModel?.shipperProductId == it) {
-                    cplItemModel.isActive = true
-                }
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun setAllProductIdsActivated() {
-        cplItem.forEach { courier ->
-            courier.isActive = true
-            courier.shipperProduct.forEach { data ->
-                data.isActive = true
-            }
+    fun modifyData(shipper: ShipperCPLModel) {
+        val index = cplItem.indexOfFirst { shipperCPLModel -> shipperCPLModel.shipperId == shipper.shipperId }
+        if (index != -1 && cplItem.elementAtOrNull(index) != null) {
+            cplItem[index] = shipper
+            notifyItemChanged(index)
         }
     }
-
-    fun getActivateSpIds(): List<Int> {
-        val activatedListIds = mutableListOf<Int>()
-        cplItem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId.toInt())
-                }
-            }
-        }
-        return activatedListIds
-    }
-
-    fun checkActivatedSpIds(): List<Int> {
-        val activatedListIds = mutableListOf<Int>()
-        cplItem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId.toInt())
-                }
-            }
-        }
-        return activatedListIds
-    }
-
-    fun getShownShippers(): List<Int> {
-        val listShipperShown = mutableListOf<Int>()
-        cplItem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (!product.uiHidden) {
-                    listShipperShown.add(product.shipperProductId.toInt())
-                }
-            }
-        }
-        return listShipperShown
-    }
-
 }

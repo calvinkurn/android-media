@@ -45,9 +45,6 @@ android {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
     }
-    buildFeatures {
-        buildConfig true
-    }
 
 
     testOptions {
@@ -109,6 +106,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.irisSession)
 
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles
@@ -146,9 +144,9 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-
+    androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

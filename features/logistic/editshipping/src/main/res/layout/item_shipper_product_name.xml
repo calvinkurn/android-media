@@ -17,16 +17,6 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"/>
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/shipper_product_info_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:icon_name="INFORMATION"
-        app:layout_constraintStart_toEndOf="@id/shipper_product_name"
-        app:layout_constraintTop_toTopOf="@id/shipper_product_name"
-        app:layout_constraintBottom_toBottomOf="@id/shipper_product_name" />
-
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/shipper_product_cb"
         android:layout_width="wrap_content"

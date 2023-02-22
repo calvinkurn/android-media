@@ -6,11 +6,11 @@ data class TradeInInfo(
         @SerializedName("is_valid_trade_in")
         var isValidTradeIn: Boolean = false,
         @SerializedName("new_device_price")
-        var newDevicePrice: Int = 0,
+        var newDevicePrice: Double = 0.0,
         @SerializedName("new_device_price_fmt")
         var newDevicePriceFmt: String = "",
         @SerializedName("old_device_price")
-        var oldDevicePrice: Int = 0,
+        var oldDevicePrice: Double = 0.0,
         @SerializedName("old_device_price_fmt")
         var oldDevicePriceFmt: String = "",
         @SerializedName("drop_off_enable")

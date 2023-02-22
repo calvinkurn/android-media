@@ -7,7 +7,7 @@ object WishlistV2RemoteConfigRollenceUtil {
 
     private var isUseWishlistCollection: Boolean? = null
 
-    fun isUsingWishlistCollection(context: Context) : Boolean {
+    fun isUsingWishlistCollection(context: Context): Boolean {
         return isEnableRemoteConfigWishlistCollection(context) && isEnableRollenceWishlistCollection()
     }
 
@@ -30,9 +30,8 @@ object WishlistV2RemoteConfigRollenceUtil {
 
     private fun isEnableRollenceWishlistCollection(): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.WISHLIST_CONTROL_VARIANT)
-            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_EXPERIMENT_VARIANT)
-
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.CONTROL_VARIANT)
+            return (remoteConfigRollenceValue == RollenceKey.EXPERIMENT_VARIANT)
         } catch (e: Exception) {
             true
         }

@@ -1011,13 +1011,11 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void sendScreenAuthenticated(String screenName) {
         if (TextUtils.isEmpty(screenName)) return;
-        eventAuthenticate(null);
         sendScreen(screenName, null);
     }
 
     public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
         if (TextUtils.isEmpty(screenName)) return;
-        eventAuthenticate(customDimension);
         sendScreen(screenName, customDimension);
     }
 
@@ -1028,33 +1026,12 @@ public class GTMAnalytics extends ContextAnalytics {
         customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
         customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
         customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
-        eventAuthenticate(customDimension);
         sendScreen(screenName, customDimension);
     }
 
     @Override
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         //no op, only for appsfyler and moengage
-    }
-
-    public void eventAuthenticate(Map<String, String> customDimension) {
-        String afUniqueId = getAfUniqueId(context);
-        UserSessionInterface userSession = new UserSession(context);
-        Map<String, Object> map = DataLayer.mapOf(
-                Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
-                        Authenticated.KEY_USER_SELLER, (userSession.hasShop() ? 1 : 0),
-                        Authenticated.KEY_USER_ID, userSession.getGTMLoginID(),
-                        Authenticated.KEY_SHOP_ID, userSession.getShopId(),
-                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none")
-                ),
-                Authenticated.ANDROID_ID, userSession.getAndroidId(),
-                Authenticated.ADS_ID, userSession.getAdsId(),
-                Authenticated.GA_CLIENT_ID, getClientIDString()
-        );
-        if (customDimension != null && customDimension.size() > 0) {
-            map.putAll(customDimension);
-        }
-        pushEvent(Authenticated.KEY_CD_NAME, map);
     }
 
     private void pushEECommerceInternal(String keyEvent, Bundle bundle) {

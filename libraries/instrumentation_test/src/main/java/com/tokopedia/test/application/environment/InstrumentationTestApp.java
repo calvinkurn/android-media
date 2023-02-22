@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
+import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -45,6 +47,7 @@ import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInte
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -84,11 +87,26 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         SplitCompat.install(this);
         FpmLogger.init(this);
         PersistentCacheManager.init(this);
+        TokopediaUrl.Companion.init(this); // generate base url
 
         TrackApp.initTrackApp(this);
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
             new Cassava.Builder(this)
+                    .setRemoteValidator(new RemoteSpec() {
+                        @NonNull
+                        @Override
+                        public String getUrl() {
+                            return TokopediaUrl.getInstance().getAPI();
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                        }
+                    })
+                    .setLocalRootPath("tracker")
                     .initialize();
         }
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

@@ -21,8 +21,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_checkout.R
@@ -32,7 +32,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.getElemen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.After

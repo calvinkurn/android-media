@@ -27,14 +27,6 @@ object ProductAddStepperTracking {
         sendAddProductClick(SCREEN, shopId, "click start")
     }
 
-    fun trackHelpProductQuality(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click toaster", "product photo quality")
-    }
-
-    fun trackRemoveProductImage(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click remove product image")
-    }
-
     fun trackDragPhoto(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click drag product image")
     }

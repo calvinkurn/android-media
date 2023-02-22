@@ -15,6 +15,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+
 class FeedPlusContainerViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val repo: FeedPlusRepository,
@@ -52,6 +53,7 @@ class FeedPlusContainerViewModel @Inject constructor(
             repo.clearDynamicTabCache()
         }
     }
+
 
     fun getWhitelist() {
         viewModelScope.launchCatchError(block = {

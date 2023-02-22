@@ -124,7 +124,7 @@
     <string name="product_detail_ask_discussion_label">Tanya di Diskusi</string>
 
     <!--Ticker-->
-    <string name="ticker_href_builder">&lt;a href="#"&gt;%s&lt;/a&gt;</string>
+    <string name="ticker_href_builder">&lt;b&gt;&lt;a href="#"&gt;%s&lt;/a&gt;&lt;/b&gt;</string>
 
     <!--New Shop Info-->
     <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>

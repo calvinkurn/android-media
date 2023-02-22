@@ -153,8 +153,9 @@
     <string name="shop_page_share_telegram">Telegram</string>
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
-    <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="shop_page_share_text_with_link">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n%2$s</string>
     <string name="label_close">Tutup</string>
+    <string name="shop_page_share_chat_bubble_operational_hour_format">Buka %1s WIB</string>
 
     <!-- content description shop page -->
     <string name="content_desc_shop_page_main_profile_image">image gambar toko</string>
@@ -186,4 +187,7 @@
     <string name="label_report">Laporkan</string>
     <string name="label_report_success">Laporan berhasil terkirim.</string>
 
+    <!-- operational hours -->
+    <string name="shop_ops_hour_open_all_day">Buka 24 jam</string>
+    <string name="shop_ops_hour_holiday">Libur</string>
 </resources>

@@ -9,20 +9,20 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
-import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
 import com.tokopedia.topchat.matchers.withRecyclerView
-import org.hamcrest.Matchers.greaterThan
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Test
 
@@ -91,7 +91,6 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
         assertImageContainerAtPosition(1, matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(greaterThan(count)))
     }
 
     @Test

@@ -40,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
@@ -82,6 +83,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -104,9 +106,6 @@ open class ChatListFragment constructor() :
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var remoteConfig: RemoteConfig
-
-    @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
 
     @Inject
@@ -117,6 +116,7 @@ open class ChatListFragment constructor() :
     }
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private var remoteConfig: RemoteConfig? = null
     private var chatTabListContract: ChatListContract.TabFragment? = null
 
     private var sightTag = ""
@@ -146,10 +146,25 @@ open class ChatListFragment constructor() :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        if (getRemoteConfigOnCreate()) {
+            super.onCreate(null)
+        } else {
+            super.onCreate(savedInstanceState)
+        }
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
+    }
+
+    private fun getRemoteConfigOnCreate(): Boolean {
+        if (remoteConfig == null) {
+            context?.let {
+                remoteConfig = FirebaseRemoteConfigImpl(it)
+            }
+        }
+        // If the value is empty, default true
+        // If the remote config is null or error, default to false
+        return remoteConfig?.getBoolean(ON_CREATE_KEY, true) ?: false
     }
 
     private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
@@ -369,7 +384,7 @@ open class ChatListFragment constructor() :
         chatItemListViewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
-            } else if (chatItemListViewModel.shouldShowBubbleTicker()) {
+            } else if (chatItemListViewModel.shouldShowBubbleTicker() && Utils.getShouldBubbleChatEnabled()) {
                 addBubbleChatTicker()
             }
         }
@@ -972,6 +987,7 @@ open class ChatListFragment constructor() :
         const val CHAT_BUYER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-buyer-empty.png"
         const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://images.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
+        const val ON_CREATE_KEY = "android_chatlist_oncreate"
 
         private const val RV_TOP_POSITION = 0
 

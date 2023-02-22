@@ -127,8 +127,6 @@ public class TopChatAnalytics {
         String TEMPLATE_CHAT_CLICK = "click on template chat";
         String UPDATE_TEMPLATE = "click on tambah template";
         String CLICK_PRODUCT_IMAGE = "click on product thumbnail";
-        String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
-        String CLICK_THUMBNAIL = "click on thumbnail";
         String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
         String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
         String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";

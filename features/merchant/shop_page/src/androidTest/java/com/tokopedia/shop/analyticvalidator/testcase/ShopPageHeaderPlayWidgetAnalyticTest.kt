@@ -10,8 +10,8 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity

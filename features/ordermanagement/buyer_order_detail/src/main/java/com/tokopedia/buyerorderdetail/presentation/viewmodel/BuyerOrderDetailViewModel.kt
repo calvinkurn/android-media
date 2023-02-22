@@ -43,7 +43,6 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -407,13 +406,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
         return AddToCartMultiParam(
-            productId = productId.toLongOrZero(),
+            productId = productId,
             productName = productName,
-            productPrice = price.toLong(),
+            productPrice = price,
             qty = quantity,
             notes = productNote,
-            shopId = getShopId().toIntOrZero(),
-            custId = userSession.get().userId.toIntOrZero()
+            shopId = getShopId(),
+            custId = userSession.get().userId
         )
     }
 

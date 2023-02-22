@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.campaignstock.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -10,10 +11,11 @@ import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GetOtherCampaignStockDataGqlQuery", OtherCampaignStockDataUseCase.QUERY)
 class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): GraphqlUseCase<OtherCampaignStockData>(gqlRepository) {
 
     companion object {
-        private const val QUERY = "query GetOtherCampaignStockData(\$productID: String!, \$options: OptionV3!, \$extraInfo:ExtraInfoV3!, \$warehouseID: String) {\n" +
+        const val QUERY = "query GetOtherCampaignStockData(\$productID: String!, \$options: OptionV3!, \$extraInfo:ExtraInfoV3!, \$warehouseID: String) {\n" +
                 "  getProductV3(productID: \$productID, options: \$options, extraInfo:${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {\n" +
                 "    pictures {\n" +
                 "      urlThumbnail\n" +
@@ -52,7 +54,7 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): OtherCampaignStockData {
-        val gqlRequest = GraphqlRequest(QUERY, OtherCampaignStockResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(GetOtherCampaignStockDataGqlQuery(), OtherCampaignStockResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.response(listOf(gqlRequest))
         val errors = gqlResponse.getError(OtherCampaignStockResponse::class.java)
         if (errors.isNullOrEmpty()) {

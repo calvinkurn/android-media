@@ -23,6 +23,7 @@ import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.*
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_IN
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
@@ -30,7 +31,9 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CON
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION_POLICY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentType.*
 import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.Purpose
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
@@ -56,6 +59,7 @@ class UserConsentWidget : FrameLayout,
 
     private var lifecycleOwner: LifecycleOwner? = null
     private var consentCollectionParam: ConsentCollectionParam? = null
+    private var submissionParam = ConsentSubmissionParam()
     private var userConsentActionListener: UserConsentActionListener? = null
     private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
 
@@ -93,6 +97,8 @@ class UserConsentWidget : FrameLayout,
 
         viewBinding?.apply {
             buttonAction.setOnClickListener {
+                submitConsent()
+
                 collection?.purposes?.let {
                     userConsentAnalytics.trackOnActionButtonClicked(it)
                 }
@@ -120,6 +126,24 @@ class UserConsentWidget : FrameLayout,
                 recyclerPurposes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }
+    }
+
+    /*
+    * if you hide the button, you can call this function when user submit using your own button submit
+    * */
+    fun submitConsent() {
+        submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
+        submissionParam.version = consentCollectionParam?.version.orEmpty()
+        collection?.purposes?.forEach {
+            submissionParam.purposes.add(
+                Purpose(
+                    purposeID = it.id,
+                    transactionType = CONSENT_OPT_IN,
+                    version = it.version
+                )
+            )
+        }
+        viewModel?.submitConsent(submissionParam)
     }
 
     private fun initInjector() {
@@ -219,19 +243,19 @@ class UserConsentWidget : FrameLayout,
     private fun renderSinglePurpose() {
         var purposeText = ""
         if (collection?.purposes?.size.orZero() == NUMBER_ONE) {
-            purposeText = collection?.purposes?.first()?.description.orEmpty()
+            purposeText = collection?.purposes?.first()?.attribute?.uiName.orEmpty()
         } else {
             collection?.purposes?.forEachIndexed { index, purposeDataModel ->
                 purposeText += when(index) {
                     (collection?.purposes?.size.orZero() - NUMBER_ONE) -> {
-                        " & ${purposeDataModel.description}"
+                        " & ${purposeDataModel.attribute.uiName}"
                     }
 
                     (collection?.purposes?.size.orZero() - NUMBER_TWO) -> {
-                        purposeDataModel.description
+                        purposeDataModel.attribute.uiName
                     }
                     else -> {
-                        "${purposeDataModel.description}, "
+                        "${purposeDataModel.attribute.uiName}, "
                     }
                 }
             }

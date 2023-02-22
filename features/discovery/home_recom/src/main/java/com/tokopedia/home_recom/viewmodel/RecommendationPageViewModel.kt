@@ -293,8 +293,8 @@ open class RecommendationPageViewModel @Inject constructor(
     fun onAddToCart(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let { productDetailData ->
             val addToCartRequestParams = AddToCartRequestParams()
-            addToCartRequestParams.productId = productDetailData.id
-            addToCartRequestParams.shopId = productDetailData.shop.id
+            addToCartRequestParams.productId = productDetailData.id.toString()
+            addToCartRequestParams.shopId = productDetailData.shop.id.toString()
             addToCartRequestParams.quantity = productDetailData.minOrder
             addToCartRequestParams.notes = ""
             addToCartRequestParams.productName = productDetailData.name
@@ -328,8 +328,8 @@ open class RecommendationPageViewModel @Inject constructor(
     fun onBuyNow(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let { productDetailData ->
             val addToCartRequestParams = AddToCartRequestParams()
-            addToCartRequestParams.productId = productDetailData.id.toLong()
-            addToCartRequestParams.shopId = productDetailData.shop.id
+            addToCartRequestParams.productId = productDetailData.id.toString()
+            addToCartRequestParams.shopId = productDetailData.shop.id.toString()
             addToCartRequestParams.quantity = productDetailData.minOrder
             addToCartRequestParams.notes = ""
             addToCartRequestParams.atcFromExternalSource = AtcFromExternalSource.ATC_FROM_DISCOVERY

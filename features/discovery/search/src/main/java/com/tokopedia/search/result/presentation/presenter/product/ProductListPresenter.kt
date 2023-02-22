@@ -25,8 +25,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -1236,6 +1234,7 @@ class ProductListPresenter @Inject constructor(
         if (isViewNotAttached || item == null) return
 
         trackProductClick(item)
+        if (item.isTopAds || item.isOrganicAds) trackProductTopAdsClick(item)
 
         sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
             item,
@@ -1249,41 +1248,26 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun trackProductClick(item: ProductItemDataView) {
-        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
-        else getViewToTrackOnClickOrganicProduct(item)
+        if (item.isTopAds) view.sendTopAdsGTMTrackingProductClick(item)
+        else view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
-    private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {
+    private fun trackProductTopAdsClick(item: ProductItemDataView) {
         topAdsUrlHitter.hitClickUrl(
             view.className,
             item.topadsClickUrl,
             item.productID,
             item.productName,
             item.imageUrl,
-            SearchConstant.TopAdsComponent.TOP_ADS
+            if (item.isTopAds) SearchConstant.TopAdsComponent.TOP_ADS
+            else SearchConstant.TopAdsComponent.ORGANIC_ADS
         )
-
-        view.sendTopAdsGTMTrackingProductClick(item)
-    }
-
-    private fun getViewToTrackOnClickOrganicProduct(item: ProductItemDataView) {
-        if (item.isOrganicAds) {
-            topAdsUrlHitter.hitClickUrl(
-                view.className,
-                item.topadsClickUrl,
-                item.productID,
-                item.productName,
-                item.imageUrl,
-                SearchConstant.TopAdsComponent.ORGANIC_ADS
-            )
-        }
-
-        view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
     override fun onProductAddToCart(item: ProductItemDataView) {
         if (item.shouldOpenVariantBottomSheet()) {
             view.openVariantBottomSheet(item)
+            if (item.isTopAds || item.isOrganicAds) trackProductTopAdsClick(item)
         } else {
             executeAtcCommon(item)
         }
@@ -1303,8 +1287,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = productID.toLongOrZero(),
-            shopId = shopID.toIntOrZero(),
+            productId = productID,
+            shopId = shopID,
             quantity = minOrder,
             productName = productName,
             price = price,
@@ -1323,6 +1307,8 @@ class ProductListPresenter @Inject constructor(
 
         trackProductClick(productItemDataView)
         view.sendGTMTrackingProductATC(productItemDataView, addToCartDataModel?.data?.cartId)
+        if (productItemDataView.isTopAds || productItemDataView.isOrganicAds)
+            trackProductTopAdsClick(productItemDataView)
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {

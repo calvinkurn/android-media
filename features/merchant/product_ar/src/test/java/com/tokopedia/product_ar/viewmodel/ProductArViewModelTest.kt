@@ -326,7 +326,7 @@ class ProductArViewModelTest {
                 data = DataModel(
                         success = 1,
                         cartId = "123",
-                        productId = INITIAL_PRODUCT_ID.toLong())
+                        productId = INITIAL_PRODUCT_ID)
         )
 
         val reqParams = slot<AddToCartRequestParams>()
@@ -351,8 +351,8 @@ class ProductArViewModelTest {
 
         //Assert req params should be contains product "Merah"
         val capturedParams = reqParams.captured
-        Assert.assertEquals(capturedParams.productId, INITIAL_PRODUCT_ID.toLong())
-        Assert.assertEquals(capturedParams.shopId, INITIAL_SHOP_ID.toInt())
+        Assert.assertEquals(capturedParams.productId, INITIAL_PRODUCT_ID)
+        Assert.assertEquals(capturedParams.shopId, INITIAL_SHOP_ID)
         Assert.assertEquals(capturedParams.price, "50000.0")
         Assert.assertEquals(capturedParams.quantity, 5)
         Assert.assertEquals(capturedParams.productName, "Merah")
@@ -362,7 +362,7 @@ class ProductArViewModelTest {
         Assert.assertEquals(successValue.errorMessage.firstOrNull(), "sukses")
         Assert.assertEquals(successValue.isDataError(), false)
         Assert.assertEquals(successValue.data.cartId, "123")
-        Assert.assertEquals(successValue.data.productId, INITIAL_PRODUCT_ID.toLong())
+        Assert.assertEquals(successValue.data.productId, INITIAL_PRODUCT_ID)
 
         scope.cancel()
     }
@@ -398,7 +398,7 @@ class ProductArViewModelTest {
                 data = DataModel(
                         success = 1,
                         cartId = "123",
-                        productId = INITIAL_PRODUCT_ID.toLong())
+                        productId = INITIAL_PRODUCT_ID)
         )
 
         coEvery {
@@ -429,7 +429,7 @@ class ProductArViewModelTest {
                 data = DataModel(
                         success = 0,
                         cartId = "123",
-                        productId = INITIAL_PRODUCT_ID.toLong())
+                        productId = INITIAL_PRODUCT_ID)
         )
 
         coEvery {

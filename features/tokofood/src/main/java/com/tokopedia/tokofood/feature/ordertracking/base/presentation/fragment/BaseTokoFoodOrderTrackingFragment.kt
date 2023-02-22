@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -250,6 +251,7 @@ class BaseTokoFoodOrderTrackingFragment :
      * initGroupBooking -> channelId -> observeUnreadChatCount
      */
     private fun initializeUnreadCounter(goFoodOrderNumber: String) {
+        if (!TokoChatConnection.isTokoChatActive()) return
         this.viewModel.goFoodOrderNumber = goFoodOrderNumber
         if (viewModel.channelId.isBlank()) {
             viewModel.initGroupBooking(viewModel.goFoodOrderNumber, this)

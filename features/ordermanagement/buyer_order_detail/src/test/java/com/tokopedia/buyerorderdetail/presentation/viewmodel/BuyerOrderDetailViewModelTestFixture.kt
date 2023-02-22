@@ -112,13 +112,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     val atcExpectedParams = arrayListOf(
         AddToCartMultiParam(
-            productId = product.productId.toLong(),
+            productId = product.productId,
             productName = product.productName,
-            productPrice = product.price.toLong(),
+            productPrice = product.price,
             qty = product.quantity,
             notes = product.productNote,
-            shopId = shopId.toInt(),
-            custId = userId.toInt()
+            shopId = shopId,
+            custId = userId
         )
     )
 

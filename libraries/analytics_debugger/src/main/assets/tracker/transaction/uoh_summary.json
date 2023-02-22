@@ -87,37 +87,9 @@
       "currentSite": "tokopediamarketplace",
       "event": "clickOrderList",
       "userId": ".*",
-      "eventAction": "click three dot menu marketplace",
+      "eventAction": "click secondary option on three dot menu marketplace",
       "eventLabel": ".*",
       "sessionIris": ".*"
-    },
-    {
-      "businessUnit": "order management",
-      "clientId": ".*",
-      "eventCategory": "order list",
-      "currentSite": "tokopediamarketplace",
-      "screenName": ".*",
-      "event": "add_to_cart",
-      "userId": ".*",
-      "eventAction": "click beli lagi on order card marketplace",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "dimension45": ".*",
-          "quantity": "\\d*.\\d*|\\d.\\d+E\\d",
-          "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "dimension40": "/order list - marketplace",
-          "item_name": ".*",
-          "dimension81": ".*",
-          "dimension80": ".*",
-          "item_id": "\\d*.\\d*|\\d.\\d+E\\d",
-          "item_brand": ".*",
-          "dimension79": "\\d*.\\d*|\\d.\\d+E\\d",
-          "item_variant": ".*",
-          "item_category": ".*"
-        }
-      ],
-      "eventLabel": ".*"
     },
     {
       "businessUnit": "order management",

@@ -2,7 +2,7 @@ package com.tokopedia.usercomponents.userconsent.fakes
 
 import com.google.gson.Gson
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
 
 object FakeGetCollectionResponse {
 

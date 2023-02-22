@@ -272,13 +272,20 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingCourier.setWeight(Typography.BOLD)
             tvShippingDuration.gone()
             btnChangeDuration.gone()
-            tvShippingCourierNotes.gone()
             tvShippingPrice.gone()
             if (shipping.serviceEta != null) {
                 tvShippingCourierEta.text = shipping.serviceEta
                 tvShippingCourierEta.visible()
             } else {
                 tvShippingCourierEta.gone()
+            }
+            val description = shipment.whitelabelDescription
+            if (description?.isNotEmpty() == true) {
+                tvShippingCourierNotes.text = description
+                tvShippingCourierNotes.weightType = Typography.DISPLAY_3
+                tvShippingCourierNotes.visible()
+            } else {
+                tvShippingCourierNotes.gone()
             }
             setMultiViewsOnClickListener(
                 tvShippingCourier,

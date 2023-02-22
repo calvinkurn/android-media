@@ -9,11 +9,11 @@ import com.tokopedia.logisticCommon.data.model.ShipperProductCPLModel
 
 class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShipperItemViewHolder>() {
 
-    val cplShipperItem = mutableListOf<ShipperProductCPLModel>()
+    private val cplShipperItem = mutableListOf<ShipperProductCPLModel>()
     var listener: CPLShipperItemAdapterListener? = null
 
     interface CPLShipperItemAdapterListener {
-        fun uncheckCplItem()
+        fun onCheckboxProductClicked(shipperProductId: Long, checked: Boolean)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CPLShipperItemViewHolder {
@@ -35,22 +35,8 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
         notifyDataSetChanged()
     }
 
-    fun updateChecked(checked: Boolean) {
-        cplShipperItem.forEach {
-            it.isActive = checked
-        }
-        notifyDataSetChanged()
-    }
-
     fun setupListener(listener: CPLShipperItemAdapterListener) {
         this.listener = listener
-    }
-
-    fun doCheckActiveCplShipperItem() {
-        val hasActiveCplShipperItem = cplShipperItem.find { it.isActive }
-        if (hasActiveCplShipperItem == null) {
-            listener?.uncheckCplItem()
-        }
     }
 
     inner class CPLShipperItemViewHolder(private val binding: ItemShipperProductNameBinding): RecyclerView.ViewHolder(binding.root) {
@@ -58,6 +44,7 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
         fun bindData(data: ShipperProductCPLModel) {
             val lastItem = cplShipperItem.last()
             binding.shipperProductName.text = data.shipperProductName
+            binding.shipperProductCb.setOnCheckedChangeListener(null)
             binding.shipperProductCb.isChecked = data.isActive
 
             if (data == lastItem) {
@@ -65,11 +52,7 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
             }
 
             binding.shipperProductCb.setOnCheckedChangeListener { _, isChecked ->
-                data.isActive = isChecked
-
-                if (isChecked.not()) {
-                    doCheckActiveCplShipperItem()
-                }
+                listener?.onCheckboxProductClicked(data.shipperProductId, isChecked)
             }
         }
     }

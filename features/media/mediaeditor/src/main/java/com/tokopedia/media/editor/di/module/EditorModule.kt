@@ -93,8 +93,10 @@ object EditorModule {
 
     @Provides
     @ActivityScope
-    fun provideWatermarkFilterRepository(): WatermarkFilterRepository {
-        return WatermarkFilterRepositoryImpl()
+    fun provideWatermarkFilterRepository(
+        @ApplicationContext context: Context
+    ): WatermarkFilterRepository {
+        return WatermarkFilterRepositoryImpl(context)
     }
 
     @Provides

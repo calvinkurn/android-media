@@ -1451,11 +1451,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     override fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int) {
         showLoadingDialog()
         val atcParam = AddToCartRequestParams(
-                productId = wishlistItem.id.toLong(),
+                productId = wishlistItem.id,
                 productName = wishlistItem.name,
                 price = wishlistItem.originalPriceFmt,
                 quantity = wishlistItem.minOrder.toIntOrZero(),
-                shopId = wishlistItem.shop.id.toIntOrZero(),
+                shopId = wishlistItem.shop.id,
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST)
         wishlistViewModel.doAtc(atcParam)
         wishlistItemOnAtc = wishlistItem

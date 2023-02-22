@@ -71,7 +71,8 @@ class ShippingCourierConverter @Inject constructor() {
                 otdPrev.textDetail,
                 otdPrev.urlDetail,
                 otdPrev.value,
-                otdPrev.iconUrl
+                otdPrev.iconUrl,
+                otdPrev.urlText
             )
             courierItemData.ontimeDelivery = otd
         }

@@ -3,6 +3,8 @@ package com.tokopedia.topchat.chatlist.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -24,4 +26,9 @@ class CommonTopchatModule {
         return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
     }
 
+    @ChatListScope
+    @Provides
+    fun provideIrisSession(@ApplicationContext context: Context): Session {
+        return IrisSession(context)
+    }
 }

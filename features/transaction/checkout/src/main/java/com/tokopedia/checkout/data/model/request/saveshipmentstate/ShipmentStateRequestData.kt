@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ShipmentStateRequestData(
         @SerializedName("address_id")
-        var addressId: Int = 0,
+        var addressId: String = "",
         @SerializedName("shop_products")
         var shopProductDataList: List<ShipmentStateShopProductData>? = null
 )

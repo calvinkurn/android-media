@@ -796,18 +796,18 @@ open class ProductManageFragment :
     }
 
     override fun editMultipleProductsEtalase() {
-        goToEtalasePicker()
-        ProductManageTracking.eventBulkSettingsMoveEtalase()
+            goToEtalasePicker()
+            ProductManageTracking.eventBulkSettingsMoveEtalase()
     }
 
     override fun editMultipleProductsInActive() {
-        showEditProductsInActiveConfirmationDialog()
-        ProductManageTracking.eventBulkSettingsDeactive()
+            showEditProductsInActiveConfirmationDialog()
+            ProductManageTracking.eventBulkSettingsDeactive()
     }
 
     override fun deleteMultipleProducts() {
-        viewModel.onDeleteMultipleProducts()
-        ProductManageTracking.eventBulkSettingsDeleteBulk()
+            viewModel.onDeleteMultipleProducts()
+            ProductManageTracking.eventBulkSettingsDeleteBulk()
     }
 
     override fun onFinish(selectedData: FilterOptionWrapper) {
@@ -1225,7 +1225,19 @@ open class ProductManageFragment :
 
     private fun setupMultiSelect() {
         textMultipleSelect?.setOnClickListener {
-            viewModel.toggleMultiSelect()
+            val isNotAllTobacco = adapter.data.filterIsInstance<ProductUiModel>().filter {
+                !it.isTobacco
+            }.isNotEmpty()
+
+            if (textMultipleSelect?.text.toString() == getString(R.string.product_manage_multiple_select)){
+                if (isNotAllTobacco) {
+                    viewModel.toggleMultiSelect()
+                } else {
+                    showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
+                }
+            }else{
+                viewModel.toggleMultiSelect()
+            }
             ProductManageTracking.eventMultipleSelect()
         }
 
@@ -1252,11 +1264,15 @@ open class ProductManageFragment :
             recyclerView?.post {
                 if (isChecked) {
                     productManageListAdapter.checkAllProducts(itemsChecked) {
-                        itemsChecked = it
+                        itemsChecked = it.filter { !it.isTobacco }.toMutableList()
+                        if (itemsChecked.isEmpty()){
+                            viewModel.toggleMultiSelect()
+                            showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
+                        }
                     }
                 } else {
                     productManageListAdapter.unCheckMultipleProducts(null, itemsChecked) {
-                        itemsChecked = it
+                        itemsChecked = it.filter { !it.isTobacco }.toMutableList()
                     }
                 }
 
@@ -1311,7 +1327,6 @@ open class ProductManageFragment :
 
     private fun renderCheckedView() {
         val multiSelectEnabled = viewModel.toggleMultiSelect.value == true
-
         if (multiSelectEnabled) {
             val textSelectedProduct = getString(
                 R.string.product_manage_bulk_count,
@@ -1498,6 +1513,7 @@ open class ProductManageFragment :
         val productNotEmpty = adapter.data
             .filterIsInstance<ProductUiModel>()
             .isNotEmpty()
+
         val productManageAccess =
             viewModel.productManageAccess.value as? Success<ProductManageAccess>
         val hasMultiSelectAccess = productManageAccess?.data?.multiSelect == true
@@ -1793,7 +1809,7 @@ open class ProductManageFragment :
     private fun unCheckMultipleProducts(productIds: List<String>) {
         recyclerView?.post {
             productManageListAdapter.unCheckMultipleProducts(productIds, itemsChecked) {
-                itemsChecked = it
+                itemsChecked = it.filter { !it.isTobacco }.toMutableList()
             }
 
             renderSelectAllCheckBox()
@@ -2758,7 +2774,7 @@ open class ProductManageFragment :
     }
 
     private fun showEditProductsInActiveConfirmationDialog() {
-        context?.let {
+        context?.let { it ->
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
@@ -3250,7 +3266,7 @@ open class ProductManageFragment :
                 view.id == R.id.imageStockReminder && !conditionNotShowCoachmarkReminder -> {
                     showCoachProductWithStockReminder(view)
                 }
-                view.id == R.id.btnMoreOptions && !conditionNotShowMoreMenu-> {
+                view.id == R.id.btnMoreOptions && !conditionNotShowMoreMenu -> {
                     if (GlobalConfig.isSellerApp()) {
                         showCoachMoreOptionMenu(
                             view,

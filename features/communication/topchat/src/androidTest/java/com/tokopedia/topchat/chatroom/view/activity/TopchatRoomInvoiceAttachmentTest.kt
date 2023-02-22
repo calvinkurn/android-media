@@ -14,19 +14,19 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withTotalItem
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers
 import org.junit.Test
 
 @UiTest
 class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
 
-    private val expectedIntent = Matchers.allOf(
+    private val expectedIntent = CoreMatchers.allOf(
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "Seller Testing"),
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "66961")
     )
 
-    private val expectedIntentSeller = Matchers.allOf(
+    private val expectedIntentSeller = CoreMatchers.allOf(
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "Buyer Testing"),
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "66961")
     )

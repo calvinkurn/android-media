@@ -121,7 +121,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     },
                     "mvc": {
                       "is_mvc": 0,
@@ -249,7 +250,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     },
                     "mvc": {
                       "is_mvc": 0,
@@ -318,7 +320,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     },
                     "mvc": {
                       "is_mvc": 0,
@@ -446,7 +449,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     },
                     "mvc": {
                       "is_mvc": 0,
@@ -515,7 +519,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     },
                     "mvc": {
                       "is_mvc": 0,
@@ -584,7 +589,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     },
                     "mvc": {
                       "is_mvc": 0,
@@ -712,7 +718,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     },
                     "mvc": {
                       "is_mvc": 0,

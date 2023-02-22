@@ -260,15 +260,34 @@
                         android:layout_marginHorizontal="@dimen/unify_space_16"
                         android:visibility="gone" />
 
-                    <com.tokopedia.unifycomponents.UnifyButton
-                        android:id="@+id/btn_action"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/unify_space_16"
-                        android:layout_marginEnd="@dimen/unify_space_16"
-                        android:textColor="@color/Unify_NN300"
-                        app:unifyButtonSize="small"
-                        app:unifyButtonVariant="text" />
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        >
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/btn_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_toStartOf="@id/btn_kebab_option"
+                            app:unifyButtonSize="small"
+                            app:unifyButtonVariant="text"
+                            />
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/btn_kebab_option"
+                            android:layout_width="32dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            app:unifyButtonSize="small"
+                            app:unifyButtonType="alternate"
+                            app:unifyButtonVariant="ghost"
+                            />
+
+                    </RelativeLayout>
 
                     <View
                         android:id="@+id/view_line"

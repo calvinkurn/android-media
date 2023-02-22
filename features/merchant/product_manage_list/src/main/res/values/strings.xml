@@ -234,4 +234,7 @@
     <string name="text_read_article">Baca Artikel</string>
     <string name="content_coach_mark_label_guarantee_title">Kini, ada tanda “Stok Tersedia” di produkmu, lho!</string>
     <string name="content_coach_mark_label_guarantee_desc">Tanda ini akan dilihat pembeli di halaman detail produkmu. Klik di sini untuk pelajari lebih lanjut, ya.</string>
+
+    <string name="product_tobacco_message">Produk tidak dapat dilihat di aplikasi ini. Kamu bisa cek lewat desktop atau web, ya.</string>
+    <string name="product_tobacco_message_not_allow_bulk_edit_all">Produk yang tidak dapat dipilih karena larangan dari Google Policy</string>
 </resources>

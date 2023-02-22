@@ -145,6 +145,7 @@ class EditorFragment @Inject constructor(
 
     private fun imageCrop(bitmap: Bitmap, originalPath: String){
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
+        val imageRatio = bitmap.width.toFloat() / bitmap.height
         cropCenterImage(bitmap, cropRatio)?.apply {
             viewModel.saveToCache(
                 first,
@@ -154,6 +155,7 @@ class EditorFragment @Inject constructor(
                     originalUrl = originalPath,
                     editorToolType = EditorToolType.CROP,
                     resultUrl = this.absolutePath,
+                    originalRatio = imageRatio
                 )
 
                 newEditorDetailUiModel.cropRotateValue = second

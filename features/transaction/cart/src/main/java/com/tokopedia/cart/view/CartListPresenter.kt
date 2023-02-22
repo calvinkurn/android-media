@@ -1668,11 +1668,11 @@ class CartListPresenter @Inject constructor(
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
-            this.productId = productId
-            this.shopId = shopId
+            this.productId = productId.toString()
+            this.shopId = shopId.toString()
             this.quantity = quantity
             this.notes = ""
-            this.warehouseId = 0
+            this.warehouseId = "0"
             this.atcFromExternalSource = externalSource
             this.productName = productName
             this.category = productCategory
@@ -1697,7 +1697,7 @@ class CartListPresenter @Inject constructor(
     override fun processAddToCartExternal(productId: Long) {
         view?.showProgressLoading()
         val requestParams = RequestParams.create()
-        requestParams.putLong(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId)
+        requestParams.putString(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId.toString())
         requestParams.putString(AddToCartExternalUseCase.PARAM_USER_ID, userSessionInterface.userId)
         compositeSubscription.add(
             addToCartExternalUseCase.createObservable(requestParams)

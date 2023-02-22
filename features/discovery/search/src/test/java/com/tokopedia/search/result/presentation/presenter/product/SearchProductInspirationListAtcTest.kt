@@ -23,6 +23,7 @@ private const val inspirationListAtc = "searchproduct/inspirationlistatc/inspira
 internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val visitableList by lazy { visitableListSlot.captured }
     private val keyword = "samsung"
     private val searchParameter = mapOf<String, Any>(
         SearchApiConst.Q to keyword,
@@ -30,25 +31,8 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         SearchApiConst.UNIQUE_ID to "unique_id",
         SearchApiConst.USER_ID to "0",
     )
-    private val clickedProductTest = InspirationCarouselDataView.Option.Product(
-        id = "3747018003",
-        name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
-    )
-
-    private val clickedProductWithVariantTest = InspirationCarouselDataView.Option.Product(
-        id = "2773621125",
-        name = "Edifier R1080BT Wireless Bluetooth Small Speaker Subwoofer 2.0 Wooden",
-        parentId = "123123",
-    )
-
-    private val clickedProductAdsTest = InspirationCarouselDataView.Option.Product(
-        id = "3747018003",
-        name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
-        isOrganicAds = true,
-    )
-
+    private val atcDataViewFirstIndex = 0
     private val expectedType = "same_shop"
-
     private val expectedAtcSuccessResponse = AddToCartDataModel(
         data = DataModel(
             cartId = "123123",
@@ -89,14 +73,24 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         }
     }
 
+    private fun `Given visitable list will be captured`() {
+        every {
+            productListView.setProductList(capture(visitableListSlot))
+        } just runs
+    }
+
     @Test
     fun `User click add to cart non variant`() {
         val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
 
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given visitable list will be captured`()
         `Given Load Data`()
 
-        `When user click add to cart non variant`()
+        val clickedProductAtc =
+            visitableList.filterIsInstance<InspirationListAtcDataView>()[atcDataViewFirstIndex]
+                .option.product[0]
+        `When user click add to cart`(clickedProductAtc)
 
         `Then verify add to cart API will hit`()
     }
@@ -106,30 +100,21 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
 
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given visitable list will be captured`()
         `Given Load Data`()
 
-        `When user click add to cart with variant`()
+        val clickedProductAtc =
+            visitableList.filterIsInstance<InspirationListAtcDataView>()[atcDataViewFirstIndex]
+                .option.product[1]
+        `When user click add to cart`(clickedProductAtc)
 
-        `Then verify variant bottomsheet will show`()
+        `Then verify variant bottomsheet will show`(clickedProductAtc)
+        `Then Verify Track Add To Cart Variant`(clickedProductAtc)
     }
 
-    private fun `When user click add to cart non variant`() {
+    private fun `When user click add to cart`(clickedProduct: InspirationCarouselDataView.Option.Product) {
         productListPresenter.onListAtcItemAddToCart(
-            clickedProductTest,
-            expectedType
-        )
-    }
-
-    private fun `When user click add to cart non variant product ads`() {
-        productListPresenter.onListAtcItemAddToCart(
-            clickedProductAdsTest,
-            expectedType
-        )
-    }
-
-    private fun `When user click add to cart with variant`() {
-        productListPresenter.onListAtcItemAddToCart(
-            clickedProductWithVariantTest,
+            clickedProduct,
             expectedType
         )
     }
@@ -140,10 +125,10 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         }
     }
 
-    private fun `Then verify variant bottomsheet will show`() {
+    private fun `Then verify variant bottomsheet will show`(clickedProduct: InspirationCarouselDataView.Option.Product) {
         verify {
-            inspirationListAtcView.openVariantBottomSheet(clickedProductWithVariantTest, expectedType)
-            inspirationListAtcView.trackAddToCartVariant(clickedProductWithVariantTest)
+            inspirationListAtcView.openVariantBottomSheet(clickedProduct, expectedType)
+            inspirationListAtcView.trackAddToCartVariant(clickedProduct)
         }
     }
 
@@ -152,14 +137,18 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
 
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given visitable list will be captured`()
         `Given Load Data`()
         `Given Add to cart is succeed`()
 
-        `When user click add to cart non variant`()
+        val clickedProductAtc =
+            visitableList.filterIsInstance<InspirationListAtcDataView>()[atcDataViewFirstIndex]
+                .option.product[0]
+        `When user click add to cart`(clickedProductAtc)
 
         `Then verify searchbar notification updated`()
         `Then verify toaster has opened`()
-        `Then verify item click and add to card has been tracked`(clickedProductTest)
+        `Then verify item click and add to card has been tracked`(clickedProductAtc)
     }
 
     @Test
@@ -167,14 +156,19 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
 
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given visitable list will be captured`()
         `Given Load Data`()
         `Given Add to cart is succeed`()
 
-        `When user click add to cart non variant product ads`()
+        val clickedProductAtc =
+            visitableList.filterIsInstance<InspirationListAtcDataView>()[atcDataViewFirstIndex]
+                .option.product[0]
+        `When user click add to cart`(clickedProductAtc)
 
         `Then verify searchbar notification updated`()
         `Then verify toaster has opened`()
-        `Then verify item click and add to card has been tracked`(clickedProductAdsTest)
+        `Then verify item click and add to card has been tracked`(clickedProductAtc)
+        `Then Verify TopAds Click Url Hit`(clickedProductAtc)
     }
 
     private fun `Given Add to cart is succeed`() {
@@ -215,9 +209,15 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         }
     }
 
-    private fun `Then Verify TopAds Click Url Hit`() {
+    private fun `Then Verify TopAds Click Url Hit`(clickedProduct: InspirationCarouselDataView.Option.Product) {
         verify {
-            inspirationListAtcView.trackAdsClick(clickedProductAdsTest)
+            inspirationListAtcView.trackAdsClick(clickedProduct)
+        }
+    }
+
+    private fun `Then Verify Track Add To Cart Variant`(clickedProduct: InspirationCarouselDataView.Option.Product) {
+        verify {
+            inspirationListAtcView.trackAddToCartVariant(clickedProduct)
         }
     }
 

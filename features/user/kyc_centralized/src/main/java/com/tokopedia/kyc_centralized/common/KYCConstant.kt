@@ -49,4 +49,7 @@ object KYCConstant {
     const val MB_6 = 6
     const val MB_10 = 10
     const val MB_15 = 15
+
+    const val consentCollectionId = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
+    const val consentVersion = "1"
 }

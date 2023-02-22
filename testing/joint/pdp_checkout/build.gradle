@@ -34,7 +34,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.variantCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation projectOrAar(rootProject.ext.libraries.telemetry)

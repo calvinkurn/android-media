@@ -23,6 +23,7 @@ class BuyerOrderDetailTrackerValidationTest700 : BuyerOrderDetailTrackerValidati
             testClickShopName(activityRule.activity)
             testClickProduct(activityRule.activity)
             testClickProductActionButton(activityRule.activity)
+            testClickInsuranceWidget()
             testClickCopyAWB(activityRule.activity)
             testClickPrimaryActionButton()
             testClickSecondaryActionButtonSeePoD(activityRule.activity)
@@ -41,7 +42,9 @@ class BuyerOrderDetailTrackerValidationTest700 : BuyerOrderDetailTrackerValidati
                 BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
                 BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonGiveReviewQueryPath,
                 BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonSeePoDQueryPath,
-                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickInsuranceWidgetQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.impressionInsuranceWidgetQueryPath
             )
             hasPassedAnalytics(cassavaTestRule)
         }

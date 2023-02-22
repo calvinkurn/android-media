@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -114,12 +115,16 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         return ""
     }
 
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TOP
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
     }
 
-    private fun initInjector() {
+    override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
                     .builder()

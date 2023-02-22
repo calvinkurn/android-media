@@ -96,7 +96,6 @@
             android:layout_marginBottom="16dp"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost"
             tools:text="beli"/>
 
     </LinearLayout>

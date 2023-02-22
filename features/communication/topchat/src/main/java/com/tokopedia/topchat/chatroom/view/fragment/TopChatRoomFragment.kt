@@ -2244,7 +2244,8 @@ open class TopChatRoomFragment :
 
     private fun addToWishlistV2(productId: String, success: () -> Unit) {
         viewModel.addToWishListV2(
-            productId, session.userId,
+            productId,
+            session.userId,
             object : WishlistV2ActionListener {
                 override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                     view?.let { v ->
@@ -2268,6 +2269,7 @@ open class TopChatRoomFragment :
                                 context,
                                 v
                             )
+                            success()
                         }
                     }
                 }
@@ -3470,13 +3472,15 @@ open class TopChatRoomFragment :
         element.productBundling.bundleType
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId ?: "")) {
             if (element.isBroadcast()) {
-                element.productBundling.bundleId?.let {
+                element.productBundling.bundleItem?.let {
                     TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
-                        it,
-                        element.productBundling.bundleStatus.toString(),
-                        element.productBundling.bundleId.toString(),
-                        getBroadcastSenderShopId(element),
-                        session.userId
+                        blastId = element.blastId,
+                        statusBundle = element.productBundling.bundleStatus.toString(),
+                        bundleId = element.productBundling.bundleId.toString(),
+                        bundleType = element.getBundleTypeMapped(),
+                        bundleItems = it,
+                        shopId = getBroadcastSenderShopId(element),
+                        userId = session.userId
                     )
                 }
             } else {
@@ -3526,7 +3530,7 @@ open class TopChatRoomFragment :
         return if (element.isSender) {
             session.shopName
         } else {
-            ""
+            opponentName
         }
     }
 

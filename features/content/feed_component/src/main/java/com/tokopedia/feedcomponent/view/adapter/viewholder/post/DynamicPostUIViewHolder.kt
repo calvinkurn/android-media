@@ -571,7 +571,7 @@ open class DynamicPostUIViewHolder(
             listener.onShareClick(
                 adapterPosition,
                 feedXCard.id,
-                feedXCard.author.name + " `post",
+                feedXCard.author.name + " post",
                 desc.replace("%s", feedXCard.webLink),
                 feedXCard.webLink,
                 feedXCard.media.firstOrNull()?.mediaUrl ?: "",
@@ -586,7 +586,7 @@ open class DynamicPostUIViewHolder(
             listener.onShareClick(
                 adapterPosition,
                 feedXCard.id,
-                feedXCard.author.name + " `post",
+                feedXCard.author.name + " post",
                 desc.replace("%s", feedXCard.webLink),
                 feedXCard.webLink,
                 feedXCard.author.logoURL,

@@ -42,19 +42,15 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_shop_moderated_permanent_ticker_description).orEmpty()
     }
 
-    fun getTickerNotifyMeTitle(): String {
-        return getString(com.tokopedia.product.manage.common.R.string.product_manage_notifyme_ticker_title).orEmpty()
-    }
-
-    fun getTickerNotifyMeDescription(): String {
-        return getString(com.tokopedia.product.manage.common.R.string.product_manage_notifyme_ticker_description).orEmpty()
-    }
-
     fun getTickerStockAvailableTitle(): String {
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_available_title).orEmpty()
     }
 
     fun getTickerStockAvailableDescription(): String {
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_available_description).orEmpty()
+    }
+
+    fun getTickerTobaccoDescription(): String {
+        return getString(com.tokopedia.product.manage.common.R.string.product_manage_tobacco_ticker_description).orEmpty()
     }
 }

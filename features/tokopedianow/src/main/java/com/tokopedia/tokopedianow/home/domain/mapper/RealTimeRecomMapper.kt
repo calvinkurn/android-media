@@ -20,7 +20,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 
 object RealTimeRecomMapper {
 
-    fun MutableList<HomeLayoutItemUiModel>.mapRealTimeRecommendation(
+    fun MutableList<HomeLayoutItemUiModel?>.mapRealTimeRecommendation(
         channelId: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?,
@@ -32,7 +32,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapLatestRealTimeRecommendation(
+    fun MutableList<HomeLayoutItemUiModel?>.mapLatestRealTimeRecommendation(
         channelId: String,
         @TokoNowLayoutType type: String
     ) {
@@ -47,7 +47,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapRefreshRealTimeRecommendation(
+    fun MutableList<HomeLayoutItemUiModel?>.mapRefreshRealTimeRecommendation(
         channelId: String,
         productId: String
     ) {
@@ -59,7 +59,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapRealTimeRecomState(
+    fun MutableList<HomeLayoutItemUiModel?>.mapRealTimeRecomState(
         channelId: String,
         productId: String,
         widgetState: RealTimeRecomWidgetState,
@@ -71,7 +71,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapLoadingRealTimeRecommendation(
+    fun MutableList<HomeLayoutItemUiModel?>.mapLoadingRealTimeRecommendation(
         channelId: String,
         @TokoNowLayoutType type: String
     ) {
@@ -81,7 +81,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.removeRealTimeRecommendation(
+    fun MutableList<HomeLayoutItemUiModel?>.removeRealTimeRecommendation(
         channelId: String,
         @TokoNowLayoutType type: String
     ) {
@@ -91,16 +91,18 @@ object RealTimeRecomMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.getRealTimeRecom(channelId: String): HomeRealTimeRecomUiModel? {
+    fun MutableList<HomeLayoutItemUiModel?>.getRealTimeRecom(channelId: String): HomeRealTimeRecomUiModel? {
         return getProductRecomItem(channelId)?.realTimeRecom ?: getLeftAtcItem(channelId)?.realTimeRecom
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.getProductRecomItem(channelId: String): HomeProductRecomUiModel? {
-        return map { it.layout }.filterIsInstance<HomeProductRecomUiModel>().firstOrNull { it.id == channelId }
+    private fun MutableList<HomeLayoutItemUiModel?>.getProductRecomItem(channelId: String): HomeProductRecomUiModel? {
+        return firstOrNull { (it?.layout is HomeProductRecomUiModel && it.layout.id == channelId) }
+            ?.layout as? HomeProductRecomUiModel
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.getLeftAtcItem(channelId: String): HomeLeftCarouselAtcUiModel? {
-        return map { it.layout }.filterIsInstance<HomeLeftCarouselAtcUiModel>().firstOrNull { it.id == channelId }
+    private fun MutableList<HomeLayoutItemUiModel?>.getLeftAtcItem(channelId: String): HomeLeftCarouselAtcUiModel? {
+        return firstOrNull { (it?.layout is HomeLeftCarouselAtcUiModel && it.layout.id == channelId) }
+            ?.layout as? HomeLeftCarouselAtcUiModel
     }
 
     private fun HomeProductRecomUiModel.getRecomItem(productId: String?): HomeRealTimeRecomProductUiModel? {
@@ -150,7 +152,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapRefreshLeftAtcRTR(
+    private fun MutableList<HomeLayoutItemUiModel?>.mapRefreshLeftAtcRTR(
         channelId: String,
         productId: String
     ) {
@@ -161,7 +163,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapRefreshProductRecomRTR(
+    private fun MutableList<HomeLayoutItemUiModel?>.mapRefreshProductRecomRTR(
         channelId: String,
         productId: String
     ) {
@@ -172,7 +174,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapLeftAtcRealTimeRecomState(
+    private fun MutableList<HomeLayoutItemUiModel?>.mapLeftAtcRealTimeRecomState(
         channelId: String,
         productId: String,
         state: RealTimeRecomWidgetState
@@ -184,7 +186,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapProductRealTimeRecomState(
+    private fun MutableList<HomeLayoutItemUiModel?>.mapProductRealTimeRecomState(
         channelId: String,
         productId: String,
         state: RealTimeRecomWidgetState
@@ -196,7 +198,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapLoadingLeftAtcRTR(channelId: String) {
+    private fun MutableList<HomeLayoutItemUiModel?>.mapLoadingLeftAtcRTR(channelId: String) {
         getLeftAtcItem(channelId)?.let { item ->
             updateItemById(item.id) {
                 mapLoadingLeftAtcRTR(item)
@@ -204,7 +206,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapLoadingProductRecomRTR(channelId: String) {
+    private fun MutableList<HomeLayoutItemUiModel?>.mapLoadingProductRecomRTR(channelId: String) {
         getProductRecomItem(channelId)?.let { item ->
             updateItemById(item.id) {
                 mapLoadingRealTimeRecomData(item)
@@ -212,7 +214,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapProductRecomRTR(
+    private fun MutableList<HomeLayoutItemUiModel?>.mapProductRecomRTR(
         channelId: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?
@@ -228,7 +230,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.mapMixLeftAtcRTR(
+    private fun MutableList<HomeLayoutItemUiModel?>.mapMixLeftAtcRTR(
         channelId: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?
@@ -244,7 +246,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.removeMixLeftAtcRTR(channelId: String) {
+    private fun MutableList<HomeLayoutItemUiModel?>.removeMixLeftAtcRTR(channelId: String) {
         getLeftAtcItem(channelId)?.let {
             updateItemById(it.id) {
                 LeftCarouselMapper.removeLeftAtcRTR(it)
@@ -252,7 +254,7 @@ object RealTimeRecomMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.removeProductRecomRTR(channelId: String) {
+    private fun MutableList<HomeLayoutItemUiModel?>.removeProductRecomRTR(channelId: String) {
         getProductRecomItem(channelId)?.let {
             updateItemById(it.id) {
                 ProductRecomMapper.removeRealTimeRecomData(it)

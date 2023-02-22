@@ -9,7 +9,7 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.homenav.mock.MainNavMockResponseConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.homenav.view.activity.HomeNavActivity

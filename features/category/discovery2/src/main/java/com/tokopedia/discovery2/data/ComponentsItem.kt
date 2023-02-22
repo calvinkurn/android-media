@@ -101,6 +101,7 @@ data class ComponentsItem(
         var errorState: ErrorState? = null,
         var userAddressData: LocalCacheModel? = null,
         var nextPageKey:String? = "",
+        var isFromCategory: Boolean = false,
         var horizontalProductFailState: Boolean = false,
         var isSelectedFiltersFromQueryApplied: Boolean = false,
         var isExplicitWidgetHidden: Boolean = false,

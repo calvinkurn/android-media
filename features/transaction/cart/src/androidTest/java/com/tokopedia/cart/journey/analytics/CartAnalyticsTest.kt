@@ -8,7 +8,7 @@ import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartIdlingResource
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper

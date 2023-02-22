@@ -106,7 +106,7 @@
     <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
     <string name="feed_vod_share_weblink">https://www.tokopedia.com/play/channel/%s</string>
     <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
-    <string name="feed_share_title">%s `post</string>
+    <string name="feed_share_title">%s post</string>
     <string name="feed_share_desc_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
 
     <!--Delete Post -->

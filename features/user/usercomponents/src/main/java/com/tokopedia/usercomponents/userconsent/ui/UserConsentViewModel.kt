@@ -6,13 +6,16 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.domain.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.SubmitConsentUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class UserConsentViewModel @Inject constructor(
     private val getUserConsentCollection: GetConsentCollectionUseCase,
+    private val submitConsentUseCase: SubmitConsentUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -40,6 +43,12 @@ class UserConsentViewModel @Inject constructor(
         }, {
             _consentCollection.value = UserComponentsStateResult.Fail(it)
         })
+    }
+
+    fun submitConsent(param: ConsentSubmissionParam) {
+        launchCatchError(block =  {
+            submitConsentUseCase(param)
+        }, onError = {})
     }
 
     companion object {
