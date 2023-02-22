@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 import javax.inject.Inject
 
@@ -77,7 +78,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         return coverDataStore.getObservableSelectedCover()
     }
 
-    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
+    override fun getSelectedCoverAsFlow(): MutableStateFlow<PlayCoverUiModel> {
         return coverDataStore.getSelectedCoverAsFlow()
     }
 

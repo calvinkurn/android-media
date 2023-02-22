@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
@@ -26,6 +27,7 @@ import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -53,6 +55,12 @@ internal class PlayBroadcastViewModelRobot(
     logger: PlayLogger = mockk(relaxed = true),
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
 ) : Closeable {
+
+    private val testDoubleModelBuilder = TestDoubleModelBuilder()
+
+    init {
+        coEvery { mDataStore.getSetupDataStore() } returns testDoubleModelBuilder.buildSetupDataStore(dispatcher = dispatchers)
+    }
 
     private val viewModel = PlayBroadcastViewModel(
         handle,
