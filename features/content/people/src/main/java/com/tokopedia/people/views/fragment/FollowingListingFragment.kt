@@ -96,7 +96,7 @@ class FollowingListingFragment @Inject constructor(
 
         view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
             isSwipeRefresh = true
-            mAdapter.cursor = ""
+            mAdapter.lastCursor = ""
             mAdapter.startDataLoading("")
         }
     }
@@ -120,7 +120,7 @@ class FollowingListingFragment @Inject constructor(
                                 mAdapter.resetAdapter()
                             }
 
-                            mAdapter.onSuccess(it.data)
+                            mAdapter.onSuccess(it.data, it.nextCursor)
                         }
                         is ErrorMessage -> {
                             mAdapter.onError()
@@ -230,7 +230,7 @@ class FollowingListingFragment @Inject constructor(
 
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
-        mAdapter.cursor = ""
+        mAdapter.lastCursor = ""
         mAdapter.startDataLoading("")
     }
 
