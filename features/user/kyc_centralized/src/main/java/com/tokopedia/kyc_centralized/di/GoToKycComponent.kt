@@ -10,7 +10,8 @@ import dagger.Component
 @ActivityScope
 @Component(
     modules = [
-        GotoKycViewModelModule::class
+        GotoKycViewModelModule::class,
+        GoToKycModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )

@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class GotoKycMainViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val state: SavedStateHandle
+//    private val state: SavedStateHandle
 ) : BaseViewModel(dispatcher.main)  {
 }
