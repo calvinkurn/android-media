@@ -18,6 +18,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherTypeBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
@@ -27,6 +28,7 @@ import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
+import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -121,7 +123,15 @@ class VoucherTypeFragment : BaseDaggerFragment() {
 
     override fun onFragmentBackPressed(): Boolean {
         activity?.finish()
-        RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MVC_LIST)
+        context?.let {
+            val source = SharedPreferencesUtil().getEditCouponSourcePage(it)
+            if (source == VoucherDetailActivity::class.java.toString()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MVC_LIST)
+                VoucherDetailActivity.start(it, voucherConfiguration.duplicatedVoucherId)
+            } else {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MVC_LIST)
+            }
+        }
         return super.onFragmentBackPressed()
     }
 
