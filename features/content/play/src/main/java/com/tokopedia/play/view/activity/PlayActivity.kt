@@ -17,6 +17,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
+import com.tokopedia.play.databinding.ViewVerticalSwipeCoachmarkBinding
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -32,6 +33,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentUpcomingViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
+import com.tokopedia.play.view.viewcomponent.SwipeCoachMarkViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
@@ -39,6 +41,7 @@ import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -101,6 +104,9 @@ class PlayActivity :
             dataSource = this,
             listener = this
         )
+    }
+    private val swipeCoachMarkView by viewComponent {
+        SwipeCoachMarkViewComponent(it)
     }
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
     private val fragmentErrorView by viewComponent {
