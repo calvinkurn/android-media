@@ -25,10 +25,31 @@ open class DebugMediaLoaderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_debug_medialoader)
 
+        edtUrl.setText("https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg")
+
+        edtProperties.setText(
+            GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+                .toJson(Properties())
+        )
+
+        btnEdit.setOnClickListener {
+            isCustomPropertiesVisible = if (!isCustomPropertiesVisible) {
+                edtProperties.show()
+                true
+            } else {
+                edtProperties.hide()
+                false
+            }
+        }
+
         btnShow.setOnClickListener {
             val url = edtUrl.text.toString().trim()
+            val json = edtProperties.text.toString().trim()
 
-            imgSample.loadSecureImage(url, userSession)
+            val properties = Gson().fromJson(json, Properties::class.java)
+            imgSample.debugLoadImage(url, properties)
         }
     }
 
