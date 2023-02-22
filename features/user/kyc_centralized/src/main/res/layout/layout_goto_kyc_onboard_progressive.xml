@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/goto_kyc_onboard_progressive_tokopedia_care"
+        android:text="@string/goto_kyc_question_ktp_issue"
         app:typographyType="paragraph_3"
         android:layout_marginVertical="16dp"/>
 

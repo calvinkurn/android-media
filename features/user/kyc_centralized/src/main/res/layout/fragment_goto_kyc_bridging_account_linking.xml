@@ -94,7 +94,7 @@
         android:id="@+id/tv_tokopedia_care"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/goto_kyc_bridging_done_gopay_tokopedia_care"
+        android:text="@string/goto_kyc_question_ktp_issue"
         android:gravity="center"
         android:visibility="gone"
         tools:visibility="visible"

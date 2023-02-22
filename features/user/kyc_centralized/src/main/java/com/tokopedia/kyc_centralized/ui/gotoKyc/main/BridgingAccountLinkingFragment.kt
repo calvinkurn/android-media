@@ -95,14 +95,14 @@ class BridgingAccountLinkingFragment : TkpdBaseV4Fragment() {
             if (isDoneGopay) {
                 goToDobChallenge()
             } else {
-                goToKycProcess()
+                goToCaptureKycDocuments()
             }
         }
     }
 
     private fun initSpannable() {
-        val message = getString(R.string.goto_kyc_bridging_done_gopay_tokopedia_care)
-        val indexStar = message.indexOf(getString(R.string.goto_kyc_bridging_done_gopay_tokopedia_care_text_link))
+        val message = getString(R.string.goto_kyc_question_ktp_issue)
+        val indexStar = message.indexOf(getString(R.string.goto_kyc_contact_tokopedia_care))
         val indexEnd = message.length
 
         val spannable = SpannableString(message)
@@ -136,7 +136,7 @@ class BridgingAccountLinkingFragment : TkpdBaseV4Fragment() {
             String.format(
                 TOKOPEDIA_CARE_STRING_FORMAT,
                 ApplinkConst.WEBVIEW,
-                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
+                TokopediaUrl.getInstance().WEB.plus(TOKOPEDIA_CARE_PATH)
             )
         )
     }
@@ -145,7 +145,7 @@ class BridgingAccountLinkingFragment : TkpdBaseV4Fragment() {
 
     }
 
-    private fun goToKycProcess() {
+    private fun goToCaptureKycDocuments() {
 
     }
 
