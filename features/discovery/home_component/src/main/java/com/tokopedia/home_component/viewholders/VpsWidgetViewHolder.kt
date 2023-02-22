@@ -22,10 +22,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by frenzel
  */
-class VpsWidgetViewHolder (itemView: View,
-                           val vpsWidgetListener: VpsWidgetListener?,
-                           val homeComponentListener: HomeComponentListener?,
-                           val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<VpsDataModel>(itemView) {
+class VpsWidgetViewHolder(
+    itemView: View,
+    val vpsWidgetListener: VpsWidgetListener?,
+    val homeComponentListener: HomeComponentListener?,
+    val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null
+) : AbstractViewHolder<VpsDataModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_vps_widget
@@ -49,15 +51,18 @@ class VpsWidgetViewHolder (itemView: View,
     }
 
     private fun setHeaderComponent(element: VpsDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                vpsWidgetListener?.onSeeAllClicked(element.channelModel, adapterPosition)
-            }
+        binding?.homeComponentHeaderView?.setChannel(
+            element.channelModel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    vpsWidgetListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                }
             }
-        })
+        )
     }
 
     private fun setChannelDivider(element: VpsDataModel) {
@@ -69,7 +74,7 @@ class VpsWidgetViewHolder (itemView: View,
     }
 
     private fun initView(element: VpsDataModel) {
-        recyclerView?.layoutManager = layoutManager
+        initRV()
         initItems(element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
@@ -78,11 +83,17 @@ class VpsWidgetViewHolder (itemView: View,
         }
     }
 
+    private fun initRV() {
+        parentRecyclerViewPool?.let { recyclerView?.setRecycledViewPool(parentRecyclerViewPool) }
+        recyclerView?.layoutManager = layoutManager
+    }
+
     private fun initItems(element: VpsDataModel) {
         adapter.addData(element)
         recyclerView?.adapter = adapter
         adapter.notifyDataSetChanged()
-        if (recyclerView?.itemDecorationCount == 0)
+        if (recyclerView?.itemDecorationCount == 0) {
             recyclerView?.addItemDecoration(VpsWidgetSpacingItemDecoration())
+        }
     }
 }
