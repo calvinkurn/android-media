@@ -14,6 +14,7 @@ const val APPROVE_PARTIAL_ORDER_FULFILLMENT_QUERY = """
           order_id: ${'$'}order_id
       }){
          success
+         message
       }
     }
 """
