@@ -258,6 +258,8 @@
     <string name="goto_kyc_onboard_progressive_subtitle">Kamu udah terdaftar di GoPay, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_onboard_progressive_item_title">KTP di GoPay</string>
     <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
+    <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
+    <string name="goto_kyc_onboard_benefit_button_verification">Ambil Keuntungannya</string>
     <string name="goto_kyc_bridging_title">Sip, akun Gojek-mu udah kesambung!</string>
     <string name="goto_kyc_bridging_not_done_gopay_subtitle">Kamu tinggal lanjutin proses berikutnya, deh.</string>
     <string name="goto_kyc_bridging_not_done_gopay_item_ktp_title">Ambil foto KTP</string>

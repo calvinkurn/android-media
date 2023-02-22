@@ -386,8 +386,21 @@ object ApplinkConstInternalUserPlatform {
      * @Applink     : tokopedia-android-internal://user/goto-kyc?projectId={projectId}
      * @param
      *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
      **/
     const val GOTO_KYC = "$NEW_INTERNAL_USER/goto-kyc"
+
+    /**
+     * ## GoTo KYC With Benefit
+     * ### Open GoTo KYC With Benefit
+     *
+     * @class       : GotoKycOnboardBenefitActivity
+     * @Applink     : tokopedia-android-internal://user/goto-kyc-with-onboard-benefit?projectId={projectId}
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
+     **/
+    const val GOTO_KYC_WITH_ONBOARD_BENEFIT = "$NEW_INTERNAL_USER/goto-kyc-with-onboard-benefit"
 
     /**
      * ## KYC Param | type
