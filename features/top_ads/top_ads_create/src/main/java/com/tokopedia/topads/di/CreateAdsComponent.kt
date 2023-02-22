@@ -1,6 +1,7 @@
 package com.tokopedia.topads.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.topads.view.activity.MpAdCreationActivity
 import com.tokopedia.topads.view.fragment.*
 import dagger.Component
 
@@ -21,6 +22,8 @@ interface CreateAdsComponent {
     fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen)
     fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen2)
     fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen3)
-
+    fun inject(mpAdCreationActivity:MpAdCreationActivity)
+    fun inject(mpAdsGroupsFragment: MpAdGroupFragment)
+    fun inject(mpCreateAdGroupFragment: MpCreateAdGroupFragment)
 
 }

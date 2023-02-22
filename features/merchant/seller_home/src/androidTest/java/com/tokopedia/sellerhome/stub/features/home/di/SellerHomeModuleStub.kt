@@ -18,6 +18,8 @@ import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by @ilhamsuaib on 06/12/21.
@@ -74,12 +76,28 @@ class SellerHomeModuleStub {
 
     @SellerHomeScope
     @Provides
+    fun provideOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+            .readTimeout(0L, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+        return builder.build()
+    }
+
+    @SellerHomeScope
+    @Provides
     fun provideSellerHomeSSE(
         @ApplicationContext context: Context,
         sseMapper: WidgetSSEMapper,
         userSession: UserSessionInterface,
+        sseOkHttpClient: OkHttpClient,
         dispatchers: CoroutineDispatchers
     ): SellerHomeWidgetSSE {
-        return SellerHomeWidgetSSEImpl(context, userSession, sseMapper, dispatchers)
+        return SellerHomeWidgetSSEImpl(
+            context,
+            userSession,
+            sseMapper,
+            sseOkHttpClient,
+            dispatchers
+        )
     }
 }

@@ -38,7 +38,7 @@ class ChatListTickerViewHolder(
                 }
             })
             addOnImpressionListener(element.impressHolder) {
-                chatListTickerListener.onChatListTickerImpressed()
+                chatListTickerListener.onChatListTickerImpressed(element.applink)
             }
         }
     }

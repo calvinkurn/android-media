@@ -63,11 +63,16 @@ class GetWhiteListNewUseCase @Inject constructor(
                   link
                   badge
                   type
+                  has_accept_tnc
                   post {
                     enable
                     has_username
                   }
                   livestream {
+                    enable
+                    has_username
+                  }
+                  shortvideo {
                     enable
                     has_username
                   }

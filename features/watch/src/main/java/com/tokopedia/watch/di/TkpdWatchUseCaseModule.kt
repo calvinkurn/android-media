@@ -9,6 +9,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.watch.orderlist.mapper.AcceptBulkOrderMapper
 import com.tokopedia.watch.orderlist.mapper.AcceptBulkOrderStatusMapper
+import com.tokopedia.watch.notification.mapper.NotificationListMapper
+import com.tokopedia.watch.notification.usecase.GetNotificationListUseCase
 import com.tokopedia.watch.orderlist.mapper.OrderListMapper
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
 import com.tokopedia.watch.orderlist.usecase.SomListAcceptBulkOrderUseCase
@@ -46,6 +48,22 @@ class TkpdWatchUseCaseModule {
         orderListMapper: OrderListMapper
     ): GetOrderListUseCase {
         return GetOrderListUseCase(graphqlUseCase, orderListMapper)
+    }
+
+    @Provides
+    @TkpdWatchScope
+    fun provideNotificationListMapper(
+    ): NotificationListMapper {
+        return NotificationListMapper()
+    }
+
+    @Provides
+    @TkpdWatchScope
+    fun provideGetNotificationListUseCase(
+        graphqlUseCase: GraphqlUseCase,
+        notificationListMapper: NotificationListMapper
+    ): GetNotificationListUseCase {
+        return GetNotificationListUseCase(graphqlUseCase, notificationListMapper)
     }
 
     @Provides

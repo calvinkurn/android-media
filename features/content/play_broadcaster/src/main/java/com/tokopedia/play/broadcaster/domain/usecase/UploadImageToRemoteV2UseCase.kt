@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.play_common.const.PlayUploadSourceIdConst
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.io.File
@@ -17,16 +18,11 @@ class UploadImageToRemoteV2UseCase @Inject constructor(
     private var params: RequestParams = RequestParams.EMPTY
 
     fun setParams(mediaPath: File): RequestParams {
-        params = uploaderUseCase.createParams(PLAY_BROADCAST_COVER_SOURCE_ID, mediaPath)
+        params = uploaderUseCase.createParams(PlayUploadSourceIdConst.uploadImageSourceId, mediaPath)
         return params
     }
 
     override suspend fun executeOnBackground(): UploadResult {
         return uploaderUseCase(params)
-    }
-
-    companion object {
-
-        private const val PLAY_BROADCAST_COVER_SOURCE_ID = "jJtrdn"
     }
 }

@@ -14,7 +14,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.bottomsheet.SomBott
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 
-class BottomSheetManager(private val view: ViewGroup) {
+class BottomSheetManager(private val view: ViewGroup, private val fragmentManager: FragmentManager) {
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
     private var orderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet? = null
     private var somRejectReasonBottomSheet: SomRejectReasonBottomSheet? = null
@@ -201,6 +201,7 @@ class BottomSheetManager(private val view: ViewGroup) {
         viewModel: SomOrderExtensionViewModel
     ): SomBottomSheetOrderExtensionRequest {
         return SomBottomSheetOrderExtensionRequest(
+            fragmentManager,
             view.context,
             orderId,
             data,

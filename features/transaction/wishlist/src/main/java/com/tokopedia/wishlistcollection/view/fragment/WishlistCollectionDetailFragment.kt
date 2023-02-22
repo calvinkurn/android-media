@@ -146,7 +146,6 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -211,13 +210,13 @@ class WishlistCollectionDetailFragment :
     private var collectionType = 0
     private var countDelete = 1
     private var toolbarTitle = ""
-    private var bottomSheetCollection = BottomSheetAddCollectionWishlist()
+    private var bottomSheetCollection: BottomSheetAddCollectionWishlist? = BottomSheetAddCollectionWishlist()
     private var _isDeleteOnly = false
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
     private var isCTAResetOfferFilterClicked = false
-    private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
+    private var bottomSheetCollectionSettings: BottomSheetWishlistCollectionSettings? = BottomSheetWishlistCollectionSettings()
     private var isToolbarHasDesc = false
     private var toolbarDesc = ""
     private val coachMarkItemSharingIcon = ArrayList<CoachMark2Item>()
@@ -351,6 +350,12 @@ class WishlistCollectionDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
+    }
+
+    override fun onDestroyView() {
+        bottomSheetCollection = null
+        bottomSheetCollectionSettings = null
+        super.onDestroyView()
     }
 
     private fun isAutoRefreshEnabled(): Boolean {
@@ -1259,13 +1264,11 @@ class WishlistCollectionDetailFragment :
             if (activityWishlistV2 != PARAM_HOME) {
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder().apply {
-                    if (WishlistV2RemoteConfigRollenceUtil.isEnableRollenceWishlistSharing()) {
-                        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
-                        ) {
-                            addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
-                        }
+                    if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
+                    ) {
+                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
                     }
                     addIcon(iconId = IconList.ID_CART, disableRouteManager = true, onClick = { handleGoToCartPage() })
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
@@ -3022,9 +3025,10 @@ class WishlistCollectionDetailFragment :
     private fun onCollectionSettingsClicked(collectionId: String, collectionName: String) {
         bottomSheetCollectionSettings =
             BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, collectionType, listSettingButtons)
-        bottomSheetCollectionSettings.setListener(this@WishlistCollectionDetailFragment)
-        if (bottomSheetCollectionSettings.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheetCollectionSettings.show(childFragmentManager)
+        bottomSheetCollectionSettings?.setOnDismissListener { bottomSheetCollectionSettings = null }
+        bottomSheetCollectionSettings?.setListener(this@WishlistCollectionDetailFragment)
+        if (bottomSheetCollectionSettings?.isAdded == true || childFragmentManager.isStateSaved) return
+        bottomSheetCollectionSettings?.show(childFragmentManager)
     }
 
     private fun turnOnBulkDeleteMode(isDeleteOnly: Boolean) {
@@ -3491,9 +3495,10 @@ class WishlistCollectionDetailFragment :
             source,
             false
         )
-        if (bottomSheetCollection.isAdded || fragmentManager.isStateSaved) return
-        bottomSheetCollection.setActionListener(this@WishlistCollectionDetailFragment)
-        bottomSheetCollection.show(fragmentManager)
+        bottomSheetCollection?.setOnDismissListener { bottomSheetCollection = null }
+        if (bottomSheetCollection?.isAdded == true || fragmentManager.isStateSaved) return
+        bottomSheetCollection?.setActionListener(this@WishlistCollectionDetailFragment)
+        bottomSheetCollection?.show(fragmentManager)
     }
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
@@ -3567,13 +3572,13 @@ class WishlistCollectionDetailFragment :
             collectionName = name,
             productIds = listProductId
         )
-        bottomSheetCollection.saveToCollection(addWishlistParam)
+        bottomSheetCollection?.saveToCollection(addWishlistParam)
         WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listProductId.toString(), SRC_WISHLIST)
     }
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
         if (dataObject.totalCollection < dataObject.maxLimitCollection) {
-            bottomSheetCollection.dismiss()
+            bottomSheetCollection?.dismiss()
             showBottomSheetCreateNewCollection(childFragmentManager)
         } else {
             val intent = Intent()
@@ -3633,7 +3638,7 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
-        bottomSheetCollectionSettings.dismiss()
+        bottomSheetCollectionSettings?.dismiss()
         goToEditCollectionPage()
     }
 
@@ -3645,7 +3650,7 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {
-        bottomSheetCollectionSettings.dismiss()
+        bottomSheetCollectionSettings?.dismiss()
         showDialogDeleteCollection(collectionId, collectionName)
         WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
     }
@@ -3660,7 +3665,7 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onManageItemsInCollection(actionText: String) {
-        bottomSheetCollectionSettings.dismiss()
+        bottomSheetCollectionSettings?.dismiss()
         turnOnBulkDeleteMode(false)
         WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
     }

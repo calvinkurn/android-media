@@ -38,7 +38,6 @@ import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LONG
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.editshipping.util.ShopEditAddressUtils
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
@@ -48,7 +47,6 @@ import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -228,17 +226,15 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
         txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
         tvUserConsent = view?.findViewById(R.id.tv_user_consent)
+        mapView = view?.findViewById(R.id.map_view_detail)
+        btnOpenMap = view?.findViewById(R.id.btn_open_map)
         initMaps()
     }
 
     private fun initMaps() {
         context?.let {
-            if (MapsAvailabilityHelper.isMapsAvailable(it)) {
-                mapView = view?.findViewById(R.id.map_view_detail)
-                btnOpenMap = view?.findViewById(R.id.btn_open_map)
-            } else {
-                view?.findViewById<View>(R.id.layout_maps_preview)?.gone()
-                view?.findViewById<Ticker>(R.id.ticker_maps_preview_unavailable)?.visible()
+            if (!MapsAvailabilityHelper.isMapsAvailable(it)) {
+                mapView?.gone()
             }
         }
     }

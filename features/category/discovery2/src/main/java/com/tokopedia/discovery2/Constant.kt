@@ -34,7 +34,7 @@ object Constant {
     }
 
     object ATCButtonCTATypes {
-        const val MINI_CART = "minicart_cta"
+        const val MINI_CART = "minicart_atc"
         const val GENERAL_CART = "general_atc"
     }
 

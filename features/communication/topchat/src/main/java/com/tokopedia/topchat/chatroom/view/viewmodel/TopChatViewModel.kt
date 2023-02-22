@@ -980,7 +980,14 @@ open class TopChatViewModel @Inject constructor(
         sendWsStopTyping()
     }
 
-    fun startUploadImages(image: ImageUploadUiModel) {
+    /**
+     * isSecure param is used when users don't use service
+     * otherwise it will be sent in service param
+     */
+    fun startUploadImages(
+        image: ImageUploadUiModel,
+        isSecure: Boolean
+    ) {
         _removeSrwBubble.value = null
         if (isEnableUploadImageService()) {
             showPreviewMsg(image)
@@ -991,7 +998,8 @@ open class TopChatViewModel @Inject constructor(
             uploadImageUseCase.upload(
                 image = image,
                 onSuccess = ::onSuccessUploadImage,
-                onError = ::onErrorUploadImage
+                onError = ::onErrorUploadImage,
+                isSecure = isSecure
             )
         }
     }
@@ -1013,12 +1021,14 @@ open class TopChatViewModel @Inject constructor(
 
     private fun onSuccessUploadImage(
         uploadId: String,
-        imageUploadUiModel: ImageUploadUiModel
+        imageUploadUiModel: ImageUploadUiModel,
+        isSecure: Boolean
     ) {
         val wsPayload = payloadGenerator.generateImageWsPayload(
             roomMetaData,
             uploadId,
-            imageUploadUiModel
+            imageUploadUiModel,
+            isSecure
         )
         sendWsPayload(wsPayload)
     }

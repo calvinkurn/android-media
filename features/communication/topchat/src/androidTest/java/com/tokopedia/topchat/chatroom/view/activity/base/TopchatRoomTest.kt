@@ -24,7 +24,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
-import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
@@ -34,7 +33,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -54,6 +52,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -205,7 +204,6 @@ abstract class TopchatRoomTest {
     protected var firstPageChatBroadcastAsBuyer = GetExistingChatPojo()
     protected var getShopFollowingStatus = ShopFollowingPojo()
     protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
-    protected var uploadImageReplyResponse = ChatReplyPojo()
     protected var orderProgressResponse = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
@@ -248,17 +246,17 @@ abstract class TopchatRoomTest {
         )
     }
 
-    protected open fun enableCompressImage() {
-        remoteConfig.setString(
-            RemoteConfigKey.TOPCHAT_COMPRESS,
-            "true"
+    protected open fun enableUploadSecure() {
+        abTestPlatform.setString(
+            TopChatRoomFragment.ROLLENCE_UPLOAD_SECURE,
+            TopChatRoomFragment.ROLLENCE_UPLOAD_SECURE
         )
     }
 
-    protected open fun disableCompressImage() {
-        remoteConfig.setString(
-            RemoteConfigKey.TOPCHAT_COMPRESS,
-            "false"
+    protected open fun disableUploadSecure() {
+        abTestPlatform.setString(
+            TopChatRoomFragment.ROLLENCE_UPLOAD_SECURE,
+            ""
         )
     }
 
@@ -291,10 +289,6 @@ abstract class TopchatRoomTest {
         getShopFollowingStatus = AndroidFileUtil.parse(
             "success_get_shop_following_status.json",
             ShopFollowingPojo::class.java
-        )
-        uploadImageReplyResponse = AndroidFileUtil.parse(
-            "success_upload_image_reply.json",
-            ChatReplyPojo::class.java
         )
         chatRoomSettingResponse = AndroidFileUtil.parse(
             "success_get_chat_setting_fraud_alert.json",

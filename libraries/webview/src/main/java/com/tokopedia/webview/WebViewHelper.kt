@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.net.Uri
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import timber.log.Timber
-import java.net.URLDecoder
+import com.tokopedia.webview.ext.encodeQueryNested
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -27,6 +29,8 @@ object WebViewHelper {
     private const val PARAM_APPCLIENT_ID = "appClientId"
     private const val HOST_TOKOPEDIA = "tokopedia"
 
+    private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
+
     @JvmStatic
     fun isUrlValid(url: String): Boolean {
         return if (isSeamless(url)) {
@@ -40,9 +44,11 @@ object WebViewHelper {
 
     private fun getDomainName(url: String): String {
         val domain = Uri.parse(url).host
-        return if (domain != null)
+        return if (domain != null) {
             if (domain.startsWith(PREFIX_PATTERN)) domain.substring(4) else domain
-        else ""
+        } else {
+            ""
+        }
     }
 
     private fun isSeamless(url: String): Boolean = getDomainName(url) == JS_DOMAIN_PATTERN
@@ -52,6 +58,15 @@ object WebViewHelper {
         return uri.getQueryParameter(KEY_PARAM_URL)
     }
 
+    @JvmStatic
+    fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
+        val rc = FirebaseRemoteConfigImpl(context)
+        return if (rc.getBoolean(ANDROID_WEBVIEW_JS_ENCODE, true)) {
+            appendGAClientIdAsQueryParamV2(url, context)
+        } else {
+            appendGAClientIdAsQueryParamLegacy(url, context)
+        }
+    }
 
     /**
      * This function appends GA client ID as a query param for url contains tokopedia as domain
@@ -61,35 +76,27 @@ object WebViewHelper {
      * @return
      */
     @JvmStatic
-    fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
-        Timber.d("WebviewHelper before $url")
+    fun appendGAClientIdAsQueryParamLegacy(url: String?, context: Context): String? {
         var returnURl = url
 
-        if (url?.contains("ta.tokopedia.com") == true)
+        if (url?.contains("ta.tokopedia.com") == true) {
             return url
+        }
 
         if (url != null && isPassingGAClientIdEnable(context)) {
             try {
-                //parse url
+                // parse url
                 val uri = Uri.parse(url)
 
-
-                //logic to append GA clientID in web URL to track app to web sessions
+                // logic to append GA clientID in web URL to track app to web sessions
                 if (uri != null && !url.contains(PARAM_APPCLIENT_ID)) {
-                    val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString();
+                    val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString()
 
                     if (clientID != null && url.contains("js.tokopedia.com")) {
-                        val tokopediaEncodedUrl = uri.getQueryParameter("url")
+                        val tokopediaDecodedUrl = uri.getQueryParameter("url")
 
-                        if (tokopediaEncodedUrl != null) {
-                            var tokopediaDecodedUrl =
-                                URLDecoder.decode(tokopediaEncodedUrl, "UTF-8")
-                            val tokopediaUri = Uri.parse(tokopediaDecodedUrl)
-                            tokopediaDecodedUrl = tokopediaUri.buildUpon()
-                                .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
-                                .toString()
-
-                            returnURl = replaceUriParameter(uri, "url", tokopediaDecodedUrl)
+                        if (tokopediaDecodedUrl != null) {
+                            returnURl = appendAppClientId(tokopediaDecodedUrl, uri, clientID)
                         }
                     } else if (clientID != null && url.contains(HOST_TOKOPEDIA)) {
                         returnURl =
@@ -98,14 +105,79 @@ object WebViewHelper {
                     }
                 }
             } catch (ex: Exception) {
-                //do nothing
+                // do nothing
             }
         }
-
-        Timber.d("WebviewHelper after $returnURl")
         return returnURl
     }
 
+    private fun appendAppClientId(url: String, uri: Uri, clientID: String): String {
+        val tokopediaUri = Uri.parse(url)
+        val newUrl = appendAppClientQueryParameter(tokopediaUri, clientID)
+        return replaceUriParameter(uri, "url", newUrl)
+    }
+
+    private fun appendAppClientQueryParameter(uri: Uri, clientID: String): String {
+        return uri.buildUpon()
+            .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
+            .toString()
+    }
+
+    /**
+     * This function appends GA client ID as a query param for url contains tokopedia as domain
+     *
+     * @param url
+     * @param context
+     * @return
+     */
+    @JvmStatic
+    fun appendGAClientIdAsQueryParamV2(url: String?, context: Context): String {
+        var returnURl = url ?: ""
+
+        if (url == null) {
+            return ""
+        }
+
+        if (url.contains("ta.tokopedia.com")) {
+            return url
+        }
+
+        try {
+            val uri = Uri.parse(url)
+            if (uri != null) {
+                if (url.contains("js.tokopedia.com")) {
+                    var urlQueryParam = getEncodedUrlCheckSecondUrl(uri, url)
+                    urlQueryParam = urlQueryParam.encodeQueryNested()
+                    val uriQueryParam = Uri.parse(urlQueryParam)
+                    urlQueryParam = appendGAClientId(context, uriQueryParam)
+                    return replaceUriParameter(uri, "url", urlQueryParam)
+                } else if (url.contains(HOST_TOKOPEDIA)) {
+                    returnURl = appendGAClientId(context, uri)
+                }
+            }
+        } catch (ex: Exception) {
+            // do nothing
+        }
+        return returnURl
+    }
+
+    fun appendGAClientId(context: Context, uri: Uri): String {
+        val clientID = getClientId()
+        if (clientID != null &&
+            uri.getQueryParameter(PARAM_APPCLIENT_ID) == null &&
+            isPassingGAClientIdEnable(context)
+        ) {
+            return uri.buildUpon()
+                .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
+                .toString()
+        } else {
+            return uri.toString()
+        }
+    }
+
+    fun getClientId(): String {
+        return TrackApp.getInstance().gtm.cachedClientIDString
+    }
 
     private fun isPassingGAClientIdEnable(context: Context?): Boolean {
         if (context == null) return false
@@ -114,7 +186,7 @@ object WebViewHelper {
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PASS_GA_CLIENT_ID_WEB, true)
     }
 
-    private fun replaceUriParameter(uri: Uri, key: String, newValue: String): String {
+    fun replaceUriParameter(uri: Uri, key: String, newValue: String): String {
         val params = uri.getQueryParameterNames()
         val newUri = uri.buildUpon().clearQuery()
         for (param in params) {
@@ -165,7 +237,7 @@ object WebViewHelper {
      * Input3: tokopedia://webview?url=https://abc.com/#/a?a=b&titlebar=false
      * Expected url query = https://abc.com/#/a?a=b&titlebar=false
      */
-     fun getUrlQuery(uri: Uri): String? {
+    fun getUrlQuery(uri: Uri): String? {
         val uriStringAfterMark = uri.toString().substringAfter("?").substringAfter("$KEY_URL=")
         return if (uriStringAfterMark.contains("#")) {
             if (uriStringAfterMark.contains("?")) {
@@ -289,7 +361,16 @@ object WebViewHelper {
             .queryIntentActivities(intent, 0)
         return if (resolveInfos.isNotEmpty()) {
             intent
-        } else null
+        } else {
+            null
+        }
     }
 
+    fun getMediaPickerIntent(context: Context): Intent {
+        return MediaPicker.intent(context) {
+            pageSource(PageSource.WebView)
+            modeType(ModeType.IMAGE_ONLY)
+            singleSelectionMode()
+        }
+    }
 }

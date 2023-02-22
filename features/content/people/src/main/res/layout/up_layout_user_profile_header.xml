@@ -232,7 +232,6 @@
                     android:maxLines="3"
                     android:text="@string/up_link_see_more"
                     android:textColor="@color/Unify_GN500"
-                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_bio"
                     app:typographyType="body_2"

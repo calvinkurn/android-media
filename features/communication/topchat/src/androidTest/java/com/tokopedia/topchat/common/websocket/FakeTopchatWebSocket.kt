@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachment
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductProfile
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
@@ -248,13 +249,27 @@ class FakeTopchatWebSocket @Inject constructor(
         listener?.onMessage(websocket, responseString)
     }
 
-    fun generateUploadImageResposne(roomMetaData: RoomMetaData): WebSocketResponse {
+    fun generateUploadImageResponse(roomMetaData: RoomMetaData, isSecure: Boolean): WebSocketResponse {
         return alterResponseOf(defaultImageResponsePath) {
             val data = it.getAsJsonObject(data)
             data.addProperty(msg_id, roomMetaData.msgId)
             data.addProperty(from_uid, roomMetaData.receiver.uid)
             data.addProperty(to_uid, roomMetaData.sender.uid)
             data.addProperty(is_opposite, true)
+
+            val message = data.getAsJsonObject(MESSAGE_KEY)
+            message.addProperty(
+                TIMESTAMP_UNIX_NANO_KEY,
+                Calendar.getInstance().timeInMillis * 1_000_000
+            )
+
+            val attachment = data.getAsJsonObject(ATTACHMENT_KEY)
+            val typeAttachment = if (isSecure) {
+                AttachmentType.Companion.TYPE_IMAGE_UPLOAD_SECURE.toIntOrZero()
+            } else {
+                AttachmentType.Companion.TYPE_IMAGE_UPLOAD.toIntOrZero()
+            }
+            attachment.addProperty(TYPE_KEY, typeAttachment)
         }
     }
 
@@ -266,6 +281,10 @@ class FakeTopchatWebSocket @Inject constructor(
         private val from_uid = "from_uid"
         private val to_uid = "to_uid"
         private val is_opposite = "is_opposite"
+        private const val MESSAGE_KEY = "message"
+        private const val TIMESTAMP_UNIX_NANO_KEY = "timestamp_unix_nano"
+        private const val ATTACHMENT_KEY = "attachment"
+        private const val TYPE_KEY = "type"
 
         private const val EVENT_TOPCHAT_REPLY_MESSAGE = 103
     }

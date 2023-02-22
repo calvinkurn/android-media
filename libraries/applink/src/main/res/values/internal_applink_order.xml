@@ -23,6 +23,7 @@
     <string name="path_history" translatable="false">/history</string>
     <string name="path_order" translatable="false">/order</string>
     <string name="path_reschedule" translatable="false">/reschedulepickup</string>
+    <string name="path_return_to_shipper" translatable="false">/returntoshipper</string>
     <string name="path_buyer_order_detail" translatable="false">/buyer-order-detail</string>
     <string name="path_buyer_order_detail_extension" translatable="false">/buyer-order-extension</string>
 

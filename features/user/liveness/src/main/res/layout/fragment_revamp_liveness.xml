@@ -1,89 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Static_Black"
+    tools:ignore="MissingConstraints,ResourceName">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_Static_Black"
-        tools:ignore="MissingConstraints,ResourceName">
+    <ai.advance.liveness.lib.LivenessView
+        android:id="@+id/livenessView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonBack" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <com.tokopedia.liveness.view.BackgroundOverlay
+        android:id="@+id/backgroundOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-            <ai.advance.liveness.lib.LivenessView
-                android:id="@+id/livenessView"
-                style="@style/liveness_preview" />
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/buttonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/liveness_cancel"
+        android:padding="@dimen/spacing_lvl4"
+        android:scaleType="centerInside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="ARROW_BACK"/>
 
-        </FrameLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/liveness_title"
+        android:textColor="@color/liveness_dms_toolbar_text_color"
+        app:layout_constraintBottom_toBottomOf="@id/buttonBack"
+        app:layout_constraintLeft_toRightOf="@id/buttonBack"
+        app:layout_constraintTop_toTopOf="@id/buttonBack"
+        app:typographyType="heading_4" />
 
-        <com.tokopedia.liveness.view.BackgroundOverlay
-            android:id="@+id/backgroundOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/buttonBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/liveness_cancel"
-            android:padding="@dimen/spacing_lvl4"
-            android:scaleType="centerInside"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:icon_color_light_enable="@color/Unify_N0"
-            app:icon_color_night_enable="@color/Unify_N0"
-            app:icon_name="ARROW_BACK"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTipView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lineSpacingExtra="4sp"
+        android:paddingLeft="@dimen/spacing_lvl5"
+        android:paddingRight="@dimen/spacing_lvl5"
+        android:textColor="@color/liveness_dms_tip_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:typographyType="heading_4"
+        tools:text="Silakan berkedip" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/liveness_title"
-            android:textColor="@color/liveness_dms_toolbar_text_color"
-            app:layout_constraintBottom_toBottomOf="@id/buttonBack"
-            app:layout_constraintLeft_toRightOf="@id/buttonBack"
-            app:layout_constraintTop_toTopOf="@id/buttonBack"
-            app:typographyType="heading_4" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieLivenessTips"
+        android:layout_width="@dimen/liveness_104"
+        android:layout_height="@dimen/liveness_104"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textTipView"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.6" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textTipView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:lineSpacingExtra="4sp"
-            android:paddingLeft="@dimen/spacing_lvl5"
-            android:paddingRight="@dimen/spacing_lvl5"
-            android:textColor="@color/liveness_dms_tip_color"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline"
-            app:typographyType="heading_4"
-            tools:text="Silakan berkedip" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieLivenessTips"
-            android:layout_width="@dimen/liveness_104"
-            android:layout_height="@dimen/liveness_104"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textTipView"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

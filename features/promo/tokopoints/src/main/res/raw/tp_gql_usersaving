@@ -1,5 +1,5 @@
-query tokopointsUserSaving($year: Int, $month: Int, $type: Int){
-    tokopointsUserSaving:tokopointsUserSaving(year: $year, month: $month, type: $type){
+query tokopointsUserSaving($year: Int, $month: Int, $type: Int, $apiVersion: String){
+    tokopointsUserSaving:tokopointsUserSaving(year: $year, month: $month, type: $type, apiVersion: $apiVersion){
     resultStatus {
       code
       status
