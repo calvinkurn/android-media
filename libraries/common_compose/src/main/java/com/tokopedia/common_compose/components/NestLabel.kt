@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles
+package com.tokopedia.common_compose.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,6 +46,13 @@ fun NestLabel(
         )
     }
 
+}
+
+enum class NestLabelType {
+    HIGHLIGHT_LIGHT_GREEN,
+    HIGHLIGHT_LIGHT_ORANGE,
+    HIGHLIGHT_LIGHT_GREY,
+    HIGHLIGHT_LIGHT_RED
 }
 
 @Preview(name = "Label (Green)")
