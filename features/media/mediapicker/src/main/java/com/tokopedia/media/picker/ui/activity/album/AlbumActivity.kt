@@ -4,22 +4,25 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.ActivityAlbumBinding
 import com.tokopedia.media.picker.analytics.PickerAnalytics
+import com.tokopedia.media.picker.data.mapper.toUiModel
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.adapter.AlbumAdapter
-import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
+import com.tokopedia.media.picker.ui.adapter.OnAlbumClickListener
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
@@ -28,7 +31,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     lateinit var factory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var param: ParamCacheManager
+    lateinit var param: PickerCacheManager
 
     @Inject
     lateinit var pickerAnalytics: PickerAnalytics
@@ -69,9 +72,11 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     private fun initObservable() {
-        viewModel.albums.observe(this) {
-            if (it.isNotEmpty()) {
-                adapter.setData(it)
+        lifecycleScope.launchWhenStarted {
+            viewModel.getAlbums().collect {
+                if (it.isNotEmpty()) {
+                    adapter.setData(it.toUiModel())
+                }
             }
         }
 
@@ -84,9 +89,6 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
         // set toolbar as solid theme and toolbar title
         navToolbar.setTitle(getString(R.string.picker_toolbar_album_title))
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-
-        // fetch the album list
-        viewModel.fetch()
     }
 
     private fun setupRecyclerView() {
@@ -129,7 +131,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
             )
         }
 
-        fun getAlbumBucketDetails(intent: Intent?): Pair<Long, String> {
+        fun getIntentResult(intent: Intent?): Pair<Long, String> {
             val bucketId = intent?.getLongExtra(INTENT_BUCKET_ID, 0)?: -1
             val bucketName = intent?.getStringExtra(INTENT_BUCKET_NAME)?: ""
 

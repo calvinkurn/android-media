@@ -87,6 +87,6 @@
         android:layout_gravity="center"
         app:globalerrors_type="SERVER_ERROR"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

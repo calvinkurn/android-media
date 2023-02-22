@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.usecase.ClaimCouponClickUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
+import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -38,9 +39,9 @@ class ClaimCouponItemViewModelTest {
         mockk()
     }
 
-    private val userSession: UserSessionInterface by lazy {
-        mockk()
-    }
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -55,7 +56,7 @@ class ClaimCouponItemViewModelTest {
     }
 
     @Test
-    fun `test for application`(){
+    fun `test for application`() {
         assert(viewModel.application === application)
     }
 
@@ -138,6 +139,8 @@ class ClaimCouponItemViewModelTest {
 
     @Test
     fun `redeemCoupon when isLoggedIn is false`() {
+        viewModel.userSession = userSession
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
         coEvery { viewModel.userSession.isLoggedIn } returns false
 
         viewModel.redeemCoupon { }
@@ -146,24 +149,51 @@ class ClaimCouponItemViewModelTest {
     }
 
     @Test
+    fun `redeemCoupon when isLoggedIn is true and id is empty`() {
+        viewModel.userSession = userSession
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
+        val applink = "applink"
+        val code = "code"
+        val data = RedeemCouponResponse(hachikoRedeem =
+        RedeemCouponResponse.HachikoRedeem(coupons =
+        arrayListOf(RedeemCouponResponse.HachikoRedeem.Coupon(
+            appLink = applink, code = code
+        ))))
+        val list = ArrayList<DataItem>()
+        val dataItem = DataItem(id = "")
+        list.add(dataItem)
+        every { componentsItem.data } returns list
+        coEvery { viewModel.userSession.isLoggedIn } returns true
+        coEvery { viewModel.claimCouponClickUseCase.redeemCoupon(any()) } returns data
+
+        viewModel.redeemCoupon { }
+
+        assertEquals(viewModel.getRedeemCouponCode().value, code)
+    }
+
+    @Test
     fun `redeemCoupon when isLoggedIn is true`() {
-            val applink = "applink"
-            val code = "code"
-            val data = RedeemCouponResponse(hachikoRedeem =
-                RedeemCouponResponse.HachikoRedeem(coupons =
-                    arrayListOf(RedeemCouponResponse.HachikoRedeem.Coupon(
-                        appLink = applink, code = code
-            ))))
-            coEvery { viewModel.userSession.isLoggedIn } returns true
-            coEvery { viewModel.claimCouponClickUseCase.redeemCoupon(any()) } returns data
+        viewModel.userSession = userSession
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
+        val applink = "applink"
+        val code = "code"
+        val data = RedeemCouponResponse(hachikoRedeem =
+        RedeemCouponResponse.HachikoRedeem(coupons =
+        arrayListOf(RedeemCouponResponse.HachikoRedeem.Coupon(
+            appLink = applink, code = code
+        ))))
+        coEvery { viewModel.userSession.isLoggedIn } returns true
+        coEvery { viewModel.claimCouponClickUseCase.redeemCoupon(any()) } returns data
 
-            viewModel.redeemCoupon { }
+        viewModel.redeemCoupon { }
 
-            assertEquals(viewModel.getRedeemCouponCode().value, code)
+        assertEquals(viewModel.getRedeemCouponCode().value, code)
     }
 
     @Test
     fun `redeemCoupon when isLoggedIn is true and HachikoRedeem is null`() {
+        viewModel.userSession = userSession
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
         val data = RedeemCouponResponse()
         coEvery { userSession.isLoggedIn } returns true
         coEvery { claimCouponClickUseCase.redeemCoupon(any()) } returns data
@@ -175,6 +205,8 @@ class ClaimCouponItemViewModelTest {
 
     @Test
     fun `redeemCoupon when isLoggedIn is true and coupons list empty`() {
+        viewModel.userSession = userSession
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
         val data = RedeemCouponResponse(hachikoRedeem =
         RedeemCouponResponse.HachikoRedeem(coupons = arrayListOf()))
         coEvery { userSession.isLoggedIn } returns true
@@ -187,6 +219,8 @@ class ClaimCouponItemViewModelTest {
 
     @Test
     fun `redeemCoupon when claimCouponClickUseCase redeemCoupon throws MessageErrorException`() {
+        viewModel.userSession = userSession
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
         coEvery { userSession.isLoggedIn } returns true
         coEvery { claimCouponClickUseCase.redeemCoupon(any()) } throws MessageErrorException("error")
 
@@ -197,6 +231,8 @@ class ClaimCouponItemViewModelTest {
 
     @Test
     fun `redeemCoupon when claimCouponClickUseCase redeemCoupon throws Exception`() {
+        viewModel.userSession = userSession
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
         coEvery { userSession.isLoggedIn } returns true
         coEvery { claimCouponClickUseCase.redeemCoupon(any()) } throws Exception("error")
 
@@ -213,7 +249,7 @@ class ClaimCouponItemViewModelTest {
     fun setClick() {
         viewModel.setClick(mockk(), "")
 
-        verify(exactly = 1) { viewModel.navigate(any(),any()) }
+        verify(exactly = 1) { viewModel.navigate(any(), any()) }
     }
 
     /**************************** setClick() *******************************************/

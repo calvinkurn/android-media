@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,10 +25,10 @@ class TokoNowCategoryListViewModel @Inject constructor(
         private const val CATEGORY_LEVEL_DEPTH = 2
     }
 
-    val categoryList: LiveData<Result<CategoryListResponse>>
+    val categoryList: LiveData<Result<GetCategoryListResponse.CategoryListResponse>>
         get() = _categoryList
 
-    private val _categoryList = MutableLiveData<Result<CategoryListResponse>>()
+    private val _categoryList = MutableLiveData<Result<GetCategoryListResponse.CategoryListResponse>>()
 
     fun getCategoryList(warehouseId: String) {
         launchCatchError(block = {

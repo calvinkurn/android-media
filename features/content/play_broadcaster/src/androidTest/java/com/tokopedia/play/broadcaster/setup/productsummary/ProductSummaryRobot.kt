@@ -53,7 +53,8 @@ class ProductSummaryRobot(
                         summaryAnalytic = mockk(relaxed = true),
                         scheduleAnalytic = mockk(relaxed = true),
                         pinProductAnalytic = mockk(relaxed = true),
-                        accountAnalytic = mockk(relaxed = true)
+                        accountAnalytic = mockk(relaxed = true),
+                        shortsEntryPointAnalytic = mockk(relaxed = true),
                     )
                 )
             }

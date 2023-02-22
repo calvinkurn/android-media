@@ -43,6 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
@@ -81,7 +82,9 @@ import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
+import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
+import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 
 class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,
@@ -174,7 +177,11 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductSingleVariantDataModel): Int {
-        return ProductSingleVariantViewHolder.LAYOUT
+        return if (data.isThumbnailType) {
+            ProductThumbnailVariantViewHolder.LAYOUT
+        } else {
+            ProductSingleVariantViewHolder.LAYOUT
+        }
     }
 
     override fun type(data: ProductMiniShopWidgetDataModel): Int {
@@ -233,6 +240,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ProductShopAdditionalViewHolder.LAYOUT
     }
 
+    override fun type(data: ViewToViewWidgetDataModel): Int {
+        return ViewToViewWidgetViewHolder.LAYOUT
+    }
+    
     override fun type(data: ProductCustomInfoTitleDataModel): Int {
         return ProductCustomInfoTitleViewHolder.LAYOUT
     }
@@ -293,6 +304,11 @@ class DynamicProductDetailAdapterFactoryImpl(
                 variantListener,
                 listener
             )
+            ProductThumbnailVariantViewHolder.LAYOUT -> ProductThumbnailVariantViewHolder(
+                view,
+                variantListener,
+                listener
+            )
             OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(
@@ -305,13 +321,16 @@ class DynamicProductDetailAdapterFactoryImpl(
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {
                     ContentWidgetViewHolder(
-                        view, PlayWidgetViewHolder(
+                        view,
+                        PlayWidgetViewHolder(
                             itemView = playWidgetView,
                             coordinator = playWidgetCoordinator
                         ),
                         listener
                     )
-                } else super.createViewHolder(view, type)
+                } else {
+                    super.createViewHolder(view, type)
+                }
             }
             ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(
                 view,
@@ -328,9 +347,9 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
+            ViewToViewWidgetViewHolder.LAYOUT -> ViewToViewWidgetViewHolder(view, listener)
             ProductCustomInfoTitleViewHolder.LAYOUT -> ProductCustomInfoTitleViewHolder(view = view)
             else -> super.createViewHolder(view, type)
         }
     }
-
 }

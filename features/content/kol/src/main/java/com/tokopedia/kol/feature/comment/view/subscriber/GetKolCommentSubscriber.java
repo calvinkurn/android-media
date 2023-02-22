@@ -33,7 +33,7 @@ public class GetKolCommentSubscriber extends Subscriber<KolComments> {
 
     @Override
     public void onNext(KolComments kolComments) {
-        viewListener.updateCursor(kolComments.getLastcursor());
+        viewListener.updateCursor(kolComments.getLastCursor());
         viewListener.onSuccessGetComments(kolComments);
     }
 }

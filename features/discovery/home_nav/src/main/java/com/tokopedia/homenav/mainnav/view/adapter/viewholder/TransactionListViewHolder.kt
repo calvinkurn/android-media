@@ -15,7 +15,6 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderList
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
@@ -65,7 +64,6 @@ class TransactionListViewHolder(itemView: View,
         if (element.isMePageUsingRollenceVariant) {
             visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentRevampModel(it) })
             visitableList.addAll(element.orderListModel.orderList.map { OrderProductRevampModel(it) })
-            visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
             if (visitableList.isEmpty()) {
                 visitableList.add(OrderEmptyModel())
             } else if (visitableList.size == SIZE_LAYOUT_SHOW_VIEW_ALL_CARD && element.othersTransactionCount > OTHER_TRANSACTION_THRESHOLD) {

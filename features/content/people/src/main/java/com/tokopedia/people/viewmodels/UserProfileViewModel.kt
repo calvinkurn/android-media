@@ -76,6 +76,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val isSelfProfile: Boolean
         get() = _profileType.value == ProfileType.Self
 
+    val isWhitelist: Boolean
+        get() = isSelfProfile && _profileWhitelist.value.isWhitelist
+
     val profileWebLink: String
         get() = _profileInfo.value.shareLink.webLink
 
@@ -136,9 +139,9 @@ class UserProfileViewModel @AssistedInject constructor(
             )
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, action.isRefresh)
-            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
+            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(
                 action.channelId,
@@ -217,18 +220,6 @@ class UserProfileViewModel @AssistedInject constructor(
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorVideoPosts(it))
-            }
-        )
-    }
-
-    private fun handleLoadNextPageShopRecom(nextCursor: String) {
-        viewModelScope.launchCatchError(
-            block = {
-                if (nextCursor.isEmpty()) return@launchCatchError
-                loadShopRecom(nextCursor)
-            },
-            onError = {
-                _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
             }
         )
     }
@@ -440,12 +431,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo.update { followInfo }
         _profileType.update { profileType }
 
-        if (profileType == ProfileType.Self) {
-            _profileWhitelist.update { repo.getWhitelist() }
-            if (isRefresh) loadShopRecom()
-        }
-
-        if (_profileInfo.value.isBlocking) {
+        if (isBlocking) {
             _feedPostsContent.value = UserFeedPostsUiModel()
             viewModelScope.launch {
                 _uiEvent.emit(UserProfileUiEvent.BlockingUserState(
@@ -455,6 +441,8 @@ class UserProfileViewModel @AssistedInject constructor(
             return
         }
 
+        if (profileType == ProfileType.Self) _profileWhitelist.update { repo.getWhitelist() }
+
         if (isRefresh) loadProfileTab()
     }
 
@@ -462,8 +450,11 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val result = repo.getUserProfileTab(_profileInfo.value.userID)
+                val isEmpty = result == ProfileTabUiModel()
                 _profileTab.update { result }
-                _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(result == ProfileTabUiModel()))
+                _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(isEmpty))
+
+                if (isEmpty && isSelfProfile) loadShopRecom()
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
@@ -471,33 +462,53 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
-    private suspend fun loadShopRecom(cursor: String = "") {
-        val result = repo.getShopRecom(cursor)
-        if (result.isShown) {
-            val items = if (cursor.isEmpty()) {
-                result.items
-            } else {
-                _shopRecom.value.items + result.items
-            }
+    private fun loadShopRecom(cursor: String = "") {
+        viewModelScope.launchCatchError(
+            block = {
+                val result = repo.getShopRecom(cursor)
+                if (result.isShown) {
+                    val items = if (cursor.isEmpty()) {
+                        result.items
+                    } else {
+                        _shopRecom.value.items + result.items
+                    }
 
-            _shopRecom.update {
-                it.copy(
-                    isShown = true,
-                    nextCursor = result.nextCursor,
-                    title = result.title,
-                    loadNextPage = result.loadNextPage,
-                    items = items,
-                    isRefresh = cursor.isEmpty()
-                )
+                    _shopRecom.update {
+                        it.copy(
+                            isShown = true,
+                            nextCursor = result.nextCursor,
+                            title = result.title,
+                            loadNextPage = result.loadNextPage,
+                            items = items,
+                            isRefresh = cursor.isEmpty()
+                        )
+                    }
+                } else {
+                    _shopRecom.update { ShopRecomUiModel() }
+                }
+            },
+            onError = {
+                _shopRecom.update { ShopRecomUiModel() }
             }
-        } else {
-            _shopRecom.update { ShopRecomUiModel() }
-        }
+        )
+    }
+
+    private fun handleLoadNextPageShopRecom(nextCursor: String) {
+        viewModelScope.launchCatchError(
+            block = {
+                if (nextCursor.isEmpty()) return@launchCatchError
+                loadShopRecom(nextCursor)
+            },
+            onError = {
+                _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
+            }
+        )
     }
 
     companion object {
         const val UGC_ONBOARDING_OPEN_FROM_LIVE = 1
         const val UGC_ONBOARDING_OPEN_FROM_POST = 2
+        const val UGC_ONBOARDING_OPEN_FROM_SHORTS = 3
         private const val FOLLOW_TYPE_SHOP = 2
         private const val FOLLOW_TYPE_BUYER = 3
         private const val DEFAULT_LIMIT = 10

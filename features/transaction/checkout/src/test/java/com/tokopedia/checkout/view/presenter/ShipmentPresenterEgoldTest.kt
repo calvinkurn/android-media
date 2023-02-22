@@ -2,15 +2,21 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -55,6 +61,9 @@ class ShipmentPresenterEgoldTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -90,6 +99,9 @@ class ShipmentPresenterEgoldTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -100,13 +112,31 @@ class ShipmentPresenterEgoldTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -191,24 +221,30 @@ class ShipmentPresenterEgoldTest {
             minEgoldRange = 50
             maxEgoldRange = 1000
             egoldTieringModelArrayList = arrayListOf<EgoldTieringModel>().apply {
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 500
-                    minAmount = 2000
-                    maxAmount = 5999
-                    basisAmount = 4000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 98001
-                    minAmount = 2000
-                    maxAmount = 11999
-                    basisAmount = 10000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 998001
-                    minAmount = 2000
-                    maxAmount = 51999
-                    basisAmount = 50000
-                })
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 500
+                        minAmount = 2000
+                        maxAmount = 5999
+                        basisAmount = 4000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 98001
+                        minAmount = 2000
+                        maxAmount = 11999
+                        basisAmount = 10000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 998001
+                        minAmount = 2000
+                        maxAmount = 51999
+                        basisAmount = 50000
+                    }
+                )
             }
         }
 
@@ -234,24 +270,30 @@ class ShipmentPresenterEgoldTest {
             minEgoldRange = 50
             maxEgoldRange = 1000
             egoldTieringModelArrayList = arrayListOf<EgoldTieringModel>().apply {
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 500
-                    minAmount = 2000
-                    maxAmount = 5999
-                    basisAmount = 4000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 98001
-                    minAmount = 2000
-                    maxAmount = 11999
-                    basisAmount = 10000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 998001
-                    minAmount = 2000
-                    maxAmount = 51999
-                    basisAmount = 50000
-                })
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 500
+                        minAmount = 2000
+                        maxAmount = 5999
+                        basisAmount = 4000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 98001
+                        minAmount = 2000
+                        maxAmount = 11999
+                        basisAmount = 10000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 998001
+                        minAmount = 2000
+                        maxAmount = 51999
+                        basisAmount = 50000
+                    }
+                )
             }
         }
 

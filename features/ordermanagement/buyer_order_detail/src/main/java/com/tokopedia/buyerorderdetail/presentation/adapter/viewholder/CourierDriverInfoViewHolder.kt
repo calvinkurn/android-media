@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
-import android.animation.LayoutTransition
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -25,7 +24,6 @@ open class CourierDriverInfoViewHolder(
     private val btnBuyerOrderDetailCallCourierDriver = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailCallCourierDriver)
     private val ivBuyerOrderDetailCourierDriverPhoto = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailCourierDriverPhoto)
     private val tvBuyerOrderDetailCourierDriverName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverName)
-    private val tvBuyerOrderDetailCourierDriverPhoneNumber = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverPhoneNumber)
     private val tvBuyerOrderDetailCourierDriverPlateNumber = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverPlateNumber)
 
     private var element: ShipmentInfoUiModel.CourierDriverInfoUiModel? = null
@@ -39,38 +37,13 @@ open class CourierDriverInfoViewHolder(
             this.element = it
             setupDriverPhoto(it.photoUrl)
             setupDriverName(it.name)
-            setupDriverPhoneNumber(it.phoneNumber)
             setupDriverPlateNumber(it.plateNumber)
             setupCallingButton(it.phoneNumber)
         }
     }
 
     override fun bind(element: ShipmentInfoUiModel.CourierDriverInfoUiModel?, payloads: MutableList<Any>) {
-        payloads.firstOrNull()?.let {
-            if (it is Pair<*, *>) {
-                val (oldItem, newItem) = it
-                if (oldItem is ShipmentInfoUiModel.CourierDriverInfoUiModel && newItem is ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-                    this.element = newItem
-                    if (oldItem.photoUrl != newItem.photoUrl) {
-                        setupDriverPhoto(newItem.photoUrl)
-                    }
-                    if (oldItem.name != newItem.name) {
-                        setupDriverName(newItem.name)
-                    }
-                    if (oldItem.phoneNumber != newItem.phoneNumber) {
-                        setupDriverPhoneNumber(newItem.phoneNumber)
-                        setupCallingButton(newItem.phoneNumber)
-                    }
-                    if (oldItem.plateNumber != newItem.plateNumber) {
-                        setupDriverPlateNumber(newItem.plateNumber)
-                    }
-                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
-                    return
-                }
-            }
-        }
-        super.bind(element, payloads)
+        bind(element)
     }
 
     private fun setupClickListeners() {
@@ -91,13 +64,6 @@ open class CourierDriverInfoViewHolder(
         tvBuyerOrderDetailCourierDriverName?.run {
             text = name
             showWithCondition(name.isNotBlank())
-        }
-    }
-
-    private fun setupDriverPhoneNumber(phoneNumber: String) {
-        tvBuyerOrderDetailCourierDriverPhoneNumber?.run {
-            text = phoneNumber
-            showWithCondition(phoneNumber.isNotBlank())
         }
     }
 

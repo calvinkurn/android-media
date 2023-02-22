@@ -49,9 +49,9 @@ jobs:
     - run: git config --global --add url."git@github.com:".insteadOf "https://github.com/"
     - name: Set Up Go
       if: matrix.language == 'go'
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
-        go-version: 1.14
+        go-version: 'stable'
     - name: Set Up Node
       if: matrix.language == 'javascript'
       uses: actions/setup-node@v3

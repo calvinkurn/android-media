@@ -7,6 +7,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.config.GetBroadcastingConfigurationResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
@@ -17,6 +18,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
@@ -33,6 +35,19 @@ import kotlin.random.Random
  * Created by jegul on 21/09/20
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
+
+    override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
+            audioRate = response.broadcasterGetBroadcastingConfig.config.audioRate,
+            bitrateMode = response.broadcasterGetBroadcastingConfig.config.bitrateMode,
+            fps = response.broadcasterGetBroadcastingConfig.config.fps,
+            maxRetry = response.broadcasterGetBroadcastingConfig.config.maxRetry,
+            reconnectDelay = response.broadcasterGetBroadcastingConfig.config.reconnectDelay,
+            videoBitrate = response.broadcasterGetBroadcastingConfig.config.videoBitrate,
+            videoHeight = response.broadcasterGetBroadcastingConfig.config.videoHeight,
+            videoWidth = response.broadcasterGetBroadcastingConfig.config.videoWidth,
+        )
+    }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
@@ -87,6 +102,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
             streamAllowed = true,
+            shortVideoAllowed = true,
             channelStatus = ChannelStatus.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
             durationConfig = DurationConfigUiModel(

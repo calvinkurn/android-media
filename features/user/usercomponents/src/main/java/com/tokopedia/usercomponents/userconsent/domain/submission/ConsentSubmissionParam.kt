@@ -13,6 +13,10 @@ data class ConsentSubmissionParam(
     /** collection version */
     @SerializedName("version")
     var version: String = "",
+    @SerializedName("dataElements")
+    var dataElements: Map<String, String>? = mapOf(),
+    @SerializedName("default")
+    var default: Boolean = false,
     @SerializedName("purposes")
     var purposes: MutableList<Purpose> = mutableListOf()
 ): GqlParam

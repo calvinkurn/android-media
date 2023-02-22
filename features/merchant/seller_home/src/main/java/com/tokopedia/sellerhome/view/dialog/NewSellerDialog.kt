@@ -16,8 +16,13 @@ object NewSellerDialog {
     const val DISMISSAL_KEY: String = "widget.info.shopStateChanged"
     private const val IMG_WELCOMING_DIALOG =
         "https://images.tokopedia.net/img/android/seller_home/img_sah_new_seller_dialog.png"
+    private var isDialogShowing = false
 
     fun showFirstOrderDialog(context: Context, info: ShopStateInfoUiModel, onDismiss: () -> Unit) {
+        if (isDialogShowing) {
+            return
+        }
+
         val isVerticalAction = info.buttonAlt.name.isNotBlank()
         val actionType = if (isVerticalAction) {
             DialogUnify.VERTICAL_ACTION
@@ -29,6 +34,8 @@ object NewSellerDialog {
             actionType,
             DialogUnify.WITH_ILLUSTRATION
         )
+
+        isDialogShowing = true
 
         with(dialog) {
             setImageUrl(info.imageUrl)
@@ -48,7 +55,10 @@ object NewSellerDialog {
                     dismiss()
                 }
             }
-            setOnDismissListener(onDismiss)
+            setOnDismissListener {
+                onDismiss()
+                isDialogShowing = false
+            }
             show()
         }
         SellerHomeTracking.sendImpressionFirstTransactionPopUpEvent()
@@ -59,11 +69,17 @@ object NewSellerDialog {
         shopName: String,
         onDismiss: () -> Unit
     ) {
+        if (isDialogShowing) {
+            return
+        }
+
         val dialog = DialogUnify(
             context,
             DialogUnify.SINGLE_ACTION,
             DialogUnify.WITH_ILLUSTRATION
         )
+
+        isDialogShowing = true
 
         with(dialog) {
             setImageUrl(IMG_WELCOMING_DIALOG)
@@ -78,7 +94,10 @@ object NewSellerDialog {
             setPrimaryCTAClickListener {
                 dismiss()
             }
-            setOnDismissListener(onDismiss)
+            setOnDismissListener {
+                onDismiss()
+                isDialogShowing = false
+            }
             show()
         }
     }

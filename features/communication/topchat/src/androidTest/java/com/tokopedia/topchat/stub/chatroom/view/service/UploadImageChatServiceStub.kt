@@ -13,7 +13,12 @@ class UploadImageChatServiceStub : UploadImageChatService() {
     }
 
     companion object {
-        fun enqueueWork(context: Context, image: ImageUploadServiceModel, messageId: String) {
+        fun enqueueWork(
+            context: Context,
+            image: ImageUploadServiceModel,
+            messageId: String,
+            isSecure: Boolean
+        ) {
             val intent = Intent(context, UploadImageChatServiceStub::class.java)
             intent.putExtra(MESSAGE_ID, messageId)
             intent.putExtra(MESSAGE, image.message)
@@ -33,6 +38,7 @@ class UploadImageChatServiceStub : UploadImageChatService() {
             intent.putExtra(IS_RETRY, image.isRetry)
             intent.putExtra(IS_READ, image.isRead)
             intent.putExtra(IS_DUMMY, image.isDummy)
+            intent.putExtra(IS_SECURE, isSecure)
             enqueueWork(context, UploadImageChatServiceStub::class.java, JOB_ID_UPLOAD_IMAGE, intent)
         }
     }

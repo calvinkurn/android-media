@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -137,10 +136,6 @@ class HomeSharingWidgetViewHolder(
             lottieReferral.playAnimation()
             lottieReferral.repeatCount = ANIMATION_REPEAT_COUNT
         }
-    }
-
-    private fun createVectorDrawableCompat(resId: Int): VectorDrawableCompat? {
-        return VectorDrawableCompat.create(itemView.resources, resId, itemView.context.theme)
     }
 
     private fun setReferralListener(element: HomeSharingReferralWidgetUiModel) {

@@ -5,10 +5,8 @@ import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProduct
 import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseChipsViewComponent
+import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.*
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.ProductListViewComponent
-import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SaveButtonViewComponent
-import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +32,12 @@ class ProductChooserAnalyticManager @Inject constructor(
         scope.launch(dispatchers.computation) {
             event.subscribe().collect {
                 when (it) {
+                    is ProductChooserBottomSheet.Event.SetSelectedAccount -> {
+                        analytic.setSelectedAccount(it.account)
+                    }
+                    is ProductChooserBottomSheet.Event.ViewBottomSheet -> {
+                        analytic.viewProductChooser()
+                    }
                     SaveButtonViewComponent.Event.OnClicked -> {
                         analytic.clickSaveButtonOnProductSetup()
                     }
@@ -59,6 +63,9 @@ class ProductChooserAnalyticManager @Inject constructor(
                     is ProductChooserBottomSheet.Event.SortChosen -> {
                         analytic.clickProductSortingType(it.sort.text)
                     }
+                    SearchBarViewComponent.Event.OnSearchBarClicked -> {
+                        analytic.clickSearchBarOnProductSetup()
+                    }
                 }
             }
         }
@@ -75,7 +82,7 @@ class ProductChooserAnalyticManager @Inject constructor(
         state: ProductListPaging.Param
     ) {
         if (prev?.keyword != null && prev.keyword != state.keyword) {
-            analytic.clickSearchBarOnProductSetup(state.keyword)
+            analytic.clickSearchWhenParamChanged(state.keyword)
         }
     }
 }

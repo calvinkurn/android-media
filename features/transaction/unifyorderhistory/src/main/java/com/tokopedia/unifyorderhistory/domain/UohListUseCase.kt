@@ -9,6 +9,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohListParam
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INPUT
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @GqlQuery("GetOrderHistoryQuery", UohListUseCase.query)
@@ -16,12 +17,15 @@ class UohListUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) :
-    CoroutineUseCase<UohListParam, UohListOrder>(dispatchers.io) {
+    CoroutineUseCase<Pair<UohListParam, Boolean>, UohListOrder>(dispatchers.io) {
 
     override fun graphqlQuery(): String = query
 
-    override suspend fun execute(params: UohListParam): UohListOrder {
-        return repository.request(GetOrderHistoryQuery(), createVariables(params))
+    override suspend fun execute(params: Pair<UohListParam, Boolean>): UohListOrder {
+        if (params.second) {
+            delay(DELAY_LOAD)
+        }
+        return repository.request(GetOrderHistoryQuery(), createVariables(params.first))
     }
 
     private fun createVariables(param: UohListParam): Map<String, Any> {
@@ -29,6 +33,7 @@ class UohListUseCase @Inject constructor(
     }
 
     companion object {
+        const val DELAY_LOAD = 2000L
         const val query = """
             query GetOrderHistory(${'$'}input:UOHOrdersRequest!){
                 uohOrders(input:${'$'}input) {

@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
 import com.tokopedia.tokopedianow.similarproduct.bottomsheet.TokoNowSimilarProductBottomSheet
 import com.tokopedia.tokopedianow.similarproduct.di.component.DaggerSimilarProductComponent
@@ -46,7 +46,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
             }
         }
     }
-    private var listener: SimilarProductListener? = null
+    private var listener: TokoNowSimilarProductTrackerListener? = null
 
     @Inject
     lateinit var viewModel : TokoNowSimilarProductViewModel
@@ -309,7 +309,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
             .inject(this)
     }
 
-    fun setListener(listener: SimilarProductListener?){
+    fun setListener(listener: TokoNowSimilarProductTrackerListener?){
         this.listener = listener
     }
 }

@@ -437,8 +437,13 @@ open class ChatListFragment constructor() :
     override fun onChatListTickerClicked(applink: String) {
         if (applink.isNotBlank()) {
             context?.let {
-                if (applink == ApplinkConst.TokoFood.TOKOFOOD_ORDER) {
-                    chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                when (applink) {
+                    ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                        TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
+                    }
+                    ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                        chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                    }
                 }
                 RouteManager.route(it, applink)
             }
@@ -583,8 +588,17 @@ open class ChatListFragment constructor() :
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
-    override fun onChatListTickerImpressed() {
-        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+    override fun onChatListTickerImpressed(applink: String) {
+        if (applink.isNotBlank()) {
+            when (applink) {
+                ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                    TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+                }
+                ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                    chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+                }
+            }
+        }
     }
 
     private fun getRoleStr(): String {

@@ -31,9 +31,9 @@ class LargeUploadStateManager @Inject constructor(
         return Gson().fromJson(content, LargeUploadCacheParam::class.java)
     }
 
-    fun setPartNumber(sourceId: String, fileName: String, partNumber: Int) {
+    fun setPartNumber(sourceId: String, fileName: String, partDone: Map<Int, Boolean>) {
         get(sourceId, fileName)?.let {
-            val updated = it.copy(partNumber = partNumber)
+            val updated = it.copy(partDone = partDone)
             set(sourceId, updated)
         }
     }

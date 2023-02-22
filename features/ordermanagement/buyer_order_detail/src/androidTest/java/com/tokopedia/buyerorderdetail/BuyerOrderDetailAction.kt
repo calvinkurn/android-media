@@ -14,6 +14,7 @@ import androidx.test.espresso.action.Swipe
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
@@ -366,6 +367,15 @@ class BuyerOrderDetailAction {
     fun testClickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet(activity: AppCompatActivity, fromPrimaryActionButton: Boolean) {
         openFinishOrderConfirmationBottomSheet(activity, fromPrimaryActionButton)
         clickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet()
+    }
+
+    fun testScrollToBottom(activity: AppCompatActivity) {
+        onView(withId(R.id.rvBuyerOrderDetail))
+            .perform(
+                scrollToPosition<RecyclerView.ViewHolder>(
+                    findBuyerOrderDetailFragment(activity)!!.view!!.findViewById<RecyclerView>(R.id.rvBuyerOrderDetail)!!.adapter!!.itemCount.dec()
+                )
+            )
     }
 
     infix fun validate(validation: BuyerOrderDetailValidator.() -> Unit) = BuyerOrderDetailValidator().apply(validation)

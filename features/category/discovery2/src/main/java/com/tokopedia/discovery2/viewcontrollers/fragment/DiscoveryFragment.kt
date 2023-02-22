@@ -17,6 +17,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -44,6 +45,7 @@ import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -52,8 +54,10 @@ import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CHANNEL
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -92,6 +96,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -121,13 +126,14 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -176,6 +182,7 @@ class DiscoveryFragment :
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
     private var shouldShowChooseAddressWidget: Boolean = true
+    private var hideShowChangeAvailable: Boolean = true
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private lateinit var appBarLayout: AppBarLayout
@@ -184,6 +191,7 @@ class DiscoveryFragment :
     private var miniCartData: MiniCartSimplifiedData? = null
     private var miniCartInitialized: Boolean = false
     private var userPressed: Boolean = false
+    private var isTabPresentToDoubleScroll: Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -207,6 +215,8 @@ class DiscoveryFragment :
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
     var currentTabPosition: Int? = null
+    var isAffiliateInitialized = false
+        private set
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -242,6 +252,8 @@ class DiscoveryFragment :
                 bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
                 bundle.putString(SHOP_ID, queryParameterMap[SHOP_ID])
                 bundle.putString(QUERY_PARENT, queryParameterMap[QUERY_PARENT])
+                bundle.putString(AFFILIATE_UNIQUE_ID, queryParameterMap[AFFILIATE_UNIQUE_ID])
+                bundle.putString(CHANNEL, queryParameterMap[CHANNEL])
             }
         }
     }
@@ -354,34 +366,36 @@ class DiscoveryFragment :
                     ivToTop.show()
                 }
                 scrollDist += dy
+                if (recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)) {
+                    if (dy > 0 && shouldShowChooseAddressWidget && scrollDist > MINIMUM) {
+                        shouldShowChooseAddressWidget = false
+                        hideShowChangeAvailable = true
+                        recyclerView.postDelayed(100) {
+                            hideShowChooseAddressOnScroll()
+                        }
+                    }
+                } else {
+                    if (dy <= 0 && !shouldShowChooseAddressWidget && discoveryViewModel.getAddressVisibilityValue()) {
+                        shouldShowChooseAddressWidget = true
+                        hideShowChangeAvailable = true
+                        recyclerView.postDelayed(100) {
+                            hideShowChooseAddressOnScroll()
+                        }
+                    }
+                }
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) &&
-                    newState == RecyclerView.SCROLL_STATE_IDLE
-                ) {
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && (newState == RecyclerView.SCROLL_STATE_IDLE))
                     ivToTop.hide()
-                }
                 if (scrollDist > MINIMUM) {
-                    chooseAddressWidget?.hide()
-                    chooseAddressWidgetDivider?.hide()
-                    shouldShowChooseAddressWidget = false
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         scrollToLastSection()
                     }
                 } else if (scrollDist < -MINIMUM) {
-                    if (discoveryViewModel.getAddressVisibilityValue()) {
-                        chooseAddressWidget?.show()
-                        if (isLightThemeStatusBar != true) {
-                            chooseAddressWidgetDivider?.show()
-                        } else {
-                            chooseAddressWidgetDivider?.hide()
-                        }
-                        shouldShowChooseAddressWidget = true
-                    }
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (mAnchorHeaderView.childCount == 0) {
@@ -395,6 +409,7 @@ class DiscoveryFragment :
         })
         recyclerView.setOnTouchListenerRecyclerView { v, event ->
             userPressed = true
+            isTabPresentToDoubleScroll = false
             if (event.actionMasked == MotionEvent.ACTION_UP) {
                 v.performClick()
             }
@@ -403,15 +418,18 @@ class DiscoveryFragment :
         recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
                 return false
             }
 
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
             }
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
             }
         })
 
@@ -443,13 +461,6 @@ class DiscoveryFragment :
                             requestStatusBarDark()
                             navToolbar.setShowShadowEnabled(true)
                             navToolbar.showShadow(true)
-                            if (discoveryViewModel.getAddressVisibilityValue()) {
-                                context?.let {
-                                    chooseAddressWidget?.background =
-                                        ColorDrawable(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-                                    chooseAddressWidget?.updateWidget()
-                                }
-                            }
                         }
                     }
                 }
@@ -461,9 +472,33 @@ class DiscoveryFragment :
 
     }
 
+    private fun hideShowChooseAddressOnScroll(){
+        if(!hideShowChangeAvailable)
+            return
+        hideShowChangeAvailable = false
+        if(!shouldShowChooseAddressWidget) {
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
+        }else{
+            chooseAddressWidget?.show()
+            if (isLightThemeStatusBar != true) {
+                chooseAddressWidgetDivider?.show()
+            } else {
+                chooseAddressWidgetDivider?.hide()
+            }
+        }
+    }
+
     private fun scrollToLastSection() {
         if (!userPressed && !autoScrollSectionID.isNullOrEmpty()) {
             scrollToSection(autoScrollSectionID!!)
+        }else if(!userPressed && isTabPresentToDoubleScroll){
+//            isTabPresentToDoubleScroll = false
+            pinnedAlreadyScrolled = false
+            discoveryAdapter.currentList?.let {
+                if (it.isNotEmpty())
+                    scrollToPinnedComponent(it)
+            }
         }
     }
 
@@ -666,6 +701,7 @@ class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                     setupBackgroundForHeader(it.data)
                     addMiniCartToPageFirstTime()
+                    setupAffiliate()
                 }
                 is Fail -> {
                     discoveryAdapter.addDataList(ArrayList())
@@ -872,6 +908,13 @@ class DiscoveryFragment :
         }
     }
 
+    private fun setupAffiliate() {
+        if (pageInfoHolder?.isAffiliate == true && !discoveryViewModel.isAffiliateInitialized) {
+            isAffiliateInitialized = true
+            discoveryViewModel.initAffiliateSDK()
+        }
+    }
+
     private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
         if (anchorViewHolder == null) {
             val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
@@ -1053,9 +1096,15 @@ class DiscoveryFragment :
         }
     }
 
-    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
+    private fun linkerDataMapper(data: PageInfo?, isAffiliate: Boolean = false): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = data?.id?.toString() ?: ""
+        if (isAffiliate) {
+            linkerData.id = data?.name ?: ""
+            linkerData.linkAffiliateType = AffiliateLinkType.CAMPAIGN.value
+            linkerData.isAffiliate = true
+        } else {
+            linkerData.id = data?.id?.toString() ?: ""
+        }
         linkerData.name = data?.name ?: ""
         linkerData.uri = Utils.getShareUrlQueryParamAppended(
             data?.share?.url
@@ -1091,7 +1140,24 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector) {
+                if (this@DiscoveryFragment.isAffiliateInitialized) {
+                    val inputShare = AffiliatePDPInput().apply {
+                        pageDetail = PageDetail(
+                            pageId = "0",
+                            pageType = "campaign",
+                            siteId = "1",
+                            verticalId = "1",
+                            pageName = pageEndPoint
+                        )
+                        pageType = PageType.CAMPAIGN.value
+                        product = Product()
+                        shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
+                    }
+                    universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
+                    universalShareBottomSheet?.affiliateRequestDataReceived(true)
+                }
+            }
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
@@ -1102,7 +1168,7 @@ class DiscoveryFragment :
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = linkerDataMapper(pageInfoHolder)
+        val linkerShareData = linkerDataMapper(pageInfoHolder, shareModel.isAffiliate)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
@@ -1261,10 +1327,11 @@ class DiscoveryFragment :
         if (!pinnedAlreadyScrolled) {
             val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
-                val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                val (position, isTabPresent) = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                isTabPresentToDoubleScroll = isTabPresent
                 if (position >= 0) {
-                    userPressed = true
-                    recyclerView.smoothScrollToPosition(position)
+                    userPressed = false
+                    recyclerView.smoothScrollToPosition(position, isTabPresent)
                     isManualScroll = false
                 }
             }
@@ -1276,7 +1343,7 @@ class DiscoveryFragment :
         val position = discoveryViewModel.scrollToPinnedComponent(
             discoveryAdapter.currentList,
             componentID
-        )
+        ).first
         if (position >= 0) {
             userPressed = false
             smoothScrollToComponentWithPosition(position)
@@ -1594,6 +1661,7 @@ class DiscoveryFragment :
         when (view) {
             ivToTop -> {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
                 recyclerView.smoothScrollToPosition(DEFAULT_SCROLL_POSITION)
                 ivToTop.hide()
             }
@@ -1625,7 +1693,10 @@ class DiscoveryFragment :
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
-                        sendOpenScreenAnalytics(it.data.identifier, it.data.additionalInfo)
+                        sendOpenScreenAnalytics(
+                            it.data.identifier,
+                            it.data.additionalInfo,
+                            it.data.isAffiliate)
                     }
                     else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
@@ -1640,14 +1711,30 @@ class DiscoveryFragment :
         addMiniCartToPage()
     }
 
-    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null, isAffiliate: Boolean = false) {
         val campaignId = arguments?.getString(CAMPAIGN_ID, "") ?: ""
         val variantId = arguments?.getString(VARIANT_ID, "") ?: ""
         val shopId = arguments?.getString(SHOP_ID, "") ?: ""
+        val affiliateUID = arguments?.getString(AFFILIATE_UNIQUE_ID, "")?.toDecodedString() ?: ""
+        val affiliateChannelID = if (isAffiliate && affiliateUID.isNotEmpty()) {
+            val trackerID = discoveryViewModel.getTrackerIDForAffiliate()
+            "$affiliateUID - $trackerID - $AFFILIATE"
+        } else
+            ""
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(), campaignId, variantId, shopId)
+            getDiscoveryAnalytics().trackOpenScreen(
+                discoveryViewModel.pageIdentifier,
+                additionalInfo,
+                isUserLoggedIn(),
+                ParamsForOpenScreen(campaignId, variantId, shopId, affiliateChannelID)
+            )
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(), campaignId, variantId, shopId)
+            getDiscoveryAnalytics().trackOpenScreen(
+                identifier,
+                additionalInfo,
+                isUserLoggedIn(),
+                ParamsForOpenScreen(campaignId, variantId, shopId, affiliateChannelID)
+            )
         }
         openScreenStatus = true
     }
@@ -2026,6 +2113,10 @@ class DiscoveryFragment :
                 com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
             )
         }
+    }
+
+    fun createAffiliateLink(applink: String): String {
+        return discoveryViewModel.createAffiliateLink(applink)
     }
 
 }

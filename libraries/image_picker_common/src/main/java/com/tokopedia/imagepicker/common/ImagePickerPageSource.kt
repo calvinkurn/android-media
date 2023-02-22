@@ -4,7 +4,6 @@ enum class ImagePickerPageSource(val value: String) {
     ADD_EDIT_PRODUCT_PAGE("Add Product"),
     FEED_PAGE("Feed"),
     CHAT_BOT_PAGE("Chat Bot"),
-    TOP_CHAT_PAGE("Top Chat"),
     PLAY_PAGE("Play"),
     REVIEW_PAGE("Review"),
     FEEDBACK_PAGE("Feedback"),

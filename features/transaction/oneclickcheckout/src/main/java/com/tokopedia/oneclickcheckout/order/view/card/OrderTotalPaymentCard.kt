@@ -14,6 +14,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -41,6 +43,9 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                                 }
                                 else -> {
                                     groupPayment.gone()
+                                    loaderBtnPay.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentLabel.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentValue.type = LoaderUnify.TYPE_RECT
                                     groupLoaderPayment.visible()
                                 }
                             }
@@ -70,6 +75,9 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                                 else -> {
                                     setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                                     groupPayment.gone()
+                                    loaderBtnPay.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentLabel.type = LoaderUnify.TYPE_RECT
+                                    loaderTotalPaymentValue.type = LoaderUnify.TYPE_RECT
                                     groupLoaderPayment.visible()
                                 }
                             }
@@ -80,9 +88,25 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                 if (orderTotal.orderCost.totalPrice > 0.0) {
                     tvTotalPaymentValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false).removeDecimalSuffix()
                     btnOrderDetail.visibility = if (orderTotal.buttonState == OccButtonState.LOADING) View.GONE else View.VISIBLE
+                    tickerPaymentError.gone()
                 } else {
                     tvTotalPaymentValue.text = "-"
                     btnOrderDetail.visibility = View.GONE
+                    if (orderTotal.showTickerError) {
+                        tickerPaymentError.setHtmlDescription(tickerPaymentError.context.getString(R.string.occ_payment_fee_error_ticker))
+                        tickerPaymentError.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                listener.onRefreshPaymentClicked()
+                            }
+
+                            override fun onDismiss() {
+                                /* no-op */
+                            }
+                        })
+                        tickerPaymentError.visible()
+                    } else {
+                        tickerPaymentError.gone()
+                    }
                 }
 
                 btnOrderDetail.setOnClickListener {
@@ -103,6 +127,8 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
         fun onOrderDetailClicked(orderCost: OrderCost)
 
         fun onPayClicked()
+
+        fun onRefreshPaymentClicked()
     }
 
     companion object {

@@ -9,19 +9,22 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class AnnotationCategoryUseCase @Inject constructor(
-        repository: GraphqlRepository): GraphqlUseCase<AnnotationCategoryResponse>(repository) {
+    repository: GraphqlRepository
+) : GraphqlUseCase<AnnotationCategoryResponse>(repository) {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
         const val PARAM_CATEGORY_ID = "categoryID"
         const val PARAM_VENDOR_NAME = "vendorName"
         const val PARAM_EXCLUDE_SENSITIVE = "excludeSensitive"
+        const val PARAM_SOURCE = "source"
         const val DEFAULT_VALUE_VENDOR_NAME = "merchant"
         const val DEFAULT_VALUE_EXCLUDE_SENSITIVE = "true"
+        const val DEFAULT_VALUE_SOURCE = "android"
         private val query =
-                """
-                query getAnotationCategoryV2(${'$'}categoryID: String!, ${'$'}productID: String, ${'$'}vendorName: String, ${'$'}excludeSensitive: String) {
-                    drogonAnnotationCategoryV2(categoryID: ${'$'}categoryID, productID: ${'$'}productID, vendorName: ${'$'}vendorName, excludeSensitive: ${'$'}excludeSensitive){
+            """
+                query getAnotationCategoryV2(${'$'}categoryID: String!, ${'$'}productID: String, ${'$'}vendorName: String, ${'$'}excludeSensitive: String, ${'$'}source: String) {
+                    drogonAnnotationCategoryV2(categoryID: ${'$'}categoryID, productID: ${'$'}productID, vendorName: ${'$'}vendorName, excludeSensitive: ${'$'}excludeSensitive, source: ${'$'}source){
                         header {
                           processTime
                           messages
@@ -44,7 +47,7 @@ class AnnotationCategoryUseCase @Inject constructor(
                         }
                     }
                 }
-                """.trimIndent()
+            """.trimIndent()
     }
 
     private val requestParams = RequestParams.create()
@@ -64,6 +67,7 @@ class AnnotationCategoryUseCase @Inject constructor(
         requestParams.putString(PARAM_CATEGORY_ID, categoryId)
         requestParams.putString(PARAM_VENDOR_NAME, DEFAULT_VALUE_VENDOR_NAME)
         requestParams.putString(PARAM_EXCLUDE_SENSITIVE, DEFAULT_VALUE_EXCLUDE_SENSITIVE)
+        requestParams.putString(PARAM_SOURCE, DEFAULT_VALUE_SOURCE)
         setRequestParams(requestParams.parameters)
     }
 

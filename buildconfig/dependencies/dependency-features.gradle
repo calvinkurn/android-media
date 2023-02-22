@@ -2,6 +2,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			sellerMvcCreation		: ":features:merchant:seller_mvc_creation",
 			shopDiscount		: ":features:merchant:shop_discount",
 			productAr		                : ":features:merchant:product_ar",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
@@ -18,12 +19,12 @@ ext {
             catalog                         : ":features:category:catalog",
             catalogLibrary                  : ":features:category:catalog_library",
             commonTradein                   : ":features:category:common_tradein",
-            affiliateSDK                   : ":features:category:common_sdk_affiliate_toko",
+            affiliateSDK                    : ":features:category:common_sdk_affiliate_toko",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
             agerestriction                  : ":features:category:age_restriction",
-            affiliateToko                  : ":features:category:affiliate_toko",
+            affiliateToko                   : ":features:category:affiliate_toko",
             ePharmacy                       : ":features:category:epharmacy",
             commonEPharmacy                 : ":features:category:common_epharmacy",
             tradeIn                         : ":features:category:tradein",

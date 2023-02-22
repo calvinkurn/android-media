@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
 import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.picker.common.PickerResult
@@ -19,7 +19,7 @@ class PreviewViewModel @Inject constructor(
     private val imageCompressor: ImageCompressionRepository,
     private val mediaSaver: SaveToGalleryRepository,
     dispatchers: CoroutineDispatchers,
-    private val paramCache: ParamCacheManager
+    private val paramCache: PickerCacheManager
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
