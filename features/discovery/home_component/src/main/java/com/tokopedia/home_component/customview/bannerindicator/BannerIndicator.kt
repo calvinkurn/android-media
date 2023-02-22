@@ -34,6 +34,11 @@ class BannerIndicator : LinearLayout {
     private var totalBanner = Int.ZERO
     private var currentPosition = Int.ZERO
 
+    companion object {
+        private const val MINIMUM_PROGRESS = 0
+        private const val MAXIMUM_PROGRESS = 100
+    }
+
     init {
         this.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
@@ -106,9 +111,6 @@ class BannerIndicator : LinearLayout {
 
     private fun animateIndicatorBanner(progressIndicator: ProgressBar, position: Int) {
         currentPosition = position
-//        bannerAnimator = ValueAnimator
-//            .ofInt(0, 100)
-//            .setDuration(5000)
         bannerAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             progressIndicator.progress = value

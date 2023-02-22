@@ -46,6 +46,7 @@ class BannerRevampViewHolder(
         get() = masterJob + Dispatchers.Main
 
     private var channelModel: ChannelModel? = null
+    private var totalBanner = 0
 
     init {
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -68,6 +69,7 @@ class BannerRevampViewHolder(
                 this.isCache = element.isCache
                 try {
                     val banners = it.convertToBannerItemModel()
+                    totalBanner = banners.size
                     binding?.bannerIndicator?.setBannerIndicators(banners.size)
                     binding?.bannerIndicator?.setBannerListener(object : BannerIndicatorListener {
                         override fun onChangePosition(position: Int) {
@@ -94,12 +96,12 @@ class BannerRevampViewHolder(
                     bannerListener?.onChannelBannerImpressed(it, absoluteAdapterPosition)
                 }
             })
-            setScrollListener()
+            setScrollListener(element)
         }
     }
 
     private var isFromDrag = false
-    private fun setScrollListener() {
+    private fun setScrollListener(element: BannerRevampDataModel) {
         binding?.rvBannerRevamp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -113,7 +115,7 @@ class BannerRevampViewHolder(
                             val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
                             Log.d("dhabalog", "position $currentPagePosition")
                             if (currentPagePosition != RecyclerView.NO_POSITION) {
-                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
+                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition % totalBanner)
                                 isFromDrag = false
                             }
                         }
