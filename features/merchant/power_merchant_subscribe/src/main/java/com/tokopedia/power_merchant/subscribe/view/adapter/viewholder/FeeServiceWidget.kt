@@ -36,7 +36,6 @@ class FeeServiceWidget(
                 onLearnFeeClicked(element)
             }
             root.addOnImpressionListener(element.impressHolder){
-                listener.setOnServiceFeeViewBind(itemView)
                 powerMerchantTracking.sendEventImpressFeeService(element.shopScore.toString())
             }
         }
@@ -49,6 +48,5 @@ class FeeServiceWidget(
 
     interface Listener {
         fun showServiceFeeByCategory()
-        fun setOnServiceFeeViewBind(view: View)
     }
 }

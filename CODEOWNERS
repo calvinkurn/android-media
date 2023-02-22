@@ -107,6 +107,7 @@
 /features/merchant/seller_tokopedia_flash_sale          @tokopedia/android-minionken-dev
 /features/merchant/product_manage_common/               @tokopedia/android-minionken-dev
 /features/merchant/product_manage_list/                 @tokopedia/android-minionken-dev
+/features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
