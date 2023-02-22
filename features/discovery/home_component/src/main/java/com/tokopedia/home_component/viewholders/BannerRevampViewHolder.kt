@@ -2,7 +2,6 @@ package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +47,7 @@ class BannerRevampViewHolder(
     private var channelModel: ChannelModel? = null
     private var totalBanner = 0
     private var currentPosition: Int = 0
+    private var isFromDrag = false
 
     init {
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -96,25 +96,18 @@ class BannerRevampViewHolder(
                     bannerListener?.onChannelBannerImpressed(it, absoluteAdapterPosition)
                 }
             })
-            setScrollListener(element)
+            setScrollListener()
         }
     }
 
-    private var isFromDrag = false
-    private fun setScrollListener(element: BannerRevampDataModel) {
+    private fun setScrollListener() {
         binding?.rvBannerRevamp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-//                binding?.bannerIndicator?.pauseAnimation()
-            }
-
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
                         if (isFromDrag) {
                             val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
                             currentPosition = currentPagePosition
-                            Log.d("dhabalog", "position $currentPagePosition")
                             if (currentPagePosition != RecyclerView.NO_POSITION) {
                                 binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
                                 isFromDrag = false
@@ -123,12 +116,6 @@ class BannerRevampViewHolder(
                     }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         isFromDrag = true
-//                        onPageDragStateChanged(true)
-//                        pauseAutoScroll()
-                    }
-                    RecyclerView.SCROLL_STATE_SETTLING -> {
-                        val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-//                        binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
                     }
                 }
             }
@@ -170,6 +157,8 @@ class BannerRevampViewHolder(
 
         binding?.rvBannerRevamp?.layoutManager = getLayoutManager()
         val adapter = BannerRevampChannelAdapter(list, this)
+        val halfIntegerSize = Integer.MAX_VALUE / 2
+        binding?.rvBannerRevamp?.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
         binding?.rvBannerRevamp?.adapter = adapter
     }
 
