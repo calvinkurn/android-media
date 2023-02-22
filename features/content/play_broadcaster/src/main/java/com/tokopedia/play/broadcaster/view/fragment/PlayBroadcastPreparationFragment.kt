@@ -875,10 +875,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
     }
 
-    override fun setupCoverButtonSaveClicked() {
-        // tracker
-    }
-
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
         if (!isShow) coachMark?.dismissCoachMark()

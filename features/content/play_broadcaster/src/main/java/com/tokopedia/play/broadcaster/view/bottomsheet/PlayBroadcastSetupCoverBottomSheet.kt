@@ -165,7 +165,6 @@ class PlayBroadcastSetupCoverBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun dismissSetupCover()
-        fun setupCoverButtonSaveClicked()
         fun setupCoverProductClicked()
     }
 
