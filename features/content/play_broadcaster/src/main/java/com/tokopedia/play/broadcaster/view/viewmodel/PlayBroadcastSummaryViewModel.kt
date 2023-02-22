@@ -206,6 +206,12 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                         }
                     }
                 }
+                is CoverSetupState.GeneratedCover.ImageCover -> {
+                    if (croppedCover.coverImage.isEmpty()) return@launch
+                    _channelSummary.setValue {
+                        copy(coverUrl = croppedCover.coverImage)
+                    }
+                }
             }
         }
     }

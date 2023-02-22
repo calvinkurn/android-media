@@ -129,6 +129,10 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
                         binding.btnSetupCoverUploadImage.isEnabled = false
                     }
                 }
+                is CoverSetupState.GeneratedCover.ImageCover -> {
+                    binding.clCoverFormPreview.setCover(croppedCover.coverImage)
+                    binding.btnSetupCoverUploadImage.isEnabled = true
+                }
                 else -> {}
             }
         }

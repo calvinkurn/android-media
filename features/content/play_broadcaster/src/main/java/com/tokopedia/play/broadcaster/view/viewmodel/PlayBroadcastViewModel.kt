@@ -1807,7 +1807,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setSelectedCover(
                 cover = PlayCoverUiModel(
                     croppedCover = CoverSetupState.GeneratedCover.ImageCover(
-                        imageUrl = request.imageUrl,
+                        coverImage = request.imageUrl,
                     ),
                     state = SetupDataState.Draft,
                 )

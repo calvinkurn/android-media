@@ -57,7 +57,7 @@ class CoverDataStoreImpl @Inject constructor(
         val currentCover = getSelectedCover()
         val coverUrl = when (val croppedCover = currentCover?.croppedCover) {
             is CoverSetupState.Cropped -> croppedCover.coverImage.toString()
-            is CoverSetupState.GeneratedCover -> croppedCover.imageUrl
+            is CoverSetupState.GeneratedCover -> croppedCover.coverImage
             else -> throw IllegalStateException("Something went wrong: Cover url not found")
         }
 
