@@ -210,6 +210,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
         renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
         renderTicker(state.isDiscountPromoTypeEnabled, state.tickers)
+
+        setDiscountSwitchPriceInput(state.voucherConfiguration)
     }
 
     private fun renderPromoTypeChips(
@@ -417,6 +419,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             }
             setupHeader()
             setupPromoTypeSection()
+            setupDiscountNominalSection()
+            setupDiscountPercentageSection()
             setupTargetBuyerSection()
             setupSpendingEstimationSection()
             setupButtonSection()
@@ -970,8 +974,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     // Discount input region
     private fun setDiscountSelected() {
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-
         promoTypeSectionBinding?.run {
             chipDiscount.setSelected()
             chipFreeShipping.setNormal()
@@ -981,8 +983,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
         cashbackInputSectionBinding?.parentCashback?.gone()
         discountInputSectionBinding?.parentDiscount?.visible()
-
-        setDiscountSwitchPriceInput(currentVoucherConfiguration)
     }
 
     private fun setDiscountSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
@@ -1014,9 +1014,17 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
             }
         }
+        presetValue()
     }
 
     private fun setDiscountNominalInput() {
+        discountInputSectionBinding?.tfDiscountNominal?.visible()
+        discountInputSectionBinding?.tfDiscountPercentage?.invisible()
+        discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.gone()
+        discountInputSectionBinding?.tfDiscountMaxDeduction?.gone()
+    }
+
+    private fun setupDiscountNominalSection() {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
@@ -1029,9 +1037,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         )
                     )
                 }
-                visible()
-                tpgDiscountMaxDeductionLabel.gone()
-                tfDiscountMaxDeduction.gone()
                 appendText("")
                 prependText(getString(R.string.smvc_rupiah_label))
                 labelText.text = getString(R.string.smvc_nominal_discount_label)
@@ -1046,11 +1051,19 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
-            tfDiscountPercentage.invisible()
+
         }
     }
 
     private fun setDiscountPercentageInput() {
+        discountInputSectionBinding?.tfDiscountPercentage?.visible()
+        discountInputSectionBinding?.tfDiscountNominal?.invisible()
+
+        discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.visible()
+        discountInputSectionBinding?.tfDiscountMaxDeduction?.visible()
+    }
+
+    private fun setupDiscountPercentageSection() {
         discountInputSectionBinding?.run {
             tfDiscountPercentage.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
@@ -1063,9 +1076,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         )
                     )
                 }
-                visible()
-                tpgDiscountMaxDeductionLabel.visible()
-                tfDiscountMaxDeduction.visible()
+
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
@@ -1080,7 +1091,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
-            tfDiscountNominal.invisible()
+
         }
     }
 
