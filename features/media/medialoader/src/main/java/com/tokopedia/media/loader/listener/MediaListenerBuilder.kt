@@ -14,29 +14,18 @@ import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dat
 
 object MediaListenerBuilder {
 
-    fun callback(
+    operator fun invoke(
         context: Context,
         properties: Properties,
         startTime: Long
     ) = object : RequestListener<Bitmap> {
+
         override fun onLoadFailed(
             e: GlideException?,
             model: Any?,
             target: Target<Bitmap>?,
             isFirstResource: Boolean
-        ): Boolean {
-            val loadTime = (System.currentTimeMillis() - startTime).toString()
-
-            MediaLoaderTracker.trackLoadFailed(
-                context = context.applicationContext,
-                url = properties.data.toString(),
-                loadTime = loadTime,
-                exception = e
-            )
-
-            properties.loaderListener?.onFailed(e)
-            return false
-        }
+        ) = onLoadFailed(context, properties, startTime, e)
 
         override fun onResourceReady(
             resource: Bitmap?,
@@ -44,31 +33,58 @@ object MediaListenerBuilder {
             target: Target<Bitmap>?,
             dataSource: DataSource?,
             isFirstResource: Boolean
-        ): Boolean {
-            val loadTime = (System.currentTimeMillis() - startTime).toString()
-
-            // tracker
-            if (properties.data is String) {
-                MediaLoaderTracker.simpleTrack(
-                    context = context.applicationContext,
-                    bitmap = resource,
-                    url = properties.data.toString(),
-                    isIcon = IsIcon(properties.isIcon),
-                    loadTime = loadTime
-                )
-            }
-
-            // override the load time into properties
-            properties.loadTime = loadTime
-
-            // override target size with adaptive (dynamic)
-            if (properties.isAdaptiveSizeImageRequest) {
-                resource?.adaptiveSizeImageRequest(target)
-            }
-
-            properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
-            return false
-        }
+        ) = onResourceReady(context, properties, startTime, resource, target, dataSource)
     }
 
+    private fun onLoadFailed(
+        context: Context,
+        properties: Properties,
+        startTime: Long,
+        e: GlideException?
+    ): Boolean {
+        val loadTime = (System.currentTimeMillis() - startTime).toString()
+
+        MediaLoaderTracker.failed(
+            context = context.applicationContext,
+            url = properties.data.toString(),
+            loadTime = loadTime,
+            exception = e
+        )
+
+        properties.loaderListener?.onFailed(e)
+        return false
+    }
+
+    private fun onResourceReady(
+        context: Context,
+        properties: Properties,
+        startTime: Long,
+        resource: Bitmap?,
+        target: Target<Bitmap>?,
+        dataSource: DataSource?
+    ): Boolean {
+        val loadTime = (System.currentTimeMillis() - startTime).toString()
+
+        // tracker
+        if (properties.data is String) {
+            MediaLoaderTracker.succeed(
+                context = context.applicationContext,
+                bitmap = resource,
+                url = properties.data.toString(),
+                isIcon = IsIcon(properties.isIcon),
+                loadTime = loadTime
+            )
+        }
+
+        // override the load time into properties
+        properties.loadTime = loadTime
+
+        // override target size with adaptive (dynamic)
+        if (properties.isAdaptiveSizeImageRequest) {
+            resource?.adaptiveSizeImageRequest(target)
+        }
+
+        properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
+        return false
+    }
 }

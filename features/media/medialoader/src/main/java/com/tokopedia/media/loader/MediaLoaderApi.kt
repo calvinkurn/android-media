@@ -49,7 +49,7 @@ internal object MediaLoaderApi {
             .dynamicPlaceHolder(context, properties)
             .thumbnail(setThumbnailUrl(context, properties))
             .listener(
-                MediaListenerBuilder.callback(
+                MediaListenerBuilder(
                     context,
                     properties,
                     startTimeRequest
