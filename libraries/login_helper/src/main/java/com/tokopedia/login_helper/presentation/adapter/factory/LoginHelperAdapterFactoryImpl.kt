@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.login_helper.domain.uiModel.HeaderUiModel
 import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
+import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginDataViewHolder
 import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginHeaderViewHolder
 
 class LoginHelperAdapterFactoryImpl : BaseAdapterTypeFactory(), LoginHelperAdapterFactory {
-    override fun type(model: LoginDataUiModel): Int {
+    override fun type(model: UserDataUiModel): Int {
         return LoginDataViewHolder.RES_LAYOUT
     }
 

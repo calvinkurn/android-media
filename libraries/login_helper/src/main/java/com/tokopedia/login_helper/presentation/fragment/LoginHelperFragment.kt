@@ -54,15 +54,6 @@ class LoginHelperFragment : BaseDaggerFragment() {
         viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
     }
 
-    override fun initInjector() {
-        DaggerLoginHelperComponent.builder()
-            .baseAppComponent(
-                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
-            )
-            .build()
-            .inject(this)
-    }
-
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.collect {
@@ -135,6 +126,15 @@ class LoginHelperFragment : BaseDaggerFragment() {
 
     private fun backToPreviousScreen() {
         activity?.finish()
+    }
+
+    override fun initInjector() {
+        DaggerLoginHelperComponent.builder()
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
+            .build()
+            .inject(this)
     }
 
     companion object {

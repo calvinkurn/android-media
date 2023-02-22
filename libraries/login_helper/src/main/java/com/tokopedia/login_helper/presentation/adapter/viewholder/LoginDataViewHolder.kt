@@ -3,12 +3,25 @@ package com.tokopedia.login_helper.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.login_helper.databinding.ItemLoginDataBinding
+import com.tokopedia.login_helper.databinding.ItemLoginHeaderBinding
 import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
+import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
-class LoginDataViewHolder(itemView: View?): AbstractViewHolder<LoginDataUiModel>(itemView) {
+class LoginDataViewHolder(itemView: View?): AbstractViewHolder<UserDataUiModel>(itemView) {
 
-    override fun bind(element: LoginDataUiModel?) {
+    private var binding: ItemLoginDataBinding? by viewBinding()
 
+    override fun bind(element: UserDataUiModel?) {
+        binding?.apply {
+            if (element?.email != null) {
+                userEmail.text = element.email
+            }
+            if (element?.tribe != null && element.tribe.isNotEmpty()){
+                tribeChip.chipText = element.tribe
+            }
+        }
     }
 
     companion object {

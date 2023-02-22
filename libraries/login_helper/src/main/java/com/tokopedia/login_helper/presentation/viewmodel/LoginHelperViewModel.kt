@@ -36,11 +36,14 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.TapBackButton -> {
                 handleBackButtonTap()
             }
+            is LoginHelperEvent.GetLoginData -> {
+                getLoginData()
+            }
         }
-        callTheAPi()
     }
 
-    private fun callTheAPi() {
+
+    private fun getLoginData() {
         Log.d("FATAL", "callTheAPi: starting ")
         launchCatchError(
             dispatchers.io,
@@ -54,12 +57,14 @@ class LoginHelperViewModel @Inject constructor(
         )
     }
 
+
     private fun changeEnvType(envType: LoginHelperEnvType) {
         _uiState.update {
             it.copy(
                 envType = envType
             )
         }
+        getLoginData()
     }
 
     private fun handleBackButtonTap() {
