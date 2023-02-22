@@ -46,6 +46,7 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         component.inject(this)
 
         livenessSdk.initOffLine(application)
+        livenessSdk.isDetectOcclusion(true)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
         livenessSdk.setActionSequence(
