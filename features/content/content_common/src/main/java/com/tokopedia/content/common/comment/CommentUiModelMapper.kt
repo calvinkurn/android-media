@@ -66,6 +66,7 @@ class CommentUiModelMapper @Inject constructor() {
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",
             isOwner = true,
+            isReportAllowed = false,
         )
     }
 
