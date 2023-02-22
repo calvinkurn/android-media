@@ -180,7 +180,9 @@ class ContentCommentBottomSheet @Inject constructor(
                             text = event.message.message.orEmpty(),
                             actionText = getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
-                            clickListener = { event.onClick }
+                            clickListener = {
+                                run { event.onClick() }
+                            }
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {

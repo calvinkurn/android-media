@@ -1,7 +1,5 @@
 package com.tokopedia.content.common.comment
 
-import com.tokopedia.content.common.comment.uimodel.CommentUiModel
-
 /**
  * @author by astidhiyaa on 20/02/23
  */
@@ -12,7 +10,7 @@ sealed class CommentEvent {
 
     data class ShowErrorToaster(
         val message: Throwable,
-        val onClick: (CommentUiModel.Item) -> Unit
+        val onClick: () -> Unit
     ) : CommentEvent()
 
     data class OpenAppLink(val appLink: String) : CommentEvent()
