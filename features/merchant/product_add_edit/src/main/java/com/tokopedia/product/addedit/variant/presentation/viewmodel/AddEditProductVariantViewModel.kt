@@ -383,7 +383,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         mIsVariantSizechartVisible.value = isSizeUnit && isVariantValueNotEmpty
     }
 
-    fun getSelectedVariantUnit(layoutPosition: Int) {
+    fun getSelectedVariantUnit(layoutPosition: Int): Unit {
         val selectedVariantUnit = selectedVariantUnitMap.getOrElse(layoutPosition) { Unit() }
         return if (selectedVariantUnit.unitName.isNotBlank()) {
             selectedVariantUnitMap.getOrElse(layoutPosition) { Unit() }
