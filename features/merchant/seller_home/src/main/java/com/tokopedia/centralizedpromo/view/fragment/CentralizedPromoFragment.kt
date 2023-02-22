@@ -259,23 +259,26 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private fun showCoachMarkPromoCreationItem(pageId: String, view: View) {
         val key = "$pageId+$SHARED_PREF_SUFFIX"
-        val alreadyShow = sharedPref.getBoolean(key, false)
         val coachMarkList = arrayListOf<CoachMark2Item>()
 
-        if (pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON && !alreadyShow) {
-            coachMarkList.add(
-                CoachMark2Item(
-                    anchorView = view,
-                    title = context?.getString(R.string.centralize_promo_flash_sale_title_coachmark)
-                        ?: "",
-                    description = context?.getString(R.string.centralize_promo_flash_sale_desc_coachmark)
-                        ?: "",
-                    position = CoachMark2.POSITION_BOTTOM
-                )
-            )
+        if (pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON) {
+            val alreadyShow = sharedPref.getBoolean(key, false)
 
-            coachMark2?.showCoachMark(coachMarkList, null, 0)
-            sharedPref.edit().putBoolean(key, true).apply()
+            if (!alreadyShow) {
+                coachMarkList.add(
+                    CoachMark2Item(
+                        anchorView = view,
+                        title = context?.getString(R.string.centralize_promo_flash_sale_title_coachmark)
+                            ?: "",
+                        description = context?.getString(R.string.centralize_promo_flash_sale_desc_coachmark)
+                            ?: "",
+                        position = CoachMark2.POSITION_BOTTOM
+                    )
+                )
+
+                coachMark2?.showCoachMark(coachMarkList, null, 0)
+                sharedPref.edit().putBoolean(key, true).apply()
+            }
         }
     }
 
