@@ -390,7 +390,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
                 val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
                 notEligiblePromoHolderdata.promoTitle = voucherOrdersItemUiModel.titleDescription
-                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
+                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.code
                 if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
                     notEligiblePromoHolderdata.shopName = orderCart.shop.shopName
                     notEligiblePromoHolderdata.shopBadge = orderCart.shop.shopBadge
@@ -437,5 +437,20 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             return true
         }
         return false
+    }
+
+    fun getValidPromoCodes(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): List<String> {
+        val promoCodes = mutableListOf<String>()
+        if (validateUsePromoRevampUiModel != null) {
+            if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state != "red") {
+                promoCodes.addAll(validateUsePromoRevampUiModel.promoUiModel.codes)
+            }
+            validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.forEach {
+                if (it.messageUiModel.state != "red") {
+                    promoCodes.add(it.code)
+                }
+            }
+        }
+        return promoCodes
     }
 }

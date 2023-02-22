@@ -33,7 +33,8 @@ object Utils {
             userStatus =  chipsData.userStatus,
             linkingStatus = chipsData.linkingStatus,
             gatewayPartnerName =  chipsData.name,
-            installmentAmout = chipsData.installmentAmount
+            installmentAmout = chipsData.installmentAmount,
+            promoName = chipsData.promoName
         )
     }
 

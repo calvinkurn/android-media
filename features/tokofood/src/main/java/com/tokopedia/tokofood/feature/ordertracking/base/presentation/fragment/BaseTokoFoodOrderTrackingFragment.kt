@@ -99,7 +99,7 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private var loaderDialog: LoaderDialog? = null
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE
 
     override fun initInjector() {
         activity?.let {

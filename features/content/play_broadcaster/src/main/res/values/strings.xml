@@ -44,7 +44,7 @@
 
     <!--Cover-->
     <string name="play_prepare_cover_title_title">Tambah Cover</string>
-    <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
+    <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif supaya calon penontonmu jadi penasaran!</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
     <string name="play_prepare_cover_choose_from_gallery">Pilih dari galeri foto</string>
     <string name="play_prepare_cover_title_add_cover_label">Tambah Cover</string>

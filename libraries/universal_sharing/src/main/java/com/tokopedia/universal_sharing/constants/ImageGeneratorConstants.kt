@@ -59,6 +59,8 @@ class ImageGeneratorConstants {
         const val VOUCHER_CASHBACK_PERCENTAGE = "voucher_cashback_percentage"
         const val VOUCHER_NOMINAL_AMOUNT = "voucher_nominal_amount"
         const val VOUCHER_NOMINAL_SYMBOL = "voucher_nominal_symbol"
+        const val VOUCHER_DISCOUNT_TYPE = "voucher_discount_type"
+        const val VOUCHER_DISCOUNT_PERCENTAGE = "voucher_discount_percentage"
         const val SHOP_LOGO_MVC = "shop_logo"
         const val SHOP_NAME_MVC = "shop_name"
         const val VOUCHER_CODE = "voucher_code"
