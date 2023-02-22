@@ -43,4 +43,6 @@ sealed interface PlayBroadcastEvent {
         val error: Throwable,
     ) : PlayBroadcastEvent
     object BroadcastRecovered : PlayBroadcastEvent
+
+    data class SubmitCoverLoading(val isLoading: Boolean, val throwable: Throwable? = null): PlayBroadcastEvent
 }
