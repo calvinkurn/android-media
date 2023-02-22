@@ -52,11 +52,11 @@ data class ProfileUiModel(
     data class UserUiModel(
         val id: String,
         val encryptedId: String,
-        val photoUrl: String, // item.profile.imageCover
-        val name: String, // item.profile.name
-        val username: String, // item.profile.username
+        val photoUrl: String,
+        val name: String,
+        val username: String,
         val isFollowed: Boolean,
-        val isMySelf: Boolean, // userSession.id == item.profile.id
-        val appLink: String, // item.profile.sharelink.applink
+        val isMySelf: Boolean,
+        val appLink: String,
     ): PeopleUiModel()
 }

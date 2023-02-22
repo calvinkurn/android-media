@@ -24,7 +24,8 @@ class FollowerFollowingViewModel @Inject constructor(
         get() = profileFollowers
 
     private val profileFollowingsList = MutableLiveData<Resources<List<ProfileUiModel.PeopleUiModel>>>()
-    val profileFollowingsListLiveData: LiveData<Resources<List<ProfileUiModel.PeopleUiModel>>> get() = profileFollowingsList
+    val profileFollowingsListLiveData: LiveData<Resources<List<ProfileUiModel.PeopleUiModel>>>
+        get() = profileFollowingsList
 
     private val _followResult = MutableLiveData<MutationUiModel>()
     val followResult: LiveData<MutationUiModel> get() = _followResult
