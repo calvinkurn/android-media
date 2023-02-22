@@ -1,8 +1,6 @@
 package com.tokopedia.content.common.comment.ui
 
-import android.app.Activity
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.R
@@ -29,7 +28,6 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -84,6 +82,16 @@ class ContentCommentBottomSheet @Inject constructor(
             childFragmentManager,
             requireActivity().classLoader
         )
+    }
+
+    private val toasterCallback by lazyThreadSafetyNone {
+        object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+
+                viewModel.submitAction(CommentAction.PermanentRemoveComment)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,13 +166,13 @@ class ContentCommentBottomSheet @Inject constructor(
                             text = getString(R.string.comment_delete_kembali),
                             actionText = getString(R.string.comment_delete_undo),
                             duration = Toaster.LENGTH_LONG,
-                            clickListener = { viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = true)) }
+                            clickListener = {
+                                viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = true))
+                                binding.rvComment.scrollToPosition(0)
+                            }
                         )
+                        toaster.addCallback(toasterCallback)
                         toaster.show()
-
-                        toaster.view.addOneTimeGlobalLayoutListener {
-                            if (!isVisible) viewModel.submitAction(CommentAction.PermanentRemoveComment)
-                        }
                     }
                     is CommentEvent.ShowErrorToaster -> {
                         Toaster.build(
