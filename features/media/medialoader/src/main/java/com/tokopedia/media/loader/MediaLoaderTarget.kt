@@ -8,15 +8,12 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.media.loader.MediaLoaderApi.setThumbnailUrl
 import com.tokopedia.media.loader.data.Properties
-import com.tokopedia.media.loader.options.CommonOptions
-import com.tokopedia.media.loader.options.PlaceholderOptions
-import com.tokopedia.media.loader.options.TransformationOptions
 import com.tokopedia.media.loader.listener.MediaListenerBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
-import com.tokopedia.media.loader.utils.generateUrl
+import com.tokopedia.media.loader.utils.mediaLoad
 
 object MediaLoaderTarget {
 
@@ -41,31 +38,21 @@ object MediaLoaderTarget {
         // startTimeRequest will use for performance tracking
         val startTimeRequest = System.currentTimeMillis()
 
-        GlideApp
+        return GlideApp
             .with(context)
             .asBitmap()
-            .apply(CommonOptions.build(properties))
-            .apply(TransformationOptions.build(properties))
-            .apply(PlaceholderOptions.build(context, properties))
-            .apply {
-                // set custom thumbnail
-                setThumbnailUrl(context, properties)
-
-                // callback listener
-                listener(
-                    MediaListenerBuilder.callback(
-                        context,
-                        properties,
-                        startTimeRequest
-                    )
+            .transform(properties)
+            .commonOptions(properties)
+            .dynamicPlaceHolder(context, properties)
+            .thumbnail(setThumbnailUrl(context, properties))
+            .listener(
+                MediaListenerBuilder.callback(
+                    context,
+                    properties,
+                    startTimeRequest
                 )
-
-                return if (properties.data is String) {
-                    load(properties.generateUrl())
-                } else {
-                    load(properties.data)
-                }
-            }
+            )
+            .mediaLoad(properties)
     }
 
 }

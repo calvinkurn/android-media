@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.BaseRequestOptions
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.data.PARAM_BLURHASH
@@ -17,8 +17,9 @@ import com.tokopedia.media.loader.utils.toUri
 
 class PlaceholderOptions constructor(
     private val context: Context,
-    private val properties: Properties
-) : RequestOptions() {
+    private val properties: Properties,
+    private val options: BaseRequestOptions<*>
+) {
 
     /*
     * The blurhash (built-in) list,
@@ -46,7 +47,7 @@ class PlaceholderOptions constructor(
     }
 
     private fun setCustomPlaceHolder() {
-        placeholder(
+        options.placeholder(
             ContextCompat.getDrawable(
                 context,
                 properties.placeHolder
@@ -63,7 +64,7 @@ class PlaceholderOptions constructor(
                 ?.getQueryParameter(PARAM_BLURHASH)
                 ?: blurHashes.random()
 
-            placeholder(
+            options.placeholder(
                 BitmapDrawable(
                     context.resources, generateBlurHash(
                         hash = hash,
@@ -73,7 +74,7 @@ class PlaceholderOptions constructor(
                 )
             )
         } else {
-            placeholder(
+            options.placeholder(
                 ContextCompat.getDrawable(
                     context,
                     PLACEHOLDER_RES_UNIFY
@@ -93,16 +94,5 @@ class PlaceholderOptions constructor(
             width = ratio.first,
             height = ratio.second
         )
-    }
-
-    companion object {
-        @Volatile
-        private var factory: PlaceholderOptions? = null
-
-        fun build(context: Context, properties: Properties): RequestOptions {
-            return factory ?: PlaceholderOptions(context, properties).also {
-                factory = it
-            }
-        }
     }
 }

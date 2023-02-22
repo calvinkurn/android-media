@@ -1,12 +1,15 @@
 package com.tokopedia.media.loader.options
 
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.BaseRequestOptions
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
-class CommonOptions(private val properties: Properties) : RequestOptions() {
+class CommonOptions constructor(
+    private val properties: Properties,
+    private val options: BaseRequestOptions<*>
+) {
 
     init {
         setCircleCrop()
@@ -20,39 +23,41 @@ class CommonOptions(private val properties: Properties) : RequestOptions() {
 
     private fun setCircleCrop() {
         if (properties.isCircular) {
-            circleCrop()
+            options.circleCrop()
         }
     }
 
     private fun setErrorDrawable() {
-        error(properties.error)
+        if (properties.error.isMoreThanZero()) {
+            options.error(properties.error)
+        }
     }
 
     private fun isAnimationEnabled() {
         if (properties.isAnimate.not()) {
-            dontAnimate()
+            options.dontAnimate()
         }
     }
 
     private fun setCustomSignature() {
         if (properties.isCache) {
             properties.signatureKey?.let {
-                signature(it)
+                options.signature(it)
             }
         } else {
-            skipMemoryCache(true)
+            options.skipMemoryCache(true)
         }
     }
 
     private fun setCacheStrategy() {
         properties.cacheStrategy?.let {
-            diskCacheStrategy(MediaCacheStrategy.mapTo(it))
+            options.diskCacheStrategy(MediaCacheStrategy.mapTo(it))
         }
     }
 
     private fun setDecodeFormat() {
         properties.decodeFormat?.let {
-            format(MediaDecodeFormat.mapTo(it))
+            options.format(MediaDecodeFormat.mapTo(it))
         }
     }
 
@@ -62,18 +67,7 @@ class CommonOptions(private val properties: Properties) : RequestOptions() {
                 val width = overrideSize?.width?: 0
                 val height = overrideSize?.height?: 0
 
-                override(width, height)
-            }
-        }
-    }
-
-    companion object {
-        @Volatile
-        private var factory: CommonOptions? = null
-
-        fun build(properties: Properties): RequestOptions {
-            return factory ?: CommonOptions(properties).also {
-                factory = it
+                options.override(width, height)
             }
         }
     }

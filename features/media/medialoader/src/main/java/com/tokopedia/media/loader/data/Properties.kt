@@ -8,7 +8,7 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
-open class Properties(
+data class Properties(
     internal var data: Any? = null,
     internal var renderDelay: Long = 0L,
     internal var thumbnailUrl: String = "",
@@ -46,6 +46,9 @@ open class Properties(
     // flag to check wether icon or not
     internal var isIcon = false
 
+    // flag to check the image is gif or not
+    internal var isGif = false
+
     // determine is request secure or not
     internal var isSecure = false
 
@@ -55,6 +58,10 @@ open class Properties(
 
     fun isIcon(value: Boolean) = apply {
         isIcon = value
+    }
+
+    fun isGif(value: Boolean) = apply {
+        isGif = value
     }
 
     internal fun setImageSize(width: Int, height: Int) = apply {
@@ -190,6 +197,8 @@ open class Properties(
         return other is Properties &&
             imageViewSize == other.imageViewSize &&
             isIcon == other.isIcon &&
+            isSecure == other.isSecure &&
+            isGif == other.isGif &&
             renderDelay == other.renderDelay &&
             loadTime == other.loadTime &&
             thumbnailUrl == other.thumbnailUrl &&
@@ -219,6 +228,8 @@ open class Properties(
         var result = thumbnailUrl.hashCode()
         result = 3 * result + imageViewSize.hashCode()
         result = 3 * result + isIcon.hashCode()
+        result = 3 * result + isGif.hashCode()
+        result = 3 * result + isSecure.hashCode()
         result = 3 * result + renderDelay.hashCode()
         result = 3 * result + loadTime.hashCode()
         result = 3 * result + blurHash.hashCode()

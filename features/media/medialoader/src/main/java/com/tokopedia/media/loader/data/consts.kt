@@ -46,3 +46,5 @@ const val HEADER_KEY_AUTH = "Accounts-Authorization"
 const val HEADER_USER_ID = "Tkpd-UserId"
 const val HEADER_X_DEVICE = "X-Device"
 const val PREFIX_BEARER = "Bearer"
+
+const val DEBUG_TIMBER_TAG = "media-loader"

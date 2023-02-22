@@ -11,12 +11,20 @@ import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.Resize
 
-fun ImageView.loadAsGif(url: String) = loadGifImage(this, url, Properties())
+fun ImageView.loadAsGif(
+    url: String
+) = loadGifImage(this, url,
+    Properties()
+        .isGif(true)
+)
 
 fun ImageView.loadAsGif(
     url: String,
     properties: Properties.() -> Unit
-) = loadGifImage(this, url, Properties().apply(properties))
+) = loadGifImage(this, url, Properties()
+    .apply(properties)
+    .isGif(true)
+)
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 

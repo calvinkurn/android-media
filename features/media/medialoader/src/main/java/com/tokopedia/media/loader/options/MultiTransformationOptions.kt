@@ -7,10 +7,13 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.BaseRequestOptions
 import com.tokopedia.media.loader.data.Properties
 
-class TransformationOptions(private val properties: Properties) : RequestOptions() {
+class MultiTransformationOptions constructor(
+    private val properties: Properties,
+    options: BaseRequestOptions<*>
+) {
 
     private val transforms = arrayListOf<Transformation<Bitmap>>()
 
@@ -25,7 +28,7 @@ class TransformationOptions(private val properties: Properties) : RequestOptions
         setRoundedCorners()
 
         if (transforms.isNotEmpty()) {
-            transform(MultiTransformation(transforms))
+            options.transform(MultiTransformation(transforms))
         }
     }
 
@@ -62,17 +65,6 @@ class TransformationOptions(private val properties: Properties) : RequestOptions
     private fun multiTransform() {
         properties.transforms?.let {
             transforms.addAll(it)
-        }
-    }
-
-    companion object {
-        @Volatile
-        private var factory: TransformationOptions? = null
-
-        fun build(properties: Properties): RequestOptions {
-            return factory ?: TransformationOptions(properties).also {
-                factory = it
-            }
         }
     }
 }

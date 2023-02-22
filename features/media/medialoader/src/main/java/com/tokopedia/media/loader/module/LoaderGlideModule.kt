@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader.module
 
 import android.content.Context
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.Registry
@@ -22,6 +23,7 @@ class LoaderGlideModule: AppGlideModule() {
             Glide.getPhotoCacheDir(context)?.absolutePath,
             (LIMIT_CACHE_SIZE_IN_MB * SIZE_IN_MB * SIZE_IN_MB).toLong()
         ))
+        builder.setLogLevel(Log.VERBOSE)
         super.applyOptions(context, builder)
     }
 

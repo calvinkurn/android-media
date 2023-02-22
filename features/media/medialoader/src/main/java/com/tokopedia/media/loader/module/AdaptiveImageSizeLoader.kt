@@ -34,15 +34,11 @@ class AdaptiveImageSizeLoader constructor(
 
     override fun getUrl(model: String, width: Int, height: Int, options: Options?): String {
         val setting = preferences?.qualitySettings()?: 0
+        val url = buildUrl(setting, model)
 
-        val url = buildUrl(
-            qualitySettings = setting,
-            url = model
-        )
-
-        Timber.d("medialoader: [Url] $url")
-
-        return url
+        return url.also {
+            Timber.d("$DEBUG_TIMBER_TAG: [Url] $it")
+        }
     }
 
     private fun isAdaptiveImageSupported(model: String): Boolean {

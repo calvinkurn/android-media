@@ -3,9 +3,12 @@ package com.tokopedia.media.loader
 import android.app.Activity
 import android.content.Context
 import android.widget.ImageView
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.data.DEBUG_TIMBER_TAG
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
+import timber.log.Timber
 
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
@@ -13,8 +16,13 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
         try {
             MediaLoaderApi.loadImage(
                 imageView = this,
-                properties = properties.setSource(source),
+                properties = properties
+                    .setSource(source),
             )
+
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                Timber.d("$DEBUG_TIMBER_TAG: $properties")
+            }
         } catch (e: Exception) {
             e.printStackTrace()
 
