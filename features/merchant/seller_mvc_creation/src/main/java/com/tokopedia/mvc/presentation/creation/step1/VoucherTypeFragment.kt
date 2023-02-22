@@ -9,6 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -117,6 +119,12 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         presetValue()
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        activity?.finish()
+        RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MVC_LIST)
+        return super.onFragmentBackPressed()
+    }
+
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.collect { state -> handleUiState(state) }
@@ -184,7 +192,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                 getString(R.string.smvc_creation_step_one_out_of_three_sub_title_label)
             }
             setNavigationOnClickListener {
-                activity?.finish()
+                onFragmentBackPressed()
                 tracker.sendClickKembaliArrowEvent()
             }
         }

@@ -173,6 +173,8 @@ class SummaryFragment :
                     ),
                     viewModel.products.value.orEmpty()
                 )
+            } else {
+                RouteManager.route(context, SELLER_MVC_LIST)
             }
         }
         activity?.finish()
