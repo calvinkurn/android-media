@@ -210,8 +210,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
         renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
         renderTicker(state.isDiscountPromoTypeEnabled, state.tickers)
-
-        setDiscountSwitchPriceInput(state.voucherConfiguration)
     }
 
     private fun renderPromoTypeChips(
@@ -419,8 +417,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             }
             setupHeader()
             setupPromoTypeSection()
+
             setupDiscountNominalSection()
             setupDiscountPercentageSection()
+
             setupTargetBuyerSection()
             setupSpendingEstimationSection()
             setupButtonSection()
@@ -438,6 +438,46 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             setDiscountMaxDeductionInput()
             setDiscountMinimumBuyInput()
             setDiscountQuotaInput()
+
+            discountInputSectionBinding?.switchPriceDiscount?.setOnCheckedChangeListener { _, isOn ->
+                if (isOn) {
+                    setDiscountPercentageInput()
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.ChooseBenefitType(
+                            BenefitType.PERCENTAGE
+                        )
+                    )
+                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
+                } else {
+                    setDiscountNominalInput()
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.ChooseBenefitType(
+                            BenefitType.NOMINAL
+                        )
+                    )
+                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
+                }
+            }
+
+            cashbackInputSectionBinding?.switchPriceCashback?.setOnCheckedChangeListener { _, isOn ->
+                if (isOn) {
+                    setCashbackPercentageInput()
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.ChooseBenefitType(
+                            BenefitType.PERCENTAGE
+                        )
+                    )
+                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
+                } else {
+                    setCashbackNominalInput()
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.ChooseBenefitType(
+                            BenefitType.NOMINAL
+                        )
+                    )
+                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
+                }
+            }
         }
     }
 
@@ -724,25 +764,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 setCashbackNominalInput()
             }
             switchPriceCashback.isChecked = isChecked
-            switchPriceCashback.setOnCheckedChangeListener { _, isOn ->
-                if (isOn) {
-                    setCashbackPercentageInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.PERCENTAGE
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
-                } else {
-                    setCashbackNominalInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.NOMINAL
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
-                }
-            }
+
         }
     }
 
@@ -927,6 +949,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
         cashbackInputSectionBinding?.parentCashback?.gone()
         discountInputSectionBinding?.parentDiscount?.visible()
+
+        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+        setDiscountSwitchPriceInput(currentVoucherConfiguration)
     }
 
     private fun setDiscountSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
@@ -938,25 +963,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 setDiscountNominalInput()
             }
             switchPriceDiscount.isChecked = isChecked
-            switchPriceDiscount.setOnCheckedChangeListener { _, isOn ->
-                if (isOn) {
-                    setDiscountPercentageInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.PERCENTAGE
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
-                } else {
-                    setDiscountNominalInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.NOMINAL
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
-                }
-            }
+
         }
 
     }
