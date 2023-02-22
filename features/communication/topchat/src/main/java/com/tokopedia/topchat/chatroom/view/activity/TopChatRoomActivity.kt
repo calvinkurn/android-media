@@ -106,7 +106,7 @@ open class TopChatRoomActivity :
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        if (!currentActiveChat.isNullOrEmpty()) {
+        if (!currentActiveChat.isNullOrEmpty() && isAllowedFlexMode()) {
             handleIntentChatRoomWithMessageId()
         }
         if (intent != null && intent.extras != null) {
@@ -115,7 +115,7 @@ open class TopChatRoomActivity :
             if (role == null) {
                 role = intent.getIntExtra(Constant.CHAT_USER_ROLE_KEY, RoleType.BUYER)
             }
-            if (currentActiveChat == null) {
+            if (currentActiveChat == null && isAllowedFlexMode()) {
                 currentActiveChat = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE)
             } else {
                 // open another chatroom, remove attachment & reset web socket
