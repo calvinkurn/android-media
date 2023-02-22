@@ -180,6 +180,7 @@ class PushController(val context: Context) : CoroutineScope {
         notificationManager.cancel(baseNotificationModel.notificationId)
         baseNotificationModel.status = NotificationStatus.COMPLETED
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
+        sendPushExpiryLog(baseNotificationModel)
     }
 
     private fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {
