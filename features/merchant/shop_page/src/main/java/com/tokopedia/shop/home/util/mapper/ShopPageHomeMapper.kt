@@ -805,7 +805,8 @@ object ShopPageHomeMapper {
                             url = labelGroup.url,
                             type = labelGroup.type
                         )
-                    }
+                    },
+                    rating = it.rating.toDoubleOrZero()
                 )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
