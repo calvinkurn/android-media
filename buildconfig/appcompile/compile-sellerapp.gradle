@@ -202,6 +202,8 @@ includeIfEnabled("features:category:common_sdk_affiliate_toko")
 includeIfEnabled("features:fintech:merchant_lending_widget")
 includeIfEnabled("features:category:common_sdk_affiliate_toko")
 
+includeIfEnabled(":features:watch")
+
 includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")

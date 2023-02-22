@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cat
 
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner)  {
 
@@ -27,6 +31,8 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var categoryBestSellerViewModel: CategoryBestSellerViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator(fragment.context?.resources?.getDimensionPixelSize(R.dimen.dp_12))
+    private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
+    private var componentsItem: ComponentsItem? = null
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -46,10 +52,21 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
+            categoryBestSellerViewModel.getComponentData().observe(lifecycle, {
+                componentsItem = it
+            })
             categoryBestSellerViewModel.getProductCarouselItemsListData().observe(lifecycle, { item ->
                 if(item.isNotEmpty())
                     addCardHeader(item[0].lihatSemua)
                 mDiscoveryRecycleAdapter.setDataList(item)
+            })
+            categoryBestSellerViewModel.getBackgroundImage().observe(lifecycle, {
+                if (it.isNullOrEmpty()) {
+                    backgroundImage.hide()
+                } else {
+                    backgroundImage.loadImageWithoutPlaceholder(it)
+                    backgroundImage.show()
+                }
             })
             categoryBestSellerViewModel.syncData.observe(lifecycle, { sync ->
                 if (sync) {
@@ -62,6 +79,18 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
             categoryBestSellerViewModel.getProductLoadState().observe(lifecycle, {
                 if (it) handleErrorState()
             })
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            categoryBestSellerViewModel.getComponentData().removeObservers(it)
+            categoryBestSellerViewModel.getProductCarouselItemsListData().removeObservers(it)
+            categoryBestSellerViewModel.getBackgroundImage().removeObservers(it)
+            categoryBestSellerViewModel.syncData.removeObservers(it)
+            categoryBestSellerViewModel.getProductCardMaxHeight().removeObservers(it)
+            categoryBestSellerViewModel.getProductLoadState().removeObservers(it)
         }
     }
 
@@ -82,7 +111,7 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
         val lihatSemuaDataItem = DataItem(title = lihatSemua?.header,
                 subtitle = lihatSemua?.subheader, btnApplink = lihatSemua?.applink)
         val lihatSemuaComponentData = ComponentsItem(
-                name = ComponentsList.CategoryBestSeller.componentName,
+                name = componentsItem?.name ?: ComponentsList.CategoryBestSeller.componentName,
                 data = listOf(lihatSemuaDataItem))
         mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context,
                 ComponentsList.LihatSemua, lihatSemuaComponentData, fragment))

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/routerFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.RouterFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment"
         android:label="RouterFragment" >
         <action
             android:id="@+id/action_routerFragment_to_statusSubmissionFragment"

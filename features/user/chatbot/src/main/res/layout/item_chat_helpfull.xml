@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="@id/helpfull_question_option"
         app:layout_constraintLeft_toLeftOf="parent"
         android:contentDescription="@null"
-        tools:src="@drawable/rating_active_5"
+        tools:src="@drawable/emoji_inactive_1"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography

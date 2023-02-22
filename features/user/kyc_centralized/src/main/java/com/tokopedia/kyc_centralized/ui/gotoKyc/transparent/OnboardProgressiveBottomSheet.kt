@@ -86,7 +86,7 @@ class OnboardProgressiveBottomSheet(private val source: String): BottomSheetUnif
         RouteManager.route(
             context,
             ApplinkConstInternalGlobal.WEBVIEW,
-            TokopediaUrl.getInstance().MOBILEWEB.plus(PATH_TOKOPEDIA_CARE)
+            TokopediaUrl.getInstance().WEB.plus(PATH_TOKOPEDIA_CARE)
         )
     }
 

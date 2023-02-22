@@ -78,7 +78,7 @@ data class GetWishlistV2Response(
 				@SerializedName("price")
 				val price: String = "",
 
-				@SerializedName("wholesale_price")
+				@SuppressLint("Invalid Data Type") @SerializedName("wholesale_price")
 				val wholesalePrice: List<WholesalePriceItem> = emptyList(),
 
 				@SerializedName("id")
