@@ -55,6 +55,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         private const val SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION = "onBoardingAdsAndPromotions"
         private const val SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION =
             "onBoardingPromoRecommendation"
+        private const val SHARED_PREF_SUFFIX =
+            "centralizePromoFragmentSuffix"
 
         private const val ERROR_GET_LAYOUT_DATA = "Error when get layout data for %s."
 
@@ -256,7 +258,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMarkPromoCreationItem(pageId: String, view: View) {
-        val alreadyShow = sharedPref.getBoolean("$pageId+${this.javaClass.simpleName}", false)
+        val key = "$pageId+$SHARED_PREF_SUFFIX"
+        val alreadyShow = sharedPref.getBoolean(key, false)
         val coachMarkList = arrayListOf<CoachMark2Item>()
 
         if (pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON && !alreadyShow) {
@@ -272,7 +275,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
             )
 
             coachMark2?.showCoachMark(coachMarkList, null, 0)
-            sharedPref.edit().putBoolean("$pageId+${this.javaClass.simpleName}", true).apply()
+            sharedPref.edit().putBoolean(key, true).apply()
         }
     }
 
