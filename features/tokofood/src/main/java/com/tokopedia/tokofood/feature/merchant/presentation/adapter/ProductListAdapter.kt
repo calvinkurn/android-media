@@ -137,7 +137,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
     }
 
     fun updateCartProductUiModel(
-        cartTokoFood: CartTokoFood,
+        cartTokoFood: CartListCartGroupCart,
         dataSetPosition: Int,
         adapterPosition: Int,
         customOrderDetail: CustomOrderDetail? = null
@@ -149,7 +149,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
 
                     if (!isCustomizable) cartId = cartTokoFood.cartId
                     orderQty = cartTokoFood.quantity
-                    orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+                    orderNote = cartTokoFood.metadata.notes
                     isAtc = cartTokoFood.quantity.isMoreThanZero()
 
                     customOrderDetails[position] = customOrderDetail

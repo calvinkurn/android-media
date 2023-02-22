@@ -203,7 +203,7 @@ class MultipleFragmentsViewModel @Inject constructor(
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             withContext(dispatchers.io) {
-                updateCartTokoFoodUseCase.get().execute(updateParam)
+                updateCartTokoFoodUseCase.get().execute(updateParam, source)
             }.let {
                 if (shouldRefreshCart) {
                     loadCartList(source)
@@ -212,7 +212,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
                         source = source,
-                        data = updateParam to it.data
+                        data = updateParam to it.getTokofoodBusinessData()
                     )
                 )
             }
@@ -220,35 +220,6 @@ class MultipleFragmentsViewModel @Inject constructor(
             cartDataValidationState.emit(
                 UiEvent(
                     state = UiEvent.EVENT_FAILED_UPDATE_NOTES,
-                    source = source,
-                    throwable = it
-                )
-            )
-        })
-    }
-
-    fun updateQuantity(updateParam: UpdateParam,
-                       source: String,
-                       shouldRefreshCart: Boolean = true) {
-        launchCatchError(block = {
-            withContext(dispatchers.io) {
-                updateCartTokoFoodUseCase.get().execute(updateParam)
-            }.let {
-                if (shouldRefreshCart) {
-                    loadCartList(source)
-                }
-                cartDataValidationState.emit(
-                    UiEvent(
-                        state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
-                        source = source,
-                        data = updateParam to it.data
-                    )
-                )
-            }
-        }, onError = {
-            cartDataValidationState.emit(
-                UiEvent(
-                    state = UiEvent.EVENT_FAILED_UPDATE_QUANTITY,
                     source = source,
                     throwable = it
                 )
@@ -268,7 +239,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                 }
                 cartDataValidationState.emit(
                     UiEvent(
-                        state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY_NEW,
+                        state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
                         source = source,
                         data = updateParam
                     )
@@ -289,7 +260,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                    source: String) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
-                updateCartTokoFoodUseCase.get().execute(updateParam)
+                updateCartTokoFoodUseCase.get().execute(updateParam, source)
             }.let {
                 cartDataValidationState.emit(
                     UiEvent(
@@ -302,7 +273,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
                         source = source,
-                        data = updateParam to it.data
+                        data = updateParam to it.getTokofoodBusinessData()
                     )
                 )
             }

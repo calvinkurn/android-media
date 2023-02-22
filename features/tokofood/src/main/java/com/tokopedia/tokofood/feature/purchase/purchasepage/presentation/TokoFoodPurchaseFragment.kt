@@ -303,21 +303,22 @@ class TokoFoodPurchaseFragment :
                     hideLoading()
                     renderRecyclerView()
                     (it.data as? Pair<*, *>)?.let { pair ->
-                        (pair.first as? CheckoutTokoFood)?.let { response ->
+                        (pair.first as? CartGeneralCartListData)?.let { response ->
                             (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
-                                shopId = response.data.shop.shopId
+                                val businessData = response.data.getTokofoodBusinessData()
+                                shopId = businessData.customResponse.shop.shopId
                                 loadCartData(response)
                                 when {
-                                    response.data.popupErrorMessage.isNotEmpty() -> {
+                                    businessData.customResponse.popupErrorMessage.isNotEmpty() -> {
                                         showToasterError(
-                                            response.data.popupErrorMessage,
+                                            businessData.customResponse.popupErrorMessage,
                                             getOkayMessage()
                                         ) {}
                                     }
-                                    response.data.popupMessage.isNotEmpty() -> {
-                                        if (!isPreviousPopupPromo || !response.data.isPromoPopupType()) {
+                                    businessData.customResponse.popupMessage.isNotEmpty() -> {
+                                        if (!isPreviousPopupPromo || !businessData.isPromoPopupType()) {
                                             showToaster(
-                                                response.data.popupMessage,
+                                                businessData.customResponse.popupMessage,
                                                 getOkayMessage()
                                             ) {}
                                         }
@@ -497,7 +498,7 @@ class TokoFoodPurchaseFragment :
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
                         if (it.source == SOURCE) {
                             it.data?.getSuccessUpdateResultPair()?.let { (_, cartTokoFoodData) ->
-                                cartTokoFoodData.carts.firstOrNull()?.let { product ->
+                                cartTokoFoodData.getAvailableSectionProducts().firstOrNull()?.let { product ->
                                     viewBinding?.recyclerViewPurchase?.post {
                                         viewModel.updateNotes(product)
                                     }

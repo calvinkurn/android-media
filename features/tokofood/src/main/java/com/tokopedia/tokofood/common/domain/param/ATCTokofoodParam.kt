@@ -27,6 +27,8 @@ data class ATCTokofoodParamCustomRequest(
 )
 
 data class ATCTokofoodParamProduct(
+    @SerializedName("cart_id")
+    val cartId: String = String.EMPTY,
     @SerializedName("product_id")
     val productId: String = String.EMPTY,
     @SerializedName("quantity")

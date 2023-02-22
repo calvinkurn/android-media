@@ -14,6 +14,8 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartListData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
@@ -437,19 +439,19 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun updateNotes(product: CartTokoFood) {
+    fun updateNotes(product: CartListCartGroupCart) {
         val productData = getVisitablesValue().getProductById(product.productId, product.cartId)
         productData?.let {
             val dataList = getVisitablesValue()
             val newProductData = it.second.copy()
-            newProductData.notes = product.getMetadata()?.notes.orEmpty()
+            newProductData.notes = product.metadata.notes
             newProductData.cartId = product.cartId
             dataList[it.first] = newProductData
             _visitables.value = dataList
         }
     }
 
-    fun updateCartId(updateParam: UpdateParam, cartData: CartTokoFoodData) {
+    fun updateCartId(updateParam: UpdateParam, cartData: CartListBusinessData) {
         updateParam.productList.forEach { param ->
             getVisitablesValue().getProductByUpdateParam(param)?.let { productData ->
                 productData.second.let { product ->

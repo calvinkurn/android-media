@@ -15,4 +15,5 @@ object TokoFoodCartUtil {
     const val AVAILABLE_SECTION = "available_section"
     const val UNAVAILABLE_SECTION = "unavilable_section"
 
+    const val SOURCE_MERCHANT_PAGE = "merchant_page"
 }

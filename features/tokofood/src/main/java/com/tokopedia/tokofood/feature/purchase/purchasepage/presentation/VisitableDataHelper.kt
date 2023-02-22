@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
@@ -163,9 +164,9 @@ object VisitableDataHelper {
         return count == Int.ONE
     }
 
-    fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.getUpdatedCartId(cartTokoFoodData: CartTokoFoodData): String? {
-        return cartTokoFoodData.carts.find { cartData ->
-            cartData.productId == this.id && cartData.getMetadata()?.variants?.let { variants ->
+    fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.getUpdatedCartId(cartTokoFoodData: CartListBusinessData): String? {
+        return cartTokoFoodData.getAvailableSectionProducts().find { cartData ->
+            cartData.productId == this.id && cartData.metadata.variants.let { variants ->
                 var isSameVariants = true
                 run checkVariant@ {
                     variants.forEach { variant ->
@@ -180,7 +181,7 @@ object VisitableDataHelper {
                     }
                 }
                 variants.isEmpty() || isSameVariants && variants.size == this.variantsParam.size
-            } != false
+            }
         }?.cartId
     }
 

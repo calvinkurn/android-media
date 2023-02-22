@@ -22,7 +22,7 @@ private const val QUERY = """
         }
     """
 
-@GqlQuery("RemoveCartTokofoodNew", QUERY)
+@GqlQuery("UpdateQuantityTokofood", QUERY)
 class UpdateQuantityTokofoodUseCase @Inject constructor(
     repository: GraphqlRepository
 ): GraphqlUseCase<UpdateQuantityTokofoodResponse>(repository) {

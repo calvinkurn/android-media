@@ -55,8 +55,6 @@ import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
@@ -766,8 +764,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
-                                    (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                                        cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
+                                    (pair.second as? CartListBusinessData)?.let { cartListBusinessData ->
+                                        cartListBusinessData.getAvailableSectionProducts().firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
                                                 val cardPositions =
                                                     viewModel.productMap[requestParam.productId]
@@ -830,8 +828,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                     if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.forEach { requestParam ->
-                                    (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                                        cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
+                                    (pair.second as? CartListBusinessData)?.let { cartListBusinessData ->
+                                        cartListBusinessData.getAvailableSectionProducts().firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
                                                 val cardPositions = viewModel.productMap[requestParam.productId]
                                                 cardPositions?.run {
@@ -1083,10 +1081,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartTokoFoodData>?) {
-        updateCartData?.let { (updateParam, cartTokoFoodData) ->
+    private fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartListBusinessData>?) {
+        updateCartData?.let { (updateParam, cartListBusinessData) ->
             updateParam.productList.firstOrNull()?.let { requestParam ->
-                cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
+                cartListBusinessData.getAvailableSectionProducts().firstOrNull { data -> data.productId == requestParam.productId }
                     ?.let { cartTokoFood ->
                         val cardPositions =
                             viewModel.productMap[requestParam.productId]
