@@ -1860,13 +1860,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupPreparationMenu() {
         viewModelScope.launchCatchError(block = {
-            val menuList = mutableListOf<DynamicPreparationMenu>().apply {
-                add(DynamicPreparationMenu.createTitle(true))
-                add(DynamicPreparationMenu.createCover(false))
-                add(DynamicPreparationMenu.createProduct(false))
-                add(DynamicPreparationMenu.createSchedule(false))
-                add(DynamicPreparationMenu.createFaceFilter(false))
-            }
+            val menuList = listOf(
+                DynamicPreparationMenu.createTitle(true),
+                DynamicPreparationMenu.createCover(false),
+                DynamicPreparationMenu.createProduct(false),
+                DynamicPreparationMenu.createSchedule(false),
+                DynamicPreparationMenu.createFaceFilter(false),
+            )
 
             _menuList.update { menuList }
         }) { }

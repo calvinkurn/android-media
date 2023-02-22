@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Created by jegul on 11/05/21
@@ -20,7 +21,7 @@ open class MockTitleDataStore(
     private val testModelBuilder = TestDoubleModelBuilder()
     private val titleDataStore = testModelBuilder.buildRealTitleDataStore(dispatchers)
 
-    override fun getObservableTitle(): Flow<PlayTitleUiModel> {
+    override fun getObservableTitle(): MutableStateFlow<PlayTitleUiModel> {
         return titleDataStore.getObservableTitle()
     }
 
