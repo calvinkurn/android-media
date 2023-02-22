@@ -195,7 +195,7 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun getAvatarShop(): String {
-        return userSession.shopAvatar
+        return userSession.shopAvatarOriginal
     }
 
     private fun initializeWatermarkAsset() {

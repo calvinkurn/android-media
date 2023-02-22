@@ -382,7 +382,6 @@ object SocketResponse {
 }
     """
 
-
     const val DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_TRUE_RENDER_ANDROID = """
 {
   "code": 103,
@@ -1007,6 +1006,158 @@ object SocketResponse {
     "client_connect_time": "0001-01-01T00:00:00Z",
     "source": ""
   }
+}
+    """
+
+    const val ATTACHMENT_22 = """
+        {
+    "code": 103,
+    "data": {
+        "msg_id": 4058088,
+        "from": "Tanya",
+        "from_uid": 5515973,
+        "from_user_name": "Tanya",
+        "from_role": "User",
+        "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/u/5515973/user_thumbnail/desktop",
+        "is_bot": true,
+        "is_opposite": true,
+        "to_uid": 5479892,
+        "message": {
+            "censored_reply": "Apa jawaban ini cukup membantu?",
+            "original_reply": "Apa jawaban ini cukup membantu?",
+            "timestamp": "2020-09-24T14:03:23.30111385+07:00",
+            "timestamp_fmt": "24 September 2020, 14:03 WIB",
+            "timestamp_unix": 1600931003301,
+            "timestamp_unix_nano": 1600931003301114000
+        },
+        "start_time": "2020-09-24T14:03:23.300881873+07:00",
+        "attachment_id": 1,
+        "attachment": {
+            "attributes": {
+                "helpful_questions": [
+                    {
+                        "button_alias":"button_yes",
+                        "text": "Ya, sudah membantu",
+                        "value": 1
+                    },
+                    {
+                        "button_alias": "button_no",
+                        "text": "Tidak membantu",
+                        "value": 0
+                    }
+                ],
+                "user_id": 5480593,
+                "case_id": "5005D000005kYF4QAM",
+                "case_chat_id": "a175D000001A7VMQQQ"
+            },
+            "fallback_attachment": {
+                "html": "<div>Mohon tunggu, kamu akan segera terhubung dengan tim CS kami. Untuk mempercepat proses penyelesaian kendala, silakan klik kendala yang ingin kamu tanyakan terlebih dahulu ya.<br>Terima kasih sudah ngobrol dengan Tanya. :)</div>",
+                "message": "Mohon tunggu, kamu akan segera terhubung dengan tim CS kami. Untuk mempercepat proses penyelesaian kendala, silakan klik kendala yang ingin kamu tanyakan terlebih dahulu ya.\nTerima kasih sudah ngobrol dengan Tanya. :)"
+            },
+            "id": 1,
+            "type": 22
+        },
+        "show_rating": false,
+        "rating_status": 0,
+        "to_buyer": true,
+        "client_connect_time": "0001-01-01T00:00:00Z",
+        "source": ""
+    }
+}
+    """
+
+    const val ATTACHMENT_23 = """
+        {
+    "code": 103,
+    "data": {
+        "msg_id": 4058088,
+        "from": "Tokopedia Care",
+        "from_uid": 5515973,
+        "from_user_name": "Tokopedia Care",
+        "from_role": "User",
+        "thumbnail": "http://devel-go.tkpd:3001/image/v1/u/5515973/user_thumbnail/desktop",
+        "is_bot": true,
+        "is_opposite": true,
+        "to_uid": 5512488,
+        "message": {
+            "censored_reply": "Baik, jika ada pertanyaan lainnya silakan chat kembali. :) Menurut kakak, bagaimana layanan kami untuk kendala Promo?",
+            "original_reply": "Baik, jika ada pertanyaan lainnya silakan chat kembali. :) Menurut kakak, bagaimana layanan kami untuk kendala Promo?",
+            "timestamp": "2019-08-15T16:34:05.937614106+07:00",
+            "timestamp_fmt": "15 August 2019, 16:34 WIB",
+            "timestamp_unix": 1565861645937,
+            "timestamp_unix_nano": 1565861645937614000
+        },
+        "start_time": "2019-08-15T16:34:00.928200094+07:00",
+        "attachment_id": 1,
+        "attachment": {
+            "attributes": {
+                "points": [
+                    {
+                        "caption": "Tidak Memuaskan",
+                        "description": "Apa yang bisa diperbaiki dari layanan kami?",
+                        "score": 1
+                    },
+                    {
+                        "caption": "Kurang Memuaskan",
+                        "description": "Apa yang bisa diperbaiki dari layanan kami?",
+                        "score": 2
+                    },
+                    {
+                        "caption": "Biasa Saja",
+                        "description": "Apa yang bisa ditingkatkan dari layanan kami?",
+                        "score": 3
+                    },
+                    {
+                        "caption": "Memuaskan",
+                        "description": "Apa yang bisa ditingkatkan dari layanan kami?",
+                        "score": 4
+                    },
+                    {
+                        "caption": "Sangat Memuaskan",
+                        "description": "Apa yang sebaiknya dipertahankan dari layanan kami?",
+                        "score": 5
+                    }
+                ],
+                "reason_title": "Apa yang sebaiknya dipertahankan dari layanan kami?",
+                "reasons": [
+                    {
+                        "code": 31,
+                        "text": "Kecepatan respons"
+                    },
+                    {
+                        "code": 32,
+                        "text": "Kejelasan bahasa"
+                    },
+                    {
+                        "code": 33,
+                        "text": "Waktu penyelesaian"
+                    },
+                    {
+                        "code": 35,
+                        "text": "Solusi yang diberikan"
+                    },
+                    {
+                        "code": 36,
+                        "text": "Pemahaman masalah"
+                    }
+                ],
+                "title": "Bagaimana kualitas layanan Tokopedia Care?",
+                "trigger_rule_type": "chat",
+                "user_id": 5480593,
+                "case_id": "5005D000005kYF4QAM",
+                "case_chat_id": "a175D000001A7VMQQQ"
+            },
+            "fallback_attachment": {
+                "html": "<div></div>"
+            },
+            "id": 1,
+            "type": 23
+        },
+        "show_rating": false,
+        "rating_status": 0,
+        "to_buyer": true,
+        "client_connect_time": "0001-01-01T00:00:00Z"
+    }
 }
     """
 

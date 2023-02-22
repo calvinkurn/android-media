@@ -6,7 +6,6 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
@@ -25,8 +24,8 @@ class CatalogLihatItemViewHolder(
         itemView.findViewById(R.id.lihat_item_title)
     }
 
-    private val lihatExpandedItemLayout: CardUnify2? by lazy(NONE) {
-        itemView.findViewById(R.id.img_card)
+    private val lihatExpandedItemLayout: View? by lazy(NONE) {
+        itemView.findViewById(R.id.view_background)
     }
 
     companion object {
@@ -46,6 +45,7 @@ class CatalogLihatItemViewHolder(
                 )
             }
         }
+        lihatExpandedItemLayout?.background = view.context.getDrawable(R.drawable.squircle)
         lihatExpandedItemLayout?.setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(
                 childDataItem?.categoryIdentifier ?: ""

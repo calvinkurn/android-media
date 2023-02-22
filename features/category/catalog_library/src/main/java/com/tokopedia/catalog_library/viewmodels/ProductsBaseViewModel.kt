@@ -8,8 +8,8 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +50,8 @@ class ProductsBaseViewModel @Inject constructor(
     }
 
     private fun onAvailableCatalogListData(
-        catalogListResponse: CatalogListResponse, page: Int = 1
+        catalogListResponse: CatalogListResponse,
+        page: Int = 1
     ) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Catalog List Response Data"))
@@ -71,6 +72,7 @@ class ProductsBaseViewModel @Inject constructor(
     ): CatalogLibraryDataModel {
         return CatalogLibraryDataModel(
             getProductsVisitableList(
+                data.catalogGetList.categoryName,
                 data.catalogGetList.catalogsProduct,
                 page
             )
@@ -78,15 +80,22 @@ class ProductsBaseViewModel @Inject constructor(
     }
 
     private fun getProductsVisitableList(
+        categoryName: String,
         catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
         page: Int = 1
     ): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        val title = if (categoryName == "") {
+            CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE
+        } else {
+            "Semua katalog ${categoryName.lowercase()}"
+        }
         if (page == 1) {
             val productHeaderModel = CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
-                CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE, null
+                title,
+                null
             )
             visitableList.add(productHeaderModel)
         }

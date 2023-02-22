@@ -2,6 +2,7 @@ package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog_library.R
@@ -45,11 +46,18 @@ class CatalogMostViralItemViewHolder(
         element?.catalogMostViralData?.imageUrl?.let { iconUrl ->
             mostViralImage.loadImage(iconUrl)
         }
+        mostViralLayout.background =
+            VectorDrawableCompat.create(
+                view.context.resources,
+                R.drawable.background,
+                view.context.theme
+            )
         mostViralTitle.text = element?.catalogMostViralData?.name
         mostViralIcon.apply {
             setImage(
                 newLightEnable = MethodChecker.getColor(
-                    itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                 )
             )
         }
@@ -59,7 +67,7 @@ class CatalogMostViralItemViewHolder(
 
         mostViralSubtitle.text = String.format(
             view.context.getString(R.string.most_viral_subtitle_common),
-            element?.categoryName ?: "",
+            element?.categoryName ?: ""
         )
     }
 }

@@ -17,7 +17,7 @@ import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse.CategoryListLibraryPage.CategoryData
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
 
 class CatalogLihatViewHolder(
     private val view: View,
@@ -76,12 +76,11 @@ class CatalogLihatViewHolder(
         return AccordionDataUnify(
             title = catalogLibraryData?.rootCategoryName.toString(),
             expandableView = expandableLayout,
-            isExpanded = catalogLibraryData?.accordionExpandedState ?: true,
+            isExpanded = catalogLibraryData?.accordionExpandedState ?: true
         )
     }
 
-    private fun getChildVisitableList(childCategoryList: ArrayList<CategoryData.ChildCategoryList>?)
-        : MutableList<BaseCatalogLibraryDataModel> {
+    private fun getChildVisitableList(childCategoryList: ArrayList<CategoryData.ChildCategoryList>?): MutableList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         childCategoryList?.forEach {
             visitableList.add(

@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.usecase.CatalogRelevantUseCase
 import com.tokopedia.catalog_library.usecase.CatalogSpecialUseCase
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,7 +59,7 @@ class CatalogHomepageViewModel @Inject constructor(
             CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
                 CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
-                "Kategori spesial buatmi",
+                CatalogLibraryConstant.CATALOG_HOME_HEADING_KATEGORI_SPECIAL,
                 getSpecialVisitableList(data.catalogCategorySpecial.catalogSpecialDataList),
                 RecyclerView.HORIZONTAL,
                 CatalogLibraryConstant.APP_LINK_KATEGORI,
@@ -91,7 +91,7 @@ class CatalogHomepageViewModel @Inject constructor(
             CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
                 CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
-                "Cek katalognya produk incaranmu",
+                CatalogLibraryConstant.CATALOG_HOME_HEADING_RELEVANT,
                 getRelevantVisitableList(data.catalogGetRelevant.catalogsList),
                 RecyclerView.HORIZONTAL
             )

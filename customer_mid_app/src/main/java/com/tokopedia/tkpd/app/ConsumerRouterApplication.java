@@ -89,6 +89,7 @@ import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -194,6 +195,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
+        initRefreshProfileWorker();
         initSeamlessLoginWorker();
         connectTokoChat(false);
         return true;
@@ -209,6 +211,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initDataStoreMigration() {
         if (userSession.isLoggedIn()) {
             DataStoreMigrationWorker.Companion.scheduleWorker(this);
+        }
+    }
+
+    private void initRefreshProfileWorker() {
+        if (userSession.isLoggedIn()) {
+            RefreshProfileWorker.scheduleWorker(this);
         }
     }
 

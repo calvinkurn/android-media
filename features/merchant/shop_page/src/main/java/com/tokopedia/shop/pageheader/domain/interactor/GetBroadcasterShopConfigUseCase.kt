@@ -15,7 +15,6 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster.Config>() {
 
     var params: RequestParams = RequestParams.EMPTY
-    private var isFromCacheFirst: Boolean = true
     private val query = """
     query getBroadcasterConfig(${'$'}shopId: String!){
         broadcasterGetShopConfig(shopID: ${'$'}shopId)

@@ -19,38 +19,44 @@ class BuyerOrderDetailStickyActionButtonHandler(
     private val viewModel: BuyerOrderDetailViewModel
 ) : ActionButtonClickListener {
     override fun onActionButtonClicked(
-        isFromPrimaryButton: Boolean, button: ActionButtonsUiModel.ActionButton
+        isFromPrimaryButton: Boolean,
+        button: ActionButtonsUiModel.ActionButton
     ) {
         when (button.key) {
             BuyerOrderDetailActionButtonKey.ASK_SELLER -> {
                 onAskSellerActionButtonClicked()
                 trackClickActionButtonSOM(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHAT_SELLER
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHAT_SELLER
                 )
             }
             BuyerOrderDetailActionButtonKey.REQUEST_CANCEL -> {
                 onRequestCancelActionButtonClicked(button)
                 trackClickActionButtonSOM(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_CANCEL_ORDER
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_CANCEL_ORDER
                 )
             }
             BuyerOrderDetailActionButtonKey.TRACK_SHIPMENT -> {
                 onTrackShipmentActionButtonClicked(button)
                 trackClickActionButtonSOM(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_TRACK_ORDER
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_TRACK_ORDER
                 )
             }
             BuyerOrderDetailActionButtonKey.REQUEST_COMPLAINT -> {
                 onComplaintActionButtonClicked(button.url)
                 trackClickActionButtonSOM(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER
                 )
             }
             BuyerOrderDetailActionButtonKey.VIEW_COMPLAINT -> {
                 onViewComplaintActionButtonClicked(button.url)
                 if (!isFromPrimaryButton) {
                     trackClickActionButtonSOM(
-                        false, BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
+                        false,
+                        BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
                     )
                 }
             }
@@ -58,23 +64,26 @@ class BuyerOrderDetailStickyActionButtonHandler(
             BuyerOrderDetailActionButtonKey.RECEIVE_CONFIRMATION -> {
                 onReceiveConfirmationActionButtonClicked(button)
                 trackClickActionButtonSOM(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER
                 )
             }
             BuyerOrderDetailActionButtonKey.HELP -> {
                 onHelpActionButtonClicked(button)
                 trackClickActionButtonSOM(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_HELP
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_HELP
                 )
             }
-            BuyerOrderDetailActionButtonKey.BUY_AGAIN -> {
+            BuyerOrderDetailActionButtonKey.BUY_AGAIN, BuyerOrderDetailActionButtonKey.REORDER -> {
                 onBuyAgainAllProductButtonClicked()
                 trackBuyAgainProduct()
             }
             BuyerOrderDetailActionButtonKey.GIVE_REVIEW -> {
                 onGiveReviewActionButtonClicked(button.url)
                 trackClickActionButtonSOM(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_REVIEW_ORDER
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_REVIEW_ORDER
                 )
             }
             BuyerOrderDetailActionButtonKey.RESPONSE_EXTEND_ORDER -> {
@@ -84,7 +93,9 @@ class BuyerOrderDetailStickyActionButtonHandler(
             BuyerOrderDetailActionButtonKey.SEE_POD -> {
                 onSeePODButtonClicked(button.url)
                 trackClickActionButtonPG(
-                    isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_SEE_POD, ""
+                    isFromPrimaryButton,
+                    BuyerOrderDetailTrackerConstant.BUTTON_NAME_SEE_POD,
+                    ""
                 )
             }
             BuyerOrderDetailActionButtonKey.RE_UPLOAD_PRESCRIPTION -> {
@@ -136,7 +147,9 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onRequestCancelActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         navigator.goToRequestCancellationPage(
-            viewModel.buyerOrderDetailUiState.value, button, cacheManager
+            viewModel.buyerOrderDetailUiState.value,
+            button,
+            cacheManager
         )
     }
 
@@ -145,7 +158,8 @@ class BuyerOrderDetailStickyActionButtonHandler(
             if (uiState is BuyerOrderDetailUiState.HasData) {
                 val newUrl = button.url.substringAfter("url=", "")
                 navigator.goToTrackShipmentPage(
-                    uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderId, newUrl
+                    uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderId,
+                    newUrl
                 )
             }
         }
@@ -169,7 +183,10 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         bottomSheetManager.showReceiveConfirmationBottomSheet(
-            button, bottomSheetManager, navigator, viewModel
+            button,
+            bottomSheetManager,
+            navigator,
+            viewModel
         )
     }
 
@@ -187,7 +204,8 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun trackBuyAgainProduct() {
         BuyerOrderDetailTracker.eventClickBuyAgain(
-            viewModel.getOrderId(), viewModel.getUserId()
+            viewModel.getOrderId(),
+            viewModel.getUserId()
         )
     }
 
@@ -205,7 +223,9 @@ class BuyerOrderDetailStickyActionButtonHandler(
     }
 
     private fun trackClickActionButtonPG(
-        fromPrimaryButton: Boolean, buttonName: String, trackerId: String
+        fromPrimaryButton: Boolean,
+        buttonName: String,
+        trackerId: String
     ) {
         viewModel.buyerOrderDetailUiState.value.let { uiState ->
             if (uiState is BuyerOrderDetailUiState.HasData) {
