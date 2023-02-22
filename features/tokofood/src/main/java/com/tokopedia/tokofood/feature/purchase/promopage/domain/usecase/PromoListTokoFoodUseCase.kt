@@ -5,81 +5,89 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.address.TokoFoodChosenAddress
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
-import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
-import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFood
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.CartGeneralPromoListDataData
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodResponse
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokoFoodParam
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokofoodParamBusinessData
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokofoodParamCart
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokofoodParamCustomRequest
 import javax.inject.Inject
 
 private const val QUERY = """
         query PromoListTokofood(${'$'}params: cartTokofoodParams!) {
-          promo_list_tokofood(params: ${'$'}params) {
+          cart_general_promo_list(params: ${'$'}params) {
             message
-            status
+            success
             data {
-              title
-              change_restriction_message
-              error_page{
-                is_show_error_page
-                image
-                title
-                description
-                button{
-                   text
-                   color
-                   action
-                   link
-                  }
-                }
-              empty_state{
-                title
-                description
-                image_url
-              }
-              available_section{
-                title
-                sub_title
-                icon_url
-                is_enabled
-                sub_section {
-                  title
-                  icon_url
-                  is_enabled
-                  ticker_message
-                  coupons{
+              business_data {
+                business_id
+                success
+                message
+                custom_response {
+                  change_restriction_message
+                  error_page{
+                    is_show_error_page
+                    image
                     title
-                    expiry_info
-                    is_selected
-                    top_banner_title
-                    additional_information
-                  }
-                }
-              }
-              unavailable_section{
-                title
-                sub_title
-                icon_url
-                is_enabled
-                sub_section {
-                  title
-                  icon_url
-                  is_enabled
-                  ticker_message
-                  coupons{
+                    description
+                    button{
+                       text
+                       color
+                       action
+                       link
+                      }
+                    }
+                  empty_state{
                     title
-                    expiry_info
-                    is_selected
-                    top_banner_title
-                    additional_information
+                    description
+                    image_url
+                  }
+                  available_section{
+                    title
+                    sub_title
+                    icon_url
+                    is_enabled
+                    sub_section {
+                      title
+                      icon_url
+                      is_enabled
+                      ticker_message
+                      coupons{
+                        title
+                        expiry_info
+                        is_selected
+                        top_banner_title
+                        additional_information
+                      }
+                    }
+                  }
+                  unavailable_section{
+                    title
+                    sub_title
+                    icon_url
+                    is_enabled
+                    sub_section {
+                      title
+                      icon_url
+                      is_enabled
+                      ticker_message
+                      coupons{
+                        title
+                        expiry_info
+                        is_selected
+                        top_banner_title
+                        additional_information
+                      }
+                    }
+                  }
+                  promo_summary{
+                    title
+                    total
+                    total_fmt
                   }
                 }
-              }
-              promo_summary{
-                title
-                total
-                total_fmt
               }
             }
           }
@@ -98,30 +106,47 @@ class PromoListTokoFoodUseCase @Inject constructor(
     }
 
     suspend fun execute(source: String,
-                        merchantId: String): PromoListTokoFood {
-        val additionalAttributes = CartAdditionalAttributesTokoFood(
-            chosenAddressRequestHelper.getChosenAddress()
+                        merchantId: String,
+                        cartList: List<String>): CartGeneralPromoListDataData {
+        val param = generateParams(
+            chosenAddressRequestHelper.getChosenAddress(),
+            source,
+            merchantId,
+            cartList
         )
-        val param = generateParams(additionalAttributes.generateString(), source, merchantId)
         setRequestParams(param)
         val response = executeOnBackground()
-        if (response.promoListTokoFood.isSuccess()) {
-            return response.promoListTokoFood
+        if (response.cartGeneralPromoList.data.isSuccess()) {
+            return response.cartGeneralPromoList.data.data
         } else {
-            throw MessageErrorException(response.promoListTokoFood.message)
+            throw MessageErrorException(response.cartGeneralPromoList.data.message)
         }
     }
 
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(additionalAttributes: String,
+        private fun generateParams(chosenAddress: TokoFoodChosenAddress,
                                    source: String,
-                                   merchantId: String): Map<String, Any> {
+                                   merchantId: String,
+                                   cartList: List<String>): Map<String, Any> {
             val params = PromoTokoFoodParam(
-                additionalAttributes = additionalAttributes,
                 source = source,
-                merchantId = merchantId
+                businessData = listOf(
+                    PromoTokofoodParamBusinessData(
+                        // TODO: Add businessId
+                        businessId = String.EMPTY,
+                        customRequest = PromoTokofoodParamCustomRequest(
+                            chosenAddress = chosenAddress,
+                            merchantId = merchantId
+                        ),
+                        carts = cartList.map {
+                            PromoTokofoodParamCart(
+                                cartId = it
+                            )
+                        }
+                    )
+                )
             )
             return mapOf(PARAMS_KEY to params)
         }

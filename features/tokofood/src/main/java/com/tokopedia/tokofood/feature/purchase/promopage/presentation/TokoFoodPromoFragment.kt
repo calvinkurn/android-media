@@ -70,6 +70,10 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
         arguments?.getString(MERCHANT_ID_KEY).orEmpty()
     }
 
+    private val cartIdList by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getStringArrayList(CART_LIST_KEY).orEmpty()
+    }
+
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         TokoFoodPromoAdapterTypeFactory(this)
     }
@@ -91,15 +95,18 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
 
         private const val SOURCE_KEY = "source_key"
         private const val MERCHANT_ID_KEY = "merchant_id_key"
+        private const val CART_LIST_KEY = "cart_list_key"
 
         fun createInstance(source: String,
-                           merchantId: String? = null): TokoFoodPromoFragment {
+                           merchantId: String? = null,
+                           cartList: List<String>): TokoFoodPromoFragment {
             return TokoFoodPromoFragment().apply {
                 arguments = Bundle().apply {
                     putString(SOURCE_KEY, source)
                     merchantId?.let {
                         putString(MERCHANT_ID_KEY, it)
                     }
+                    putStringArrayList(CART_LIST_KEY, ArrayList(cartList))
                 }
             }
         }
@@ -166,7 +173,7 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
         viewBinding?.recyclerViewPurchasePromo?.show()
         rvAdapter?.clearAllElements()
         showLoading()
-        viewModel.loadData(source, merchantId)
+        viewModel.loadData(source, merchantId, cartIdList)
     }
 
     override fun onBackPressed() {

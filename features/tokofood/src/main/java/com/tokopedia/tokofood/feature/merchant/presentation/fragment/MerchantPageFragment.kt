@@ -1645,7 +1645,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         navigateToNewFragment(
             TokoFoodPromoFragment.createInstance(
                 SOURCE,
-                merchantId
+                merchantId,
+                viewModel.productCartMap.keys.toList()
             )
         )
     }

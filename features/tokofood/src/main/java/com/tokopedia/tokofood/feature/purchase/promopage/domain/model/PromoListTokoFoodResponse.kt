@@ -1,29 +1,61 @@
 package com.tokopedia.tokofood.feature.purchase.promopage.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
-class PromoListTokoFoodResponse(
-    @SerializedName("promo_list_tokofood")
-    val promoListTokoFood: PromoListTokoFood = PromoListTokoFood()
+data class PromoListTokoFoodResponse(
+    @SerializedName("cart_general_promo_list")
+    val cartGeneralPromoList: CartGeneralPromoList = CartGeneralPromoList()
 )
 
-class PromoListTokoFood(
-    @SerializedName("message")
-    val message: String = "",
-    @SerializedName("status")
-    val status: String = "",
+data class CartGeneralPromoList(
+    @SerializedName("header")
+    val header: Header = Header(),
     @SerializedName("data")
-    val data: PromoListTokoFoodData = PromoListTokoFoodData()
+    val data: CartGeneralPromoListData = CartGeneralPromoListData()
+)
+
+data class CartGeneralPromoListData(
+    @SerializedName("success")
+    val success: Int = Int.ZERO,
+    @SerializedName("message")
+    val message: String = String.EMPTY,
+    @SerializedName("data")
+    val data: CartGeneralPromoListDataData = CartGeneralPromoListDataData()
 ) {
-    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS
+    fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS_INT
 }
 
-class PromoListTokoFoodData(
+data class CartGeneralPromoListDataData(
+    @SerializedName("business_data")
+    val businessData: List<CartGeneralPromoListBusinessData> = listOf()
+) {
+
+    // TODO: Add businessId
+    fun getTokofoodBusinessData(): CartGeneralPromoListBusinessData {
+        return businessData.firstOrNull { it.businessId == String.EMPTY } ?: CartGeneralPromoListBusinessData()
+    }
+}
+
+data class CartGeneralPromoListBusinessData(
+    @SerializedName("business_id")
+    val businessId: String = String.EMPTY,
+    @SerializedName("success")
+    val success: Int = Int.ZERO,
+    @SerializedName("message")
+    val message: String = String.EMPTY,
+    @SerializedName("custom_response")
+    val customResponse: CartGeneralBusinessDataCustomResponse = CartGeneralBusinessDataCustomResponse()
+)
+
+data class CartGeneralBusinessDataCustomResponse(
     @SerializedName("title")
-    val title: String = "",
+    val title: String = String.EMPTY,
     @SerializedName("change_restriction_message")
-    val changeRestrictionMessage: String = "",
+    val changeRestrictionMessage: String = String.EMPTY,
     @SerializedName("error_page")
     val errorPage: PromoListTokoFoodErrorPage = PromoListTokoFoodErrorPage(),
     @SerializedName("empty_state")
@@ -35,6 +67,7 @@ class PromoListTokoFoodData(
     @SerializedName("promo_summary")
     val promoSummary: PromoListTokoFoodSummary = PromoListTokoFoodSummary()
 )
+
 
 data class PromoListTokoFoodErrorPage(
     @SerializedName("is_show_error_page")

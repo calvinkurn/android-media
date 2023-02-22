@@ -34,6 +34,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -128,6 +129,7 @@ class TokoFoodPurchaseFragment :
     private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
 
     private var shopId = ""
+    private var currentCartIdList: List<String> = listOf()
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -287,6 +289,7 @@ class TokoFoodPurchaseFragment :
     private fun observeList() {
         viewModel.visitables.observe(viewLifecycleOwner) {
             rvAdapter?.updateList(it)
+            setCurrentCartList(it)
         }
     }
 
@@ -986,6 +989,12 @@ class TokoFoodPurchaseFragment :
         putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
+    private fun setCurrentCartList(visitableList: List<Visitable<*>>) {
+        currentCartIdList =
+            visitableList.filterIsInstance(TokoFoodPurchaseProductTokoFoodPurchaseUiModel::class.java)
+                .map { it.cartId }
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -1057,7 +1066,13 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onPromoWidgetClicked() {
-        navigateToNewFragment(TokoFoodPromoFragment.createInstance(SOURCE))
+        navigateToNewFragment(
+            TokoFoodPromoFragment.createInstance(
+                SOURCE,
+                String.EMPTY,
+                currentCartIdList
+            )
+        )
     }
 
     override fun onButtonCheckoutClicked() {
