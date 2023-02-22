@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Unify_Background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/product_bundling_info"

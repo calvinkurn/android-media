@@ -62,6 +62,7 @@ data class CartItemHolderData(
         var needPrescription: Boolean = false,
         var butuhResepText: String = "",
         var butuhResepIconUrl: String = "",
+    var isFinalItem: Boolean = false,
 
         // Analytics data
         var shopId: String = "",

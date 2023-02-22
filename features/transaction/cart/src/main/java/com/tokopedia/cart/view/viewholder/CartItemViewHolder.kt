@@ -88,7 +88,7 @@ class CartItemViewHolder constructor(
         qtyTextWatcher = null
     }
 
-    fun bindData(data: CartItemHolderData, viewHolderListener: ViewHolderListener, dataSize: Int) {
+    fun bindData(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, dataSize: Int) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
@@ -364,12 +364,12 @@ class CartItemViewHolder constructor(
             } else {
                 binding.containerProductAction.show()
                 binding.holderItemCartDivider.visibility =
-                    if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
+                    if (data.isFinalItem) View.GONE else View.VISIBLE
             }
         } else {
             binding.containerProductAction.show()
             binding.holderItemCartDivider.visibility =
-                if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
+                if (data.isFinalItem) View.GONE else View.VISIBLE
         }
     }
 
@@ -783,7 +783,7 @@ class CartItemViewHolder constructor(
         }
     }
 
-    private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener) {
+    private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
             qtyEditorProduct.gone()

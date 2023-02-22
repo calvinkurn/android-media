@@ -128,15 +128,15 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
-        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsed) {
-            renderCollapsedCartItems(cartShopHolderData)
-        } else {
-            renderExpandedCartItems(cartShopHolderData)
-            if (cartShopHolderData.clickedCollapsedProductIndex != RecyclerView.NO_POSITION) {
-                scrollToSelectedExpandedProduct(cartShopHolderData.clickedCollapsedProductIndex)
-                cartShopHolderData.clickedCollapsedProductIndex = RecyclerView.NO_POSITION
-            }
-        }
+//        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsed) {
+//            renderCollapsedCartItems(cartShopHolderData)
+//        } else {
+//            renderExpandedCartItems(cartShopHolderData)
+//            if (cartShopHolderData.clickedCollapsedProductIndex != RecyclerView.NO_POSITION) {
+//                scrollToSelectedExpandedProduct(cartShopHolderData.clickedCollapsedProductIndex)
+//                cartShopHolderData.clickedCollapsedProductIndex = RecyclerView.NO_POSITION
+//            }
+//        }
     }
 
     private fun renderShopName(cartShopHolderData: CartShopHolderData) {

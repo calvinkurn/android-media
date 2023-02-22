@@ -119,8 +119,8 @@ object CartUiModelMapper {
         )
     }
 
-    fun mapAvailableShopUiModel(cartData: CartData): List<CartShopHolderData> {
-        val cartShopHolderDataList = mutableListOf<CartShopHolderData>()
+    fun mapAvailableShopUiModel(cartData: CartData): List<Any> {
+        val cartShopHolderDataList = mutableListOf<Any>()
         val firstPlusAvailableGroupIndex = cartData.availableSection.availableGroupGroups.indexOfFirst {
             it.shipmentInformation.freeShippingGeneral.isBoTypePlus()
         }
@@ -138,6 +138,7 @@ object CartUiModelMapper {
                     productUiModelList.add(productUiModel)
                 }
             }
+            productUiModelList.lastOrNull()?.isFinalItem = true
             val shopUiModel = CartShopHolderData().apply {
                 this.productUiModelList = productUiModelList
                 cartString = availableGroup.cartString
@@ -208,6 +209,7 @@ object CartUiModelMapper {
                     if (availableGroup.shop.enabler.showLabel) availableGroup.shop.enabler.labelName else ""
             }
             cartShopHolderDataList.add(shopUiModel)
+            cartShopHolderDataList.addAll(productUiModelList)
         }
 
         return cartShopHolderDataList
