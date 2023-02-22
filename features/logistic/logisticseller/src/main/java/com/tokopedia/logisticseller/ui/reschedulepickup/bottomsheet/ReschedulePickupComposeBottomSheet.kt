@@ -7,6 +7,7 @@ import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.tokopedia.common_compose.components.NestBottomSheet
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.R
@@ -25,7 +26,7 @@ fun RescheduleBottomSheetLayout(
     onTimeChosen: (RescheduleTimeOptionModel) -> Unit,
     onReasonChosen: (RescheduleReasonOptionModel) -> Unit
 ) {
-    NestBottomSheet(getBottomSheetTitle(currentScreen), onCloseBottomSheet) {
+    NestBottomSheet(getBottomSheetTitle(currentScreen), onClosePressed = onCloseBottomSheet) {
         when (currentScreen) {
             RescheduleBottomSheetState.DAY -> RescheduleBottomSheetContent(
                 items = options.dayOptions,
