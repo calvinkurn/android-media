@@ -265,7 +265,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
                     || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
             add(DFP({ it.startsWithPattern(PLAY_SHORTS)
-                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_SHORTS) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_shorts))
+                    || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_SHORTS) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_shorts))
             add(DFP({
                 it.startsWith(ApplinkConstInternalGlobal.IMAGE_PICKER) ||
                         it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
