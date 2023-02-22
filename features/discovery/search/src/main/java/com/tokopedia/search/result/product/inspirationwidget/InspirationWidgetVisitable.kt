@@ -9,7 +9,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.T
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 
 interface InspirationWidgetVisitable: Visitable<ProductListTypeFactory>, VerticalSeparable {
@@ -34,10 +34,10 @@ interface InspirationWidgetVisitable: Visitable<ProductListTypeFactory>, Vertica
                 .filter { showInspirationCardLayout.contains(it.layout) }
                 .map { data -> InspirationCardDataView.create(data) }
 
-            val inspirationSizeList = searchInspirationWidget.filterWidgetList()
-                .map { data -> InspirationSizeDataView.create(data, keyword, dimension90) }
+            val inspirationFilterList = searchInspirationWidget.filterWidgetList()
+                .map { data -> InspirationFilterDataView.create(data, keyword, dimension90) }
 
-            return inspirationCardList + inspirationSizeList
+            return inspirationCardList + inspirationFilterList
         }
     }
 }

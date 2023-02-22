@@ -84,9 +84,9 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private fun `Then verify initialize filter is interactions`() {
         verifyOrder {
             productListView.hideQuickFilterShimmering()
+            productListView.setAutoFilterToggle(capture(backendFiltersToggle))
             productListView.initFilterController(capture(actualQuickFilterList))
             productListView.setQuickFilter(capture(listItemSlot))
-            productListView.setAutoFilterToggle(capture(backendFiltersToggle))
             productListView.setSortFilterIndicatorCounter()
         }
     }

@@ -1,8 +1,8 @@
-package com.tokopedia.search.result.product.inspirationwidget.size
+package com.tokopedia.search.result.product.inspirationwidget.filter
 
 import com.tokopedia.filter.common.data.Option
 
-data class InspirationSizeOptionFiltersDataView(
+data class InspirationFilterOptionFiltersDataView(
     val key: String = "",
     val name: String = "",
     val value: String = "",

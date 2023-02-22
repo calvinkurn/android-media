@@ -1,16 +1,16 @@
-package com.tokopedia.search.result.product.inspirationwidget.size
+package com.tokopedia.search.result.product.inspirationwidget.filter
 
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 
-class InspirationSizeOptionDataView(
+class InspirationFilterOptionDataView(
     val text: String = "",
     val img: String = "",
     val url: String = "",
     val hexColor: String = "",
     val applink: String = "",
-    val filters: InspirationSizeOptionFiltersDataView = InspirationSizeOptionFiltersDataView(),
+    val filters: InspirationFilterOptionFiltersDataView = InspirationFilterOptionFiltersDataView(),
     val inspirationCardType: String = "",
     val componentId: String = "",
     val keyword: String = "",

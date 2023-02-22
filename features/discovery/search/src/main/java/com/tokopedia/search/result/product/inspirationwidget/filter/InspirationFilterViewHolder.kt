@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.product.inspirationwidget.size
+package com.tokopedia.search.result.product.inspirationwidget.filter
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -12,10 +12,10 @@ import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-internal class InspirationSizeViewHolder(
+internal class InspirationFilterViewHolder(
     itemView: View,
-    private val inspirationSizeListener: InspirationSizeListener
-): AbstractViewHolder<InspirationSizeDataView>(itemView) {
+    private val inspirationFilterListener: InspirationFilterListener
+): AbstractViewHolder<InspirationFilterDataView>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -23,15 +23,15 @@ internal class InspirationSizeViewHolder(
     }
 
     private var binding: SearchResultProductSizeLayoutBinding? by viewBinding()
-    private var inspirationSizeOptionAdapter: InspirationSizeOptionAdapter? = null
+    private var inspirationFilterOptionAdapter: InspirationFilterOptionAdapter? = null
 
-    override fun bind(element: InspirationSizeDataView) {
+    override fun bind(element: InspirationFilterDataView) {
         bindHeader(element)
         bindTitle(element)
         bindOptions(element)
     }
 
-    private fun bindHeader(element: InspirationSizeDataView) {
+    private fun bindHeader(element: InspirationFilterDataView) {
         binding?.inspirationWidgetHeaderTitle?.run {
             showWithCondition(element.data.headerTitle.isNotEmpty())
             text = element.data.headerTitle
@@ -43,17 +43,17 @@ internal class InspirationSizeViewHolder(
         }
     }
 
-    private fun bindTitle(element: InspirationSizeDataView) {
+    private fun bindTitle(element: InspirationFilterDataView) {
         binding?.searchProductSizeTitle?.text = element.data.title
     }
 
-    private fun bindOptions(element: InspirationSizeDataView) {
-        val chipVerticalSpacaing = 4.toPx()
+    private fun bindOptions(element: InspirationFilterDataView) {
+        val chipVerticalSpacing = 4.toPx()
         binding?.searchProductSizeOptionRecyclerView?.apply {
             layoutManager = createLayoutManager()
             createAdapter(element)
-            adapter = inspirationSizeOptionAdapter
-            addItemDecorationIfNotExists(ChipSpacingItemDecoration(chipVerticalSpacaing, 0))
+            adapter = inspirationFilterOptionAdapter
+            addItemDecorationIfNotExists(ChipSpacingItemDecoration(chipVerticalSpacing, 0))
         }
     }
 
@@ -61,27 +61,26 @@ internal class InspirationSizeViewHolder(
         return LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private fun createAdapter(element: InspirationSizeDataView) {
-        val adapter = InspirationSizeOptionAdapter(inspirationSizeListener)
+    private fun createAdapter(element: InspirationFilterDataView) {
+        val adapter = InspirationFilterOptionAdapter(inspirationFilterListener)
         val sortedSizeData = getSortedSizeData(element.optionSizeData)
         adapter.setItemList(sortedSizeData)
-        adapter.setInspirationSizeDataView(element)
 
-        inspirationSizeOptionAdapter = adapter
+        inspirationFilterOptionAdapter = adapter
     }
 
     private fun getSortedSizeData(
-        optionSizeData: List<InspirationSizeOptionDataView>
-    ) : List<InspirationSizeOptionDataView> {
+        optionSizeData: List<InspirationFilterOptionDataView>
+    ) : List<InspirationFilterOptionDataView> {
         val sortedSelectedSizeData = optionSizeData
-            .filter { inspirationSizeListener.isFilterSelected(it.option) }
+            .filter { inspirationFilterListener.isFilterSelected(it.option) }
             .sortedByOptionValue()
         val nonSelectedSizeData = optionSizeData - sortedSelectedSizeData.toSet()
         val sortedNonSelectedSizeData = nonSelectedSizeData.sortedByOptionValue()
         return sortedSelectedSizeData + sortedNonSelectedSizeData
     }
 
-    private fun List<InspirationSizeOptionDataView>.sortedByOptionValue() : List<InspirationSizeOptionDataView> {
+    private fun List<InspirationFilterOptionDataView>.sortedByOptionValue() : List<InspirationFilterOptionDataView> {
         return sortedBy {
             try {
                 it.option.value.toInt()

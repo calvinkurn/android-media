@@ -7,8 +7,8 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeOptionDataView
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterListener
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterOptionDataView
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.componentIdMap
@@ -24,7 +24,7 @@ class InspirationWidgetListenerDelegate(
     private val filterController: FilterController,
     private val parameterListener: ProductListParameterListener,
 ): InspirationCardListener,
-    InspirationSizeListener,
+    InspirationFilterListener,
     QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
@@ -41,13 +41,13 @@ class InspirationWidgetListenerDelegate(
         InspirationWidgetTracking.trackEventClickInspirationCardOption(label)
     }
 
-    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView) {
+    override fun onInspirationFilterOptionClicked(sizeOptionDataView: InspirationFilterOptionDataView) {
         val option = sizeOptionDataView.option
         val isFilterSelectedReversed = !isFilterSelected(option)
 
-        trackInspirationSizeOptionClick(isFilterSelectedReversed, sizeOptionDataView)
+        trackInspirationFilterOptionClick(isFilterSelectedReversed, sizeOptionDataView)
 
-        applyInspirationSizeFilter(
+        applyInspirationFilter(
             option,
             isFilterSelectedReversed,
             sizeOptionDataView.componentId
@@ -60,15 +60,15 @@ class InspirationWidgetListenerDelegate(
         return filterController.getFilterViewState(option)
     }
 
-    private fun trackInspirationSizeOptionClick(
+    private fun trackInspirationFilterOptionClick(
         isFilterSelected: Boolean,
-        sizeOptionDataView: InspirationSizeOptionDataView,
+        sizeOptionDataView: InspirationFilterOptionDataView,
     ) {
         if (isFilterSelected)
             sizeOptionDataView.click(TrackApp.getInstance().gtm)
     }
 
-    private fun applyInspirationSizeFilter(
+    private fun applyInspirationFilter(
         option: Option,
         isFilterSelected: Boolean,
         componentId: String,
