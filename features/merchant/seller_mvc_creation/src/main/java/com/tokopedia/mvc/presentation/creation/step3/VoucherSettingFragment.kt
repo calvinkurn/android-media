@@ -605,13 +605,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         )
                     }
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
                     .debounce(DEBOUNCE)
@@ -636,13 +629,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         )
                     }
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
                     .debounce(DEBOUNCE)
@@ -662,13 +648,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             tfFreeShippingQuota.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(FREE_SHIPPING_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -773,13 +752,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldNominalCashbackEvent(CASHBACK_EVENT_LABEL)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 visible()
                 tpgCashbackMaxDeductionLabel.gone()
                 tfCahsbackMaxDeduction.gone()
@@ -810,13 +782,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 visible()
                 tpgCashbackMaxDeductionLabel.visible()
                 tfCahsbackMaxDeduction.visible()
@@ -844,13 +809,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(CASHBACK_EVENT_LABEL)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
                     .debounce(DEBOUNCE)
@@ -871,13 +829,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(CASHBACK_EVENT_LABEL)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
                     .debounce(DEBOUNCE)
@@ -897,13 +848,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             tfCashbackQuota.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(CASHBACK_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -1014,7 +958,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
             }
         }
-        presetValue()
+
     }
 
     private fun setDiscountNominalInput() {
@@ -1029,13 +973,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             tfDiscountNominal.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldNominalCashbackEvent(DISCOUNT_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
                 }
                 appendText("")
                 prependText(getString(R.string.smvc_rupiah_label))
@@ -1069,14 +1006,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(DISCOUNT_EVENT_LABEL)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
-
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
@@ -1101,13 +1030,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(DISCOUNT_EVENT_LABEL)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
                     .debounce(DEBOUNCE)
@@ -1128,13 +1050,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(DISCOUNT_EVENT_LABEL)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
                     .debounce(DEBOUNCE)
@@ -1154,13 +1069,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             tfDiscountQuota.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(DISCOUNT_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
