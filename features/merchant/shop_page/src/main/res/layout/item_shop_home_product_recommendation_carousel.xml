@@ -27,9 +27,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false" />
-
-    <com.tokopedia.productcard.ProductCardListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
 </LinearLayout>
