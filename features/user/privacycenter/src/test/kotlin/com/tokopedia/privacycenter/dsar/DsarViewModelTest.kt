@@ -113,7 +113,7 @@ class DsarViewModelTest {
         viewModel.checkRequestStatus()
 
         val result = viewModel.requestDetails.getOrAwaitValue()
-        assert(result.status == status)
+        assert(result == searchRequestResp)
 
         verify(exactly = 1) {
             mainLoaderObserver.onChanged(true)
@@ -137,7 +137,7 @@ class DsarViewModelTest {
 
     @Test
     fun `checkRequest success - Completed`() {
-        val status = DsarConstants.STATUS_COMPLETED
+        val status = "COMPLETE"
 
         val searchRequestResp = GetRequestDetailResponse(requestQueueRefId = "123", status = status)
         coEvery { searchRequestUseCase(any()) } returns searchRequestResp
@@ -149,6 +149,7 @@ class DsarViewModelTest {
             mainLoaderObserver.onChanged(true)
             mainLoaderObserver.onChanged(false)
         }
+        assert(viewModel.showMainLayout.getOrAwaitValue())
     }
 
     @Test

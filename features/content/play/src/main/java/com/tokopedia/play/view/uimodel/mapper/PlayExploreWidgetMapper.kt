@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.model.Content
 import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.play.di.PlayScope
@@ -9,6 +10,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
 /**
@@ -46,8 +48,11 @@ class PlayExploreWidgetMapper @Inject constructor() {
         return TabMenuUiModel(items = newList, state = ResultState.Success)
     }
 
+    private val generatedId = AtomicLong(0)
+
     private fun mapWidgets(content: Content): WidgetItemUiModel {
         return WidgetItemUiModel(
+            id = generatedId.getAndIncrement(),
             item =
             PlayWidgetUiModel(
                 title = content.title,
@@ -66,6 +71,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                 background = PlayWidgetBackgroundUiModel(overlayImageAppLink = "", overlayImageUrl = "", overlayImageWebLink = "", backgroundUrl = "", gradientColors = emptyList()),
                 items = content.items.map {
                     val channelType = PlayWidgetChannelType.getByValue(it.airTime)
+                    val partnerName = MethodChecker.fromHtml(it.partner.name).toString()
                     PlayWidgetChannelUiModel(
                         channelId = it.id,
                         title = it.title,
@@ -74,7 +80,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                         totalView = PlayWidgetTotalView(totalViewFmt = it.stats.view.formatted, isVisible = channelType != PlayWidgetChannelType.Upcoming),
                         promoType = PlayWidgetPromoType.getByType(it.configurations.promoLabels.firstOrNull()?.type.orEmpty(), it.configurations.promoLabels.firstOrNull()?.text.orEmpty()),
                         reminderType = getReminderType(it.configurations.reminder.isSet),
-                        partner = PlayWidgetPartnerUiModel(it.partner.id, it.partner.name),
+                        partner = PlayWidgetPartnerUiModel(it.partner.id, partnerName),
                         video = PlayWidgetVideoUiModel(it.video.id, it.isLive, it.coverUrl, it.video.streamUrl),
                         channelType = channelType,
                         hasGame = it.configurations.promoLabels.firstOrNull { it.type == GIVEAWAY } != null,

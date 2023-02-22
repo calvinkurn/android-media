@@ -147,7 +147,6 @@ class DeveloperOptionAdapter(
 
     private val hiddenItems = mutableListOf(
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
-        AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
@@ -214,7 +213,6 @@ class DeveloperOptionAdapter(
 
     init {
         initializeList()
-
     }
 
     fun initializeList() {
@@ -249,12 +247,11 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        removeWidget(AppAuthSecretUiModel::class.java)
+        // no-op
     }
 
     private fun removeMainAppItems() {
         removeWidget(SellerAppReviewDebuggingUiModel::class.java)
-        removeWidget(AppAuthSecretUiModel::class.java)
     }
 
     private fun <T> removeWidget(itemClass: Class<T>) {
