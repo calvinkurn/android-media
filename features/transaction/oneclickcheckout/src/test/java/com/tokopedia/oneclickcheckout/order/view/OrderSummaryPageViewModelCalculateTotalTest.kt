@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
@@ -3296,10 +3297,12 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(
-            option1,
-            option2,
-            option3
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(
+            installmentOptions = listOf(
+                option1,
+                option2,
+                option3
+            )
         )
 
         // When
