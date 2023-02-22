@@ -59,5 +59,4 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-    implementation projectOrAar(rootProject.ext.features.mediapicker)
 }
