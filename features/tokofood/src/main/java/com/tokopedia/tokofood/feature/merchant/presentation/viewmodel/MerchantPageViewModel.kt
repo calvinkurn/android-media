@@ -16,7 +16,6 @@ import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusiness
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
-import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
@@ -351,7 +350,7 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail? {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartListCartGroupCart, productUiModel: ProductUiModel): CustomOrderDetail? {
         if (!productUiModel.isCustomizable) return null
         resetMasterData(productUiModel.customListItems)
         return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(

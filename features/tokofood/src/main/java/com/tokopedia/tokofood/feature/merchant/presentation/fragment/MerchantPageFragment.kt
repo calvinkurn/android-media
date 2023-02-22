@@ -53,6 +53,8 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -744,7 +746,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 }
                 UiEvent.EVENT_PHONE_VERIFICATION -> {
                     if (it.source == SOURCE) {
-                        val bottomSheetData = it.data as? CartTokoFoodBottomSheet
+                        val bottomSheetData = it.data as? CartListBusinessDataBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
                                 val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
@@ -1049,22 +1051,22 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
 
-    private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartTokoFoodData>?) {
-        addCartData?.let { (updateParam, cartTokoFoodData) ->
+    private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartListBusinessData>?) {
+        addCartData?.let { (updateParam, cartListBusinessData) ->
             updateParam.productList.firstOrNull()?.let { requestParam ->
-                cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
-                    ?.let { cartTokoFood ->
+                cartListBusinessData.getAvailableSectionProducts().firstOrNull { product -> product.productId == requestParam.productId }
+                    ?.let { cart ->
                         val cardPositions = viewModel.productMap[requestParam.productId]
                         cardPositions?.run {
                             val dataSetPosition = viewModel.getDataSetPosition(this)
                             val adapterPosition = viewModel.getAdapterPosition(this)
                             binding?.rvProductList?.post {
                                 productListAdapter?.updateProductUiModel(
-                                    cartTokoFood = cartTokoFood,
+                                    cartTokoFood = cart,
                                     dataSetPosition = dataSetPosition,
                                     adapterPosition = adapterPosition,
                                     customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
-                                        cartTokoFood = cartTokoFood,
+                                        cartTokoFood = cart,
                                         productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
                                     )
                                 )

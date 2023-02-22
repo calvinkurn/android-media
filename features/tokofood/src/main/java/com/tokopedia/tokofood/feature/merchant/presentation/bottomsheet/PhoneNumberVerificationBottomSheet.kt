@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.databinding.BottomsheetPhoneNumberVerificationLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -21,7 +21,7 @@ class PhoneNumberVerificationBottomSheet : BottomSheetUnify() {
         private const val TAG = "PhoneNumberVerificationBottomSheet"
 
         @JvmStatic
-        fun createInstance(bottomSheetData: CartTokoFoodBottomSheet): PhoneNumberVerificationBottomSheet {
+        fun createInstance(bottomSheetData: CartListBusinessDataBottomSheet): PhoneNumberVerificationBottomSheet {
             return PhoneNumberVerificationBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA, bottomSheetData)
@@ -33,8 +33,8 @@ class PhoneNumberVerificationBottomSheet : BottomSheetUnify() {
     private var binding: BottomsheetPhoneNumberVerificationLayoutBinding? = null
     private var clickListener: OnButtonCtaClickListener? = null
 
-    private val bottomSheetData: CartTokoFoodBottomSheet by lazy {
-        arguments?.getParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA) ?: CartTokoFoodBottomSheet()
+    private val bottomSheetData: CartListBusinessDataBottomSheet by lazy {
+        arguments?.getParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA, CartListBusinessDataBottomSheet::class.java) ?: CartListBusinessDataBottomSheet()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

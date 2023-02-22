@@ -10,11 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
-import com.tokopedia.tokofood.common.domain.response.CartListData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.usecase.AddToCartTokoFoodUseCase
-import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.MiniCartListTokofoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokofoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.UpdateCartTokoFoodUseCase
@@ -42,7 +38,6 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class MultipleFragmentsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val loadCartTokoFoodUseCase: Lazy<LoadCartTokoFoodUseCase>,
     private val miniCartTokoFoodUseCase: Lazy<MiniCartListTokofoodUseCase>,
     private val addToCartTokoFoodUseCase: Lazy<AddToCartTokoFoodUseCase>,
     private val updateCartTokoFoodUseCase: Lazy<UpdateCartTokoFoodUseCase>,
@@ -328,12 +323,13 @@ class MultipleFragmentsViewModel @Inject constructor(
             withContext(dispatchers.io) {
                 addToCartTokoFoodUseCase.get().execute(updateParam)
             }.let {
-                if (it.data.bottomSheet.isShowBottomSheet) {
+                val businessData = it.getTokofoodBusinessData()
+                if (businessData.customResponse.bottomSheet.isShowBottomSheet) {
                     cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_PHONE_VERIFICATION,
                             source = source,
-                            data = it.data.bottomSheet
+                            data = businessData.customResponse.bottomSheet
                         )
                     )
                 } else {
@@ -348,7 +344,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                         UiEvent(
                             state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
                             source = source,
-                            data = updateParam to it.data
+                            data = updateParam to it.getTokofoodBusinessData()
                         )
                     )
                 }

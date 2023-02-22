@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
@@ -101,6 +102,33 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
                 if (!isCustomizable) cartId = cartTokoFood.cartId
                 orderQty = cartTokoFood.quantity
                 orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+                isAtc = cartTokoFood.quantity.isMoreThanZero()
+                customOrderDetail?.let { customOrderDetails.add(it) }
+            }
+            notifyItemChanged(adapterPosition)
+        }
+    }
+
+    fun updateProductUiModel(
+        cartTokoFood: CartListCartGroupCart,
+        dataSetPosition: Int,
+        adapterPosition: Int,
+        customOrderDetail: CustomOrderDetail? = null
+    ) {
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.run {
+            val sameCustomProductExist: Boolean
+            val sameCustomProduct = this.customOrderDetails.firstOrNull { it.cartId == cartTokoFood.cartId }
+            sameCustomProductExist = sameCustomProduct != null
+            if (sameCustomProductExist) {
+                if (!isCustomizable) cartId = cartTokoFood.cartId
+                orderQty = cartTokoFood.quantity
+                orderNote = cartTokoFood.metadata.notes
+                isAtc = cartTokoFood.quantity.isMoreThanZero()
+                sameCustomProduct?.apply { qty += 1 }
+            } else {
+                if (!isCustomizable) cartId = cartTokoFood.cartId
+                orderQty = cartTokoFood.quantity
+                orderNote = cartTokoFood.metadata.notes
                 isAtc = cartTokoFood.quantity.isMoreThanZero()
                 customOrderDetail?.let { customOrderDetails.add(it) }
             }

@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.common.domain.response
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -11,6 +12,7 @@ import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodBusinessData
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodCartGroup
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
+import kotlinx.parcelize.Parcelize
 
 data class CartListTokofoodResponse(
     @SerializedName("cart_general_cart_list")
@@ -330,6 +332,7 @@ data class CartListBusinessDataPromo(
     val subtitle: String = String.EMPTY
 )
 
+@Parcelize
 data class CartListBusinessDataBottomSheet(
     @SerializedName("is_show_bottomsheet")
     val isShowBottomSheet: Boolean = false,
@@ -343,8 +346,9 @@ data class CartListBusinessDataBottomSheet(
     val termsAndCondition: String = String.EMPTY,
     @SerializedName("buttons")
     val buttons: List<CartListBusinessDataBottomSheetButton> = listOf()
-)
+): Parcelable
 
+@Parcelize
 data class CartListBusinessDataBottomSheetButton(
     @SerializedName("text")
     val text: String = String.EMPTY,
@@ -354,7 +358,7 @@ data class CartListBusinessDataBottomSheetButton(
     val action: Int = Int.ZERO,
     @SerializedName("link")
     val link: String = String.EMPTY
-)
+): Parcelable
 
 data class CartListBusinessDataShop(
     @SerializedName("shop_id")

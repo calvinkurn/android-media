@@ -9,6 +9,8 @@ import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
+import com.tokopedia.tokofood.common.domain.response.CartListCartMetadataVariant
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
@@ -79,11 +81,11 @@ object TokoFoodMerchantUiModelMapper {
         return variantParams.toList()
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartListCartGroupCart, productUiModel: ProductUiModel): CustomOrderDetail {
         val selectedCustomListItems = mapCartTokoFoodVariantsToSelectedCustomListItems(
-                orderNote = cartTokoFood.getMetadata()?.notes.orEmpty(),
+                orderNote = cartTokoFood.metadata.notes,
                 masterData = productUiModel.customListItems,
-                selectedVariants = cartTokoFood.getMetadata()?.variants ?: listOf()
+                selectedVariants = cartTokoFood.metadata.variants ?: listOf()
         )
         val subTotal = calculateSubtotalPrice(
                 baseProductPrice = productUiModel.price,
@@ -114,7 +116,7 @@ object TokoFoodMerchantUiModelMapper {
     private fun mapCartTokoFoodVariantsToSelectedCustomListItems(
         orderNote: String,
         masterData: List<CustomListItem>,
-        selectedVariants: List<CartMetadataVariantTokoFood>
+        selectedVariants: List<CartListCartMetadataVariant>
     ): List<CustomListItem> {
         val selectedCustomListItems = deepCopyMasterData(masterData)
         val optionMap = selectedVariants.groupBy { it.variantId }
