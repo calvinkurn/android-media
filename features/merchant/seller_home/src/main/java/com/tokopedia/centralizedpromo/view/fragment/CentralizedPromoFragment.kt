@@ -25,6 +25,8 @@ import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoViewModel
 import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.orFalse
@@ -92,6 +94,11 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     }
 
     private val coachMark by lazy { createCoachMark() }
+    private val coachMark2 by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
+    }
 
     private var isErrorToastShown: Boolean = false
     private var isCoachMarkShowed: Boolean = false
@@ -248,6 +255,27 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun showCoachMarkPromoCreationItem(pageId: String, view: View) {
+        val alreadyShow = sharedPref.getBoolean("$pageId+${this.javaClass.simpleName}", false)
+        val coachMarkList = arrayListOf<CoachMark2Item>()
+
+        if (pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON && !alreadyShow) {
+            coachMarkList.add(
+                CoachMark2Item(
+                    anchorView = view,
+                    title = context?.getString(R.string.centralize_promo_flash_sale_title_coachmark)
+                        ?: "",
+                    description = context?.getString(R.string.centralize_promo_flash_sale_desc_coachmark)
+                        ?: "",
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            )
+
+            coachMark2?.showCoachMark(coachMarkList, null, 0)
+            sharedPref.edit().putBoolean("$pageId+${this.javaClass.simpleName}", true).apply()
+        }
+    }
+
     private fun updateCoachMarkStatus(key: String) {
         sharedPref.edit().putBoolean(key, false).apply()
     }
@@ -356,9 +384,11 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         sharedPref.edit().putBoolean(pageName, isChecked).apply()
     }
 
-    private fun onImpressionPromoList(promoName: String) {
-        CentralizedPromoTracking.sendImpressionCard(promoName,currentFilterTab.name)
-
+    private fun onImpressionPromoList(promoName: String, pageId: String, targetView: View) {
+        CentralizedPromoTracking.sendImpressionCard(promoName, currentFilterTab.name)
+        view?.post {
+            showCoachMarkPromoCreationItem(pageId, targetView)
+        }
     }
 }
 
