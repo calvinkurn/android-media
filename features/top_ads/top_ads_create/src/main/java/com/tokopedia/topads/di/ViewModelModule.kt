@@ -64,4 +64,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MpAdsCreateGroupViewModel::class)
     internal abstract fun provideMpAdsCreateGroupsViewModel(viewModel: MpAdsCreateGroupViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SeePerformanceTopAdsViewModel::class)
+    internal abstract fun provideSeePerformanceTopAdsViewModel(viewModel: SeePerformanceTopAdsViewModel) : ViewModel
 }

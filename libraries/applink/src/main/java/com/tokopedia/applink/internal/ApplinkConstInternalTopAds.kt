@@ -66,4 +66,6 @@ object ApplinkConstInternalTopAds {
     //Mp AdCreation
     const val TOPADS_MP_ADS_CREATION = "${INTERNAL_TOPADS}/mp-ad-creation?product_id={id}"
 
+    const val TOPADS_SEE_ADS_PERFORMANCE = "${INTERNAL_TOPADS}/see-ads-performance?product_id={id}"
+
 }
