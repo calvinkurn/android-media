@@ -1,0 +1,285 @@
+{
+  "aceSearchShop": {
+    "shops": [
+      {
+        "shop_id": 10968363,
+        "shop_name": "Samsung Store Teras Kota",
+        "shop_applink": "tokopedia://shop/10968363",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2021/3/1/10968363/10968363_c0f00aca-7ea3-4fa0-93c9-befd9bf02b22.jpg",
+        "shop_location": "Tangerang Selatan",
+        "shop_badge": {
+          "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+          "show": true
+        },
+        "button_title": "Lihat Toko",
+        "free_ongkir": {
+          "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
+          "is_active": true
+        },
+        "products": [
+          {
+            "id": 6572171532,
+            "name": "Samsung Galaxy A04s Smartphone (4/64GB)",
+            "applink": "tokopedia://product/6572171532",
+            "price": 1999000,
+            "price_format": "Rp 1.999.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/30/da5a544f-d67e-4a41-9481-8a0f787c9390.jpg",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          },
+          {
+            "id": 3421685963,
+            "name": "Samsung Galaxy A23 Smartphone(6/128GB)",
+            "applink": "tokopedia://product/3421685963",
+            "price": 3149000,
+            "price_format": "Rp 3.149.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/2/3b245da3-4e77-4224-95d6-7f692c14d712.jpg",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          },
+          {
+            "id": 6962236479,
+            "name": "Samsung Galaxy A04e Smartphone (3/32GB)",
+            "applink": "tokopedia://product/6962236479",
+            "price": 1299000,
+            "price_format": "Rp 1.299.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/ebbe2010-c640-4dab-aea0-41426dd358f9.jpg",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "shop_id": 10940756,
+        "shop_name": "Samsung Store Mall Lottemart Bintaro",
+        "shop_applink": "tokopedia://shop/10940756",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2021/2/27/10940756/10940756_49e62882-db02-4a53-bc22-10f716c661ce.jpg",
+        "shop_location": "Tangerang Selatan",
+        "shop_badge": {
+          "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+          "show": true
+        },
+        "button_title": "Lihat Toko",
+        "free_ongkir": {
+          "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
+          "is_active": true
+        },
+        "products": [
+          {
+            "id": 5384855607,
+            "name": "Samsung Galaxy Z Fold 4 5G ( 12GB/256GB )Garansi Resmi SEIN -GrayGreen",
+            "applink": "tokopedia://product/5384855607",
+            "price": 24999000,
+            "price_format": "Rp 24.999.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/12/a6eb400c-fdb8-430a-8d44-2c5e0323bc03.jpg",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          },
+          {
+            "id": 2819372532,
+            "name": "Samsung Galaxy Tab A8 WIFI ( 3/32GB ) - Gray",
+            "applink": "tokopedia://product/2819372532",
+            "price": 2899000,
+            "price_format": "Rp 2.899.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/6/d1986bea-dd18-4cfd-9ff2-93c47b50807a.jpg",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          },
+          {
+            "id": 7790460626,
+            "name": "Samsung Galaxy Tab A7 Lite WI-FI ( 3GB/32GB ) - Garansi SEIN - Gray ",
+            "applink": "tokopedia://product/7790460626",
+            "price": 1924000,
+            "price_format": "Rp 1.924.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/2/3/d21286e0-708f-4b18-b470-c3e15181cc17.jpg",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "shop_id": 10940756,
+        "shop_name": "Samsung Store Mall Lottemart Bintaro",
+        "shop_applink": "tokopedia://shop/10940756",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2021/2/27/10940756/10940756_49e62882-db02-4a53-bc22-10f716c661ce.jpg",
+        "shop_location": "Tangerang Selatan",
+        "shop_badge": {
+          "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+          "show": true
+        },
+        "button_title": "Lihat Toko",
+        "free_ongkir": {
+          "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
+          "is_active": false
+        },
+        "products": [
+          {
+            "id": 5384855607,
+            "name": "Samsung Galaxy Z Fold 4 5G ( 12GB/256GB )Garansi Resmi SEIN -GrayGreen",
+            "applink": "tokopedia://product/5384855607",
+            "price": 24999000,
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/12/a6eb400c-fdb8-430a-8d44-2c5e0323bc03.jpg",
+            "price_format": "Rp 24.999.000",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          },
+          {
+            "id": 2819372532,
+            "name": "Samsung Galaxy Tab A8 WIFI ( 3/32GB ) - Gray",
+            "applink": "tokopedia://product/2819372532",
+            "price": 2899000,
+            "price_format": "Rp 2.899.000",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/6/d1986bea-dd18-4cfd-9ff2-93c47b50807a.jpg",
+            "rating_average": "4.5",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          },
+          {
+            "id": 7790460626,
+            "name": "Samsung Galaxy Tab A7 Lite WI-FI ( 3GB/32GB ) - Garansi SEIN - Gray ",
+            "applink": "tokopedia://product/7790460626",
+            "price": 1924000,
+            "price_format": "Rp 1.924.000",
+            "original_price": "Rp159.000",
+            "discount_percentage": "30",
+            "rating_average": "4.5",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/2/3/d21286e0-708f-4b18-b470-c3e15181cc17.jpg",
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

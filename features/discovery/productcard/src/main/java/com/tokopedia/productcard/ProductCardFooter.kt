@@ -6,6 +6,7 @@ import android.widget.RelativeLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.showWithCondition
@@ -40,8 +41,11 @@ internal fun View.renderProductCardFooter(
 
     renderWishlistComponents(productCardModel)
 
-    val buttonSeeOtherProduct = findViewById<UnifyButton?>(R.id.buttonSeeOtherProduct)
-    buttonSeeOtherProduct.shouldShowWithAction(productCardModel.willShowButtonSeeOtherProduct()) {
+    val buttonSeeOtherProduct = findViewById<UnifyButton?>(
+        ViewStubId(R.id.buttonSeeOtherProductStub),
+        ViewId(R.id.buttonSeeOtherProduct),
+    )
+    buttonSeeOtherProduct?.shouldShowWithAction(productCardModel.willShowButtonSeeOtherProduct()) {
         buttonSeeOtherProduct.text = productCardModel.seeOtherProductText
     }
 }

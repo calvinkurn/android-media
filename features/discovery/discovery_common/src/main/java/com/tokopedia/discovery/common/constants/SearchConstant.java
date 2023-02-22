@@ -98,6 +98,10 @@ public interface SearchConstant {
         int HEADLINE_PRODUCT_COUNT = 3;
     }
 
+    interface MPS {
+        String MPS_USE_CASE = "mps_use_case";
+    }
+
     interface ShopStatus {
         int KEY_SHOP_IS_GOLD = 1;
         int KEY_SHOP_STATUS_CLOSED = 2;
@@ -119,6 +123,7 @@ public interface SearchConstant {
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";
+        String MPS = "mps";
     }
 
     interface FreeOngkir {
@@ -128,18 +133,6 @@ public interface SearchConstant {
 
     interface SimilarSearch {
         String QUERY = "SIMILAR_SEARCH_QUERY";
-    }
-
-    interface ABTestRemoteConfigKey {
-        String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
-        String AB_TEST_VARIANT_FULL_STAR = "Full Star";
-        String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
-        String AB_TEST_SHOP_RATING = "Hierarchical Rating Toko";
-        String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
-        String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
-        String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
-        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
-        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
     }
 
     interface ProductCardLabel {

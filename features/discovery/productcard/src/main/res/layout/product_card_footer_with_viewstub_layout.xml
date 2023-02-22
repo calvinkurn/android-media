@@ -211,4 +211,15 @@
         app:layout_constraintTop_toBottomOf="@id/rlPrimaryButtonWishlist"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ViewStub
+        android:id="@+id/buttonSeeOtherProductStub"
+        android:inflatedId="@+id/buttonSeeOtherProduct"
+        android:layout="@layout/product_card_see_other_product_button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/product_card_button_delete_product_height"
+        android:layout_marginTop="@dimen/product_card_button_delete_product_margin_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonDeleteProduct"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/search_mps_loading_animation_view"
+        android:layout_width="280dp"
+        android:layout_height="240dp"
+        android:contentDescription="@string/content_desc_search_mps_loading"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/search_mps_loading_progress_bar"/>
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/search_mps_loading_progress_bar"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_mps_loading_animation_view"
+        app:layout_constraintBottom_toTopOf="@id/search_mps_loading_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/search_mps_loading_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_mps_loading_progress_bar"
+        app:layout_constraintBottom_toTopOf="@id/search_mps_loading_subtitle"
+        app:typographyType="heading_3"
+        tools:text="Tunggu sebentar, ya.."/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/search_mps_loading_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_mps_loading_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="paragraph_2"
+        tools:text="Barang yang kamu mau, sedang dalam proses pencarian"/>
+
+</merge>

@@ -129,6 +129,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     implementation rootProject.ext.dbDependencies.sqliteFramework
@@ -146,6 +148,8 @@ dependencies {
     androidTestImplementation rootProject.ext.firebase.messaging
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }
 
 project.ext {

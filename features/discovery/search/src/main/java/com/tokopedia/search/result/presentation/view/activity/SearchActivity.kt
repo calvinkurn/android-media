@@ -331,8 +331,9 @@ class SearchActivity : BaseActivity(),
 
     private fun shouldSetActiveTabToDefault(activeTab: String): Boolean {
         return activeTab !in listOf(
-                SearchConstant.ActiveTab.PRODUCT,
-                SearchConstant.ActiveTab.SHOP,
+            SearchConstant.ActiveTab.PRODUCT,
+            SearchConstant.ActiveTab.SHOP,
+            SearchConstant.ActiveTab.MPS,
         )
     }
 
@@ -342,20 +343,23 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun showLoadingView(visible: Boolean) {
-        loadingView?.visibility = if (visible) View.VISIBLE else View.GONE
+//        loadingView?.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     private fun showContainer(visible: Boolean) {
-        container?.visibility = if (visible) View.VISIBLE else View.INVISIBLE
+//        container?.visibility = if (visible) View.VISIBLE else View.INVISIBLE
     }
-
 
     private fun loadSection() {
         val searchFragmentTitles = mutableListOf<String>()
         addFragmentTitlesToList(searchFragmentTitles)
         initTabLayout()
 
-        searchSectionPagerAdapter = SearchSectionPagerAdapter(supportFragmentManager, searchParameter)
+        searchSectionPagerAdapter = SearchSectionPagerAdapter(
+            supportFragmentManager,
+            searchParameter,
+            component,
+        )
         searchSectionPagerAdapter?.updateData(searchFragmentTitles)
         viewPager?.adapter = searchSectionPagerAdapter
         tabLayout?.setupWithViewPager(viewPager)
@@ -391,7 +395,10 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun shopListFragmentExecuteBackToTop() {
-        searchSectionPagerAdapter?.getShopListFragment()?.backToTop()
+        if (searchParameter.isMps())
+            searchSectionPagerAdapter?.getMPSFragment()?.backToTop()
+        else
+            searchSectionPagerAdapter?.getShopListFragment()?.backToTop()
     }
 
     private fun setActiveTab() {
@@ -405,7 +412,8 @@ class SearchActivity : BaseActivity(),
 
     private fun getViewPagerCurrentItem() =
             when (searchParameter.get(SearchApiConst.ACTIVE_TAB)) {
-                SearchConstant.ActiveTab.SHOP -> SearchTabPosition.TAB_SECOND_POSITION
+                SearchConstant.ActiveTab.SHOP, SearchConstant.ActiveTab.MPS ->
+                    SearchTabPosition.TAB_SECOND_POSITION
                 else -> SearchTabPosition.TAB_FIRST_POSITION
             }
 

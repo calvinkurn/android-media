@@ -241,7 +241,7 @@ internal class ShopListFragment:
         searchViewModel?.hideSearchPageLoading()
     }
 
-    private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
+    private fun showRetryLayout(searchShopLiveData: State.Error<List<Visitable<*>>>) {
         activity?.let { activity ->
             val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
                 searchShopViewModel?.onViewClickRetry()

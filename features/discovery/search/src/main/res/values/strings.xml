@@ -115,4 +115,17 @@
     <string name="search_same_session_recommendation_hide_recommendation">Rekomendasi disembunyikan</string>
 
     <string name="search_ads_low_organic_title">Menampilkan hasil yang serupa dengan \"%s\"</string>
+
+    <string name="content_desc_search_mps_loading">loading multi product search</string>
+
+    <string name="search_mps_loading_title_1">Siap! Toped lagi cari di semua toko</string>
+    <string name="search_mps_loading_title_2">Toped lagi lihatin toko demi toko</string>
+    <string name="search_mps_loading_title_3">Oh, kamu cari produk yang itu? Siap!</string>
+
+    <string name="search_mps_loading_subtitle_1">Ke Pasar Minggu pakai kebaya. Mohon tunggu sebentar, yaa.</string>
+    <string name="search_mps_loading_subtitle_2">Makan nasi kapau, lanjut minum jamu. Apapun yang kamu mau, Toped cariin untukmu.</string>
+    <string name="search_mps_loading_subtitle_3">Nongkrong di Gambir sambil makan bistik. Jangan khawatir, pasti kami cariin yang terbaik.</string>
+    <string name="search_mps_loading_subtitle_4">Main ke pasar, pulangnya beli kencur. Yuk santai sebentar, hasilnya siap meluncur.</string>
+    <string name="search_mps_loading_subtitle_5">Jalan-jalan ke Surabaya, tak lupa main di pantai. Siap-siap belanja ya, hasilnya segera sampai.</string>
+    <string name="search_mps_loading_subtitle_6">Beli batako di Palangkaraya. Toped bakal pilihin toko yang punya semuanya.</string>
 </resources>
