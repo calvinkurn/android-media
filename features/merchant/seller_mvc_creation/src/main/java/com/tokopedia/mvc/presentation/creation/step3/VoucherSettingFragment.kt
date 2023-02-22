@@ -422,6 +422,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             setupButtonSection()
             presetValue()
             hideTextFieldLabel()
+
+            setFreeShippingNominalInput()
+            setFreeShippingMinimumBuyInput()
+            setFreeShippingQuotaInput()
+
+            setCashbackMaxDeductionInput()
+            setCashbackMinimumBuyInput()
+            setCashbackQuotaInput()
+
+            setDiscountMaxDeductionInput()
+            setDiscountMinimumBuyInput()
+            setDiscountQuotaInput()
         }
     }
 
@@ -571,9 +583,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         cashbackInputSectionBinding?.parentCashback?.gone()
         discountInputSectionBinding?.parentDiscount?.gone()
 
-        setFreeShippingNominalInput()
-        setFreeShippingMinimumBuyInput()
-        setFreeShippingQuotaInput()
+
         viewModel.processEvent(
             VoucherCreationStepThreeEvent.ChooseBenefitType(
                 BenefitType.NOMINAL
@@ -720,9 +730,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.parentDiscount?.gone()
 
         setCashbackSwitchPriceInput(currentVoucherConfiguration)
-        setCashbackMaxDeductionInput()
-        setCashbackMinimumBuyInput()
-        setCashbackQuotaInput()
     }
 
     private fun setCashbackSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
@@ -976,9 +983,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.parentDiscount?.visible()
 
         setDiscountSwitchPriceInput(currentVoucherConfiguration)
-        setDiscountMaxDeductionInput()
-        setDiscountMinimumBuyInput()
-        setDiscountQuotaInput()
     }
 
     private fun setDiscountSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
