@@ -82,7 +82,7 @@
 
         <com.tokopedia.unifycomponents.timer.TimerUnifySingle
             android:id="@+id/fst_ongoing_timer"
-            android:layout_width="92dp"
+            android:layout_width="94dp"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
             app:timer_unify_single_showClockIcon="true"
