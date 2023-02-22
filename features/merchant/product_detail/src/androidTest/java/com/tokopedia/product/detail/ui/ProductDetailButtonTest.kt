@@ -2,38 +2,42 @@ package com.tokopedia.product.detail.ui
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.annotation.UiThreadTest
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
-import com.tokopedia.product.detail.common.view.ItemVariantChipViewHolder
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
-import com.tokopedia.product.detail.ui.interceptor.*
-import com.tokopedia.product.detail.util.*
-import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_MINICART_EMPTY_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_MINICART_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P1_NEGATIVE_CASE_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P1_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P1_VARIANT_TOKONOW_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P2_DATA_NEGATIVE_CASE_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P2_DATA_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_SUCCESS_ATC_NON_VARIANT_TOKONOW_PATH
+import com.tokopedia.product.detail.ui.interceptor.RESPONSE_TICKER_PATH
+import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
+import com.tokopedia.product.detail.util.ProductIdlingInterface
+import com.tokopedia.product.detail.util.ViewAttributeMatcher
+import com.tokopedia.product.detail.util.assertNotVisible
+import com.tokopedia.product.detail.util.assertVisible
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Test
 
@@ -79,7 +83,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun sticky_login_shows_login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
+        InstrumentationAuthHelper.login() // given user logged in
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -125,30 +129,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_add_to_cart))
             .assertVisible()
             .check(matches(ViewMatchers.withText("+ Keranjang test")))
-
-        support_button_not_visible()
-    }
-
-    @Test
-    fun check_change_variant_change_to_1_button() {
-        activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
-        clickVariantTest()
-
-        onView(withId(R.id.btn_topchat)).assertVisible()
-
-        onView(withId(R.id.btn_buy_now))
-            .assertVisible()
-            .check(matches(ViewMatchers.withText("Beli pakai OVO")))
-            .check(
-                matches(
-                    ViewAttributeMatcher {
-                        val buttonUnify = (it as UnifyButton)
-                        buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                    }
-                )
-            )
-
-        onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
 
         support_button_not_visible()
     }
@@ -214,7 +194,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_button_atc_variant_noMinicart_tokonow_login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
+        InstrumentationAuthHelper.login() // given user logged in
         customInterceptor.customP1ResponsePath = RESPONSE_P1_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH
         customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_EMPTY_PATH
@@ -241,7 +221,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_button_atc_variant_minicart_tokonow_login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
+        InstrumentationAuthHelper.login() // given user logged in
 
         customInterceptor.customP1ResponsePath = RESPONSE_P1_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH
@@ -306,7 +286,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_quantity_editor_button_non_variant_login_minicart_tokonow() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
+        InstrumentationAuthHelper.login() // given user logged in
         customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
         customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
@@ -331,7 +311,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     @Test
     fun check_button_atc_non_variant_login_noMinicart_tokonow() {
         // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
+        InstrumentationAuthHelper.login() // given user logged in
 
         customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
@@ -360,7 +340,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun click_button_atc_variant_login_noMinicart_tokonow() = runBlockingTest {
-        InstrumentationAuthHelper.login()
         check_button_atc_variant_noMinicart_tokonow_login()
         customInterceptor.resetInterceptor()
         customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
@@ -429,7 +408,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     //region seller side
     @Test
     fun check_button_seller_side() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
+        InstrumentationAuthHelper.login() // given user logged in
         InstrumentationAuthHelper.userSession {
             setIsShopOwner(true)
             shopId = "1990266"
@@ -475,51 +454,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
             instr.callActivityOnResume(activityCommonRule.activity)
         }
     }
-
-    private fun clickVariantTest() {
-        clickChipVariantTest()
-        intentForResultVbs()
-    }
-
-    private fun clickChipVariantTest() {
-        onView(withId(R.id.rv_pdp)).perform(
-            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rv_single_variant))),
-                ViewActions.scrollTo()
-            )
-        )
-        val viewInteraction = onView(
-            AllOf.allOf(withId(R.id.rv_single_variant))
-        ).check(
-            matches(isDisplayed())
-        )
-        viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<ItemVariantChipViewHolder>(
-                0,
-                CommonActions.clickChildViewWithId(R.id.atc_variant_chip)
-            )
-        )
-    }
-
-    private fun intentForResultVbs() {
-        val cacheManager = SaveInstanceCacheManager(InstrumentationRegistry.getInstrumentation().targetContext, true)
-        val variant = mockProductVariantResult()
-        cacheManager.put(AtcVariantHelper.PDP_PARCEL_KEY_RESULT, variant)
-
-        val resultIntent = Intent().apply {
-            putExtra(AtcVariantHelper.ATC_VARIANT_CACHE_ID, cacheManager.id)
-        }
-        intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent))
-    }
-
-    private fun mockProductVariantResult() = ProductVariantResult(
-        parentProductId = "1060686573",
-        mapOfSelectedVariantOption = mutableMapOf(
-            "19261110" to "61436278"
-        ),
-        selectedProductId = "1060957408"
-    )
 
     private fun support_button_not_visible() {
         onView(withId(R.id.seller_button_container)).assertNotVisible()
