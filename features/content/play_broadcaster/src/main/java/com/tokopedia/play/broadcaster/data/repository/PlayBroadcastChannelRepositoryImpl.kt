@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetGeneratedImageCoverResponse
 import com.tokopedia.play.broadcaster.domain.model.imagegenerator.GetImageGeneratorPolicyResponse
-import com.tokopedia.play.broadcaster.domain.model.imagegenerator.ImageGeneratorArgs
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
@@ -96,8 +95,8 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         return@withContext getImageGeneratorPolicyUseCase.execute()
     }
 
-    override suspend fun getGeneratedImageCover(imageGeneratorArgs: ImageGeneratorArgs): GetGeneratedImageCoverResponse = withContext(dispatchers.io) {
-        return@withContext getGeneratedImageCoverUseCase.execute(imageGeneratorArgs.getArg())
+    override suspend fun getGeneratedImageCover(args: List<Map<String, String>>): GetGeneratedImageCoverResponse = withContext(dispatchers.io) {
+        return@withContext getGeneratedImageCoverUseCase.execute(args)
     }
 
     override suspend fun updateSchedule(
