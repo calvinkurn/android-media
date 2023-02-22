@@ -325,7 +325,7 @@ class LivenessFragment : BaseDaggerFragment(),
 
 
     @SuppressLint("DeprecatedMethod")
-    override fun onGetFaceDataSuccess(resultEntity: ResultEntity?, livenessId: String) {
+    override fun onGetFaceDataSuccess(resultEntity: ResultEntity?) {
         try {
             activity?.let {
                 val bitmap = LivenessResult.getLivenessBitmap()

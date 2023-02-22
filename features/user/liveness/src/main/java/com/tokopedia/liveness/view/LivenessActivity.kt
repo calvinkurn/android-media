@@ -4,7 +4,6 @@ import ai.advance.common.utils.ScreenUtil
 import ai.advance.core.PermissionActivity
 import ai.advance.enums.DeviceType
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.Market
 import android.Manifest
 import android.content.Context
 import android.os.Build
@@ -46,7 +45,7 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
 
         component.inject(this)
 
-        livenessSdk.init(application, Market.Indonesia)
+        livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
         livenessSdk.setActionSequence(
