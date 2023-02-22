@@ -7,8 +7,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentUiModel
  */
 sealed class CommentEvent {
     data class ShowSuccessToaster(
-        val message: String? = null,
-        val onClick: (CommentUiModel.Item) -> Unit?
+        val message: String? = null
     ) : CommentEvent()
 
     data class ShowErrorToaster(
@@ -19,4 +18,5 @@ sealed class CommentEvent {
     data class OpenAppLink(val appLink: String) : CommentEvent()
     object ShowKeyboard: CommentEvent()
     object HideKeyboard: CommentEvent()
+    object OpenReportEvent : CommentEvent()
 }

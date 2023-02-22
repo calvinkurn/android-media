@@ -23,7 +23,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     @Assisted private val source: PageSource,
     private val dispatchers: CoroutineDispatchers,
     private val repo: ContentCommentRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : ViewModel() {
 
     val comments: Flow<CommentWidgetUiModel>
@@ -45,6 +45,8 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     private val _event = MutableSharedFlow<CommentEvent>(extraBufferCapacity = 2)
 
+    private val _selectedComment = MutableStateFlow(Pair(CommentUiModel.Item.Empty, 0))
+
     init {
         viewModelScope.launch {
             _query.distinctUntilChanged { old, new ->
@@ -61,7 +63,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 val result = repo.getComments(
                     PageSource.Play(source.id),
                     commentType = param.commentType,
-                    cursor = param.lastParentCursor,
+                    cursor = param.lastParentCursor
                 )
                 _comments.update {
                     it.copy(
@@ -73,7 +75,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 _query.update {
                     it.copy(
                         lastParentCursor = result.cursor,
-                        needToRefresh = false,
+                        needToRefresh = false
                     )
                 }
             }) { error ->
@@ -88,7 +90,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 val result = repo.getComments(
                     PageSource.Play(source.id),
                     commentType = param.commentType,
-                    cursor = param.lastChildCursor,
+                    cursor = param.lastChildCursor
                 )
                 _comments.getAndUpdate {
                     val selected = it.list
@@ -96,23 +98,29 @@ class ContentCommentViewModel @AssistedInject constructor(
                     val parent =
                         it.list.find { item -> item is CommentUiModel.Item && item.id == param.commentType.parentId } as? CommentUiModel.Item
                     val newChild = mutableListOf<CommentUiModel>().apply {
-                        addAll(it.list.mapIndexed { index, model ->
-                            if (index == selected && model is CommentUiModel.Expandable) model.copy(
-                                isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
-                                repliesCount = if (result.hasNextPage) result.nextRepliesCount else parent?.childCount.orEmpty()
-                            )
-                            else model
-                        })
+                        addAll(
+                            it.list.mapIndexed { index, model ->
+                                if (index == selected && model is CommentUiModel.Expandable) {
+                                    model.copy(
+                                        isExpanded = if (result.hasNextPage) model.isExpanded else !model.isExpanded,
+                                        repliesCount = if (result.hasNextPage) result.nextRepliesCount else parent?.childCount.orEmpty()
+                                    )
+                                } else {
+                                    model
+                                }
+                            }
+                        )
                     }
                     newChild.addAll(selected, result.list)
                     it.copy(
-                        cursor = result.cursor, list = newChild
+                        cursor = result.cursor,
+                        list = newChild
                     )
                 }
                 _query.update {
                     it.copy(
                         lastChildCursor = result.cursor,
-                        needToRefresh = false,
+                        needToRefresh = false
                     )
                 }
             }) { error ->
@@ -122,8 +130,11 @@ class ContentCommentViewModel @AssistedInject constructor(
             }
         }
 
-        if (param.commentType is CommentType.Parent) handleParent()
-        else handleChild()
+        if (param.commentType is CommentType.Parent) {
+            handleParent()
+        } else {
+            handleChild()
+        }
     }
 
     fun submitAction(action: CommentAction) {
@@ -132,10 +143,23 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.LoadNextPage -> updateQuery(action.commentType)
             CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
-            is CommentAction.DeleteComment -> deleteComment(action.commentId)
+            is CommentAction.DeleteComment -> deleteComment(isFromToaster = action.isFromToaster)
+            is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
+            CommentAction.RequestReportAction -> {
+                requireLogin {
+                    viewModelScope.launch {
+                        _event.emit(CommentEvent.OpenReportEvent)
+                    }
+                }
+            }
+            is CommentAction.SelectComment -> _selectedComment.update {
+                val item = action.comment
+                it.copy(first = item, second = _comments.value.list.indexOf(item))
+            }
             CommentAction.EditTextCLicked -> handleEditTextClicked()
             is CommentAction.ReplyComment -> sendReply(action.comment, action.commentType)
+            else -> {}
         }
     }
 
@@ -143,11 +167,15 @@ class ContentCommentViewModel @AssistedInject constructor(
         fun dropChild() {
             _comments.getAndUpdate {
                 val newList = it.list.map { item ->
-                    if (item is CommentUiModel.Expandable && item == comment) item
-                        .copy(isExpanded = !item.isExpanded) else item
+                    if (item is CommentUiModel.Expandable && item == comment) {
+                        item
+                            .copy(isExpanded = !item.isExpanded)
+                    } else {
+                        item
+                    }
                 }
                     .toMutableList().apply {
-                        removeIf { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
+                        removeAll { item -> item is CommentUiModel.Item && item.commentType == comment.commentType }
                     }
                 it.copy(list = newList)
             }
@@ -164,7 +192,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         _query.update {
             it.copy(
                 needToRefresh = true,
-                commentType = commentType,
+                commentType = commentType
             )
         }
     }
@@ -175,42 +203,57 @@ class ContentCommentViewModel @AssistedInject constructor(
         }
     }
 
-    private fun deleteComment(commentId: String) { //isFromToaster [add Param]
-        removeComment(commentId)
-        viewModelScope.launchCatchError(block = {
-            val result = repo.deleteComment(commentId)
-            if (result) {
-                _event.emit(CommentEvent.ShowSuccessToaster(onClick = {
-                    deleteComment(commentId)
-                }))
+    private fun deleteComment(isFromToaster: Boolean) {
+        fun removeComment() {
+            _comments.getAndUpdate {
+                it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })
             }
+        }
+
+        if (!isFromToaster) {
+            removeComment()
+            viewModelScope.launch {
+                _event.emit(
+                    CommentEvent.ShowSuccessToaster()
+                )
+            }
+        } else {
+            addComment()
+        }
+    }
+
+    private fun deleteComment() {
+        viewModelScope.launchCatchError(block = {
+            repo.deleteComment(_selectedComment.value.first.id)
         }) {
-            _event.emit(CommentEvent.ShowErrorToaster(message = it) {
-                deleteComment(commentId)
-            })
+            _event.emit(
+                CommentEvent.ShowErrorToaster(message = it) {
+                    deleteComment(isFromToaster = false)
+                }
+            )
         }
     }
 
     private fun reportComment(
-        param: FeedReportRequestParamModel,
+        param: FeedReportRequestParamModel
     ) {
-        requireLogin {
-            viewModelScope.launchCatchError(block = {
-                val result = repo.reportComment(param)
-                if (result) removeComment(param.contentId)
-            }) {
-                _event.emit(
-                    CommentEvent.ShowErrorToaster(
-                        message = it,
-                        onClick = { reportComment(param) })
+        viewModelScope.launchCatchError(block = {
+            repo.reportComment(param)
+        }) {
+            _event.emit(
+                CommentEvent.ShowErrorToaster(
+                    message = it,
+                    onClick = { reportComment(param) }
                 )
-            }
+            )
         }
     }
 
-    private fun removeComment(id: String) {
+    private fun addComment() {
         _comments.getAndUpdate {
-            it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == id })
+            val newList = it.list.toMutableList()
+            newList.add(_selectedComment.value.second, _selectedComment.value.first)
+            it.copy(list = newList)
         }
     }
 
@@ -246,7 +289,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             viewModelScope.launch {
                 _event.emit(
                     CommentEvent.OpenAppLink(
-                        appLink = ApplinkConst.LOGIN,
+                        appLink = ApplinkConst.LOGIN
                     )
                 )
             }

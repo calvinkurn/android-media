@@ -15,6 +15,7 @@ sealed interface CommentUiModel {
         val commentType: CommentType,
         val childCount: String,
         val isOwner: Boolean,
+        val isReportAllowed: Boolean,
     ) : CommentUiModel {
         companion object {
             val Empty = Item(
@@ -27,6 +28,7 @@ sealed interface CommentUiModel {
                 commentType = CommentType.Parent,
                 childCount = "",
                 isOwner = false,
+                isReportAllowed = false,
             )
         }
     }

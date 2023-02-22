@@ -148,6 +148,7 @@
     <string name="content_common_menu_delete">Hapus</string>
     <string name="content_common_menu_report">Laporkan</string>
     <string name="comment_delete_undo">Kembalikan</string>
+    <string name="comment_delete_kembali">Komentar dihapus.</string>
 
     <!--Report Bottom Sheet -->
     <string name="feed_common_reason_type_fraud" translatable="false">fraud</string>
