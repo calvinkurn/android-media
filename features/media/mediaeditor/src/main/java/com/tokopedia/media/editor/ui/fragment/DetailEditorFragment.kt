@@ -95,6 +95,7 @@ class DetailEditorFragment @Inject constructor(
     private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
     private val cropComponent by uiComponent { CropToolUiComponent(it, this) }
     private val addLogoComponent by uiComponent { AddLogoToolUiComponent(it, this) }
+    private val addTextComponent by uiComponent { AddTextToolUiComponent(it, null) }
 
     private var data = EditorDetailUiModel()
     private var detailState = EditorUiModel()
@@ -594,6 +595,10 @@ class DetailEditorFragment @Inject constructor(
                         data.addLogoValue
                     )
                 }
+            }
+            // ==========
+            EditorToolType.ADD_TEXT -> {
+                addTextComponent.setupView()
             }
         }
     }

@@ -88,7 +88,14 @@ class DetailEditorActivity : BaseEditorActivity() {
 
         setHeader(
             getString(getToolEditorText(editorIntent.editorToolType)),
-            rightIcon = if (editorIntent.isToolAddLogo()) IconUnify.INFORMATION else null
+            rightIcon = if (
+                editorIntent.isToolAddLogo() ||
+                editorIntent.isToolAddText()
+            ) {
+                IconUnify.INFORMATION
+            } else {
+                null
+            }
         )
     }
 

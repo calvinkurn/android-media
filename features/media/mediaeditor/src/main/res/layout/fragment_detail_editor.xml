@@ -110,6 +110,13 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
 
+        <!--    Add Logo Tool-->
+        <include
+            layout="@layout/ui_component_tool_add_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
+
     </LinearLayout>
 
     <LinearLayout
