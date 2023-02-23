@@ -19,7 +19,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
@@ -31,7 +30,6 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -99,13 +97,6 @@ object ShopUtil {
         return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
             AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
             AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
-        )
-    }
-
-    fun isUsingNewShareBottomSheet(context: Context): Boolean {
-        return UniversalShareBottomSheet.isCustomSharingEnabled(
-            context,
-            ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
         )
     }
 

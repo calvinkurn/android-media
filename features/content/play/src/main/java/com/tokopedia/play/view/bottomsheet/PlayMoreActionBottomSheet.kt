@@ -16,6 +16,7 @@ import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.isChanged
+import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -27,6 +28,7 @@ import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
+import com.tokopedia.play.view.uimodel.action.SelectReason
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
 import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
@@ -307,12 +309,17 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun observeUserReportSubmission() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.userReportSubmission.collectLatest {
-                when (it) {
+            playViewModel.userReportSubmission.withCache().collectLatest { cache ->
+
+                if (cache.isChanged { it.selectedReasoning } && cache.value.selectedReasoning != null)
+                    userReportSubmissionSheetView.setView(cache.value.selectedReasoning)
+
+                if(cache.isNotChanged { it.state }) return@collectLatest
+                when (cache.value.state) {
                     is ResultState.Success -> hideSheets()
                     is ResultState.Fail -> doShowToaster(
                         toasterType = Toaster.TYPE_ERROR,
-                        message = ErrorHandler.getErrorMessage(requireContext(), it.error)
+                        message = ErrorHandler.getErrorMessage(requireContext(), cache.value.state.error)
                     )
                 }
             }
@@ -461,7 +468,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     ) {
         userReportTimeMillis = Calendar.getInstance().time
         playViewModel.onShowUserReportSubmissionSheet(estimatedSheetHeight = userReportSheetView.rootView.measuredHeight)
-        userReportSubmissionSheetView.setView(item)
+        playViewModel.submitAction(SelectReason(item.reasoningId))
     }
 
     override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
