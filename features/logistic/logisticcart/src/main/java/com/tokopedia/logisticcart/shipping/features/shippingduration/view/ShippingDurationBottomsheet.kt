@@ -139,7 +139,8 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         isFulFillment: Boolean,
         preOrderTime: Int,
         mvc: String,
-        cartData: String
+        cartData: String,
+        warehouseId: Long
     ) {
         bundle = Bundle().apply {
             putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
@@ -158,6 +159,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             putInt(ARGUMENT_PO_TIME, preOrderTime)
             putString(ARGUMENT_MVC, mvc)
             putString(ARGUMENT_CART_DATA, cartData)
+            putLong(ARGUMENT_WAREHOUSE_ID, warehouseId)
         }
     }
 
@@ -207,7 +209,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val isFulfillment = it.getBoolean(ARGUMENT_IS_FULFILLMENT)
             val preOrderTime = it.getInt(ARGUMENT_PO_TIME)
             val cartData = it.getString(ARGUMENT_CART_DATA, "")
-            var warehouseId = it.getLong(ARGUMENT_WAREHOUSE_ID)
+            val warehouseId = it.getLong(ARGUMENT_WAREHOUSE_ID)
 
             presenter?.loadCourierRecommendation(
                 shipmentDetailData = shipmentDetailData,
