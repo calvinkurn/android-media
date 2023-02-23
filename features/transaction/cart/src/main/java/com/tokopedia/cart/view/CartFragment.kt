@@ -4250,7 +4250,9 @@ class CartFragment :
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
         if (cartShopHolderData != null) {
             cartShopHolderData.isCollapsed = true
+            cartAdapter.getData().removeAll(cartShopHolderData.productUiModelList.toSet())
             onNeedToUpdateViewItem(index)
+            onNeedToRemoveMultipleViewItem(index + 1, cartShopHolderData.productUiModelList.size)
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
             if (layoutManager != null) {
                 val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
@@ -4268,7 +4270,9 @@ class CartFragment :
                 cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopId)
             }
             cartShopHolderData.isCollapsed = false
+            cartAdapter.addItems(index + 1, cartShopHolderData.productUiModelList)
             onNeedToUpdateViewItem(index)
+            onNeedToInsertMultipleViewItem(index + 1, cartShopHolderData.productUiModelList.size)
         }
     }
 
@@ -4280,7 +4284,14 @@ class CartFragment :
             cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
             cartShopHolderData.isCollapsed = false
             cartShopHolderData.clickedCollapsedProductIndex = index
+            cartAdapter.addItems(shopIndex + 1, cartShopHolderData.productUiModelList)
             onNeedToUpdateViewItem(shopIndex)
+            onNeedToInsertMultipleViewItem(shopIndex + 1, cartShopHolderData.productUiModelList.size)
+            val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
+            if (layoutManager != null) {
+//                val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(shopIndex + 1 + index, 60.dpToPx(resources.displayMetrics))
+            }
         }
     }
 

@@ -215,7 +215,9 @@ object CartUiModelMapper {
                     if (availableGroup.shop.enabler.showLabel) availableGroup.shop.enabler.labelName else ""
             }
             cartShopHolderDataList.add(shopUiModel)
-            cartShopHolderDataList.addAll(productUiModelList)
+            if (!shopUiModel.isCollapsed) {
+                cartShopHolderDataList.addAll(productUiModelList)
+            }
         }
 
         return cartShopHolderDataList

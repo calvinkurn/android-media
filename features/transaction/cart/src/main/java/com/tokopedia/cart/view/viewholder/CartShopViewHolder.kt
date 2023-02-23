@@ -38,11 +38,12 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.math.min
 
-class CartShopViewHolder(private val binding: ItemShopBinding,
-                         private val actionListener: ActionListener,
-                         private val cartItemAdapterListener: CartItemAdapter.ActionListener,
-                         private val compositeSubscription: CompositeSubscription,
-                         private var plusCoachmark: CoachMark2?,
+class CartShopViewHolder(
+    private val binding: ItemShopBinding,
+    private val actionListener: ActionListener,
+    private val cartItemAdapterListener: CartItemAdapter.ActionListener,
+    private val compositeSubscription: CompositeSubscription,
+    private var plusCoachmark: CoachMark2?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
@@ -128,15 +129,17 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
-//        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsed) {
-//            renderCollapsedCartItems(cartShopHolderData)
-//        } else {
+        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsed) {
+            renderCollapsedCartItems(cartShopHolderData)
+            binding.rvCartItem.visible()
+        } else {
+            binding.rvCartItem.gone()
 //            renderExpandedCartItems(cartShopHolderData)
 //            if (cartShopHolderData.clickedCollapsedProductIndex != RecyclerView.NO_POSITION) {
 //                scrollToSelectedExpandedProduct(cartShopHolderData.clickedCollapsedProductIndex)
 //                cartShopHolderData.clickedCollapsedProductIndex = RecyclerView.NO_POSITION
 //            }
-//        }
+        }
     }
 
     private fun renderShopName(cartShopHolderData: CartShopHolderData) {
@@ -144,9 +147,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         binding.tvShopName.text = Utils.getHtmlFormat(shopName)
         binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
-                    cartShopHolderData.shopId,
-                    cartShopHolderData.shopName,
-                    cartShopHolderData.isTokoNow)
+                cartShopHolderData.shopId,
+                cartShopHolderData.shopName,
+                cartShopHolderData.isTokoNow
+            )
         }
     }
 
@@ -270,17 +274,17 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {
         binding.cbSelectShop.let {
             compositeSubscription.add(
-                    rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(isChecked: Boolean) {
-                            cbSelectShopClickListener(cartShopHolderData)
-                        }
+                rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
+                    override fun onNext(isChecked: Boolean) {
+                        cbSelectShopClickListener(cartShopHolderData)
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
+                    override fun onError(e: Throwable?) {
+                    }
+                })
             )
         }
     }
@@ -369,7 +373,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         with(binding) {
             if (cartShopHolderData.freeShippingBadgeUrl.isNotBlank()) {
                 ImageHandler.loadImageWithoutPlaceholderAndError(
-                        imgFreeShipping, cartShopHolderData.freeShippingBadgeUrl
+                    imgFreeShipping,
+                    cartShopHolderData.freeShippingBadgeUrl
                 )
                 val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingPlus) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
@@ -418,8 +423,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     tickerWarning.closeButtonVisibility = View.GONE
                     tickerWarning.show()
                     tickerWarning.post {
-                        binding.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.tickerWarning.measure(
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        )
                         binding.tickerWarning.requestLayout()
                     }
                 }
@@ -467,7 +474,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 if (binding.tickerWarning.isVisible) {
                     binding.tickerWarning.post {
                         val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
-                                ?: 0
+                            ?: 0
                         val tickerHeight = binding.tickerWarning.height
                         val totalOffset = calculateScrollOffset(productIndex, tickerHeight + paddingOffset)
                         actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
@@ -489,8 +496,9 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderBoAfford(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError
-                && cartShopHolderData.boAffordability.enable && !cartShopHolderData.isOverweight) {
+        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError &&
+            cartShopHolderData.boAffordability.enable && !cartShopHolderData.isOverweight
+        ) {
             binding.apply {
                 val boAffordability = cartShopHolderData.boAffordability
                 when (boAffordability.state) {
@@ -576,5 +584,4 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         private const val CHEVRON_ROTATION_0 = 0f
         private const val CHEVRON_ROTATION_180 = 180f
     }
-
 }
