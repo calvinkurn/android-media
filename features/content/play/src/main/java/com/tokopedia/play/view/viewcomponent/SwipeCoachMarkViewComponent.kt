@@ -8,6 +8,7 @@ import android.animation.ValueAnimator
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.FloatRange
+import androidx.core.animation.addListener
 import com.tokopedia.play.databinding.ViewVerticalSwipeCoachmarkBinding
 import com.tokopedia.play.R
 import com.tokopedia.play.util.animation.DefaultAnimatorListener
@@ -22,6 +23,8 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
 ) {
 
     private val binding = ViewVerticalSwipeCoachmarkBinding.bind(rootView)
+
+    private var mAnimator: Animator? = null
 
     fun showAnimated() {
         invisible()
@@ -41,17 +44,31 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
 
                 override fun onAnimationEnd(isCancelled: Boolean, animation: Animator) {
                     hideAnimated()
+                    mAnimator = null
                 }
             })
-            animator.start()
+            startAnimator(animator)
         }
     }
 
     fun hideAnimated() {
-        getRootAlphaAnimation(
+        if (isHidden()) return
+
+        val animator = getRootAlphaAnimation(
             from = binding.root.alpha,
             to = 0.0f,
-        ).start()
+        )
+        animator.addListener(
+            onEnd = { hide() }
+        )
+        startAnimator(animator)
+    }
+
+    private fun startAnimator(animator: Animator) {
+        mAnimator?.cancel()
+
+        mAnimator = animator
+        animator.start()
     }
 
     private fun getRootAlphaAnimation(

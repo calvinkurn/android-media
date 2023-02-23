@@ -43,6 +43,10 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.delay
 import javax.inject.Inject
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 /**
  * Created by jegul on 29/11/19
@@ -220,6 +224,7 @@ class PlayActivity :
 
     override fun onPageSelected(position: Int) {
         activeFragment?.setFragmentActive(position)
+        swipeCoachMarkView.hideAnimated()
     }
 
     override fun onShouldLoadNextPage() {
@@ -235,13 +240,6 @@ class PlayActivity :
     private fun inject() {
         PlayInjector.get(this)
             .inject(this)
-//        DaggerPlayComponent.builder()
-//                .baseAppComponent(
-//                        (applicationContext as BaseMainApplication).baseAppComponent
-//                )
-//                .playModule(PlayModule(this))
-//                .build()
-//                .inject(this)
     }
 
     private fun setupViewModel() {
@@ -261,6 +259,7 @@ class PlayActivity :
         observeFirstChannelEvent()
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun observeChannelList() {
         viewModel.observableChannelIdsResult.observe(this) {
             when (it.state) {
@@ -277,6 +276,11 @@ class PlayActivity :
                     pageMonitoring.startRenderPerformanceMonitoring()
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
+
+                    lifecycleScope.launchWhenResumed {
+                        delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
+                        swipeCoachMarkView.showAnimated()
+                    }
                 }
                 is PageResultState.Upcoming -> {
                     ivLoading.hide()
@@ -391,5 +395,7 @@ class PlayActivity :
 
     companion object {
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
+
+        private const val COACHMARK_START_DELAY_IN_SEC = 1
     }
 }

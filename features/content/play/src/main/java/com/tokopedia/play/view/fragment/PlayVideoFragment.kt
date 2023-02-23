@@ -40,7 +40,6 @@ import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -86,7 +85,6 @@ class PlayVideoFragment @Inject constructor(
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
-    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
@@ -404,10 +402,8 @@ class PlayVideoFragment @Inject constructor(
         val isShown = startingChannel == channelId || channelId == "0" // 0 for handling channel recom
 
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+            //TODO("Check if this analytic is still in use or not")
             analytic.screenWithSwipeCoachMark(isShown = isShown)
-            if (!orientation.isLandscape && isShown) {
-                onboardingView?.showAnimated()
-            }
         })
     }
 

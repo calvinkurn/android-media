@@ -1345,7 +1345,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun isAllowAutoSwipe(status: Boolean) =
-        status && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage() && !playViewModel.isAnyBottomSheetsShown
+        status && !playViewModel.bottomInsets.isAnyShown &&
+            playNavigation.canNavigateNextPage() &&
+            !playViewModel.isAnyBottomSheetsShown &&
+            playViewModel.uiState.value.status.channelStatus.statusSource == PlayStatusSource.Socket
 
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
