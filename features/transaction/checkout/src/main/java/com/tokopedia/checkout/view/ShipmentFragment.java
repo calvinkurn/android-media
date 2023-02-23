@@ -2502,7 +2502,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
                         isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
                         shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()),
-                        shipmentPresenter.getCartDataForRates(), false, shipmentCartItemModel.getFulfillmentId());
+                        shipmentPresenter.getCartDataForRates(), false, String.valueOf(shipmentCartItemModel.getFulfillmentId()));
             }
         }
     }

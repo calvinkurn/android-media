@@ -13,5 +13,5 @@ data class OrderShippingDuration(
     val isDisableOrderPrioritas: Boolean = false,
     val pslCode: String = "",
     val cartData: String = "",
-    val warehouseId: Long = 0
+    val warehouseId: String = ""
 )

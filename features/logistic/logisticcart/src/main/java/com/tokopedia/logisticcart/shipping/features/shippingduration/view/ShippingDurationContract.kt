@@ -70,7 +70,7 @@ interface ShippingDurationContract {
             cartData: String,
             isOcc: Boolean,
             isDisableCourierPromo: Boolean,
-            warehouseId: Long
+            warehouseId: String
         )
 
         fun getCourierItemDataById(
