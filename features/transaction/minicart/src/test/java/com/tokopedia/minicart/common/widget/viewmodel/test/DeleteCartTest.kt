@@ -73,7 +73,7 @@ class DeleteCartTest {
 
     @Test
     fun `WHEN delete single cart item success THEN global event state should be updated accordingly`() {
-        //given
+        // given
         val productId = "1920796612"
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -85,16 +85,16 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM)
     }
 
     @Test
     fun `WHEN delete single cart item success THEN temporary variable to store last deleted item should not be empty`() {
-        //given
+        // given
         val productId = "1920796612"
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -106,16 +106,16 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         assert(viewModel.lastDeletedProductItems != null)
     }
 
     @Test
     fun `WHEN delete single cart item success THEN temporary variable to store last deleted item should contains deleted product`() {
-        //given
+        // given
         val productId = "1920796612"
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -127,10 +127,10 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         viewModel.lastDeletedProductItems?.forEach {
             assert(it.productId == productId)
         }
@@ -138,7 +138,7 @@ class DeleteCartTest {
 
     @Test
     fun `WHEN delete single cart item success and has remaining cart item THEN flag isLastItem should be false`() {
-        //given
+        // given
         val productId = "1868874657"
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -150,17 +150,17 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         val data = viewModel.globalEvent.value?.data as? RemoveFromCartDomainModel ?: RemoveFromCartDomainModel()
         assert(!data.isLastItem)
     }
 
     @Test
     fun `WHEN delete single cart item success and has no remaining cart item THEN flag isLastItem should be true`() {
-        //given
+        // given
         val productId = "1868874657"
         val miniCartListUiModel = DataProvider.provideGetMiniCartListSuccessWithSingleAvailableItem()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -172,17 +172,17 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         val data = viewModel.globalEvent.value?.data as? RemoveFromCartDomainModel ?: RemoveFromCartDomainModel()
         assert(data.isLastItem)
     }
 
     @Test
     fun `WHEN delete single cart item error THEN global event state should be updated accordingly`() {
-        //given
+        // given
         val productId = "1920796612"
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -195,16 +195,16 @@ class DeleteCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_DELETE_CART_ITEM)
     }
 
     @Test
     fun `WHEN delete single cart item error THEN global event should have throwable with correct error message`() {
-        //given
+        // given
         val productId = "1920796612"
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -217,16 +217,16 @@ class DeleteCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.throwable?.message?.equals(errorMessage) == true)
     }
 
     @Test
     fun `WHEN bulk delete unavailable items success THEN global event state should be updated accordingly`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
@@ -236,16 +236,16 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.bulkDeleteUnavailableCartItems()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM)
     }
 
     @Test
     fun `WHEN bulk delete unavailable items success and has remaining available item THEN flag isLastItem should be false`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
@@ -255,17 +255,17 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.bulkDeleteUnavailableCartItems()
 
-        //then
+        // then
         val data = viewModel.globalEvent.value?.data as? RemoveFromCartDomainModel ?: RemoveFromCartDomainModel()
         assert(!data.isLastItem)
     }
 
     @Test
     fun `WHEN bulk delete unavailable items success and has no remaining available item THEN flag isLastItem should be true`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
@@ -275,17 +275,17 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.bulkDeleteUnavailableCartItems()
 
-        //then
+        // then
         val data = viewModel.globalEvent.value?.data as? RemoveFromCartDomainModel ?: RemoveFromCartDomainModel()
         assert(data.isLastItem)
     }
 
     @Test
     fun `WHEN bulk delete unavailable items error THEN global event state should be updated accordingly`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
@@ -296,16 +296,16 @@ class DeleteCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.bulkDeleteUnavailableCartItems()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_DELETE_CART_ITEM)
     }
 
     @Test
     fun `WHEN bulk delete unavailable items error THEN global event should have throwable with correct error messag`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
@@ -316,16 +316,16 @@ class DeleteCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.bulkDeleteUnavailableCartItems()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.throwable?.message?.equals(errorMessage) == true)
     }
 
     @Test
     fun `WHEN delete single cart item success but somehow data is empty THEN global event state should not be updated`() {
-        //given
+        // given
         viewModel.initializeGlobalState()
 
         val productId = "1920796612"
@@ -341,16 +341,16 @@ class DeleteCartTest {
 
         viewModel.setMiniCartListUiModel(MiniCartListUiModel())
 
-        //when
+        // when
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN bulk delete unavailable items with hidden items THEN should remove all items including hidden items`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         viewModel.toggleUnavailableItemsAccordion()
@@ -362,16 +362,16 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.bulkDeleteUnavailableCartItems()
 
-        //then
+        // then
         assert(slotUnavailableCartIdList.captured.size == 2)
     }
 
     @Test
     fun `WHEN delete multiple cart items success THEN temporary variable to store last deleted item should not be empty`() {
-        //given
+        // given
         val bundleId = "36012"
         val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -383,16 +383,16 @@ class DeleteCartTest {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
 
-        //when
+        // when
         viewModel.deleteMultipleCartItems(miniCartProductUiModel)
 
-        //then
+        // then
         assert(viewModel.lastDeletedProductItems != null)
     }
 
     @Test
     fun `WHEN delete multiple cart items error THEN global event should have throwable with correct error message`() {
-        //given
+        // given
         val bundleId = "36012"
         val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
@@ -405,10 +405,10 @@ class DeleteCartTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.deleteMultipleCartItems(miniCartProductUiModel)
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.throwable?.message?.equals(errorMessage) == true)
     }
 }
