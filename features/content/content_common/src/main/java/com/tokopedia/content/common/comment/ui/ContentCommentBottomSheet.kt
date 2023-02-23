@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
@@ -247,6 +248,15 @@ class ContentCommentBottomSheet @Inject constructor(
         sheetMenu.show(childFragmentManager)
     }
 
+    override fun onMentionClicked(userType: String, userId: String) {
+        val appLink = when (userType) {
+            USER_TYPE_KOL -> ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
+            USER_TYPE_SELLER -> ApplinkConst.SHOP.replace("{shop_id}", userId)
+            else -> ""
+        }
+        router.route(requireContext(), appLink)
+    }
+
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
         viewModel.submitAction(CommentAction.ExpandComment(item))
     }
@@ -336,6 +346,9 @@ class ContentCommentBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "ContentCommentBottomSheet"
+
+        private const val USER_TYPE_KOL = "user"
+        private const val USER_TYPE_SELLER = "seller"
 
         private const val HEIGHT_PERCENT = 0.8
 

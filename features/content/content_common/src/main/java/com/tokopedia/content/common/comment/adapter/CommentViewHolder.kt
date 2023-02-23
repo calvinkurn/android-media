@@ -1,5 +1,13 @@
 package com.tokopedia.content.common.comment.adapter
 
+import android.graphics.Typeface
+import android.text.Spanned
+import android.text.SpannedString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
@@ -10,7 +18,9 @@ import com.tokopedia.content.common.databinding.ItemContentCommentBinding
 import com.tokopedia.feedcomponent.util.bold
 import com.tokopedia.feedcomponent.util.buildSpannedString
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.content.common.R as contentR
 
 /**
@@ -22,6 +32,51 @@ class CommentViewHolder {
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
 
+        private val commentInfo = mutableMapOf<String, String>()
+
+        private val clickableSpan by lazyThreadSafetyNone {
+            object : ClickableSpan() {
+                override fun updateDrawState(tp: TextPaint) {
+                    tp.color = MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
+                    tp.isUnderlineText = false
+                    tp.typeface = Typeface.DEFAULT_BOLD
+                }
+
+                override fun onClick(widget: View) {
+                    listener.onMentionClicked(userType = commentInfo[USER_TYPE].orEmpty(), userId = commentInfo[ID].orEmpty())
+                }
+            }
+        }
+        private fun getTagMention(item: CommentUiModel.Item): SpannedString {
+            return try {
+                val regex = """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
+                val find = regex.findAll(item.content)
+                var length = 10 //total escape character [{}|@]
+                if (find.count() > 0) {
+                    find.forEachIndexed { index, matchResult ->
+                        if(index == 0) commentInfo[ID] = matchResult.value.replace("@","")
+                        if(index == 1) commentInfo[USER_TYPE] = matchResult.value.replace("@","")
+                        if(index == 2) commentInfo[USERNAME] = matchResult.value.removeSuffix("@")
+                        length += matchResult.value.length
+                    }
+                    buildSpannedString {
+                        bold { append(item.username + " ") }
+                        append(
+                            commentInfo[USERNAME],
+                            clickableSpan,
+                            Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                        )
+                        append(" ")
+                    }
+                } else throw Exception()
+            } catch (e: Exception) {
+                buildSpannedString {
+                    bold { append(item.username + " ") }
+                    append(item.content)
+                }
+            }
+        }
+
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
                 root.setPadding(
@@ -32,11 +87,9 @@ class CommentViewHolder {
                 )
 
                 ivCommentPhoto.loadImage(item.photo)
-                tvCommentContent.text = buildSpannedString {
-                    bold { append(item.username) }
-                    append("   ")
-                    append(item.content)
-                }
+
+                tvCommentContent.text = getTagMention(item)
+                tvCommentContent.movementMethod = LinkMovementMethod.getInstance()
                 tvCommentTime.text = item.createdTime
 
                 tvCommentReply.setOnClickListener {
@@ -53,6 +106,12 @@ class CommentViewHolder {
         interface Listener {
             fun onReplyClicked(item: CommentUiModel.Item)
             fun onLongClicked(item: CommentUiModel.Item)
+            fun onMentionClicked(userType: String, userId: String)
+        }
+        companion object {
+            private const val ID = "id"
+            private const val USER_TYPE = "userType"
+            private const val USERNAME = "userName"
         }
     }
 
