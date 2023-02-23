@@ -51,5 +51,6 @@
     <dimen name="home_dynamic_icon_image_size">32dp</dimen>
     <dimen name="home_dynamic_icon_margin_top_title">12dp</dimen>
 
+    <dimen name="home_dynamic_icon_padding_top_revamp">8dp</dimen>
     <dimen name="home_dynamic_icon_image_size_revamp">64dp</dimen>
 </resources>

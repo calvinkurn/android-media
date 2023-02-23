@@ -23,7 +23,8 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
                 parent,
                 false
             ),
-            listener
+            listener,
+            isRevamp
         )
     }
 

@@ -96,7 +96,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
                     iconRecyclerView?.addItemDecoration(
                         CommonSpacingDecoration(
-                            if (isRevamp) MARGIN_HORIZONTAL_BETWEEN_CARD_REVAMP.toPx()
+                            if (isRevamp) MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
                             else MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
                         )
                     )
