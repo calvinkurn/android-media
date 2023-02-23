@@ -156,7 +156,7 @@ import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
@@ -374,7 +374,7 @@ class NewShopPageFragment :
     private var shouldOverrideTabToReview: Boolean = false
     private var shouldOpenShopNoteBottomSheet: Boolean = false
     private var shouldAutoRedirectToCreateEtalase: Boolean = false
-    private var listShopPageTabModel = listOf<ShopPageTabModel>()
+    private var listShopPageTabModel = listOf<ShopPageHeaderTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(
             shopId,
@@ -1732,7 +1732,7 @@ class NewShopPageFragment :
     }
 
     private fun setupTabs() {
-        listShopPageTabModel = (createListShopPageDynamicTabModel() as? List<ShopPageTabModel>) ?: listOf()
+        listShopPageTabModel = (createListShopPageDynamicTabModel() as? List<ShopPageHeaderTabModel>) ?: listOf()
         configureTab(listShopPageTabModel.size)
         viewPagerAdapter?.setTabData(listShopPageTabModel)
         selectedPosition = getSelectedDynamicTabPosition()
@@ -1872,12 +1872,12 @@ class NewShopPageFragment :
         } ?: Int.ZERO
     }
 
-    private fun createListShopPageTabModel(): List<ShopPageTabModel> {
-        val listShopPageTabModel = mutableListOf<ShopPageTabModel>()
+    private fun createListShopPageTabModel(): List<ShopPageHeaderTabModel> {
+        val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         if (isShowHomeTab()) {
             getHomeFragment()?.let { homeFragment ->
                 listShopPageTabModel.add(
-                    ShopPageTabModel(
+                    ShopPageHeaderTabModel(
                         getString(R.string.shop_info_title_tab_home),
                         iconTabHomeInactive,
                         iconTabHomeActive,
@@ -1899,7 +1899,7 @@ class NewShopPageFragment :
             shopPageProductFragment.setInitialProductListData(it)
         }
         listShopPageTabModel.add(
-            ShopPageTabModel(
+            ShopPageHeaderTabModel(
                 getString(R.string.new_shop_info_title_tab_product),
                 iconTabProductInactive,
                 iconTabProductActive,
@@ -1919,7 +1919,7 @@ class NewShopPageFragment :
             }
         )
         listShopPageTabModel.add(
-            ShopPageTabModel(
+            ShopPageHeaderTabModel(
                 getString(R.string.shop_info_title_tab_showcase),
                 iconTabShowcaseInactive,
                 iconTabShowcaseActive,
@@ -1937,7 +1937,7 @@ class NewShopPageFragment :
                 }
             )
             listShopPageTabModel.add(
-                ShopPageTabModel(
+                ShopPageHeaderTabModel(
                     getString(R.string.shop_info_title_tab_feed),
                     iconTabFeedInactive,
                     iconTabFeedActive,
@@ -1954,7 +1954,7 @@ class NewShopPageFragment :
             }
         )
         listShopPageTabModel.add(
-            ShopPageTabModel(
+            ShopPageHeaderTabModel(
                 getString(R.string.shop_info_title_tab_review),
                 iconTabReviewInactive,
                 iconTabReviewActive,
@@ -1964,8 +1964,8 @@ class NewShopPageFragment :
         return listShopPageTabModel
     }
 
-    private fun createListShopPageDynamicTabModel(): List<ShopPageTabModel> {
-        val listShopPageTabModel = mutableListOf<ShopPageTabModel>()
+    private fun createListShopPageDynamicTabModel(): List<ShopPageHeaderTabModel> {
+        val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
             when (it.name) {
                 ShopPageTabName.HOME -> {
@@ -2046,7 +2046,7 @@ class NewShopPageFragment :
                 }
             }?.let { tabFragment ->
                 listShopPageTabModel.add(
-                    ShopPageTabModel(
+                    ShopPageHeaderTabModel(
                         tabTitle = it.name,
                         tabFragment = tabFragment,
                         iconUrl = it.icon,

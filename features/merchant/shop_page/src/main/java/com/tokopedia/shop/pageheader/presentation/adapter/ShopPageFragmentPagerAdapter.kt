@@ -19,7 +19,7 @@ import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
-import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.data.model.ShopTabIconUrlModel
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
@@ -28,7 +28,7 @@ internal class ShopPageFragmentPagerAdapter(
     private val ctx: Context?,
     fragment: Fragment
 ) : FragmentStateAdapter(fragment) {
-    private var listShopPageTabModel = listOf<ShopPageTabModel>()
+    private var listShopPageTabModel = listOf<ShopPageHeaderTabModel>()
     private val ctxRef = WeakReference(ctx)
 
     companion object {
@@ -190,14 +190,15 @@ internal class ShopPageFragmentPagerAdapter(
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
     fun getRegisteredFragment(position: Int): Fragment? {
-        return if (listShopPageTabModel.isNotEmpty())
+        return if (listShopPageTabModel.isNotEmpty()) {
             listShopPageTabModel.getOrNull(position)?.tabFragment
-        else
+        } else {
             null
+        }
     }
 
-    fun setTabData(listShopPageTabModel: List<ShopPageTabModel>) {
-        this.listShopPageTabModel = listShopPageTabModel
+    fun setTabData(listShopPageHeaderTabModel: List<ShopPageHeaderTabModel>) {
+        this.listShopPageTabModel = listShopPageHeaderTabModel
     }
 
     fun getFragmentPosition(classType: Class<*>): Int {

@@ -2,7 +2,7 @@ package com.tokopedia.shop.pageheader.data.model
 
 import androidx.fragment.app.Fragment
 
-data class ShopPageTabModel(
+data class ShopPageHeaderTabModel(
     val tabTitle: String = "",
     var tabIconInactive: Int = 0,
     val tabIconActive: Int = 0,
