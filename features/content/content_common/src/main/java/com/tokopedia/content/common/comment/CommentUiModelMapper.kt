@@ -65,7 +65,7 @@ class CommentUiModelMapper @Inject constructor() {
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",
-            isOwner = true,
+            isOwner = false,
             isReportAllowed = false,
         )
     }

@@ -1,26 +1,21 @@
 package com.tokopedia.content.common.comment.adapter
 
-import android.graphics.Typeface
-import android.text.Spanned
-import android.text.SpannedString
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.comment.MentionedSpanned
+import com.tokopedia.content.common.comment.TagMentionBuilder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
-import com.tokopedia.feedcomponent.util.buildSpannedString
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.content.common.R as contentR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 09/02/23
@@ -31,77 +26,28 @@ class CommentViewHolder {
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
 
-        private val commentInfo = mutableMapOf<String, String>()
-
-        private val clickableSpan by lazyThreadSafetyNone {
-            object : ClickableSpan() {
-                override fun updateDrawState(tp: TextPaint) {
-                    tp.color = MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
-                    tp.isUnderlineText = false
-                    tp.typeface = Typeface.DEFAULT_BOLD
-                }
-
-                override fun onClick(widget: View) {
-                    listener.onMentionClicked(
-                        userType = commentInfo[USER_TYPE].orEmpty(),
-                        userId = commentInfo[ID].orEmpty()
-                    )
+        private val parentListener by lazyThreadSafetyNone {
+            object : MentionedSpanned.Listener {
+                override fun onClicked(id: String, userType: String) {
+                    listener.onProfileClicked(id)
                 }
             }
         }
 
-        private val userClickSpan by lazyThreadSafetyNone {
-            object : ClickableSpan() {
-                override fun updateDrawState(tp: TextPaint) {
-                    tp.color = MethodChecker.getColor(itemView.context, unifyR.color.Unify_NN950)
-                    tp.isUnderlineText = false
-                    tp.typeface = Typeface.DEFAULT_BOLD
-                }
-
-                override fun onClick(widget: View) {
-                    listener.onUserNameClicked(commentInfo[OWNER_APP_LINK].orEmpty())
+        private val mentionListener by lazyThreadSafetyNone {
+            object : MentionedSpanned.Listener {
+                override fun onClicked(id: String, userType: String) {
+                    listener.onMentionClicked(userType, id)
                 }
             }
         }
 
-        private fun getTagMention(item: CommentUiModel.Item): SpannedString {
-            return try {
-                val regex = """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
-                val find = regex.findAll(item.content)
-                var length = 10 //total escape character [{}|@]
-                if (find.count() > 0) {
-                    find.forEachIndexed { index, matchResult ->
-                        if (index == 0) commentInfo[ID] = matchResult.value.replace("@", "")
-                        if (index == 1) commentInfo[USER_TYPE] = matchResult.value.replace("@", "")
-                        if (index == 2) commentInfo[USERNAME] = matchResult.value.removeSuffix("@")
-                        if (index == 3) commentInfo[OWNER_APP_LINK] = item.appLink
-                        length += matchResult.value.length
-                    }
-                    buildSpannedString {
-                        append(
-                            item.username,
-                            userClickSpan,
-                            Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                        )
-                        append(" ")
-                        append(
-                            commentInfo[USERNAME],
-                            clickableSpan,
-                            Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                        )
-                        append(item.content.removeRange(0, length))
-                    }
-                } else throw Exception()
-            } catch (e: Exception) {
-                buildSpannedString {
-                    append(
-                        item.username,
-                        userClickSpan,
-                        Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                    )
-                    append(item.content)
-                }
-            }
+        private val parentColor by lazyThreadSafetyNone {
+            MethodChecker.getColor(itemView.context, unifyR.color.Unify_NN950)
+        }
+
+        private val mentionColor by lazyThreadSafetyNone {
+            MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
         }
 
         fun bind(item: CommentUiModel.Item) {
@@ -118,7 +64,8 @@ class CommentViewHolder {
                     listener.onProfileClicked(item.appLink)
                 }
 
-                tvCommentContent.text = getTagMention(item)
+                tvCommentContent.text = TagMentionBuilder
+                    .getMentionTag(item = item, mentionColor, parentColor, mentionListener, parentListener)
                 tvCommentContent.movementMethod = LinkMovementMethod.getInstance()
                 tvCommentTime.text = item.createdTime
 

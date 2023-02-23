@@ -2,6 +2,8 @@ package com.tokopedia.content.common.comment.ui
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -30,6 +32,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -85,6 +88,20 @@ class ContentCommentBottomSheet @Inject constructor(
             childFragmentManager,
             requireActivity().classLoader
         )
+    }
+
+    private val textWatcher by lazyThreadSafetyNone {
+        object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+               binding.viewCommentSend.isEnabled = p0?.isNotBlank().orFalse()
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {
+                binding.viewCommentSend.isEnabled = p0?.isNotBlank().orFalse()
+            }
+        }
     }
 
     private val toasterCallback by lazyThreadSafetyNone {
@@ -238,7 +255,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
-        // TODO("Not yet implemented")
+        viewModel.submitAction(CommentAction.EditTextCLicked)
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {
