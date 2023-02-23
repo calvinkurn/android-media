@@ -61,7 +61,8 @@ class PartialOrderFulfillmentViewModelTest : PartialOrderFulfillmentViewModelTes
         runBlocking {
             // given
             val approvePartialOrderFulfillmentUiModel = ApprovePartialOrderFulfillmentUiModel(
-                isSuccess = true
+                isSuccess = true,
+                message = "Pesananmu akan dikirim sebagian dan akan ada dana yang dikembalikan setelah pesanan selesai."
             )
             onApprovePartialOrderFulfillmentUseCase_thenReturn(approvePartialOrderFulfillmentUiModel, orderId)
 
