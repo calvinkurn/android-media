@@ -79,13 +79,19 @@ class VoucherSettingViewModel @Inject constructor(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
+        val voucherServiceType =
+            getVoucherServiceType(voucherConfiguration.isVoucherProduct)
+        val voucherTarget = getVoucherTarget(voucherConfiguration.isVoucherPublic)
+        val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, voucherConfiguration.promoType)
+
         _uiState.update {
             it.copy(
                 isLoading = false,
                 pageMode = pageMode,
                 voucherConfiguration = voucherConfiguration.copy(
                     isFinishFilledStepTwo = true
-                )
+                ),
+                availableTargetBuyer = availableTargetBuyer
             )
         }
 
@@ -151,11 +157,13 @@ class VoucherSettingViewModel @Inject constructor(
                 getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
             val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
             val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, promoType)
+
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     voucherConfiguration = it.voucherConfiguration.copy(
-                        promoType = promoType
+                        promoType = promoType,
+                        targetBuyer = VoucherTargetBuyer.ALL_BUYER
                     ),
                     spendingEstimation = 0,
                     availableTargetBuyer = availableTargetBuyer

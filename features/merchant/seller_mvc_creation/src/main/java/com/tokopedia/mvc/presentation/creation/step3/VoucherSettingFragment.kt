@@ -1186,18 +1186,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
             }
-            setTargetBuyerRadioButton()
-        }
-    }
-
-    private fun setTargetBuyerRadioButton() {
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        buyerTargetSectionBinding?.run {
-            if (currentVoucherConfiguration.targetBuyer == VoucherTargetBuyer.ALL_BUYER) {
-                radioAllBuyer.isChecked = true
-            } else {
-                radioNewFollower.isChecked = true
-            }
         }
     }
 
@@ -1206,21 +1194,31 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         voucherConfiguration: VoucherConfiguration
     ) {
         buyerTargetSectionBinding?.run {
+
             radioAllBuyer.disable()
             radioNewFollower.disable()
-            if (pageMode == PageMode.CREATE) {
-                for (id in availableTargetBuyer) {
-                    rgBuyerTarget.getChildAt(id.id).enable()
+
+            for (targetBuyer in availableTargetBuyer) {
+                rgBuyerTarget.getChildAt(targetBuyer.id).enable()
+            }
+
+            when (voucherConfiguration.targetBuyer) {
+                VoucherTargetBuyer.ALL_BUYER -> {
+                    radioAllBuyer.enable()
+                    radioAllBuyer.isChecked = true
+                    radioNewFollower.isChecked = false
                 }
-                if (availableTargetBuyer.size <= Int.ONE) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseTargetBuyer(
-                            VoucherTargetBuyer.ALL_BUYER
-                        )
-                    )
+                VoucherTargetBuyer.NEW_FOLLOWER -> {
+                    radioNewFollower.enable()
+                    radioNewFollower.isChecked = true
+                    radioAllBuyer.isChecked = false
+                }
+                else -> {
+                    radioAllBuyer.enable()
+                    radioAllBuyer.isChecked = true
+                    radioNewFollower.isChecked = false
                 }
             }
-            setTargetBuyerRadioButton()
         }
     }
 
