@@ -152,7 +152,6 @@ object ShopUtil {
         return try {
             Color.parseColor(colorHex)
         } catch (e: Exception) {
-            e.printStackTrace()
             Int.ZERO
         }
     }
