@@ -142,8 +142,12 @@ open class ProfileFollowingAdapter(
         holder.imgProfile.setImageUrl(item.logoUrl)
         holder.textName.text = item.name
 
-        holder.imgBadge.show()
-        holder.imgBadge.setImageUrl(item.badgeUrl)
+        if (item.badgeUrl.isNotBlank()) {
+            holder.imgBadge.show()
+            holder.imgBadge.setImageUrl(item.badgeUrl)
+        } else {
+            holder.imgBadge.hide()
+        }
 
         holder.textUsername.hide()
 
