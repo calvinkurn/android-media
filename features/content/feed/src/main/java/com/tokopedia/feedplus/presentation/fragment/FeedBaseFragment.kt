@@ -210,8 +210,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
 
             if (inClearView) {
+                it.btnFeedCreatePost.hide()
+                it.btnFeedLive.hide()
                 it.viewFeedTabIndicator.hide()
             } else {
+                it.btnFeedCreatePost.show()
+                it.btnFeedLive.show()
                 it.viewFeedTabIndicator.show()
             }
 
@@ -231,18 +235,22 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun showClearView() {
         binding?.let {
+            it.viewFeedTabIndicator.hide()
             it.btnFeedCreatePost.hide()
             it.tyFeedFirstTab.hide()
             it.tyFeedSecondTab.hide()
+            it.btnFeedLive.hide()
             it.feedUserProfileImage.hide()
         }
     }
 
     private fun hideClearView() {
         binding?.let {
+            it.viewFeedTabIndicator.show()
             it.btnFeedCreatePost.show()
             it.tyFeedFirstTab.show()
             it.tyFeedSecondTab.show()
+            it.btnFeedLive.show()
             it.feedUserProfileImage.show()
         }
     }
