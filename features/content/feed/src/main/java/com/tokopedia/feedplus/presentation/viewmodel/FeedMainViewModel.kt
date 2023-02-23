@@ -29,6 +29,10 @@ class FeedMainViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
+    private val _isInClearView = MutableLiveData<Boolean>(false)
+    val isInClearView: LiveData<Boolean>
+        get() = _isInClearView
+
     private val _feedTabs = MutableLiveData<Result<FeedTabsModel>>()
     val feedTabs: LiveData<Result<FeedTabsModel>>
         get() = _feedTabs
@@ -60,18 +64,6 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
-    private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
-        val authorUserdata = creationDataList.find { it.type == CreatorType.USER }
-        val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
-        val authorShopdata = creationDataList.find { it.type == CreatorType.SHOP }
-        val authorShopdataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
-
-        val creatorList =
-            (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
-                (authorShopdataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
-        _feedCreateContentBottomSheetData.postValue(Success(creatorList))
-    }
-
     fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
         launchCatchError(dispatchers.io, block = {
             submitReportUseCase.setRequestParams(
@@ -88,5 +80,21 @@ class FeedMainViewModel @Inject constructor(
         }) {
             _reportResponse.postValue(Fail(it))
         }
+    }
+
+    fun toggleClearView() {
+        _isInClearView.value = !(_isInClearView.value ?: false)
+    }
+
+    private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
+        val authorUserdata = creationDataList.find { it.type == CreatorType.USER }
+        val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
+        val authorShopdata = creationDataList.find { it.type == CreatorType.SHOP }
+        val authorShopdataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
+
+        val creatorList =
+            (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
+                (authorShopdataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
+        _feedCreateContentBottomSheetData.postValue(Success(creatorList))
     }
 }

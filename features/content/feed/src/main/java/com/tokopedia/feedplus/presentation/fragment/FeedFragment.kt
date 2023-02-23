@@ -84,6 +84,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        observeLiveData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -139,10 +140,45 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         }
     }
 
+    override fun onMenuClicked(model: FeedModel) {
+        activity?.let {
+            feedMenuSheet = FeedThreeDotsMenuBottomSheet
+                .getFragment(it.supportFragmentManager, it.classLoader)
+            feedMenuSheet.setListener(this)
+            feedMenuSheet.setData(getMenuItemData(), model.id)
+            feedMenuSheet.show(it.supportFragmentManager)
+        }
+    }
+
+    override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
+        when (feedMenuItem.type) {
+            FeedMenuIdentifier.LAPORKAN -> {
+                if (!userSession.isLoggedIn) {
+                    onGoToLogin()
+                } else {
+                    feedMenuSheet.showReportLayoutWhenLaporkanClicked()
+                    Toast.makeText(context, "Laporkan - onMenuItemClick", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            FeedMenuIdentifier.MODE_NONTON -> {
+                // TODO add code for clear mode
+                Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+        feedMainViewModel.reportContent(feedReportRequestParamModel)
+    }
+
     private fun initView() {
         binding?.let {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
+            adapter = FeedPostAdapter(
+                FeedAdapterTypeFactory(this),
+                feedMainViewModel.isInClearView.value ?: false
+            )
 
             LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.layoutManager = layoutManager
@@ -160,32 +196,26 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         }
     }
 
-    companion object {
-        private const val ARGUMENT_DATA = "ARGUMENT_DATA"
-        const val REQUEST_REPORT_POST_LOGIN = 1201
-
-        fun createFeedFragment(data: FeedDataModel): FeedFragment =
-            FeedFragment().also {
-                it.arguments = Bundle().apply {
-                    putParcelable(ARGUMENT_DATA, data)
+    private fun observeLiveData() {
+        feedMainViewModel.isInClearView.observe(viewLifecycleOwner) {
+            if (it) {
+                binding?.rvFeedPost?.setOnClickListener {
+                    feedMainViewModel.toggleClearView()
                 }
+                adapter?.toggleClearView(true)
+            } else {
+                binding?.rvFeedPost?.setOnClickListener {
+                    // do nothing
+                }
+                adapter?.toggleClearView(false)
             }
+        }
     }
 
     private fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             requireActivity().startActivityForResult(intent, REQUEST_REPORT_POST_LOGIN)
-        }
-    }
-
-    override fun onMenuClicked(model: FeedModel) {
-        activity?.let {
-            feedMenuSheet = FeedThreeDotsMenuBottomSheet
-                .getFragment(it.supportFragmentManager, it.classLoader)
-            feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(), model.id)
-            feedMenuSheet.show(it.supportFragmentManager)
         }
     }
 
@@ -216,25 +246,15 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         return items
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
-        when (feedMenuItem.type) {
-            FeedMenuIdentifier.LAPORKAN -> {
-                if (!userSession.isLoggedIn) {
-                    onGoToLogin()
-                } else {
-                    feedMenuSheet.showReportLayoutWhenLaporkanClicked()
-                    Toast.makeText(context, "Laporkan - onMenuItemClick", Toast.LENGTH_SHORT).show()
+    companion object {
+        private const val ARGUMENT_DATA = "ARGUMENT_DATA"
+        const val REQUEST_REPORT_POST_LOGIN = 1201
+
+        fun createFeedFragment(data: FeedDataModel): FeedFragment =
+            FeedFragment().also {
+                it.arguments = Bundle().apply {
+                    putParcelable(ARGUMENT_DATA, data)
                 }
             }
-
-            FeedMenuIdentifier.MODE_NONTON -> {
-                // TODO add code for clear mode
-                Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
-        feedMainViewModel.reportContent(feedReportRequestParamModel)
     }
 }
