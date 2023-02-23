@@ -31,6 +31,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         private const val PADDING_AND_MARGIN = 26
         private const val TWO = 2
         private val paddingOffset = 6f.dpToPx()
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
     private var uiModel: ShopHomeProductUiModel? = null
@@ -87,12 +88,22 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         setupImpressionListener(listener)
         productCardBigGrid?.applyCarousel()
         productCardBigGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+        val stockBarLabel = uiModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+        ).copy(
+            stockBarLabelColor = stockBarLabelColor
         )
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)

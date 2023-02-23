@@ -20,6 +20,10 @@ class ShopHomeFlashSaleProductListViewHolder(
     private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
+    companion object{
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
+    }
+
     private var uiModel: ShopHomeProductUiModel? = null
     private var fsUiModel: ShopHomeFlashSaleUiModel? = null
     private var productCardList: ProductCardListView? = itemView.findViewById(R.id.fs_product_card_list)
@@ -42,12 +46,22 @@ class ShopHomeFlashSaleProductListViewHolder(
         this.fsUiModel = fsUiModel
         setupClickListener(listener)
         setupImpressionListener(listener)
+        val stockBarLabel = uiModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+        ).copy(
+            stockBarLabelColor = stockBarLabelColor
         )
         productCardList?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
