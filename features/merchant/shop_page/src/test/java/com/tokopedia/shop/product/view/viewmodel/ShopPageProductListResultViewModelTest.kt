@@ -35,7 +35,6 @@ import com.tokopedia.shop.product.view.datamodel.ShopPageProductResultPageData
 import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseTitleUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
-// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
