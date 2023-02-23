@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ShipmentButtonPaymentModel(
-        var enable: Boolean = false,
-        var totalPrice: String = "-",
-        var quantity: Int = 0,
+    var enable: Boolean = false,
+    var totalPrice: String = "-",
+    var quantity: Int = 0
 ) : Parcelable
