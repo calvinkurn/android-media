@@ -27,6 +27,9 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSr
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabelVisibility
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot.clickSrwQuestion
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
+import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplate
+import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
+import com.tokopedia.topchat.chattemplate.domain.pojo.TopchatChatTemplates
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.utils.time.RfcDateTimeParser
@@ -117,17 +120,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun template_chat_shown_if_srw_preview_load_finish_first_with_no_question() {
         // Given
-        val templateChats = listOf(
-            "Hi barang ini ready gk?", "Lorem Ipsum"
-        )
-        val templateResponse = generateTemplateResponse(templates = templateChats)
         val templateDelay = 500L
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
             generatePreAttachPayload(DEFAULT_PRODUCT_ID)
-        getTemplateChatRoomUseCase.setResponse(templateResponse, templateDelay)
+        getTemplateChatRoomUseCase.response = getTemplateChatRoomUseCase.successGetTemplateResponseBuyer
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
