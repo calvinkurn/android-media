@@ -36,12 +36,14 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -125,6 +127,15 @@ class AffiliatePromoFragment :
                 )
             }
         }
+        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.isVisible = affiliatePromoViewModel.isAffiliateGamificationEnabled()
+
+        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.setOnClickListener{
+            val urlRedirectionAppLink = affiliatePromoViewModel.affilateRedirection()
+            if(urlRedirectionAppLink.isNotEmpty()){
+                RouteManager.route(context, urlRedirectionAppLink)
+            }
+        }
+
         view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.isVisible =
             affiliatePromoViewModel.isAffiliateSSAShopEnabled()
         setupViewPager()

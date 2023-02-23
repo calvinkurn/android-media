@@ -12,6 +12,7 @@ import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -20,7 +21,8 @@ class AffiliatePromoViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateSearchUseCase: AffiliateSearchUseCase,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
-    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
+    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
+    private var remoteConfig: RemoteConfig
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
     private var affiliateSearchData = MutableLiveData<AffiliateSearchData>()
@@ -32,6 +34,10 @@ class AffiliatePromoViewModel @Inject constructor(
             AFFILIATE_SSA_SHOP,
             ""
         ) == AFFILIATE_SSA_SHOP
+
+    fun isAffiliateGamificationEnabled() = remoteConfig.getBoolean("affil_banner_gami", false)
+
+    fun affilateRedirection() = remoteConfig.getString("affil_gami_disco", "")
 
     fun getSearch(productLink: String) {
         progressBar.value = true
