@@ -1,32 +1,28 @@
-package com.tokopedia.checkout.utils;
+package com.tokopedia.checkout.utils
 
-import java.math.BigDecimal;
+import java.math.BigDecimal
+import java.math.RoundingMode
 
-/**
- * Created by Irfan Khoirul on 30/07/18.
- */
+object WeightFormatterUtil {
 
-public class WeightFormatterUtil {
+    private const val KILOGRAM_DIVIDER = 1000.0f
+    private const val DIGIT_AFTER_COMMA = 2
+    private const val LABEL_KILOGRAM = " kg"
+    private const val LABEL_GRAM = " gr"
 
-    private static final float KILOGRAM_DIVIDER = 1000.0f;
-    private static final int DIGIT_AFTER_COMMA = 2;
-    private static final String LABEL_KILOGRAM = " kg";
-    private static final String LABEL_GRAM = " gr";
-
-    public static String getFormattedWeight(double weight, int qty) {
-        String weighTotalFormatted;
-        double weightTotal = weight * qty;
+    @JvmStatic
+    fun getFormattedWeight(weight: Double, qty: Int): String {
+        val weighTotalFormatted: String
+        var weightTotal = weight * qty
         if (weightTotal >= KILOGRAM_DIVIDER) {
-            BigDecimal bigDecimal = new BigDecimal(weightTotal / KILOGRAM_DIVIDER);
-            bigDecimal = bigDecimal.setScale(DIGIT_AFTER_COMMA, BigDecimal.ROUND_HALF_UP);
-            weightTotal = bigDecimal.doubleValue();
-            weighTotalFormatted = weightTotal + " " + LABEL_KILOGRAM;
+            var bigDecimal = BigDecimal(weightTotal / KILOGRAM_DIVIDER)
+            bigDecimal = bigDecimal.setScale(DIGIT_AFTER_COMMA, RoundingMode.HALF_UP)
+            weightTotal = bigDecimal.toDouble()
+            weighTotalFormatted = "$weightTotal $LABEL_KILOGRAM"
         } else {
-            weighTotalFormatted = ((int) weightTotal) + LABEL_GRAM;
+            weighTotalFormatted = weightTotal.toInt().toString() + LABEL_GRAM
         }
-
         return weighTotalFormatted.replace(".0 ", "")
-                .replace("  ", " ");
+            .replace("  ", " ")
     }
-
 }
