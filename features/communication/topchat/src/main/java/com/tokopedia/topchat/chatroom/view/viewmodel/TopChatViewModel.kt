@@ -24,6 +24,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
@@ -47,11 +48,11 @@ import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
+import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.util.AddressUtil
-import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -91,7 +92,8 @@ open class TopChatViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val chatAttachmentMapper: ChatAttachmentMapper,
     private val existingChatMapper: TopChatRoomGetExistingChatMapper,
-    private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
+    private var getTemplateChatRoomUseCase: GetTemplateUseCase,
+    private var getTemplateChatRoomMapper: GetTemplateChatRoomMapper,
     private var chatPreAttachPayload: GetChatPreAttachPayloadUseCase
 ) : BaseViewModel(dispatcher.main) {
 
@@ -766,11 +768,18 @@ open class TopChatViewModel @Inject constructor(
 
     fun getTemplate(isSeller: Boolean) {
         launchCatchError(block = {
-            val result = getTemplateChatRoomUseCase.getTemplateChat(isSeller)
+            val result = getTemplateChatRoomUseCase(GetTemplateUseCase.Param(isSeller))
             val templateList = arrayListOf<Visitable<*>>()
-            if (result.isEnabled) {
-                templateList.addAll(result.listTemplate)
+            val listTemplate = if (isSeller) {
+                getTemplateChatRoomMapper.map(
+                    result.chatTemplatesAll.sellerTemplate
+                ).listTemplate
+            } else {
+                getTemplateChatRoomMapper.map(
+                    result.chatTemplatesAll.buyerTemplate
+                ).listTemplate
             }
+            templateList.addAll(listTemplate)
             _templateChat.value = Success(templateList)
         }, onError = {
                 _templateChat.value = Fail(it)

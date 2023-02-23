@@ -13,11 +13,13 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
+import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.*
@@ -131,11 +133,12 @@ abstract class BaseTopChatViewModelTest {
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase
 
     @RelaxedMockK
-    lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
+    lateinit var getTemplateChatRoomUseCase: GetTemplateUseCase
 
     @RelaxedMockK
     lateinit var chatPreAttachPayload: GetChatPreAttachPayloadUseCase
 
+    private val getTemplateChatRoomMapper: GetTemplateChatRoomMapper = GetTemplateChatRoomMapper()
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     protected lateinit var viewModel: TopChatViewModel
@@ -182,6 +185,7 @@ abstract class BaseTopChatViewModelTest {
             chatAttachmentMapper,
             existingChatMapper,
             getTemplateChatRoomUseCase,
+            getTemplateChatRoomMapper,
             chatPreAttachPayload
         )
 
