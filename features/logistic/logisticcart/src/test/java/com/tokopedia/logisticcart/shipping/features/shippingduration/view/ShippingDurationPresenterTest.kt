@@ -73,7 +73,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -100,7 +100,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, addressData, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", true, addressData, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -126,7 +126,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -152,7 +152,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -176,7 +176,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -197,7 +197,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -224,7 +224,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -253,7 +253,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, null, false, 0, "", "", false, true
+            products, "1479278-30-740525-99367774", true, null, false, 0, "", "", false, true, 0
         )
 
         // Then
@@ -286,7 +286,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -316,7 +316,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
@@ -346,7 +346,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false, 0
         )
 
         // Then
