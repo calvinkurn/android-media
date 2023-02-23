@@ -414,6 +414,20 @@ object DeeplinkMapperMerchant {
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL, appLink) != null
     }
 
+    fun isSellerMvcIntroAppLink(deeplink: String): Boolean {
+        return ApplinkConst.SellerApp.SELLER_MVC_INTRO == deeplink
+    }
+
+    fun isSellerMvcCreate(deeplink: String): Boolean {
+        val uriAppLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_CREATE, uriAppLink) != null
+    }
+
+    fun isSellerMvcDetailAppLink(deeplink: String): Boolean {
+        val appLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_DETAIL, appLink) != null
+    }
+
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_LIST, lastSegment)
@@ -442,6 +456,28 @@ object DeeplinkMapperMerchant {
         val lastSegment = appLink.lastPathSegment.orEmpty()
         return UriUtil.buildUri(
             ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL,
+            lastSegment
+        )
+    }
+
+    fun getRegisteredNavigationForSellerMvcIntro(): String {
+        return ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+    }
+
+    fun getRegisteredNavigationForSellerMvcCreate(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_CREATE,
+            lastSegment
+        )
+    }
+
+    fun getRegisteredNavigationForSellerMvcDetail(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL,
             lastSegment
         )
     }
