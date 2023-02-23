@@ -14,7 +14,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ShopRequestUnmoderateBottomsheetBinding
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomSheetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomsheetViewHolderListener
-import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
+import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentViewHolderListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -24,20 +24,20 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 /**
  * author by Rafli Syam on 22/01/2021
  */
-class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmoderateBottomsheetViewHolderListener {
+class ShopPageHeaderRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmoderateBottomsheetViewHolderListener {
 
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.shop_request_unmoderate_bottomsheet
-        private val TAG = ShopRequestUnmoderateBottomSheet::class.java.simpleName
+        private val TAG = ShopPageHeaderRequestUnmoderateBottomSheet::class.java.simpleName
 
-        fun createInstance(): ShopRequestUnmoderateBottomSheet = ShopRequestUnmoderateBottomSheet()
+        fun createInstance(): ShopPageHeaderRequestUnmoderateBottomSheet = ShopPageHeaderRequestUnmoderateBottomSheet()
     }
 
     private var buttonSendUnmoderateRequest: UnifyButton? = null
     private var loaderModerateBottomsheet: LoaderUnify? = null
     private var typographyAlreadySentReq: Typography? = null
-    private var bottomSheetListener: ShopPageFragmentViewHolderListener? = null
+    private var bottomSheetListenerHeader: ShopPageHeaderFragmentViewHolderListener? = null
     private var rvRequestOptions: RecyclerView? = null
     private var choosenOptionValue = ""
     private var viewBinding by autoClearedNullable<ShopRequestUnmoderateBottomsheetBinding>()
@@ -57,8 +57,8 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
         optionValue?.let { choosenOptionValue = it }
     }
 
-    fun init(listener: ShopPageFragmentViewHolderListener) {
-        this.bottomSheetListener = listener
+    fun init(listenerHeader: ShopPageHeaderFragmentViewHolderListener) {
+        this.bottomSheetListenerHeader = listenerHeader
     }
 
     fun show(fragmentManager: FragmentManager?) {
@@ -95,7 +95,7 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
         viewBinding = ShopRequestUnmoderateBottomsheetBinding.inflate(LayoutInflater.from(context)).apply {
             rvRequestOptions = this.rvReqUnmoderateOptions
             buttonSendUnmoderateRequest = this.btnSendReqUnmoderate
-            this@ShopRequestUnmoderateBottomSheet.loaderModerateBottomsheet = this.loaderModerateBottomsheet
+            this@ShopPageHeaderRequestUnmoderateBottomSheet.loaderModerateBottomsheet = this.loaderModerateBottomsheet
             typographyAlreadySentReq = this.tvAlreadySentRequest
             setTitle(getString(R.string.shop_page_header_request_unmoderate_bottomsheet_title))
             setChild(this.root)
@@ -109,7 +109,7 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
         rvRequestOptions?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = ShopRequestUnmoderateBottomSheetAdapter(context, this@ShopRequestUnmoderateBottomSheet)
+            adapter = ShopRequestUnmoderateBottomSheetAdapter(context, this@ShopPageHeaderRequestUnmoderateBottomSheet)
         }
     }
 
@@ -117,7 +117,7 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
         buttonSendUnmoderateRequest?.setOnClickListener {
             // send request unmoderate shop
             buttonSendUnmoderateRequest?.isLoading = true
-            bottomSheetListener?.onSendRequestOpenModerate(choosenOptionValue)
+            bottomSheetListenerHeader?.onSendRequestOpenModerate(choosenOptionValue)
         }
     }
 }

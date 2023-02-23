@@ -13,7 +13,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.ShopPagePagePageHeader
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderPerformanceWidgetViewHolder(
@@ -21,7 +21,7 @@ class ShopHeaderPerformanceWidgetViewHolder(
     private val shopPageHeaderPerformanceWidgetBadgeTextValueListener: ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
     private val shopPageHeaderPerformanceWidgetImageOnlyListener: ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder.Listener,
     private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
-) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
+) : AbstractViewHolder<ShopPageHeaderWidgetUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_header_performance_widget
@@ -31,10 +31,10 @@ class ShopHeaderPerformanceWidgetViewHolder(
     private var shopPageHeaderPerformanceWidgetAdapter: ShopPageHeaderPerformanceWidgetAdapter? = null
     private var rvShopPerformanceWidget: RecyclerView? = viewBinding?.rvShopPerformanceWidget
 
-    override fun bind(model: ShopHeaderWidgetUiModel) {
+    override fun bind(modelPage: ShopPageHeaderWidgetUiModel) {
         shopPageHeaderPerformanceWidgetAdapter = ShopPageHeaderPerformanceWidgetAdapter(
             ShopPagePagePageHeaderPerformanceWidgetAdapterTypeFactory(
-                model,
+                modelPage,
                 shopPageHeaderPerformanceWidgetBadgeTextValueListener,
                 shopPageHeaderPerformanceWidgetImageOnlyListener,
                 shopPageHeaderPerformanceWidgetImageTextListener
@@ -51,6 +51,6 @@ class ShopHeaderPerformanceWidgetViewHolder(
                 addItemDecoration(itemDecoration)
             }
         }
-        shopPageHeaderPerformanceWidgetAdapter?.addComponents(model.components)
+        shopPageHeaderPerformanceWidgetAdapter?.addComponents(modelPage.componentPages)
     }
 }

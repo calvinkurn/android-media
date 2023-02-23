@@ -12,11 +12,11 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderActionButtonWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_ACTION
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 
 class ShopPageHeaderAdapterTypeFactory(
     private val shopPageHeaderBasicInfoWidgetListener: ShopPageHeaderBasicInfoWidgetViewHolder.Listener,
@@ -36,8 +36,8 @@ class ShopPageHeaderAdapterTypeFactory(
         adapterShopHeader = adapter
     }
 
-    fun type(model: ShopHeaderWidgetUiModel): Int {
-        return when (model.type.toLowerCase()) {
+    fun type(modelPage: ShopPageHeaderWidgetUiModel): Int {
+        return when (modelPage.type.toLowerCase()) {
             SHOP_BASIC_INFO.toLowerCase() -> ShopPageHeaderBasicInfoWidgetViewHolder.LAYOUT
             SHOP_PERFORMANCE.toLowerCase() -> ShopHeaderPerformanceWidgetViewHolder.LAYOUT
             SHOP_ACTION.toLowerCase() -> ShopPageHeaderActionButtonWidgetViewHolder.LAYOUT

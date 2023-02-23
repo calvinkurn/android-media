@@ -4,14 +4,14 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderBadgeTextValueComponentTypeFactory
 
-data class ShopHeaderBadgeTextValueComponentUiModel(
+data class ShopPageHeaderBadgeTextValueComponentUiModel(
     override val name: String = "",
     override val type: String = "",
     val ctaText: String = "",
     val ctaLink: String = "",
     val ctaIcon: String = "",
     val text: List<Text> = listOf()
-) : BaseShopHeaderComponentUiModel, ImpressHolder() {
+) : BaseShopPageHeaderComponentUiModel, ImpressHolder() {
 
     override var componentPosition: Int = -1
 

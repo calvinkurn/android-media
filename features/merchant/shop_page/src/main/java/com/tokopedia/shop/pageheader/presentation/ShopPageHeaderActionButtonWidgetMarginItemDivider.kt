@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 
-class ShopPageActionButtonWidgetMarginItemDivider : RecyclerView.ItemDecoration() {
+class ShopPageHeaderActionButtonWidgetMarginItemDivider : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildLayoutPosition(view)

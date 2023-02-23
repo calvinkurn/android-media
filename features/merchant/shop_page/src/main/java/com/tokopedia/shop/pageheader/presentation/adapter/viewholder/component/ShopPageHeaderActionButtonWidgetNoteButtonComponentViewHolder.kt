@@ -10,7 +10,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetNoteButtonComponentBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
@@ -19,7 +19,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder(
     itemView: View,
     private val listener: Listener
-) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {
+) : AbstractViewHolder<ShopPageHeaderButtonComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_note_button_component
@@ -28,7 +28,7 @@ class ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder(
     private val viewBinding: LayoutShopActionButtonWidgetNoteButtonComponentBinding? by viewBinding()
     private val imageButtonShopNote: UnifyButton? = viewBinding?.imageButtonShopNote
 
-    override fun bind(model: ShopHeaderButtonComponentUiModel) {
+    override fun bind(model: ShopPageHeaderButtonComponentUiModel) {
         imageButtonShopNote?.setOnClickListener {
             listener.onClickNoteButton(model.link)
         }

@@ -64,8 +64,8 @@ import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUs
 import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
-import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
-import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageTickerData
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -123,7 +123,7 @@ class NewShopPageViewModel @Inject constructor(
     val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
         get() = _shopShareTracker
 
-    val shopPageP1Data = MutableLiveData<Result<NewShopPageP1HeaderData>>()
+    val shopPageP1Data = MutableLiveData<Result<ShopPageHeaderP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     var homeWidgetLayoutData: HomeLayoutData = HomeLayoutData()
@@ -149,8 +149,8 @@ class NewShopPageViewModel @Inject constructor(
     val shopSellerPLayWidgetData: LiveData<Result<Broadcaster.Config>>
         get() = _shopSellerPLayWidgetData
 
-    private val _shopPageTickerData = MutableLiveData<Result<ShopPageTickerData>>()
-    val shopPageTickerData: LiveData<Result<ShopPageTickerData>>
+    private val _shopPageTickerData = MutableLiveData<Result<ShopPageHeaderTickerData>>()
+    val shopPageHeaderTickerData: LiveData<Result<ShopPageHeaderTickerData>>
         get() = _shopPageTickerData
 
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
@@ -459,7 +459,7 @@ class NewShopPageViewModel @Inject constructor(
             shopInfoData.await()?.let { shopInfo ->
                 _shopPageShopShareData.postValue(Success(shopInfo))
                 shopOperationalHourStatusData.await()?.let { shopOperationalHourStatus ->
-                    _shopPageTickerData.postValue(Success(ShopPageTickerData(shopInfo, shopOperationalHourStatus)))
+                    _shopPageTickerData.postValue(Success(ShopPageHeaderTickerData(shopInfo, shopOperationalHourStatus)))
                 }
             }
         }) {}

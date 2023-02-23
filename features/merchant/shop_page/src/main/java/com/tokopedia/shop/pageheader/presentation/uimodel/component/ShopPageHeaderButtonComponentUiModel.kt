@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderButtonComponentTypeFactory
 
-open class ShopHeaderButtonComponentUiModel : BaseShopHeaderComponentUiModel, ImpressHolder() {
+open class ShopPageHeaderButtonComponentUiModel : BaseShopPageHeaderComponentUiModel, ImpressHolder() {
 
     override var name: String = ""
     override var type: String = ""

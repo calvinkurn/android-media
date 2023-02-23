@@ -3,7 +3,7 @@ package com.tokopedia.shop.pageheader.presentation.uimodel.component
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 
-interface BaseShopHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory> {
+interface BaseShopPageHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory> {
 
     object ComponentType {
         const val IMAGE_ONLY = "image_only"

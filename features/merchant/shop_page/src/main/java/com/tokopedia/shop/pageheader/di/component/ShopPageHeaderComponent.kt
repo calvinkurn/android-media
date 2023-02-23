@@ -3,7 +3,7 @@ package com.tokopedia.shop.pageheader.di.component
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
 import com.tokopedia.shop.pageheader.di.scope.ShopPageHeaderScope
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
 import dagger.Component
 
 /**
@@ -12,5 +12,5 @@ import dagger.Component
 @ShopPageHeaderScope
 @Component(modules = [ShopPageHeaderModule::class], dependencies = [ShopComponent::class])
 interface ShopPageHeaderComponent {
-    fun inject(fragment: NewShopPageFragment?)
+    fun inject(headerFragment: ShopPageHeaderHeaderFragment?)
 }

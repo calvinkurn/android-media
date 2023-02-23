@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference
 /**
  * Source : https://stackoverflow.com/questions/43404526/android-imagespan-how-to-center-align-the-image-at-the-end-of-the-text
  */
-class CenteredImageSpan(
+class ShopPageHeaderCenteredImageSpan(
     drawable: Drawable,
     verticalAlignment: Int = ALIGN_BOTTOM
 ) : ImageSpan(drawable, verticalAlignment) {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetImageTextImageComponentBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageTextComponentUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderPerformanceWidgetImageTextComponentImageViewHolder(
@@ -19,7 +19,7 @@ class ShopPageHeaderPerformanceWidgetImageTextComponentImageViewHolder(
     private val viewBinding: LayoutShopPerformanceWidgetImageTextImageComponentBinding? by viewBinding()
     private val imageView: ImageView? = viewBinding?.imageView
 
-    fun bind(data: ShopHeaderImageTextComponentUiModel.Images.Data?) {
+    fun bind(data: ShopPageHeaderImageTextComponentUiModel.Images.Data?) {
         imageView?.loadImage(data?.image)
     }
 }

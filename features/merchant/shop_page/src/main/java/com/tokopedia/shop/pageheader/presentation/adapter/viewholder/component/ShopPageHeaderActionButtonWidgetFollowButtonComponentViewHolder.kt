@@ -12,19 +12,19 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetFollowButtonComponentBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderActionWidgetFollowButtonComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.shop.pageheader.util.TextBaselineSpanAdjuster
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderActionWidgetFollowButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTextBaselineSpanAdjuster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
     itemView: View,
-    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
     private val listener: Listener
-) : AbstractViewHolder<ShopHeaderActionWidgetFollowButtonComponentUiModel>(itemView) {
+) : AbstractViewHolder<ShopPageHeaderActionWidgetFollowButtonComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_follow_button_component
@@ -36,12 +36,12 @@ class ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
     interface Listener {
         fun onImpressionVoucherFollowUnFollowShop()
         fun onClickFollowUnFollowButton(
-            componentModel: ShopHeaderButtonComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderButtonComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
         fun onImpressionFollowButtonComponent(
-            componentModel: ShopHeaderButtonComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderButtonComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
     }
 
@@ -56,7 +56,7 @@ class ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
         }
     }
 
-    override fun bind(model: ShopHeaderActionWidgetFollowButtonComponentUiModel) {
+    override fun bind(model: ShopPageHeaderActionWidgetFollowButtonComponentUiModel) {
         val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         val isFollowing = model.isFollowing
         buttonFollow?.apply {
@@ -94,14 +94,14 @@ class ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
                 if (!isLoading)
                     listener.onClickFollowUnFollowButton(
                         model,
-                        shopHeaderWidgetUiModel
+                        shopPageHeaderWidgetUiModel
                     )
             }
             if (text.isNotEmpty()) {
                 addOnImpressionListener(model) {
                     listener.onImpressionFollowButtonComponent(
                         model,
-                        shopHeaderWidgetUiModel
+                        shopPageHeaderWidgetUiModel
                     )
                 }
             }
@@ -125,7 +125,7 @@ class ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
                     val imageSpan = ImageSpan(drawableImage)
                     spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannableString.setSpan(
-                        TextBaselineSpanAdjuster(TEST_ASCENT_MULTIPLIER),
+                        ShopPageHeaderTextBaselineSpanAdjuster(TEST_ASCENT_MULTIPLIER),
                         0,
                         spannableString.length,
                         SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE

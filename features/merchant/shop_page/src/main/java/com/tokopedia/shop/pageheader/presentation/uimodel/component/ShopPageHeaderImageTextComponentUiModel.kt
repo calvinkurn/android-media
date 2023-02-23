@@ -4,12 +4,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderImageTextComponentTypeFactory
 
-data class ShopHeaderImageTextComponentUiModel(
+data class ShopPageHeaderImageTextComponentUiModel(
     override val name: String = "",
     override val type: String = "",
     val images: Images = Images(),
     val textComponent: TextComponent = TextComponent()
-) : BaseShopHeaderComponentUiModel, ImpressHolder() {
+) : BaseShopPageHeaderComponentUiModel, ImpressHolder() {
 
     override var componentPosition: Int = -1
 

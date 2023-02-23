@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_PLAY
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.SHOP_NAME
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_PLAY
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_NAME
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_ACTION
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 
 class ShopPageHeaderAdapter(
     typeFactory: ShopPageHeaderAdapterTypeFactory
@@ -28,37 +28,37 @@ class ShopPageHeaderAdapter(
         this.adapterPageHeaderActionButtonWidget = adapterPageHeaderActionButtonWidget
     }
 
-    fun setData(data: List<ShopHeaderWidgetUiModel>) {
+    fun setData(data: List<ShopPageHeaderWidgetUiModel>) {
         addElement(data)
         notifyDataSetChanged()
     }
 
     fun isFollowButtonPlaceholderAvailable(): Boolean {
-        return getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW) != null
+        return getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopPageHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW) != null
     }
 
     fun isPlayWidgetPlaceholderAvailable(): Boolean? {
-        return getWidgetUiModel(SHOP_PLAY)?.getComponentUiModel<ShopHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY) != null
+        return getWidgetUiModel(SHOP_PLAY)?.getComponentUiModel<ShopPageHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY) != null
     }
 
     private fun getWidgetUiModel(
         widgetName: String
-    ): ShopHeaderWidgetUiModel? {
-        return visitables.filterIsInstance<ShopHeaderWidgetUiModel>().firstOrNull {
+    ): ShopPageHeaderWidgetUiModel? {
+        return visitables.filterIsInstance<ShopPageHeaderWidgetUiModel>().firstOrNull {
             it.name.equals(widgetName, true)
         }
     }
 
-    private inline fun <reified T : BaseShopHeaderComponentUiModel> ShopHeaderWidgetUiModel.getComponentUiModel(
+    private inline fun <reified T : BaseShopPageHeaderComponentUiModel> ShopPageHeaderWidgetUiModel.getComponentUiModel(
         componentName: String
     ): T? {
-        return this.components.filterIsInstance<T>().firstOrNull {
+        return this.componentPages.filterIsInstance<T>().firstOrNull {
             it.name.equals(componentName, true)
         }
     }
 
     fun setLoadingFollowButton(loading: Boolean) {
-        getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW)?.apply {
+        getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopPageHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW)?.apply {
             this.isButtonLoading = loading
             adapterPageHeaderActionButtonWidget?.notifyButtonWidgetAdapter()
         }
@@ -70,7 +70,7 @@ class ShopPageHeaderAdapter(
         isFollowing: Boolean? = null,
         isNeverFollow: Boolean? = null
     ) {
-        getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW)?.apply {
+        getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopPageHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW)?.apply {
             label?.let {
                 this.label = it
             }
@@ -88,14 +88,14 @@ class ShopPageHeaderAdapter(
     }
 
     fun getFollowButtonView(): View? {
-        return getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderButtonComponentUiModel>(BUTTON_FOLLOW)?.let {
+        return getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopPageHeaderButtonComponentUiModel>(BUTTON_FOLLOW)?.let {
             adapterPageHeaderActionButtonWidget?.getFollowButtonViewHolder(it)
         }
     }
 
     fun setPlayWidgetData(shopPageHeaderDataModel: ShopPageHeaderDataModel) {
         val widgetUiModel = getWidgetUiModel(SHOP_PLAY)
-        widgetUiModel?.getComponentUiModel<ShopHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY)?.let {
+        widgetUiModel?.getComponentUiModel<ShopPageHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY)?.let {
             it.shopPageHeaderDataModel = shopPageHeaderDataModel
             val playWidgetPosition = visitables.indexOf(widgetUiModel)
             if (playWidgetPosition != -1) {
@@ -106,7 +106,7 @@ class ShopPageHeaderAdapter(
 
     fun setShopName(shopName: String) {
         val shopBasicInfoWidget = getWidgetUiModel(SHOP_BASIC_INFO)
-        shopBasicInfoWidget?.getComponentUiModel<ShopHeaderBadgeTextValueComponentUiModel>(SHOP_NAME)?.let {
+        shopBasicInfoWidget?.getComponentUiModel<ShopPageHeaderBadgeTextValueComponentUiModel>(SHOP_NAME)?.let {
             it.text.getOrNull(0)?.textHtml = shopName
             val shopBasicInfoWidgetPosition = visitables.indexOf(shopBasicInfoWidget)
             if (shopBasicInfoWidgetPosition != -1) {

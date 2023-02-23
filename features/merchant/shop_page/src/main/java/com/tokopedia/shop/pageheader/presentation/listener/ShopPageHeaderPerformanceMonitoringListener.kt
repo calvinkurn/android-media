@@ -2,7 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.listener
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 
-interface ShopPagePerformanceMonitoringListener {
+interface ShopPageHeaderPerformanceMonitoringListener {
     fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface?
     fun stopMonitoringPltPreparePage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface)
     fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface)

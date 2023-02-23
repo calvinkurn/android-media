@@ -6,16 +6,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetChatButtonComponentBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
     itemView: View,
-    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
     private val shopActionButtonWidgetChatButtonComponentListener: Listener
-) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {
+) : AbstractViewHolder<ShopPageHeaderButtonComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_chat_button_component
@@ -23,20 +23,20 @@ class ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
 
     interface Listener {
         fun onButtonChatClicked(
-            componentModel: ShopHeaderButtonComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderButtonComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
 
         fun onImpressionButtonChat(
-            componentModel: ShopHeaderButtonComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderButtonComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
     }
 
     private val viewBinding: LayoutShopActionButtonWidgetChatButtonComponentBinding? by viewBinding()
     private val buttonChat: UnifyButton? = viewBinding?.buttonShopChat
 
-    override fun bind(model: ShopHeaderButtonComponentUiModel) {
+    override fun bind(model: ShopPageHeaderButtonComponentUiModel) {
         val lp = itemView.layoutParams
         if (lp is FlexboxLayoutManager.LayoutParams) {
             lp.flexGrow = 1.0f
@@ -46,13 +46,13 @@ class ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
             setOnClickListener {
                 shopActionButtonWidgetChatButtonComponentListener.onButtonChatClicked(
                     model,
-                    shopHeaderWidgetUiModel
+                    shopPageHeaderWidgetUiModel
                 )
             }
             addOnImpressionListener(model) {
                 shopActionButtonWidgetChatButtonComponentListener.onImpressionButtonChat(
                     model,
-                    shopHeaderWidgetUiModel
+                    shopPageHeaderWidgetUiModel
                 )
             }
         }

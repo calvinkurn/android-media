@@ -3,7 +3,7 @@ package com.tokopedia.shop.pageheader.util
 import android.text.TextPaint
 import android.text.style.MetricAffectingSpan
 
-class TextBaselineSpanAdjuster(
+class ShopPageHeaderTextBaselineSpanAdjuster(
     private val multiplier: Double
 ) : MetricAffectingSpan() {
     override fun updateDrawState(paint: TextPaint) {

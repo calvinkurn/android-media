@@ -14,9 +14,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.presentation.customview.CenteredImageSpan
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.customview.ShopPageHeaderCenteredImageSpan
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderPlayWidgetButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderPlayWidgetViewHolder(
@@ -24,7 +24,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
     private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
     private val listener: Listener
 
-) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
+) : AbstractViewHolder<ShopPageHeaderWidgetUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_header_play_widget
@@ -32,14 +32,14 @@ class ShopPageHeaderPlayWidgetViewHolder(
 
     interface Listener {
         fun onStartLiveStreamingClicked(
-                componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
-                broadcasterConfig: Broadcaster.Config,
+            componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
+            broadcasterConfig: Broadcaster.Config,
         )
 
         fun onImpressionPlayWidgetComponent(
-            componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
     }
 
@@ -49,7 +49,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
     private val playSgcBtnStartLive = viewBinding?.playSgcBtnStartLive
     private val widgetPlayRootContainer: FrameLayout? = viewBinding?.widgetPlayRootContainer
 
-    override fun bind(shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
+    override fun bind(shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel) {
         viewBinding?.tvStartCreateContent?.setCompoundDrawablesWithIntrinsicBounds(
             MethodChecker.getDrawable(itemView.context, R.drawable.ic_content_creation),
             null,
@@ -57,7 +57,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
             null
         )
 
-        val modelComponent = shopHeaderWidgetUiModel.components.filterIsInstance<ShopHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
+        val modelComponent = shopPageHeaderWidgetUiModel.componentPages.filterIsInstance<ShopPageHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
         modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             if (allowContentCreation(shopPageHeaderDataModel)) {
                 showPlayWidget()
@@ -67,7 +67,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                     listener.onStartLiveStreamingClicked(
                             modelComponent,
-                            shopHeaderWidgetUiModel,
+                            shopPageHeaderWidgetUiModel,
                             shopPageHeaderDataModel.broadcaster
                     )
                 }
@@ -99,7 +99,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
         val imgBeta = MethodChecker.getDrawable(itemView.context, R.drawable.ic_play_beta_badge)?.apply {
             setBounds(0, 0, intrinsicWidth, intrinsicHeight)
         }
-        val imgBetaSpan = imgBeta?.let { CenteredImageSpan(it) }
+        val imgBetaSpan = imgBeta?.let { ShopPageHeaderCenteredImageSpan(it) }
 
         val span = SpannableString(
             MethodChecker.fromHtml(

@@ -128,10 +128,10 @@ import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomShee
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -374,7 +374,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
@@ -382,7 +382,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
@@ -390,7 +390,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun startMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startCustomMetric(it, tag)
             }
@@ -398,7 +398,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopCustomMetric(it, tag)
             }
@@ -406,7 +406,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun invalidateMonitoringPlt() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.invalidateMonitoringPlt(it)
             }
@@ -414,7 +414,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun stopMonitoringPerformance() {
-        (activity as? ShopPageHeaderActivity)?.stopShopHomeTabPerformanceMonitoring()
+        (activity as? ShopPageHeaderHeaderActivity)?.stopShopHomeTabPerformanceMonitoring()
     }
 
     override fun onCreateView(
@@ -590,7 +590,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun getSelectedFragment(): Fragment? {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedFragmentInstance()
+        return (parentFragment as? ShopPageHeaderHeaderFragment)?.getSelectedFragmentInstance()
     }
 
     override fun onResume() {
@@ -1444,7 +1444,7 @@ open class ShopPageHomeFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? NewShopPageFragment)?.expandHeader()
+                    (parentFragment as? ShopPageHeaderHeaderFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
@@ -3700,15 +3700,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.hideScrollToTopButton()
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.showScrollToTopButton()
     }
 
     private fun getSelectedTabName(): String {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedTabName().orEmpty()
+        return (parentFragment as? ShopPageHeaderHeaderFragment)?.getSelectedTabName().orEmpty()
     }
 
     override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
@@ -3945,7 +3945,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun updateMiniCartWidget() {
-        (parentFragment as? NewShopPageFragment)?.updateMiniCartWidget()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.updateMiniCartWidget()
     }
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {

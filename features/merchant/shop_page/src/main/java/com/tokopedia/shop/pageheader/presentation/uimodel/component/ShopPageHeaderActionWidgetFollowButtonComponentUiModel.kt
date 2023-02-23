@@ -1,6 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
-class ShopHeaderActionWidgetFollowButtonComponentUiModel : ShopHeaderButtonComponentUiModel() {
+class ShopPageHeaderActionWidgetFollowButtonComponentUiModel : ShopPageHeaderButtonComponentUiModel() {
     var isButtonLoading = false
     var leftDrawableUrl = ""
     var isFollowing = false

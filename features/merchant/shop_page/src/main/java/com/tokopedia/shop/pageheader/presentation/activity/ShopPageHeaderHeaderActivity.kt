@@ -33,14 +33,14 @@ import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 
-class ShopPageHeaderActivity :
+class ShopPageHeaderHeaderActivity :
     BaseSimpleActivity(),
     HasComponent<ShopComponent>,
     HasSharedViewModel,
-    ShopPagePerformanceMonitoringListener,
+    ShopPageHeaderPerformanceMonitoringListener,
     ShopPageSharedListener {
 
     companion object {
@@ -50,7 +50,7 @@ class ShopPageHeaderActivity :
         const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
 
         @JvmStatic
-        fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageHeaderActivity::class.java)
+        fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageHeaderHeaderActivity::class.java)
             .apply {
                 putExtra(SHOP_ID, shopId)
                 putExtra(SHOP_REF, shopRef)
@@ -84,7 +84,7 @@ class ShopPageHeaderActivity :
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment = NewShopPageFragment.createInstance()
+    override fun getNewFragment(): Fragment = ShopPageHeaderHeaderFragment.createInstance()
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
@@ -128,7 +128,7 @@ class ShopPageHeaderActivity :
         when (requestCode) {
             MvcView.REQUEST_CODE -> {
                 if (resultCode == MvcView.RESULT_CODE_OK) {
-                    (fragment as? NewShopPageFragment)?.refreshData()
+                    (fragment as? ShopPageHeaderHeaderFragment)?.refreshData()
                 }
             }
             else -> {
@@ -202,7 +202,7 @@ class ShopPageHeaderActivity :
     }
 
     override fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return (fragment as? NewShopPageFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
+        return (fragment as? ShopPageHeaderHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 
     override fun createAffiliateCookieAtcProduct(
@@ -210,7 +210,7 @@ class ShopPageHeaderActivity :
         isVariant: Boolean,
         stockQty: Int
     ) {
-        (fragment as? NewShopPageFragment)?.createAffiliateCookieAtcProduct(
+        (fragment as? ShopPageHeaderHeaderFragment)?.createAffiliateCookieAtcProduct(
             productId,
             isVariant,
             stockQty

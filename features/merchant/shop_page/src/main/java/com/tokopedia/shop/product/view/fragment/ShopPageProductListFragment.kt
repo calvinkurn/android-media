@@ -82,10 +82,10 @@ import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewM
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -300,7 +300,7 @@ class ShopPageProductListFragment :
                 val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? NewShopPageFragment)?.expandHeader()
+                    (parentFragment as? ShopPageHeaderHeaderFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
                     hideScrollToTopButton()
@@ -604,7 +604,7 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedTabName(): String {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedTabName().orEmpty()
+        return (parentFragment as? ShopPageHeaderHeaderFragment)?.getSelectedTabName().orEmpty()
     }
 
     override fun getSelectedEtalaseName(): String {
@@ -1068,7 +1068,7 @@ class ShopPageProductListFragment :
     }
 
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
@@ -1076,7 +1076,7 @@ class ShopPageProductListFragment :
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
@@ -1084,7 +1084,7 @@ class ShopPageProductListFragment :
     }
 
     private fun startMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startCustomMetric(it, tag)
             }
@@ -1092,7 +1092,7 @@ class ShopPageProductListFragment :
     }
 
     private fun stopMonitoringPltCustomMetric(tag: String) {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopCustomMetric(it, tag)
             }
@@ -1100,7 +1100,7 @@ class ShopPageProductListFragment :
     }
 
     private fun invalidateMonitoringPlt() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.invalidateMonitoringPlt(it)
             }
@@ -1108,7 +1108,7 @@ class ShopPageProductListFragment :
     }
 
     private fun stopMonitoringPerformance() {
-        (activity as? ShopPageHeaderActivity)?.stopShopProductTabPerformanceMonitoring()
+        (activity as? ShopPageHeaderHeaderActivity)?.stopShopProductTabPerformanceMonitoring()
     }
 
     private fun isShopProductTabSelected(): Boolean {
@@ -1322,7 +1322,7 @@ class ShopPageProductListFragment :
     }
 
     private fun updateMiniCartWidget() {
-        (parentFragment as? NewShopPageFragment)?.updateMiniCartWidget()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.updateMiniCartWidget()
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -1338,7 +1338,7 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedFragment(): Fragment? {
-        return (parentFragment as? NewShopPageFragment)?.getSelectedFragmentInstance()
+        return (parentFragment as? ShopPageHeaderHeaderFragment)?.getSelectedFragmentInstance()
     }
 
     override fun onPause() {
@@ -1662,7 +1662,7 @@ class ShopPageProductListFragment :
     }
 
     private fun isShopWidgetAlreadyShown(): Boolean {
-        return (parentFragment as? NewShopPageFragment)?.isShopWidgetAlreadyShown() ?: false
+        return (parentFragment as? ShopPageHeaderHeaderFragment)?.isShopWidgetAlreadyShown() ?: false
     }
 
     private fun onSuccessClaimBenefit(data: MembershipClaimBenefitResponse) {
@@ -1868,11 +1868,11 @@ class ShopPageProductListFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.hideScrollToTopButton()
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.showScrollToTopButton()
     }
 
     private fun handleAtcFlow(

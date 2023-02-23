@@ -23,7 +23,6 @@ import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
@@ -42,7 +41,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -194,15 +193,15 @@ class ShopPageCampaignFragment :
     }
 
     private fun showConfetti() {
-        (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
     }
 
     private fun isShowConfetti(): Boolean {
-        return (parentFragment as? NewShopPageFragment)?.isShowConfetti().orFalse()
+        return (parentFragment as? ShopPageHeaderHeaderFragment)?.isShowConfetti().orFalse()
     }
 
     private fun setConfettiAlreadyShown() {
-        (parentFragment as? NewShopPageFragment)?.setConfettiAlreadyShown()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.setConfettiAlreadyShown()
     }
 
     override fun observeShopProductFilterParameterSharedViewModel() {}
@@ -637,7 +636,7 @@ class ShopPageCampaignFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? NewShopPageFragment)?.expandHeader()
+                    (parentFragment as? ShopPageHeaderHeaderFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
                     hideScrollToTopButton()
@@ -744,11 +743,11 @@ class ShopPageCampaignFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.hideScrollToTopButton()
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+        (parentFragment as? ShopPageHeaderHeaderFragment)?.showScrollToTopButton()
     }
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {

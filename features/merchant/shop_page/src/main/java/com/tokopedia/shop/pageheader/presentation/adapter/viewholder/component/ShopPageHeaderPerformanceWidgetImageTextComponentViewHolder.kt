@@ -12,17 +12,17 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetImageTextComponentBinding
-import com.tokopedia.shop.pageheader.presentation.ShopPageActionButtonWidgetMarginItemDivider
+import com.tokopedia.shop.pageheader.presentation.ShopPageHeaderActionButtonWidgetMarginItemDivider
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopImageTextComponentImagesAdapter
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageTextComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder(
     itemView: View,
-    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
     private val listener: Listener
-) : AbstractViewHolder<ShopHeaderImageTextComponentUiModel>(itemView) {
+) : AbstractViewHolder<ShopPageHeaderImageTextComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_performance_widget_image_text_component
@@ -30,8 +30,8 @@ class ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder(
 
     interface Listener {
         fun onImpressionShopPerformanceWidgetImageTextItem(
-            componentModel: ShopHeaderImageTextComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderImageTextComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
     }
 
@@ -40,24 +40,24 @@ class ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder(
     private val textLabel: TextView? = viewBinding?.textLabel
     private val constraintLayout: ConstraintLayout? = viewBinding?.constraintLayoutImageTextComponent
 
-    override fun bind(model: ShopHeaderImageTextComponentUiModel) {
+    override fun bind(model: ShopPageHeaderImageTextComponentUiModel) {
         configureLayoutPosition(model)
         setLayoutData(model)
         itemView.addOnImpressionListener(model) {
             listener.onImpressionShopPerformanceWidgetImageTextItem(
                 model,
-                shopHeaderWidgetUiModel
+                shopPageHeaderWidgetUiModel
             )
         }
     }
 
-    private fun setLayoutData(model: ShopHeaderImageTextComponentUiModel) {
+    private fun setLayoutData(model: ShopPageHeaderImageTextComponentUiModel) {
         val labelValue = model.textComponent.data.textHtml
         textLabel?.text = MethodChecker.fromHtml(labelValue)
         setRecycleViewImagesData(model.images.data)
     }
 
-    private fun configureLayoutPosition(model: ShopHeaderImageTextComponentUiModel) {
+    private fun configureLayoutPosition(model: ShopPageHeaderImageTextComponentUiModel) {
         val valueStyleImages = model.images.style
         val constraintSet = ConstraintSet()
         constraintSet.clone(constraintLayout)
@@ -73,7 +73,7 @@ class ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder(
         constraintSet.applyTo(constraintLayout)
     }
 
-    private fun setRecycleViewImagesData(listImages: List<ShopHeaderImageTextComponentUiModel.Images.Data>) {
+    private fun setRecycleViewImagesData(listImages: List<ShopPageHeaderImageTextComponentUiModel.Images.Data>) {
         recyclerViewImages?.apply {
             val adapter = ShopImageTextComponentImagesAdapter()
             this.adapter = adapter
@@ -84,7 +84,7 @@ class ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder(
             )
             layoutManager = manager
             if (itemDecorationCount == 0)
-                addItemDecoration(ShopPageActionButtonWidgetMarginItemDivider())
+                addItemDecoration(ShopPageHeaderActionButtonWidgetMarginItemDivider())
             adapter.setImagesData(listImages)
         }
     }

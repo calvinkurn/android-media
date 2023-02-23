@@ -4,8 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
 
 class ShopPageHeaderActionButtonWidgetAdapter(
     typeFactoryComponent: ShopPageHeaderActionButtonWidgetAdapterTypeFactory
@@ -18,8 +18,8 @@ class ShopPageHeaderActionButtonWidgetAdapter(
         this.recyclerView = recyclerView
     }
 
-    fun addComponents(listComponent: List<BaseShopHeaderComponentUiModel>) {
-        addElement(listComponent)
+    fun addComponents(listComponentPage: List<BaseShopPageHeaderComponentUiModel>) {
+        addElement(listComponentPage)
         notifyDataSetChanged()
     }
 
@@ -27,7 +27,7 @@ class ShopPageHeaderActionButtonWidgetAdapter(
         notifyDataSetChanged()
     }
 
-    fun getFollowButtonViewHolder(uiModel: ShopHeaderButtonComponentUiModel): View? {
+    fun getFollowButtonViewHolder(uiModel: ShopPageHeaderButtonComponentUiModel): View? {
         return recyclerView?.findViewHolderForLayoutPosition(visitables.indexOf(uiModel))?.itemView
     }
 }

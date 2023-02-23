@@ -7,14 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderButtonComponentTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_CHAT
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_SHOP_NOTES
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_CHAT
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_SHOP_NOTES
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 
 class ShopPageHeaderActionButtonWidgetAdapterTypeFactory(
-    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
     private val shopPageHeaderActionButtonWidgetChatButtonComponentListener: ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.Listener,
     private val shopPageHeaderActionButtonWidgetFollowButtonComponentListener: ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.Listener,
     private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener
@@ -28,19 +28,19 @@ class ShopPageHeaderActionButtonWidgetAdapterTypeFactory(
             )
             ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.LAYOUT -> ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
                 parent,
-                shopHeaderWidgetUiModel,
+                shopPageHeaderWidgetUiModel,
                 shopPageHeaderActionButtonWidgetChatButtonComponentListener
             )
             ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT -> ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
                 parent,
-                shopHeaderWidgetUiModel,
+                shopPageHeaderWidgetUiModel,
                 shopPageHeaderActionButtonWidgetFollowButtonComponentListener
             )
             else -> super.createViewHolder(parent, type)
         }
     }
 
-    override fun type(model: ShopHeaderButtonComponentUiModel): Int {
+    override fun type(model: ShopPageHeaderButtonComponentUiModel): Int {
         return when (model.name) {
             BUTTON_SHOP_NOTES -> ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT
             BUTTON_CHAT -> ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.LAYOUT

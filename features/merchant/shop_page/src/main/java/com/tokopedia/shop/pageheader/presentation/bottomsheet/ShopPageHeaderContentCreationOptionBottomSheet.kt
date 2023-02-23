@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 /**
  * Created By : Jonathan Darwin on December 01, 2022
  */
-class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
+class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
 
@@ -86,12 +86,12 @@ class ShopContentCreationOptionBottomSheet : BottomSheetUnify() {
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): ShopContentCreationOptionBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ShopContentCreationOptionBottomSheet
+        ): ShopPageHeaderContentCreationOptionBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ShopPageHeaderContentCreationOptionBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                ShopContentCreationOptionBottomSheet::class.java.name
-            ) as ShopContentCreationOptionBottomSheet
+                ShopPageHeaderContentCreationOptionBottomSheet::class.java.name
+            ) as ShopPageHeaderContentCreationOptionBottomSheet
         }
     }
 

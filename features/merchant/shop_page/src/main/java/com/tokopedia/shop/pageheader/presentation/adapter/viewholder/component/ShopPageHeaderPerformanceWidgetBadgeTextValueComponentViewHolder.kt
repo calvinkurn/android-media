@@ -10,16 +10,16 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetBadgeTextValueComponentBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder(
     itemView: View,
-    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
     private val listener: Listener
-) : AbstractViewHolder<ShopHeaderBadgeTextValueComponentUiModel>(itemView) {
+) : AbstractViewHolder<ShopPageHeaderBadgeTextValueComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_performance_widget_badge_text_value_component
@@ -27,13 +27,13 @@ class ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder(
 
     interface Listener {
         fun onShopPerformanceWidgetBadgeTextValueItemClicked(
-            componentModel: ShopHeaderBadgeTextValueComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderBadgeTextValueComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
 
         fun onImpressionShopPerformanceWidgetBadgeTextValueItem(
-            componentModel: ShopHeaderBadgeTextValueComponentUiModel,
-            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopPageHeaderBadgeTextValueComponentUiModel,
+            shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
     }
 
@@ -42,7 +42,7 @@ class ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder(
     private val imageViewFirstLine: ImageView? = viewBinding?.imageFirstLine
     private val textViewSecondLine: Typography? = viewBinding?.textSecondLine
 
-    override fun bind(model: ShopHeaderBadgeTextValueComponentUiModel) {
+    override fun bind(model: ShopPageHeaderBadgeTextValueComponentUiModel) {
         val textFirstLine = model.text.getOrNull(0)?.textHtml.orEmpty()
         val imageUrlFirstLine = model.text.getOrNull(0)?.icon.orEmpty()
         val appLink = model.text.getOrNull(0)?.textLink.orEmpty()
@@ -60,13 +60,13 @@ class ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder(
         itemView.setOnClickListener {
             listener.onShopPerformanceWidgetBadgeTextValueItemClicked(
                 model,
-                shopHeaderWidgetUiModel
+                shopPageHeaderWidgetUiModel
             )
         }
         itemView.addOnImpressionListener(model) {
             listener.onImpressionShopPerformanceWidgetBadgeTextValueItem(
                 model,
-                shopHeaderWidgetUiModel
+                shopPageHeaderWidgetUiModel
             )
         }
     }

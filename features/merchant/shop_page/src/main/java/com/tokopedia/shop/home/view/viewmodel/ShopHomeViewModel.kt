@@ -73,7 +73,7 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.util.ShopPageTabName
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -1264,7 +1264,7 @@ class ShopHomeViewModel @Inject constructor(
             ).parameters
         )
         val layoutData = useCase.executeOnBackground().shopPageGetDynamicTab.tabData.firstOrNull {
-            it.name == ShopPageTabName.HOME
+            it.name == ShopPageHeaderTabName.HOME
         } ?: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
         return ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(layoutData.data.homeLayoutData)
     }
