@@ -11,13 +11,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.login_helper.R
 import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
+import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperException
 import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperViewModel
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.login_helper.util.showToaster
+import com.tokopedia.login_helper.util.showToasterError
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -65,8 +69,8 @@ class LoginHelperFragment : BaseDaggerFragment() {
         binding?.apply {
             loginBtn.setOnClickListener {
                 viewModel.processEvent(LoginHelperEvent.LoginUser(
-                    "pbs-bagas.priyadi+01@tokopedia.com",
-                    "toped123"
+                    "sourav.saikia+03@tokopedia.com",
+                    "password"
                 ))
             }
         }
@@ -121,12 +125,19 @@ class LoginHelperFragment : BaseDaggerFragment() {
         header.setUpHeader()
     }
 
+    //TODO Fix : Does not work
     private fun FragmentLoginHelperBinding.handleChipClick() {
         loginHelperChipStaging.setOnClickListener {
-            viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
+           view?.showToaster(
+                context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_warning_chip_click)
+                    .toBlankOrString()
+            )
         }
         loginHelperChipProd.setOnClickListener {
-            viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
+            view?.showToaster(
+                context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_warning_chip_click)
+                    .toBlankOrString()
+            )
         }
     }
 
@@ -158,12 +169,19 @@ class LoginHelperFragment : BaseDaggerFragment() {
 
     private fun handleLoginTokenSuccess(data: LoginToken) {
         //Call for user Profile
-        view?.let { Toaster.build(it,data.toString(), Toaster.LENGTH_LONG).show() }
+        view.showToaster(
+            context?.resources?.getString(R.string.login_helper_exception_text).toBlankOrString()
+        )
         viewModel.getUserInfo()
     }
 
     private fun handleLoginTokenFailure(throwable: Throwable) {
-        view?.let { Toaster.build(it,"Failure", Toaster.LENGTH_LONG).show() }
+        view.let {
+            if (throwable is LoginHelperException)
+                it.showToasterError("Login Helper Exception")
+            else
+                it.showToasterError(throwable.message.toString())
+        }
     }
 
     private fun handleProfileResponse(profilePojo: Result<ProfilePojo>?) {
@@ -210,7 +228,6 @@ class LoginHelperFragment : BaseDaggerFragment() {
             viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
         } else {
             viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
-            setEnvTypeChip(LoginHelperEnvType.PRODUCTION)
         }
     }
 

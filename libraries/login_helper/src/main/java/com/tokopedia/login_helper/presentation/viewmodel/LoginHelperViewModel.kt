@@ -1,13 +1,13 @@
 package com.tokopedia.login_helper.presentation.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.login_helper.R
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
 import com.tokopedia.login_helper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
@@ -99,6 +99,7 @@ class LoginHelperViewModel @Inject constructor(
                         Log.d("FATAL", "go to activation page : a")
                     },
                     onGoToSecurityQuestion = {
+                        updateLoginToken(Fail(LoginHelperException()))
                         Log.d("FATAL", "loginUsergoto security question: ")
                     }
                 )
@@ -161,3 +162,5 @@ class LoginHelperViewModel @Inject constructor(
         _uiAction.tryEmit(LoginHelperAction.TapBackAction)
     }
 }
+
+class LoginHelperException(): Exception()
