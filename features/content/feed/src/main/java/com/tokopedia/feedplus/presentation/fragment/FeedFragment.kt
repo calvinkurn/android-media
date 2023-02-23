@@ -162,7 +162,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
-                // TODO add code for clear mode
+                feedMainViewModel.toggleClearView()
                 Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
             }
         }
