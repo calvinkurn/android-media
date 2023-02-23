@@ -2,7 +2,6 @@ package com.tokopedia.search.result.product.inspirationwidget.filter
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetFilter
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetOption
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetDataView
@@ -54,7 +53,7 @@ class InspirationFilterDataView(
                 url = optionModel.url,
                 hexColor = optionModel.color,
                 applink = optionModel.applink,
-                filters = optionModel.filters.toInspirationFilterOptionFiltersDataView(),
+                option = optionModel.asOption(),
                 inspirationCardType = inspirationCardType,
                 componentId = optionModel.componentId,
                 keyword = keyword,
@@ -63,12 +62,5 @@ class InspirationFilterDataView(
                 trackingOption = trackingOption
             )
         }
-
-        private fun InspirationWidgetFilter.toInspirationFilterOptionFiltersDataView() =
-            InspirationFilterOptionFiltersDataView(
-                key = this.key,
-                name = this.name,
-                value = this.value
-            )
     }
 }

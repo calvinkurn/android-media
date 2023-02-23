@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.inspirationwidget.filter
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.filter.common.data.Option
 
 class InspirationFilterOptionDataView(
     val text: String = "",
@@ -10,7 +11,7 @@ class InspirationFilterOptionDataView(
     val url: String = "",
     val hexColor: String = "",
     val applink: String = "",
-    val filters: InspirationFilterOptionFiltersDataView = InspirationFilterOptionFiltersDataView(),
+    val option: Option = Option(),
     val inspirationCardType: String = "",
     val componentId: String = "",
     val keyword: String = "",
@@ -28,6 +29,4 @@ class InspirationFilterOptionDataView(
     companion object {
         private const val VALUE_ID = "0"
     }
-
-    val option = filters.option
 }
