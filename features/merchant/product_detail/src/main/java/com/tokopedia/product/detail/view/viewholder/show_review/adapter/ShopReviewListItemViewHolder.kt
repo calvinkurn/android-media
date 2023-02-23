@@ -3,11 +3,16 @@ package com.tokopedia.product.detail.view.viewholder.show_review.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
 import com.tokopedia.product.detail.databinding.ShopReviewListItemBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by yovi.putra on 15/02/23"
@@ -26,10 +31,45 @@ class ShopReviewListItemViewHolder(
 
     private fun ShopReviewListItemBinding.renderUI(uiModel: ProductShopReviewUiModel.Review) {
         shopReviewListImage.loadImage(uiModel.userImage)
-        shopReviewListName.text = uiModel.userName
-        shopReviewListUserTitle.text = uiModel.userTitle
         shopReviewListUserSubTitle.text = uiModel.userSubtitle
         shopReviewListReviewText.text = uiModel.reviewText
+        setUserName(uiModel = uiModel)
+        setUserTitle(uiModel = uiModel)
+    }
+
+    private fun ShopReviewListItemBinding.setUserName(uiModel: ProductShopReviewUiModel.Review) {
+        shopReviewListName.text = uiModel.userName
+
+        // create pretty UI when user title not appear
+        val isUserTitleVisible = uiModel.userTitle.isNotBlank()
+        if (isUserTitleVisible) {
+            setUserNameMaxWidth()
+        } else {
+            setUserNameWidth()
+        }
+    }
+
+    private fun ShopReviewListItemBinding.setUserNameMaxWidth() {
+        val maxWidthPx = USERNAME_MAX_WIDTH.toPx()
+
+        if (shopReviewListName.maxWidth != maxWidthPx) {
+            shopReviewListName.maxWidth = USERNAME_MAX_WIDTH.toPx()
+        }
+    }
+
+    private fun ShopReviewListItemBinding.setUserNameWidth() {
+        shopReviewListName.updateLayoutParams<ViewGroup.LayoutParams> {
+            this?.width = Int.ZERO
+        }
+    }
+
+    private fun ShopReviewListItemBinding.setUserTitle(uiModel: ProductShopReviewUiModel.Review) {
+        val isUserTitleVisible = uiModel.userTitle.isNotBlank()
+
+        shopReviewListTitleDot.isVisible = isUserTitleVisible
+        shopReviewListUserTitle.showIfWithBlock(isUserTitleVisible) {
+            text = uiModel.userTitle
+        }
     }
 
     private fun ShopReviewListItemBinding.eventClick(
@@ -50,6 +90,8 @@ class ShopReviewListItemViewHolder(
     }
 
     companion object {
+        private const val USERNAME_MAX_WIDTH = 92
+
         fun create(
             parent: ViewGroup,
             listener: DynamicProductDetailListener
