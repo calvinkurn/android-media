@@ -9,7 +9,7 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory, var isInClearView: Boolean) :
+class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory, var isInClearView: Boolean = false) :
     BaseAdapter<FeedAdapterTypeFactory>(typeFactory) {
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
@@ -25,6 +25,4 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory, var isInClearView: Bo
     }
 
     // TODO : Later to use DiffUtil
-
-
 }

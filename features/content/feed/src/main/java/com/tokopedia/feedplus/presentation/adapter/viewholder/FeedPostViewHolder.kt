@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
  */
 class FeedPostViewHolder(
     private val binding: ItemFeedPostBinding,
-    private val listener: FeedListener,
+    private val listener: FeedListener
 ) : AbstractViewHolder<FeedModel>(binding.root) {
 
     override fun bind(element: FeedModel?) {
@@ -29,7 +29,6 @@ class FeedPostViewHolder(
                 }
 
                 root.setOnClickListener {
-
                 }
             }
         }
@@ -47,22 +46,6 @@ class FeedPostViewHolder(
 
     private fun showClearView() {
         binding.apply {
-            imgFeedOwnerProfile.show()
-            imgFeedOwnerBadge.show()
-            tvFeedOwnerName.show()
-            labelFeedLive.show()
-            btnFeedFollow.show()
-            tvFeedCaption.show()
-            likeButton.show()
-            commentButton.show()
-            menuButton.show()
-            shareButton.show()
-            productTagButton.show()
-        }
-    }
-
-    private fun hideClearView() {
-        binding.apply {
             imgFeedOwnerProfile.hide()
             imgFeedOwnerBadge.hide()
             tvFeedOwnerName.hide()
@@ -77,13 +60,29 @@ class FeedPostViewHolder(
         }
     }
 
+    private fun hideClearView() {
+        binding.apply {
+            imgFeedOwnerProfile.show()
+            imgFeedOwnerBadge.show()
+            tvFeedOwnerName.show()
+            labelFeedLive.show()
+            btnFeedFollow.show()
+            tvFeedCaption.show()
+            likeButton.show()
+            commentButton.show()
+            menuButton.show()
+            shareButton.show()
+            productTagButton.show()
+        }
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
 
         fun create(
             parent: ViewGroup,
-            listener: FeedListener,
+            listener: FeedListener
         ): FeedPostViewHolder {
             return FeedPostViewHolder(
                 ItemFeedPostBinding.inflate(
@@ -95,5 +94,4 @@ class FeedPostViewHolder(
             )
         }
     }
-
 }
