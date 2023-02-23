@@ -1,310 +1,332 @@
-package com.tokopedia.checkout.view.converter;
+package com.tokopedia.checkout.view.converter
 
-import com.google.gson.Gson;
-import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee;
-import com.tokopedia.checkout.data.model.request.common.RatesFeature;
-import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
+import com.google.gson.Gson
+import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
+import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee
+import com.tokopedia.checkout.data.model.request.common.RatesFeature
+import com.tokopedia.checkout.view.adapter.ShipmentAdapter
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import javax.inject.Inject
 
 /**
  * @author Irfan Khoirul on 07/03/18
  * Originally Authored by Kris, Aghny
  */
+class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) {
 
-public class ShipmentDataRequestConverter {
-    private Gson _gson;
-
-    @Inject
-    public ShipmentDataRequestConverter(Gson gson) {
-        this._gson = gson;
-    }
-
-    public ShipmentAdapter.RequestData generateRequestData(List<ShipmentCartItemModel> shipmentCartItemModels,
-                                                           RecipientAddressModel recipientAddress,
-                                                           boolean isAnalyticsPurpose, boolean isTradeInPickup) {
-        ShipmentAdapter.RequestData requestData = new ShipmentAdapter.RequestData();
-        if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
-            List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
+    fun generateRequestData(
+        shipmentCartItemModels: List<ShipmentCartItemModel>?,
+        recipientAddress: RecipientAddressModel?,
+        isAnalyticsPurpose: Boolean,
+        isTradeInPickup: Boolean
+    ): ShipmentAdapter.RequestData {
+        val requestData = ShipmentAdapter.RequestData()
+        if (shipmentCartItemModels != null && shipmentCartItemModels.isNotEmpty()) {
+            val shopProductCheckoutRequestList: MutableList<ShopProductCheckoutRequest> =
+                ArrayList()
             if (recipientAddress != null) {
-                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                        shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel, isTradeInPickup));
+                for (shipmentCartItemModel in shipmentCartItemModels) {
+                    if (shipmentCartItemModel.selectedShipmentDetailData != null) {
+                        val element = getProductCheckoutRequest(
+                            shipmentCartItemModel,
+                            isTradeInPickup
+                        )
+                        if (element != null) {
+                            shopProductCheckoutRequestList.add(
+                                element
+                            )
+                        }
                     } else if (isAnalyticsPurpose) {
-                        shopProductCheckoutRequestList.add(getProductCheckoutRequestForAnalytics(shipmentCartItemModel));
+                        shopProductCheckoutRequestList.add(
+                            getProductCheckoutRequestForAnalytics(
+                                shipmentCartItemModel
+                            )
+                        )
                     }
                 }
-                requestData.setCheckoutRequestData(createCheckoutRequestData(shopProductCheckoutRequestList, recipientAddress));
+                requestData.checkoutRequestData =
+                    createCheckoutRequestData(shopProductCheckoutRequestList, recipientAddress)
             }
         }
-
-        return requestData;
+        return requestData
     }
 
-    private ShopProductCheckoutRequest getProductCheckoutRequestForAnalytics(ShipmentCartItemModel shipmentCartItemModel) {
+    private fun getProductCheckoutRequestForAnalytics(shipmentCartItemModel: ShipmentCartItemModel): ShopProductCheckoutRequest {
         // Create shop product model for shipment
-        ShippingInfoCheckoutRequest shippingInfoCheckoutRequest = new ShippingInfoCheckoutRequest();
-        shippingInfoCheckoutRequest.setShippingId(0);
-        shippingInfoCheckoutRequest.setSpId(0);
-        shippingInfoCheckoutRequest.setRatesId("");
-        shippingInfoCheckoutRequest.setChecksum("");
-        shippingInfoCheckoutRequest.setUt("");
-        shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice("");
-
-        ShopProductCheckoutRequest shopProductCheckout = new ShopProductCheckoutRequest();
-        shopProductCheckout.setShippingInfo(shippingInfoCheckoutRequest);
-        shopProductCheckout.setFcancelPartial(0);
-        shopProductCheckout.setFinsurance(0);
-        shopProductCheckout.setOrderPriority(0);
-        shopProductCheckout.setPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0);
-        shopProductCheckout.setShopId(shipmentCartItemModel.getShopId());
-        shopProductCheckout.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-        shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
-        shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
-        shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
-        shopProductCheckout.setNeedToSendValidationMetadata(false);
-        shopProductCheckout.setValidationMetadata("");
-        if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-            shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
+        val shippingInfoCheckoutRequest = ShippingInfoCheckoutRequest()
+        shippingInfoCheckoutRequest.shippingId = 0
+        shippingInfoCheckoutRequest.spId = 0
+        shippingInfoCheckoutRequest.ratesId = ""
+        shippingInfoCheckoutRequest.checksum = ""
+        shippingInfoCheckoutRequest.ut = ""
+        shippingInfoCheckoutRequest.analyticsDataShippingCourierPrice = ""
+        val shopProductCheckout = ShopProductCheckoutRequest()
+        shopProductCheckout.shippingInfo = shippingInfoCheckoutRequest
+        shopProductCheckout.fcancelPartial = 0
+        shopProductCheckout.finsurance = 0
+        shopProductCheckout.isOrderPriority = 0
+        shopProductCheckout.isPreorder = if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
+        shopProductCheckout.shopId = shipmentCartItemModel.shopId
+        shopProductCheckout.warehouseId = shipmentCartItemModel.fulfillmentId
+        shopProductCheckout.cartString = shipmentCartItemModel.cartString
+        shopProductCheckout.productData = convertToProductDataCheckout(shipmentCartItemModel)
+        shopProductCheckout.isTokoNow = shipmentCartItemModel.isTokoNow
+        shopProductCheckout.needToSendValidationMetadata = false
+        shopProductCheckout.validationMetadata = ""
+        if (shipmentCartItemModel.addOnsOrderLevelModel != null) {
+            shopProductCheckout.giftingAddOnOrderLevel =
+                convertGiftingAddOnModelRequest(shipmentCartItemModel.addOnsOrderLevelModel)
         }
-        return shopProductCheckout;
+        return shopProductCheckout
     }
 
-    private ShopProductCheckoutRequest getProductCheckoutRequest(ShipmentCartItemModel shipmentCartItemModel,
-                                                                 boolean isTradeInPickup) {
-        ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-        if (shipmentDetailData != null && (shipmentDetailData.getSelectedCourier() != null ||
-                shipmentDetailData.getSelectedCourierTradeInDropOff() != null)) {
-            CourierItemData courierItemData = null;
-            if (isTradeInPickup && shipmentDetailData.getSelectedCourierTradeInDropOff() != null) {
-                courierItemData = shipmentDetailData.getSelectedCourierTradeInDropOff();
-            } else if (!isTradeInPickup && shipmentDetailData.getSelectedCourier() != null) {
-                courierItemData = shipmentDetailData.getSelectedCourier();
+    private fun getProductCheckoutRequest(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        isTradeInPickup: Boolean
+    ): ShopProductCheckoutRequest? {
+        val shipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
+        if (shipmentDetailData != null && (
+            shipmentDetailData.selectedCourier != null ||
+                shipmentDetailData.selectedCourierTradeInDropOff != null
+            )
+        ) {
+            var courierItemData: CourierItemData? = null
+            if (isTradeInPickup && shipmentDetailData.selectedCourierTradeInDropOff != null) {
+                courierItemData = shipmentDetailData.selectedCourierTradeInDropOff
+            } else if (!isTradeInPickup && shipmentDetailData.selectedCourier != null) {
+                courierItemData = shipmentDetailData.selectedCourier
             }
-
             if (courierItemData != null) {
-                RatesFeature ratesFeature = generateRatesFeature(courierItemData);
-                SelectedShipperModel selectedShipperModel = courierItemData.getSelectedShipper();
+                val ratesFeature = generateRatesFeature(courierItemData)
+                val selectedShipper = courierItemData.selectedShipper
 
                 // Create shop product model for shipment
-                ShippingInfoCheckoutRequest shippingInfoCheckoutRequest = new ShippingInfoCheckoutRequest();
-                shippingInfoCheckoutRequest.setShippingId(selectedShipperModel.getShipperId());
-                shippingInfoCheckoutRequest.setSpId(selectedShipperModel.getShipperProductId());
-                if (courierItemData.getScheduleDeliveryUiModel() != null && courierItemData.getScheduleDeliveryUiModel().isSelected()) {
-                    shippingInfoCheckoutRequest.setRatesId(
-                            courierItemData.getScheduleDeliveryUiModel().getRatesId() != 0 ?
-                                    String.valueOf(courierItemData.getScheduleDeliveryUiModel().getRatesId()) :
-                                    ""
-                    );
-                }
-                else {
-                    shippingInfoCheckoutRequest.setRatesId(
-                            shipmentDetailData.getShippingCourierViewModels() != null ?
-                                    shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
-                    );
-                }
-                shippingInfoCheckoutRequest.setChecksum(selectedShipperModel.getChecksum());
-                shippingInfoCheckoutRequest.setUt(selectedShipperModel.getUt());
-                shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(selectedShipperModel.getShipperPrice()));
-                shippingInfoCheckoutRequest.setRatesFeature(ratesFeature);
-
-                ShopProductCheckoutRequest shopProductCheckout = new ShopProductCheckoutRequest();
-                shopProductCheckout.setShippingInfo(shippingInfoCheckoutRequest);
-                shopProductCheckout.setFcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0);
-                shopProductCheckout.setFinsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0);
-                shopProductCheckout.setOrderPriority((shipmentDetailData.isOrderPriority() != null && shipmentDetailData.isOrderPriority() ? 1 : 0));
-                shopProductCheckout.setPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0);
-                shopProductCheckout.setShopId(shipmentCartItemModel.getShopId());
-                shopProductCheckout.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
-                shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
-                shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
-
-                shopProductCheckout.setNeedToSendValidationMetadata(
-                        !selectedShipperModel.getScheduleDate().equals("") &&
-                        selectedShipperModel.getTimeslotId() != 0L &&
-                        !shipmentCartItemModel.getValidationMetadata().equals("")
-                );
-                shopProductCheckout.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
-
-                ArrayList<String> promoCodes = new ArrayList<>();
-                List<PromoRequest> promoRequests = new ArrayList<>();
-
-                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                    promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
-                    PromoRequest promoRequest = new PromoRequest();
-                    promoRequest.setCode(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
-                    promoRequest.setType(PromoRequest.TYPE_LOGISTIC);
-                    promoRequests.add(promoRequest);
-                    shopProductCheckout.setFreeShippingMetadata(selectedShipperModel.getFreeShippingMetadata());
-                }
-                shopProductCheckout.setPromos(promoRequests);
-
-                if (promoCodes.size() > 0) {
-                    shopProductCheckout.setPromoCodes(promoCodes);
-                }
-
-                if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
-                    DropshipDataCheckoutRequest dropshipDataCheckoutRequest = new DropshipDataCheckoutRequest();
-                    dropshipDataCheckoutRequest.setName(shipmentDetailData.getDropshipperName());
-                    dropshipDataCheckoutRequest.setTelpNo(shipmentDetailData.getDropshipperPhone());
-                    shopProductCheckout.setDropship(1);
-                    shopProductCheckout.setDropshipData(dropshipDataCheckoutRequest);
+                val shippingInfoCheckoutRequest = ShippingInfoCheckoutRequest()
+                shippingInfoCheckoutRequest.shippingId = selectedShipper.shipperId
+                shippingInfoCheckoutRequest.spId = selectedShipper.shipperProductId
+                if (courierItemData.scheduleDeliveryUiModel != null && courierItemData.scheduleDeliveryUiModel!!.isSelected) {
+                    shippingInfoCheckoutRequest.ratesId =
+                        if (courierItemData.scheduleDeliveryUiModel!!.ratesId != 0L) courierItemData.scheduleDeliveryUiModel!!.ratesId.toString() else ""
                 } else {
-                    shopProductCheckout.setDropship(0);
+                    shippingInfoCheckoutRequest.ratesId =
+                        if (shipmentDetailData.shippingCourierViewModels != null) shipmentDetailData.shippingCourierViewModels!![0].ratesId else ""
                 }
-
-                if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-                    shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
+                shippingInfoCheckoutRequest.checksum = selectedShipper.checksum
+                shippingInfoCheckoutRequest.ut = selectedShipper.ut
+                shippingInfoCheckoutRequest.analyticsDataShippingCourierPrice =
+                    selectedShipper.shipperPrice.toString()
+                shippingInfoCheckoutRequest.ratesFeature = ratesFeature
+                val shopProductCheckout = ShopProductCheckoutRequest()
+                shopProductCheckout.shippingInfo = shippingInfoCheckoutRequest
+                shopProductCheckout.fcancelPartial =
+                    if (shipmentDetailData.usePartialOrder) 1 else 0
+                shopProductCheckout.finsurance =
+                    if (shipmentDetailData.useInsurance != null && shipmentDetailData.useInsurance!!) 1 else 0
+                shopProductCheckout.isOrderPriority =
+                    if (shipmentDetailData.isOrderPriority != null && shipmentDetailData.isOrderPriority!!) 1 else 0
+                shopProductCheckout.isPreorder =
+                    if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
+                shopProductCheckout.shopId = shipmentCartItemModel.shopId
+                shopProductCheckout.warehouseId = shipmentCartItemModel.fulfillmentId
+                shopProductCheckout.cartString = shipmentCartItemModel.cartString
+                shopProductCheckout.productData =
+                    convertToProductDataCheckout(shipmentCartItemModel)
+                shopProductCheckout.isTokoNow = shipmentCartItemModel.isTokoNow
+                shopProductCheckout.needToSendValidationMetadata =
+                    (selectedShipper.scheduleDate != "" && selectedShipper.timeslotId != 0L && shipmentCartItemModel.validationMetadata != "")
+                shopProductCheckout.validationMetadata = shipmentCartItemModel.validationMetadata
+                val promoCodes = ArrayList<String>()
+                val promoRequests: MutableList<PromoRequest> = ArrayList()
+                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                    promoCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                    val promoRequest = PromoRequest()
+                    promoRequest.code = shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                    promoRequest.type = PromoRequest.TYPE_LOGISTIC
+                    promoRequests.add(promoRequest)
+                    shopProductCheckout.freeShippingMetadata = selectedShipper.freeShippingMetadata
                 }
-
-                if (shipmentCartItemModel.getHasEthicalProducts()) {
-                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                        if (!cartItemModel.isError() && cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
-                            shopProductCheckout.setNeedPrescription(true);
-
-                            shopProductCheckout.setPrescriptionIds(shipmentCartItemModel.getPrescriptionIds());
-                            shopProductCheckout.setConsultationDataString(shipmentCartItemModel.getConsultationDataString());
-                            break;
+                shopProductCheckout.promos = promoRequests
+                if (promoCodes.size > 0) {
+                    shopProductCheckout.promoCodes = promoCodes
+                }
+                if (shipmentDetailData.useDropshipper != null && shipmentDetailData.useDropshipper!!) {
+                    val dropshipDataCheckoutRequest = DropshipDataCheckoutRequest()
+                    dropshipDataCheckoutRequest.name = shipmentDetailData.dropshipperName
+                    dropshipDataCheckoutRequest.telpNo = shipmentDetailData.dropshipperPhone
+                    shopProductCheckout.isDropship = 1
+                    shopProductCheckout.dropshipData = dropshipDataCheckoutRequest
+                } else {
+                    shopProductCheckout.isDropship = 0
+                }
+                if (shipmentCartItemModel.addOnsOrderLevelModel != null) {
+                    shopProductCheckout.giftingAddOnOrderLevel =
+                        convertGiftingAddOnModelRequest(shipmentCartItemModel.addOnsOrderLevelModel)
+                }
+                if (shipmentCartItemModel.hasEthicalProducts) {
+                    for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+                        if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
+                            shopProductCheckout.needPrescription = true
+                            shopProductCheckout.prescriptionIds =
+                                shipmentCartItemModel.prescriptionIds
+                            shopProductCheckout.consultationDataString =
+                                shipmentCartItemModel.consultationDataString
+                            break
                         }
                     }
                 }
-
-                return shopProductCheckout;
+                return shopProductCheckout
             }
-            return null;
+            return null
         }
-        return null;
+        return null
     }
 
-    public static RatesFeature generateRatesFeature(CourierItemData courierItemData) {
-        RatesFeature result = new RatesFeature();
-        OntimeDeliveryGuarantee otdg = new OntimeDeliveryGuarantee();
-        if (courierItemData.getSelectedShipper().getOntimeDelivery() != null) {
-            otdg.setAvailable(courierItemData.getSelectedShipper().getOntimeDelivery().getAvailable());
-            otdg.setDuration(courierItemData.getSelectedShipper().getOntimeDelivery().getValue());
+    private fun convertToProductDataCheckout(shipmentCartItemModel: ShipmentCartItemModel): ArrayList<ProductDataCheckoutRequest> {
+        val productDataList = ArrayList<ProductDataCheckoutRequest>()
+        for (cartItem in shipmentCartItemModel.cartItemModels) {
+            productDataList.add(
+                convertToProductDataCheckout(
+                    cartItem,
+                    shipmentCartItemModel.selectedShipmentDetailData
+                )
+            )
         }
-        result.setOntimeDeliveryGuarantee(otdg);
-        return result;
+        return productDataList
     }
 
-    private ArrayList<ProductDataCheckoutRequest> convertToProductDataCheckout(ShipmentCartItemModel shipmentCartItemModel) {
-        ArrayList<ProductDataCheckoutRequest> productDataList = new ArrayList<>();
-        for (CartItemModel cartItem : shipmentCartItemModel.getCartItemModels()) {
-            productDataList.add(convertToProductDataCheckout(cartItem, shipmentCartItemModel.getSelectedShipmentDetailData()));
+    private fun convertToProductDataCheckout(
+        cartItem: CartItemModel,
+        shipmentDetailData: ShipmentDetailData?
+    ): ProductDataCheckoutRequest {
+        var courierId = ""
+        var serviceId = ""
+        var shippingPrice = ""
+        if (shipmentDetailData?.selectedCourier != null) {
+            courierId =
+                shipmentDetailData.selectedCourier!!.selectedShipper.shipperProductId.toString()
+            serviceId = shipmentDetailData.selectedCourier!!.selectedShipper.serviceId.toString()
+            shippingPrice =
+                shipmentDetailData.selectedCourier!!.selectedShipper.shipperPrice.toString()
         }
-
-        return productDataList;
+        val productDataCheckoutRequest = ProductDataCheckoutRequest()
+        productDataCheckoutRequest.productId = cartItem.productId
+        productDataCheckoutRequest.bundleId = cartItem.bundleId
+        productDataCheckoutRequest.bundleGroupId = cartItem.bundleGroupId
+        productDataCheckoutRequest.bundleType = cartItem.bundleType
+        productDataCheckoutRequest.isPurchaseProtection = cartItem.isProtectionOptIn
+        productDataCheckoutRequest.productName = cartItem.analyticsProductCheckoutData.productName
+        productDataCheckoutRequest.productPrice = cartItem.analyticsProductCheckoutData.productPrice
+        productDataCheckoutRequest.productBrand = cartItem.analyticsProductCheckoutData.productBrand
+        productDataCheckoutRequest.productCategory =
+            cartItem.analyticsProductCheckoutData.productCategory
+        productDataCheckoutRequest.productVariant =
+            cartItem.analyticsProductCheckoutData.productVariant
+        productDataCheckoutRequest.productQuantity =
+            cartItem.analyticsProductCheckoutData.productQuantity
+        productDataCheckoutRequest.productShopId =
+            cartItem.analyticsProductCheckoutData.productShopId
+        productDataCheckoutRequest.productShopType =
+            cartItem.analyticsProductCheckoutData.productShopType
+        productDataCheckoutRequest.productShopName =
+            cartItem.analyticsProductCheckoutData.productShopName
+        productDataCheckoutRequest.productCategoryId =
+            cartItem.analyticsProductCheckoutData.productCategoryId
+        productDataCheckoutRequest.productListName =
+            cartItem.analyticsProductCheckoutData.productListName
+        productDataCheckoutRequest.productAttribution =
+            cartItem.analyticsProductCheckoutData.productAttribution
+        productDataCheckoutRequest.cartId = cartItem.cartId
+        productDataCheckoutRequest.warehouseId = cartItem.analyticsProductCheckoutData.warehouseId
+        productDataCheckoutRequest.productWeight =
+            cartItem.analyticsProductCheckoutData.productWeight
+        productDataCheckoutRequest.promoCode = cartItem.analyticsProductCheckoutData.promoCode
+        productDataCheckoutRequest.promoDetails = cartItem.analyticsProductCheckoutData.promoDetails
+        productDataCheckoutRequest.buyerAddressId =
+            cartItem.analyticsProductCheckoutData.buyerAddressId
+        productDataCheckoutRequest.shippingDuration = serviceId
+        productDataCheckoutRequest.courier = courierId
+        productDataCheckoutRequest.shippingPrice = shippingPrice
+        productDataCheckoutRequest.codFlag = cartItem.analyticsProductCheckoutData.codFlag
+        productDataCheckoutRequest.tokopediaCornerFlag =
+            cartItem.analyticsProductCheckoutData.tokopediaCornerFlag
+        productDataCheckoutRequest.isFulfillment =
+            cartItem.analyticsProductCheckoutData.isFulfillment
+        productDataCheckoutRequest.isDiscountedPrice =
+            cartItem.analyticsProductCheckoutData.isDiscountedPrice
+        productDataCheckoutRequest.isFreeShipping = cartItem.isFreeShipping
+        productDataCheckoutRequest.isFreeShippingExtra = cartItem.isFreeShippingExtra
+        productDataCheckoutRequest.freeShippingName = cartItem.freeShippingName
+        productDataCheckoutRequest.campaignId = cartItem.analyticsProductCheckoutData.campaignId
+        productDataCheckoutRequest.protectionPricePerProduct = cartItem.protectionPricePerProduct
+        productDataCheckoutRequest.protectionTitle = cartItem.protectionTitle
+        productDataCheckoutRequest.isProtectionAvailable = cartItem.isProtectionAvailable
+        productDataCheckoutRequest.addOnGiftingProductLevelRequest =
+            convertGiftingAddOnModelRequest(cartItem.addOnProductLevelModel)
+        return productDataCheckoutRequest
     }
 
-    private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem, ShipmentDetailData shipmentDetailData) {
-        String courierId = "";
-        String serviceId = "";
-        String shippingPrice = "";
-        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
-            courierId = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getShipperProductId());
-            serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getServiceId());
-            shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getShipperPrice());
-        }
-
-        ProductDataCheckoutRequest productDataCheckoutRequest = new ProductDataCheckoutRequest();
-        productDataCheckoutRequest.setProductId(cartItem.getProductId());
-        productDataCheckoutRequest.setBundleId(cartItem.getBundleId());
-        productDataCheckoutRequest.setBundleGroupId(cartItem.getBundleGroupId());
-        productDataCheckoutRequest.setBundleType(cartItem.getBundleType());
-        productDataCheckoutRequest.setPurchaseProtection(cartItem.isProtectionOptIn());
-        productDataCheckoutRequest.setProductName(cartItem.getAnalyticsProductCheckoutData().getProductName());
-        productDataCheckoutRequest.setProductPrice(cartItem.getAnalyticsProductCheckoutData().getProductPrice());
-        productDataCheckoutRequest.setProductBrand(cartItem.getAnalyticsProductCheckoutData().getProductBrand());
-        productDataCheckoutRequest.setProductCategory(cartItem.getAnalyticsProductCheckoutData().getProductCategory());
-        productDataCheckoutRequest.setProductVariant(cartItem.getAnalyticsProductCheckoutData().getProductVariant());
-        productDataCheckoutRequest.setProductQuantity(cartItem.getAnalyticsProductCheckoutData().getProductQuantity());
-        productDataCheckoutRequest.setProductShopId(cartItem.getAnalyticsProductCheckoutData().getProductShopId());
-        productDataCheckoutRequest.setProductShopType(cartItem.getAnalyticsProductCheckoutData().getProductShopType());
-        productDataCheckoutRequest.setProductShopName(cartItem.getAnalyticsProductCheckoutData().getProductShopName());
-        productDataCheckoutRequest.setProductCategoryId(cartItem.getAnalyticsProductCheckoutData().getProductCategoryId());
-        productDataCheckoutRequest.setProductListName(cartItem.getAnalyticsProductCheckoutData().getProductListName());
-        productDataCheckoutRequest.setProductAttribution(cartItem.getAnalyticsProductCheckoutData().getProductAttribution());
-        productDataCheckoutRequest.setCartId(cartItem.getCartId());
-        productDataCheckoutRequest.setWarehouseId(cartItem.getAnalyticsProductCheckoutData().getWarehouseId());
-        productDataCheckoutRequest.setProductWeight(cartItem.getAnalyticsProductCheckoutData().getProductWeight());
-        productDataCheckoutRequest.setPromoCode(cartItem.getAnalyticsProductCheckoutData().getPromoCode());
-        productDataCheckoutRequest.setPromoDetails(cartItem.getAnalyticsProductCheckoutData().getPromoDetails());
-        productDataCheckoutRequest.setBuyerAddressId(cartItem.getAnalyticsProductCheckoutData().getBuyerAddressId());
-        productDataCheckoutRequest.setShippingDuration(serviceId);
-        productDataCheckoutRequest.setCourier(courierId);
-        productDataCheckoutRequest.setShippingPrice(shippingPrice);
-        productDataCheckoutRequest.setCodFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag());
-        productDataCheckoutRequest.setTokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag());
-        productDataCheckoutRequest.setFulfillment(cartItem.getAnalyticsProductCheckoutData().isFulfillment());
-        productDataCheckoutRequest.setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice());
-        productDataCheckoutRequest.setFreeShipping(cartItem.isFreeShipping());
-        productDataCheckoutRequest.setFreeShippingExtra(cartItem.isFreeShippingExtra());
-        productDataCheckoutRequest.setFreeShippingName(cartItem.getFreeShippingName());
-        productDataCheckoutRequest.setCampaignId(cartItem.getAnalyticsProductCheckoutData().getCampaignId());
-        productDataCheckoutRequest.setProtectionPricePerProduct(cartItem.getProtectionPricePerProduct());
-        productDataCheckoutRequest.setProtectionTitle(cartItem.getProtectionTitle());
-        productDataCheckoutRequest.setProtectionAvailable(cartItem.isProtectionAvailable());
-        productDataCheckoutRequest.setAddOnGiftingProductLevelRequest(convertGiftingAddOnModelRequest(cartItem.getAddOnProductLevelModel()));
-        return productDataCheckoutRequest;
-    }
-
-    private ArrayList<AddOnGiftingRequest> convertGiftingAddOnModelRequest(AddOnsDataModel addOnsDataModel) {
-        ArrayList<AddOnGiftingRequest> listAddOnProductRequest = new ArrayList<>();
-        if (addOnsDataModel.getStatus() == 1) {
-            for (AddOnDataItemModel addOnDataItemModel : addOnsDataModel.getAddOnsDataItemModelList()) {
-                AddOnGiftingRequest addOnGiftingRequest = new AddOnGiftingRequest();
-                addOnGiftingRequest.setItemId(addOnDataItemModel.getAddOnId());
-                addOnGiftingRequest.setItemType("add_ons");
-                addOnGiftingRequest.setItemQty((int) addOnDataItemModel.getAddOnQty());
-                addOnGiftingRequest.setItemMetadata(_gson.toJson(addOnDataItemModel.getAddOnMetadata()));
-                listAddOnProductRequest.add(addOnGiftingRequest);
+    private fun convertGiftingAddOnModelRequest(addOnsDataModel: AddOnsDataModel?): ArrayList<AddOnGiftingRequest> {
+        val listAddOnProductRequest = ArrayList<AddOnGiftingRequest>()
+        if (addOnsDataModel!!.status == 1) {
+            for ((_, addOnId, addOnMetadata, addOnQty) in addOnsDataModel.addOnsDataItemModelList) {
+                val addOnGiftingRequest = AddOnGiftingRequest()
+                addOnGiftingRequest.itemId = addOnId
+                addOnGiftingRequest.itemType = "add_ons"
+                addOnGiftingRequest.itemQty = addOnQty.toInt()
+                addOnGiftingRequest.itemMetadata = _gson.toJson(addOnMetadata)
+                listAddOnProductRequest.add(addOnGiftingRequest)
             }
         }
-        return listAddOnProductRequest;
+        return listAddOnProductRequest
     }
 
-    private List<DataCheckoutRequest> createCheckoutRequestData(
-            List<ShopProductCheckoutRequest> shopProducts,
-            RecipientAddressModel recipientAddress) {
-
-        String addressId = getSelectedAddressId(recipientAddress);
-        List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
-        DataCheckoutRequest dataCheckoutRequest = new DataCheckoutRequest();
-        dataCheckoutRequest.setAddressId(addressId);
-        dataCheckoutRequest.setShopProducts(shopProducts);
-        checkoutRequestData.add(dataCheckoutRequest);
-
-        return checkoutRequestData;
+    private fun createCheckoutRequestData(
+        shopProducts: List<ShopProductCheckoutRequest>,
+        recipientAddress: RecipientAddressModel
+    ): List<DataCheckoutRequest> {
+        val addressId = getSelectedAddressId(recipientAddress)
+        val checkoutRequestData: MutableList<DataCheckoutRequest> = ArrayList()
+        val dataCheckoutRequest = DataCheckoutRequest()
+        dataCheckoutRequest.addressId = addressId
+        dataCheckoutRequest.shopProducts = shopProducts
+        checkoutRequestData.add(dataCheckoutRequest)
+        return checkoutRequestData
     }
 
-    private String getSelectedAddressId(RecipientAddressModel recipientAddress) {
-        if (recipientAddress != null) {
-            if (recipientAddress.getSelectedTabIndex() == 1 && recipientAddress.getLocationDataModel() != null) {
-                return recipientAddress.getLocationDataModel().getAddrId();
+    private fun getSelectedAddressId(recipientAddress: RecipientAddressModel?): String {
+        return if (recipientAddress != null) {
+            if (recipientAddress.selectedTabIndex == 1 && recipientAddress.locationDataModel != null) {
+                recipientAddress.locationDataModel.addrId
             } else {
-                return recipientAddress.getId();
+                recipientAddress.id
             }
+        } else {
+            "0"
         }
-        return "0";
     }
 
+    companion object {
+        @JvmStatic
+        fun generateRatesFeature(courierItemData: CourierItemData): RatesFeature {
+            val result = RatesFeature()
+            val otdg = OntimeDeliveryGuarantee()
+            if (courierItemData.selectedShipper.ontimeDelivery != null) {
+                otdg.available = courierItemData.selectedShipper.ontimeDelivery!!.available
+                otdg.duration = courierItemData.selectedShipper.ontimeDelivery!!.value
+            }
+            result.ontimeDeliveryGuarantee = otdg
+            return result
+        }
+    }
 }
