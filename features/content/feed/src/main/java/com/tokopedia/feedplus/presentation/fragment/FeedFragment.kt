@@ -48,6 +48,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
+    private var isInClearViewMode: Boolean = false
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
@@ -84,7 +85,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        observeLiveData()
+        observeClearViewData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -162,7 +163,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
-                feedMainViewModel.toggleClearView()
+                feedMainViewModel.toggleClearView(true)
                 Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
             }
         }
@@ -172,13 +173,16 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         feedMainViewModel.reportContent(feedReportRequestParamModel)
     }
 
+    override fun disableClearView() {
+        feedMainViewModel.toggleClearView(false)
+    }
+
+    override fun inClearViewMode(): Boolean = isInClearViewMode
+
     private fun initView() {
         binding?.let {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = FeedPostAdapter(
-                FeedAdapterTypeFactory(this),
-                feedMainViewModel.isInClearView.value ?: false
-            )
+            adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
 
             LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.layoutManager = layoutManager
@@ -196,19 +200,10 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         }
     }
 
-    private fun observeLiveData() {
+    private fun observeClearViewData() {
         feedMainViewModel.isInClearView.observe(viewLifecycleOwner) {
-            if (it) {
-                binding?.rvFeedPost?.setOnClickListener {
-                    feedMainViewModel.toggleClearView()
-                }
-                adapter?.toggleClearView(true)
-            } else {
-                binding?.rvFeedPost?.setOnClickListener {
-                    // do nothing
-                }
-                adapter?.toggleClearView(false)
-            }
+            isInClearViewMode = it
+            adapter?.onToggleClearView()
         }
     }
 

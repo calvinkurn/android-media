@@ -28,20 +28,19 @@ class FeedPostViewHolder(
                     listener.onMenuClicked(it)
                 }
 
+                if (listener.inClearViewMode()) {
+                    showClearView()
+                } else {
+                    hideClearView()
+                }
+
                 root.setOnClickListener {
+                    if (listener.inClearViewMode()) {
+                        listener.disableClearView()
+                    }
                 }
             }
         }
-    }
-
-    fun bind(element: FeedModel?, isInClearView: Boolean) {
-        if (isInClearView) {
-            showClearView()
-        } else {
-            hideClearView()
-        }
-
-        bind(element)
     }
 
     private fun showClearView() {

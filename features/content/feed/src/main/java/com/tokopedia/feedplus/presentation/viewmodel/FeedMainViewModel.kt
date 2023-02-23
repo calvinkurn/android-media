@@ -82,8 +82,8 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
-    fun toggleClearView() {
-        _isInClearView.value = !(_isInClearView.value ?: false)
+    fun toggleClearView(clearView: Boolean) {
+        _isInClearView.value = clearView
     }
 
     private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
