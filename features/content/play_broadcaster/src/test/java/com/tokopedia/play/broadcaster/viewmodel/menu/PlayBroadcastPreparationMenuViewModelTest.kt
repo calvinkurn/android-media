@@ -11,6 +11,8 @@ import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBui
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMockMapper
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -42,14 +44,14 @@ class PlayBroadcastPreparationMenuViewModelTest {
     )
     private val mockChannel = GetChannelResponse.Channel(
         basic = GetChannelResponse.ChannelBasic(
-            channelId = "123",
-            coverUrl = "https://tokopedia.com"
+            channelId = "123"
         )
     )
     private val mockAddedTag = GetAddedChannelTagsResponse()
-    private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
+    private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList(sectionSize = 0)
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockPlayBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true)
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
 
@@ -71,6 +73,7 @@ class PlayBroadcastPreparationMenuViewModelTest {
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
         coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
+        coEvery { mockPlayBroadcastMapper.mapCover(any(), any()) } returns uiModelBuilder.buildPlayCoverUiModel()
     }
 
     @Test
@@ -81,6 +84,7 @@ class PlayBroadcastPreparationMenuViewModelTest {
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
         )
 
         robot.use {
@@ -88,19 +92,27 @@ class PlayBroadcastPreparationMenuViewModelTest {
                 getAccountConfiguration()
             }
 
-//            state.menuList.assertEqualTo(menuList)
+            state.menuList.assertEqualTo(menuList)
         }
     }
 
     @Test
     fun `playBroadcaster_menu_mandatoryFieldFilled`() {
+        val mockTitle = "Title"
+
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
         )
 
         robot.use {
             val state = it.recordState {
-
+                getAccountConfiguration()
+                uploadTitle(mockTitle)
             }
 
             state.menuList.forEach { menu ->

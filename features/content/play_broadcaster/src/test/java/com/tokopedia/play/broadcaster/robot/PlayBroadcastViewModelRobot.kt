@@ -40,7 +40,7 @@ import java.io.Closeable
 internal class PlayBroadcastViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     handle: SavedStateHandle = SavedStateHandle(),
-    mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
+    private val mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
@@ -118,6 +118,12 @@ internal class PlayBroadcastViewModelRobot(
     }
 
     fun getAccountConfiguration(authorType: String = TYPE_UNKNOWN) = viewModel.submitAction(PlayBroadcastAction.GetConfiguration(authorType))
+
+    fun uploadTitle(title: String) {
+        CoroutineScope(dispatchers.coroutineDispatcher).launch {
+            mDataStore.getSetupDataStore().uploadTitle("", "", title)
+        }
+    }
 
     fun startLive() = viewModel.submitAction(
         PlayBroadcastAction.BroadcastStateChanged(
