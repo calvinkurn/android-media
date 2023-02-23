@@ -9,7 +9,7 @@ data class VoucherCreationStepThreeUiState(
     val originalPageMode: PageMode = PageMode.CREATE,
     val pageMode: PageMode = PageMode.CREATE,
     val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(),
-    val availableTargetBuyer: List<VoucherTargetBuyer> = listOf(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER),
+    val availableTargetBuyer: List<VoucherTargetBuyer> = listOf(VoucherTargetBuyer.ALL_BUYER),
     val spendingEstimation: Long = 0,
     val isNominalError: Boolean = false,
     val nominalErrorMsg: String = "",
