@@ -120,6 +120,8 @@ class OrderSummaryPageRobot {
                 click().perform(uiController, view.findViewById(com.tokopedia.logisticcart.R.id.btn_change_duration))
             }
         }))
+        // Wait for bottomsheet to fully open
+        Thread.sleep(1000)
         DurationBottomSheetRobot().apply(func)
     }
 
