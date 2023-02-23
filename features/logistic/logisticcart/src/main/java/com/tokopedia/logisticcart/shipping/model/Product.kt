@@ -10,13 +10,13 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Product(
-        @SerializedName("product_id")
-        @SuppressLint("Invalid Data Type")
-        var productId: Long = 0,
+    @SerializedName("product_id")
+    @SuppressLint("Invalid Data Type")
+    var productId: Long = 0,
 
-        @SerializedName("is_free_shipping")
-        var isFreeShipping: Boolean = false,
+    @SerializedName("is_free_shipping")
+    var isFreeShipping: Boolean = false,
 
-        @SerializedName("is_free_shipping_tc")
-        var isFreeShippingTc: Boolean = false
+    @SerializedName("is_free_shipping_tc")
+    var isFreeShippingTc: Boolean = false
 ) : Parcelable
