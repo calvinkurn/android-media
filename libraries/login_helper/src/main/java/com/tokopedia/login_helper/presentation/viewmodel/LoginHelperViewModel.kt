@@ -110,22 +110,26 @@ class LoginHelperViewModel @Inject constructor(
         })
     }
 
-//    fun getUserInfo() {
-//        getProfileUseCase.execute(GetProfileSubscriber(userSession,
-//            { mutableProfileResponse.value = Success(it) },
-//            { mutableProfileResponse.value = Fail(it) },
-//            getAdminTypeUseCase = getAdminTypeUseCase,
-//            showLocationAdminPopUp = {
-//                mutableShowLocationAdminPopUp.value = Success(true)
-//            },
-//            onLocationAdminRedirection = {
-//                mutableAdminRedirection.value = Success(true)
-//            },
-//            showErrorGetAdminType = {
-//                mutableShowLocationAdminPopUp.value = Fail(it)
-//            }
-//        ))
-//    }
+    fun getUserInfo() {
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+            {
+                updateProfileResponse(Success(it))
+            },
+            {
+                updateProfileResponse(Fail(it))
+            },
+            getAdminTypeUseCase = getAdminTypeUseCase,
+            showLocationAdminPopUp = {
+             //   mutableShowLocationAdminPopUp.value = Success(true)
+            },
+            onLocationAdminRedirection = {
+           //     mutableAdminRedirection.value = Success(true)
+            },
+            showErrorGetAdminType = {
+       //         mutableShowLocationAdminPopUp.value = Fail(it)
+            }
+        ))
+    }
 
     private fun updateLoginToken(loginToken: com.tokopedia.usecase.coroutines.Result<LoginToken>) {
         _uiState.update {
@@ -136,7 +140,11 @@ class LoginHelperViewModel @Inject constructor(
     }
 
     private fun updateProfileResponse(profilePojo: com.tokopedia.usecase.coroutines.Result<ProfilePojo>) {
-
+        _uiState.update {
+            it.copy(
+                profilePojo = profilePojo
+            )
+        }
     }
 
 

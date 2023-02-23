@@ -23,6 +23,7 @@ class GetUserDetailsRestUseCase @Inject constructor(private val repository: Rest
 
         val restRequest = RestRequest.Builder(url, token)
             .setRequestType(RequestType.GET)
+            .setHeaders(mapOf(Pair("Content-Type", "application/x-www-form-urlencoded")))
             .build()
 
         restRequestList.clear()

@@ -58,4 +58,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
 
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 }

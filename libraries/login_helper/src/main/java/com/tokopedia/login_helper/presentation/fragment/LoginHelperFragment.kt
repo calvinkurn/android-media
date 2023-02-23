@@ -18,9 +18,12 @@ import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperViewModel
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.sessioncommon.data.LoginToken
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.Env
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -57,7 +60,7 @@ class LoginHelperFragment : BaseDaggerFragment() {
         }
         observeUiState()
         observeUiAction()
-        viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
+        setEnvValue()
 
         binding?.apply {
             loginBtn.setOnClickListener {
@@ -90,6 +93,7 @@ class LoginHelperFragment : BaseDaggerFragment() {
     private fun handleUiState(state: LoginHelperUiState) {
         setEnvTypeChip(state.envType)
         handleLoginToken(state.loginToken)
+        handleProfileResponse(state.profilePojo)
     }
 
     private fun handleAction(action: LoginHelperAction) {
@@ -155,11 +159,30 @@ class LoginHelperFragment : BaseDaggerFragment() {
     private fun handleLoginTokenSuccess(data: LoginToken) {
         //Call for user Profile
         view?.let { Toaster.build(it,data.toString(), Toaster.LENGTH_LONG).show() }
-   //     viewModel.getUserInfo()
+        viewModel.getUserInfo()
     }
 
     private fun handleLoginTokenFailure(throwable: Throwable) {
         view?.let { Toaster.build(it,"Failure", Toaster.LENGTH_LONG).show() }
+    }
+
+    private fun handleProfileResponse(profilePojo: Result<ProfilePojo>?) {
+        when(profilePojo) {
+            is Success -> {
+                handleProfileResponseSuccess(profilePojo.data)
+            }
+            is Fail -> {
+                handleProfileResponseFailure(profilePojo.throwable)
+            }
+        }
+    }
+
+    private fun handleProfileResponseSuccess(data: ProfilePojo) {
+        view?.let { Toaster.build(it,data.toString(), Toaster.LENGTH_LONG).show() }
+    }
+
+    private fun handleProfileResponseFailure(throwable: Throwable) {
+        view?.let { Toaster.build(it,throwable.message.toString(), Toaster.LENGTH_LONG).show() }
     }
 
 
@@ -179,6 +202,16 @@ class LoginHelperFragment : BaseDaggerFragment() {
             )
             .build()
             .inject(this)
+    }
+
+    private fun setEnvValue() {
+        val currentEnv = getInstance().TYPE
+        if(Env.STAGING == currentEnv) {
+            viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
+        } else {
+            viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
+            setEnvTypeChip(LoginHelperEnvType.PRODUCTION)
+        }
     }
 
     companion object {
