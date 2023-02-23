@@ -248,7 +248,7 @@ open class FlightSearchActivity :
 
         wrapper.addView(imageView)
         wrapper.addView(imageViewShare)
-        wrapper.tag = TAG_CHANGE_BUTTON
+        imageView.tag = TAG_CHANGE_BUTTON
         imageView.setOnClickListener {
             showChangeSearchBottomSheet()
         }
