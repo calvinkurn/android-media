@@ -41,7 +41,7 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
         viewBinding?.buttonAction?.setOnClickListener {
             viewBinding?.sampleUserConsent?.submitConsent()
         }
-        viewBinding?.sampleUserConsent?.setOnNeedConsentListener { needConsent ->
+        viewBinding?.sampleUserConsent?.setOnDetailConsentListener { needConsent, _ ->
             viewBinding?.buttonAction?.showWithCondition(needConsent)
         }
     }
