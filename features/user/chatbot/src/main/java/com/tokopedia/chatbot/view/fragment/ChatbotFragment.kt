@@ -1124,7 +1124,7 @@ class ChatbotFragment :
     }
 
     private fun backFromOnboardingActivity() {
-        smoothScrollToPosition(ZERO_POSITION)
+        checkVideoUploadOnboardingStatus()
     }
 
     private fun submitCsat(resultCode: Int, data: Intent?) {
