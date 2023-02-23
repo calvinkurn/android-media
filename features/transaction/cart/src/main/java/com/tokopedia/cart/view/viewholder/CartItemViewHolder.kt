@@ -182,6 +182,15 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductAction(data: CartItemHolderData) {
+        with(binding) {
+            textNotes.gone()
+            textNotesFilled.gone()
+            textNotesChange.gone()
+            textFieldNotes.gone()
+            textMoveToWishlist.gone()
+            textProductUnavailableAction.gone()
+            buttonDeleteCart.gone()
+        }
         if (data.actionsData.isNotEmpty()) {
             data.actionsData.forEach {
                 when (it.id) {
@@ -569,7 +578,8 @@ class CartItemViewHolder constructor(
                 ?: ""
         } else {
             binding.textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                data.productPrice, false
+                data.productPrice,
+                false
             ).removeDecimalSuffix()
         }
     }
@@ -695,7 +705,9 @@ class CartItemViewHolder constructor(
                             renderProductNotesEmpty(element)
                         }
                         true
-                    } else false
+                    } else {
+                        false
+                    }
                 }
             }
 
@@ -714,7 +726,6 @@ class CartItemViewHolder constructor(
                     count: Int,
                     after: Int
                 ) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -723,7 +734,6 @@ class CartItemViewHolder constructor(
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-
                 }
             })
             textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
@@ -804,7 +814,6 @@ class CartItemViewHolder constructor(
         }
         qtyTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -831,7 +840,6 @@ class CartItemViewHolder constructor(
             }
 
             override fun afterTextChanged(s: Editable?) {
-
             }
         }
         qtyEditorProduct.editText.addTextChangedListener(qtyTextWatcher)
@@ -857,7 +865,9 @@ class CartItemViewHolder constructor(
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
                 true
-            } else false
+            } else {
+                false
+            }
         }
         qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
         qtyEditorProduct.editText.isEnabled = data.isError == false
@@ -1039,7 +1049,6 @@ class CartItemViewHolder constructor(
         }
     }
 
-
     interface ViewHolderListener {
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
@@ -1051,7 +1060,6 @@ class CartItemViewHolder constructor(
         fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData)
 
         fun onNeedToRefreshAllShop()
-
     }
 
     companion object {
