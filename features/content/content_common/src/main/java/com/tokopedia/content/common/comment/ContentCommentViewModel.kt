@@ -264,7 +264,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun handleEditTextClicked() {
-        requireLogin { //handle ActivityResult
+        requireLogin {
             viewModelScope.launch {
                 _event.emit(CommentEvent.ShowKeyboard)
             }
@@ -272,21 +272,23 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun sendReply(comment: String, commentType: CommentType){
-        viewModelScope.launchCatchError(block = {
-            _event.emit(CommentEvent.HideKeyboard)
-            val result = repo.replyComment(source, commentType, comment)
-            _comments.getAndUpdate {
-                val newList = it.list.toMutableList().apply {
-                    add(0, result)
+        requireLogin {
+            viewModelScope.launchCatchError(block = {
+                _event.emit(CommentEvent.HideKeyboard)
+                val result = repo.replyComment(source, commentType, comment)
+                _comments.getAndUpdate {
+                    val newList = it.list.toMutableList().apply {
+                        add(0, result)
+                    }
+                    it.copy(list = newList)
                 }
-                it.copy(list = newList)
+            }){
+                _event.emit(
+                    CommentEvent.ShowErrorToaster(
+                        message = it,
+                        onClick = { sendReply(comment, commentType) })
+                )
             }
-        }){
-            _event.emit(
-                CommentEvent.ShowErrorToaster(
-                    message = it,
-                    onClick = { sendReply(comment, commentType) })
-            )
         }
     }
 

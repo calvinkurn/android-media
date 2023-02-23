@@ -120,7 +120,6 @@ class ContentCommentBottomSheet @Inject constructor(
         isDragable = false
         showKnob = false
         showHeader = false
-        isKeyboardOverlap = true
     }
 
     private fun setupView() {
@@ -132,7 +131,7 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.rvComment.addOnScrollListener(scrollListener)
 
         binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
-        binding.viewCommentSend.setOnClickListener {
+        binding.newComment.setOnClickListener {
             viewModel.submitAction(CommentAction.EditTextCLicked)
         }
         binding.ivCommentSend.setOnClickListener {
@@ -285,7 +284,7 @@ class ContentCommentBottomSheet @Inject constructor(
         super.onResume()
 
         val window = dialog?.window
-        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.root.layoutParams.height = newHeight
     }
