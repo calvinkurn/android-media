@@ -79,6 +79,26 @@ class VoucherSettingViewModel @Inject constructor(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
+        val voucherServiceType =
+            getVoucherServiceType(voucherConfiguration.isVoucherProduct)
+        val voucherTarget = getVoucherTarget(voucherConfiguration.isVoucherPublic)
+        val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, voucherConfiguration.promoType)
+
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                pageMode = pageMode,
+                voucherConfiguration = voucherConfiguration.copy(
+                    isFinishFilledStepTwo = true
+                ),
+                availableTargetBuyer = availableTargetBuyer
+            )
+        }
+
+        getVoucherCreationMetadata(pageMode, currentState.voucherConfiguration)
+    }
+
+    private fun getVoucherCreationMetadata(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -93,14 +113,7 @@ class VoucherSettingViewModel @Inject constructor(
                 val isDiscountPromoTypeEnabled = voucherCreationMetadata.discountActive
 
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        pageMode = pageMode,
-                        voucherConfiguration = voucherConfiguration.copy(
-                            isFinishFilledStepTwo = true
-                        ),
-                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled
-                    )
+                    it.copy(isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled)
                 }
 
                 getTickers()
@@ -144,11 +157,13 @@ class VoucherSettingViewModel @Inject constructor(
                 getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
             val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
             val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, promoType)
+
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     voucherConfiguration = it.voucherConfiguration.copy(
-                        promoType = promoType
+                        promoType = promoType,
+                        targetBuyer = VoucherTargetBuyer.ALL_BUYER
                     ),
                     spendingEstimation = 0,
                     availableTargetBuyer = availableTargetBuyer
