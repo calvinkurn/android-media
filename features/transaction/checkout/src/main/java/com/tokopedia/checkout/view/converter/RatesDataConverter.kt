@@ -1,174 +1,179 @@
-package com.tokopedia.checkout.view.converter;
+package com.tokopedia.checkout.view.converter
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartData;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
-import com.tokopedia.purchase_platform.common.utils.UtilsKt;
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
+import com.tokopedia.purchase_platform.common.utils.joinToString
+import com.tokopedia.purchase_platform.common.utils.joinToStringFromListInt
+import javax.inject.Inject
 
-import java.util.ArrayList;
-import java.util.List;
+class RatesDataConverter @Inject constructor() {
 
-import javax.inject.Inject;
-
-/**
- * @author Irfan Khoirul on 25/04/18.
- */
-
-public class RatesDataConverter {
-
-    @Inject
-    public RatesDataConverter() {
-
-    }
-
-    public ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
-                                                    RecipientAddressModel recipientAddressModel) {
-        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        ShipmentCartData shipmentCartData = shipmentCartItemModel.getShipmentCartData();
-        shipmentCartData.setDestinationAddress(recipientAddressModel.getStreet());
-        shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
-        shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
-        shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
-        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getPostalCode());
-        shipmentDetailData.setShipmentCartData(shipmentCartData);
-        int totalQuantity = 0;
-        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            if (!cartItemModel.isError()) {
-                totalQuantity += cartItemModel.getQuantity();
+    fun getShipmentDetailData(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        recipientAddressModel: RecipientAddressModel
+    ): ShipmentDetailData {
+        val shipmentDetailData = ShipmentDetailData()
+        val shipmentCartData = shipmentCartItemModel.shipmentCartData
+        shipmentCartData!!.destinationAddress = recipientAddressModel.street
+        shipmentCartData.destinationDistrictId = recipientAddressModel.destinationDistrictId
+        shipmentCartData.destinationLatitude = recipientAddressModel.latitude
+        shipmentCartData.destinationLongitude = recipientAddressModel.longitude
+        shipmentCartData.destinationPostalCode = recipientAddressModel.postalCode
+        shipmentDetailData.shipmentCartData = shipmentCartData
+        var totalQuantity = 0
+        for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+            if (!cartItemModel.isError) {
+                totalQuantity += cartItemModel.quantity
             }
         }
-        shipmentDetailData.setTotalQuantity(totalQuantity);
-        shipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
-        shipmentDetailData.setBlackbox(shipmentCartItemModel.isBlackbox());
-        if (recipientAddressModel.getSelectedTabIndex() == 1 && recipientAddressModel.getLocationDataModel() != null) {
-            shipmentDetailData.setAddressId(recipientAddressModel.getLocationDataModel().getAddrId());
+        shipmentDetailData.totalQuantity = totalQuantity
+        shipmentDetailData.shopId = shipmentCartItemModel.shopId.toString()
+        shipmentDetailData.isBlackbox = shipmentCartItemModel.isBlackbox
+        if (recipientAddressModel.selectedTabIndex == 1 && recipientAddressModel.locationDataModel != null) {
+            shipmentDetailData.addressId = recipientAddressModel.locationDataModel.addrId
         } else {
-            shipmentDetailData.setAddressId(shipmentCartItemModel.getAddressId());
+            shipmentDetailData.addressId = shipmentCartItemModel.addressId
         }
-        shipmentDetailData.setPreorder(shipmentCartItemModel.isProductIsPreorder());
-        return shipmentDetailData;
+        shipmentDetailData.preorder = shipmentCartItemModel.isProductIsPreorder
+        return shipmentDetailData
     }
 
-    public ShipmentCartData getShipmentCartData(UserAddress userAddress, GroupShop groupShop,
-                                                ShipmentCartItemModel shipmentCartItemModel, String keroToken, String keroUnixTime) {
-        ShipmentCartData shipmentCartData = new ShipmentCartData();
-        initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
-        long orderValue = 0;
-        int totalWeight = 0;
-        int totalWeightActual = 0;
-        int preOrderDuration = 0;
-        if (shipmentCartItemModel.getCartItemModels() != null) {
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                if (!cartItemModel.isError()) {
-                    orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
-                    totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
-                    double weightActual;
-                    if (cartItemModel.getWeightActual() > 0) {
-                        weightActual = cartItemModel.getWeightActual();
-                    } else {
-                        weightActual = cartItemModel.getWeight();
-                    }
-                    totalWeightActual += (cartItemModel.getQuantity() * weightActual);
-                    preOrderDuration = cartItemModel.getPreOrderDurationDay();
+    fun getShipmentCartData(
+        userAddress: UserAddress,
+        groupShop: GroupShop,
+        shipmentCartItemModel: ShipmentCartItemModel,
+        keroToken: String,
+        keroUnixTime: String
+    ): ShipmentCartData {
+        val shipmentCartData = ShipmentCartData()
+        initializeShipmentCartData(
+            userAddress,
+            groupShop,
+            shipmentCartData,
+            keroToken,
+            keroUnixTime
+        )
+        var orderValue: Long = 0
+        var totalWeight = 0
+        var totalWeightActual = 0
+        var preOrderDuration = 0
+        for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+            if (!cartItemModel.isError) {
+                orderValue += (cartItemModel.quantity * cartItemModel.price).toLong()
+                totalWeight += (cartItemModel.quantity * cartItemModel.weight).toInt()
+                val weightActual: Double = if (cartItemModel.weightActual > 0) {
+                    cartItemModel.weightActual
+                } else {
+                    cartItemModel.weight
                 }
+                totalWeightActual += (cartItemModel.quantity * weightActual).toInt()
+                preOrderDuration = cartItemModel.preOrderDurationDay
             }
         }
-        shipmentCartData.setOrderValue(orderValue);
-        shipmentCartData.setWeight(totalWeight);
-        shipmentCartData.setWeightActual(totalWeightActual);
-        shipmentCartData.setPreOrderDuration(preOrderDuration);
-        shipmentCartData.setFulfillment(shipmentCartItemModel.isFulfillment());
-        shipmentCartData.setShopTier(shipmentCartItemModel.getShopTypeInfoData().getShopTier());
-
-        return shipmentCartData;
+        shipmentCartData.orderValue = orderValue
+        shipmentCartData.weight = totalWeight.toDouble()
+        shipmentCartData.weightActual = totalWeightActual.toDouble()
+        shipmentCartData.preOrderDuration = preOrderDuration
+        shipmentCartData.isFulfillment = shipmentCartItemModel.isFulfillment
+        shipmentCartData.shopTier = shipmentCartItemModel.shopTypeInfoData!!.shopTier
+        return shipmentCartData
     }
 
-    private void initializeShipmentCartData(UserAddress userAddress, GroupShop groupShop,
-                                            ShipmentCartData shipmentCartData, String keroToken,
-                                            String keroUnixTime) {
-        shipmentCartData.setToken(keroToken);
-        shipmentCartData.setUt(keroUnixTime);
-        shipmentCartData.setDestinationAddress(userAddress.getAddress());
-        shipmentCartData.setDestinationDistrictId(userAddress.getDistrictId());
-        shipmentCartData.setDestinationLatitude(!UtilsKt.isNullOrEmpty(userAddress.getLatitude()) ?
-                userAddress.getLatitude() : null);
-        shipmentCartData.setDestinationLongitude(!UtilsKt.isNullOrEmpty(userAddress.getLongitude()) ?
-                userAddress.getLongitude() : null);
-        shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
-        shipmentCartData.setOriginDistrictId(groupShop.getShop().getDistrictId());
-        shipmentCartData.setOriginLatitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLatitude()) ?
-                groupShop.getShop().getLatitude() : null);
-        shipmentCartData.setOriginLongitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLongitude()) ?
-                groupShop.getShop().getLongitude() : null);
-        shipmentCartData.setOriginPostalCode(groupShop.getShop().getPostalCode());
-        shipmentCartData.setCategoryIds(getCategoryIds(groupShop.getProducts()));
-        shipmentCartData.setProductInsurance(isForceInsurance(groupShop.getProducts()) ? 1 : 0);
-        shipmentCartData.setShopShipments(groupShop.getShopShipments());
-        String shippingNames = getShippingNames(groupShop.getShopShipments());
-        shipmentCartData.setShippingNames(shippingNames);
-        String shippingServices = getShippingServices(groupShop.getShopShipments());
-        shipmentCartData.setShippingServices(shippingServices);
-        shipmentCartData.setInsurance(1);
-        shipmentCartData.setDeliveryPriceTotal(0);
-        shipmentCartData.setBoMetadata(groupShop.getBoMetadata());
+    private fun initializeShipmentCartData(
+        userAddress: UserAddress,
+        groupShop: GroupShop,
+        shipmentCartData: ShipmentCartData,
+        keroToken: String,
+        keroUnixTime: String
+    ) {
+        shipmentCartData.token = keroToken
+        shipmentCartData.ut = keroUnixTime
+        shipmentCartData.destinationAddress = userAddress.address
+        shipmentCartData.destinationDistrictId = userAddress.districtId
+        shipmentCartData.destinationLatitude =
+            if (!isNullOrEmpty(userAddress.latitude)) userAddress.latitude else null
+        shipmentCartData.destinationLongitude =
+            if (!isNullOrEmpty(userAddress.longitude)) userAddress.longitude else null
+        shipmentCartData.destinationPostalCode = userAddress.postalCode
+        shipmentCartData.originDistrictId = groupShop.shop.districtId
+        shipmentCartData.originLatitude =
+            if (!isNullOrEmpty(groupShop.shop.latitude)) groupShop.shop.latitude else null
+        shipmentCartData.originLongitude =
+            if (!isNullOrEmpty(groupShop.shop.longitude)) groupShop.shop.longitude else null
+        shipmentCartData.originPostalCode = groupShop.shop.postalCode
+        shipmentCartData.categoryIds = getCategoryIds(groupShop.products)
+        shipmentCartData.productInsurance = if (isForceInsurance(groupShop.products)) 1 else 0
+        shipmentCartData.shopShipments = groupShop.shopShipments
+        val shippingNames = getShippingNames(groupShop.shopShipments)
+        shipmentCartData.shippingNames = shippingNames
+        val shippingServices = getShippingServices(groupShop.shopShipments)
+        shipmentCartData.shippingServices = shippingServices
+        shipmentCartData.insurance = 1
+        shipmentCartData.deliveryPriceTotal = 0
+        shipmentCartData.boMetadata = groupShop.boMetadata
     }
 
-    private String getCategoryIds(List<Product> products) {
-        List<Integer> categoryIds = new ArrayList<>();
-        for (int i = 0; i < products.size(); i++) {
-            if (!products.get(i).isError()) {
-                int categoryId = products.get(i).getProductCatId();
+    private fun getCategoryIds(products: List<Product>): String {
+        val categoryIds: MutableList<Int> = ArrayList()
+        for (i in products.indices) {
+            if (!products[i].isError) {
+                val categoryId = products[i].productCatId
                 if (!categoryIds.contains(categoryId)) {
-                    categoryIds.add(categoryId);
+                    categoryIds.add(categoryId)
                 }
             }
         }
-        return UtilsKt.joinToStringFromListInt(categoryIds, ",");
+        return joinToStringFromListInt(categoryIds, ",")
     }
 
-    private boolean isForceInsurance(List<com.tokopedia.checkout.domain.model.cartshipmentform.Product> products) {
-        for (com.tokopedia.checkout.domain.model.cartshipmentform.Product product : products) {
-            if (!product.isError() && product.isProductFinsurance()) {
-                return true;
+    private fun isForceInsurance(products: List<Product>): Boolean {
+        for (product in products) {
+            if (!product.isError && product.isProductFinsurance) {
+                return true
             }
         }
-        return false;
+        return false
     }
 
-    public String getShippingNames(List<ShopShipment> shopShipments) {
-        List<String> shippingNames = new ArrayList<>();
-        for (int i = 0; i < shopShipments.size(); i++) {
-            String shippingName = shopShipments.get(i).getShipCode();
+    private fun getShippingNames(shopShipments: List<ShopShipment>): String {
+        val shippingNames: MutableList<String> = ArrayList()
+        for (i in shopShipments.indices) {
+            val shippingName = shopShipments[i].shipCode
             if (!shippingNames.contains(shippingName)) {
-                shippingNames.add(shippingName);
+                shippingNames.add(shippingName)
             }
         }
-        return UtilsKt.joinToString(shippingNames, ",");
+        return joinToString(shippingNames, ",")
     }
 
-    public String getShippingServices(List<ShopShipment> shopShipments) {
-        List<String> shippingServices = new ArrayList<>();
-        for (int i = 0; i < shopShipments.size(); i++) {
-            for (int j = 0; j < shopShipments.get(i).getShipProds().size(); j++) {
-                String shippingService = shopShipments.get(i).getShipProds().get(j).getShipGroupName();
+    private fun getShippingServices(shopShipments: List<ShopShipment>): String {
+        val shippingServices: MutableList<String> = ArrayList()
+        for (i in shopShipments.indices) {
+            for (j in shopShipments[i].shipProds.indices) {
+                val shippingService = shopShipments[i].shipProds[j].shipGroupName
                 if (!shippingServices.contains(shippingService)) {
-                    shippingServices.add(shippingService);
+                    shippingServices.add(shippingService)
                 }
             }
         }
-        return UtilsKt.joinToString(shippingServices, ",");
+        return joinToString(shippingServices, ",")
     }
 
-    public static String getLogisticPromoCode(ShipmentCartItemModel itemModel) {
-        if (itemModel != null && itemModel.getVoucherLogisticItemUiModel() != null) {
-            return itemModel.getVoucherLogisticItemUiModel().getCode();
-        } else return "";
+    companion object {
+        @JvmStatic
+        fun getLogisticPromoCode(itemModel: ShipmentCartItemModel): String {
+            return if (itemModel.voucherLogisticItemUiModel != null) {
+                itemModel.voucherLogisticItemUiModel!!.code
+            } else {
+                ""
+            }
+        }
     }
-
 }
