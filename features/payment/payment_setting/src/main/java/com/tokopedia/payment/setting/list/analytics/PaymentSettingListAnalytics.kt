@@ -7,12 +7,15 @@ import com.tokopedia.payment.setting.list.analytics.PaymentSettingListAnalyticsC
 import com.tokopedia.payment.setting.list.analytics.PaymentSettingListAnalyticsConstant.Value
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-object PaymentSettingListAnalytics {
+class PaymentSettingListAnalytics @Inject constructor(val userSessionInterface: UserSessionInterface) {
 
     private fun sendGeneralEvent(gtmData: MutableMap<String, Any>) {
         gtmData[Key.BUSINESS_UNIT] = Value.PAYMENT
         gtmData[Key.CURRENT_SITE] = Value.TOKOPEDIAMARKETPLACE
+        gtmData[Key.USER_ID] = userSessionInterface.userId
 
         TrackApp.getInstance().gtm.sendGeneralEvent(gtmData)
     }

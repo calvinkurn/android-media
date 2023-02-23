@@ -6,6 +6,7 @@ object PaymentSettingListAnalyticsConstant {
         const val TRACKER_ID = "trackerId"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
+        const val USER_ID = "userId"
     }
 
     object Value {

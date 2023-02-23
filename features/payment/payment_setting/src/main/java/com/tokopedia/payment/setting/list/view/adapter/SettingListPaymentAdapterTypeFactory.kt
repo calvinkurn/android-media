@@ -10,7 +10,7 @@ import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 
-class SettingListPaymentAdapterTypeFactory(val listenerEmptyViewHolder: SettingListEmptyViewHolder.ListenerEmptyViewHolder) : BaseAdapterTypeFactory() {
+class SettingListPaymentAdapterTypeFactory(val actionListener: SettingListActionListener) : BaseAdapterTypeFactory() {
 
     fun type(settingListPaymentModel: SettingListPaymentModel): Int {
         return SettingListPaymentViewHolder.LAYOUT
@@ -38,13 +38,13 @@ class SettingListPaymentAdapterTypeFactory(val listenerEmptyViewHolder: SettingL
                 return SettingListPaymentViewHolder(parent)
             }
             SettingListEmptyViewHolder.LAYOUT -> {
-                return SettingListEmptyViewHolder(parent, listenerEmptyViewHolder)
+                return SettingListEmptyViewHolder(parent, actionListener)
             }
             SettingListAddCardViewHolder.LAYOUT -> {
-                return SettingListAddCardViewHolder(parent, listenerEmptyViewHolder)
+                return SettingListAddCardViewHolder(parent, actionListener)
             }
             SettingBannerViewHolder.LAYOUT -> {
-                return SettingBannerViewHolder(parent)
+                return SettingBannerViewHolder(parent, actionListener)
             }
             SettingListCardCounterViewHolder.LAYOUT -> {
                 return SettingListCardCounterViewHolder(parent)

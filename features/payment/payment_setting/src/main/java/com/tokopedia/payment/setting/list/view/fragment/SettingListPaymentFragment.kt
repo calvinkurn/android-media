@@ -21,12 +21,13 @@ import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.list.analytics.PaymentSettingListAnalytics
 import com.tokopedia.payment.setting.list.model.PaymentSignature
-import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
-import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
 import com.tokopedia.payment.setting.list.model.SettingBannerModel
-import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
+import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
+import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
+import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
+import com.tokopedia.payment.setting.list.view.adapter.SettingListActionListener
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
 import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,12 +38,15 @@ import javax.inject.Inject
 
 
 class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
-        SettingListEmptyViewHolder.ListenerEmptyViewHolder {
+        SettingListActionListener {
 
     private var paymentSignature: PaymentSignature? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var analytics: PaymentSettingListAnalytics
 
     private val settingsListViewModel: SettingsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -122,12 +126,44 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         when (data) {
             is SettingBannerModel -> {
                 RouteManager.route(this.context, data.buttonRedirectUrl)
+                sendEventClickBanner(data)
             }
             is SettingListCardCounterModel -> {}
             else -> {
                 activity?.run {
                     this@SettingListPaymentFragment.startActivityForResult(DetailCreditCardActivity.createIntent(this, data), REQUEST_CODE_DETAIL_CREDIT_CARD)
                 }
+            }
+        }
+    }
+
+    private fun sendEventClickBanner(data: SettingBannerModel) {
+        when (data.code) {
+            SettingBannerModel.CODE_REGISTER_COBRAND -> {
+                analytics.sendEventClickBannerUserNotYetHaveCobrand()
+            }
+            SettingBannerModel.CODE_ON_PROGRESS -> {
+                analytics.sendEventClickBannerUserCobrandOnProgress()
+            }
+            SettingBannerModel.CODE_ACTIVATION -> {
+                analytics.sendEventClickBannerUserCobrandActivate()
+            }
+            SettingBannerModel.CODE_SAVE_CARD -> {
+                analytics.sendEventClickBannerUserCobrandAdd()
+            }
+        }
+    }
+
+    private fun sendEventViewBanner(data: SettingBannerModel) {
+        when (data.code) {
+            SettingBannerModel.CODE_REGISTER_COBRAND -> {
+                analytics.sendEventViewBannerUserNotYetHaveCobrand()
+            }
+            SettingBannerModel.CODE_ON_PROGRESS -> {
+                analytics.sendEventViewBannerUserCobrandOnProgress()
+            }
+            SettingBannerModel.CODE_ACTIVATION -> {
+                analytics.sendEventViewBannerUserCobrandActivate()
             }
         }
     }
@@ -139,6 +175,10 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                         .startActivityForResult(AddCreditCardActivity.createIntent(this, paymentSignature), REQUEST_CODE_ADD_CREDIT_CARD)
             }
         }
+    }
+
+    override fun onViewBanner(element: SettingBannerModel) {
+        sendEventViewBanner(element)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
