@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
 
 class ShopPageHeaderPerformanceWidgetAdapter(
-    typeFactoryComponent: ShopHeaderPerformanceWidgetAdapterTypeFactory
-) : BaseListAdapter<Visitable<*>, ShopHeaderPerformanceWidgetAdapterTypeFactory>(typeFactoryComponent) {
+    typeFactoryComponent: ShopPagePagePageHeaderPerformanceWidgetAdapterTypeFactory
+) : BaseListAdapter<Visitable<*>, ShopPagePagePageHeaderPerformanceWidgetAdapterTypeFactory>(typeFactoryComponent) {
 
     fun addComponents(listComponent: List<BaseShopHeaderComponentUiModel>) {
         addElement(listComponent)

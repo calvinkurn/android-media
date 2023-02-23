@@ -8,7 +8,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopHeaderButtonWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.ShopPageActionButtonWidgetMarginItemDivider
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderActionButtonWidgetAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderActionButtonWidgetAdapterTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderActionButtonWidgetAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder
@@ -33,7 +33,7 @@ class ShopPageHeaderActionButtonWidgetViewHolder(
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
         val shopActionButtonWidgetAdapter = ShopPageHeaderActionButtonWidgetAdapter(
-            ShopHeaderActionButtonWidgetAdapterTypeFactory(
+            ShopPageHeaderActionButtonWidgetAdapterTypeFactory(
                 model,
                 shopPageHeaderActionButtonWidgetChatButtonComponentListener,
                 shopPageHeaderActionButtonWidgetFollowButtonComponentListener,
@@ -45,8 +45,9 @@ class ShopPageHeaderActionButtonWidgetViewHolder(
             adapter = shopActionButtonWidgetAdapter
             val manager = FlexboxLayoutManager(itemView.context)
             layoutManager = manager
-            if (itemDecorationCount == 0)
+            if (itemDecorationCount == 0) {
                 addItemDecoration(ShopPageActionButtonWidgetMarginItemDivider())
+            }
         }
         shopActionButtonWidgetAdapter?.addComponents(model.components)
     }

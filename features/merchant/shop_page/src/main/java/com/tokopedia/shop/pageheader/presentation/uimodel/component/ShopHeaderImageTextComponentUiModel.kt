@@ -2,7 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderImageTextComponentTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderImageTextComponentTypeFactory
 
 data class ShopHeaderImageTextComponentUiModel(
     override val name: String = "",
@@ -37,7 +37,7 @@ data class ShopHeaderImageTextComponentUiModel(
     }
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
-        return if (typeFactory is ShopHeaderImageTextComponentTypeFactory) {
+        return if (typeFactory is ShopPageHeaderImageTextComponentTypeFactory) {
             typeFactory.type(this)
         } else {
             -1

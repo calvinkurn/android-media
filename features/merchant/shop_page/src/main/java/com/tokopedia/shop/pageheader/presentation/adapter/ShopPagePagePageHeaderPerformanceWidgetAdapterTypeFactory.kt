@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderBadgeTextValueComponentTypeFactory
-import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderImageOnlyComponentTypeFactory
-import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderImageTextComponentTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderBadgeTextValueComponentTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderImageOnlyComponentTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderImageTextComponentTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder
@@ -16,16 +16,16 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderIm
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
-class ShopHeaderPerformanceWidgetAdapterTypeFactory(
+class ShopPagePagePageHeaderPerformanceWidgetAdapterTypeFactory(
     private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
     private val shopPageHeaderPerformanceWidgetBadgeTextValueListener: ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
     private val shopPageHeaderPerformanceWidgetImageOnlyListener: ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder.Listener,
     private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
 ) :
     BaseAdapterTypeFactory(),
-    ShopHeaderImageOnlyComponentTypeFactory,
-    ShopHeaderBadgeTextValueComponentTypeFactory,
-    ShopHeaderImageTextComponentTypeFactory {
+    ShopPageHeaderImageOnlyComponentTypeFactory,
+    ShopPageHeaderBadgeTextValueComponentTypeFactory,
+    ShopPageHeaderImageTextComponentTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {

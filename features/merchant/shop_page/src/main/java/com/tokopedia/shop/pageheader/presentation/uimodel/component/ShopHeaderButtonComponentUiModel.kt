@@ -3,7 +3,7 @@ package com.tokopedia.shop.pageheader.presentation.uimodel.component
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
-import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderButtonComponentTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderButtonComponentTypeFactory
 
 open class ShopHeaderButtonComponentUiModel : BaseShopHeaderComponentUiModel, ImpressHolder() {
 
@@ -27,7 +27,7 @@ open class ShopHeaderButtonComponentUiModel : BaseShopHeaderComponentUiModel, Im
     }
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
-        return if (typeFactory is ShopHeaderButtonComponentTypeFactory) {
+        return if (typeFactory is ShopPageHeaderButtonComponentTypeFactory) {
             typeFactory.type(this)
         } else {
             -1

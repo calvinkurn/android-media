@@ -8,8 +8,8 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHead
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 
 class ShopPageHeaderActionButtonWidgetAdapter(
-    typeFactoryComponent: ShopHeaderActionButtonWidgetAdapterTypeFactory
-) : BaseListAdapter<Visitable<*>, ShopHeaderActionButtonWidgetAdapterTypeFactory>(typeFactoryComponent) {
+    typeFactoryComponent: ShopPageHeaderActionButtonWidgetAdapterTypeFactory
+) : BaseListAdapter<Visitable<*>, ShopPageHeaderActionButtonWidgetAdapterTypeFactory>(typeFactoryComponent) {
 
     private var recyclerView: RecyclerView? = null
 

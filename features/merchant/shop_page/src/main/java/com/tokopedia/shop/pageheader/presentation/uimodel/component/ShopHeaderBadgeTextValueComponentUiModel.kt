@@ -2,7 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderBadgeTextValueComponentTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopPageHeaderBadgeTextValueComponentTypeFactory
 
 data class ShopHeaderBadgeTextValueComponentUiModel(
     override val name: String = "",
@@ -23,7 +23,7 @@ data class ShopHeaderBadgeTextValueComponentUiModel(
     )
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
-        return if (typeFactory is ShopHeaderBadgeTextValueComponentTypeFactory) {
+        return if (typeFactory is ShopPageHeaderBadgeTextValueComponentTypeFactory) {
             typeFactory.type(this)
         } else {
             -1
