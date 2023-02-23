@@ -7,6 +7,7 @@ import android.net.Uri
 import android.widget.ImageView
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.data.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.data.DEFAULT_ICON_SIZE
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.Resize
@@ -129,7 +130,7 @@ inline fun ImageView.loadIcon(
 ) {
     call(url, Properties()
         .apply(properties)
-        .overrideSize(Resize(300, 300))
+        .overrideSize(Resize(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE))
         .isIcon(true)
     )
 }

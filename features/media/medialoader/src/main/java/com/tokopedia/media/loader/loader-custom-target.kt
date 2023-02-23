@@ -10,7 +10,7 @@ import com.tokopedia.media.loader.utils.MediaTarget
 fun <T: View> loadImageWithTarget(
     context: Context,
     url: String,
-    properties: Properties.() -> Unit,
+    properties: Properties.() -> Unit = {},
     mediaTarget: MediaTarget<T>
 ) {
     MediaLoaderTarget.loadImage(
@@ -25,7 +25,7 @@ fun <T: View> loadImageWithTarget(
 fun loadImageWithEmptyTarget(
     context: Context,
     url: String,
-    properties: Properties.() -> Unit,
+    properties: Properties.() -> Unit = {},
     mediaTarget: MediaBitmapEmptyTarget<Bitmap>
 ) {
     MediaLoaderTarget.loadImage(

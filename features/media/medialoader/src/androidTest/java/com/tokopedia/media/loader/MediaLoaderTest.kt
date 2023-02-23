@@ -1,15 +1,25 @@
 package com.tokopedia.media.loader
 
+import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.media.loader.data.DEFAULT_ICON_SIZE
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.di.DaggerMediaLoaderComponent
+import com.tokopedia.media.loader.di.MediaLoaderModule
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -17,18 +27,44 @@ import org.junit.Test
 class MediaLoaderTest {
 
     @get:Rule
-    val activityTestRule = ActivityScenarioRule(
-        DebugMediaLoaderActivity::class.java
-    )
+    val activityTestRule = object : ActivityCustomRule(
+        ActivityScenarioRule(
+            DebugMediaLoaderActivity::class.java
+        )
+    ) {
+        override fun before() {
+            super.before()
+            InstrumentationAuthHelper
+                .loginInstrumentationTestUser1()
+        }
+    }
+
+    private val applicationContext: Context
+        get() = InstrumentationRegistry
+            .getInstrumentation()
+            .context
+            .applicationContext
+
+    private val interceptor = StubInterceptor()
+    private val countingIdlingResource = CountingIdlingResource("media-loader")
 
     @Before
     fun setUp() {
+        DaggerMediaLoaderComponent
+            .builder()
+            .mediaLoaderModule(
+                MediaLoaderModule(applicationContext)
+            )
+            .build()
+            .inject(interceptor)
+
         Intents.init()
+        countingIdlingResource.increment()
     }
 
     @After
     fun tearDown() {
-        renderImageView {
+        onImageView {
             it.clearImage()
         }
 
@@ -37,127 +73,257 @@ class MediaLoaderTest {
 
     @Test
     fun loadImage() {
-        renderImageView {
-            it.loadImage(publicImageUrl)
-            it.takeScreenshot("loadImage")
+        onImageView {
+            // When
+            it.loadImage(publicImageUrl) {
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage")
+                    assertEquals(it.width, bitmap?.width)
+                })
+            }
+        }
+    }
+
+    @Test
+    fun loadImage_secure() {
+        onImageView {
+            // When
+            it.loadSecureImage(secureImageUrl, interceptor.userSession) {
+                listener(onSuccess = { _, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_secure")
+                })
+            }
         }
     }
 
     @Test
     fun loadImage_customPlaceHolder() {
-        renderImageView {
+        onImageView {
+            // When
             it.loadImage(publicImageUrl) {
                 setPlaceHolder(R.drawable.mock_bg_placeholder)
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeEagerScreenshot("loadImage_customPlaceHolder")
+                    assertEquals(it.width, bitmap?.width)
+                })
             }
-            it.takeEagerScreenshot("loadImage_customPlaceHolder")
         }
     }
 
     @Test
     fun loadImage_failed() {
-        renderImageView {
-            it.loadImage("")
-            it.takeEagerScreenshot("loadImage_failed")
+        onImageView {
+            // When
+            it.loadImage("") {
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeEagerScreenshot("loadImage_failed")
+                    assertEquals(0, bitmap?.width)
+                })
+            }
         }
     }
 
     @Test
     fun loadImage_invalidUrl() {
-        renderImageView {
+        onImageView {
+            // When
             it.loadImage(invalidUrl) {
                 setErrorDrawable(R.drawable.mock_bg_placeholder)
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeEagerScreenshot("loadImage_invalidUrl")
+                    assertEquals(it.width, bitmap?.width)
+                })
             }
-            it.takeEagerScreenshot("loadImage_invalidUrl")
         }
     }
 
     @Test
     fun loadImage_centerCrop() {
-        renderImageView {
+        onImageView {
+            // When
             it.loadImage(publicImageUrl) {
                 centerCrop()
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_centerCrop")
+                    assertEquals(it.width, bitmap?.width)
+                })
             }
-            it.takeScreenshot("loadImage_centerCrop")
         }
     }
 
     @Test
     fun loadImage_overrideSize() {
-        renderImageView {
+        // Given
+        val resize = 50
+
+        onImageView {
+            // When
             it.loadImage(publicImageUrl) {
-                overrideSize(Resize(50, 50))
+                overrideSize(Resize(resize, resize))
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_overrideSize")
+                    assertEquals(resize, bitmap?.width)
+                })
             }
-            it.takeScreenshot("loadImage_overrideSize")
         }
     }
 
     @Test
     fun loadImage_decodeFormat_565() {
-        renderImageView {
+        onImageView {
+            // When
             it.loadImage(publicImageUrl) {
                 decodeFormat(MediaDecodeFormat.PREFER_RGB_565)
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_decodeFormat_565")
+                    assertEquals(it.width, bitmap?.width)
+                })
             }
-            it.takeScreenshot("loadImage_decodeFormat_565")
         }
     }
 
     @Test
     fun loadImage_fitCenter() {
-        renderImageView {
-            it.loadImageFitCenter(publicImageUrl)
-            it.takeScreenshot("loadImage_fitCenter")
+        onImageView {
+            // When
+            it.loadImageFitCenter(publicImageUrl) {
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_fitCenter")
+                    assertEquals(it.width, bitmap?.width)
+                })
+            }
         }
     }
 
     @Test
     fun loadImage_circle() {
-        renderImageView {
-            it.loadImageCircle(publicImageUrl)
-            it.takeScreenshot("loadImage_circle")
+        onImageView {
+            // When
+            it.loadImageCircle(publicImageUrl) {
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_circle")
+                    assertEquals(it.width, bitmap?.width)
+                })
+            }
         }
     }
 
     @Test
     fun loadImage_rounded() {
+        // Given
         val rounded = 120f
 
-        renderImageView {
-            it.loadImageRounded(publicImageUrl, rounded)
-            it.takeScreenshot("loadImage_rounded")
+        onImageView {
+            // When
+            it.loadImageRounded(publicImageUrl, rounded) {
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_rounded")
+                    assertEquals(it.width, bitmap?.width)
+                })
+            }
         }
     }
 
     @Test
     fun loadImage_centerCrop_and_roundedCorner() {
+        // Given
         val rounded = 120f
 
-        renderImageView {
+        onImageView {
+            // When
             it.loadImage(publicImageUrl) {
                 centerCrop()
                 setRoundedRadius(rounded)
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_centerCrop_and_roundedCorner")
+                    assertEquals(it.width, bitmap?.width)
+                })
             }
-            it.takeScreenshot("loadImage_centerCrop_and_roundedCorner")
         }
     }
 
     @Test
     fun loadImage_withoutPlaceholder() {
-        renderImageView {
-            it.loadImageWithoutPlaceholder(publicImageUrl)
-            it.takeScreenshot("loadImage_withoutPlaceholder")
+        onImageView {
+            // When
+            it.loadImageWithoutPlaceholder(publicImageUrl) {
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadImage_withoutPlaceholder")
+                    assertEquals(it.width, bitmap?.width)
+                })
+            }
         }
     }
 
     @Test
     fun loadIcon() {
-        renderImageView {
-            it.loadIcon(iconUrl)
-            it.takeScreenshot("loadIcon")
+        onImageView {
+            // When
+            it.loadIcon(iconUrl) {
+                listener(onSuccess = { bitmap, _ ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    it.takeScreenshot("loadIcon")
+                    assertEquals(DEFAULT_ICON_SIZE, bitmap?.width)
+                })
+            }
         }
     }
 
+    @Test
+    fun loadImage_withEmptyTarget() {
+        // When
+        loadImageWithEmptyTarget(applicationContext, publicImageUrl, mediaTarget = MediaBitmapEmptyTarget(
+            onReady = { bitmap ->
+                countingIdlingResource.decrement()
+
+                // Then
+                assert(bitmap.width.isMoreThanZero())
+            }
+        ))
+    }
+
     private fun View.takeScreenshot(caseName: String) {
-        Thread.sleep(3000)
         takeEagerScreenshot(caseName)
     }
 
@@ -165,7 +331,7 @@ class MediaLoaderTest {
         CommonActions.takeScreenShotVisibleViewInScreen(this, "media_loader", caseName)
     }
 
-    private fun renderImageView(imgView: (ImageView) -> Unit) {
+    private fun onImageView(imgView: (ImageView) -> Unit) {
         onView(withId(R.id.img_sample)).check { view, _ -> imgView(view as ImageView) }
     }
 

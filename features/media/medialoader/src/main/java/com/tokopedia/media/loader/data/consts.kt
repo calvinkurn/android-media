@@ -38,8 +38,8 @@ const val MEDIA_QUALITY_PREF = "media_image_quality"
 // wrapper of GlideException
 typealias MediaException = GlideException
 
-// default rounded for loadImageRounded()
 const val DEFAULT_ROUNDED = 5.0f
+const val DEFAULT_ICON_SIZE = 300
 
 // uses for secure image loader
 const val HEADER_KEY_AUTH = "Accounts-Authorization"

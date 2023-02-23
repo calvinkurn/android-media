@@ -1,0 +1,22 @@
+package com.tokopedia.media.loader
+
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import org.junit.rules.ExternalResource
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
+
+open class ActivityCustomRule(
+    private val inner: ActivityScenarioRule<*>
+) : ExternalResource() {
+
+    override fun apply(base: Statement, description: Description): Statement =
+        super.apply(inner.apply(base, description), description)
+
+    override fun before() {
+        // ... beforeActivityLaunched
+    }
+
+    override fun after() {
+        // ... afterActivityFinished
+    }
+}
