@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
@@ -79,7 +80,7 @@ class ShopReviewListItemViewHolder(
         val appLink = uiModel.appLink
 
         if (appLink.isNotBlank()) {
-            root.setOnClickListener {
+            root.setOnClickDebounceListener {
                 listener.onShopReviewSeeMore(
                     appLink = appLink,
                     eventLabel = uiModel.talkId,

@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.os.SystemClock
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -23,7 +24,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
 import timber.log.Timber
-
 
 /**
  * @author by milhamj on 30/11/18.
@@ -36,20 +36,23 @@ private const val SHADOW_LAYER_DX = 0f
 
 fun View.show() {
     // optimize recalculate
-    if (this.visibility != View.VISIBLE)
+    if (this.visibility != View.VISIBLE) {
         this.visibility = View.VISIBLE
+    }
 }
 
 fun View.hide() {
     // optimize recalculate
-    if (this.visibility != View.GONE)
+    if (this.visibility != View.GONE) {
         this.visibility = View.GONE
+    }
 }
 
 fun View.invisible() {
     // optimize recalculate
-    if (this.visibility != View.INVISIBLE)
+    if (this.visibility != View.INVISIBLE) {
         this.visibility = View.INVISIBLE
+    }
 }
 
 fun View.showWithCondition(shouldShow: Boolean) {
@@ -73,7 +76,9 @@ fun <T : View> T.showIfWithBlock(predicate: Boolean, block: T.() -> Unit) {
     if (predicate) {
         show()
         block()
-    } else hide()
+    } else {
+        hide()
+    }
 }
 
 fun View.visible() {
@@ -109,7 +114,7 @@ fun ViewGroup.inflateLayout(layoutId: Int, isAttached: Boolean = false): View {
 
 fun ViewGroup?.setViewGroupEnabled(enable: Boolean) {
     if (this != null) {
-        repeat (childCount) {
+        repeat(childCount) {
             val child = getChildAt(it)
             child.isEnabled = enable
             if (child is ViewGroup) {
@@ -119,9 +124,11 @@ fun ViewGroup?.setViewGroupEnabled(enable: Boolean) {
     }
 }
 
-fun Activity.createDefaultProgressDialog(loadingMessage: String?,
-                                         cancelable: Boolean = true,
-                                         onCancelClicked: (() -> Unit)?): ProgressDialog {
+fun Activity.createDefaultProgressDialog(
+    loadingMessage: String?,
+    cancelable: Boolean = true,
+    onCancelClicked: (() -> Unit)?
+): ProgressDialog {
     return ProgressDialog(this).apply {
         setMessage(loadingMessage)
         setCancelable(cancelable)
@@ -138,8 +145,8 @@ fun View.showLoading() {
     } catch (e: NullPointerException) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
         )
         params.gravity = Gravity.CENTER
         params.weight = 1.0f
@@ -161,8 +168,8 @@ fun View.showLoadingTransparent() {
     } catch (e: NullPointerException) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
         )
         params.gravity = Gravity.CENTER
         params.weight = 1.0f
@@ -190,27 +197,30 @@ fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
 }
 
-
 fun ImageView.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
-    addOnImpressionListener(holder, object : ViewHintListener {
-        override fun onViewHint() {
-            onView.invoke()
+    addOnImpressionListener(
+        holder,
+        object : ViewHintListener {
+            override fun onViewHint() {
+                onView.invoke()
+            }
         }
-    })
+    )
 }
 
 fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
-                object : ViewTreeObserver.OnScrollChangedListener {
-                    override fun onScrollChanged() {
-                        if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
-                            listener.onViewHint()
-                            holder.invoke()
-                            viewTreeObserver.removeOnScrollChangedListener(this)
-                        }
+            object : ViewTreeObserver.OnScrollChangedListener {
+                override fun onScrollChanged() {
+                    if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
+                        listener.onViewHint()
+                        holder.invoke()
+                        viewTreeObserver.removeOnScrollChangedListener(this)
                     }
-                })
+                }
+            }
+        )
     }
 }
 
@@ -242,25 +252,29 @@ private fun View.createBitmap(width: Int, height: Int): Bitmap {
 }
 
 fun View.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
-    addOnImpressionListener(holder, object : ViewHintListener {
-        override fun onViewHint() {
-            onView.invoke()
+    addOnImpressionListener(
+        holder,
+        object : ViewHintListener {
+            override fun onViewHint() {
+                onView.invoke()
+            }
         }
-    })
+    )
 }
 
 fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
-                object : ViewTreeObserver.OnScrollChangedListener {
-                    override fun onScrollChanged() {
-                        if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
-                            listener.onViewHint()
-                            holder.invoke()
-                            viewTreeObserver.removeOnScrollChangedListener(this)
-                        }
+            object : ViewTreeObserver.OnScrollChangedListener {
+                override fun onScrollChanged() {
+                    if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
+                        listener.onViewHint()
+                        holder.invoke()
+                        viewTreeObserver.removeOnScrollChangedListener(this)
                     }
-                })
+                }
+            }
+        )
     }
 }
 
@@ -270,10 +284,9 @@ fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
             listener.onViewHint()
         }
     }
-
 }
 
-fun View.isVisibleOnTheScreen(onViewVisible:() -> Unit, onViewNotVisible:() -> Unit) {
+fun View.isVisibleOnTheScreen(onViewVisible: () -> Unit, onViewNotVisible: () -> Unit) {
     viewTreeObserver.addOnScrollChangedListener {
         if (getVisiblePercent(this@isVisibleOnTheScreen) == -1) {
             onViewNotVisible.invoke()
@@ -310,13 +323,13 @@ private fun viewIsVisible(view: View?): Boolean {
     val X = location[0] + offset
     val Y = location[1] + offset
     return if (screen.top <= Y && screen.bottom >= Y &&
-            screen.left <= X && screen.right >= X) {
+        screen.left <= X && screen.right >= X
+    ) {
         true
     } else {
         false
     }
 }
-
 
 fun getScreenWidth(): Int {
     return Resources.getSystem().displayMetrics.widthPixels
@@ -354,15 +367,17 @@ fun Context.isAppInstalled(packageName: String): Boolean {
 /**
  * must fill shadow radius at least 1
  */
-fun View?.generateBackgroundWithShadow(@ColorRes backgroundColor: Int,
-                                       @ColorRes shadowColor: Int,
-                                       @DimenRes topLeftRadius: Int,
-                                       @DimenRes topRightRadius: Int,
-                                       @DimenRes bottomLeftRadius: Int,
-                                       @DimenRes bottomRightRadius: Int,
-                                       @DimenRes elevation: Int,
-                                       @DimenRes shadowRadius: Int,
-                                       shadowGravity: Int): Drawable? {
+fun View?.generateBackgroundWithShadow(
+    @ColorRes backgroundColor: Int,
+    @ColorRes shadowColor: Int,
+    @DimenRes topLeftRadius: Int,
+    @DimenRes topRightRadius: Int,
+    @DimenRes bottomLeftRadius: Int,
+    @DimenRes bottomRightRadius: Int,
+    @DimenRes elevation: Int,
+    @DimenRes shadowRadius: Int,
+    shadowGravity: Int
+): Drawable? {
     if (this == null) return null
     val topLeftRadiusValue = context.resources.getDimension(topLeftRadius)
     val topRightRadiusValue = context.resources.getDimension(topRightRadius)
@@ -375,8 +390,14 @@ fun View?.generateBackgroundWithShadow(@ColorRes backgroundColor: Int,
     val backgroundColorValue = ContextCompat.getColor(context, backgroundColor)
 
     val outerRadius = floatArrayOf(
-            topLeftRadiusValue, topLeftRadiusValue, topRightRadiusValue, topRightRadiusValue,
-            bottomLeftRadiusValue, bottomLeftRadiusValue, bottomRightRadiusValue, bottomRightRadiusValue
+        topLeftRadiusValue,
+        topLeftRadiusValue,
+        topRightRadiusValue,
+        topRightRadiusValue,
+        bottomLeftRadiusValue,
+        bottomLeftRadiusValue,
+        bottomRightRadiusValue,
+        bottomRightRadiusValue
     )
 
     val backgroundPaint = Paint()
@@ -430,4 +451,17 @@ fun View.setLayoutHeight(height: Int) {
     if (layoutParams.height == height) return
 
     layoutParams.height = height
+}
+
+fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
+    var lastClickTime = 0L
+
+    setOnClickListener onClick@{
+        if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+            return@onClick
+        }
+
+        lastClickTime = SystemClock.elapsedRealtime()
+        block()
+    }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_h
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
@@ -34,7 +35,7 @@ class SocialProofTextViewHolder(
         val id = socialProof.socialProofId
 
         if (appLink.isNotBlank()) {
-            binding.root.setOnClickListener {
+            binding.root.setOnClickDebounceListener {
                 listener.goToApplink(appLink)
                 listener.onSocialProofItemClickTracking(socialProofId = id, trackData = trackData)
             }

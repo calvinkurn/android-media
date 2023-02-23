@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
@@ -100,7 +101,7 @@ class ProductShopReviewViewHolder(
         trackDataModel: ComponentTrackDataModel
     ) {
         if (uiModel.appLink.isNotBlank()) {
-            shopReviewListSeeMore.setOnClickListener {
+            shopReviewListSeeMore.setOnClickDebounceListener {
                 listener.onShopReviewSeeMore(
                     appLink = uiModel.appLink,
                     eventLabel = "",
