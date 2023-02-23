@@ -19,8 +19,8 @@ import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabIconUrlModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
-import com.tokopedia.shop.pageheader.data.model.ShopTabIconUrlModel
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
@@ -148,9 +148,9 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun getIconUrlFromJsonString(iconDataJsonString: String): String {
         return try {
-            CommonUtil.fromJson<ShopTabIconUrlModel>(
+            CommonUtil.fromJson<ShopPageHeaderTabIconUrlModel>(
                 iconDataJsonString,
-                ShopTabIconUrlModel::class.java
+                ShopPageHeaderTabIconUrlModel::class.java
             ).run {
                 if (ctx?.isDarkMode() == true) {
                     darkModeUrl

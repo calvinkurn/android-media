@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * author by Rafli Syam on 26/01/2021
  */
-data class ShopRequestUnmoderateRequestParams(
+data class ShopPageHeaderRequestUnmoderateRequestParams(
     @SuppressLint("Invalid Data Type") // cannot use string or long since the shop ids is a list
     @SerializedName("shopIDs")
     @Expose
