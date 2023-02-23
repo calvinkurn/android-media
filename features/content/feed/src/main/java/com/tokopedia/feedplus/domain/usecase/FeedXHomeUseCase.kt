@@ -21,7 +21,27 @@ class FeedXHomeUseCase @Inject constructor(
         setGraphqlQuery(FeedXHomeQuery())
     }
 
+    fun createParams(source: String, cursor: String, limit: Int = 0, detailId: String = "") {
+        val params = mutableMapOf(
+            PARAMS_SOURCE to source,
+            PARAMS_CURSOR to cursor,
+            PARAMS_LIMIT to limit
+        )
+        if (detailId.isNotEmpty()) {
+            params[PARAMS_SOURCE_ID] = detailId
+        }
+
+        setRequestParams(mapOf(PARAMS_REQUEST to params))
+    }
+
     companion object {
+        private const val PARAMS_REQUEST = "req"
+
+        private const val PARAMS_SOURCE = "source"
+        private const val PARAMS_SOURCE_ID = "sourceID"
+        private const val PARAMS_CURSOR = "cursor"
+        private const val PARAMS_LIMIT = "limit"
+
         const val QUERY_NAME = "FeedXHomeQuery"
         const val QUERY = """
             query feedXHome(${'$'}req: FeedXHomeRequest!) {

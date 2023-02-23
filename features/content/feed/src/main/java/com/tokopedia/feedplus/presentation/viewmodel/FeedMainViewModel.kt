@@ -18,6 +18,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -47,38 +48,43 @@ class FeedMainViewModel @Inject constructor(
         get() = _feedCreateContentBottomSheetData
 
     fun fetchFeedTabs() {
-        launchCatchError(dispatchers.io, block = {
-            feedXHeaderUseCase.setRequestParams(
-                FeedXHeaderUseCase.createParam()
-            )
-            val response = feedXHeaderUseCase.executeOnBackground()
-            _feedTabs.postValue(Success(MapperFeedTabs.transform(response.feedXHeaderData)))
+        launchCatchError(dispatchers.main, block = {
+            val response = withContext(dispatchers.io) {
+                feedXHeaderUseCase.setRequestParams(
+                    FeedXHeaderUseCase.createParam()
+                )
+                feedXHeaderUseCase.executeOnBackground()
+            }
+            _feedTabs.value = Success(MapperFeedTabs.transform(response.feedXHeaderData))
+
             handleCreationData(
                 MapperFeedTabs.getCreationBottomSheetData(
                     response.feedXHeaderData
                 )
             )
         }) {
-            _feedTabs.postValue(Fail(it))
-            _feedCreateContentBottomSheetData.postValue(Fail(it))
+            _feedTabs.value = Fail(it)
+            _feedCreateContentBottomSheetData.value = Fail(it)
         }
     }
 
     fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
-        launchCatchError(dispatchers.io, block = {
-            submitReportUseCase.setRequestParams(
-                FeedComplaintSubmitReportUseCase.createParam(
-                    feedReportRequestParamModel
+        launchCatchError(dispatchers.main, block = {
+            val response = withContext(dispatchers.io) {
+                submitReportUseCase.setRequestParams(
+                    FeedComplaintSubmitReportUseCase.createParam(
+                        feedReportRequestParamModel
+                    )
                 )
-            )
-            val response = submitReportUseCase.executeOnBackground()
+                submitReportUseCase.executeOnBackground()
+            }
             if (response.data.success.not()) {
                 throw MessageErrorException("Error in Reporting")
             } else {
-                _reportResponse.postValue(Success(response))
+                _reportResponse.value = Success(response)
             }
         }) {
-            _reportResponse.postValue(Fail(it))
+            _reportResponse.value = Fail(it)
         }
     }
 
@@ -95,6 +101,6 @@ class FeedMainViewModel @Inject constructor(
         val creatorList =
             (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
                 (authorShopdataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
-        _feedCreateContentBottomSheetData.postValue(Success(creatorList))
+        _feedCreateContentBottomSheetData.value = Success(creatorList)
     }
 }

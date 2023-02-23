@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
 import com.tokopedia.feedplus.presentation.model.FeedMenuItem
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifycomponents.Toaster
@@ -53,7 +55,11 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
     private lateinit var feedMenuSheet: FeedThreeDotsMenuBottomSheet
 
@@ -84,6 +90,9 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        feedPostViewModel.fetchFeedPosts()
+
         initView()
         observeClearViewData()
     }
