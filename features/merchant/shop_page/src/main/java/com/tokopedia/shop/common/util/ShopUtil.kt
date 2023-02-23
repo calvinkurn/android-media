@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -150,8 +151,9 @@ object ShopUtil {
     fun parseColorFromHexString(colorHex: String): Int {
         return try {
             Color.parseColor(colorHex)
-        } catch (e: Throwable) {
-            0
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Int.ZERO
         }
     }
 }
