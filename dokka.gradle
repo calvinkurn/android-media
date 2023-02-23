@@ -10,45 +10,46 @@ buildscript {
 apply plugin: "org.jetbrains.dokka"
 
 import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 def dirName = "tkpd-docs"
 
-tasks.withType(DokkaMultiModuleTask).configureEach {
-    outputDirectory = rootProject.file(dirName)
-    failOnWarning.set(true)
-
-    String baseConfiguration = """
-            {
-                "customAssets": ["${file("dokka-templates/assets/logo-icon.svg")}"],
-                "customStyleSheets": ["${file("dokka-templates/logo-styles.css")}"],
-                "footerMessage": "(c) 2023 Tokopedia Android Engineering Team"
-            }
-        """
-
-    pluginsMapConfiguration.set(["org.jetbrains.dokka.base.DokkaBase": baseConfiguration])
-
-    dokkaSourceSets.configureEach {
-        documentedVisibilities.set([
-                DokkaConfiguration.Visibility.PUBLIC,
-                DokkaConfiguration.Visibility.PROTECTED
-        ])
-
-        perPackageOption {
-            matchingRegex.set(".*internal.*")
-            suppress.set(true)
-        }
-    }
-}
-
 subprojects {
+    def projectName = it.name
+
     afterEvaluate {
         if (tasks.findByName('dokkaHtmlPartial') == null) {
             // If dokka isn't enabled on this module, skip
+            println("[dokka] skipped ${projectName}")
             return
         }
 
-        tasks.named('dokkaHtmlPartial') {
+        tasks.withType(DokkaTaskPartial.class) {
+            outputDirectory = rootProject.file(dirName)
+            failOnWarning.set(true)
+
+            String baseConfiguration = """
+                {
+                    "customAssets": ["${file("dokka-templates/assets/logo-icon.svg")}"],
+                    "customStyleSheets": ["${file("dokka-templates/logo-styles.css")}"],
+                    "footerMessage": "(c) 2023 Tokopedia Android Engineering Team"
+                }
+            """
+            pluginsMapConfiguration.set(["org.jetbrains.dokka.base.DokkaBase": baseConfiguration])
+
             dokkaSourceSets.configureEach {
+                documentedVisibilities.set([
+                        DokkaConfiguration.Visibility.PUBLIC,
+                        DokkaConfiguration.Visibility.PROTECTED
+                ])
+
+                perPackageOption {
+                    matchingRegex.set(".*internal.*")
+                    suppress.set(true)
+                }
+
+                includes.from("readme.md")
+
                 reportUndocumented.set(true)
                 skipEmptyPackages.set(true)
                 skipDeprecated.set(true)
