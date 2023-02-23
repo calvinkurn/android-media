@@ -17,7 +17,7 @@ import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 
 class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
-    ConstraintLayout(context, attributeSet), ChatbotSendButtonListener {
+    ConstraintLayout(context, attributeSet) {
 
     private var replyBox: ConstraintLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
@@ -25,10 +25,10 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     var commentEditText: EditText? = null
     private var addAttachmentMenu: ImageView? = null
     private var guideline: Guideline? = null
-    private var sendButton: ImageView? = null
+    var sendButton: ImageView? = null
 
     private var textWatcher: TextWatcher? = null
-    private var isSendButtonActivated: Boolean = false
+    var listener: ChatbotSendButtonListener? = null
 
     init {
         initViewBindings()
@@ -108,26 +108,16 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (getMessage().isNotEmpty()) {
-                    enableSendButton()
+                    listener?.enableSendButton()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (getMessage().isEmpty()) {
-                    disableSendButton()
+                    listener?.disableSendButton()
                 }
             }
         }
-    }
-
-    override fun disableSendButton() {
-        isSendButtonActivated = false
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-    }
-
-    override fun enableSendButton() {
-        isSendButtonActivated = true
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send)
     }
 
     companion object {

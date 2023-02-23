@@ -598,8 +598,12 @@ class PromoCheckoutViewModel @Inject constructor(
                 couponSubSection.coupons.forEachIndexed { index, couponItem ->
                     if (couponItem.isGroupHeader) {
                         val promoItem = uiModelMapper.mapPromoListItemUiModel(
-                            couponItem, couponSubSection, couponSectionItem,
-                            promoHeader.uiData.identifierId, preSelectedPromoList, index
+                            couponItem,
+                            couponSubSection,
+                            couponSectionItem,
+                            promoHeader.uiData.identifierId,
+                            preSelectedPromoList,
+                            index
                         )
                         if (eligibilityHeader.uiState.isEnabled) {
                             couponList.add(promoItem)
@@ -965,7 +969,11 @@ class PromoCheckoutViewModel @Inject constructor(
                     ?: 0
             val status = if (selectedPromoList.size == promoRecommendationCount &&
                 selectedRecommendationCount == promoRecommendationCount
-            ) 1 else 0
+            ) {
+                1
+            } else {
+                0
+            }
             analytics.eventClickPakaiPromoSuccess(
                 getPageSource(),
                 status.toString(),

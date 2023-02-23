@@ -82,8 +82,13 @@ import com.tokopedia.feedcomponent.R as feedComponentR
  * @author by milhamj on 25/07/18.
  */
 @Keep
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener,
-    PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener,FeedOnboardingCoachmark.Listener {
+class FeedPlusContainerFragment :
+    BaseDaggerFragment(),
+    FragmentListener,
+    AllNotificationListener,
+    PostProgressUpdateView.PostUpdateSwipe,
+    FeedPlusContainerListener,
+    FeedOnboardingCoachmark.Listener {
 
     private var showOldToolbar: Boolean = false
     private var shouldHitFeedTracker: Boolean = false
@@ -154,7 +159,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     lateinit var onboardingCoachmark: FeedOnboardingCoachmark
     private var isOnboardingCoachmarkAlreadyShown: Boolean = false
-
 
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
@@ -385,7 +389,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         coachMarkManager?.dismissAllCoachMark()
         coachMarkManager = null
-        onboardingCoachmark.dismiss()
+        if (::onboardingCoachmark.isInitialized) {
+            onboardingCoachmark.dismiss()
+        }
         super.onDestroy()
     }
 
@@ -439,7 +445,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             isOnboardingCoachmarkAlreadyShown = false
             hideAllFab()
             coachMarkManager?.dismissAllCoachMark()
-            onboardingCoachmark.dismiss()
+            if (::onboardingCoachmark.isInitialized) {
+                onboardingCoachmark.dismiss()
+            }
         }
         if (isVisibleToUser && !isOnboardingCoachmarkAlreadyShown) {
             showOnboardingStepsCoachmark(
@@ -549,7 +557,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         )
 
         playShortsUploader.observe(viewLifecycleOwner) { progress, uploadData ->
-            when(progress) {
+            when (progress) {
                 PlayShortsUploadConst.PROGRESS_COMPLETED -> {
                     postProgressUpdateView?.hide()
                     Toaster.build(
@@ -596,8 +604,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (fabFeed.menuOpen) {
                 entryPointAnalytic.clickMainEntryPoint()
 
-                if(viewModel.isShowShortsButton)
+                if (viewModel.isShowShortsButton) {
                     playShortsInFeedAnalytic.viewShortsEntryPoint()
+                }
             }
         }
     }
@@ -703,8 +712,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
 
         viewModel.getWhitelist()
-        if (!userSession.isLoggedIn)
+        if (!userSession.isLoggedIn) {
             onCoachmarkFinish()
+        }
     }
     private fun openTabAsPerParamValue() {
         when (arguments?.getString(PARAM_FEED_TAB_POSITION) ?: UPDATE_TAB_POSITION) {
@@ -734,7 +744,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (items.isNotEmpty() && userSession.isLoggedIn) {
                 fabFeed.addItem(items)
                 feedFloatingButton.show()
-
             } else {
                 feedFloatingButton.hide()
             }
@@ -821,7 +830,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 shouldShowShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
                 shouldShowUserProfileCoachmark = true
             )
-
         }
     }
 
@@ -867,21 +875,40 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         fabFeed.menuOpen = false
     }
 
+    private fun showOnboardingStepsCoachmark(shouldShowShortVideoCoachmark: Boolean, shouldShowUserProfileCoachmark: Boolean) {
+        var anchorMap: Map<String, View> = mutableMapOf()
 
-    private fun showOnboardingStepsCoachmark(shouldShowShortVideoCoachmark: Boolean, shouldShowUserProfileCoachmark: Boolean){
+        ivFeedUser?.let {
+            anchorMap = anchorMap.plus(
+                Pair(
+                    FeedOnboardingCoachmark.USER_PROFILE_COACH_MARK_ANCHOR,
+                    it
+                )
+            )
+        }
+
         val tab = tabLayout?.tabLayout?.getTabAt(2)
-        val anchorMap = mapOf<String, View>(
-            Pair(FeedOnboardingCoachmark.USER_PROFILE_COACH_MARK_ANCHOR, ivFeedUser!!),
-            Pair(FeedOnboardingCoachmark.VIDEO_TAB_COACH_MARK_ANCHOR, tab?.view!!),
-            Pair(FeedOnboardingCoachmark.SHORT_VIDEO_COACH_MARK_ANCHOR, feedFloatingButton),
+        tab?.let {
+            anchorMap =
+                anchorMap.plus(Pair(FeedOnboardingCoachmark.VIDEO_TAB_COACH_MARK_ANCHOR, it.view))
+        }
+
+        anchorMap = anchorMap.plus(
+            Pair(
+                FeedOnboardingCoachmark.SHORT_VIDEO_COACH_MARK_ANCHOR,
+                feedFloatingButton
+            )
         )
+
         isOnboardingCoachmarkAlreadyShown = true
-        onboardingCoachmark.showFeedOnboardingCoachmark(
-            anchorMap,
-            this,
-            shouldShowShortVideoCoachmark,
-            shouldShowUserProfileCoachmark
-        )
+        if (::onboardingCoachmark.isInitialized) {
+            onboardingCoachmark.showFeedOnboardingCoachmark(
+                anchorMap,
+                this,
+                shouldShowShortVideoCoachmark,
+                shouldShowUserProfileCoachmark
+            )
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
