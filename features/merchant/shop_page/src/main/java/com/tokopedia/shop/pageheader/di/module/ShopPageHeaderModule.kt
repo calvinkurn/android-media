@@ -8,7 +8,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
-import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
+import com.tokopedia.shop.pageheader.di.scope.ShopPageHeaderScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,22 +16,22 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module(includes = [ShopViewModelModule::class])
-class ShopPageModule {
+@Module(includes = [ShopPageHeaderViewModelModule::class])
+class ShopPageHeaderModule {
 
-    @ShopPageScope
+    @ShopPageHeaderScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @ShopPageScope
+    @ShopPageHeaderScope
     @Provides
     fun provideGetBroadcasterShopConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterShopConfigUseCase {
         return GetBroadcasterShopConfigUseCase(graphqlUseCase)
     }
 
-    @ShopPageScope
+    @ShopPageHeaderScope
     @Provides
     @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST)
     fun provideGqlQueryShopFeedWhitelist(@ApplicationContext context: Context): String {
@@ -41,7 +41,7 @@ class ShopPageModule {
         )
     }
 
-    @ShopPageScope
+    @ShopPageHeaderScope
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_PAGE_P1_QUERIES)
     fun provideShopPageP1Queries(
@@ -56,7 +56,7 @@ class ShopPageModule {
         )
     }
 
-    @ShopPageScope
+    @ShopPageHeaderScope
     @Provides
     fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)

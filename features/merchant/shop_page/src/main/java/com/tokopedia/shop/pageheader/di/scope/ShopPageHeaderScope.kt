@@ -9,4 +9,4 @@ import javax.inject.Scope
  */
 @Scope
 @Retention(RetentionPolicy.CLASS)
-annotation class ShopPageScope 
+annotation class ShopPageHeaderScope

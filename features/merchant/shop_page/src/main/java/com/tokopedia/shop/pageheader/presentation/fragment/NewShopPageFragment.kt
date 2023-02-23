@@ -157,9 +157,9 @@ import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBin
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
-import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
-import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
-import com.tokopedia.shop.pageheader.di.module.ShopPageModule
+import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
+import com.tokopedia.shop.pageheader.di.component.ShopPageHeaderComponent
+import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
@@ -227,7 +227,7 @@ import javax.inject.Inject
 
 class NewShopPageFragment :
     BaseDaggerFragment(),
-    HasComponent<ShopPageComponent>,
+    HasComponent<ShopPageHeaderComponent>,
     ShopPageFragmentViewHolderListener,
     ShopShareBottomsheetListener,
     ChooseAddressWidget.ChooseAddressWidgetListener,
@@ -424,7 +424,7 @@ class NewShopPageFragment :
 
     private var isConfettiAlreadyShown = false
     override fun getComponent() = activity?.run {
-        DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
+        DaggerShopPageHeaderComponent.builder().shopPageModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
     }
 
