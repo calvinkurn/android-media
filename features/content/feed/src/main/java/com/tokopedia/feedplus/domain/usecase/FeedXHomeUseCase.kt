@@ -1,0 +1,264 @@
+package com.tokopedia.feedplus.domain.usecase
+
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import javax.inject.Inject
+
+/**
+ * Created By : Muhammad Furqan on 23/02/23
+ */
+@GqlQuery(FeedXHomeUseCase.QUERY_NAME, FeedXHomeUseCase.QUERY)
+class FeedXHomeUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<Any>(graphqlRepository) {
+
+    init {
+        setTypeClass(Any::class.java)
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setGraphqlQuery(FeedXHomeQuery())
+    }
+
+    companion object {
+        const val QUERY_NAME = "FeedXHomeQuery"
+        const val QUERY = """
+            query feedXHome(${'$'}req: FeedXHomeRequest!) {
+              feedXHome(req:${'$'}req) {
+                items {
+                  __typename
+                  ...FeedXCardBanners
+                  ...FeedXCardPost
+                  ...FeedXCardPlay
+                  ...FeedXCardTopAds
+                  ...FeedXCardProductsHighlight
+                  ...FeedXCardPlaceholder
+                }
+                pagination {
+                  totalData
+                  cursor
+                  hasNext
+                }
+              }
+            }
+            
+            fragment FeedXCardBanners on FeedXCardBanners {
+              id
+              items {
+                id
+                appLink
+                webLink
+                coverURL
+                mods
+              }
+              publishedAt
+              mods
+            }
+            
+            fragment FeedXCardPost on FeedXCardPost {
+              ...FeedXCardWithProductTag
+            }
+            
+            fragment FeedXCardPlay on FeedXCardPlay {
+              playChannelID
+              ...FeedXCardWithProductTag
+            }
+            
+            fragment FeedXCardTopAds on FeedXCardTopAds {
+              id
+              author {
+                ...FeedXAuthor
+              }
+              promos
+              items {
+                id
+                product {
+                  ...FeedXProduct
+                }
+                mods
+              }
+              publishedAt
+              mods
+            }
+            
+            fragment FeedXCardProductsHighlight on FeedXCardProductsHighlight {
+              ...FeedXCard
+              type
+              hasVoucher
+              cta {
+                text
+                subtitle
+                color
+                colorGradient {
+                  color
+                  position
+                }
+                __typename
+              }
+              ribbonImageURL
+              campaign {
+                id
+                status
+                name
+                shortName
+                startTime
+                endTime
+                restrictions {
+                  label
+                  isActive
+                  __typename
+                }
+              }
+              appLinkProductList
+              webLinkProductList
+              maximumDiscountPercentage
+              maximumDiscountPercentageFmt
+              totalProducts
+              products {
+                ...FeedXProduct
+                priceMasked
+                priceMaskedFmt
+                stockWording
+                stockSoldPercentage
+                cartable
+                isCashback
+                cashbackFmt
+              }
+            }
+            
+            fragment FeedXCardPlaceholder on FeedXCardPlaceholder {
+              id
+              type
+              mods
+            }
+            
+            fragment FeedXCard on FeedXCard {
+              id
+              author {
+                ...FeedXAuthor
+              }
+              title
+              subTitle
+              text
+              appLink
+              webLink
+              like {
+                label
+                count
+                countFmt
+                likedBy
+                isLiked
+                mods
+              }
+              comments {
+                label
+                count
+                countFmt
+                items {
+                  id
+                  author {
+                    ...FeedXAuthor
+                  }
+                  text
+                  mods
+                }
+                mods
+              }
+              share {
+                label
+                operation
+                mods
+              }
+              followers {
+                label
+                isFollowed
+                count
+                countFmt
+                mods
+              }
+              publishedAt
+              mods
+              editable
+              deletable
+              detailScore {
+                label
+                value
+              }
+            }
+            
+            fragment FeedXCardWithProductTag on FeedXCardWithProductTag {
+              ...FeedXCard
+              actionButtonLabel
+              actionButtonOperationWeb
+              actionButtonOperationApp
+              reportable
+              media {
+                id
+                type
+                coverURL
+                mediaURL
+                appLink
+                webLink
+                tagging {
+                  tagIndex
+                  posX
+                  posY
+                }
+                mods
+              }
+              mediaRatio {
+                width
+                height
+              }
+              tags {
+                ...FeedXProduct
+              }
+              hashtagApplinkFmt
+              hashtagWebLinkFmt
+              views {
+                label
+                count
+                countFmt
+                mods
+              }
+            }
+            
+            fragment FeedXAuthor on FeedXAuthor {
+              id
+              type
+              name
+              description
+              badgeURL
+              logoURL
+              webLink
+              appLink
+              encryptedUserID
+            }
+            
+            fragment FeedXProduct on FeedXProduct {
+              id
+              name
+              coverURL
+              webLink
+              appLink
+              star
+              price
+              priceFmt
+              isDiscount
+              discount
+              discountFmt
+              priceOriginal
+              priceOriginalFmt
+              priceDiscount
+              priceDiscountFmt
+              totalSold
+              isBebasOngkir
+              bebasOngkirStatus
+              bebasOngkirURL
+              shopID
+              mods
+            }
+        """
+    }
+}
