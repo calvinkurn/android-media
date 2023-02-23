@@ -1198,25 +1198,24 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             radioAllBuyer.disable()
             radioNewFollower.disable()
 
-            for (targetBuyer in availableTargetBuyer) {
-                rgBuyerTarget.getChildAt(targetBuyer.id).enable()
+            if (pageMode == PageMode.CREATE) {
+                for (targetBuyer in availableTargetBuyer) {
+                    rgBuyerTarget.getChildAt(targetBuyer.id).enable()
+                }
             }
 
             when (voucherConfiguration.targetBuyer) {
                 VoucherTargetBuyer.ALL_BUYER -> {
-                    radioAllBuyer.enable()
+                    if (pageMode == PageMode.CREATE) radioAllBuyer.enable()
                     radioAllBuyer.isChecked = true
-                    radioNewFollower.isChecked = false
                 }
                 VoucherTargetBuyer.NEW_FOLLOWER -> {
-                    radioNewFollower.enable()
+                    if (pageMode == PageMode.CREATE) radioNewFollower.enable()
                     radioNewFollower.isChecked = true
-                    radioAllBuyer.isChecked = false
                 }
                 else -> {
-                    radioAllBuyer.enable()
+                    if (pageMode == PageMode.CREATE) radioAllBuyer.enable()
                     radioAllBuyer.isChecked = true
-                    radioNewFollower.isChecked = false
                 }
             }
         }
