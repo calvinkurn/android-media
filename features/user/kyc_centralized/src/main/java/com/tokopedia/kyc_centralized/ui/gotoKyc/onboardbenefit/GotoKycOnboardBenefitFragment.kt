@@ -33,6 +33,8 @@ class GotoKycOnboardBenefitFragment: BaseDaggerFragment() {
         initListener()
     }
 
+    override fun getScreenName(): String = ""
+
     private fun loadInitImage() {
         binding?.ivOnboardBenefit?.loadImageWithoutPlaceholder(
             getString(R.string.img_url_goto_kyc_onboard_benefit)
@@ -56,15 +58,11 @@ class GotoKycOnboardBenefitFragment: BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    override fun getScreenName(): String = SCREEN_NAME
-
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
     }
 
     companion object {
-        private val SCREEN_NAME = GotoKycOnboardBenefitFragment::class.java.simpleName
-
         fun createInstance(): Fragment = GotoKycOnboardBenefitFragment()
     }
 }

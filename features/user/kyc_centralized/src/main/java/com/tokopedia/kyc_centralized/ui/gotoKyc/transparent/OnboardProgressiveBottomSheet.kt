@@ -55,7 +55,7 @@ class OnboardProgressiveBottomSheet(private val source: String): BottomSheetUnif
     }
 
     private fun setTokopediaCareView() {
-        val message = getString(R.string.goto_kyc_onboard_progressive_tokopedia_care)
+        val message = getString(R.string.goto_kyc_question_ktp_issue)
         val spannable = SpannableString(message)
         spannable.setSpan(
             object : ClickableSpan() {
@@ -71,7 +71,7 @@ class OnboardProgressiveBottomSheet(private val source: String): BottomSheetUnif
                     )
                 }
             },
-            message.indexOf(getString(R.string.goto_kyc_onboard_progressive_tokopedia_care_spannable)),
+            message.indexOf(getString(R.string.goto_kyc_contact_tokopedia_care)),
             message.length,
             0
         )
