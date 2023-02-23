@@ -22,7 +22,6 @@ data class PurchaseUiEvent(
         const val EVENT_SUCCESS_CHECKOUT_GENERAL = 93
         const val EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET = 94
         const val EVENT_FAILED_CHECKOUT_GENERAL_TOASTER = 95
-        const val EVENT_FAILED_EDIT_PRODUCT = 96
         const val EVENT_GO_TO_ORDER_CUSTOMIZATION = 97
     }
 }

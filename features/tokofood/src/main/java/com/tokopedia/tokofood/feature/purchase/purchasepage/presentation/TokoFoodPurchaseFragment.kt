@@ -48,8 +48,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
@@ -393,7 +392,7 @@ class TokoFoodPurchaseFragment :
                     }
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
-                    (it.data as? CheckoutTokoFoodConsentBottomSheet)?.let { data ->
+                    (it.data as? CartListBusinessDataBottomSheet)?.let { data ->
                         showConsentBottomSheet(data)
                     }
                 }
@@ -816,8 +815,8 @@ class TokoFoodPurchaseFragment :
         if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
     }
 
-    private fun showConsentBottomSheet(data: CheckoutTokoFoodConsentBottomSheet) {
-        if (data.isShowBottomsheet) {
+    private fun showConsentBottomSheet(data: CartListBusinessDataBottomSheet) {
+        if (data.isShowBottomSheet) {
             consentBottomSheet = TokoFoodPurchaseConsentBottomSheet.createInstance(
                 data.title,
                 data.description,

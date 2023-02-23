@@ -23,8 +23,6 @@ data class CheckoutGeneralTokoFoodData(
     val success: Int = 0,
     @SerializedName("error")
     val error: String = "",
-    @SerializedName("error_state")
-    val errorState: Int = 0,
     @SerializedName("error_metadata")
     val errorMetadata: String = "",
     @SerializedName("message")

@@ -3,12 +3,12 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.metadata.TokoFoodCheckoutMetadata
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartInfoParam
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartParam
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodParam
+import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokofoodParamBusinessCheckoutState
+import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokofoodParamBusinessData
+import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokofoodParamTransaction
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
 import javax.inject.Inject
 
@@ -23,7 +23,6 @@ private const val QUERY = """
             data {
               success
               error
-              error_state
               error_metadata
               message
               data{
@@ -46,7 +45,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
         setGraphqlQuery(TokoFoodCheckoutGeneral())
     }
 
-    suspend fun execute(params: CheckoutTokoFood): CheckoutGeneralTokoFoodResponse{
+    suspend fun execute(params: CartGeneralCartListData): CheckoutGeneralTokoFoodResponse{
         val param = generateParam(params)
         setRequestParams(param)
         return executeOnBackground()
@@ -56,17 +55,25 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
 
         private const val PARAMS_KEY = "params"
 
-        private fun generateParam(tokoFood: CheckoutTokoFood): Map<String, Any> {
-            val checkoutMetadata = TokoFoodCheckoutMetadata.convertCheckoutDataIntoMetadata(tokoFood)
-            val metadataString = checkoutMetadata.generateString()
+        private fun generateParam(tokoFood: CartGeneralCartListData): Map<String, Any> {
+            val tokofoodBusinessData = tokoFood.data.getTokofoodBusinessData()
+            val checkoutAdditionalData = tokofoodBusinessData.customResponse.checkoutAdditionalData
             val param =
                 CheckoutGeneralTokoFoodParam(
-                    carts = CheckoutGeneralTokoFoodCartParam(
-                        businessType = tokoFood.data.checkoutAdditionalData.checkoutBusinessId.toIntOrNull() ?: TokoFoodCartUtil.TOKOFOOD_BUSINESS_TYPE,
-                        cartInfo = listOf(
-                            CheckoutGeneralTokoFoodCartInfoParam(
-                                metadata = metadataString,
-                                dataType = tokoFood.data.checkoutAdditionalData.dataType
+                    transaction = CheckoutGeneralTokofoodParamTransaction(
+                        flowType = checkoutAdditionalData.flowType,
+                        businessData = listOf(
+                            CheckoutGeneralTokofoodParamBusinessData(
+                                checkoutBusinessType = checkoutAdditionalData.checkoutBusinessId,
+                                checkoutDataType = checkoutAdditionalData.dataType,
+                                // TODO: Add businessId
+                                businessId = String.EMPTY,
+                                businessCheckoutState = CheckoutGeneralTokofoodParamBusinessCheckoutState(
+                                    userAddress = tokofoodBusinessData.customResponse.userAddress,
+                                    shop = tokofoodBusinessData.customResponse.shop,
+                                    shipping = tokofoodBusinessData.customResponse.shipping,
+                                    shoppingSummary = tokofoodBusinessData.customResponse.shoppingSummary
+                                )
                             )
                         )
                     )
