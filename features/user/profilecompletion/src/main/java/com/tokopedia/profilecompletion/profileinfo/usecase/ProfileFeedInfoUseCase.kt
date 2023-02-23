@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.profileinfo.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -11,8 +12,9 @@ import javax.inject.Inject
 
 class ProfileFeedInfoUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    private val userSession: UserSessionInterface
-) : CoroutineUseCase<Unit, ProfileFeedResponse>(Dispatchers.IO) {
+    private val userSession: UserSessionInterface,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<Unit, ProfileFeedResponse>(dispatchers.io) {
 
     /* can use both username/userId as param */
     private val usernameParam = "username"
