@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopProductCardListBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -27,16 +28,27 @@ class ShopProductItemListViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.item_shop_product_card_list
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
     private val viewBinding: ItemShopProductCardListBinding? by viewBinding()
     private val productCardView: ProductCardListView? = viewBinding?.productCardView
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
+        val stockBarLabel = shopProductUiModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
             shopProductUiModel = shopProductUiModel,
             isWideContent = false,
             isShowThreeDots = isShowTripleDot
+        ).copy(
+            stockBarLabelColor = stockBarLabelColor
         )
         productCardView?.setProductModel(productCardModel)
         productCardView?.setThreeDotsOnClickListener {

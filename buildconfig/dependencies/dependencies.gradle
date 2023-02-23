@@ -13,7 +13,7 @@ ext {
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.7.0"
-    startupRuntimeVersion = "1.1.0"
+    startupRuntimeVersion = "1.1.1"
 
     biometricVersion = "1.1.0"
     appCompatVersion = '1.3.1'
@@ -27,7 +27,7 @@ ext {
     androidxCoreVersion = '1.8.0'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
-    playServiceWearableVersion = '17.1.0'
+    playServiceWearableVersion = '18.0.0'
     coroutineVersion = '1.5.1'
     coroutinePlayServiceVersion = '1.3.9'
     retrofitVersion = '2.6.0'
@@ -126,8 +126,8 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.24.1'
     unifyPrinciplesVersion = '1.4.4'
-    unifyComponentsVersion = '1.2.25.2'
-    unifyCoachMarkVersion = '1.2.20'
+    unifyComponentsVersion = '1.2.26'
+    unifyCoachMarkVersion = '1.2.21'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.6.2'
     unifyDialogVersion = '1.0.14.2'
@@ -356,8 +356,9 @@ ext {
             espressoIntents       : "androidx.test.espresso:espresso-intents:$espressoVersion",
             espressoContrib       : "androidx.test.espresso:espresso-contrib:$espressoVersion",
             espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$espressoVersion",
+            okhttpIdlingResource  : "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0",
             retrofitMock          : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
-            retrofitMockWebser    : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
+            retrofitMockWebserver : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker              : 'com.google.dexmaker:dexmaker:1.2',
             dexMakerMockito       : 'com.linkedin.dexmaker:dexmaker-mockito:2.28.1',
             assertJ               : "org.assertj:assertj-core:1.7.1",

@@ -57,6 +57,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   id
                   status_name
                   indicator_color
+                  labels {
+                    label
+                  }
                 }
                 ticker_info {
                   text
@@ -317,6 +320,16 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     total_price
                     total_price_str
                     total_quantity
+                  }
+                }
+                additional_data {
+                  epharmacy_data {
+                    consultation_name
+                    consultation_date
+                    consultation_doctor_name
+                    consultation_prescription_number
+                    consultation_expiry_date
+                    consultation_patient_name
                   }
                 }
                 has_ppp

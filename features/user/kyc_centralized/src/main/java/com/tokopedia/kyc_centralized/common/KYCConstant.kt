@@ -21,6 +21,7 @@ object KYCConstant {
     const val HOME_CREDIT_PROJECT_ID = "16"
     const val CO_BRAND_PROJECT_ID = "18"
     const val GO_CICIL_PROJECT_ID = "21"
+    const val OFFICIAL_STORE_PROJECT_ID = "23"
 
     const val BUSINESS_UNIT = "businessUnit"
     const val USER_PLATFORM = "user platform"

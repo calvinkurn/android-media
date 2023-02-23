@@ -75,12 +75,13 @@ class OneLinersViewHolder(
         root.addOnImpressionListener(element.impressHolder) {
             renderCoachMark(content?.eduLink?.appLink?.isNotBlank() == true)
 
-            if (element.name == STOCK_ASSURANCE)
+            if (element.name == STOCK_ASSURANCE) {
                 listener.onImpressStockAssurance(
                     componentTrackDataModel = getComponentTrackData(element),
                     label = content?.linkText + content?.content
                 )
-            else listener.onImpressComponent(getComponentTrackData(element))
+            }
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 

@@ -21,6 +21,7 @@ public class LinkerData implements Parcelable {
     public static final String RIDE_TYPE = "Ride";
     public static final String PROMO_TYPE = "Promo";
     public static final String HOTEL_TYPE = "Hotel";
+    public static final String FLIGHT_TYPE = "Flight";
     public static final String ENTERTAINMENT_TYPE = "Entertainment";
     public static final String USER_PROFILE_SOCIAL = "User Profile Social";
     public static final String NOW_TYPE = "Now";
