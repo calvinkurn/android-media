@@ -46,11 +46,12 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
-import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
+// import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
@@ -116,8 +117,8 @@ class ShopHomeViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
     private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>,
-    private val getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>,
-    ) : BaseViewModel(dispatcherProvider.main) {
+    private val getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>
+) : BaseViewModel(dispatcherProvider.main) {
 
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData
@@ -304,9 +305,9 @@ class ShopHomeViewModel @Inject constructor(
             if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCart(addToCartSubmitData.data)
                 checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
-            }
-            else
+            } else {
                 onErrorAddToCart(MessageErrorException(addToCartSubmitData.data.message.first()))
+            }
         }) {
             onErrorAddToCart(it)
         }
@@ -325,9 +326,9 @@ class ShopHomeViewModel @Inject constructor(
             if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
                 checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
-            }
-            else
+            } else {
                 onErrorAddToCartOcc(MessageErrorException(addToCartOccSubmitData.data.message.first()))
+            }
         }) {
             onErrorAddToCartOcc(it)
         }
@@ -739,8 +740,11 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
-        if (!isLogin) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
-        else updatePlayWidgetToggleReminder(channelId, reminderType)
+        if (!isLogin) {
+            _playWidgetReminderEvent.value = Pair(channelId, reminderType)
+        } else {
+            updatePlayWidgetToggleReminder(channelId, reminderType)
+        }
     }
 
     private fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
@@ -895,7 +899,7 @@ class ShopHomeViewModel @Inject constructor(
             val productList = asyncCatchError(
                 dispatcherProvider.io,
                 block = {
-                    if (initialProductListData == null)
+                    if (initialProductListData == null) {
                         getProductListData(
                             shopId,
                             ShopPageConstant.START_PAGE,
@@ -904,8 +908,9 @@ class ShopHomeViewModel @Inject constructor(
                             widgetUserAddressLocalData,
                             isEnableDirectPurchase
                         )
-                    else
+                    } else {
                         null
+                    }
                 },
                 onError = { null }
             )
@@ -1045,11 +1050,13 @@ class ShopHomeViewModel @Inject constructor(
     ) {
         when (atcType) {
             ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
-                _createAffiliateCookieAtcProduct.postValue(AffiliateAtcProductModel(
-                    shopHomeProductUiModel.id,
-                    shopHomeProductUiModel.isVariant,
-                    shopHomeProductUiModel.stock
-                ))
+                _createAffiliateCookieAtcProduct.postValue(
+                    AffiliateAtcProductModel(
+                        shopHomeProductUiModel.id,
+                        shopHomeProductUiModel.isVariant,
+                        shopHomeProductUiModel.stock
+                    )
+                )
             }
             else -> {}
         }
@@ -1126,10 +1133,11 @@ class ShopHomeViewModel @Inject constructor(
                 widgetModel.isNewData = listUpdatedShopHomeProductUiModel.any { it.isNewData }
             }
         }
-        return if (widgetModel.isNewData)
+        return if (widgetModel.isNewData) {
             widgetModel.copy()
-        else
+        } else {
             null
+        }
     }
 
     fun getShopWidgetDataWithUpdatedQuantity(shopHomeWidgetData: MutableList<Visitable<*>>) {
@@ -1244,7 +1252,7 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    //need to surpress it.name, since name is not related to PII
+    // need to surpress it.name, since name is not related to PII
     @SuppressLint("PII Data Exposure")
     private suspend fun getShopDynamicHomeTabWidgetData(
         shopId: String,

@@ -1,7 +1,9 @@
-package com.tokopedia.shop.sort.data.source.cloud.model
+package com.tokopedia.shop.common.graphql.data.shopsort
+
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+
 
 /**
  * Created by nathan on 3/4/18.

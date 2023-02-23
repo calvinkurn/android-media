@@ -2,8 +2,9 @@ package com.tokopedia.shop.common.data.source.cloud.api
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSortList
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
-import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSortList
+// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSortList
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.QueryMap

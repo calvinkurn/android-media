@@ -27,6 +27,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStat
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.Status
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -34,7 +35,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopPageProductResultPageData
 import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseTitleUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
-import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
+// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -1383,7 +1384,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         val mockStockQty = 11
         val mockShopId = "125"
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any())
+            affiliateCookieHelper.initCookie(any(), any(), any())
         } returns Unit
         shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
@@ -1393,7 +1394,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             mockStockQty,
             mockShopId
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
     @Test
@@ -1404,7 +1405,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         val mockStockQty = 11
         val mockShopId = "125"
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any())
+            affiliateCookieHelper.initCookie(any(), any(), any())
         } throws Exception()
         shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
@@ -1414,7 +1415,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             mockStockQty,
             mockShopId
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
     @Test

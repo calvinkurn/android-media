@@ -1,7 +1,8 @@
 package com.tokopedia.shop.sort.data.repository
 
+import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 import com.tokopedia.shop.sort.data.source.cloud.ShopProductSortCloudDataSource
-import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
+// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import com.tokopedia.shop.sort.domain.repository.ShopProductSortRepository
 import rx.Observable
 import javax.inject.Inject

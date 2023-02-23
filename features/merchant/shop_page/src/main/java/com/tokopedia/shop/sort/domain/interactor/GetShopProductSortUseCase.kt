@@ -1,6 +1,7 @@
 package com.tokopedia.shop.sort.domain.interactor
 
-import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
+// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
+import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 import com.tokopedia.shop.sort.domain.repository.ShopProductSortRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

@@ -1,10 +1,7 @@
-package com.tokopedia.shop.common.data.response
+package com.tokopedia.shop.common.graphql.data.shopsort
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
-
-// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 
 data class GqlShopSortProductResponse(
     @SerializedName("shopSort")

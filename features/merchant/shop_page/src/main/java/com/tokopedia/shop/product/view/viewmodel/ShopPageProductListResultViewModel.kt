@@ -26,7 +26,7 @@ import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
-import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
+// import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
@@ -61,24 +61,26 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
+import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 
-class ShopPageProductListResultViewModel @Inject constructor(private val userSession: UserSessionInterface,
-                                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-                                                             private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-                                                             private val getShopProductUseCase: GqlGetShopProductUseCase,
-                                                             private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-                                                             private val shopProductSortMapper: ShopProductSortMapper,
-                                                             private val dispatcherProvider: CoroutineDispatchers,
-                                                             private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-                                                             private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-                                                             private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
-                                                             private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-                                                             private val getFollowStatusUseCase: GetFollowStatusUseCase,
-                                                             private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
-                                                             private val addToCartUseCase: AddToCartUseCase,
-                                                             private val updateCartUseCase: UpdateCartUseCase,
-                                                             private val deleteCartUseCase: DeleteCartUseCase,
-                                                             private val sharedPreferences: SharedPreferences
+class ShopPageProductListResultViewModel @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val getShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+    private val shopProductSortMapper: ShopProductSortMapper,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+    private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
+    private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
+    private val getFollowStatusUseCase: GetFollowStatusUseCase,
+    private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val deleteCartUseCase: DeleteCartUseCase,
+    private val sharedPreferences: SharedPreferences
 
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -777,6 +779,6 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         launchCatchError(dispatcherProvider.io, block = {
             val shopAffiliateChannel = sharedPreferences.getString(SHARED_PREF_AFFILIATE_CHANNEL, "")
             _shopAffiliateChannel.postValue(shopAffiliateChannel)
-        }){}
+        }) {}
     }
 }

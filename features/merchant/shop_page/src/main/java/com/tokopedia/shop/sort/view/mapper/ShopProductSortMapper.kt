@@ -1,6 +1,7 @@
 package com.tokopedia.shop.sort.view.mapper
 
-import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
+// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
+import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import java.util.*
 

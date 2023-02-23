@@ -1,12 +1,9 @@
-package com.tokopedia.shop.sort.data.source.cloud.model
+package com.tokopedia.shop.common.graphql.data.shopsort
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.util.*
+import java.util.ArrayList
 
-/**
- * Created by nathan on 3/4/18.
- */
 class ShopProductSortList {
     @SerializedName("sort")
     @Expose

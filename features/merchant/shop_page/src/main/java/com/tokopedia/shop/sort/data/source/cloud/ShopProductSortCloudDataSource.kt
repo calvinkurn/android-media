@@ -1,8 +1,9 @@
 package com.tokopedia.shop.sort.data.source.cloud
 
 import androidx.collection.ArrayMap
+import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 import com.tokopedia.shop.sort.data.source.cloud.api.ShopAceApi
-import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
+// import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import rx.Observable
 import rx.functions.Func1
 import javax.inject.Inject
