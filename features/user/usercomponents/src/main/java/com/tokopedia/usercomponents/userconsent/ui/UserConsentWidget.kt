@@ -71,7 +71,7 @@ class UserConsentWidget : FrameLayout,
 
     /** set Default State if user got error when trying to get data collection from BE **/
     var defaultTemplate: UserConsentType = NONE
-    var hideWhenAlreadyHaveConsent: Boolean = false
+    var hideWhenAlreadySubmittedConsent: Boolean = false
     var tncPage = ""
     var privacyPage = ""
 
@@ -159,7 +159,7 @@ class UserConsentWidget : FrameLayout,
             TNC_PRIVACY_OPTIONAL.value -> TNC_PRIVACY_OPTIONAL
             else -> NONE
         }
-        hideWhenAlreadyHaveConsent = typedArray.getBoolean(R.styleable.UserConsentWidget_hide_when_already_have_consent, false)
+        hideWhenAlreadySubmittedConsent = typedArray.getBoolean(R.styleable.UserConsentWidget_hide_when_already_submitted_consent, false)
 
         typedArray.recycle()
     }
@@ -375,7 +375,7 @@ class UserConsentWidget : FrameLayout,
                 title?.text = resources.getString(R.string.usercomponents_failed_load_data)
                 refreshBtn?.setOnClickListener {
                     consentCollectionParam?.let { param ->
-                        viewModel?.getConsentCollection(param, hideWhenAlreadyHaveConsent)
+                        viewModel?.getConsentCollection(param, hideWhenAlreadySubmittedConsent)
                     }
                 }
             }?.show()
@@ -453,7 +453,7 @@ class UserConsentWidget : FrameLayout,
         invalidate()
         initViewModel(viewModelStoreOwner)
         initObserver()
-        viewModel?.getConsentCollection(consentCollectionParam, hideWhenAlreadyHaveConsent)
+        viewModel?.getConsentCollection(consentCollectionParam, hideWhenAlreadySubmittedConsent)
     }
 
     fun onDestroy() {
