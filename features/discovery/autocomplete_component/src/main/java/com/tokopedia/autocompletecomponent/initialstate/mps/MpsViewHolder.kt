@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.chipwidget.AutocompleteChipDataView
 import com.tokopedia.autocompletecomponent.chipwidget.ChipSpacingItemDecoration
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteMpsBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
@@ -44,11 +43,12 @@ class MpsViewHolder(
         binding.tgHeader.text = element.header
         adapter = MpsChipsAdapter(object : MpsChipCallback {
             override fun onItemClicked(position: Int) {
+                if (element.disableAddButton) return
                 val chip = element.list.getOrNull(position) ?: return
                 listener.onMpsChipClicked(chip)
             }
         })
-        adapter?.submitList(element.list.map { toAutocompleteChipDataView(it) })
+        adapter?.submitList(element.list.map { toMpsChipDataView(it, element.disableAddButton) })
         binding.rvChips.adapter = adapter
     }
 
@@ -65,9 +65,10 @@ class MpsViewHolder(
             .build()
     }
 
-    private fun toAutocompleteChipDataView(
-        baseItemInitialStateSearch: BaseItemInitialStateSearch
-    ): AutocompleteChipDataView = AutocompleteChipDataView(
+    private fun toMpsChipDataView(
+        baseItemInitialStateSearch: BaseItemInitialStateSearch,
+        disableAddButton: Boolean,
+    ): MpsChipDataView = MpsChipDataView(
         template = baseItemInitialStateSearch.template,
         type = baseItemInitialStateSearch.type,
         applink = baseItemInitialStateSearch.applink,
@@ -75,7 +76,8 @@ class MpsViewHolder(
         title = baseItemInitialStateSearch.title,
         dimension90 = baseItemInitialStateSearch.dimension90,
         position = baseItemInitialStateSearch.position,
-        featureId = baseItemInitialStateSearch.featureId
+        featureId = baseItemInitialStateSearch.featureId,
+        disableAddButton = disableAddButton,
     )
 
     companion object {

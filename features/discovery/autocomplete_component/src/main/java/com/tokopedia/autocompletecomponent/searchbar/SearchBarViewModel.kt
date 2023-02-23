@@ -10,6 +10,7 @@ import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSear
 import com.tokopedia.autocompletecomponent.util.CoachMarkLocalCache
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 
@@ -24,15 +25,15 @@ class SearchBarViewModel @Inject constructor(
         .asLiveData()
 
     private val activeSearchParameter: SearchParameter
-        get() {
-            return _searchParameterLiveData.value ?: SearchParameter()
-        }
+        get() = _searchParameterLiveData.value ?: SearchParameter()
 
-    private val _mpsStateLiveData: MutableLiveData<SearchBarMpsState> = MutableLiveData(
-        SearchBarMpsState()
+    private val _searchBarStateLiveData: MutableLiveData<SearchBarState> = MutableLiveData(
+        SearchBarState()
     )
-    val mpsStateLiveData: LiveData<SearchBarMpsState>
-        get() = _mpsStateLiveData
+    val searchBarStateLiveData: LiveData<SearchBarState>
+        get() = _searchBarStateLiveData
+    private val currentSearchBarState: SearchBarState
+        get() = _searchBarStateLiveData.value ?: SearchBarState()
 
     private val _searchBarKeywords: MutableLiveData<List<SearchBarKeyword>> = MutableLiveData(
         emptyList()
@@ -55,7 +56,7 @@ class SearchBarViewModel @Inject constructor(
         private set
 
     val isMpsEnabled: Boolean
-        get() = _mpsStateLiveData.value?.isMpsEnabled == true
+        get() = _searchBarStateLiveData.value?.isMpsEnabled == true
 
     fun restoreSearchParameter(
         searchParameter: SearchParameter,
@@ -86,13 +87,29 @@ class SearchBarViewModel @Inject constructor(
             )
         }
         activeKeyword = searchBarKeyword
-        _activeKeywordLiveData.postValue(activeKeyword)
-        _searchBarKeywords.postValue(searchBarKeywords)
-        _searchParameterLiveData.postValue(SearchParameter(searchParameter))
+        _activeKeywordLiveData.value = activeKeyword
+        _searchBarKeywords.value = searchBarKeywords
+        _searchParameterLiveData.value = SearchParameter(searchParameter)
     }
 
     fun showSearch(searchParameter: SearchParameter) {
-        _searchParameterLiveData.postValue(SearchParameter(searchParameter))
+        setHintIfExists(searchParameter)
+        _searchParameterLiveData.value = SearchParameter(searchParameter)
+    }
+
+    private fun setHintIfExists(searchParameter: SearchParameter) {
+        val hint = searchParameter.get(SearchApiConst.HINT)
+        val placeholder = searchParameter.get(SearchApiConst.PLACEHOLDER)
+        val hintText = when {
+            hint.isNotBlank() -> hint
+            placeholder.isNotBlank() -> placeholder
+            else -> ""
+        }
+        val currentState = _searchBarStateLiveData.value ?: SearchBarState()
+        _searchBarStateLiveData.value = currentState.copy(
+            hasHintOrPlaceHolder = hintText.isNotBlank(),
+            hintText = hintText,
+        )
     }
 
     fun onQueryUpdated(query: String) {
@@ -106,11 +123,11 @@ class SearchBarViewModel @Inject constructor(
             val updatedList = if (keyword.keyword.isNotBlank()) (newList + keyword) else newList
             val sortedKeywords = updatedList.sortedBy { it.position }
             searchParameter.setSearchQueries(sortedKeywords.map { it.keyword })
-            _searchBarKeywords.postValue(sortedKeywords)
-        } else {
+            _searchBarKeywords.value = sortedKeywords
+        } else if (keywords.isEmpty()){
             searchParameter.setSearchQuery(keyword.keyword)
         }
-        _searchParameterLiveData.postValue(searchParameter)
+        _searchParameterLiveData.value = searchParameter
         activeKeyword = keyword
     }
 
@@ -134,21 +151,21 @@ class SearchBarViewModel @Inject constructor(
             val newKeyword = SearchBarKeyword(
                 position = sortedKeywords.size,
             )
-            _searchBarKeywords.postValue(sortedKeywords)
+            _searchBarKeywords.value = sortedKeywords
             activeKeyword = newKeyword
-            _activeKeywordLiveData.postValue(newKeyword)
+            _activeKeywordLiveData.value = newKeyword
 
             val searchParameter = activeSearchParameter
             searchParameter.setSearchQueries(sortedKeywords.map { it.keyword })
-            _searchParameterLiveData.postValue(searchParameter)
+            _searchParameterLiveData.value = searchParameter
 
-            updateMpsState()
+            updateSearchBarState()
         }
     }
 
     fun onKeywordSelected(keyword: SearchBarKeyword) {
         activeKeyword = keyword
-        _activeKeywordLiveData.postValue(keyword)
+        _activeKeywordLiveData.value = keyword
     }
 
     private fun List<SearchBarKeyword>.sortWithNewIndex(): List<SearchBarKeyword> {
@@ -162,10 +179,10 @@ class SearchBarViewModel @Inject constructor(
         val sortedKeywords = keywords.sortWithNewIndex()
         val query = if (keyword.position == activeKeyword.position) {
             activeKeyword = SearchBarKeyword(position = sortedKeywords.size)
-            _activeKeywordLiveData.postValue(activeKeyword)
+            _activeKeywordLiveData.value = activeKeyword
             activeKeyword.keyword
         } else activeKeyword.keyword
-        _searchBarKeywords.postValue(sortedKeywords)
+        _searchBarKeywords.value = sortedKeywords
 
         val searchParameter = activeSearchParameter
         if (sortedKeywords.isNotEmpty()) {
@@ -174,34 +191,54 @@ class SearchBarViewModel @Inject constructor(
             searchParameter.setSearchQuery(query)
         }
 
-        _searchParameterLiveData.postValue(searchParameter)
+        _searchParameterLiveData.value = searchParameter
+        updateSearchBarState()
     }
 
-    private fun updateMpsState() {
-        val currentMpsState = _mpsStateLiveData.value ?: SearchBarMpsState()
-        if (!currentMpsState.isMpsEnabled) return
+    private fun updateSearchBarState() {
+        val currentState = currentSearchBarState
+        if (!currentState.isMpsEnabled) return
+        val searchBarKeywordSize = _searchBarKeywords.value?.size.orZero()
+        val shouldEnableAddButton = searchBarKeywordSize < 3
+        val allowKeyboardDismiss = searchBarKeywordSize == 0
+        val shouldDisplayMpsPlaceHolder = searchBarKeywordSize != 0
         val shouldShowMpsCoachMark = coachMarkLocalCache.shouldShowPlusIconCoachMark()
         val isMpsAnimationEnabled = coachMarkLocalCache.shouldShowAddedKeywordCoachMark()
-        val mpsState = currentMpsState.copy(
+        val mpsState = currentState.copy(
             isMpsAnimationEnabled = isMpsAnimationEnabled,
             shouldShowCoachMark = shouldShowMpsCoachMark,
+            isAddButtonEnabled = shouldEnableAddButton,
+            isKeyboardDismissEnabled = allowKeyboardDismiss,
+            shouldDisplayMpsPlaceHolder = shouldDisplayMpsPlaceHolder,
         )
-        _mpsStateLiveData.postValue(mpsState)
+        _searchBarStateLiveData.value = mpsState
     }
 
     fun enableMps() {
         val shouldShowMpsCoachMark = coachMarkLocalCache.shouldShowPlusIconCoachMark()
         val isMpsAnimationEnabled = coachMarkLocalCache.shouldShowAddedKeywordCoachMark()
-        val mpsState = SearchBarMpsState(
+        val searchBarKeywordSize = _searchBarKeywords.value?.size.orZero()
+        val shouldEnableAddButton = searchBarKeywordSize < 3
+        val allowKeyboardDismiss = searchBarKeywordSize == 0
+        val newState = currentSearchBarState.copy(
             isMpsEnabled = true,
             isMpsAnimationEnabled = isMpsAnimationEnabled,
             shouldShowCoachMark = shouldShowMpsCoachMark,
+            isAddButtonEnabled = shouldEnableAddButton,
+            isKeyboardDismissEnabled = allowKeyboardDismiss,
         )
-        _mpsStateLiveData.postValue(mpsState)
+        _searchBarStateLiveData.value = newState
     }
 
     fun disableMps() {
-        _mpsStateLiveData.postValue(SearchBarMpsState())
+        _searchBarStateLiveData.value = currentSearchBarState.copy(
+            isMpsEnabled = false,
+            isMpsAnimationEnabled = false,
+            shouldShowCoachMark = false,
+            isAddButtonEnabled = false,
+            isKeyboardDismissEnabled = true,
+            shouldDisplayMpsPlaceHolder = false,
+        )
     }
 
     fun onInitialStateItemSelected(item: BaseItemInitialStateSearch) {
@@ -217,10 +254,10 @@ class SearchBarViewModel @Inject constructor(
         )
         val newKeywords = currentKeywords + newKeyword
         activeKeyword = activeKeyword.copy(position = newKeywords.size)
+        _activeKeywordLiveData.value = activeKeyword
         searchParameter.setSearchQueries(newKeywords.map { it.keyword })
-        _searchParameterLiveData.postValue(searchParameter)
-        _searchBarKeywords.postValue(newKeywords)
-        _activeKeywordLiveData.postValue(activeKeyword)
+        _searchParameterLiveData.value = searchParameter
+        _searchBarKeywords.value = newKeywords
     }
 
     fun markCoachMarkIconPlusAlreadyDisplayed() {

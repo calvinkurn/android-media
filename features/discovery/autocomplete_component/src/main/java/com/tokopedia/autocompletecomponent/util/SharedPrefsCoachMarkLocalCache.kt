@@ -64,10 +64,23 @@ class SharedPrefsCoachMarkLocalCache @Inject constructor(
             .apply()
     }
 
+    override fun shouldShowSuggestionCoachMark(): Boolean {
+        val sharedPref = sharedPref ?: return false
+        return sharedPref.getBoolean(KEY_COACH_MARK_SUGGESTION, true)
+    }
+
+    override fun markShowSuggestionCoachMark() {
+        val sharedPref = sharedPref ?: return
+        sharedPref.edit()
+            .putBoolean(KEY_COACH_MARK_SUGGESTION, false)
+            .apply()
+    }
+
     companion object {
         private const val PREF_NAME = "AutoCompleteCoachMarkSharedPref"
         const val KEY_COACH_MARK_PLUS_ICON = "KEY_COACH_MARK_PLUS_ICON"
         const val KEY_COACH_MARK_ADDED_KEYWORD = "KEY_COACH_MARK_ADDED_KEYWORD"
+        const val KEY_COACH_MARK_SUGGESTION = "KEY_COACH_MARK_SUGGESTION"
 
         private const val ONE_DAY = 24 * 60 * 60 * 1000L
     }

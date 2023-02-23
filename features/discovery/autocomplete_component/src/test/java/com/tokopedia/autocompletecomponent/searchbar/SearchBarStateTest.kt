@@ -6,13 +6,13 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SearchBarMpsStateTest : SearchBarViewModelTestFixtures() {
+internal class SearchBarStateTest : SearchBarViewModelTestFixtures() {
     @Test
     fun `disable mps success`() {
         viewModel.disableMps()
 
         `Then verify coach mark local cache is not called`()
-        `Then verify mps state`(SearchBarMpsState())
+        `Then verify mps state`(SearchBarState())
     }
 
     @Test
@@ -22,10 +22,10 @@ internal class SearchBarMpsStateTest : SearchBarViewModelTestFixtures() {
         viewModel.enableMps()
 
         `Then verify coach mark local cache is called`()
-        `Then verify mps state`(SearchBarMpsState(isMpsEnabled = true))
+        `Then verify mps state`(SearchBarState(isMpsEnabled = true))
     }
 
-    private fun `Then verify mps state`(mpsState: SearchBarMpsState) {
-        viewModel.mpsStateLiveData.value shouldBe mpsState
+    private fun `Then verify mps state`(mpsState: SearchBarState) {
+        viewModel.searchBarStateLiveData.value shouldBe mpsState
     }
 }

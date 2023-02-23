@@ -37,7 +37,7 @@ import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordAdapter
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordItemDecoration
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordListener
-import com.tokopedia.autocompletecomponent.searchbar.SearchBarMpsState
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarState
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarView
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment
@@ -257,8 +257,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             it.searchBarKeywords.observe(this) { searchBarKeywords ->
                 renderSearchBarKeywords(searchBarKeywords)
             }
-            it.mpsStateLiveData.observe(this) { mpsState ->
-                renderMpsState(mpsState)
+            it.searchBarStateLiveData.observe(this) { mpsState ->
+                renderSearchBarState(mpsState)
             }
             it.searchParameterLiveData.observe(this) { searchParameter ->
                 onSearchParameterChange(searchParameter)
@@ -270,10 +270,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         searchBarKeywordAdapter?.submitList(searchBarKeywords)
         if (searchBarKeywords.isNotEmpty()) {
             rvSearchBarKeyword.visible()
-            searchBarView.preventKeyboardDismiss()
         } else {
             rvSearchBarKeyword.hide()
-            searchBarView.allowKeyboardDismiss()
         }
     }
 
@@ -369,6 +367,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         super.onStart()
 
         viewModel?.showSearch(searchParameter)
+        searchBarView.showSearch(searchParameter)
     }
 
     override fun isAllowShake(): Boolean = false
@@ -469,14 +468,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             getInitialStateFragment()?.show(searchParameter.getSearchParameterHashMap())
         } else {
             val activeKeyword = viewModel?.activeKeyword ?: return
-            val suggestionSearchParameter = if(searchParameter.isMps()) {
-                SearchParameter(searchParameter).apply {
-                    setMpsQuery(activeKeyword.keyword)
-                }
-            } else {
-                searchParameter
-            }
-            getSuggestionFragment()?.getSuggestion(suggestionSearchParameter.getSearchParameterHashMap())
+            getSuggestionFragment()?.getSuggestion(searchParameter.getSearchParameterHashMap(), activeKeyword)
         }
     }
 
@@ -537,12 +529,30 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         initialStateContainer?.show()
     }
 
-    private fun renderMpsState(mpsState: SearchBarMpsState) {
-        if (mpsState.isMpsEnabled) showMps() else hideMps()
-        if (mpsState.isMpsAnimationEnabled) enableMpsIconAnimation() else disableMpsIconAnimation()
-        if (mpsState.shouldShowCoachMark) {
+    private fun renderSearchBarState(state: SearchBarState) {
+        if (state.isMpsEnabled) showMps() else hideMps()
+        if (state.isMpsAnimationEnabled) enableMpsIconAnimation() else disableMpsIconAnimation()
+        if (state.shouldShowCoachMark) {
             showPlusIconCoachMark()
         }
+        if (state.isAddButtonEnabled) {
+            searchBarView.enableAddButton()
+        } else {
+            searchBarView.disableAddButton()
+        }
+        if (state.isKeyboardDismissEnabled) {
+            searchBarView.allowKeyboardDismiss()
+        } else {
+            searchBarView.preventKeyboardDismiss()
+        }
+        val hintText = if (state.shouldDisplayMpsPlaceHolder) {
+            getString(R.string.searchbar_mps_placeholder_text)
+        } else if (state.hasHintOrPlaceHolder) {
+            state.hintText
+        } else {
+            getString(R.string.search_autocomplete_hint)
+        }
+        searchBarView.setTextViewHint(hintText)
     }
 
     private fun showMps() {

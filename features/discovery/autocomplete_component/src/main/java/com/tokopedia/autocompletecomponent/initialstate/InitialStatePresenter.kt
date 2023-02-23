@@ -282,6 +282,7 @@ class InitialStatePresenter @Inject constructor(
                         initialStateData,
                         getDimension90(),
                         keyword,
+                        searchParameter,
                     )?.let {
                         data.add(it)
                     }

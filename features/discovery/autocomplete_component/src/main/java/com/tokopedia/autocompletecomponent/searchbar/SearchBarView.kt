@@ -17,8 +17,6 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
-import android.util.TypedValue
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -33,7 +31,6 @@ import com.tokopedia.autocompletecomponent.databinding.AutocompleteSearchBarView
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.microinteraction.autocomplete.AutoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logger.ServerLogger
@@ -241,8 +238,6 @@ class SearchBarView constructor(
 
     private fun onSubmitQuery() {
         val searchTextView = binding?.searchTextView ?: return
-        searchTextView.text?.let { modifyQueryInSearchParameter(it) }
-
         if (!mOnQueryChangeListener.onQueryTextSubmit()) {
             searchTextView.text = null
         }
@@ -254,7 +249,7 @@ class SearchBarView constructor(
         imm.showSoftInput(view, 0)
     }
 
-    private fun setTextViewHint(hint: CharSequence?) {
+    fun setTextViewHint(hint: CharSequence?) {
         binding?.searchTextView?.hint = hint
     }
 
@@ -380,6 +375,14 @@ class SearchBarView constructor(
         binding?.autocompleteAddButtonGroup?.visibility = View.GONE
     }
 
+    fun enableAddButton() {
+        if(isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = true
+    }
+
+    fun disableAddButton() {
+        if(isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = false
+    }
+
     fun setActiveKeyword(searchBarKeyword: SearchBarKeyword) {
         mOldQueryText = searchBarKeyword.keyword
         binding?.searchTextView?.apply {
@@ -412,10 +415,6 @@ class SearchBarView constructor(
         this.activity = activity
     }
 
-    private fun modifyQueryInSearchParameter(query: CharSequence) {
-        searchParameter.setSearchQuery(query.toString().trim())
-    }
-
     private fun hideKeyboard(view: View) {
         val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
@@ -442,10 +441,6 @@ class SearchBarView constructor(
         val param = this.searchParameter
         this.searchParameter = searchParameter
 
-        val hint = searchParameter.get(SearchApiConst.HINT)
-        val placeholder = searchParameter.get(SearchApiConst.PLACEHOLDER)
-
-        setHintIfExists(hint, placeholder)
         lastQuery = searchParameter.getSearchQuery()
         showSearch()
         return param

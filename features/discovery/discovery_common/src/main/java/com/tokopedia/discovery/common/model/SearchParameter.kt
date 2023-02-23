@@ -83,6 +83,9 @@ class SearchParameter(
     fun setSearchQueries(queries: List<String>) {
         remove(SearchApiConst.Q)
         set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_MPS)
+        remove(SearchApiConst.Q1)
+        remove(SearchApiConst.Q2)
+        remove(SearchApiConst.Q3)
         queries.forEachIndexed { index, query ->
             val key = when (index) {
                 1 -> SearchApiConst.Q2

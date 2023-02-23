@@ -65,6 +65,7 @@ internal fun MutableMap<String, String>.addComponentId() {
 }
 
 internal fun MutableMap<String, String>.addQueryIfEmpty() {
+    if (get(SearchApiConst.ACTIVE_TAB) == SearchApiConst.ACTIVE_TAB_MPS) return
     val query = get(SearchApiConst.Q) ?: ""
 
     if (query.isEmpty()) {

@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.chips.convertToSuggestionChipWidgetDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.SuggestionRequestUtils
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
@@ -13,10 +14,12 @@ import com.tokopedia.autocompletecomponent.suggestion.doubleline.convertToDouble
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.convertToDoubleLineWithoutImageVisitableList
 import com.tokopedia.autocompletecomponent.suggestion.productline.convertToSuggestionProductLineDataView
 import com.tokopedia.autocompletecomponent.suggestion.separator.SuggestionSeparatorDataView
+import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.singleline.convertToSingleLineVisitableList
 import com.tokopedia.autocompletecomponent.suggestion.title.convertToTitleHeader
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.convertToTopShopWidgetVisitableList
+import com.tokopedia.autocompletecomponent.util.CoachMarkLocalCache
 import com.tokopedia.autocompletecomponent.util.HeadlineAdsIdList
 import com.tokopedia.autocompletecomponent.util.SuggestionItemIdList
 import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
@@ -31,7 +34,13 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import rx.Observer
 import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.subjects.BehaviorSubject
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 import com.tokopedia.usecase.UseCase as RxUseCase
@@ -43,13 +52,46 @@ class SuggestionPresenter @Inject constructor(
     private val suggestionTrackerUseCase: RxUseCase<Void?>,
     private val topAdsUrlHitter: Lazy<TopAdsUrlHitter>,
     private val userSession: UserSessionInterface,
+    private val coachMarkLocalCache: CoachMarkLocalCache,
 ) : BaseDaggerPresenter<SuggestionContract.View>(), SuggestionContract.Presenter {
 
     private val listVisitable = mutableListOf<Visitable<*>>()
     private var isTyping = false
     private var searchParameter = mutableMapOf<String, String>()
+    private var activeKeyword = SearchBarKeyword()
     private var shouldAddSeparator = true
     private val shopSuggestionProcessing = ShopSuggestionProcessing()
+    private val resultSubject: BehaviorSubject<List<Visitable<*>>> = BehaviorSubject.create(
+        emptyList()
+    )
+    private var suggestionSubscription: Subscription? = null
+
+    init {
+        initSuggestionCoachMarkObservation()
+    }
+
+    private fun initSuggestionCoachMarkObservation() {
+        suggestionSubscription = resultSubject.asObservable()
+            .filter { it.isNotEmpty() && it.any { element -> element is SuggestionSingleLineDataDataView && element.data.type == TYPE_KEYWORD } }
+            .debounce(1000L, TimeUnit.MILLISECONDS)
+            .map {
+                coachMarkLocalCache.shouldShowSuggestionCoachMark()
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Boolean> {
+                override fun onCompleted() {
+                    // do nothing
+                }
+
+                override fun onError(e: Throwable?) {
+                    Timber.e(e)
+                }
+
+                override fun onNext(shouldShowSuggestionCoachMark: Boolean) {
+                    if (shouldShowSuggestionCoachMark) view?.showSuggestionCoachMark()
+                }
+            })
+    }
 
     override fun getSearchParameter(): Map<String, String> {
         return searchParameter
@@ -76,8 +118,12 @@ class SuggestionPresenter @Inject constructor(
         return UrlParamUtils.isTokoNow(searchParameter)
     }
 
-    override fun getSuggestion(searchParameter: Map<String, String>) {
+    override fun getSuggestion(
+        searchParameter: Map<String, String>,
+        activeKeyword: SearchBarKeyword,
+    ) {
         this.searchParameter = searchParameter.toMutableMap()
+        this.activeKeyword = activeKeyword
 
         getSuggestionUseCase.execute(
             ::onSuccessReceivedSuggestion,
@@ -86,11 +132,31 @@ class SuggestionPresenter @Inject constructor(
         )
     }
 
+    private fun Map<String, String>.isMps(): Boolean {
+        return get(SearchApiConst.ACTIVE_TAB) == SearchApiConst.ACTIVE_TAB_MPS
+    }
+
+    private fun Map<String, String>.generateMpsSearchParam(keyword: String): Map<String, String> {
+        return mutableMapOf<String, String>().apply {
+            putAll(this)
+            set(SearchApiConst.Q, keyword)
+            set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_MPS)
+            remove(SearchApiConst.Q1)
+            remove(SearchApiConst.Q2)
+            remove(SearchApiConst.Q3)
+        }
+    }
+
     private fun createGetSuggestionParams(): RequestParams {
         val chooseAddressData = view?.chooseAddressData ?: LocalCacheModel()
+        val suggestionSearchParameter = if(searchParameter.isMps()) {
+            searchParameter.generateMpsSearchParam(activeKeyword.keyword)
+        } else {
+            searchParameter
+        }
 
         return SuggestionRequestUtils.getParams(
-            searchParameter,
+            suggestionSearchParameter,
             userSession,
             isTyping,
             chooseAddressData,
@@ -289,6 +355,7 @@ class SuggestionPresenter @Inject constructor(
     }
 
     private fun notifyView() {
+        resultSubject.onNext(listVisitable.toList())
         view.showSuggestionResult(listVisitable)
     }
 
@@ -306,7 +373,7 @@ class SuggestionPresenter @Inject constructor(
         trackSuggestionShopAds(item)
 
         view?.dropKeyBoard()
-        view?.route(item.applink, searchParameter)
+        view?.route(item.applink, searchParameter, activeKeyword)
         view?.finish()
     }
 
@@ -558,7 +625,7 @@ class SuggestionPresenter @Inject constructor(
         trackEventTopShopClicked(cardData)
 
         view?.dropKeyBoard()
-        view?.route(cardData.applink, searchParameter)
+        view?.route(cardData.applink, searchParameter, activeKeyword)
         view?.finish()
     }
 
@@ -593,13 +660,18 @@ class SuggestionPresenter @Inject constructor(
         view?.trackClickChip(label, item.dimension90, item)
 
         view?.dropKeyBoard()
-        view?.route(item.applink, searchParameter)
+        view?.route(item.applink, searchParameter, activeKeyword)
         view?.finish()
     }
 
     override fun detachView() {
+        suggestionSubscription?.unsubscribe()
         super.detachView()
         getSuggestionUseCase.cancelJobs()
         suggestionTrackerUseCase.unsubscribe()
+    }
+
+    override fun markSuggestionCoachMark() {
+        coachMarkLocalCache.markShowSuggestionCoachMark()
     }
 }

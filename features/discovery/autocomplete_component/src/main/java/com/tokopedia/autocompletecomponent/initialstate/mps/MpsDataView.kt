@@ -6,21 +6,23 @@ import com.tokopedia.autocompletecomponent.initialstate.InitialStateTypeFactory
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.convertToSearchBarEducationDataView
+import com.tokopedia.discovery.common.constants.SearchApiConst
 
 data class MpsDataView(
     var header: String = "",
     var labelAction: String = "",
     val list: List<BaseItemInitialStateSearch> = mutableListOf(),
+    val disableAddButton: Boolean = false,
 ): Visitable<InitialStateTypeFactory> {
     override fun type(typeFactory: InitialStateTypeFactory): Int {
         return typeFactory.type(this)
     }
-
     companion object {
         fun create(
             data: InitialStateData,
             dimension90: String,
             keyword: String,
+            searchParameter: Map<String, String>,
         ) : MpsDataView? {
             val items = data.items.map { item ->
                 BaseItemInitialStateSearch(
@@ -46,9 +48,14 @@ data class MpsDataView(
                 )
             }
 
-            return MpsDataView(data.header, data.labelAction, items)
-//            return if (items.isNotEmpty()) MpsDataView(data.header, data.labelAction, items)
-//            else null
+            return if (items.isNotEmpty()) MpsDataView(data.header, data.labelAction, items, searchParameter.hasMaxKeyword())
+            else null
+        }
+
+        private fun Map<String, String>.hasMaxKeyword() : Boolean {
+            return containsKey(SearchApiConst.Q1) && !get(SearchApiConst.Q1).isNullOrBlank()
+                && containsKey(SearchApiConst.Q2) && !get(SearchApiConst.Q2).isNullOrBlank()
+                && containsKey(SearchApiConst.Q3) && !get(SearchApiConst.Q3).isNullOrBlank()
         }
     }
 }
