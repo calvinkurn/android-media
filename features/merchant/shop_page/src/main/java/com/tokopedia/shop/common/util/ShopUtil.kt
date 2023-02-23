@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -152,6 +153,7 @@ object ShopUtil {
         return try {
             Color.parseColor(colorHex)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO
         }
     }
