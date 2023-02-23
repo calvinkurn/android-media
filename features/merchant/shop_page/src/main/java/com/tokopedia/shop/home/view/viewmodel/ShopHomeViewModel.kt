@@ -1289,6 +1289,8 @@ class ShopHomeViewModel @Inject constructor(
         }
         if(anyFestivityWidget && showConfetti) {
             _isShowHomeTabConfettiLiveData.postValue(true)
+        } else {
+            _isShowHomeTabConfettiLiveData.postValue(false)
         }
     }
 }

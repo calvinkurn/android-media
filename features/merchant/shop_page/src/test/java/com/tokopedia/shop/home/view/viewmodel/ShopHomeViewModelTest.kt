@@ -2203,4 +2203,59 @@ class ShopHomeViewModelTest {
         val result = viewModel.latestShopHomeWidgetLayoutData.value
         assert(result is Fail)
     }
+
+    @Test
+    fun `when calling checkShowConfetti with empty widget and showConfetti is false, live data value should be false`() {
+        viewModel.checkShowConfetti(listOf(), false)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget without festivity and showConfetti is false, live data value should be false`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel())
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, false)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget without festivity and showConfetti is true, live data value should be false`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel())
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, true)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget festivity and showConfetti is true, live data value should be true`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel(
+                isFestivity = true
+            ))
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, true)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == true)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget festivity and showConfetti is false, live data value should be false`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel(
+                isFestivity = true
+            ))
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, false)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
+    }
 }
