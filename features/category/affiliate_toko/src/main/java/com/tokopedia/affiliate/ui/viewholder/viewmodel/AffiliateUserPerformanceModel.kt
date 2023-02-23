@@ -5,8 +5,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import java.util.ArrayList
 
 class AffiliateUserPerformanceModel(
-    val data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?,
-    val affiliateShopAdpEnabled: Boolean
+    val data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?
 ) : Visitable<AffiliateAdapterTypeFactory> {
 
     override fun type(typeFactory: AffiliateAdapterTypeFactory): Int {

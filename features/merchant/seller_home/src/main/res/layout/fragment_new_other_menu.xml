@@ -30,14 +30,15 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layoutDescription="@xml/fragment_new_other_menu_content_scene">
 
-                    <androidx.appcompat.widget.AppCompatImageView
+
+                    <include
                         android:id="@+id/iv_sah_new_other_curved_header"
                         android:layout_width="match_parent"
-                        android:layout_height="154dp"
-                        android:scaleType="fitXY"
-                        android:visibility="invisible"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:visibility="visible" />
+                        layout="@layout/item_bg_sah_other_thematic" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/layout_sah_new_other_info"

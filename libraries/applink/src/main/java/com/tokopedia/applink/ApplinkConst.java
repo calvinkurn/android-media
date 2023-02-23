@@ -171,6 +171,14 @@ public interface ApplinkConst {
             "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    /**
+     * Bubble Chat / Notif Bubbles Activation apge
+     */
+    String TOPCHAT_BUBBLE_ACTIVATION = "tokopedia://chatsettings/bubble-activation";
+
+    /**
+     * Tokochat (Chat with Gojek)
+     */
     String TOKO_CHAT = "tokopedia://tokochat";
 
     String CHATBOT_HOST = "chatbot";
@@ -450,6 +458,10 @@ public interface ApplinkConst {
 
     String WEB_HOST = "www.tokopedia.com";
 
+    interface User {
+        String DSAR = "tokopedia://privacy-center/dsar";
+    }
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -558,6 +570,17 @@ public interface ApplinkConst {
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
         String PRODUCT_MANAGE = "sellerapp://product/manage";
+        String TOPCHAT_BUBBLE_ACTIVATION = "sellerapp://chatsettings/bubble-activation";
+        String SELLER_MVC_REDIRECTION_PAGE = "sellerapp://seller-mvc/redirection-page";
+        String SELLER_MVC_INTRO = "sellerapp://seller-mvc/intro";
+        String SELLER_MVC_LIST = "sellerapp://seller-mvc/list";
+        String SELLER_MVC_LIST_ACTIVE = "sellerapp://seller-mvc/list/active";
+        String SELLER_MVC_LIST_HISTORY = "sellerapp://seller-mvc/list/history";
+        String SELLER_MVC_LIST_UPCOMING = "sellerapp://seller-mvc/list/upcoming";
+        String SELLER_MVC_LIST_ONGOING = "sellerapp://seller-mvc/list/ongoing";
+        //{voucher_type} value -> shop, product
+        String SELLER_MVC_CREATE = "sellerapp://seller-mvc/create/{voucher_type}";
+        String SELLER_MVC_DETAIL = "sellerapp://seller-mvc/detail/{voucher_id}";
 
     }
 
