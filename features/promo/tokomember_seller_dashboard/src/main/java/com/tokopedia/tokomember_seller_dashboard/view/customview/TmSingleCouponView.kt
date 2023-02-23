@@ -32,6 +32,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.MIN_TRANSACTION_LABEL
 import com.tokopedia.tokomember_seller_dashboard.util.MIN_TRANSACTION_OVERFLOW
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
+import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.view.*
 
 const val QUOTA_DEFAULT = "100"
@@ -325,11 +326,15 @@ class TmSingleCouponView @JvmOverloads constructor(
 
     fun setCashbackType(selectedChipPositionCashback: Int) {
         chipGroupCashbackType.setDefaultSelection(selectedChipPositionCashback)
-        if (selectedChipPositionCashback == 1) {
-            isShowCashPercentage = true
-        } else {
-            isShowCashPercentage = false
-        }
+        isShowCashPercentage = selectedChipPositionCashback == 1
+    }
+
+    fun setCouponType(selectedChipPositionCoupon: Int) {
+//        if(fromEdit){
+//            chipGroupKuponType.disableChips()
+//        }
+        chipGroupKuponType.setDefaultSelection(selectedChipPositionCoupon)
+        this.selectedChipPositionKupon = selectedChipPositionCoupon
     }
 
     interface ChipPercentageClickListener {

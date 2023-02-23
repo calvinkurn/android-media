@@ -36,6 +36,13 @@ class TokomemberChipGroup @JvmOverloads constructor(
         this.currentPosition = defaultPosition
     }
 
+    fun disableChips() {
+        chipsList.forEach {
+            it.isEnabled = false
+            it.chipType = ChipsUnify.TYPE_DISABLE
+        }
+    }
+
     fun addChip(text: String) {
         val chip = context?.let { ChipsUnify(it) }
         val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)

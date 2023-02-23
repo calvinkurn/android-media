@@ -60,12 +60,14 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_IDR
 import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_PERCENTAGE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK_PREVIEW
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_IDR
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_PERCENT
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_SHIPPING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_SHIPPING_PREVIEW
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_CASHBACK
@@ -803,8 +805,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         chipGroupKuponType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionKupon = position
+                customViewSingleCoupon.setCouponType(selectedChipPositionKupon)
                 when (selectedChipPositionKupon) {
                     CouponType.CASHBACK -> {
+                        couponPremiumData?.typeCoupon = COUPON_CASHBACK
                         textFieldMaxCashback.setLabel(MAX_CASHBACK_LABEL)
                         tvCashbackType.show()
                         chipGroupCashbackType.show()
@@ -818,6 +822,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         }
                     }
                     CouponType.SHIPPING -> {
+                        couponPremiumData?.typeCoupon = COUPON_SHIPPING
                         textFieldMaxCashback.setLabel(MAX_GRATIS_LABEL)
                         tvCashbackType.hide()
                         chipGroupCashbackType.hide()
@@ -830,17 +835,25 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         })
         if (data?.voucherType == COUPON_TYPE_CASHBACK) {
             chipGroupCashbackType.show()
+            couponPremiumData?.typeCoupon = COUPON_CASHBACK
             ivPreviewCoupon.showHideCashBackValueView(true)
             ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
             selectedChipPositionKupon = 0
         }
         if (data?.voucherType == COUPON_TYPE_SHIPPING) {
             chipGroupCashbackType.hide()
+            couponPremiumData?.typeCoupon = COUPON_SHIPPING
             ivPreviewCoupon.showHideCashBackValueView(false)
             ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
             selectedChipPositionKupon = 1
         }
         chipGroupKuponType.setDefaultSelection(selectedChipPositionKupon)
+
+        if (fromEdit) {
+            tvKuponType.hide()
+            chipGroupKuponType.disableChips()
+            chipGroupKuponType.hide()
+        }
 
         chipGroupCashbackType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
@@ -868,6 +881,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         }
 //        chipGroupCashbackType.addChips(arrayListOf(CHIP_LABEL_RUPIAH, CHIP_LABEL_PERCENTAGE))
 
+        customViewSingleCoupon.setCouponType(selectedChipPositionKupon)
         customViewSingleCoupon.setCashbackType(selectedChipPositionCashback)
         chipGroupCashbackType.setChecked(selectedChipPositionCashback)
         chipGroupCashbackType.setDefaultSelection(selectedChipPositionCashback)
@@ -1411,7 +1425,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         if (currentHour >= 20 && checkYesterday(currentDate, currentStartDate)) {
                             currentDate.set(Calendar.HOUR_OF_DAY, currentHour)
                             currentDate.set(Calendar.MINUTE, 0)
-                            currentDate.add(Calendar.HOUR, 4)
+                            currentDate.add(Calendar.HOUR, HOUR_4)
                             if (minuteCurrent <= 30) {
                                 currentDate.set(Calendar.MINUTE, 30)
                             } else {

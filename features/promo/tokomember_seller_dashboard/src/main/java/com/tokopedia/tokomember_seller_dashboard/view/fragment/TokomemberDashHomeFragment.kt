@@ -1,6 +1,5 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
-
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -51,14 +50,14 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tm_dash_home_fragment.*
 import javax.inject.Inject
 
-
-class TokomemberDashHomeFragment : BaseDaggerFragment() {
+class TokomemberDashHomeFragment : BaseDaggerFragment(), EditCardCallback {
 
     private var shopAvatar = ""
     private var prefManager: TmPrefManager? = null
     private var tmTracker: TmTracker? = null
     private var shopId = 0
     private var isShowBs = false
+
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private val tokomemberDashHomeViewmodel: TokomemberDashHomeViewmodel by lazy(LazyThreadSafetyMode.NONE) {
@@ -68,13 +67,13 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false)?:false
+        isShowBs = arguments?.getBoolean(BUNDLE_IS_SHOW_BS, false) ?: false
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.tm_dash_home_fragment, container, false)
     }
@@ -85,12 +84,12 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         iv_home.errorTitle.hide()
         iv_home.errorDescription.hide()
         observeDataFromApi()
-        arguments?.getInt(BUNDLE_SHOP_ID)?.let{
+        arguments?.getInt(BUNDLE_SHOP_ID)?.let {
             shopId = it
         }
         prefManager = context?.let { TmPrefManager(it) }
-        if(shopId == null || shopId.isZero()){
-            prefManager?.shopId?.let{
+        if (shopId == null || shopId.isZero()) {
+            prefManager?.shopId?.let {
                 shopId = it
             }
         }
@@ -101,22 +100,25 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         tmTracker = TmTracker()
         tmTracker?.viewHomeTabsSection(shopId.toString())
 
-        if(isShowBs){
+        if (isShowBs) {
             tmTracker?.viewBottomSheetHome(shopId.toString())
             val bundle = Bundle()
             val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
-                TM_PREVIEW_BS_TITLE, TM_PREVIEW_BS_DESC,
-                TM_SUCCESS_HAPPY, TM_PREVIEW_BS_CTA_PRIMARY, errorCount = 0
+                TM_PREVIEW_BS_TITLE,
+                TM_PREVIEW_BS_DESC,
+                TM_SUCCESS_HAPPY,
+                TM_PREVIEW_BS_CTA_PRIMARY,
+                errorCount = 0
             )
             bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
             val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
-            bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener {
                 override fun onButtonClick(errorCount: Int) {
                     tmTracker?.clickDismissBottomSheetHome(shopId.toString())
                     bottomsheet.dismiss()
                 }
             })
-            bottomsheet.show(childFragmentManager,"")
+            bottomsheet.show(childFragmentManager, "")
             isShowBs = false
         }
         context?.let {
@@ -126,11 +128,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                 if (shopId != null) {
                     tmTracker?.clickHomeUbahKartu(shopId.toString())
                     prefManager?.cardId?.let { it1 ->
-                        TmDashCreateActivity.setCardEditCallback(object : EditCardCallback{
-                            override fun cardEdit() {
-                                tokomemberDashHomeViewmodel.getHomePageData(shopId)
-                            }
-                        })
+                        TmDashCreateActivity.setCardEditCallback(this@TokomemberDashHomeFragment)
                         TmDashCreateActivity.openActivity(
                             shopId,
                             activity,
@@ -149,26 +147,26 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
     private fun observeDataFromApi() {
         tokomemberDashHomeViewmodel.tokomemberHomeResultLiveData.observe(viewLifecycleOwner, {
-            when(it.status){
-                TokoLiveDataResult.STATUS.LOADING ->{
-
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING -> {
                 }
-                TokoLiveDataResult.STATUS.SUCCESS->{
+                TokoLiveDataResult.STATUS.SUCCESS -> {
                     tokomemberDashHomeViewmodel.refreshHomeData(LOADED)
                     Glide.with(flShop)
                         .asDrawable()
                         .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
-                        .into(object : CustomTarget<Drawable>(){
+                        .into(object : CustomTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val bitmap = cropImage(resource)
                                 flShopbg.setImageBitmap(bitmap)
-                                flShopbg.shapeAppearanceModel=flShopbg.shapeAppearanceModel.toBuilder().setTopRightCorner(
-                                    CornerFamily.ROUNDED,30f)
-                                    .setTopLeftCorner(CornerFamily.ROUNDED,30f)
+                                flShopbg.shapeAppearanceModel = flShopbg.shapeAppearanceModel.toBuilder().setTopRightCorner(
+                                    CornerFamily.ROUNDED,
+                                    30f
+                                )
+                                    .setTopLeftCorner(CornerFamily.ROUNDED, 30f)
                                     .build()
                             }
                             override fun onLoadCleared(placeholder: Drawable?) {
-
                             }
                         })
                     shopAvatar = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar.toString()
@@ -182,7 +180,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                     prefManager?.shopId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.shopID
                     prefManager?.cardId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.id
                 }
-                TokoLiveDataResult.STATUS.ERROR->{
+                TokoLiveDataResult.STATUS.ERROR -> {
                     tokomemberDashHomeViewmodel.refreshHomeData(LOADED)
                 }
             }
@@ -190,7 +188,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
         tokomemberDashHomeViewmodel.tokomemberHomeRefreshLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                REFRESH ->{
+                REFRESH -> {
                     tokomemberDashHomeViewmodel.getHomePageData(shopId)
                 }
             }
@@ -209,10 +207,9 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             ivTicker.loadImage(data.iconImageUrl)
             tvTickerCta.setOnClickListener {
                 try {
-                    if(data.cta?.appLink.isNullOrEmpty() && data.cta?.urlMobile?.isNotEmpty() == true){
-                        RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, data.cta.urlMobile))
-                    }
-                    else if(data.cta?.urlMobile.isNullOrEmpty() && data.cta?.appLink?.isNotEmpty() == true){
+                    if (data.cta?.appLink.isNullOrEmpty() && data.cta?.urlMobile?.isNotEmpty() == true) {
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, data.cta.urlMobile))
+                    } else if (data.cta?.urlMobile.isNullOrEmpty() && data.cta?.appLink?.isNotEmpty() == true) {
                         RouteManager.route(context, data.cta.appLink)
                     }
                 } catch (e: Exception) {
@@ -228,12 +225,10 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun cropImage(resource:Drawable) : Bitmap{
+    private fun cropImage(resource: Drawable): Bitmap {
         val bm = resource.toBitmap()
-        return Bitmap.createBitmap(bm,0,0,bm.width-15,bm.height-15)
+        return Bitmap.createBitmap(bm, 0, 0, bm.width - 15, bm.height - 15)
     }
-
-
 
     override fun getScreenName() = ""
 
@@ -245,5 +240,9 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         fun newInstance(bundle: Bundle?) = TokomemberDashHomeFragment().apply {
             arguments = bundle
         }
+    }
+
+    override fun cardEdit() {
+        tokomemberDashHomeViewmodel.getHomePageData(shopId)
     }
 }
