@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -25,10 +27,13 @@ import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
-import com.tokopedia.people.listener.FollowerFollowingListener
-import com.tokopedia.people.listener.FollowingFollowerListener
+import com.tokopedia.people.utils.isInternetAvailable
+import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowingAdapter
+import com.tokopedia.people.views.adapter.listener.UserFollowListener
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
@@ -40,9 +45,7 @@ class FollowingListingFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val userProfileTracker: UserProfileTracker,
 ) : TkpdBaseV4Fragment(),
-    AdapterCallback,
-    FollowerFollowingListener,
-    FollowingFollowerListener {
+    AdapterCallback {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -54,13 +57,29 @@ class FollowingListingFragment @Inject constructor(
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
+    private val mListener = object : UserFollowListener {
+        override fun onItemUserClicked(model: ProfileUiModel.UserUiModel, position: Int) {
+            goToUserProfilePage(model, position)
+        }
+
+        override fun onItemShopClicked(model: ProfileUiModel.ShopUiModel, position: Int) {
+            goToShopPage(model, position)
+        }
+
+        override fun onFollowUserClicked(model: ProfileUiModel.UserUiModel, position: Int) {
+            doFollowUserClicked(model, position)
+        }
+
+        override fun onFollowShopClicked(model: ProfileUiModel.ShopUiModel, position: Int) {
+            doFollowShopClicked(model, position)
+        }
+    }
+
     private val mAdapter: ProfileFollowingAdapter by lazy {
         ProfileFollowingAdapter(
-            viewModel,
-            this,
-            userSession,
-            this,
-            this,
+            viewModel = viewModel,
+            callback = this,
+            listener = mListener,
         )
     }
 
@@ -84,6 +103,7 @@ class FollowingListingFragment @Inject constructor(
     private fun initObserver() {
         addListObserver()
         addFollowersErrorObserver()
+        observeFollowResult()
     }
 
     private fun initMainUi() {
@@ -193,12 +213,31 @@ class FollowingListingFragment @Inject constructor(
             },
         )
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun observeFollowResult() {
+        viewModel.followResult.observe(viewLifecycleOwner, Observer { result ->
+            when(val data = result.first) {
+                is MutationUiModel.Error -> {
+                    val errMessage = data.message.ifBlank {
+                        if (result.second) {
+                            getString(com.tokopedia.people.R.string.up_error_unfollow)
+                        } else {
+                            getString(com.tokopedia.people.R.string.up_error_follow)
+                        }
+                    }
+                    requireView().showErrorToast(errMessage)
+                    updateItemPerPosition(result.third)
+                }
+                is MutationUiModel.Success -> {
+                    if (data.message.isNotBlank()) {
+                        requireView().showToast(data.message)
+                    }
+                }
+            }
+        })
     }
 
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun onResume() {
@@ -293,23 +332,97 @@ class FollowingListingFragment @Inject constructor(
         }
     }
 
-    override fun callstartActivityFromFragment(intent: Intent, requestCode: Int) {
-        startActivityForResult(intent, requestCode)
+    private fun goToUserProfilePage(data: ProfileUiModel.UserUiModel, position: Int) {
+        userProfileTracker.clickUserFollowing(data.id, data.isMySelf)
+        val intent = RouteManager.getIntent(
+            requireContext(),
+            data.appLink,
+        ).apply {
+            putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
+        }
+        startActivityForResult(intent, UserProfileFragment.REQUEST_CODE_USER_PROFILE)
     }
 
-    override fun callstartActivityFromFragment(applink: String, requestCode: Int) {
-        startActivityForResult(RouteManager.getIntent(context, applink), requestCode)
+    private fun goToShopPage(data: ProfileUiModel.ShopUiModel, position: Int) {
+        userProfileTracker.clickUserFollowing(data.id, false)
+        RouteManager.route(requireContext(), data.appLink)
     }
 
-    override fun clickUser(userId: String, self: Boolean) {
-        userProfileTracker.clickUserFollowing(userId, self)
+    private fun doFollowUserClicked(item: ProfileUiModel.UserUiModel, position: Int) {
+        if (!isInternetAvailable(item.isFollowed)) return
+
+        if (!userSession.isLoggedIn) {
+            val requestCode = if (item.isFollowed) {
+                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+            } else {
+                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+            }
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), requestCode)
+        } else {
+            trackFollowPeople(item.id, item.isMySelf, item.isFollowed)
+            viewModel.followUser(item.encryptedId, item.isFollowed, position)
+            mAdapter.items[position] = item.copy(
+                isFollowed = !item.isFollowed
+            )
+            mAdapter.notifyItemChanged(position)
+        }
     }
 
-    override fun clickUnfollow(userId: String, self: Boolean) {
-        userProfileTracker.clickUnfollowFromFollowing(userId, self)
+    private fun doFollowShopClicked(item: ProfileUiModel.ShopUiModel, position: Int) {
+        if (!isInternetAvailable(item.isFollowed)) return
+
+        if (!userSession.isLoggedIn) {
+            val requestCode = if (item.isFollowed) {
+                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+            } else {
+                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+            }
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), requestCode)
+        } else {
+            trackFollowPeople(item.id, false, item.isFollowed)
+            viewModel.followShop(item.id, item.isFollowed, position)
+            mAdapter.items[position] = item.copy(
+                isFollowed = !item.isFollowed
+            )
+            mAdapter.notifyItemChanged(position)
+
+        }
     }
 
-    override fun clickFollow(userId: String, self: Boolean) {
-        userProfileTracker.clickFollowFromFollowing(userId, self)
+    private fun isInternetAvailable(isFollowed: Boolean): Boolean {
+        return if (requireContext().isInternetAvailable()) true
+        else {
+            val errorMessage = if (isFollowed) {
+                getString(com.tokopedia.people.R.string.up_error_unfollow)
+            } else {
+                getString(com.tokopedia.people.R.string.up_error_follow)
+            }
+            requireView().showErrorToast(errorMessage)
+            false
+        }
+    }
+
+    private fun trackFollowPeople(userId: String, isMySelf: Boolean, isFollowed: Boolean) {
+        if (isFollowed) {
+            userProfileTracker.clickUnfollowFromFollowing(userId, isMySelf)
+        } else {
+            userProfileTracker.clickFollowFromFollowing(userId, isMySelf)
+        }
+    }
+
+    private fun updateItemPerPosition(position: Int) {
+        if (mAdapter.itemCount <= position) return
+
+        when (val item = mAdapter.getItem(position)) {
+            is ProfileUiModel.ShopUiModel ->
+                mAdapter.items[position] = item.copy(
+                    isFollowed = !item.isFollowed
+                )
+            is ProfileUiModel.UserUiModel ->
+                mAdapter.items[position] = item.copy(
+                    isFollowed = !item.isFollowed
+                )
+        }
+        mAdapter.notifyItemChanged(position)
     }
 }

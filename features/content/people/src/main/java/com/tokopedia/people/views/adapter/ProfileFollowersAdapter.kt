@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,25 +13,17 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
-import com.tokopedia.people.listener.FollowerFollowingListener
-import com.tokopedia.people.listener.FollowingFollowerListener
-import com.tokopedia.people.utils.isInternetAvailable
-import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
-import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
-import com.tokopedia.people.views.fragment.UserProfileFragment
+import com.tokopedia.people.views.adapter.listener.UserFollowListener
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel.PeopleUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.user.session.UserSession
 
 open class ProfileFollowersAdapter(
     private val viewModel: FollowerFollowingViewModel,
     callback: AdapterCallback,
-    private val userSession: UserSession,
-    private val listener: FollowerFollowingListener,
-    private val followerListener: FollowingFollowerListener,
+    private val listener: UserFollowListener,
 ) : BaseAdapter<PeopleUiModel>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -103,27 +93,20 @@ open class ProfileFollowersAdapter(
         loadCompletedWithError()
     }
 
-    private fun loadUser(holder: ViewHolder, item: ProfileUiModel.UserUiModel, position: Int) {
+    private fun bindUser(holder: ViewHolder, item: ProfileUiModel.UserUiModel, position: Int) {
         holder.imgProfile.setImageUrl(item.photoUrl)
         holder.textName.text = item.name
         holder.imgBadge.hide()
 
-        holder.textUsername.show()
-        holder.textUsername.text = "@${item.username}"
-
-        val itemViewContext = holder.itemView.context
+        if (item.username.isNotBlank()) {
+            holder.textUsername.show()
+            holder.textUsername.text = "@${item.username}"
+        } else {
+            holder.textUsername.hide()
+        }
 
         holder.itemView.setOnClickListener {
-            followerListener.clickUser(userSession.userId, item.isMySelf)
-            val intent = RouteManager.getIntent(
-                itemViewContext,
-                item.appLink,
-            )
-            intent.putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
-            listener.callstartActivityFromFragment(
-                intent,
-                UserProfileFragment.REQUEST_CODE_USER_PROFILE,
-            )
+            listener.onItemUserClicked(item, position)
         }
 
         if (item.isMySelf) {
@@ -132,42 +115,12 @@ open class ProfileFollowersAdapter(
             updateFollowButton(holder.btnAction, item.isFollowed)
             holder.btnAction.show()
             holder.btnAction.setOnClickListener { view ->
-                if (!itemViewContext.isInternetAvailable()) {
-                    val errorMessage = if (item.isFollowed) {
-                        itemViewContext.getString(com.tokopedia.people.R.string.up_error_unfollow)
-                    } else {
-                        itemViewContext.getString(com.tokopedia.people.R.string.up_error_follow)
-                    }
-                    view.showErrorToast(errorMessage)
-                }
-
-                if (!userSession.isLoggedIn) {
-                    val requestCode = if (item.isFollowed) {
-                        FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
-                    } else {
-                        FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
-                    }
-                    listener.callstartActivityFromFragment(
-                        ApplinkConst.LOGIN,
-                        requestCode,
-                    )
-                } else {
-                    if (item.isFollowed) {
-                        followerListener.clickUnfollow(userSession.userId, false)
-                    } else {
-                        followerListener.clickFollow(userSession.userId, false)
-                    }
-                    viewModel.followUser(item.encryptedId, item.isFollowed)
-                    items[position] = item.copy(
-                        isFollowed = !item.isFollowed
-                    )
-                    notifyItemChanged(position)
-                }
+                listener.onFollowUserClicked(item, position)
             }
         }
     }
 
-    private fun loadShop(holder: ViewHolder,item: ProfileUiModel.ShopUiModel, position: Int) {
+    private fun bindShop(holder: ViewHolder, item: ProfileUiModel.ShopUiModel, position: Int) {
         holder.imgProfile.setImageUrl(item.logoUrl)
         holder.textName.text = item.name
 
@@ -177,14 +130,19 @@ open class ProfileFollowersAdapter(
         holder.textUsername.hide()
 
         holder.itemView.setOnClickListener {
-            RouteManager.route(holder.itemView.context, item.appLink)
+            listener.onItemShopClicked(item, position)
+        }
+        updateFollowButton(holder.btnAction, item.isFollowed)
+        holder.btnAction.show()
+        holder.btnAction.setOnClickListener { view ->
+            listener.onFollowShopClicked(item, position)
         }
     }
 
     private fun setData(holder: ViewHolder, item: PeopleUiModel, position: Int) {
         when (item) {
-            is ProfileUiModel.UserUiModel -> loadUser(holder, item, position)
-            is ProfileUiModel.ShopUiModel -> loadShop(holder, item, position)
+            is ProfileUiModel.UserUiModel -> bindUser(holder, item, position)
+            is ProfileUiModel.ShopUiModel -> bindShop(holder, item, position)
         }
     }
 

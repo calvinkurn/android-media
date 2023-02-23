@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
@@ -27,8 +28,8 @@ class FollowerFollowingViewModel @Inject constructor(
     val profileFollowingsListLiveData: LiveData<Resources<List<ProfileUiModel.PeopleUiModel>>>
         get() = profileFollowingsList
 
-    private val _followResult = MutableLiveData<MutationUiModel>()
-    val followResult: LiveData<MutationUiModel> get() = _followResult
+    private val _followResult = MutableLiveData<Triple<MutationUiModel, Boolean, Int>>()
+    val followResult: LiveData<Triple<MutationUiModel, Boolean, Int>> get() = _followResult
 
     private val followersError = MutableLiveData<Throwable>()
     val followersErrorLiveData: LiveData<Throwable> get() = followersError
@@ -82,12 +83,29 @@ class FollowerFollowingViewModel @Inject constructor(
             },)
     }
 
-    fun followUser(id: String, isFollowed: Boolean) {
+    fun followUser(id: String, isFollowed: Boolean, position: Int) {
         viewModelScope.launchCatchError(block = {
             val result = repo.followUser(id, !isFollowed)
-            _followResult.value = result
+            _followResult.value = Triple(result, isFollowed, position)
         }) {
-            _followResult.value = MutationUiModel.Error("")
+            _followResult.value = Triple(
+                first = MutationUiModel.Error(it.localizedMessage),
+                second = isFollowed,
+                third = position
+            )
+        }
+    }
+
+    fun followShop(id: String, isFollowed: Boolean, position: Int) {
+        viewModelScope.launchCatchError(block = {
+            val result = repo.followShop(id, ShopFollowAction.getActionByState(isFollowed))
+            _followResult.value = Triple(result, isFollowed, position)
+        }) {
+            _followResult.value = Triple(
+                first = MutationUiModel.Error(it.localizedMessage),
+                second = isFollowed,
+                third = position
+            )
         }
     }
 }

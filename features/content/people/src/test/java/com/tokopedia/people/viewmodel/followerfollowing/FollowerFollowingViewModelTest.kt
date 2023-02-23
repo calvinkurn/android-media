@@ -1,6 +1,8 @@
 package com.tokopedia.people.viewmodel.followerfollowing
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.Success
 import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.model.CommonModelBuilder
@@ -157,11 +159,36 @@ class FollowerFollowingViewModelTest {
 
     @Test
     fun `when user successfully follow the account, it should emit the success data`() {
-        val expectedResult = mockSuccess
+        val position = 0
+        val follow = false
+        val expectedResult = Triple(
+            MutationUiModel.Success("yay"),
+            follow, // follow action
+            position // position
+        )
 
-        coEvery { repo.followUser(mockUserIdTarget, true) } returns expectedResult
+        coEvery { repo.followUser(mockUserIdTarget, !follow) } returns expectedResult.first
         robot.start {
-            viewModel.followUser(mockUserIdTarget, false)
+            viewModel.followUser(mockUserIdTarget, follow, position)
+
+            val data = robot.viewModel.followResult.getOrAwaitValue()
+            data equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `when user successfully follow shop, it should emit the success data`() {
+        val position = 0
+        val follow = false
+        val expectedResult = Triple(
+            MutationUiModel.Success("yay"),
+            follow, // follow action
+            position // position
+        )
+
+        coEvery { repo.followShop("1", ShopFollowAction.Follow) } returns expectedResult.first
+        robot.start {
+            viewModel.followShop("1", follow, position)
 
             val data = robot.viewModel.followResult.getOrAwaitValue()
             data equalTo expectedResult
@@ -170,36 +197,114 @@ class FollowerFollowingViewModelTest {
 
     @Test
     fun `when user failed follow the account, it should emit error state`() {
-        coEvery { repo.followUser(mockUserIdTarget, true) } throws mockException
+        val follow = false
+        val position = 0
+        val expectedResult = Triple(
+            MutationUiModel.Error(mockException.localizedMessage),
+            follow,
+            position
+        )
+        coEvery { repo.followUser(mockUserIdTarget, !follow) } throws mockException
 
         robot.start {
-            viewModel.followUser(mockUserIdTarget, false)
+            viewModel.followUser(mockUserIdTarget, follow, position)
 
             val data = robot.viewModel.followResult.getOrAwaitValue()
-            data equalTo mockErrorWithoutMessage
+            data equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `when user failed follow shop, it should emit error state`() {
+        val follow = false
+        val position = 0
+        val expectedResult = Triple(
+            MutationUiModel.Error(mockException.localizedMessage),
+            follow,
+            position
+        )
+        coEvery { repo.followShop("1", ShopFollowAction.Follow) } throws mockException
+
+        robot.start {
+            viewModel.followShop("1", follow, position)
+
+            val data = robot.viewModel.followResult.getOrAwaitValue()
+            data equalTo expectedResult
         }
     }
 
     @Test
     fun `when user failed follow the account because of BE issue, it should emit error state`() {
-        coEvery { repo.followUser(mockUserIdTarget, true) } returns mockError
+        val follow = false
+        val position = 0
+        val expectedResult = Triple(
+            mockError,
+            follow,
+            position
+        )
+        coEvery { repo.followUser(mockUserIdTarget, !follow) } returns mockError
 
         robot.start {
-            viewModel.followUser(mockUserIdTarget, false)
+            viewModel.followUser(mockUserIdTarget, follow, position)
 
             val data = robot.viewModel.followResult.getOrAwaitValue()
-            data equalTo mockError
+            data equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `when user failed follow shop because of BE issue, it should emit error state`() {
+        val follow = false
+        val position = 0
+        val expectedResult = Triple(
+            mockError,
+            follow,
+            position
+        )
+        coEvery { repo.followShop("1", ShopFollowAction.Follow) } returns mockError
+
+        robot.start {
+            viewModel.followShop("1", follow, position)
+
+            val data = robot.viewModel.followResult.getOrAwaitValue()
+            data equalTo expectedResult
         }
     }
 
     @Test
     fun `when user successfully unfollow the account, it should emit the success data`() {
-        val expectedResult = mockSuccess
+        val position = 0
+        val unFollow = true
+        val expectedResult = Triple(
+            MutationUiModel.Success("yay"),
+            unFollow,
+            position // position
+        )
 
-        coEvery { repo.followUser(mockUserIdTarget, false) } returns expectedResult
+        coEvery { repo.followUser(mockUserIdTarget, !unFollow) } returns expectedResult.first
 
         robot.start {
-            viewModel.followUser(mockUserIdTarget, true)
+            viewModel.followUser(mockUserIdTarget, unFollow, position)
+
+            val data = robot.viewModel.followResult.getOrAwaitValue()
+            data equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `when user successfully unfollow shop, it should emit the success data`() {
+        val position = 0
+        val unFollow = true
+        val expectedResult = Triple(
+            MutationUiModel.Success("yay"),
+            unFollow,
+            position // position
+        )
+
+        coEvery { repo.followShop("1", ShopFollowAction.UnFollow) } returns expectedResult.first
+
+        robot.start {
+            viewModel.followShop("1", unFollow, position)
 
             val data = robot.viewModel.followResult.getOrAwaitValue()
             data equalTo expectedResult
@@ -208,25 +313,87 @@ class FollowerFollowingViewModelTest {
 
     @Test
     fun `when user failed unfollow the account, it should emit error state`() {
-        coEvery { repo.followUser(mockUserIdTarget, false) } throws mockException
+        val unfollow = true
+        val position = 0
+        val expectedResult = Triple(
+            MutationUiModelBuilder().buildError(mockException.localizedMessage),
+            unfollow,
+            position
+        )
+        coEvery { repo.followUser(mockUserIdTarget, !unfollow) } throws mockException
 
         robot.start {
-            viewModel.followUser(mockUserIdTarget, true)
+            viewModel.followUser(mockUserIdTarget, unfollow, position)
 
             val data = robot.viewModel.followResult.getOrAwaitValue()
-            data equalTo mockErrorWithoutMessage
+            data equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `when user failed unfollow shop, it should emit error state`() {
+        val unfollow = true
+        val position = 0
+        val expectedResult = Triple(
+            MutationUiModelBuilder().buildError(mockException.localizedMessage),
+            unfollow,
+            position
+        )
+        coEvery { repo.followShop("1", ShopFollowAction.UnFollow) } throws mockException
+
+        robot.start {
+            viewModel.followShop("1", unfollow, position)
+
+            val data = robot.viewModel.followResult.getOrAwaitValue()
+            data equalTo expectedResult
         }
     }
 
     @Test
     fun `when user failed unfollow the account because of BE issue, it should emit error state`() {
-        coEvery { repo.followUser(mockUserIdTarget, false) } returns mockError
+        val unfollow = true
+        val position = 0
+        val expectedResult = Triple(
+            mockError,
+            unfollow,
+            position
+        )
+        coEvery { repo.followUser(mockUserIdTarget, !unfollow) } returns mockError
 
         robot.start {
-            viewModel.followUser(mockUserIdTarget, true)
+            viewModel.followUser(mockUserIdTarget, unfollow, position)
 
             val data = robot.viewModel.followResult.getOrAwaitValue()
-            data equalTo mockError
+            data equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `when user failed unfollow shop because of BE issue, it should emit error state`() {
+        val unfollow = true
+        val position = 0
+        val expectedResult = Triple(
+            mockError,
+            unfollow,
+            position
+        )
+        coEvery { repo.followShop("1", ShopFollowAction.UnFollow) } returns mockError
+
+        robot.start {
+            viewModel.followShop("1", unfollow, position)
+
+            val data = robot.viewModel.followResult.getOrAwaitValue()
+            data equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `when developer set username from everywhere, the username value should be same`() {
+        val expectedResult = "username"
+        robot.start {
+            viewModel.username = expectedResult
+
+            viewModel.username equalTo expectedResult
         }
     }
 }
