@@ -26,7 +26,6 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_V2_TRACE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
@@ -37,7 +36,7 @@ import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHead
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 
-class ShopPageActivity :
+class ShopPageHeaderActivity :
     BaseSimpleActivity(),
     HasComponent<ShopComponent>,
     HasSharedViewModel,
@@ -51,7 +50,7 @@ class ShopPageActivity :
         const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
 
         @JvmStatic
-        fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageActivity::class.java)
+        fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageHeaderActivity::class.java)
             .apply {
                 putExtra(SHOP_ID, shopId)
                 putExtra(SHOP_REF, shopRef)

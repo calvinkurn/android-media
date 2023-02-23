@@ -161,7 +161,7 @@ import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
@@ -577,7 +577,7 @@ class NewShopPageFragment :
     private fun setupBottomSheetSellerMigration(view: View) {
         //    we can't use viewbinding for the code below, since the layout from BottomSheetUnify hasn't implement viewbinding
         val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
-        (activity as? ShopPageActivity)?.bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
+        (activity as? ShopPageHeaderActivity)?.bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
         hideBottomSheetSellerMigration()
 
         if (isSellerMigrationEnabled(context)) {
@@ -1250,7 +1250,7 @@ class NewShopPageFragment :
     }
 
     private fun stopMonitoringPerformance() {
-        (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
+        (activity as? ShopPageHeaderActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
     private fun initStickyLogin() {
@@ -2496,11 +2496,11 @@ class NewShopPageFragment :
     }
 
     fun showBottomSheetSellerMigration() {
-        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+        (activity as? ShopPageHeaderActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     fun hideBottomSheetSellerMigration() {
-        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+        (activity as? ShopPageHeaderActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     private fun setShopName() {
@@ -2601,7 +2601,7 @@ class NewShopPageFragment :
 
     private fun isShopInfoAppLink(appLink: String): Boolean {
         val appLinkUri = Uri.parse(appLink)
-        return appLinkUri.lastPathSegment.orEmpty() == ShopPageActivity.PATH_INFO
+        return appLinkUri.lastPathSegment.orEmpty() == ShopPageHeaderActivity.PATH_INFO
     }
 
     override fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
