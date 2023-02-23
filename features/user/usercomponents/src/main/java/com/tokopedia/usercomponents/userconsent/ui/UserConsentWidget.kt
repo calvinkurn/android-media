@@ -191,8 +191,10 @@ class UserConsentWidget : FrameLayout,
                             if (needConsent == false || consentType == null) {
                                 this.hide()
                             } else {
-                                onDetailConsentListener.invoke(needConsent != false, consentType)
                                 onSuccessGetConsentCollection(consentType)
+                            }
+                            consentType?.apply {
+                                onDetailConsentListener.invoke(needConsent != false, consentType)
                             }
                         }
                     }
