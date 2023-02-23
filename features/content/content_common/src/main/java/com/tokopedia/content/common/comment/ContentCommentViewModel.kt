@@ -159,6 +159,11 @@ class ContentCommentViewModel @AssistedInject constructor(
             }
             CommentAction.EditTextCLicked -> handleEditTextClicked()
             is CommentAction.ReplyComment -> sendReply(action.comment, action.commentType)
+            is CommentAction.OpenAppLinkAction -> {
+                viewModelScope.launch {
+                    _event.emit(CommentEvent.OpenAppLink(action.appLink))
+                }
+            }
             else -> {}
         }
     }

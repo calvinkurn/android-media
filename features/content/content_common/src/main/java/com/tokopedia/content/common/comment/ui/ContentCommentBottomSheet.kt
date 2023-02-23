@@ -254,7 +254,15 @@ class ContentCommentBottomSheet @Inject constructor(
             USER_TYPE_SELLER -> ApplinkConst.SHOP.replace("{shop_id}", userId)
             else -> ""
         }
-        router.route(requireContext(), appLink)
+        viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+    }
+
+    override fun onProfileClicked(appLink: String) {
+        viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+    }
+
+    override fun onUserNameClicked(appLink: String) {
+        viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
     }
 
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
@@ -337,7 +345,6 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         }
-        Toast.LENGTH_LONG
     }
 
     interface EntrySource {

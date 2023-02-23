@@ -47,6 +47,20 @@ class CommentViewHolder {
                 }
             }
         }
+
+        private val userClickSpan by lazyThreadSafetyNone {
+            object : ClickableSpan() {
+                override fun updateDrawState(tp: TextPaint) {
+                    tp.color = MethodChecker.getColor(itemView.context, unifyR.color.Unify_NN950)
+                    tp.isUnderlineText = false
+                    tp.typeface = Typeface.DEFAULT_BOLD
+                }
+
+                override fun onClick(widget: View) {
+                    listener.onUserNameClicked(commentInfo[OWNER_APP_LINK].orEmpty())
+                }
+            }
+        }
         private fun getTagMention(item: CommentUiModel.Item): SpannedString {
             return try {
                 val regex = """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
@@ -57,10 +71,16 @@ class CommentViewHolder {
                         if(index == 0) commentInfo[ID] = matchResult.value.replace("@","")
                         if(index == 1) commentInfo[USER_TYPE] = matchResult.value.replace("@","")
                         if(index == 2) commentInfo[USERNAME] = matchResult.value.removeSuffix("@")
+                        if(index == 3) commentInfo[OWNER_APP_LINK] = item.appLink
                         length += matchResult.value.length
                     }
                     buildSpannedString {
-                        bold { append(item.username + " ") }
+                        append(
+                            item.username,
+                            userClickSpan,
+                            Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                        )
+                        append(" ")
                         append(
                             commentInfo[USERNAME],
                             clickableSpan,
@@ -80,13 +100,16 @@ class CommentViewHolder {
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
                 root.setPadding(
-                    if (item.commentType is CommentType.Child) 40 else 8,
+                    if (item.commentType is CommentType.Child) 48 else 8,
                     root.paddingTop,
                     root.paddingTop,
                     root.paddingBottom
                 )
 
                 ivCommentPhoto.loadImage(item.photo)
+                ivCommentPhoto.setOnClickListener {
+                    listener.onProfileClicked(item.appLink)
+                }
 
                 tvCommentContent.text = getTagMention(item)
                 tvCommentContent.movementMethod = LinkMovementMethod.getInstance()
@@ -107,11 +130,14 @@ class CommentViewHolder {
             fun onReplyClicked(item: CommentUiModel.Item)
             fun onLongClicked(item: CommentUiModel.Item)
             fun onMentionClicked(userType: String, userId: String)
+            fun onProfileClicked(appLink: String)
+            fun onUserNameClicked(appLink: String)
         }
         companion object {
             private const val ID = "id"
             private const val USER_TYPE = "userType"
             private const val USERNAME = "userName"
+            private const val OWNER_APP_LINK = "appLink"
         }
     }
 

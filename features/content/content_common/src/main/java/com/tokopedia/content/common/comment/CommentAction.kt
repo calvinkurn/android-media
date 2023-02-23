@@ -24,4 +24,6 @@ sealed class CommentAction {
     object RequestReportAction : CommentAction()
 
     data class SelectComment(val comment: CommentUiModel.Item) : CommentAction()
+
+    data class OpenAppLinkAction(val appLink: String) : CommentAction()
 }
