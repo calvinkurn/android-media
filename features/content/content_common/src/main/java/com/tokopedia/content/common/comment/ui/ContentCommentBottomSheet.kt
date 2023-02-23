@@ -4,7 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.WindowManager
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -120,6 +120,7 @@ class ContentCommentBottomSheet @Inject constructor(
         isDragable = false
         showKnob = false
         showHeader = false
+        isKeyboardOverlap = true
     }
 
     private fun setupView() {
@@ -282,6 +283,9 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+
+        val window = dialog?.window
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         binding.root.layoutParams.height = newHeight
     }

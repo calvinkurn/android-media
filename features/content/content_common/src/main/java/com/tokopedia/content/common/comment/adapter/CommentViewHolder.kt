@@ -15,7 +15,6 @@ import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
-import com.tokopedia.feedcomponent.util.bold
 import com.tokopedia.feedcomponent.util.buildSpannedString
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -43,7 +42,10 @@ class CommentViewHolder {
                 }
 
                 override fun onClick(widget: View) {
-                    listener.onMentionClicked(userType = commentInfo[USER_TYPE].orEmpty(), userId = commentInfo[ID].orEmpty())
+                    listener.onMentionClicked(
+                        userType = commentInfo[USER_TYPE].orEmpty(),
+                        userId = commentInfo[ID].orEmpty()
+                    )
                 }
             }
         }
@@ -61,6 +63,7 @@ class CommentViewHolder {
                 }
             }
         }
+
         private fun getTagMention(item: CommentUiModel.Item): SpannedString {
             return try {
                 val regex = """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
@@ -68,10 +71,10 @@ class CommentViewHolder {
                 var length = 10 //total escape character [{}|@]
                 if (find.count() > 0) {
                     find.forEachIndexed { index, matchResult ->
-                        if(index == 0) commentInfo[ID] = matchResult.value.replace("@","")
-                        if(index == 1) commentInfo[USER_TYPE] = matchResult.value.replace("@","")
-                        if(index == 2) commentInfo[USERNAME] = matchResult.value.removeSuffix("@")
-                        if(index == 3) commentInfo[OWNER_APP_LINK] = item.appLink
+                        if (index == 0) commentInfo[ID] = matchResult.value.replace("@", "")
+                        if (index == 1) commentInfo[USER_TYPE] = matchResult.value.replace("@", "")
+                        if (index == 2) commentInfo[USERNAME] = matchResult.value.removeSuffix("@")
+                        if (index == 3) commentInfo[OWNER_APP_LINK] = item.appLink
                         length += matchResult.value.length
                     }
                     buildSpannedString {
@@ -86,12 +89,16 @@ class CommentViewHolder {
                             clickableSpan,
                             Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                         )
-                        append(" ")
+                        append(item.content.removeRange(0, length))
                     }
                 } else throw Exception()
             } catch (e: Exception) {
                 buildSpannedString {
-                    bold { append(item.username + " ") }
+                    append(
+                        item.username,
+                        userClickSpan,
+                        Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                    )
                     append(item.content)
                 }
             }
@@ -100,7 +107,7 @@ class CommentViewHolder {
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
                 root.setPadding(
-                    if (item.commentType is CommentType.Child) 48 else 8,
+                    if (item.commentType is CommentType.Child) 100 else 8,
                     root.paddingTop,
                     root.paddingTop,
                     root.paddingBottom
@@ -133,6 +140,7 @@ class CommentViewHolder {
             fun onProfileClicked(appLink: String)
             fun onUserNameClicked(appLink: String)
         }
+
         companion object {
             private const val ID = "id"
             private const val USER_TYPE = "userType"

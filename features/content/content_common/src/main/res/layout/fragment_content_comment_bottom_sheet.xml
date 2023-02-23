@@ -35,7 +35,6 @@
         android:background="@color/Unify_Background"
         android:orientation="horizontal"
         android:padding="@dimen/content_common_space_16"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

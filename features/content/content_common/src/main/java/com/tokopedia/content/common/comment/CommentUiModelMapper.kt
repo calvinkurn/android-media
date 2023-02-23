@@ -61,7 +61,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.userInfo.photo,
             appLink = comment.id,
-            content = comment.comment,
+            content = comment.comment.replace("^[\n\r]".toRegex(), ""), //remove\n,
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",
