@@ -71,6 +71,7 @@ data class FeedXProduct(
         var productName : String= "",
         val slashedPrice : String = "",
         val authorName : String = "",
+        @SerializedName("shopID")
         var shopID : String = "",
         val isTopads: Boolean = false,
         val adClickUrl: String = "",

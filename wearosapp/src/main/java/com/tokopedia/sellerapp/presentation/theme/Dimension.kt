@@ -38,6 +38,7 @@ val DP_5 = 5.dp
 val DP_6 = 6.dp
 val DP_10 = 10.dp
 val DP_13 = 13.dp
+val DP_14 = 14.dp
 val DP_18 = 18.dp
 val DP_80 = 80.dp
 val DP_100 = 100.dp

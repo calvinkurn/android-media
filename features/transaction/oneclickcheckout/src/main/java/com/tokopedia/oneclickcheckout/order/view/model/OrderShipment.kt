@@ -14,6 +14,7 @@ data class OrderShipment(
     val serviceId: Int? = null,
     val serviceDuration: String? = null,
     val serviceEta: String? = null,
+    val whitelabelDescription: String? = null,
     val shippingEta: String? = null,
     val serviceErrorMessage: String? = null,
     val isServicePickerEnable: Boolean = false,
@@ -98,5 +99,4 @@ data class OrderShipment(
 data class OrderInsurance(
     val insuranceData: InsuranceData? = null,
     var isCheckInsurance: Boolean = false,
-    var isFirstLoad: Boolean = true
 )

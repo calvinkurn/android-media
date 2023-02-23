@@ -35,6 +35,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
     <queries>
         <package android:name="com.tokopedia.sellerapp" />
@@ -103,6 +106,7 @@
         <package android:name="com.asistenhidup.terran" />
         <package android:name="com.awantunai.app" />
         <package android:name="com.baga.cabjahbcaefiag" />
+        <package android:name="com.bajingan.bangsat" />
         <package android:name="com.bantu.pinjam" />
         <package android:name="com.bbest.q001001" />
         <package android:name="com.bbxfintech" />
@@ -201,6 +205,7 @@
         <package android:name="com.electrodialitic.haltere" />
         <package android:name="com.enough.rupiah" />
         <package android:name="com.estakapital.investor" />
+        <package android:name="com.example.myapplication" />
         <package android:name="com.excellence.PinjamanRupiah" />
         <package android:name="com.excelliance.multiaccount" />
         <package android:name="com.excelliance.multiaccounts" />

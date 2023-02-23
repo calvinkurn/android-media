@@ -200,23 +200,23 @@
             app:layout_constraintTop_toBottomOf="@id/goPayDoIcon" />
 
         <include
+            android:id="@+id/gopaySupervisedLayout"
             layout="@layout/gopay_kyc_bank_supervised_layout"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_24"
-            app:layout_constraintBottom_toTopOf="@+id/takePhotoButton"
-            app:layout_constraintEnd_toEndOf="@+id/takePhotoButton"
-            app:layout_constraintStart_toStartOf="@+id/takePhotoButton"
-            app:layout_constraintTop_toBottomOf="@+id/instructionLL"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/takePhotoButton"
+            app:layout_constraintStart_toStartOf="@id/takePhotoButton"
             app:layout_constraintVertical_bias="1.0" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/takePhotoButton"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/unify_space_24"
+            android:layout_marginBottom="8dp"
             android:text="@string/gopay_kyc_take_ktp_text"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/gopaySupervisedLayout"
             app:layout_constraintEnd_toEndOf="@+id/goPayPhotoTitle"
             app:layout_constraintStart_toStartOf="@+id/goPayPhotoTitle"
             app:unifyButtonSize="large"

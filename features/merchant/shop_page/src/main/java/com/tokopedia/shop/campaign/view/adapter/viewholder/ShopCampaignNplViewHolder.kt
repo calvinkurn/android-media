@@ -93,7 +93,6 @@ class ShopCampaignNplViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_campaign_new_product_launch
-        private const val TITLE_MARGIN_FIRST_ITEM = 16
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
         private const val PADDING_LEFT_PERCENTAGE = 0.47f
     }

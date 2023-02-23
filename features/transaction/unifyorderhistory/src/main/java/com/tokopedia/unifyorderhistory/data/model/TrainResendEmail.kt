@@ -1,19 +1,13 @@
 package com.tokopedia.unifyorderhistory.data.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class TrainResendEmail(
-    @SerializedName("data")
-    val data: Data = Data()
+    @SerializedName("trainResendBookingEmail")
+    val trainResendBookingEmail: TrainResendBookingEmail? = TrainResendBookingEmail()
 ) {
-    data class Data(
-        @SerializedName("trainResendBookingEmail")
-        val trainResendBookingEmail: TrainResendBookingEmail? = TrainResendBookingEmail()
-    ) {
-        data class TrainResendBookingEmail(
-            @SerializedName("Success")
-            val success: Boolean = false
-        )
-    }
+    data class TrainResendBookingEmail(
+        @SerializedName("Success")
+        val success: Boolean = false
+    )
 }

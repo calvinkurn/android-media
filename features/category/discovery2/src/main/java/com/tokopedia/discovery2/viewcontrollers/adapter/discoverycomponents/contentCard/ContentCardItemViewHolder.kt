@@ -30,11 +30,10 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                 if (it.isNotEmpty()) {
                     RouteManager.route(fragment.activity, it)
                 }
-                contentCardItemViewModel?.components?.data?.let { list ->
+                contentCardItemViewModel?.components?.let { componentItem ->
                     (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                        ?.trackBannerClick(
-                            list.first(),
-                            contentCardItemViewModel?.components?.position ?: 0,
+                        ?.trackContentCardClick(
+                            componentItem,
                             Utils.getUserId(fragment.context)
                         )
                 }
@@ -111,11 +110,10 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         contentCardItemViewModel?.startTimer()
-        contentCardItemViewModel?.components?.data?.let { list ->
+        contentCardItemViewModel?.components?.let { componentItem ->
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                ?.trackBannerImpression(
-                    list,
-                    contentCardItemViewModel?.components?.position ?: 0,
+                ?.trackContentCardImpression(
+                    componentItem,
                     Utils.getUserId(fragment.context)
                 )
         }

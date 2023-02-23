@@ -27,6 +27,7 @@ open class ClientMessageDatasource @Inject constructor(
         Log.d("TokopediaWearOS", "onMessageReceived: $data")
         when(messageEvent.path) {
             MessageConstant.GET_ORDER_LIST_PATH -> wearCacheAction.saveOrderListToCache(data)
+            MessageConstant.GET_NOTIFICATION_LIST_PATH -> wearCacheAction.saveNotificationListToCache(data)
             MessageConstant.GET_SUMMARY_PATH -> wearCacheAction.saveSummaryToCache(data)
             else -> { }
         }

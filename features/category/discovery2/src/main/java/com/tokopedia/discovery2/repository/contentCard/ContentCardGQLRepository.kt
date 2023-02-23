@@ -20,7 +20,13 @@ class ContentCardGQLRepository @Inject constructor() : BaseRepository(), Content
     ): Pair<ArrayList<ComponentsItem>, String?> {
         val response = (getGQLData(
             GQL_COMPONENT,
-            DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME
+            DataResponse::class.java,
+            Utils.getComponentsGQLParams(
+                componentId,
+                pageEndPoint,
+                Utils.getQueryString(queryParamterMap)
+            ),
+            GQL_COMPONENT_QUERY_NAME
         ) as DataResponse)
 
         val component = response.data.component
@@ -28,15 +34,30 @@ class ContentCardGQLRepository @Inject constructor() : BaseRepository(), Content
         val componentData = component?.data
         val componentProperties = component?.properties
         val nextPage = component?.compAdditionalInfo?.nextPage
-        val componentItem  = getComponent(componentId, pageEndPoint)
+        val componentItem = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
+        val parentPosition = componentItem?.position ?: 0
         val list = when (contentCardComponentName) {
             ComponentNames.ContentCard.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ContentCardItem.componentName, componentProperties, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
+                DiscoveryDataMapper().mapListToComponentList(
+                    componentData,
+                    ComponentNames.ContentCardItem.componentName,
+                    componentProperties,
+                    parentListSize = componentsListSize,
+                    parentSectionId = componentItem?.parentSectionId,
+                    parentComponentPosition = parentPosition
+                )
             else ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ContentCardItem.componentName, null, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
+                DiscoveryDataMapper().mapListToComponentList(
+                    componentData,
+                    ComponentNames.ContentCardItem.componentName,
+                    null,
+                    parentListSize = componentsListSize,
+                    parentSectionId = componentItem?.parentSectionId,
+                    parentComponentPosition = parentPosition
+                )
 
         }
-        return Pair(list,nextPage)
+        return Pair(list, nextPage)
     }
 }

@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
@@ -46,8 +47,10 @@ import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailab
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
@@ -76,7 +79,7 @@ import kotlinx.coroutines.flow.collect
 import java.io.File
 import javax.inject.Inject
 
-class TokoChatFragment :
+open class TokoChatFragment :
     TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
@@ -125,7 +128,7 @@ class TokoChatFragment :
         initializeChatRoom(savedInstanceState)
     }
 
-    private fun initializeChatRoom(savedInstanceState: Bundle?) {
+    protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
         setDataFromArguments(savedInstanceState)
         if (viewModel.gojekOrderId.isNotBlank()) { // Do not init when order id empty
             initGroupBooking()
@@ -227,7 +230,6 @@ class TokoChatFragment :
         observeTokoChatBackground()
         observeChatRoomTicker()
         observeChannelDetails()
-        observeMemberLeft()
         observeLoadOrderTransactionStatus()
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
@@ -407,7 +409,7 @@ class TokoChatFragment :
         }
     }
 
-    private fun observeChatRoomTicker() {
+    protected open fun observeChatRoomTicker() {
         observe(viewModel.chatRoomTicker) {
             when (it) {
                 is Success -> {
@@ -437,24 +439,36 @@ class TokoChatFragment :
             when (it) {
                 is Success -> setHeaderData(it.data)
                 is Fail -> {
-                    hideShimmeringHeader()
-                    val doesChatNotExist: Boolean = if (it.throwable is ConversationsNetworkError) {
-                        (it.throwable as ConversationsNetworkError).errorList.firstOrNull()?.code?.contains(
-                            CHAT_DOES_NOT_EXIST,
-                            ignoreCase = true
-                        ) ?: false
-                    } else {
-                        false
-                    }
-                    if (doesChatNotExist) {
-                        showUnavailableBottomSheet()
-                    } else {
-                        showGlobalErrorLayout(onActionClick = {
-                            initializeChatRoom(null)
-                        })
-                    }
+                    handleFailGetChannelDetails(it.throwable)
                 }
             }
+            observeMemberLeft()
+        }
+    }
+
+    private fun handleFailGetChannelDetails(error: Throwable) {
+        hideShimmeringHeader()
+        try {
+            val doesChatNotExist: Boolean = if (error is ConversationsNetworkError) {
+                error.errorList.firstOrNull()?.code?.contains(
+                    CHAT_DOES_NOT_EXIST,
+                    ignoreCase = true
+                ) ?: false
+            } else {
+                false
+            }
+            if (doesChatNotExist) {
+                showUnavailableBottomSheet()
+            } else {
+                showGlobalErrorWithRefreshAction()
+            }
+        } catch (throwable: Throwable) {
+            showGlobalErrorWithRefreshAction()
+            logExceptionTokoChat(
+                throwable,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                ::handleFailGetChannelDetails.name
+            )
         }
     }
 
@@ -482,8 +496,14 @@ class TokoChatFragment :
     }
 
     private fun observeMemberLeft() {
+        // reset member left live data before observe to remove old data
+        viewModel.resetMemberLeft()
         observe(viewModel.getMemberLeft()) {
-            showUnavailableBottomSheet()
+            // If the livedata gives null, then do nothing
+            // If the livedata gives old data, then do nothing
+            if (it != null && it == headerUiModel?.id) {
+                showUnavailableBottomSheet()
+            }
         }
     }
 
@@ -606,7 +626,10 @@ class TokoChatFragment :
                 findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
 
             userTitle.text = headerUiModel.title
-            subTitle.text = headerUiModel.subTitle
+            subTitle.text = TokoChatViewUtil.censorPlatNumber(
+                platNumber = headerUiModel.subTitle,
+                percentageCensor = DEFAULT_CENSOR_PERCENTAGE
+            )
             imageUrl.setImageUrl(headerUiModel.imageUrl)
             imageUrl.show()
 
@@ -710,15 +733,26 @@ class TokoChatFragment :
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
         removeShimmering()
-        val errorCode = error.errorList.firstOrNull()?.code ?: ""
-        if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
-            showUnavailableBottomSheet()
-        } else {
-            showGlobalErrorLayout(onActionClick = {
-                initializeChatRoom(null)
-            })
+        handleOnErrorCreateGroupBooking(error)
+    }
+
+    private fun handleOnErrorCreateGroupBooking(error: ConversationsNetworkError) {
+        try {
+            val errorCode = error.errorList.firstOrNull()?.code ?: ""
+            if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+                showUnavailableBottomSheet()
+            } else {
+                showGlobalErrorWithRefreshAction()
+            }
+            logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
+        } catch (throwable: Throwable) {
+            showGlobalErrorWithRefreshAction()
+            logExceptionTokoChat(
+                throwable,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                ::handleOnErrorCreateGroupBooking.name
+            )
         }
-        logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
     }
 
     override fun onGroupBookingChannelCreationStarted() {
@@ -758,11 +792,7 @@ class TokoChatFragment :
     private fun observeChatHistory() {
         observe(viewModel.getChatHistory(viewModel.channelId)) {
             // First time get Chat History
-            if (firstTimeOpen) {
-                firstTimeOpen = false
-                viewModel.loadChatRoomTicker()
-                observerTyping()
-            }
+            handleFirstTimeGetChatHistory()
 
             // It's from load more func, if recyclerview is loading more
             // Should skip if recyclerview is not loading more message
@@ -772,12 +802,24 @@ class TokoChatFragment :
             }
 
             // Map conversation message into ui model
-            val result = mapper.mapToChatUiModel(it, viewModel.getUserId())
-            adapter.setItemsAndAnimateChanges(result)
-            scrollToBottom()
+            mapConversationMessageToUiModel(it)
 
             // Mark the chat as read
             viewModel.markChatAsRead(viewModel.channelId)
+        }
+    }
+
+    protected open fun mapConversationMessageToUiModel(list: List<ConversationsMessage>) {
+        val result = mapper.mapToChatUiModel(list, viewModel.getUserId())
+        adapter.setItemsAndAnimateChanges(result)
+        scrollToBottom()
+    }
+
+    private fun handleFirstTimeGetChatHistory() {
+        if (firstTimeOpen) {
+            firstTimeOpen = false
+            viewModel.loadChatRoomTicker()
+            observerTyping()
         }
     }
 
@@ -1004,7 +1046,7 @@ class TokoChatFragment :
         )
     }
 
-    private fun showUnavailableBottomSheet() {
+    protected open fun showUnavailableBottomSheet() {
         if (unavailableBottomSheet.isVisible) return
         unavailableBottomSheet.setListener(buttonAction = {
             activity?.finish()
@@ -1037,6 +1079,12 @@ class TokoChatFragment :
                 }
             }
         )
+    }
+
+    private fun showGlobalErrorWithRefreshAction() {
+        showGlobalErrorLayout(onActionClick = {
+            initializeChatRoom(null)
+        })
     }
 
     companion object {

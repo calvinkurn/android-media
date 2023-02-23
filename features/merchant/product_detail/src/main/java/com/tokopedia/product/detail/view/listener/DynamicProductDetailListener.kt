@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.util.SparseIntArray
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -10,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -71,6 +72,7 @@ interface DynamicProductDetailListener {
         type: String,
         url: String,
         position: Int,
+        variantOptionId: String,
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
@@ -271,6 +273,7 @@ interface DynamicProductDetailListener {
      * ProductRecom
      */
     fun loadTopads(pageName: String)
+    fun loadViewToView(pageName: String)
 
     fun loadPlayWidget()
 
@@ -360,7 +363,8 @@ interface DynamicProductDetailListener {
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     fun clickShippingComponentError(
@@ -369,10 +373,15 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
+    fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
     /**
      * ProductArViewHolder
      */
-    fun showArCoachMark(view:ConstraintLayout?)
+    fun showArCoachMark(view: ConstraintLayout?)
     fun hideArCoachMark()
     fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 
@@ -415,7 +424,8 @@ interface DynamicProductDetailListener {
     fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
-        componentTrackDataModel: ComponentTrackDataModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        isOldBundlingWidget: Boolean = true
     )
 
     /**
@@ -450,4 +460,28 @@ interface DynamicProductDetailListener {
     fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
     fun startVerticalRecommendation(pageName: String)
     fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
+
+    /**
+     * ViewToView widget recommendation
+     */
+    fun onViewToViewImpressed(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int
+    )
+    fun onViewToViewClicked(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int
+    )
+    fun onViewToViewReload(pageName: String)
+
+    /**
+     * Thumbnail Variant
+     */
+    fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
+
+    fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
 }

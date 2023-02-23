@@ -53,7 +53,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         super(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (isEnableBubble()) {
-            bubblesFactory = new BubblesFactoryImpl(context);
+            generateBubbleFactory(context);
         }
     }
 
@@ -87,7 +87,12 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         }
 
         if (isEnableBubble()) {
-            setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
+            if (bubblesFactory == null) {
+                generateBubbleFactory(context);
+            }
+            if (bubblesFactory != null) {
+                setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
+            }
         }
 
         return builder.build();
@@ -138,11 +143,19 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PUSH_NOTIFICATION_CHAT_SELLER, false);
     }
 
-    private void setupBubble(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
-        BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
+    private void generateBubbleFactory(Context context) {
+        if (context != null) {
+            bubblesFactory = new BubblesFactoryImpl(context);
+        }
+    }
 
-        updateBubblesShortcuts(notificationType, bubbleNotificationModel);
-        updateBubblesBuilder(builder, bubbleNotificationModel);
+    private void setupBubble(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        try {
+            BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
+
+            updateBubblesShortcuts(notificationType, bubbleNotificationModel);
+            updateBubblesBuilder(builder, bubbleNotificationModel);
+        } catch (Exception ignored) { }
     }
 
     private void updateBubblesShortcuts(int notificationType, BubbleNotificationModel bubbleNotificationModel) {
@@ -192,7 +205,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         boolean isEnableBubble =
                 GlobalConfig.isSellerApp() &&
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-                getIsBubbleRollenceEnabled();
+                getIsBubbleRollenceEnabled() && getShouldEnableBubble();
         return isEnableBubble;
     }
 
@@ -206,6 +219,10 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             isRollenceEnabled = true;
         }
         return isRollenceEnabled;
+    }
+
+    private boolean getShouldEnableBubble() {
+        return true;
     }
 
 }

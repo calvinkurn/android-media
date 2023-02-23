@@ -7,7 +7,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R
@@ -48,6 +50,15 @@ class AddNewAddressNegativeTest {
         logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
         logisticInterceptor.saveAddressResponsePath = getRawString(context, R.raw.save_address_success)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
+        setupLocalCacheHasShownCoachmark()
+    }
+
+    private fun setupLocalCacheHasShownCoachmark() {
+        val localCacheHandler = LocalCacheHandler(context, AddEditAddressFragment.PREFERENCES_NAME)
+        localCacheHandler.apply {
+            putBoolean(AddEditAddressFragment.ADDRESS_CONTACT_HAS_SHOWN, true)
+            applyEditor()
+        }
     }
 
     @After

@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.UiUserConsentItemBinding
+import com.tokopedia.usercomponents.userconsent.common.PurposeDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPurposeUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -18,7 +19,7 @@ class UserConsentPurposeViewHolder(
 
     fun onBind(userConsentPurposeUiModel: UserConsentPurposeUiModel) {
         itemViewBinding?.apply {
-            checkboxPurposes.text = userConsentPurposeUiModel.purposes.description
+            checkboxPurposes.text = userConsentPurposeUiModel.purposes.attribute.uiName
             checkboxPurposes.setOnCheckedChangeListener { _, isChecked ->
                 listener.onCheckedChange(isChecked, userConsentPurposeUiModel.purposes)
             }
@@ -28,7 +29,7 @@ class UserConsentPurposeViewHolder(
     interface UserConsentPurposeListener {
         fun onCheckedChange(
             isChecked: Boolean,
-            purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel
+            purposeDataModel: PurposeDataModel
         )
     }
 

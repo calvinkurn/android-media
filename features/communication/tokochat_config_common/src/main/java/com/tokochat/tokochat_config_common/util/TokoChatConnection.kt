@@ -9,14 +9,17 @@ import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComp
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.lang.Exception
 
 object TokoChatConnection {
 
@@ -24,19 +27,32 @@ object TokoChatConnection {
     var courierConnection: CourierConnection? = null
 
     @Volatile
-    private var initializationStatus: Boolean = false
+    private var hasBeenInitialized: Boolean = false
 
-    fun init(context: Context) {
+    @JvmStatic
+    fun init(context: Context, isFromLoginFlow: Boolean = false) {
         // Initialize AndroidThreeTen for Conversation SDK
         AndroidThreeTen.init(context.applicationContext)
 
         injectTokoChatConfigComponent(context)
 
-        // If user does not login, return
-        if (!UserSession(context).isLoggedIn) return
+        /**
+         * If from login, fetch the AB test first
+         * We need it in here because the callback from fetch won't be called in login page
+         * Login page will immediately finish the page after login
+         */
+        if (isFromLoginFlow) {
+            fetchABTest(context)
+        } else {
+            initializeCourierConnection(context)
+        }
+    }
 
-        // If rollence turned off, return
-        if (!isTokoChatActive()) return
+    private fun initializeCourierConnection(context: Context) {
+        // If user does not login or
+        // If rollence turned off or seller app or
+        // has been initialized, return
+        if (!UserSession(context).isLoggedIn || !isTokoChatActive() || hasBeenInitialized) return
 
         // Initialize Courier Connection
         courierConnection = tokoChatConfigComponent?.getCourierConnection()
@@ -46,7 +62,7 @@ object TokoChatConnection {
         }
 
         // Set initialization status to success
-        initializationStatus = true
+        hasBeenInitialized = true
     }
 
     private fun injectTokoChatConfigComponent(context: Context) {
@@ -57,10 +73,27 @@ object TokoChatConnection {
         }
     }
 
+    private fun fetchABTest(context: Context) {
+        AbTestPlatform(context).fetch(object : RemoteConfig.Listener {
+            override fun onComplete(remoteConfig: RemoteConfig?) {
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main) {
+                        initializeCourierConnection(context)
+                    }
+                }
+            }
+
+            override fun onError(e: Exception?) {
+                // do nothing, tokochat will be inactive without rollence
+            }
+        })
+    }
+
+    @JvmStatic
     fun disconnect() {
         try {
-            // If rollence turned off, return
-            if (!isTokoChatActive() || !initializationStatus) return
+            // If rollence turned off or not initialized, return
+            if (!isTokoChatActive() || !hasBeenInitialized) return
 
             courierConnection?.handleAppEvent(AppLogout)
             GlobalScope.launch {
@@ -69,12 +102,13 @@ object TokoChatConnection {
                     ConversationsRepository.destroy()
                 }
             }
+            hasBeenInitialized = false
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
     }
 
-    private fun isTokoChatActive(): Boolean {
+    fun isTokoChatActive(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.KEY_ROLLENCE_TOKOCHAT,
@@ -83,9 +117,5 @@ object TokoChatConnection {
         } catch (e: Throwable) {
             false
         }
-    }
-
-    fun hasBeenInitialized(): Boolean {
-        return initializationStatus
     }
 }

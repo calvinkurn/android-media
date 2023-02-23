@@ -378,8 +378,20 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 chipsLabel
                 hasUsedBenefit
+                tickers {
+                  title
+                  message
+                  color
+                  action
+                  link
+                }
+                isScheduled
               }
               boMetadata
+              productMetadata {
+                productID
+                value
+              }
             }
             merchantVoucherSummary{
                 animatedInfo{
@@ -544,8 +556,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               applink
               subtitle
             }
+            customInfoTitle {
+               title
+               status
+               componentName
+            }
           }
-        }""".trimIndent()
+        }
+""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -623,6 +641,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.shopAdditional = responseData.shopAdditional
             p2UiData.arInfo = arInfo
             p2UiData.obatKeras = responseData.obatKeras
+            p2UiData.customInfoTitle = responseData.customInfoTitle
         }
         return p2UiData
     }

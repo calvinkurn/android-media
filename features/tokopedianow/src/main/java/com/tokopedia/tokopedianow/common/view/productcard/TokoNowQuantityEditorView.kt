@@ -31,7 +31,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     companion object {
         private const val DELAY_TIME_BACK_TO_START_STATE = 2000L
-        private const val DELAY_TIME_BEFORE_CHANGING_QUANTITY = 1000L
+        private const val DELAY_TIME_BEFORE_CHANGING_QUANTITY = 500L
         private const val MIN_NUMBER = 1
         private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
@@ -264,7 +264,8 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
         }
 
-        editText.addTextChangedListener(TextWatcherImpl(
+        editText.addTextChangedListener(
+            TextWatcherImpl(
                 onTextChanged = {
                     executeTimerAfterTextChanged = if (executeTimerAfterTextChanged) {
                         executeTimer()
@@ -381,4 +382,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
         }
     }
+
+    fun getQuantity(): Int = counter
 }

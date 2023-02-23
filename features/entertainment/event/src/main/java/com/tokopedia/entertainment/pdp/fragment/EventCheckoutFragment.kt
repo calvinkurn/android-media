@@ -239,6 +239,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                             val intent = RouteManager.getIntent(context, paymentCheckoutString)
                             intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+                            intent.putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, System.currentTimeMillis())
                             startActivityForResult(intent, PAYMENT_SUCCESS)
 
                         } else {

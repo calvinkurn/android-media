@@ -146,14 +146,15 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment :
-        AddEditProductFragment(),
-        ProductPhotoViewHolder.OnPhotoChangeListener,
-        AddEditProductPerformanceMonitoringListener {
+    AddEditProductFragment(),
+    ProductPhotoViewHolder.OnPhotoChangeListener,
+    AddEditProductPerformanceMonitoringListener {
 
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
@@ -192,7 +193,7 @@ class AddEditProductPreviewFragment :
     private var addEditProductDescriptionTitle: Typography? = null
     private var addEditProductDescriptionButton: Typography? = null
 
-    //variant
+    // variant
     private var addEditProductVariantLayout: ViewGroup? = null
     private var addEditProductVariantButton: Typography? = null
     private var addProductVariantTipsLayout: ViewGroup? = null
@@ -227,6 +228,9 @@ class AddEditProductPreviewFragment :
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -298,7 +302,7 @@ class AddEditProductPreviewFragment :
         multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
         context?.let { UpdateShopActiveWorker.execute(it) }
 
-        //If you add another observe, don't forget to remove observers at removeObservers()
+        // If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
         observeProductInputModel()
@@ -315,7 +319,7 @@ class AddEditProductPreviewFragment :
         observeMustFillParentWeight()
         observeIsShopModerated()
 
-        //validate shop status information
+        // validate shop status information
         validateShopStatus()
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
@@ -327,7 +331,7 @@ class AddEditProductPreviewFragment :
         if (savedInstanceState != null) {
             val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_PREVIEW)
             if (!productInputModelJson.isNullOrBlank()) {
-                //set product input model
+                // set product input model
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     productInputModel = this
                 }
@@ -370,12 +374,12 @@ class AddEditProductPreviewFragment :
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
-        //countTouchPhoto is used for count how many times images hit
-        //we use this because startDrag(viewHolder) can hit tracker two times
+        // countTouchPhoto is used for count how many times images hit
+        // we use this because startDrag(viewHolder) can hit tracker two times
         countTouchPhoto += 1
-        //countTouchPhoto can increment 1 every time we come or back to this page
-        //if we back from ActivityOnResult countTouchPhoto still increment
-        //to avoid that we have to make sure the value of countTouchPhoto must be 1
+        // countTouchPhoto can increment 1 every time we come or back to this page
+        // if we back from ActivityOnResult countTouchPhoto still increment
+        // to avoid that we have to make sure the value of countTouchPhoto must be 1
         if (countTouchPhoto > 2) {
             countTouchPhoto = 1
         }
@@ -394,23 +398,21 @@ class AddEditProductPreviewFragment :
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
         viewModel.setIsDataChanged(true)
-        if (isAdding()) {
-            ProductAddStepperTracking.trackRemoveProductImage(shopId)
-        } else {
+        if (!isAdding()) {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
     }
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS,
-                ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS,
-                ADD_EDIT_PRODUCT_PREVIEW_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS,
+            ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS,
+            ADD_EDIT_PRODUCT_PREVIEW_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_PREVIEW_TRACE)
@@ -449,10 +451,10 @@ class AddEditProductPreviewFragment :
     override fun initInjector() {
         val baseMainApplication = requireContext().applicationContext as BaseMainApplication
         DaggerAddEditProductPreviewComponent.builder()
-                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
-                .addEditProductPreviewModule(AddEditProductPreviewModule())
-                .build()
-                .inject(this)
+            .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
+            .addEditProductPreviewModule(AddEditProductPreviewModule())
+            .build()
+            .inject(this)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -490,24 +492,27 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // send tracker
-                if (isEditing()) {
-                    ProductEditStepperTracking.trackBack(shopId)
-                } else {
-                    ProductAddStepperTracking.trackBack(shopId)
-                }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // send tracker
+                    if (isEditing()) {
+                        ProductEditStepperTracking.trackBack(shopId)
+                    } else {
+                        ProductAddStepperTracking.trackBack(shopId)
+                    }
 
-                if (!viewModel.getIsDataChanged()) {
-                    // finish activity if there is no data changes
-                    activity?.finish()
-                } else {
-                    // show dialog
-                    showCloseConfirmationDialog()
+                    if (!viewModel.getIsDataChanged()) {
+                        // finish activity if there is no data changes
+                        activity?.finish()
+                    } else {
+                        // show dialog
+                        showCloseConfirmationDialog()
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun setupPhotosViews(view: View) {
@@ -542,9 +547,6 @@ class AddEditProductPreviewFragment :
             }
         }
         addProductPhotoTipsLayout?.setOnClickListener {
-            if (!isEditing()) {
-                ProductAddStepperTracking.trackHelpProductQuality(shopId)
-            }
             showPhotoTips()
         }
     }
@@ -666,14 +668,20 @@ class AddEditProductPreviewFragment :
                 ProductEditStepperTracking.trackFinishButton(shopId)
             }
 
-            val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
-                ?: DetailInputModel())
+            val validateMessage = viewModel.validateProductInput(
+                viewModel.productInputModel.value?.detailInputModel
+                    ?: DetailInputModel()
+            )
             val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
             val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
 
             if (mustFillParentWeight) {
-                Toaster.build(view, getString(R.string.error_weight_not_filled),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(
+                    view,
+                    getString(R.string.error_weight_not_filled),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
             } else if (validateMessage.isNotEmpty()) {
                 Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             } else if (isAddingOrDuplicating && !isProductLimitEligible) {
@@ -718,7 +726,7 @@ class AddEditProductPreviewFragment :
 
     private fun handleAddModeFragmentResult(data: Bundle) {
         dataBackPressed = data.getInt(BUNDLE_BACK_PRESSED, NO_DATA)
-        //only update data on preview page
+        // only update data on preview page
         when (dataBackPressed) {
             DETAIL_DATA -> {
                 viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
@@ -808,7 +816,7 @@ class AddEditProductPreviewFragment :
         val cacheManagerId = bundle.getString(BUNDLE_CACHE_MANAGER_ID) ?: ""
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
             viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
-                    ?: ProductInputModel()
+                ?: ProductInputModel()
             // set data only in draft or edit mode to make dynamic ui preview
             if (isDrafting() || viewModel.productInputModel.value?.productId != 0L) {
                 productInputModel = viewModel.productInputModel.value
@@ -827,9 +835,11 @@ class AddEditProductPreviewFragment :
     }
 
     private fun displayEmptyStockCoachmark(anchor: View) {
-        if(activity?.isDestroyed == false && activity?.isFinishing == false) {
+        if (activity?.isDestroyed == false && activity?.isFinishing == false) {
             val items = listOf(
-                CoachMark2Item(anchor, "",
+                CoachMark2Item(
+                    anchor,
+                    "",
                     getString(R.string.label_coachmark_out_of_stock),
                     CoachMarkContentPosition.BOTTOM.position
                 )
@@ -892,8 +902,12 @@ class AddEditProductPreviewFragment :
     private fun enableShipmentAdd() {
         addEditProductShipmentButton?.text = getString(R.string.action_add)
         addEditProductShipmentButton?.animateExpand()
-        addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(context ?: return,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        addEditProductShipmentTitle?.setTextColor(
+            ContextCompat.getColor(
+                context ?: return,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+            )
+        )
     }
 
     private fun enableShipmentEdit() {
@@ -969,9 +983,10 @@ class AddEditProductPreviewFragment :
                         val errorName = AddEditProductUploadErrorHandler.getErrorName(result.throwable)
                         if (isEditing) {
                             ProductEditStepperTracking.oopsConnectionPageScreen(
-                                    userSession.userId,
-                                    errorMessage,
-                                    errorName)
+                                userSession.userId,
+                                errorMessage,
+                                errorName
+                            )
                         }
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
@@ -989,11 +1004,12 @@ class AddEditProductPreviewFragment :
 
             if (viewModel.getDraftId() != Int.ZERO.toLong() ||
                 it.productId != Int.ZERO.toLong() ||
-                viewModel.getProductId().isNotBlank()) {
-                    displayEditMode()
+                viewModel.getProductId().isNotBlank()
+            ) {
+                displayEditMode()
             }
 
-            //check whether productInputModel has value from savedInstanceState
+            // check whether productInputModel has value from savedInstanceState
             if (productInputModel != null) {
                 viewModel.productInputModel.value = productInputModel
                 checkEnableOrNot()
@@ -1033,6 +1049,7 @@ class AddEditProductPreviewFragment :
     private fun observeImageUrlOrPathList() {
         viewModel.imageUrlOrPathList.observe(viewLifecycleOwner, {
             productPhotoAdapter?.setProductPhotoPaths(it)
+            viewModel.saveImageListToDetailInput(it)
         })
     }
 
@@ -1060,12 +1077,16 @@ class AddEditProductPreviewFragment :
                         }
                     } else {
                         viewModel.productInputModel.value?.let { productInputModel ->
-                            startProductAddService(productInputModel)
-                            activity?.setResult(RESULT_OK)
+                            if (viewModel.isDuplicate) {
+                                checkDownloadPermission()
+                            } else {
+                                startProductAddService(productInputModel)
+                                activity?.setResult(RESULT_OK)
+                            }
                         }
                     }
                     showLoading()
-                    view?.postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                    view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     showToasterFailed(result.exception)
@@ -1137,7 +1158,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeAdminPermission() {
         viewModel.isProductManageAuthorized.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     result.data.let { isEligible ->
                         isAdminEligible = isEligible
@@ -1160,7 +1181,7 @@ class AddEditProductPreviewFragment :
         if (isAdding() || viewModel.isDuplicate) {
             if (isFragmentFirstTimeLoaded && !isDrafting()) viewModel.getProductLimitation()
             viewModel.productLimitationData.observe(viewLifecycleOwner) {
-                when(it) {
+                when (it) {
                     is Success -> {
                         val productLimitationModel = ProductLimitationMapper.mapToProductLimitationModel(requireContext(), it.data)
                         setupBottomSheetProductLimitation(productLimitationModel)
@@ -1236,8 +1257,8 @@ class AddEditProductPreviewFragment :
         val isEditted = result.isEditted as ArrayList
         if (imagePickerResult.size > 0) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
-                    viewModel.isDuplicate ||
-                    viewModel.productInputModel.value != null
+                viewModel.isDuplicate ||
+                viewModel.productInputModel.value != null
             // update the product pictures in the preview page
             // this should be executed when the user press "Ubah" on stepper in add or edit or duplicate product
             if (shouldUpdatePhotosInsteadMoveToDetail) {
@@ -1366,13 +1387,16 @@ class AddEditProductPreviewFragment :
 
     private fun showGetProductErrorToast(errorMessage: String) {
         view?.let {
-            Toaster.build(it, errorMessage,
+            Toaster.build(
+                it,
+                errorMessage,
                 duration = Snackbar.LENGTH_INDEFINITE,
                 type = Toaster.TYPE_ERROR,
                 actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
                 clickListener = {
                     viewModel.getProductData(viewModel.getProductId())
-                }).show()
+                }
+            ).show()
         }
     }
 
@@ -1387,27 +1411,34 @@ class AddEditProductPreviewFragment :
         // show error message when maximum product image is reached
         val productPhotoCount = adapter.getProductPhotoPaths().size
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
-        if (productPhotoCount == maxProductPhotoCount) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
-        else {
+        if (productPhotoCount == maxProductPhotoCount) {
+            showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+        } else {
             val isAdding = viewModel.isAdding || !isEditing()
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                    ?: urlOrPath
-                else urlOrPath
+                if (urlOrPath.startsWith(HTTP_PREFIX)) {
+                    viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                        ?: urlOrPath
+                } else {
+                    urlOrPath
+                }
             }.orEmpty()
 
             if (Rollence.getImagePickerRollence()) {
-                val pageSource = if(!isEditing()) PageSource.AddProduct else PageSource.EditProduct
+                val pageSource = if (!isEditing()) PageSource.AddProduct else PageSource.EditProduct
                 doTracking(isEditing())
                 val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
-                    requireContext(), maxProductPhotoCount,
+                    requireContext(),
+                    maxProductPhotoCount,
                     pageSource,
                     ArrayList(imageUrlOrPathList)
                 )
                 startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
             } else {
                 val intent = ImagePickerAddEditNavigation.getIntent(
-                    requireContext(), ArrayList(imageUrlOrPathList), maxProductPhotoCount,
+                    requireContext(),
+                    ArrayList(imageUrlOrPathList),
+                    maxProductPhotoCount,
                     isAdding
                 )
                 startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -1415,7 +1446,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun doTracking(isEdit : Boolean){
+    private fun doTracking(isEdit: Boolean) {
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
         MediaImprovementTracker.sendProductActionTracker(isEdit, userId, shopId)
@@ -1488,8 +1519,8 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun updateProductImage(){
-        if(Rollence.getImagePickerRollence()){
+    private fun updateProductImage() {
+        if (Rollence.getImagePickerRollence()) {
             updateProductImageList()
         } else {
             updateImageList()
@@ -1497,7 +1528,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateImageList() {
-        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        // filter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
         val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
         val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter {
             val model = it
@@ -1515,7 +1546,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateProductImageList() {
-        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        // filter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
         val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
         val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter { pictureInput ->
             imageUrlOrPathList.contains(pictureInput.urlOriginal) || imageUrlOrPathList.contains(pictureInput.urlThumbnail)
@@ -1531,7 +1562,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun validateAndStartProductAddService() {
-        //upload the product to the server
+        // upload the product to the server
         val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
         context?.let {
             val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
@@ -1545,8 +1576,8 @@ class AddEditProductPreviewFragment :
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {
-        // increment wholesale min order by one because of > symbol
         productInputModel.run {
+            // increment wholesale min order by one because of > symbol
             this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
         }
 
@@ -1554,8 +1585,8 @@ class AddEditProductPreviewFragment :
             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
             AddEditProductAddService.startService(
-                    context = it,
-                    cacheId = saveInstanceCacheManager.id.orEmpty()
+                context = it,
+                cacheId = saveInstanceCacheManager.id.orEmpty()
             )
         }
     }
@@ -1570,8 +1601,8 @@ class AddEditProductPreviewFragment :
             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
             AddEditProductEditService.startService(
-                    context = it,
-                    cacheManagerId = saveInstanceCacheManager.id.orEmpty()
+                context = it,
+                cacheManagerId = saveInstanceCacheManager.id.orEmpty()
             )
         }
     }
@@ -1610,11 +1641,11 @@ class AddEditProductPreviewFragment :
 
     private fun goToSellerAppEditProduct(productId: String) {
         val secondAppLink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                .buildUpon()
-                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
-                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
-                .build()
-                .toString()
+            .buildUpon()
+            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+            .build()
+            .toString()
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
     }
 
@@ -1657,9 +1688,9 @@ class AddEditProductPreviewFragment :
 
     private fun showDialogLocationValidation() {
         DialogUnify(
-                requireContext(),
-                DialogUnify.SINGLE_ACTION,
-                DialogUnify.NO_IMAGE
+            requireContext(),
+            DialogUnify.SINGLE_ACTION,
+            DialogUnify.NO_IMAGE
         ).apply {
             setDefaultMaxWidth()
             setTitle(getString(R.string.label_for_dialog_title_that_shop_has_no_location))
@@ -1733,11 +1764,11 @@ class AddEditProductPreviewFragment :
     private fun showToasterSuccessSetLocation() {
         view?.let {
             Toaster.build(
-                    it,
-                    getString(R.string.label_for_toaster_success_set_shop_location),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+                it,
+                getString(R.string.label_for_toaster_success_set_shop_location),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ).show()
         }
     }
@@ -1745,20 +1776,20 @@ class AddEditProductPreviewFragment :
     private fun showToasterFailed(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         Toaster.build(
-                requireView(),
-                errorMessage,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR
+            requireView(),
+            errorMessage,
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_ERROR
         ).show()
     }
 
     private fun getSaveShopShippingLocationData(
-            shopId: Int,
-            postCode: String,
-            courierOrigin: Long,
-            addrStreet: String,
-            lat: String,
-            long: String
+        shopId: Int,
+        postCode: String,
+        courierOrigin: Long,
+        addrStreet: String,
+        lat: String,
+        long: String
     ): MutableMap<String, Any> {
         val shipmentPayload = mutableMapOf<String, Any>()
         shipmentPayload[SHOP_ID] = shopId
@@ -1785,26 +1816,26 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun validateShopStatus(){
+    private fun validateShopStatus() {
         viewModel.validateShopIsOnModerated(userSession.shopId.toIntOrZero())
     }
 
     private fun saveShippingLocation() {
         val shopId = userSession.shopId.toIntOrZero()
         if (shopId != 0 &&
-                postalCode.isNotBlank() &&
-                latitude.isNotBlank() &&
-                longitude.isNotBlank() &&
-                districtId != 0L &&
-                formattedAddress.isNotBlank()) {
-
+            postalCode.isNotBlank() &&
+            latitude.isNotBlank() &&
+            longitude.isNotBlank() &&
+            districtId != 0L &&
+            formattedAddress.isNotBlank()
+        ) {
             val params = getSaveShopShippingLocationData(
-                    shopId = shopId,
-                    postCode = postalCode,
-                    courierOrigin = districtId,
-                    addrStreet = formattedAddress,
-                    lat = latitude,
-                    long = longitude
+                shopId = shopId,
+                postCode = postalCode,
+                courierOrigin = districtId,
+                addrStreet = formattedAddress,
+                lat = latitude,
+                long = longitude
             )
             viewModel.saveShippingLocation(params)
         }
@@ -1863,7 +1894,8 @@ class AddEditProductPreviewFragment :
         productLimitationTicker?.addPagerView(adapter, tickers)
         productLimitationTicker?.post {
             productLimitationTicker?.showWithCondition(
-                (isAdding() && !isDrafting()) || viewModel.isDuplicate)
+                (isAdding() && !isDrafting()) || viewModel.isDuplicate
+            )
         }
     }
 
@@ -1905,7 +1937,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun showBottomSheet(){
+    private fun showBottomSheet() {
         val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
         bottomSheet.setOnButtonBackClicked { goToManageProduct() }
         bottomSheet.setOnButtonLearningProblemClicked { routeToArticle() }
@@ -1913,16 +1945,49 @@ class AddEditProductPreviewFragment :
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun goToManageProduct(){
+    private fun goToManageProduct() {
         activity?.let {
             RouteManager.route(it, PRODUCT_MANAGE)
             it.finish()
         }
     }
 
-    private fun routeToArticle(){
+    private fun routeToArticle() {
         val encodedUrl = URLEncoder.encode(URL_ARTICLE_SELLER_EDU, "UTF-8")
         val route = String.format(getString(R.string.format_web_page), ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(activity ?: return, route)
+    }
+
+    private fun checkDownloadPermission() {
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.R) {
+            viewModel.productInputModel.value?.let { productInputModel ->
+                productInputModel.isDuplicate = true
+                startProductAddService(productInputModel)
+                activity?.setResult(RESULT_OK)
+            }
+        } else {
+            val listener = object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+                    permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
+                }
+
+                override fun onNeverAskAgain(permissionText: String) {
+                    permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
+                }
+
+                override fun onPermissionGranted() {
+                    viewModel.productInputModel.value?.let { productInputModel ->
+                        productInputModel.isDuplicate = true
+                        startProductAddService(productInputModel)
+                        activity?.setResult(RESULT_OK)
+                    }
+                }
+            }
+            permissionCheckerHelper.checkPermission(
+                fragment = this,
+                permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                listener = listener
+            )
+        }
     }
 }

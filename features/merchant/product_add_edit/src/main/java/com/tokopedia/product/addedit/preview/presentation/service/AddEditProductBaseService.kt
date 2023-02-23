@@ -51,30 +51,43 @@ import kotlin.coroutines.CoroutineContext
 abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var uploaderUseCase: UploaderUseCase
+
     @Inject
     lateinit var addProductInputMapper: AddProductInputMapper
+
     @Inject
     lateinit var productAddUseCase: ProductAddUseCase
+
     @Inject
     lateinit var productEditUseCase: ProductEditUseCase
+
     @Inject
     lateinit var editProductInputMapper: EditProductInputMapper
+
     @Inject
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
+
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
+
     @Inject
     lateinit var setUploadStatusUseCase: SetUploadStatusUseCase
+
     @Inject
     lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
+
     @Inject
     lateinit var updateProductStockWarehouseUseCase: UpdateProductStockWarehouseUseCase
+
     @Inject
     lateinit var resourceProvider: ResourceProvider
+
     @Inject
     lateinit var gson: Gson
+
     @Inject
     lateinit var sellerAppReviewHelper: AddEditSellerReviewHelper
 
@@ -109,7 +122,7 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
         setUploadStatus(UploadStatusType.STATUS_ERROR.name)
     }
 
-    fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
+    fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel) {
         val imagePathList = filterPathOnly(imageUrlOrPathList)
         val imagePathListCompressed = compressImages(imagePathList)
         val pathImageCount = imagePathList.size
@@ -135,10 +148,10 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
 
             onUploadProductImagesSuccess(uploadIdList, variantInputModel)
         }, onError = { throwable ->
-            throwable.printStackTrace()
-            setUploadProductDataError(cleanErrorMessage(throwable.localizedMessage.orEmpty()))
-            logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
-        })
+                throwable.printStackTrace()
+                setUploadProductDataError(cleanErrorMessage(throwable.localizedMessage.orEmpty()))
+                logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
+            })
     }
 
     private fun compressImages(imagePathList: List<String>): List<String> {
@@ -163,10 +176,11 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
 
     protected fun logError(requestParams: RequestParams, throwable: Throwable) {
         val errorMessage = String.format(
-                "\"Error upload product.\",\"userId: %s\",\"errorMessage: %s\",params: \"%s\"",
-                userSession.userId,
-                throwable.message,
-                URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
+            "\"Error upload product.\",\"userId: %s\",\"errorMessage: %s\",params: \"%s\"",
+            userSession.userId,
+            throwable.message,
+            URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE)
+        )
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
@@ -175,10 +189,11 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
 
     protected fun logError(title: String, throwable: Throwable) {
         val errorMessage = String.format(
-                "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
-                title,
-                userSession.userId,
-                throwable.message.orEmpty())
+            "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
+            title,
+            userSession.userId,
+            throwable.message.orEmpty()
+        )
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
@@ -188,14 +203,14 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
     private fun initInjector() {
         val baseMainApplication = applicationContext as BaseMainApplication
         DaggerAddEditProductPreviewComponent.builder()
-                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
-                .addEditProductPreviewModule(AddEditProductPreviewModule())
-                .build()
-                .inject(this)
+            .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
+            .addEditProductPreviewModule(AddEditProductPreviewModule())
+            .build()
+            .inject(this)
     }
 
     private suspend fun uploadProductSizechart(
-            sizecharts: PictureVariantInputModel
+        sizecharts: PictureVariantInputModel
     ): PictureVariantInputModel {
         if (sizecharts.picID.isEmpty() && sizecharts.urlOriginal.isNotEmpty()) {
             val uploadId = uploadImageAndGetId(sizecharts.urlOriginal)
@@ -209,7 +224,7 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
     }
 
     private suspend fun uploadProductVariantImages(
-            productVariants: List<ProductVariantInputModel>
+        productVariants: List<ProductVariantInputModel>
     ): List<ProductVariantInputModel> {
         productVariants.forEach {
             notificationManager?.onAddProgress()
@@ -261,15 +276,15 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
         }
     }
 
-    private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
-            imageUrlOrPathList.filterNot {
-                it.startsWith(AddEditProductConstants.HTTP_PREFIX)
-            }
+    protected fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
+        imageUrlOrPathList.filterNot {
+            it.startsWith(AddEditProductConstants.HTTP_PREFIX)
+        }
 
     private fun cleanErrorMessage(message: String): String {
         // clean error message from string inside <...> and (...)
         return message.replace("\\(.*?\\)".toRegex(), "")
-                .replace("\\<.*?\\>".toRegex(), "")
+            .replace("\\<.*?\\>".toRegex(), "")
     }
 
     private fun setUploadStatus(status: String, productId: String = "") {
@@ -280,6 +295,6 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
                     status = status
                 )
             )
-        } , onError = {})
+        }, onError = {})
     }
 }

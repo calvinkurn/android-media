@@ -4,11 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.data.ConsentGroupDataModel
 import com.tokopedia.privacycenter.data.ConsentGroupListDataModel
 import com.tokopedia.privacycenter.databinding.SectionConsentwithdrawalBinding
+import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalFragment
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.adapter.ConsentWithdrawalSectionAdapter
@@ -69,13 +72,20 @@ class ConsentWithdrawalSection constructor(
             consentWithdrawalSectionAdapter.addItem(it)
         }
 
+        if(data.ticker.isNotEmpty()) {
+            sectionViewBinding.consentGroupListTicker.show()
+            sectionViewBinding.consentGroupListTicker.setTextDescription(data.ticker)
+        } else {
+            sectionViewBinding.consentGroupListTicker.hide()
+        }
+
         consentWithdrawalSectionAdapter.notifyItemRangeInserted(0, data.groups.size)
     }
 
     override fun onItemClicked(data: ConsentGroupDataModel) {
         MainPrivacyCenterAnalytics.sendClickOnConsentSectionEvent(data.groupTitle)
-
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL_NEW, data.id)
+        intent.putExtra(ConsentWithdrawalFragment.KEY_HEADER_TITLE, data.groupTitle)
         context?.startActivity(intent)
     }
 

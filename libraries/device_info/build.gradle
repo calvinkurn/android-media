@@ -33,6 +33,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.firebase.core
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 }
 
 project.ext {

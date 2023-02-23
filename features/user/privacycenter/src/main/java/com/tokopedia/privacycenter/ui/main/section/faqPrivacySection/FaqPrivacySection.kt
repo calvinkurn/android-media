@@ -17,7 +17,7 @@ class FaqPrivacySection(private val context: Context?) : BasePrivacyCenterSectio
         RouteManager.route(
             context,
             ApplinkConstInternalGlobal.WEBVIEW,
-            TokopediaUrl.getInstance().MOBILEWEB.plus(PATH_FAQ_PRIVACY)
+            TokopediaUrl.getInstance().WEB.plus(PATH_FAQ_PRIVACY)
         )
     }
 

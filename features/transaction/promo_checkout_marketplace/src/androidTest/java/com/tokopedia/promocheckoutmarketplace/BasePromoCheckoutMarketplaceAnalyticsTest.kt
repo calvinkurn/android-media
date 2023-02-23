@@ -5,8 +5,8 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.promocheckoutmarketplace.interceptor.PromoCheckoutMarketplaceInterceptor
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActivity
@@ -68,7 +68,6 @@ abstract class BasePromoCheckoutMarketplaceAnalyticsTest {
 
     fun performPromoAnalyticsActions() {
         promoCheckoutPage {
-
             // to ensure empty promo list UI is shown
             pullSwipeRefresh()
 
@@ -112,34 +111,44 @@ abstract class BasePromoCheckoutMarketplaceAnalyticsTest {
     private fun generatePromoIntent(): Intent {
         return Intent().apply {
             putExtra(ARGS_PAGE_SOURCE, getPageSource())
-            putExtra(ARGS_PROMO_REQUEST, PromoRequest().apply {
-                orders = listOf(Order().apply {
-                    shopId = 1
-                    uniqueId = "1"
-                    product_details = listOf(ProductDetail(1, 1))
-                    isChecked = true
-                    shippingId = 1
-                    spId = 1
-                    isInsurancePrice = 1
-                })
-                state = getStateParam()
-                cartType = getCartTypeParam()
-                codes = ArrayList()
-            })
-            putExtra(ARGS_VALIDATE_USE_REQUEST, ValidateUsePromoRequest().apply {
-                orders = listOf(OrdersItem().apply {
-                    shopId = 1
-                    uniqueId = "1"
-                    productDetails = listOf(ProductDetailsItem(1, 1))
-                    shippingId = 1
-                    spId = 1
-                })
-                state = getStateParam()
-                cartType = getCartTypeParam()
-                codes = mutableListOf()
-                skipApply = 0
-                isSuggested = 0
-            })
+            putExtra(
+                ARGS_PROMO_REQUEST,
+                PromoRequest().apply {
+                    orders = listOf(
+                        Order().apply {
+                            shopId = 1
+                            uniqueId = "1"
+                            product_details = listOf(ProductDetail(1, 1))
+                            isChecked = true
+                            shippingId = 1
+                            spId = 1
+                            isInsurancePrice = 1
+                        }
+                    )
+                    state = getStateParam()
+                    cartType = getCartTypeParam()
+                    codes = ArrayList()
+                }
+            )
+            putExtra(
+                ARGS_VALIDATE_USE_REQUEST,
+                ValidateUsePromoRequest().apply {
+                    orders = listOf(
+                        OrdersItem().apply {
+                            shopId = 1
+                            uniqueId = "1"
+                            productDetails = listOf(ProductDetailsItem(1, 1))
+                            shippingId = 1
+                            spId = 1
+                        }
+                    )
+                    state = getStateParam()
+                    cartType = getCartTypeParam()
+                    codes = mutableListOf()
+                    skipApply = 0
+                    isSuggested = 0
+                }
+            )
             putStringArrayListExtra(ARGS_BBO_PROMO_CODES, ArrayList())
         }
     }

@@ -41,4 +41,8 @@ data class CardWidgetUiModel(
     override fun needToRefreshData(other: BaseWidgetUiModel<CardDataUiModel>): Boolean {
         return dataKey != other.dataKey
     }
+
+    fun getWidgetAppLink(): String {
+        return data?.appLink?.takeIf { it.isNotBlank() } ?: appLink
+    }
 }

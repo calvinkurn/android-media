@@ -88,7 +88,8 @@ fun createProductUiModel(
     notifyMeOOSCount: String = "0",
     notifyMeOOSWording: String = "",
     isEmptyStock: Boolean = false,
-    isLabelGuarantee: Boolean = false
+    isLabelGuarantee: Boolean = false,
+    isTobacco: Boolean = false
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -120,6 +121,7 @@ fun createProductUiModel(
         notifyMeOOSCount,
         notifyMeOOSWording,
         isEmptyStock,
-        isLabelGuarantee
+        isLabelGuarantee,
+        isTobacco
     )
 }

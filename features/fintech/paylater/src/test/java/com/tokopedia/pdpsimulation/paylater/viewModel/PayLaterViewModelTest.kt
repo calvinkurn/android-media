@@ -1,7 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
@@ -12,6 +11,7 @@ import com.tokopedia.pdpsimulation.common.domain.model.Pictures
 import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import com.tokopedia.pdpsimulation.paylater.domain.model.Label
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
@@ -20,12 +20,10 @@ import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3U
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKSettings.relaxed
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.invoke
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -144,31 +142,85 @@ class PayLaterViewModelTest {
     @Test
     fun successPayLaterOptions()
     {
-        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val finalPrice = 10.0
+        val labelText = "PROMO"
+        val labelTextColor = "white"
+        val labelBgColor = "red"
+        val label = Label(
+            labelText,
+            labelTextColor,
+            labelBgColor,
+        )
+        val payLaterGetSimulation = PayLaterGetSimulation(
+            listOf(
+                PayLaterAllData(
+                    1,
+                    "",
+                    "",
+                    listOf(),
+                    label,
+                    "",
+                )
+            )
+        )
         val list = arrayListOf(SimulationUiModel(
-                1,
-                "",
-                "",
-                false,
-                arrayListOf(SupervisorUiModel)))
+            1,
+            "",
+            "",
+            false,
+            arrayListOf(SupervisorUiModel),
+            SimulationUiModel.LabelUiModel.create(label),
+            "",
+        ))
         mockMapperResponse(list)
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                finalPrice,
+                "0",
+                ""
+            )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        viewModel.getPayLaterAvailableDetail(finalPrice, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
+        assertSimulationData(payLaterGetSimulation, list)
+        assert(viewModel.finalProductPrice == finalPrice)
+    }
+
+    private fun assertSimulationData(
+        simulationData: PayLaterGetSimulation,
+        simulationUiModel: List<SimulationUiModel>,
+    ) {
+        simulationData.productList?.forEachIndexed { index, data ->
+            assert(data.tenure?.equals(simulationUiModel[index].tenure) ?: false)
+            assert(data.text?.equals(simulationUiModel[index].text) ?: false)
+            assert(data.smallText?.equals(simulationUiModel[index].smallText) ?: false)
+            assert(data.promoName?.equals(simulationUiModel[index].promoName) ?: false)
+            assertTenureLabel(data.label, simulationUiModel[index].label)
+        }
+    }
+
+    private fun assertTenureLabel(labelData: Label?, labelUiModel: SimulationUiModel.LabelUiModel?) {
+        assert(labelData?.text?.equals(labelUiModel?.text) ?: false)
+        assert(labelData?.textColor?.equals(labelUiModel?.textColor) ?: false)
+        assert(labelData?.bgColor?.equals(labelUiModel?.bgColor) ?: false)
     }
 
 
     @Test
     fun successPayLaterOptionsDataEmpty()
     {
-        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val payLaterGetSimulation = PayLaterGetSimulation(
+            listOf(
+                PayLaterAllData(1,"", "", listOf(), Label(), "")
+            )
+        )
         val list = arrayListOf(SimulationUiModel(
             1,
             "",
@@ -179,12 +231,18 @@ class PayLaterViewModelTest {
         coVerify(exactly = 0) {
             payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                10.0,
+                "0",
+                "",
+            )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
@@ -193,7 +251,11 @@ class PayLaterViewModelTest {
     @Test
     fun `successPayLaterOptions With Default Selected`()
     {
-        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val payLaterGetSimulation = PayLaterGetSimulation(
+            listOf(
+                PayLaterAllData(1,"", "", listOf(), Label(), "")
+            )
+        )
         val list = arrayListOf(SimulationUiModel(
             1,
             "",
@@ -203,12 +265,18 @@ class PayLaterViewModelTest {
         mockMapperResponse(list)
 
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                10.0,
+                "0",
+                "",
+            )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
@@ -226,11 +294,17 @@ class PayLaterViewModelTest {
     fun failPayLaterOptions()
     {
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 0.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                0.0,
+                "0",
+                "",
+            )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getPayLaterAvailableDetail(0.0, "0")
+        viewModel.getPayLaterAvailableDetail(0.0, "0", "")
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }
@@ -252,6 +326,7 @@ class PayLaterViewModelTest {
             (viewModel.addToCartLiveData.value as Success).data,
             addToCartMultiDataModel
         )
+        assert(viewModel.cardDetailSelected == detail)
     }
 
     @Test

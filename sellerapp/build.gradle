@@ -45,8 +45,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 200000123;
-        defaultVersionName = "2.00.123";
+        defaultVersionCode = 220412500;
+        defaultVersionName = "2.125-test";
     }
 
     packagingOptions {
@@ -107,6 +107,7 @@ android {
 //            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            multiDexKeepProguard file('multidex-config.pro')
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }

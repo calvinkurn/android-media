@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -8,13 +7,13 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class GetLayoutResponse(
-    @Expose
     @SerializedName("GetSellerDashboardPageLayout")
-    val layout: GetSellerDashboardLayout? = GetSellerDashboardLayout()
+    val layout: GetSellerDashboardLayout = GetSellerDashboardLayout()
 )
 
 data class GetSellerDashboardLayout(
-    @Expose
     @SerializedName("widget")
-    val widget: List<WidgetModel>? = emptyList()
+    val widget: List<WidgetModel>? = emptyList(),
+    @SerializedName("shopState")
+    val shopState: Long = 0
 )

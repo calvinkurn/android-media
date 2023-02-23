@@ -721,8 +721,6 @@ class AddEditProductDetailFragment :
         // tracking
         if (viewModel.isEditing) {
             ProductEditMainTracking.trackRemovePhoto(shopId)
-        } else {
-            ProductAddMainTracking.trackRemovePhoto(shopId)
         }
     }
 
@@ -815,8 +813,6 @@ class AddEditProductDetailFragment :
 
                     if (viewModel.isEditing) {
                         ProductEditMainTracking.trackBack(shopId)
-                    } else {
-                        ProductAddMainTracking.trackBack(shopId)
                     }
                 }
             }
@@ -1473,8 +1469,8 @@ class AddEditProductDetailFragment :
         val isAdding = viewModel.isAdding || !isEditing
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
-        if(Rollence.getImagePickerRollence()) {
-            val pageSource = if(!isEditing) PageSource.AddProduct else PageSource.EditProduct
+        if (Rollence.getImagePickerRollence()) {
+            val pageSource = if (!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
                 ctx,
@@ -1487,8 +1483,6 @@ class AddEditProductDetailFragment :
             // tracking
             if (isEditing) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackAddPhoto(shopId)
             }
 
             val intent = ImagePickerAddEditNavigation.getIntent(
@@ -1501,7 +1495,7 @@ class AddEditProductDetailFragment :
         }
     }
 
-    private fun doTracking(isEdit : Boolean){
+    private fun doTracking(isEdit: Boolean) {
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
         MediaImprovementTracker.sendProductActionTracker(isEdit, userId, shopId)
@@ -1589,8 +1583,6 @@ class AddEditProductDetailFragment :
                 if (!isPreOrderFirstTime) {
                     if (viewModel.isEditing) {
                         ProductEditMainTracking.clickPreorderButton(shopId)
-                    } else {
-                        ProductAddMainTracking.clickPreorderButton(shopId)
                     }
                 }
 
@@ -1712,8 +1704,6 @@ class AddEditProductDetailFragment :
             if (isChecked) {
                 if (viewModel.isEditing) {
                     ProductEditMainTracking.clickWholesale(shopId)
-                } else {
-                    ProductAddMainTracking.clickWholesale(shopId)
                 }
 
                 if (viewModel.hasVariants) {
@@ -2461,10 +2451,12 @@ class AddEditProductDetailFragment :
         )
     }
 
-    private fun updateImageListFromIntentData(data: Intent){
+    private fun updateImageListFromIntentData(data: Intent) {
         val result = MediaPicker.result(data)
-        val newUpdatedPhotos = viewModel.updateProductPhotos(result.editedImages.toMutableList(),
-            result.originalPaths.toMutableList())
+        val newUpdatedPhotos = viewModel.updateProductPhotos(
+            result.editedImages.toMutableList(),
+            result.originalPaths.toMutableList()
+        )
         productPictureList = newUpdatedPhotos.pictureList
         productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
         productPhotoAdapter?.let {

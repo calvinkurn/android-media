@@ -5,5 +5,6 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class ContentDetailUiModel(
     val postList: List<FeedXCard>,
-    val cursor: String
-): ImpressHolder()
+    val cursor: String,
+    var isPostRefresh: Boolean = false
+) : ImpressHolder()

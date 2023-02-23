@@ -65,9 +65,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:actionText="Lanjut Register"
             app:defaultTemplate="TNC_PRIVACY_OPTIONAL"
             app:layout_constraintTop_toBottomOf="@id/divider1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:text="@string/submit_consent"
+            android:layout_margin="16dp"
+            app:layout_constraintTop_toBottomOf="@id/sampleUserConsent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -76,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl1"
             android:layout_marginTop="@dimen/layout_lvl2"
-            app:layout_constraintTop_toBottomOf="@id/sampleUserConsent"
+            app:layout_constraintTop_toBottomOf="@id/buttonAction"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 

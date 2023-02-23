@@ -1,8 +1,8 @@
 package com.tokopedia.home_account.explicitprofile
 
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 
 
 infix fun ExplicitProfileResult.validateTracker(action: ExplicitProfileRobotCassava.() -> Unit): ExplicitProfileRobotCassava {

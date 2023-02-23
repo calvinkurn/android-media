@@ -94,6 +94,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
@@ -163,6 +164,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           logoURL
           webLink
           appLink
+          encryptedUserID
         }
         title
         subTitle
@@ -211,6 +213,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
@@ -323,6 +326,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           logoURL
           webLink
           appLink
+          encryptedUserID
         }
         cta {
           text
@@ -386,6 +390,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         like {
           label
@@ -476,9 +481,9 @@ class GetDynamicFeedNewUseCase @Inject constructor(
 
     fun setParams(cursor: String, limit: Int, detailId: String = "", screenName: String = "") {
         val queryMap = mutableMapOf(
-                CURSOR to cursor,
-                LIMIT to limit,
-                SCREEN_NAME to screenName,
+            CURSOR to cursor,
+            LIMIT to limit,
+            SCREEN_NAME to screenName
         )
         if (!TextUtils.isEmpty(detailId)) {
             queryMap[DETAIL_ID] = detailId
@@ -489,7 +494,7 @@ class GetDynamicFeedNewUseCase @Inject constructor(
     }
 
     suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "", screenName: String = ""):
-            DynamicFeedDomainModel {
+        DynamicFeedDomainModel {
         this.setParams(cursor, limit, detailId, screenName)
         val dynamicFeedResponse = executeOnBackground()
         val shouldShowNewTopadsOnly =
@@ -506,5 +511,4 @@ class GetDynamicFeedNewUseCase @Inject constructor(
         this.setParams(cursor, limit, detailId)
         return executeOnBackground()
     }
-
 }

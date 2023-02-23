@@ -6,6 +6,7 @@ import ai.advance.enums.DeviceType
 import ai.advance.liveness.lib.Detector
 import android.Manifest
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -133,10 +134,19 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
     }
 
     override fun getRequiredPermissions(): Array<String> {
-        return arrayOf(
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+            )
+        }else{
+            arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE
-        )
+            )
+        }
+
     }
 
     override fun onPermissionGranted() { }

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import org.hamcrest.Matchers.`is`
+import org.hamcrest.CoreMatchers.`is`
 
 object CommonAssertion {
     class RecyclerViewItemCountAssertion(private val expectedCount: Int) :

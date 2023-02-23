@@ -10,8 +10,14 @@ data class ProductListUiModel(
     val productList: List<ProductUiModel>,
     val productBundlingList: List<ProductBundlingUiModel>,
     val productListHeaderUiModel: ProductListHeaderUiModel,
-    val addonsListUiModel: AddonsListUiModel?
+    val addonsListUiModel: AddonsListUiModel?,
+    val productListToggleUiModel: ProductListToggleUiModel?
 ) {
+
+    fun getAllProduct(): List<ProductUiModel> {
+        return productList.plus(productBundlingList.map { it.bundleItemList }.flatten())
+    }
+
     data class ProductListHeaderUiModel(
         val shopBadgeUrl: String,
         val shopId: String,
@@ -84,4 +90,20 @@ data class ProductListUiModel(
         }
     }
 
+    data class ProductListToggleUiModel(
+        val collapsed: Boolean,
+        val text: StringRes
+    ) : BaseVisitableUiModel {
+        override fun shouldShow(context: Context?): Boolean {
+            return true
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
+        }
+
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
+            return typeFactory?.type(this).orZero()
+        }
+    }
 }

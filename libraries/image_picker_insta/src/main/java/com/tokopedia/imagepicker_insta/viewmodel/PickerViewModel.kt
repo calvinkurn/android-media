@@ -228,6 +228,7 @@ class PickerViewModel(
                     type = it.type,
                     hasUsername = response.feedContentForm.hasUsername,
                     hasAcceptTnc = response.feedContentForm.hasAcceptTnc,
+                    enable = response.feedContentForm.hasAcceptTnc,
                 )
             }
 

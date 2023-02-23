@@ -49,6 +49,7 @@ import com.tokopedia.cart.view.viewholder.CartWishlistViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledItemHeaderViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledReasonViewHolder
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -87,6 +88,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     private var tmpCollapsedUnavailableShop: MutableList<CartShopHolderData>? = null
 
     var firstCartSectionHeaderPosition: Int = -1
+
+    var plusCoachMark: CoachMark2? = null
 
     val allShopGroupDataList: List<CartShopHolderData>
         get() {
@@ -354,7 +357,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
             CartShopViewHolder.LAYOUT -> {
                 val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartShopViewHolder(binding, actionListener, cartItemActionListener, compositeSubscription)
+                return CartShopViewHolder(binding, actionListener, cartItemActionListener, compositeSubscription, plusCoachMark)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val binding = HolderItemCartTickerErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -1419,4 +1422,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return false
     }
 
+    fun setCoachMark(coachMark: CoachMark2) {
+        plusCoachMark = coachMark
+    }
 }

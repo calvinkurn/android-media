@@ -77,7 +77,7 @@ interface EditShippingViewListener {
 
     fun refreshLocationViewListener(address: DistrictRecommendationAddress?)
 
-    fun showCoachmarkGocarInstan(view: View)
+    fun showOnBoarding(whitelabelIndex: Int, normalServiceIndex: Int)
 
     companion object {
         const val ADDITIONAL_OPTION_REQUEST_CODE = 2

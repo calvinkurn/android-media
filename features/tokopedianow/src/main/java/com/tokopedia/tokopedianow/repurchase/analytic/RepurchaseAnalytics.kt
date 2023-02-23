@@ -7,13 +7,17 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_SEE_ALL_CATEGORY
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_REPURCHASE_PAGE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
@@ -37,9 +41,13 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_HEADER_CATEGORY_MENU
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getDataLayer
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getEcommerceDataLayerCategoryMenu
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getEcommerceDataLayerCategoryMenuPromotion
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.hitCommonTracker
+import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_ADD_TO_CART
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_DATE_FILTER
@@ -54,6 +62,9 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_SUBMIT_SEARCH
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_IMPRESSION_NO_RESULT_REPURCHASE
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.CATEGORY.EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORY
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants
 import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_REPURCHASE
@@ -67,9 +78,11 @@ import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant
+import com.tokopedia.user.session.UserSessionInterface
 import java.io.Serializable
+import javax.inject.Inject
 
-class RepurchaseAnalytics: Serializable {
+class RepurchaseAnalytics @Inject constructor(@Transient private val userSession: UserSessionInterface): Serializable {
 
     object CATEGORY{
         const val EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW = "repurchase page tokonow"
@@ -95,6 +108,12 @@ class RepurchaseAnalytics: Serializable {
         const val REPURCHASE_TOKONOW = "repurchase page tokonow"
         const val SHOP_NAME = "Tokopedia NOW!"
         const val SHOP_TYPE = "tokonow"
+    }
+
+    object TRACKER_ID {
+        const val TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET = "40828"
+        const val TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET = "40829"
+        const val TRACKER_ID_CLICK_SEE_ALL_CATEGORY = "40830"
     }
 
     fun onClickChangeAddress(userId: String) {
@@ -503,6 +522,91 @@ class RepurchaseAnalytics: Serializable {
         )
     }
 
+    /**
+     * NOW! SeeAllCategory Page Tracker
+     * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3695
+     */
+
+    fun trackImpressCategoryMenu(
+        categoryId: String,
+        categoryName: String,
+        warehouseId: String,
+        position: Int
+    ) {
+        val newPosition = position.getTrackerPosition()
+        val dataLayer = getEcommerceDataLayerCategoryMenu(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET,
+            category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW,
+            label = "",
+            trackerId = TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET,
+            promotions = arrayListOf(
+                getEcommerceDataLayerCategoryMenuPromotion(
+                    categoryId = categoryId,
+                    categoryName = categoryName,
+                    warehouseId = warehouseId,
+                    position = newPosition,
+                    itemName = getCategoryMenuItemName(
+                        position = newPosition,
+                        headerName = DEFAULT_HEADER_CATEGORY_MENU
+                    )
+                )
+            ),
+            warehouseId = warehouseId,
+            userId = userSession.userId
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+    }
+
+    fun trackClickCategoryMenu(
+        categoryId: String,
+        categoryName: String,
+        warehouseId: String,
+        position: Int
+    ) {
+        val newPosition = position.getTrackerPosition()
+        val dataLayer = getEcommerceDataLayerCategoryMenu(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET,
+            category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW,
+            label = "",
+            trackerId = TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET,
+            promotions = arrayListOf(
+                getEcommerceDataLayerCategoryMenuPromotion(
+                    categoryId = categoryId,
+                    categoryName = categoryName,
+                    warehouseId = warehouseId,
+                    position = newPosition,
+                    itemName = getCategoryMenuItemName(
+                        position = newPosition,
+                        headerName = DEFAULT_HEADER_CATEGORY_MENU
+                    )
+                )
+            ),
+            warehouseId = warehouseId,
+            userId = userSession.userId
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun trackClickSeeAllCategory() {
+        val dataLayer = getDataLayer(
+            event = EVENT_CLICK_GROCERIES,
+            action = EVENT_ACTION_CLICK_SEE_ALL_CATEGORY,
+            category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW,
+            label = ""
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_TRACKER_ID] = TRACKER_ID_CLICK_SEE_ALL_CATEGORY
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    private fun getCategoryMenuItemName(position: Int, headerName: String): String {
+        return "/ - p$position - repurchase page - category widget - $headerName"
+    }
 
     private fun createGeneralDataLayer(event: String, action: String, label: String = TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE, userId: String): Bundle {
         return Bundle().apply {

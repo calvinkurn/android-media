@@ -52,7 +52,7 @@ object PromoRequestMapper {
                             )
                             shippingId = boShipmentData.shippingId
                             spId = boShipmentData.spId
-                            boCampaignId = boShipmentData.boCampaignId
+                            boCampaignId = boShipmentData.boCampaignId.toLongOrZero()
                             shippingSubsidy = boShipmentData.shippingSubsidy
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
@@ -68,7 +68,7 @@ object PromoRequestMapper {
                             )
                             shippingId = boShipmentData.shippingId
                             spId = boShipmentData.spId
-                            boCampaignId = boShipmentData.boCampaignId
+                            boCampaignId = boShipmentData.boCampaignId.toLongOrZero()
                             shippingSubsidy = boShipmentData.shippingSubsidy
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
@@ -173,7 +173,7 @@ object PromoRequestMapper {
                     return PromoRequestBoShipmentData(
                         voucherOrder.shippingId,
                         voucherOrder.spId,
-                        validateOrderRequest.boCampaignId,
+                        validateOrderRequest.boCampaignId.toString(),
                             validateOrderRequest.shippingSubsidy,
                         validateOrderRequest.benefitClass,
                         validateOrderRequest.shippingPrice,
@@ -181,6 +181,18 @@ object PromoRequestMapper {
                     )
                 }
             }
+        }
+        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartShopHolderData.cartString }
+        if (validateOrderRequest != null && validateOrderRequest.spId > 0) {
+            return PromoRequestBoShipmentData(
+                validateOrderRequest.shippingId,
+                validateOrderRequest.spId,
+                validateOrderRequest.boCampaignId.toString(),
+                validateOrderRequest.shippingSubsidy,
+                validateOrderRequest.benefitClass,
+                validateOrderRequest.shippingPrice,
+                validateOrderRequest.etaText
+            )
         }
         return PromoRequestBoShipmentData()
     }
@@ -314,7 +326,7 @@ object PromoRequestMapper {
 private class PromoRequestBoShipmentData(
         val shippingId: Int = 0,
         val spId: Int = 0,
-        val boCampaignId: Long = 0,
+        val boCampaignId: String = "",
         val shippingSubsidy: Long = 0,
         val benefitClass: String = "",
         val shippingPrice: Double = 0.0,

@@ -1,5 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.tokoKyc.form
 
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -115,15 +117,23 @@ class UserIdentificationFormKtpFragment :
     }
 
     private fun checkPermission(isGranted: () -> Unit) {
-        activity?.let {
-            permissionCheckerHelper.request(it, arrayOf(
+        val listPermission = if (SDK_INT <= VERSION_CODES.P) {
+            arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
                 PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
-            ), granted = {
-                isGranted.invoke()
-            }, denied = {
-                it.finish()
-            })
+            )
+        } else {
+            arrayOf(PermissionCheckerHelper.Companion.PERMISSION_CAMERA)
+        }
+
+        activity?.let {
+            permissionCheckerHelper.request(it, listPermission,
+                granted = {
+                    isGranted.invoke()
+                }, denied = {
+                    it.finish()
+                }
+            )
         }
     }
 

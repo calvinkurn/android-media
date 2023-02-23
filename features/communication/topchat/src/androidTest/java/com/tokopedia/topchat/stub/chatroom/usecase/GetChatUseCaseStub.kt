@@ -149,6 +149,12 @@ class GetChatUseCaseStub @Inject constructor(
             alterDateToToday(response)
         }
 
+    val broadCastChatWithFlexibleCtaSeller: GetExistingChatPojo
+        get() = alterResponseOf(broadcastWithFlexibleCta) { response ->
+            swapInterlocutor(response)
+            alterDateToToday(response)
+        }
+
     /**
      * <!--- End Chat Response with BroadCast --->
      */

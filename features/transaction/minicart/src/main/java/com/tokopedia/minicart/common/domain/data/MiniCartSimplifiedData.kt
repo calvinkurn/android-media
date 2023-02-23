@@ -33,7 +33,7 @@ fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, M
 
 data class MiniCartWidgetData(
     var totalProductCount: Int = 0,
-    var totalProductPrice: Long = 0,
+    var totalProductPrice: Double = 0.0,
     var totalProductError: Int = 0,
     var containsOnlyUnavailableItems: Boolean = false,
     var unavailableItemsCount: Int = 0,
@@ -61,9 +61,9 @@ sealed class MiniCartItem {
             var bundleId: String = "",
             var bundleGroupId: String = "",
             var bundleTitle: String = "",
-            var bundlePrice: Long = 0L,
+            var bundlePrice: Double = 0.0,
             var bundleSlashPriceLabel: String = "",
-            var bundleOriginalPrice: Long = 0L,
+            var bundleOriginalPrice: Double = 0.0,
             var bundleQuantity: Int = 0,
             var bundleLabelQuantity: Int = 0,
             var bundleMultiplier: Int = 0,
@@ -93,7 +93,7 @@ sealed class MiniCartItem {
             internal var category: String = "",
             internal var productName: String = "",
             internal var productVariantName: String = "",
-            internal var productPrice: Long = 0L
+            internal var productPrice: Double = 0.0
     ): MiniCartItem()
 
     data class MiniCartItemParentProduct(

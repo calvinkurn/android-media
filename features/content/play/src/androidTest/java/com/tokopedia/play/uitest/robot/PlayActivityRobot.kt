@@ -22,6 +22,7 @@ import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
+import com.tokopedia.globalerror.R as globalErrorRes
 
 /**
  * Created by kenny.hadisaputra on 15/07/22
@@ -216,6 +217,14 @@ class PlayActivityRobot(
 
     fun isErrorViewAvailable() {
         Espresso.onView(withId(R.id.container_global_error)).check(matches(isDisplayed()))
+    }
+
+    fun clickGlobalErrorCta() {
+        Espresso.onView(withId(globalErrorRes.id.globalerrors_action)).perform(ViewActions.click())
+    }
+
+    fun clickExitError() {
+        Espresso.onView(withId(R.id.img_back)).perform(ViewActions.click())
     }
 
     fun swipeChannel() {

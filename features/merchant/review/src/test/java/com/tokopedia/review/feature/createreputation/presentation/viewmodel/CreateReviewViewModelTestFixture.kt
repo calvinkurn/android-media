@@ -235,11 +235,16 @@ abstract class CreateReviewViewModelTestFixture {
         uploadID: String = SAMPLE_UPLOAD_ID,
         videoUrl: String = SAMPLE_VIDEO_URL
     ) {
-        coEvery { uploaderUseCase(any()) } returns UploadResult.Success(uploadID, videoUrl)
+        coEvery {
+            uploaderUseCase(any())
+        } returns UploadResult.Success(
+            uploadId = uploadID,
+            videoUrl = videoUrl
+        )
     }
 
     protected fun mockErrorUploadMedia(withException: Boolean = true, delayTime: Long = 0L) {
-        coEvery { uploaderUseCase(any()) } coAnswers  {
+        coEvery { uploaderUseCase(any()) } coAnswers {
             delay(delayTime)
             if (withException) throw Exception() else UploadResult.Error("")
         }

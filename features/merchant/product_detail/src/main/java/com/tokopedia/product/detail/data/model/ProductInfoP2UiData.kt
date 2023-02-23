@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
@@ -61,10 +62,10 @@ data class ProductInfoP2UiData(
     var ticker: ProductTicker = ProductTicker(),
     var navBar: NavBar = NavBar(),
     var shopFinishRate: String = "",
-    var isToolbarTransparent: Boolean = false,
     var shopAdditional: ProductShopAdditional = ProductShopAdditional(),
     var arInfo: ProductArInfo = ProductArInfo(),
-    var obatKeras: ObatKeras = ObatKeras()
+    var obatKeras: ObatKeras = ObatKeras(),
+    var customInfoTitle: List<CustomInfoTitle> = emptyList()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
@@ -83,5 +84,9 @@ data class ProductInfoP2UiData(
 
     fun getRatesEstimateBoMetadata(productId: String): String {
         return ratesEstimate.firstOrNull { productId in it.listfProductId }?.boMetadata ?: ""
+    }
+
+    fun getRatesProductMetadata(productId: String): String{
+        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.productMetadata?.firstOrNull { it.productId == productId }?.value ?: ""
     }
 }

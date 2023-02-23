@@ -27,9 +27,6 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -38,9 +35,11 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
@@ -55,7 +54,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getItem
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryMenuData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
@@ -196,7 +195,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
 
-    private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
+    private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
@@ -300,6 +299,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
                 channelToken = homeLayoutResponse.first().token
 
+                homeLayoutItemList.removeProgressBar()
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
                     removeAbleWidgets,
@@ -308,8 +308,6 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
 
                 getLayoutComponentData(localCacheModel)
-
-                homeLayoutItemList.removeProgressBar()
 
                 val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
@@ -357,17 +355,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun getCategoryGrid(item: TokoNowCategoryGridUiModel, warehouseId: String) {
+    fun getCategoryMenu(warehouseId: String) {
         launchCatchError(block = {
             val response = getCategoryList(warehouseId)
-            homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
+            homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.UPDATE
             )
             _homeLayoutList.postValue(Success(data))
         }) {
-            homeLayoutItemList.mapHomeCategoryGridData(item, null)
+            homeLayoutItemList.mapHomeCategoryMenuData(null)
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.UPDATE
@@ -453,7 +451,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getRepurchaseProducts(): List<TokoNowProductCardUiModel> {
-        val item = homeLayoutItemList.firstOrNull { it.layout is TokoNowRepurchaseUiModel }
+        val item = homeLayoutItemList.firstOrNull { it?.layout is TokoNowRepurchaseUiModel }
         val repurchase = item?.layout as? TokoNowRepurchaseUiModel
         return repurchase?.productList.orEmpty()
     }
@@ -504,8 +502,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }, onError = {
-            removeWidget(item.id)
-        })
+                removeWidget(item.id)
+            })
     }
 
     fun updatePlayWidget(channelId: String, totalView: String) {
@@ -589,7 +587,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getLayoutComponentData(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             val layoutItems = mutableListOf<HomeLayoutItemUiModel>()
-            layoutItems.addAll(homeLayoutItemList)
+            layoutItems.addAll(homeLayoutItemList.filterNotNull())
 
             layoutItems.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
@@ -619,8 +617,8 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = referralEvaluateJoinUseCase.execute(referralData)
             _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
         }, onError = {
-            _referralEvaluate.postValue(Fail(it))
-        })
+                _referralEvaluate.postValue(Fail(it))
+            })
     }
 
     /**
@@ -651,7 +649,7 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getTokoNowGlobalComponent(item: Visitable<*>?, warehouseId: String) {
         when (item) {
-            is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
+            is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
             else -> removeUnsupportedLayout(item)
         }
@@ -673,15 +671,14 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getCategoryGridDataAsync(
-        item: TokoNowCategoryGridUiModel,
+    private suspend fun getCategoryMenuDataAsync(
         warehouseId: String
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = getCategoryList(warehouseId)
-            homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
+            homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
         }) {
-            homeLayoutItemList.mapHomeCategoryGridData(item, emptyList())
+            homeLayoutItemList.mapHomeCategoryMenuData(emptyList())
         }
     }
 
@@ -752,7 +749,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
+    private suspend fun getCategoryList(warehouseId: String): List<GetCategoryListResponse.CategoryListResponse.CategoryResponse> {
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
     }
 
@@ -812,6 +809,7 @@ class TokoNowHomeViewModel @Inject constructor(
             updateToolbarNotification()
             _miniCartAdd.postValue(Success(it))
         }, {
+            updateAddToCartQuantity(productId, quantity, type)
             _miniCartAdd.postValue(Fail(it))
         })
     }
@@ -849,7 +847,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }) {
-
         }
     }
 
@@ -905,7 +902,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }) {
-
         }
     }
 
@@ -978,6 +974,7 @@ class TokoNowHomeViewModel @Inject constructor(
             updateToolbarNotification()
             _miniCartUpdate.value = Success(it)
         }, {
+            updateAddToCartQuantity(productId, quantity, type)
             _miniCartUpdate.postValue(Fail(it))
         })
     }
@@ -986,14 +983,15 @@ class TokoNowHomeViewModel @Inject constructor(
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
+        val productId = miniCartItem.productId
         deleteCartUseCase.execute({
-            val productId = miniCartItem.productId
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
             trackProductRemoveCart(productId, type, miniCartItem.cartId)
             updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
             updateToolbarNotification()
             _miniCartRemove.postValue(Success(data))
         }, {
+            updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
             _miniCartRemove.postValue(Fail(it))
         })
     }
@@ -1048,7 +1046,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
-        val homeItem = homeLayoutItemList.firstOrNull { it.layout is TokoNowRepurchaseUiModel }
+        val homeItem = homeLayoutItemList.filterNotNull()
+            .firstOrNull { it.layout is TokoNowRepurchaseUiModel }
         val repurchase = homeItem?.layout as? TokoNowRepurchaseUiModel
         val productList = repurchase?.productList.orEmpty()
         val product = productList.firstOrNull { it.productId == productId }
@@ -1086,7 +1085,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
-        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
+        homeLayoutItemList.filterNotNull().firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
             val repurchase = layout as HomeLeftCarouselAtcUiModel
             val productList = repurchase.productList
             val product = productList.firstOrNull { it is HomeLeftCarouselAtcProductCardUiModel && it.productCardModel.productId == productId }
@@ -1127,17 +1126,23 @@ class TokoNowHomeViewModel @Inject constructor(
         return if (-headerYCoordinate > DEFAULT_HEADER_Y_COORDINATE) {
             headerYCoordinate = DEFAULT_HEADER_Y_COORDINATE
             headerYCoordinate
-        }  else  {
+        } else {
             -headerYCoordinate
         }
     }
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val layoutList = getHomeVisitableList()
-        val isLoading = layoutList.firstOrNull { it == HomeProgressBarUiModel } != null
-        val scrolledToBottom = lastVisibleItemIndex == layoutList.count() - DEFAULT_INDEX
-        return scrolledToBottom && !isLoading && !allItemsLoaded
+        val scrolledToBottom = scrolledToBottom(lastVisibleItemIndex)
+        return if (allItemsLoaded || !scrolledToBottom) false else !isLoading()
+    }
+
+    private fun scrolledToBottom(lastVisibleItemIndex: Int): Boolean {
+        return lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
+    }
+
+    private fun isLoading(): Boolean {
+        return getHomeVisitableList().firstOrNull { it == HomeProgressBarUiModel } != null
     }
 
     private fun showProgressBar() {
@@ -1150,7 +1155,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun getHomeVisitableList(): List<Visitable<*>> {
-        return homeLayoutItemList.mapNotNull { it.layout }
+        val layoutItemsList = homeLayoutItemList.toMutableList()
+        return layoutItemsList.filterNotNull().mapNotNull { it.layout }
     }
 
     private fun getQuestUiModel(): HomeQuestSequenceWidgetUiModel? {

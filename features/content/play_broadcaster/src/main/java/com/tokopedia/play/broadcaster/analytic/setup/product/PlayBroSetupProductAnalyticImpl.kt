@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic.setup.product
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
@@ -23,7 +24,15 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
 
     private val shopId = userSession.shopId
 
-    override fun clickSearchBarOnProductSetup(search: String) {
+    override fun setSelectedAccount(account: ContentAccountUiModel) {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun clickSearchBarOnProductSetup() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun clickSearchWhenParamChanged(search: String) {
         sendEvent(
             "click - search bar",
             "$shopId - $search"
@@ -79,11 +88,11 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickEtalaseCard() {
+    override fun clickEtalaseCard(etalaseName: String) {
         sendEvent("click - etalase card")
     }
 
-    override fun clickCampaignCard() {
+    override fun clickCampaignCard(campaignName: String) {
         sendEvent("click - campaign card")
     }
 
@@ -101,6 +110,34 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
 
     override fun clickCancelCloseOnProductChooser() {
         sendEvent("click - cancel close on add product page")
+    }
+
+    override fun clickCloseOnProductSummary() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductSummary() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun clickCloseOnProductSortingBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductSortingBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun clickCloseOnProductFilterBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductFilterBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductChooser() {
+        /** Not applicable for broadcaster */
     }
 
     private fun sendEvent(

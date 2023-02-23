@@ -32,6 +32,8 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleDataView
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleViewHolder
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchViewHolder
@@ -229,6 +231,9 @@ class ProductListTypeFactoryImpl(
     override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
         InspirationListAtcViewHolder.LAYOUT
 
+    override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
+        AdsLowOrganicTitleViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -290,6 +295,8 @@ class ProductListTypeFactoryImpl(
             )
             InspirationListAtcViewHolder.LAYOUT ->
                 InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
+            AdsLowOrganicTitleViewHolder.LAYOUT ->
+                AdsLowOrganicTitleViewHolder(view)
 
             else -> super.createViewHolder(view, type)
         }

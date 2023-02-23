@@ -17,9 +17,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.common.KycUrl
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
@@ -53,6 +57,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             kycType = arguments?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
+        loadUserConsent()
         if (showWrapperLayout) {
             viewBinding?.loader?.hide()
             viewBinding?.uiiSimpleMainView?.hide()
@@ -71,13 +76,33 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun loadUserConsent() {
+        val consentParam = ConsentCollectionParam(
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentCollectionIdStaging
+            } else {
+                KYCConstant.consentCollectionIdProduction
+           }
+        )
+        viewBinding?.layoutBenefit?.userConsentKyc?.load(
+            viewLifecycleOwner, this, consentParam
+        )
+
+        viewBinding?.layoutBenefit?.kycBenefitBtn?.setOnClickListener {
+            viewBinding?.layoutBenefit?.userConsentKyc?.submitConsent()
+            startKyc()
+        }
+
+        viewBinding?.layoutBenefit?.userConsentKyc?.setOnCheckedChangeListener {isChecked ->
+            viewBinding?.layoutBenefit?.kycBenefitBtn?.isEnabled = isChecked
+        }
+    }
+
     private fun setupKycBenefitView(view: View) {
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
-        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
-            startKyc()
-        }, closeButtonAction = {
+        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, closeButtonAction = {
             activity?.onBackPressed()
-        }, onCheckedChanged = {}, onTncClicked = {})
+        })
     }
 
     private fun startKyc() {

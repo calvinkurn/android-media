@@ -17,11 +17,11 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoS
 class KycRobot {
 
     fun checkTermsAndCondition() {
-        onView(withId(R.id.kyc_benefit_checkbox)).perform(click())
+        onView(withId(R.id.checkboxPurposes)).perform(click())
     }
 
     fun atInfoClickNext() {
-        onView(withId(R.id.kyc_benefit_btn)).perform(click())
+        onView(withId(R.id.buttonAction)).perform(click())
     }
 
     fun atKtpIntroClickNext() {

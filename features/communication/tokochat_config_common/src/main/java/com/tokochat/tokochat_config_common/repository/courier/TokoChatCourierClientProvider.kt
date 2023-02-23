@@ -13,7 +13,7 @@ import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.util.CourierEventLogger
-import com.tokopedia.config.BuildConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSessionInterface
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class TokoChatCourierClientProvider @Inject constructor(
             usernameProvider = getUsernameProvider(),
             eventTracker = getEventTracker(),
             mqttInterceptors = getMqttInterceptors(),
-            debuggingEnabled = BuildConfig.DEBUG,
+            debuggingEnabled = GlobalConfig.isAllowDebuggingTools(),
             courierRemoteConfig = courierRemoteConfig,
             appType = AppType.Tokopedia
         )
@@ -61,7 +61,7 @@ class TokoChatCourierClientProvider @Inject constructor(
     }
 
     private fun getMqttInterceptors(): List<MqttInterceptor> {
-        return if (BuildConfig.DEBUG) {
+        return if (GlobalConfig.isAllowDebuggingTools()) {
             listOf(
                 MqttChuckInterceptor(context, MqttChuckConfig())
             )

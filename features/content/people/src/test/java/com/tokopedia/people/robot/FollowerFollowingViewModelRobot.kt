@@ -20,19 +20,17 @@ class FollowerFollowingViewModelRobot(
     )
 
     fun getFollowers(
-        username: String = "",
         cursor: String = "",
         limit: Int = 10,
     ) {
-        viewModel.getFollowers(username, cursor, limit)
+        viewModel.getFollowers(cursor, limit)
     }
 
     fun getFollowings(
-        username: String = "",
         cursor: String = "",
         limit: Int = 10,
     ) {
-        viewModel.getFollowings(username, cursor, limit)
+        viewModel.getFollowings(cursor, limit)
     }
 
     fun start(fn: suspend FollowerFollowingViewModelRobot.() -> Unit) {

@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.analytic.CategoryListAnalytics
 import com.tokopedia.tokopedianow.categorylist.di.component.DaggerCategoryListComponent
-import com.tokopedia.tokopedianow.categorylist.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokopedianow.categorylist.presentation.view.CategoryListView
@@ -34,6 +33,7 @@ import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCat
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_FULL
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_NOT_FOUND
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_SERVER
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage

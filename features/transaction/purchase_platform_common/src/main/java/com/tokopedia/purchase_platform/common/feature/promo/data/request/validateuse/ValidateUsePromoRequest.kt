@@ -30,4 +30,7 @@ data class ValidateUsePromoRequest(
 
         @field:SerializedName("state")
         var state: String = "" // cart & checkout
-) : Parcelable
+) : Parcelable {
+
+    fun copyJava() = copy()
+}

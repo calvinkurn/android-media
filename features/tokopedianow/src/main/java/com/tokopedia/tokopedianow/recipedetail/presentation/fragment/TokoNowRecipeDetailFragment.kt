@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +27,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
@@ -113,6 +116,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBottomMarginWhenSoftKeyboardAppeared(view)
         showLoading()
         setRecipeData()
         setupToolbarHeader()
@@ -199,6 +203,21 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     override fun getProductTracker() = productAnalytics
 
     override fun getTracker() = analytics
+
+    private fun setBottomMarginWhenSoftKeyboardAppeared(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { mView, windowInsets ->
+            val imeHeight = windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+
+            mView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                this?.bottomMargin = imeHeight
+            }
+
+            /**
+             * Return CONSUMED, so window insets not to keep being passed down to descendant views.
+             */
+            WindowInsetsCompat.CONSUMED
+        }
+    }
 
     private fun setRecipeData() {
         activity?.intent?.data?.let {
@@ -496,7 +515,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     private fun onSuccessAddBookmark(data: BookmarkUiModel) {
         showToaster(
             message = getString(
-                R.string.tokopedianow_recipe_success_add_bookmark,
+                R.string.tokopedianow_recipe_toaster_description_success_adding_bookmark,
                 data.recipeTitle
             ),
             actionText = getString(R.string.tokopedianow_toaster_see),
@@ -507,7 +526,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onFailedAddBookmark() {
-        val message = getString(R.string.tokopedianow_recipe_failed_add_bookmark)
+        val message = getString(R.string.tokopedianow_recipe_toaster_description_failed_adding_bookmark)
         val actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again)
         showToaster(message = message, type = Toaster.TYPE_ERROR, actionText = actionText) {
             viewModel.addRecipeBookmark()
@@ -515,14 +534,16 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onSuccessRemoveBookmark(data: BookmarkUiModel) {
-        showToaster(getString(
-            R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe,
-            data.recipeTitle
-        ))
+        showToaster(
+            message = getString(R.string.tokopedianow_recipe_toaster_description_success_removing_bookmark, data.recipeTitle),
+            actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel)
+        ) {
+            viewModel.addRecipeBookmark()
+        }
     }
 
     private fun onFailedRemoveBookmark() {
-        val message = getString(R.string.tokopedianow_recipe_failed_remove_bookmark)
+        val message = getString(R.string.tokopedianow_recipe_toaster_description_failed_removing_bookmark)
         val actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again)
         showToaster(message = message, type = Toaster.TYPE_ERROR, actionText = actionText) {
             viewModel.removeRecipeBookmark()

@@ -7,5 +7,5 @@ data class TokoChatMessageWrapper(
     val type: String? = "",
 
     @SerializedName("data")
-    val language: TokoChatMessageData? = TokoChatMessageData()
+    val data: TokoChatMessageData? = TokoChatMessageData()
 )

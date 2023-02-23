@@ -1573,7 +1573,18 @@ class DigitalPDPDataPlanFragment :
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
                 addToCartFromUrl()
+            } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
+                showErrorFromCheckout(data)
             }
+        }
+    }
+
+    private fun showErrorFromCheckout(data: Intent?) {
+        if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
+            val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                as Throwable
+            if (!throwable.message.isNullOrEmpty())
+                showErrorToaster(throwable)
         }
     }
 

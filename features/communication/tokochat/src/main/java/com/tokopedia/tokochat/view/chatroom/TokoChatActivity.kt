@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.view.chatroom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -32,7 +33,7 @@ import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
  * note: Do not hardcode applink.
  * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
-class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
+open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()
@@ -41,9 +42,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .tokoChatConfigComponent(
-                (application as? BaseMainApplication)?.tokoChatConnection?.tokoChatConfigComponent
-            )
+            .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
             .build().also {
                 tokoChatComponent = it
             }
@@ -75,7 +74,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         }
     }
 
-    private fun getFragmentBundle(): Bundle {
+    protected open fun getFragmentBundle(): Bundle {
         val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE) ?: ""
         val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK) ?: ""
         val tkpdOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
