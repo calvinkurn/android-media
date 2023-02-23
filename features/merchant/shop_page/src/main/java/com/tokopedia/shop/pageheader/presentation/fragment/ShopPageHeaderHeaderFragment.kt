@@ -424,7 +424,7 @@ class ShopPageHeaderHeaderFragment :
 
     private var isConfettiAlreadyShown = false
     override fun getComponent() = activity?.run {
-        DaggerShopPageHeaderComponent.builder().shopPageModule(ShopPageHeaderModule())
+        DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
     }
 
