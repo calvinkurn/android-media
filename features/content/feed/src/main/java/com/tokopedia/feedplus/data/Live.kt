@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class Live(
-
     @SerializedName("isActive")
     val isActive: Boolean = false,
     @SerializedName("title")
@@ -15,6 +14,5 @@ data class Live(
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("__typename")
-    val _typename: String = ""
-
+    val typeName: String = ""
 )

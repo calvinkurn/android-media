@@ -10,5 +10,5 @@ data class Creation(
     @SerializedName("authors")
     val authors: List<Authors> = emptyList(),
     @SerializedName("__typename")
-    val _typename: String = ""
+    val typeName: String = ""
 )

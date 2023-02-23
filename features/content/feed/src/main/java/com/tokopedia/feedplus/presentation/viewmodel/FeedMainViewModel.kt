@@ -32,12 +32,6 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
-    private val _creationItemList = MutableLiveData<List<ContentCreationTypeItem>>()
-    var creationItemList: List<ContentCreationTypeItem>
-        get() = _creationItemList.value ?: emptyList()
-        set(value) {
-            _creationItemList.value = value
-        }
 
     fun fetchFeedTabs() {
         launchCatchError(dispatchers.main, block = {

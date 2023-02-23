@@ -3,9 +3,8 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class Authors(
-
     @SerializedName("id")
-    val id: Int = 0,
+    val id: String = "",
     @SerializedName("name")
     val name: String = "",
     @SerializedName("type")
@@ -17,7 +16,7 @@ data class Authors(
     @SerializedName("hasAcceptTnC")
     val hasAcceptTnC: Boolean = false,
     @SerializedName("items")
-    val items: List<AuthorItem> = mutableListOf()
+    val items: List<AuthorItem> = emptyList()
 
 )
 data class AuthorItem(

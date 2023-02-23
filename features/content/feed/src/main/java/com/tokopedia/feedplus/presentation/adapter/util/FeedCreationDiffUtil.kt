@@ -6,7 +6,7 @@ import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 internal class FeedCreationDiffUtil : DiffUtil.ItemCallback<ContentCreationTypeItem>() {
 
         override fun areItemsTheSame(oldItem: ContentCreationTypeItem, newItem: ContentCreationTypeItem): Boolean {
-            return false
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: ContentCreationTypeItem, newItem: ContentCreationTypeItem): Boolean {

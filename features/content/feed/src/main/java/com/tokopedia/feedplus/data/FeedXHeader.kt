@@ -9,7 +9,7 @@ data class FeedXHeader(
     @SerializedName("error")
     val error: String = "",
     @SerializedName("__typename")
-    val _typename: String = ""
+    val typename: String = ""
 )
 data class FeedXHeaderData(
     @SerializedName("creation")
@@ -21,5 +21,5 @@ data class FeedXHeaderData(
     @SerializedName("userProfile")
     val userProfile: UserProfile = UserProfile(),
     @SerializedName("__typename")
-    val _typename: String = ""
+    val typename: String = ""
 )

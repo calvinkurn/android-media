@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class UserProfile(
-
     @SerializedName("isShown")
     val isShown: Boolean = false,
     @SerializedName("image")
@@ -13,6 +12,5 @@ data class UserProfile(
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("__typename")
-    val _typename: String = ""
-
+    val typeName: String = ""
 )

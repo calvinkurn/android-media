@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class Items(
-
     @SerializedName("isActive")
     val isActive: Boolean = false,
     @SerializedName("position")
@@ -15,6 +14,5 @@ data class Items(
     @SerializedName("key")
     val key: String = "",
     @SerializedName("__typename")
-    val _typename: String = ""
-
+    val typeName: String = ""
 )

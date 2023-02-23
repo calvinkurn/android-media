@@ -88,7 +88,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         ) {
             when (it) {
                 is Success -> {
-                    feedMainViewModel.creationItemList = it.data
                 }
                 is Fail -> Toast.makeText(
                     requireContext(),
@@ -199,8 +198,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             val creationBottomSheet = FeedContentCreationTypeBottomSheet
                 .getFragment(it.supportFragmentManager, it.classLoader)
             creationBottomSheet.setListener(this)
-            creationBottomSheet.setData(feedMainViewModel.creationItemList)
-            creationBottomSheet.show(it.supportFragmentManager)
+            val feedCreateBottomSheetDataResult = feedMainViewModel.feedCreateContentBottomSheetData.value
+            if (feedCreateBottomSheetDataResult is Success) {
+                creationBottomSheet.setData(feedCreateBottomSheetDataResult.data)
+                creationBottomSheet.show(it.supportFragmentManager)
+            }
         }
     }
 
