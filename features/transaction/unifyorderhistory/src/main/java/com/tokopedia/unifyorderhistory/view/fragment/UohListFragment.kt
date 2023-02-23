@@ -2101,49 +2101,53 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int) {
         try {
             val detailUrl = order.metadata.detailURL
-            var intent = Intent()
-            if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-                intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
-            } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-                intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
-            }
-
-            currIndexNeedUpdate = index
-            orderIdNeedUpdated = order.orderUUID
-
-            // analytics
-            var jsonArray = JsonArray()
-            if (order.metadata.listProducts.isNotEmpty()) {
-                jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
-            }
-            val arrayListProducts = arrayListOf<ECommerceClick.Products>()
-            var i = 0
-            order.metadata.products.forEach {
-                var eeProductId = ""
-                var eeProductPrice = ""
-                if (order.metadata.listProducts.isNotEmpty()) {
-                    val objProduct = jsonArray.get(i).asJsonObject
-                    eeProductId = objProduct.get(EE_PRODUCT_ID).asString
-                    eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+            if (detailUrl.appURL.isEmpty()) {
+                return
+            } else {
+                var intent = Intent()
+                if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
+                    intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+                } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
+                    intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
                 }
-                arrayListProducts.add(
-                    ECommerceClick.Products(
-                        name = it.title,
-                        id = eeProductId,
-                        price = eeProductPrice,
-                        list = "/order list - ${order.verticalCategory}",
-                        position = index.toString()
+
+                currIndexNeedUpdate = index
+                orderIdNeedUpdated = order.orderUUID
+
+                // analytics
+                var jsonArray = JsonArray()
+                if (order.metadata.listProducts.isNotEmpty()) {
+                    jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
+                }
+                val arrayListProducts = arrayListOf<ECommerceClick.Products>()
+                var i = 0
+                order.metadata.products.forEach {
+                    var eeProductId = ""
+                    var eeProductPrice = ""
+                    if (order.metadata.listProducts.isNotEmpty()) {
+                        val objProduct = jsonArray.get(i).asJsonObject
+                        eeProductId = objProduct.get(EE_PRODUCT_ID).asString
+                        eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+                    }
+                    arrayListProducts.add(
+                        ECommerceClick.Products(
+                            name = it.title,
+                            id = eeProductId,
+                            price = eeProductPrice,
+                            list = "/order list - ${order.verticalCategory}",
+                            position = index.toString()
+                        )
                     )
-                )
-                i++
+                    i++
+                }
+
+                userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+                // requested as old flow (from old order list)
+                UohAnalytics.orderDetailOpenScreenEvent()
+
+                startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
             }
-
-            userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
-
-            // requested as old flow (from old order list)
-            UohAnalytics.orderDetailOpenScreenEvent()
-
-            startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -2158,11 +2162,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             order.metadata.buttons.getOrNull(buttonIndex)?.let { button ->
                 _buttonAction = button.actionType
                 if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                    if (button.appURL.isNotEmpty()) {
-                        handleRouting(button.appURL)
-                    } else {
-                        return
-                    }
+                    handleRouting(button.appURL)
                 } else {
                     when {
                         button.actionType.equals(GQL_FINISH_ORDER, true) -> {
