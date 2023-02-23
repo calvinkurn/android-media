@@ -48,9 +48,12 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         private const val MARGIN_TOP_MACRO = 6
         private const val MARGIN_BOTTOM_MACRO = 4
         private const val MARGIN_VERTICAL_DEFAULT = 12
+        private const val MARGIN_VERTICAL_REVAMP = 8
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO = 0
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 8
-        private const val MARGIN_HORIZONTAL_BETWEEN_CARD_REVAMP = 13
+        private const val MARGIN_HORIZONTAL_BETWEEN_CARD_REVAMP = 0
+        private const val PADDING_HORIZONTAL_REVAMP = 8
+        private const val PADDING_HORIZONTAL_OLD = 12
     }
 
     private val adapter = DynamicIconAdapter(listener, isRevamp)
@@ -70,6 +73,11 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     private fun setupDynamicIcon(element: DynamicIconComponentDataModel) {
         val icons = element.dynamicIconComponent.dynamicIcon
         iconRecyclerView = itemView.findViewById(R.id.dynamic_icon_recycler_view)
+        if (isRevamp) {
+            iconRecyclerView?.setPadding(PADDING_HORIZONTAL_REVAMP.toPx(), Int.ZERO, PADDING_HORIZONTAL_REVAMP.toPx(), Int.ZERO)
+        } else {
+            iconRecyclerView?.setPadding(PADDING_HORIZONTAL_OLD.toPx(), Int.ZERO, PADDING_HORIZONTAL_OLD.toPx(), Int.ZERO)
+        }
         if (icons.isNotEmpty()) {
             if (isUsingMacroInteraction) {
                 adapterMacro.updatePosition(absoluteAdapterPosition)
@@ -90,13 +98,27 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 }
                 adapterMacro.submitList(element)
                 val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
-                layoutParams.setMargins(Int.ZERO, MARGIN_TOP_MACRO, Int.ZERO, MARGIN_BOTTOM_MACRO)
+                if (isRevamp) {
+                    layoutParams.setMargins(
+                        Int.ZERO,
+                        MARGIN_VERTICAL_REVAMP,
+                        Int.ZERO,
+                        MARGIN_VERTICAL_REVAMP
+                    )
+                } else {
+                    layoutParams.setMargins(
+                        Int.ZERO,
+                        MARGIN_TOP_MACRO,
+                        Int.ZERO,
+                        MARGIN_BOTTOM_MACRO
+                    )
+                }
                 iconRecyclerView?.layoutParams = layoutParams
 
                 if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
                     iconRecyclerView?.addItemDecoration(
                         CommonSpacingDecoration(
-                            if (isRevamp) MARGIN_HORIZONTAL_BETWEEN_CARD_REVAMP.toPx()
+                            if (isRevamp) MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
                             else MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
                         )
                     )
@@ -107,7 +129,21 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 adapter.updatePosition(absoluteAdapterPosition)
                 adapter.setType(element.type)
                 val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
-                layoutParams.setMargins(Int.ZERO, MARGIN_VERTICAL_DEFAULT, Int.ZERO, MARGIN_VERTICAL_DEFAULT)
+                if (isRevamp) {
+                    layoutParams.setMargins(
+                        Int.ZERO,
+                        MARGIN_VERTICAL_REVAMP,
+                        Int.ZERO,
+                        MARGIN_VERTICAL_REVAMP
+                    )
+                } else {
+                    layoutParams.setMargins(
+                        Int.ZERO,
+                        MARGIN_VERTICAL_DEFAULT,
+                        Int.ZERO,
+                        MARGIN_VERTICAL_DEFAULT
+                    )
+                }
                 iconRecyclerView?.layoutParams = layoutParams
                 iconRecyclerView?.addItemDecoration(
                     CommonSpacingDecoration(
