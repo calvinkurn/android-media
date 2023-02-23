@@ -28,6 +28,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     companion object {
         val LAYOUT = R.layout.paylater_partner_card_item
         const val TYPE_FILLED = "filled"
+        private const val TICKER_TYPE_GENERAL = "general"
         private const val TICKER_TYPE_WARNING = "warning"
         private const val TICKER_TYPE_DANGER = "danger"
         private const val TICKER_TYPE_INFO = "info"
@@ -46,10 +47,9 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     private fun setUpRecommendation(element: Detail) {
         if (element.recommendationDetail?.flag == true) {
-
-            itemView.clDetailParent.background =if (itemView.context.isDarkMode()) {
+            itemView.clDetailParent.background = if (itemView.context.isDarkMode()) {
                 MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_dark_gradient)
-            }else{
+            } else {
                 MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_light_gradient)
             }
             itemView.clPartnerCard.background = MethodChecker.getDrawable(
@@ -59,9 +59,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             itemView.tvRecommendationTitle.visible()
             itemView.tvRecommendationTitle.text = element.recommendationDetail.text
             itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_SHADOW
-
         } else {
-
             itemView.clDetailParent.background = null
             itemView.clPartnerCard.background = null
             itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_BORDER
@@ -77,7 +75,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         itemView.payLaterActionCta.setOnClickListener {
             interaction.invokeAnalytics(
                 getInstallmentInfoEvent(
-                    element, element.cta.android_url
+                    element,
+                    element.cta.android_url
                         ?: ""
                 )
             )
@@ -100,7 +99,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setUpTicker(element: Detail) {
         itemView.payLaterStatusTicker.shouldShowWithAction(element.ticker.isShown) {
             itemView.payLaterStatusTicker.setHtmlDescription(element.ticker.content)
-            itemView.payLaterStatusTicker.tickerType = when(element.ticker.type) {
+            itemView.payLaterStatusTicker.tickerType = when (element.ticker.type) {
+                TICKER_TYPE_GENERAL -> Ticker.TYPE_INFORMATION
                 TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
                 TICKER_TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
                 TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
@@ -124,7 +124,6 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             )
             itemView.llBenefits.addView(typography)
         }
-
     }
 
     private fun setPayLaterImage(element: Detail) {
@@ -133,8 +132,9 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         } else {
             element.gatewayDetail?.img_light_url
         }
-        if (!imageUrl.isNullOrEmpty())
+        if (!imageUrl.isNullOrEmpty()) {
             itemView.ivPaylaterPartner.setImageUrl(imageUrl)
+        }
     }
 
     private fun setPayLaterHeader(element: Detail) {
@@ -142,26 +142,27 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
             tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(
                 element.installment_per_month_ceil
-                    ?: 0, false
+                    ?: 0,
+                false
             )
             if (element.tenure != 1) {
                 tvTenureMultiplier.visible()
                 tvTenureMultiplier.text =
                     context.getString(R.string.paylater_x_tenure, element.tenure)
-            }
-            else {
+            } else {
                 tvTenureMultiplier.gone()
                 tvInstallmentAmount.text = element.optionalTenureHeader
             }
-            if (element.subheader.isNullOrEmpty())
+            if (element.subheader.isNullOrEmpty()) {
                 tvInstallmentDescription.gone()
-            else {
+            } else {
                 tvInstallmentDescription.visible()
                 tvInstallmentDescription.text = element.subheader.parseAsHtml()
             }
             partnerTenureInfo.setOnClickListener {
-                if (element.installementDetails != null)
+                if (element.installementDetails != null) {
                     interaction.installementDetails(element)
+                }
             }
         }
     }
@@ -181,22 +182,44 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 }
 
 private fun View.disableTitleDetail() {
-
-    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
-        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvTitlePaymentPartner.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+    )
+    this.tvInstallmentAmount.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+    )
+    this.tvTenureMultiplier.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+    )
     this.partnerTenureInfo.isEnabled = false
 }
 private fun View.enableTitleDetail() {
-    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
-        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    this.tvTitlePaymentPartner.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
+    )
+    this.tvInstallmentAmount.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
+    )
+    this.tvTenureMultiplier.setTextColor(
+        ContextCompat.getColor(
+            this.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        )
+    )
     this.partnerTenureInfo.isEnabled = true
-
 }
