@@ -97,6 +97,8 @@ class OrderSummaryPageRobot {
                 click().perform(uiController, view.findViewById(R.id.btn_change_address))
             }
         }))
+        // Wait for bottomsheet to fully open
+        Thread.sleep(1000)
         if (func != null) {
             AddressBottomSheetRobot().apply(func)
         }
