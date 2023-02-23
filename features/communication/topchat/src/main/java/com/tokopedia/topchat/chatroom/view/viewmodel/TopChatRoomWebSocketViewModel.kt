@@ -506,6 +506,7 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
                 false
             ) && !isProblematicDevice()
         } catch (ex: Throwable) {
+            Timber.d(ex)
             false
         }
     }
