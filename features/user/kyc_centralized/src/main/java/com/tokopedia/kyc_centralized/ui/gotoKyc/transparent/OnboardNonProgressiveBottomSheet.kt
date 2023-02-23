@@ -11,7 +11,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class OnboardNonProgressiveBottomSheet(private val source: String = "", private val isAccountLinked: Boolean, private val isKtpTaken: Boolean): BottomSheetUnify() {
+class OnboardNonProgressiveBottomSheet(private val source: String = "", private val isAccountLinked: Boolean, private val isKtpTaken: Boolean) : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardNonProgressiveBinding>()
 
@@ -38,10 +38,14 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
                 getString(R.string.img_url_goto_kyc_onboard_account_linking)
             )
 
-            layoutAccountLinking.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_title)
+            tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_title)
             if (isAccountLinked) {
-                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                    R.drawable.ic_checklist_circle_green, 0)
+                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_checklist_circle_green,
+                    0
+                )
             }
 
             tvItemSubtitle.text = if (isAccountLinked) {
@@ -58,10 +62,14 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
                 getString(R.string.img_url_goto_kyc_onboard_ktp)
             )
 
-            layoutKtp.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_title)
+            tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_title)
             if (isKtpTaken) {
-                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                    R.drawable.ic_checklist_circle_green, 0)
+                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_checklist_circle_green,
+                    0
+                )
                 tvShowFile.show()
             }
 
@@ -71,8 +79,8 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
                 getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
             }
 
-            layoutSelfie.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
-            layoutSelfie.tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle)
+            tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
+            tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle)
         }
     }
 
@@ -83,5 +91,4 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
             )
         }
     }
-
 }

@@ -51,12 +51,12 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
     }
 
     private fun gotoStatusSubmission(parameter: StatusSubmissionParam) {
-        val toSubmissionStatusPage = RouterFragmentDirections.actionRouterFragmentToStatusSubmissionFragment(parameter)
+        val toSubmissionStatusPage = GotoKycRouterFragmentDirections.actionRouterFragmentToStatusSubmissionFragment(parameter)
         view?.findNavController()?.navigate(toSubmissionStatusPage)
     }
 
     private fun gotoDobChallenge() {
-        val toDobChallengePage = RouterFragmentDirections.actionRouterFragmentToDobChallengeFragment()
+        val toDobChallengePage = GotoKycRouterFragmentDirections.actionRouterFragmentToDobChallengeFragment()
         view?.findNavController()?.navigate(toDobChallengePage)
     }
 

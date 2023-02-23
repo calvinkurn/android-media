@@ -18,11 +18,11 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.RouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class GotoKycTransparentFragment: BaseDaggerFragment() {
+class GotoKycTransparentFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentGotoKycLoaderBinding>()
 
@@ -53,14 +53,14 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
 
     private fun validationParameter(projectId: String?, source: String?) {
         if (projectId?.toIntOrNull() == null) {
-            //TODO: set toaster why activity finish
+            // TODO: set toaster why activity finish
             activity?.finish()
         } else {
-            //set value project id
+            // set value project id
             viewModel.setProjectId(projectId)
             viewModel.setSource(source.orEmpty())
 
-            //please, make sure project id already set in viewModel
+            // please, make sure project id already set in viewModel
             viewModel.getProjectInfo(viewModel.projectId.toInt())
         }
     }
@@ -86,7 +86,7 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    //TODO: hit API eligibility
+                    // TODO: hit API eligibility
                 }
                 is ProjectInfoResult.Failed -> {
                     val message = it.throwable?.getMessage(requireContext())
@@ -109,8 +109,8 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
 
     private fun gotoStatusSubmission(parameter: GotoKycMainParam) {
         val intent = Intent(activity, GotoKycMainActivity::class.java)
-        intent.putExtra(RouterFragment.PARAM_REQUEST_PAGE, RouterFragment.PAGE_STATUS_SUBMISSION)
-        intent.putExtra(RouterFragment.PARAM_DATA, parameter)
+        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_STATUS_SUBMISSION)
+        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
         startActivity(intent)
         activity?.finish()
     }
@@ -178,5 +178,4 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
 
         fun createInstance(): Fragment = GotoKycTransparentFragment()
     }
-
 }
