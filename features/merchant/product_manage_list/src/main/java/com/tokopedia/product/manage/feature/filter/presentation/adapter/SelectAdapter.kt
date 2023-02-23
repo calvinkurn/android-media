@@ -14,7 +14,7 @@ class SelectAdapter(
     fun updateSelectData(selectUiModels: List<SelectUiModel>) {
         visitables.clear()
         visitables.addAll(selectUiModels)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,visitables.size)
     }
 
     fun updateChecklistData(checklistUiModels: List<ChecklistUiModel>) {

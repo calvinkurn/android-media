@@ -11,6 +11,6 @@ class FilterAdapter(
     fun updateData(filterUiModels: List<FilterUiModel>) {
         visitables.clear()
         visitables.addAll(filterUiModels)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,visitables.size)
     }
 }

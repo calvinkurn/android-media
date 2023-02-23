@@ -223,8 +223,8 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
                     } else {
                         it.copy(isAllStockEmpty = true)
                     }
+                    notifyItemChanged(index)
                 }
-                notifyDataSetChanged()
             }
         }
     }

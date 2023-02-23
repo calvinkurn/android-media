@@ -44,13 +44,13 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
     fun setItems(data: List<GroupVariantProductStockReminderUiModel>) {
         this.groupVariant = data
         productSelection.clear()
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,data.size)
     }
 
     fun setCheckAll(isCheckAll: Boolean) {
         this.isCheckAll = isCheckAll
         productSelection.clear()
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,groupVariant.size)
     }
 
     inner class GroupVariantEditSelectViewHolder(private val binding: ItemVariantEditStockReminderSelectBinding) :

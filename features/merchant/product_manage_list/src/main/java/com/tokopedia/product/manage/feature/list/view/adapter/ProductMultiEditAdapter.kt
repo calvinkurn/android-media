@@ -13,7 +13,7 @@ class ProductMultiEditAdapter(
     var menuList: List<Int> = emptyList()
         set(value) {
             field = value
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0,value.size)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiEditViewHolder {

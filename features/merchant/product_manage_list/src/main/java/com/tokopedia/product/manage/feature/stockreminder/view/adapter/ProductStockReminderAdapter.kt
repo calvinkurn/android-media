@@ -45,12 +45,12 @@ class ProductStockReminderAdapter(
 
     fun setItems(data: List<ProductStockReminderUiModel>) {
         this.dataProducts = data
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,dataProducts.size)
     }
 
     fun clearItems() {
         this.dataProducts = emptyList()
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,dataProducts.size)
     }
 
     inner class ProductStockReminderViewHolder(private val binding: ItemProductStockReminderBinding) :
