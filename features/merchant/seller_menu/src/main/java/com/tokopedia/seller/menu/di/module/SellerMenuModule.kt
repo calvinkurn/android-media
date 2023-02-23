@@ -46,54 +46,6 @@ class SellerMenuModule {
 
     @SellerMenuScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return context as NetworkRouter
-    }
-
-    @SellerMenuScope
-    @Provides
-    fun provideTkpdAuthInterceptor(
-        @ApplicationContext context: Context,
-        networkRouter: NetworkRouter,
-        userSession: UserSessionInterface
-    ): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSession)
-    }
-
-
-    @SellerMenuScope
-    @Provides
-    fun providePowerMerchantSubscribeInterceptor(userSessionInterface: UserSessionInterface): PowerMerchantSubscribeInterceptor {
-        return PowerMerchantSubscribeInterceptor(userSessionInterface)
-    }
-
-    @SellerMenuScope
-    @Provides
-    fun provideOkHttpClient(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {
-
-        val builder = OkHttpClient.Builder()
-            .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
-            .addInterceptor(tkpdAuthInterceptor)
-            .addInterceptor(powerMerchantSubscribeInterceptor)
-
-        return builder.build()
-    }
-
-    @SellerMenuScope
-    @Provides
-    fun provideVoteRetrofit(retrofitBuilder: Retrofit.Builder, okHttpClient: OkHttpClient): Retrofit {
-        return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
-    }
-
-    @SellerMenuScope
-    @Provides
-    fun provideGMCommonApi(retrofit: Retrofit): GMCommonApi {
-        return retrofit.create(GMCommonApi::class.java)
-    }
-
-    @SellerMenuScope
-    @Provides
     fun provideSellerMenuTracker(userSession: UserSessionInterface): SellerMenuTracker {
         val analytics = TrackApp.getInstance().gtm
         return SellerMenuTracker(analytics, userSession)

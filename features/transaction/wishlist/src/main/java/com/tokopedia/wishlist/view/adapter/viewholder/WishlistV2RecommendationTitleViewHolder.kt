@@ -1,7 +1,6 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone

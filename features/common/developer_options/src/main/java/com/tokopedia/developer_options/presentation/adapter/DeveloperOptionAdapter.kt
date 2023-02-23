@@ -104,7 +104,6 @@ class DeveloperOptionAdapter(
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
-        AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),
         SystemNonSystemAppsUiModel(
             listOf(
                 KEYWORD_SYSTEM_APPS,
@@ -230,12 +229,11 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        removeWidget(AppAuthSecretUiModel::class.java)
+        // no-op
     }
 
     private fun removeMainAppItems() {
         removeWidget(SellerAppReviewDebuggingUiModel::class.java)
-        removeWidget(AppAuthSecretUiModel::class.java)
     }
 
     private fun <T> removeWidget(itemClass: Class<T>) {
