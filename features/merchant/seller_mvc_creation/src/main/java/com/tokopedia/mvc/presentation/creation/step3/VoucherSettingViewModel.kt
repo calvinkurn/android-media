@@ -79,6 +79,20 @@ class VoucherSettingViewModel @Inject constructor(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                pageMode = pageMode,
+                voucherConfiguration = voucherConfiguration.copy(
+                    isFinishFilledStepTwo = true
+                )
+            )
+        }
+
+        getVoucherCreationMetadata(pageMode, currentState.voucherConfiguration)
+    }
+
+    private fun getVoucherCreationMetadata(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -93,14 +107,7 @@ class VoucherSettingViewModel @Inject constructor(
                 val isDiscountPromoTypeEnabled = voucherCreationMetadata.discountActive
 
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        pageMode = pageMode,
-                        voucherConfiguration = voucherConfiguration.copy(
-                            isFinishFilledStepTwo = true
-                        ),
-                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled
-                    )
+                    it.copy(isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled)
                 }
 
                 getTickers()
