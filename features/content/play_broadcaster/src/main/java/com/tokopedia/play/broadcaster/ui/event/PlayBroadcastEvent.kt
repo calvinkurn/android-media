@@ -44,5 +44,9 @@ sealed interface PlayBroadcastEvent {
     ) : PlayBroadcastEvent
     object BroadcastRecovered : PlayBroadcastEvent
 
+    /**
+     * Auto Generated Cover
+     **/
     data class SubmitCoverLoading(val isLoading: Boolean, val throwable: Throwable? = null): PlayBroadcastEvent
+    data class ButtonState(val isEnabled: Boolean, val showDelete: Boolean = false): PlayBroadcastEvent
 }

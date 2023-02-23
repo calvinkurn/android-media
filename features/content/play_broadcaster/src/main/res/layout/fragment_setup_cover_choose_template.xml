@@ -21,11 +21,11 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="16dp"
-            app:unify_image_url_src="@string/img_setup_cover_empty_product"
             app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_url_src="@string/img_setup_cover_empty_product" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_add_product_title"
@@ -93,11 +93,11 @@
             android:id="@+id/pc_cover_template"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:indicator_type="CIRCLE"
-            app:indicator_color="DEFAULT"
             android:layout_marginTop="16dp"
             android:gravity="center"
+            android:orientation="horizontal"
+            app:indicator_color="DEFAULT"
+            app:indicator_type="CIRCLE"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_cover_template"
@@ -116,17 +116,40 @@
             app:layout_constraintTop_toBottomOf="@id/rv_cover_template"
             app:typographyType="body_2" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_setup_cover_choose_template"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:enabled="false"
-            android:text="@string/play_label_save"
+            android:orientation="horizontal"
+            android:paddingVertical="16dp"
+            android:paddingHorizontal="8dp"
+            android:weightSum="2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:unifyButtonSize="medium" />
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_setup_cover_choose_template_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:text="@string/play_label_delete"
+                android:visibility="gone"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_setup_cover_choose_template_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="@string/play_label_save"
+                app:unifyButtonSize="medium" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
