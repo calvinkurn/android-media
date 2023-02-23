@@ -59,6 +59,8 @@ class FeedPostViewHolder(
             menuButton.hide()
             shareButton.hide()
             productTagButton.hide()
+
+            btnDisableClearMode.show()
         }
     }
 
@@ -75,6 +77,8 @@ class FeedPostViewHolder(
             menuButton.show()
             shareButton.show()
             productTagButton.show()
+
+            btnDisableClearMode.hide()
         }
     }
 
