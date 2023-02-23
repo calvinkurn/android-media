@@ -183,4 +183,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_disable_clear_mode"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/bottomsheetunify_overlay"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="VISIBILITY_OFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unify_image_type="circle"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

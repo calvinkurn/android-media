@@ -42,7 +42,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private var adapter: FeedPagerAdapter? = null
     private var creationItemList: List<ContentCreationTypeItem> = emptyList()
-    private var inClearView: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +58,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
-        observeClearViewData()
     }
 
     override fun onDestroyView() {
@@ -142,32 +140,21 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
-    private fun observeClearViewData() {
-        feedMainViewModel.isInClearView.observe(viewLifecycleOwner) {
-            inClearView = it
-            if (it) {
-                showClearView()
-            } else {
-                hideClearView()
-            }
-        }
-    }
-
     private fun initView(data: FeedTabsModel) {
         binding?.let {
             adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                    OnPageChangeCallback() {
-                    override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
-                    ) {
-                        onChangeTab(position)
-                    }
-                })
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    onChangeTab(position)
+                }
+            })
 
             var firstTabData: FeedDataModel? = null
             var secondTabData: FeedDataModel? = null
@@ -184,7 +171,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 it.tyFeedFirstTab.setOnClickListener { _ ->
                     it.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
                 }
-                if (!inClearView) it.tyFeedFirstTab.show()
+                it.tyFeedFirstTab.show()
             } else {
                 it.tyFeedFirstTab.hide()
             }
@@ -194,7 +181,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 it.tyFeedSecondTab.setOnClickListener { _ ->
                     it.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
                 }
-                if (!inClearView) it.tyFeedSecondTab.show()
+                it.tyFeedSecondTab.show()
             } else {
                 it.tyFeedSecondTab.hide()
             }
@@ -204,19 +191,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 it.feedUserProfileImage.setOnClickListener { _ ->
                     RouteManager.route(it.root.context, data.meta.profileApplink)
                 }
-                if (!inClearView) it.feedUserProfileImage.show()
+                it.feedUserProfileImage.show()
             } else {
                 it.feedUserProfileImage.hide()
-            }
-
-            if (inClearView) {
-                it.btnFeedCreatePost.hide()
-                it.btnFeedLive.hide()
-                it.viewFeedTabIndicator.hide()
-            } else {
-                it.btnFeedCreatePost.show()
-                it.btnFeedLive.show()
-                it.viewFeedTabIndicator.show()
             }
 
             it.btnFeedCreatePost.setOnClickListener {
@@ -230,28 +207,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             it.feedUserProfileImage.setOnClickListener {
                 onNavigateToProfile()
             }
-        }
-    }
-
-    private fun showClearView() {
-        binding?.let {
-            it.viewFeedTabIndicator.hide()
-            it.btnFeedCreatePost.hide()
-            it.tyFeedFirstTab.hide()
-            it.tyFeedSecondTab.hide()
-            it.btnFeedLive.hide()
-            it.feedUserProfileImage.hide()
-        }
-    }
-
-    private fun hideClearView() {
-        binding?.let {
-            it.viewFeedTabIndicator.show()
-            it.btnFeedCreatePost.show()
-            it.tyFeedFirstTab.show()
-            it.tyFeedSecondTab.show()
-            it.btnFeedLive.show()
-            it.feedUserProfileImage.show()
         }
     }
 

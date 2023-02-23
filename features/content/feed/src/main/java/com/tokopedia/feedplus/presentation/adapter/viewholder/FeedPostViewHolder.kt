@@ -28,6 +28,12 @@ class FeedPostViewHolder(
                     listener.onMenuClicked(it)
                 }
 
+                btnDisableClearMode.setOnClickListener {
+                    if (listener.inClearViewMode()) {
+                        listener.disableClearView()
+                    }
+                }
+
                 if (listener.inClearViewMode()) {
                     showClearView()
                 } else {
@@ -35,9 +41,6 @@ class FeedPostViewHolder(
                 }
 
                 root.setOnClickListener {
-                    if (listener.inClearViewMode()) {
-                        listener.disableClearView()
-                    }
                 }
             }
         }
