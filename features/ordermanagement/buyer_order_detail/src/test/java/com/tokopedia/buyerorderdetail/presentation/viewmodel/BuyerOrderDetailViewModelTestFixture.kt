@@ -41,7 +41,9 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -50,6 +52,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class BuyerOrderDetailViewModelTestFixture {
 
     @RelaxedMockK
@@ -122,7 +125,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             qty = product.quantity,
             notes = product.productNote,
             shopId = shopId,
-            custId = userId
+            custId = userId,
+            warehouseId = "0"
         )
     )
 
@@ -154,6 +158,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     fun cleanup() {
         unmockkAll()
         viewModel.viewModelScope.coroutineContext.cancelChildren()
+        unmockkAll()
     }
 
     fun createSuccessGetBuyerOrderDetailDataResult(
@@ -162,31 +167,35 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every { additionalData } returns additionalEpharmacyData
         },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        actionBeforeComplete: () -> Unit = {}
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
-        } returns flow {
-            emit(
-                GetBuyerOrderDetailDataRequestState.Requesting(
-                    GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
-                    GetP1DataRequestState.Requesting(
-                        GetOrderResolutionRequestState.Requesting,
-                        GetInsuranceDetailRequestState.Requesting
+        } answers {
+            flow {
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Requesting(
+                        GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
+                        GetP1DataRequestState.Requesting(
+                            GetOrderResolutionRequestState.Requesting,
+                            GetInsuranceDetailRequestState.Requesting
+                        )
                     )
                 )
-            )
-            emit(
-                GetBuyerOrderDetailDataRequestState.Complete(
-                    GetP0DataRequestState.Complete(
-                        GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
-                    ),
-                    GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
-                        GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                actionBeforeComplete()
+                emit(
+                    GetBuyerOrderDetailDataRequestState.Complete(
+                        GetP0DataRequestState.Complete(
+                            GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
+                        ),
+                        GetP1DataRequestState.Complete(
+                            GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
+                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                        )
                     )
                 )
-            )
+            }
         }
     }
 
@@ -291,7 +300,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 ProductListUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(),
                     any<GetInsuranceDetailRequestState>(),
-                    any<Map<String, AddToCartSingleRequestState>>()
+                    any<Map<String, AddToCartSingleRequestState>>(),
+                    any<Boolean>()
                 )
             } returns showingState
             every {
@@ -339,43 +349,6 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         uiStateCollectorJob.cancel()
     }
 
-    fun doBeforeGetBuyerOrderDetailDataComplete(
-        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
-            every { getPodInfo() } returns null
-        },
-        getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
-        action: () -> Unit
-    ) {
-        coEvery {
-            getBuyerOrderDetailDataUseCase(any())
-        } answers {
-            flow {
-                emit(
-                    GetBuyerOrderDetailDataRequestState.Requesting(
-                        GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
-                        GetP1DataRequestState.Requesting(
-                            GetOrderResolutionRequestState.Requesting,
-                            GetInsuranceDetailRequestState.Requesting
-                        )
-                    )
-                )
-                action()
-                emit(
-                    GetBuyerOrderDetailDataRequestState.Complete(
-                        GetP0DataRequestState.Complete(
-                            GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
-                        ),
-                        GetP1DataRequestState.Complete(
-                            GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
-                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
-                        )
-                    )
-                )
-            }
-        }
-    }
-
     fun EpharmacyInfoUiModel.isEmptyData(): Boolean {
         return this.consultationDate.isEmpty() &&
                 this.consultationDoctorName.isEmpty() &&
@@ -383,5 +356,30 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 this.consultationPatientName.isEmpty() &&
                 this.consultationName.isEmpty() &&
                 this.consultationPrescriptionNumber.isEmpty()
+    }
+
+    fun isProductListCollapsed(): Boolean {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("productListCollapsed").run {
+            isAccessible = true
+            (get(viewModel) as MutableStateFlow<*>).value as Boolean
+        }
+    }
+
+    fun isProductListExpanded(): Boolean {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("productListCollapsed").run {
+            isAccessible = true
+            !((get(viewModel) as MutableStateFlow<*>).value as Boolean)
+        }
+    }
+
+    fun TestCoroutineScope.getBuyerOrderDetailData(
+        orderId: String = this@BuyerOrderDetailViewModelTestFixture.orderId,
+        paymentId: String = this@BuyerOrderDetailViewModelTestFixture.paymentId,
+        cart: String = this@BuyerOrderDetailViewModelTestFixture.cart,
+        shouldCheckCache: Boolean = false
+    ) {
+        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
+        // skip debounce on viewModel#productListUiState
+        advanceTimeBy(1000L)
     }
 }

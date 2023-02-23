@@ -15,6 +15,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -61,6 +62,9 @@ class ShipmentPresenterReleaseBookingTest {
 
     @MockK
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
+
+    @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
 
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
@@ -134,7 +138,8 @@ class ShipmentPresenterReleaseBookingTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
         )
         presenter.attachView(view)
     }

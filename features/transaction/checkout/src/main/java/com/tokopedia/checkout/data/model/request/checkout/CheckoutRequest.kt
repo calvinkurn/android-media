@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.MINI_CONSULTATION_META_DATA_KEY
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.SCHEDULE_DELIVERY_META_DATA_KEY
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.UPLOAD_PRESCRIPTION_META_DATA_KEY
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
@@ -194,6 +195,7 @@ data class OrderMetadata(
         const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
         const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
         const val MINI_CONSULTATION_META_DATA_KEY = "epharm_consultation"
+        const val SCHEDULE_DELIVERY_META_DATA_KEY = "shipping_validation_metadata"
     }
 }
 
@@ -410,6 +412,9 @@ object CheckoutRequestMapper {
                     shopProductCheckoutRequest.consultationDataString
                 )
             )
+        }
+        if (shopProductCheckoutRequest.needToSendValidationMetadata) {
+            orderMetadata.add(OrderMetadata(SCHEDULE_DELIVERY_META_DATA_KEY, shopProductCheckoutRequest.validationMetadata))
         }
         return orderMetadata
     }

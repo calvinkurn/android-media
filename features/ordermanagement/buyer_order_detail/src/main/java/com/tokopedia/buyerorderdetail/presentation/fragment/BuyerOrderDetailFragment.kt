@@ -40,6 +40,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResol
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
@@ -90,7 +91,8 @@ open class BuyerOrderDetailFragment :
     DigitalRecommendationViewHolder.ActionListener,
     CourierInfoViewHolder.CourierInfoViewHolderListener,
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
-    OrderResolutionViewHolder.OrderResolutionListener {
+    OrderResolutionViewHolder.OrderResolutionListener,
+    ProductListToggleViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -138,6 +140,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -508,7 +511,7 @@ open class BuyerOrderDetailFragment :
 
     private fun onFailedMultiAddToCart(result: MultiATCState.Fail) {
         if (result.throwable == null) {
-            showErrorToaster(result.message.getString(context))
+            showErrorToaster(result.message.getStringValue(context))
         } else {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, result.throwable)
@@ -766,6 +769,14 @@ open class BuyerOrderDetailFragment :
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
+    }
+
+    override fun onCollapseProductList() {
+        viewModel.collapseProductList()
+    }
+
+    override fun onExpandProductList() {
+        viewModel.expandProductList()
     }
 
     private fun <T> Continuation<T>.resumeSafely(any: T) {

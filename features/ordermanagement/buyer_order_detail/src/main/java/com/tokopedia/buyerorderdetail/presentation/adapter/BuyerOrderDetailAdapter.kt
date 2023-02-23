@@ -89,6 +89,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
+        addProductListToggleSection(productListUiModel.productListToggleUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderInsuranceSection(
@@ -225,6 +226,14 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     ) {
         if (addonsListUiModel != null && addonsListUiModel.addonsItemList.isNotEmpty()) {
             add(addonsListUiModel)
+        }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListToggleSection(
+        productListToggleUiModel: ProductListUiModel.ProductListToggleUiModel?
+    ) {
+        if (productListToggleUiModel != null) {
+            add(productListToggleUiModel)
         }
     }
 

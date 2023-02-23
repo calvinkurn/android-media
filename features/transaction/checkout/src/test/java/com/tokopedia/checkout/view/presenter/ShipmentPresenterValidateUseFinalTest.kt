@@ -12,16 +12,21 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -54,6 +59,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
+import rx.observers.TestSubscriber
+import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 
 class ShipmentPresenterValidateUseFinalTest {
@@ -81,6 +88,9 @@ class ShipmentPresenterValidateUseFinalTest {
 
     @MockK
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
+
+    @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
 
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
@@ -153,7 +163,8 @@ class ShipmentPresenterValidateUseFinalTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
         )
         presenter.attachView(view)
     }
@@ -612,5 +623,46 @@ class ShipmentPresenterValidateUseFinalTest {
             ValidateUsePromoRequest(orders = listOf(OrdersItem())),
             presenter.lastValidateUseRequest
         )
+    }
+
+    @Test
+    fun `WHEN validate use success from schedule delivery THEN should complete uncompleted publisher`() {
+        // Given
+        val promoUiModel = PromoUiModel(
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+            )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+        )
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = false,
+            shouldStopInValidateUsePromo = false
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "123",
+            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+            cartItemModels = listOf(CartItemModel())
+        )
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+
+        // Then
+        verify {
+            view.updateButtonPromoCheckout(promoUiModel, false)
+        }
+        testSubscriber.assertCompleted()
     }
 }

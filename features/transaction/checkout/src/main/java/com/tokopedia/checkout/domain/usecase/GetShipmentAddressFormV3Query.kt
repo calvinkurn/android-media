@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase
 
 const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
-        """
+    """
         query shipmentAddressFormV3(${'$'}params: ShipmentAddressFormParams) {
           shipment_address_form_v3(params: ${'$'}params) {
             status
@@ -120,6 +120,12 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   errors_unblocking
                   shipping_id
                   sp_id
+                  scheduled_delivery {
+                    timeslot_id
+                    schedule_date
+                    validation_metadata
+                  }
+                  rates_validation_flow
                   bo_code
                   is_insurance
                   is_fulfillment_service

@@ -38,14 +38,14 @@
     <string name="swd_label_new">BARU</string>
     <string name="swd_bank_added_success">Rekening tujuan berhasil ditambahkan</string>
 
-    <string name="swd_back_to_saldo_detail">Kembali Ke Detail Saldo</string>
+    <string name="swd_back_to_saldo_detail">Balik</string>
     <string name="swd_backto_shop">Belanja di Tokopedia</string>
     <string name="swd_ttl_total">Total Penarikan</string>
     <string name="swd_destination_account">Rekening Tujuan</string>
-    <string name="swd_ttl_withdraw_dtl">Detail penarikan saldo</string>
-    <string name="swd_withdrawal_being_processed">Penarikanmu sedang diproses</string>
+    <string name="swd_ttl_withdraw_dtl">Detail penarikan</string>
+    <string name="swd_withdrawal_being_processed_title">Penarikanmu sedang diproses</string>
+    <string name="swd_contact_tokopedia_care">Hubungi Tim Tokopedia Care</string>
 
-    <string name="swd_success_page_title">Penarikan Diproses</string>
     <string name="swd_admin_fee">Dikenai biaya admin Rp%s</string>
 
     <string name="swd_program_tarik_saldo">Program Tarik Saldo</string>

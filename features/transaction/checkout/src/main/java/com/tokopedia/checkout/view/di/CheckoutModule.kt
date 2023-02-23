@@ -26,6 +26,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -100,6 +101,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
         ratesUseCase: GetRatesUseCase,
         ratesApiUseCase: GetRatesApiUseCase,
+        ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
         stateConverter: RatesResponseStateConverter,
         clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
         shippingCourierConverter: ShippingCourierConverter,
@@ -126,7 +128,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             analyticsPurchaseProtection, checkoutAnalytics,
             shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-            executorSchedulers, eligibleForAddressUseCase
+            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase
         )
     }
 

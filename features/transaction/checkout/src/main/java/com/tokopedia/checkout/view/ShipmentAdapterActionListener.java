@@ -8,6 +8,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -16,6 +17,8 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
 import java.util.List;
+
+import rx.subjects.PublishSubject;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -151,4 +154,6 @@ public interface ShipmentAdapterActionListener {
     void onViewFreeShippingPlusBadge();
 
     void onInsuranceInfoTooltipClickedTrackingAnalytics();
+
+    void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher);
 }

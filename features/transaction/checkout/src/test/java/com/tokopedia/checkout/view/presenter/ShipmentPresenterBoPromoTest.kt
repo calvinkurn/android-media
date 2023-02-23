@@ -17,6 +17,7 @@ import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCa
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
@@ -83,6 +84,9 @@ class ShipmentPresenterBoPromoTest {
 
     @MockK
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
+
+    @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
 
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
@@ -159,7 +163,8 @@ class ShipmentPresenterBoPromoTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
         )
         presenter.attachView(view)
         presenter = spyk(presenter)
@@ -896,7 +901,7 @@ class ShipmentPresenterBoPromoTest {
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
                     appliedVoucherOrder1,
-                    appliedVoucherOrder2,
+                    appliedVoucherOrder2
                 )
             )
         )
@@ -904,9 +909,9 @@ class ShipmentPresenterBoPromoTest {
             ShipmentCartItemModel(
                 cartString = "333-333-333",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
-                    code = "TEST3",
+                    code = "TEST3"
                 )
-            ),
+            )
         )
 
         every { presenter.doApplyBo(any()) } just runs
@@ -936,15 +941,15 @@ class ShipmentPresenterBoPromoTest {
             ShipmentCartItemModel(
                 cartString = "333-333-333",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
-                    code = "TEST3",
+                    code = "TEST3"
                 )
             ),
             ShipmentCartItemModel(
                 cartString = "555-555-555",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
-                    code = "TEST5",
+                    code = "TEST5"
                 )
-            ),
+            )
         )
         presenter.shipmentCartItemModelList = shipmentCartItemModels
 
@@ -987,7 +992,7 @@ class ShipmentPresenterBoPromoTest {
                         spId = 1,
                         type = "logistic",
                         messageUiModel = MessageUiModel(state = "red")
-                    ),
+                    )
                 )
             )
         )
@@ -1019,7 +1024,7 @@ class ShipmentPresenterBoPromoTest {
                         spId = 1,
                         type = "logistic",
                         messageUiModel = MessageUiModel(state = "green")
-                    ),
+                    )
                 )
             )
         )
@@ -1051,7 +1056,7 @@ class ShipmentPresenterBoPromoTest {
                         spId = 0,
                         type = "logistic",
                         messageUiModel = MessageUiModel(state = "green")
-                    ),
+                    )
                 )
             )
         )
@@ -1083,7 +1088,7 @@ class ShipmentPresenterBoPromoTest {
                         spId = 1,
                         type = "merchant",
                         messageUiModel = MessageUiModel(state = "green")
-                    ),
+                    )
                 )
             )
         )
@@ -1137,7 +1142,7 @@ class ShipmentPresenterBoPromoTest {
             ShipmentCartItemModel(
                 cartString = "111-111-111",
                 voucherLogisticItemUiModel = null
-            ),
+            )
         )
 
         every { presenter.doApplyBo(any()) } just runs
@@ -1173,7 +1178,7 @@ class ShipmentPresenterBoPromoTest {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                     code = "TEST1"
                 )
-            ),
+            )
         )
 
         every { presenter.doApplyBo(any()) } just runs
@@ -1312,7 +1317,7 @@ class ShipmentPresenterBoPromoTest {
         val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
             code = "WGOIN",
             shippingId = 1,
-            spId = 1,
+            spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "1",
@@ -1325,7 +1330,7 @@ class ShipmentPresenterBoPromoTest {
                     originLatitude = "1",
                     originLongitude = "1",
                     weight = 1.0,
-                    weightActual = 1.0,
+                    weightActual = 1.0
                 )
             )
         )
@@ -1361,7 +1366,7 @@ class ShipmentPresenterBoPromoTest {
         val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
             code = "WGOIN",
             shippingId = 1,
-            spId = 1,
+            spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
             isLeasingProduct = true,
@@ -1373,7 +1378,7 @@ class ShipmentPresenterBoPromoTest {
                     originLatitude = "1",
                     originLongitude = "1",
                     weight = 1.0,
-                    weightActual = 1.0,
+                    weightActual = 1.0
                 )
             )
         )
@@ -1407,7 +1412,7 @@ class ShipmentPresenterBoPromoTest {
         val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
             code = "WGOIN",
             shippingId = 1,
-            spId = 1,
+            spId = 1
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "1",
@@ -1429,7 +1434,7 @@ class ShipmentPresenterBoPromoTest {
                 originLatitude = "1",
                 originLongitude = "1",
                 weight = 1.0,
-                weightActual = 1.0,
+                weightActual = 1.0
             )
         )
 
