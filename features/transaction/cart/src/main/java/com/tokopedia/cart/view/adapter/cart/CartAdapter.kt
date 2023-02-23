@@ -1386,19 +1386,30 @@ class CartAdapter @Inject constructor(
         getData().forEachIndexed { index, data ->
             when (data) {
                 is CartShopHolderData -> {
-                    var changeShopLevelCheckboxState = false
-                    data.productUiModelList.forEach {
-                        if (it.isSelected != cheked) {
-                            it.isSelected = cheked
-                            indices.add(index)
-                            changeShopLevelCheckboxState = true
-                        }
-                    }
+//                    var changeShopLevelCheckboxState = false
+//                    data.productUiModelList.forEach {
+//                        if (it.isSelected != cheked) {
+//                            it.isSelected = cheked
+//                            indices.add(index)
+//                            changeShopLevelCheckboxState = true
+//                        }
+//                    }
 
-                    if (changeShopLevelCheckboxState) {
+                    if (data.isAllSelected != cheked) {
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
+                        indices.add(index)
                         actionListener.checkBoAffordability(data)
+                    }
+                }
+                is CartItemHolderData -> {
+                    if (!data.isError) {
+                        if (data.isSelected != cheked) {
+                            data.isSelected = cheked
+                            indices.add(index)
+                        }
+                    } else {
+                        return@forEachIndexed
                     }
                 }
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {

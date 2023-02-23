@@ -2095,13 +2095,21 @@ class CartFragment :
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(index, checked)
         dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
-        if (checked) {
-            val data = cartAdapter.getData()[index]
-            if (data is CartShopHolderData) {
+        val data = cartAdapter.getData()[index]
+        var isCollapsed = false
+        var productSize = 1
+        if (data is CartShopHolderData) {
+            isCollapsed = data.isCollapsed
+            productSize += data.productUiModelList.size
+            if (checked) {
                 checkBoAffordability(data)
             }
         }
-        onNeedToUpdateViewItem(index)
+        if (isCollapsed) {
+            onNeedToUpdateViewItem(index)
+        } else {
+            onNeedToUpdateMultipleViewItem(index, productSize)
+        }
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
 
