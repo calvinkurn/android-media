@@ -6,4 +6,5 @@ sealed class LoginHelperEvent {
     data class ChangeEnvType(val envType: LoginHelperEnvType): LoginHelperEvent()
     object TapBackButton: LoginHelperEvent()
     object GetLoginData: LoginHelperEvent()
+    data class LoginUser(val email: String, val password: String): LoginHelperEvent()
 }

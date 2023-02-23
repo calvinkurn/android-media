@@ -1,4 +1,4 @@
-package com.tokopedia.login_helper.di.component
+package com.tokopedia.login_helper.di.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

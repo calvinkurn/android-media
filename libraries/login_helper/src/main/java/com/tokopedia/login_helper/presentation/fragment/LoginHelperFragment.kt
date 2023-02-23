@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.di.component.DaggerLoginHelperComponent
@@ -17,7 +18,12 @@ import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperViewModel
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -52,6 +58,15 @@ class LoginHelperFragment : BaseDaggerFragment() {
         observeUiState()
         observeUiAction()
         viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
+
+        binding?.apply {
+            loginBtn.setOnClickListener {
+                viewModel.processEvent(LoginHelperEvent.LoginUser(
+                    "pbs-bagas.priyadi+01@tokopedia.com",
+                    "toped123"
+                ))
+            }
+        }
     }
 
     private fun observeUiState() {
@@ -74,6 +89,7 @@ class LoginHelperFragment : BaseDaggerFragment() {
 
     private fun handleUiState(state: LoginHelperUiState) {
         setEnvTypeChip(state.envType)
+        handleLoginToken(state.loginToken)
     }
 
     private fun handleAction(action: LoginHelperAction) {
@@ -118,6 +134,34 @@ class LoginHelperFragment : BaseDaggerFragment() {
             viewModel.processEvent(LoginHelperEvent.TapBackButton)
         }
     }
+
+    private fun handleLoader(shouldShow: Boolean) {
+        binding?.apply {
+            loginDataLoader.showWithCondition(shouldShow)
+        }
+    }
+
+    private fun handleLoginToken(loginToken: Result<LoginToken>?) {
+        when(loginToken) {
+           is Success -> {
+               handleLoginTokenSuccess(loginToken.data)
+           }
+            is Fail -> {
+                handleLoginTokenFailure(loginToken.throwable)
+            }
+        }
+    }
+
+    private fun handleLoginTokenSuccess(data: LoginToken) {
+        //Call for user Profile
+        view?.let { Toaster.build(it,data.toString(), Toaster.LENGTH_LONG).show() }
+   //     viewModel.getUserInfo()
+    }
+
+    private fun handleLoginTokenFailure(throwable: Throwable) {
+        view?.let { Toaster.build(it,"Failure", Toaster.LENGTH_LONG).show() }
+    }
+
 
     override fun getScreenName(): String {
         return context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_header_title)
