@@ -13,7 +13,7 @@ data class ShopHomeCarousellProductUiModel(
     override val name: String = "",
     override val type: String = "",
     override val header: Header = Header(),
-    override val isFestivity: Boolean,
+    override val isFestivity: Boolean = false,
     val productList: List<ShopHomeProductUiModel> = listOf()
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()

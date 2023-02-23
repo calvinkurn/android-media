@@ -349,8 +349,7 @@ class ShopHomeViewModelTest {
         viewModel.getMerchantVoucherCoupon(
             mockShopId,
             context,
-            ShopHomeVoucherUiModel(),
-            isShopFestivity
+            ShopHomeVoucherUiModel()
         )
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
@@ -364,8 +363,7 @@ class ShopHomeViewModelTest {
         viewModel.getMerchantVoucherCoupon(
             mockShopId,
             context,
-            ShopHomeVoucherUiModel(),
-            isShopFestivity
+            ShopHomeVoucherUiModel()
         )
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Fail)
@@ -386,8 +384,7 @@ class ShopHomeViewModelTest {
         viewModel.getMerchantVoucherCoupon(
             mockShopId,
             null,
-            ShopHomeVoucherUiModel(),
-            isShopFestivity
+            ShopHomeVoucherUiModel()
         )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
 
@@ -409,8 +406,7 @@ class ShopHomeViewModelTest {
         viewModel.getMerchantVoucherCoupon(
             mockShopId,
             context,
-            ShopHomeVoucherUiModel(),
-            isShopFestivity
+            ShopHomeVoucherUiModel()
         )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
 
@@ -420,8 +416,7 @@ class ShopHomeViewModelTest {
         viewModel.getMerchantVoucherCoupon(
             mockShopId,
             context,
-            ShopHomeVoucherUiModel(),
-            isShopFestivity
+            ShopHomeVoucherUiModel()
         )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
@@ -1536,7 +1531,7 @@ class ShopHomeViewModelTest {
                 false,
                 any(),
                 any(),
-                listWidgetLayout
+                any()
             ) } returns listOf(
                 ShopHomeCarousellProductUiModel(widgetId = "1")
             )
@@ -1597,7 +1592,7 @@ class ShopHomeViewModelTest {
                 false,
                 any(),
                 any(),
-                listWidgetLayout
+                any()
             ) } returns listOf(
                 resultWidget
             )
@@ -1637,7 +1632,7 @@ class ShopHomeViewModelTest {
                 false,
                 any(),
                 any(),
-                listWidgetLayout
+                any()
             ) } returns listOf(
                 ProductCardUiModel()
             )
