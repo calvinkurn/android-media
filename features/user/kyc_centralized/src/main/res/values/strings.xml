@@ -271,5 +271,9 @@
     <string name="goto_kyc_bridging_done_gopay_button">Oke, Pakai KTP Ini</string>
     <string name="goto_kyc_question_ktp_issue">Bukan KTP kamu? Hubungi Tokopedia Care</string>
     <string name="goto_kyc_contact_tokopedia_care">Hubungi Tokopedia Care</string>
+    <string name="goto_kyc_dob_challenge_title">Konfirmasi pakai tanggal lahirmu</string>
+    <string name="goto_kyc_dob_challenge_subtitle">Karena udah terdaftar di GoPay Plus, kamu tinggal konfirmasi tanggal lahirmu sesuai KTP.</string>
+    <string name="goto_kyc_dob_challenge_choose_dob">Pilih tanggal lahir</string>
+    <string name="goto_kyc_dob_challenge_confirmation">Konfirmasi</string>
 
 </resources>

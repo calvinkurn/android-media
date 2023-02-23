@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_routerFragment_to_bridgingAccountLinkingFragment"
             app:destination="@id/bridgingAccountLinkingFragment" />
+        <action
+            android:id="@+id/action_routerFragment_to_dobChallengeFragment"
+            app:destination="@id/dobChallengeFragment" />
     </fragment>
 
     <fragment
@@ -37,5 +40,9 @@
             app:argType="string"
             android:defaultValue=""/>
     </fragment>
+    <fragment
+        android:id="@+id/dobChallengeFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeFragment"
+        android:label="DobChallengeFragment" />
 
 </navigation>

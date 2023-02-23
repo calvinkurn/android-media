@@ -55,6 +55,11 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toSubmissionStatusPage)
     }
 
+    private fun gotoDobChallenge() {
+        val toDobChallengePage = RouterFragmentDirections.actionRouterFragmentToDobChallengeFragment()
+        view?.findNavController()?.navigate(toDobChallengePage)
+    }
+
     override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
