@@ -1493,9 +1493,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
-            val btmSheet =
-                (childFragmentManager.findFragmentByTag(SellerPersonaBottomSheet.TAG) as? SellerPersonaBottomSheet)
-                    ?: SellerPersonaBottomSheet.newInstance()
+            val btmSheet = SellerPersonaBottomSheet.getInstance(childFragmentManager)
             val shouldShowBottomSheet =
                 !it.isFinishing && !btmSheet.isVisible && sharedPref.shouldShowPersonaHomePopup(
                     userSession.userId

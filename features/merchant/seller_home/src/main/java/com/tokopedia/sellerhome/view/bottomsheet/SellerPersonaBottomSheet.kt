@@ -17,13 +17,14 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.BaseBottomSh
 class SellerPersonaBottomSheet : BaseBottomSheet<BottomSheetSellerPersonaBinding>() {
 
     companion object {
-        fun newInstance(): SellerPersonaBottomSheet {
-            return SellerPersonaBottomSheet().apply {
-                customPeekHeight = 0
-            }
+        fun getInstance(fm: FragmentManager): SellerPersonaBottomSheet {
+            return (fm.findFragmentByTag(TAG) as? SellerPersonaBottomSheet)
+                ?: SellerPersonaBottomSheet().apply {
+                    customPeekHeight = 0
+                }
         }
 
-        const val TAG = "SellerPersonaBottomSheet"
+        private const val TAG = "SellerPersonaBottomSheet"
         private const val IMG_SELLER_PERSONA_ENTRY_POINT =
             "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_entry_point-min.png"
     }
