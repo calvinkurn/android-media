@@ -426,7 +426,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             setupTargetBuyerSection()
             setupSpendingEstimationSection()
             setupButtonSection()
-            presetValue()
             hideTextFieldLabel()
 
             setFreeShippingNominalInput()
@@ -443,6 +442,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
             registerCashbackPromoTypeSwitchListener()
             registerDiscountPromoTypeSwitchListener()
+            presetValue()
         }
     }
 
