@@ -9,7 +9,7 @@ import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetImageTextImageC
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopPerformanceWidgetImageTextComponentImageViewHolder(
+class ShopPageHeaderPerformanceWidgetImageTextComponentImageViewHolder(
     itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 

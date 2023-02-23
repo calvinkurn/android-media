@@ -24,7 +24,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
-internal class ShopPageFragmentPagerAdapter(
+internal class ShopPageHeaderFragmentPagerAdapter(
     private val ctx: Context?,
     fragment: Fragment
 ) : FragmentStateAdapter(fragment) {

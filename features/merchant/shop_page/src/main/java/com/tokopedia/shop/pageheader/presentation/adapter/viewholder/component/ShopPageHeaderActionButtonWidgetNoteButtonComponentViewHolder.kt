@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopActionButtonWidgetNoteButtonComponentViewHolder(
+class ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder(
     itemView: View,
     private val listener: Listener
 ) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {

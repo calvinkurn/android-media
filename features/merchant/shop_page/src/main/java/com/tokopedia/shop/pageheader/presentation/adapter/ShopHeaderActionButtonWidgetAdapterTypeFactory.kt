@@ -15,26 +15,26 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 
 class ShopHeaderActionButtonWidgetAdapterTypeFactory(
     private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
-    private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener
+    private val shopPageHeaderActionButtonWidgetChatButtonComponentListener: ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetFollowButtonComponentListener: ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ShopHeaderButtonComponentTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ShopActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetNoteButtonComponentViewHolder(
+            ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT -> ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder(
                 parent,
-                shopActionButtonWidgetNoteButtonComponentListener
+                shopPageHeaderActionButtonWidgetNoteButtonComponentListener
             )
-            ShopActionButtonWidgetChatButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetChatButtonComponentViewHolder(
+            ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.LAYOUT -> ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
                 parent,
                 shopHeaderWidgetUiModel,
-                shopActionButtonWidgetChatButtonComponentListener
+                shopPageHeaderActionButtonWidgetChatButtonComponentListener
             )
-            ShopActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetFollowButtonComponentViewHolder(
+            ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT -> ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
                 parent,
                 shopHeaderWidgetUiModel,
-                shopActionButtonWidgetFollowButtonComponentListener
+                shopPageHeaderActionButtonWidgetFollowButtonComponentListener
             )
             else -> super.createViewHolder(parent, type)
         }
@@ -42,9 +42,9 @@ class ShopHeaderActionButtonWidgetAdapterTypeFactory(
 
     override fun type(model: ShopHeaderButtonComponentUiModel): Int {
         return when (model.name) {
-            BUTTON_SHOP_NOTES -> ShopActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT
-            BUTTON_CHAT -> ShopActionButtonWidgetChatButtonComponentViewHolder.LAYOUT
-            BUTTON_FOLLOW -> ShopActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT
+            BUTTON_SHOP_NOTES -> ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT
+            BUTTON_CHAT -> ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.LAYOUT
+            BUTTON_FOLLOW -> ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT
             else -> HideViewHolder.LAYOUT
         }
     }

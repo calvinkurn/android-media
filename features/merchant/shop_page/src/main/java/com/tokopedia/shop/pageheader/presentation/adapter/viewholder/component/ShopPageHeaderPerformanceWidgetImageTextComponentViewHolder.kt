@@ -18,7 +18,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderIm
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopPerformanceWidgetImageTextComponentViewHolder(
+class ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder(
     itemView: View,
     private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
     private val listener: Listener

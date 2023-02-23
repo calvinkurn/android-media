@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 
-class ShopActionButtonWidgetAdapter(
+class ShopPageHeaderActionButtonWidgetAdapter(
     typeFactoryComponent: ShopHeaderActionButtonWidgetAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopHeaderActionButtonWidgetAdapterTypeFactory>(typeFactoryComponent) {
 

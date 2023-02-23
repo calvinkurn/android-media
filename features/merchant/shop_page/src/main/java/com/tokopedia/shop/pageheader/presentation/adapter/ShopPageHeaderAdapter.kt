@@ -22,10 +22,10 @@ class ShopPageHeaderAdapter(
         typeFactory.attachAdapter(this)
     }
 
-    private var adapterActionButtonWidget: ShopActionButtonWidgetAdapter? = null
+    private var adapterPageHeaderActionButtonWidget: ShopPageHeaderActionButtonWidgetAdapter? = null
 
-    fun setAdapterWidgetButton(adapterActionButtonWidget: ShopActionButtonWidgetAdapter) {
-        this.adapterActionButtonWidget = adapterActionButtonWidget
+    fun setAdapterWidgetButton(adapterPageHeaderActionButtonWidget: ShopPageHeaderActionButtonWidgetAdapter) {
+        this.adapterPageHeaderActionButtonWidget = adapterPageHeaderActionButtonWidget
     }
 
     fun setData(data: List<ShopHeaderWidgetUiModel>) {
@@ -60,7 +60,7 @@ class ShopPageHeaderAdapter(
     fun setLoadingFollowButton(loading: Boolean) {
         getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW)?.apply {
             this.isButtonLoading = loading
-            adapterActionButtonWidget?.notifyButtonWidgetAdapter()
+            adapterPageHeaderActionButtonWidget?.notifyButtonWidgetAdapter()
         }
     }
 
@@ -83,13 +83,13 @@ class ShopPageHeaderAdapter(
             isNeverFollow?.let {
                 this.isNeverFollow = it
             }
-            adapterActionButtonWidget?.notifyButtonWidgetAdapter()
+            adapterPageHeaderActionButtonWidget?.notifyButtonWidgetAdapter()
         }
     }
 
     fun getFollowButtonView(): View? {
         return getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderButtonComponentUiModel>(BUTTON_FOLLOW)?.let {
-            adapterActionButtonWidget?.getFollowButtonViewHolder(it)
+            adapterPageHeaderActionButtonWidget?.getFollowButtonViewHolder(it)
         }
     }
 

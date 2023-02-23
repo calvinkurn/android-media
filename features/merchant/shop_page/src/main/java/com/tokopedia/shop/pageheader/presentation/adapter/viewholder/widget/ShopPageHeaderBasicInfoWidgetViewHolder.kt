@@ -19,7 +19,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHeaderBasicInfoWidgetViewHolder(
+class ShopPageHeaderBasicInfoWidgetViewHolder(
     itemView: View,
     private val shopHeaderBasicInfoWidgetListener: Listener
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {

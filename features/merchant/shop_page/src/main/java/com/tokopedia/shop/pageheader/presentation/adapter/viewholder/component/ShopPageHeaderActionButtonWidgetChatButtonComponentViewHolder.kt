@@ -11,7 +11,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopActionButtonWidgetChatButtonComponentViewHolder(
+class ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
     itemView: View,
     private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
     private val shopActionButtonWidgetChatButtonComponentListener: Listener

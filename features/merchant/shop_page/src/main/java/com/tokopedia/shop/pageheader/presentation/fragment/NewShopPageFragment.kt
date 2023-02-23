@@ -162,15 +162,15 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
-import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetNoteButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderFragmentPagerAdapter
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderBasicInfoWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopContentCreationOptionBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
@@ -232,14 +232,14 @@ class NewShopPageFragment :
     ShopShareBottomsheetListener,
     ChooseAddressWidget.ChooseAddressWidgetListener,
     InterfaceShopPageHeader,
-    ShopHeaderBasicInfoWidgetViewHolder.Listener,
-    ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
-    ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
-    ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-    ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-    ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
-    ShopHeaderPlayWidgetViewHolder.Listener,
-    ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
+    ShopPageHeaderBasicInfoWidgetViewHolder.Listener,
+    ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+    ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder.Listener,
+    ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.Listener,
+    ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+    ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
+    ShopPageHeaderPlayWidgetViewHolder.Listener,
+    ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
@@ -345,7 +345,7 @@ class NewShopPageFragment :
     private var tabPosition = TAB_POSITION_HOME
     private var stickyLoginView: StickyLoginView? = null
     private var shopPageFragmentHeaderViewHolder: NewShopPageFragmentHeaderViewHolder? = null
-    private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
+    private var viewPagerAdapterHeader: ShopPageHeaderFragmentPagerAdapter? = null
     private var errorTextView: Typography? = null
     private var subErrorTextView: Typography? = null
     private var errorButton: View? = null
@@ -558,7 +558,7 @@ class NewShopPageFragment :
                 if (!isMyShop) {
                     shopPageTracking?.clickScrollToTop(shopId, userId)
                 }
-                val selectedFragment = viewPagerAdapter?.getRegisteredFragment(viewPager?.currentItem.orZero())
+                val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
                 (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
                     it.scrollToTop()
                 }
@@ -571,7 +571,7 @@ class NewShopPageFragment :
         @SuppressLint("WrongConstant") // Suggested constant not same with actual needed value for offscreenPageLimit
         viewPager?.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
         viewPager?.isUserInputEnabled = false
-        viewPager?.adapter = viewPagerAdapter
+        viewPager?.adapter = viewPagerAdapterHeader
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
@@ -1479,7 +1479,7 @@ class NewShopPageFragment :
 
     private fun initAdapter() {
         activity?.run {
-            viewPagerAdapter = ShopPageFragmentPagerAdapter(this, this@NewShopPageFragment)
+            viewPagerAdapterHeader = ShopPageHeaderFragmentPagerAdapter(this, this@NewShopPageFragment)
         }
     }
 
@@ -1734,7 +1734,7 @@ class NewShopPageFragment :
     private fun setupTabs() {
         listShopPageTabModel = (createListShopPageDynamicTabModel() as? List<ShopPageHeaderTabModel>) ?: listOf()
         configureTab(listShopPageTabModel.size)
-        viewPagerAdapter?.setTabData(listShopPageTabModel)
+        viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         selectedPosition = getSelectedDynamicTabPosition()
         tabLayout?.removeAllTabs()
         listShopPageTabModel.forEach {
@@ -1746,7 +1746,7 @@ class NewShopPageFragment :
                 tabLayout?.addTab(it, false)
             }
         }
-        viewPagerAdapter?.notifyDataSetChanged()
+        viewPagerAdapterHeader?.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = getTabView(i)
@@ -1775,8 +1775,8 @@ class NewShopPageFragment :
                 }
                 if (isSellerMigrationEnabled(context)) {
                     getFeedTabFragmentClassName()?.let {
-                        if (isMyShop && viewPagerAdapter?.isFragmentObjectExists(it) == true) {
-                            val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(it)
+                        if (isMyShop && viewPagerAdapterHeader?.isFragmentObjectExists(it) == true) {
+                            val tabFeedPosition = viewPagerAdapterHeader?.getFragmentPosition(it)
                             if (position == tabFeedPosition) {
                                 showBottomSheetSellerMigration()
                             } else {
@@ -1795,11 +1795,11 @@ class NewShopPageFragment :
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
-        viewPagerAdapter?.handleSelectedTab(tab, isActive)
+        viewPagerAdapterHeader?.handleSelectedTab(tab, isActive)
     }
 
     private fun getTabView(index: Int): View? {
-        return viewPagerAdapter?.getDynamicTabView(index, selectedPosition)
+        return viewPagerAdapterHeader?.getDynamicTabView(index, selectedPosition)
     }
 
     private fun sendShopPageClickTabTracker(position: Int) {
@@ -2180,7 +2180,7 @@ class NewShopPageFragment :
 
     override fun refreshData() {
         hideShopPageFab()
-        val shopProductListFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
+        val shopProductListFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {
             shopProductListFragment.clearCache()
         }
@@ -2188,7 +2188,7 @@ class NewShopPageFragment :
         // clear cache feed tab
         shopPageFeedTabSharedViewModel?.clearCache()
 
-        val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)
+        val shopPageHomeFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(TAB_POSITION_HOME)
         if (shopPageHomeFragment is ShopPageHomeFragment) {
             shopPageHomeFragment.clearCache()
         }
@@ -2605,8 +2605,8 @@ class NewShopPageFragment :
     }
 
     override fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
-        return if (viewPagerAdapter?.isFragmentObjectExists(tabFragmentClass) == true) {
-            viewPagerAdapter?.getFragmentPosition(tabFragmentClass) == selectedPosition
+        return if (viewPagerAdapterHeader?.isFragmentObjectExists(tabFragmentClass) == true) {
+            viewPagerAdapterHeader?.getFragmentPosition(tabFragmentClass) == selectedPosition
         } else {
             false
         }
@@ -3290,7 +3290,7 @@ class NewShopPageFragment :
     }
 
     fun getSelectedFragmentInstance(): Fragment? {
-        return viewPagerAdapter?.getRegisteredFragment(viewPager?.currentItem.orZero())
+        return viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
     }
 
     override fun permissionAction(action: String, label: String) {

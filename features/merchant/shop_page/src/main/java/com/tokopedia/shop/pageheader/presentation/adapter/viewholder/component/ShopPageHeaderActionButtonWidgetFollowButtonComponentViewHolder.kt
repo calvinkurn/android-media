@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopActionButtonWidgetFollowButtonComponentViewHolder(
+class ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
     itemView: View,
     private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
     private val listener: Listener

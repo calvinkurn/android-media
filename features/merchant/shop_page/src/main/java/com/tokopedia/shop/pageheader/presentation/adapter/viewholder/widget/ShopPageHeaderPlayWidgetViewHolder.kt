@@ -19,7 +19,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPl
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHeaderPlayWidgetViewHolder(
+class ShopPageHeaderPlayWidgetViewHolder(
     itemView: View,
     private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
     private val listener: Listener

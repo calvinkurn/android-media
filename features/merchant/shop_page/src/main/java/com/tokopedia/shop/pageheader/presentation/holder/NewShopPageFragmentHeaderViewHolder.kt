@@ -27,8 +27,8 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderBasicInfoWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
@@ -42,15 +42,15 @@ class NewShopPageFragmentHeaderViewHolder(
     private val shopPageTracking: ShopPageTrackingBuyer?,
     private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
     private val context: Context,
-    private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
-    private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
-    private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
-    private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
-    private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
+    private val shopPageHeaderBasicInfoWidgetListener: ShopPageHeaderBasicInfoWidgetViewHolder.Listener,
+    private val shopPageHeaderPerformanceWidgetBadgeTextValueListener: ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+    private val shopPageHeaderPerformanceWidgetImageOnlyListener: ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetChatButtonComponentListener: ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetFollowButtonComponentListener: ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
+    private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
     private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
-    private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
+    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
 ) {
     private var isShopFavorite = false
     private var isUserNeverFollow = false
@@ -88,15 +88,15 @@ class NewShopPageFragmentHeaderViewHolder(
     fun setShopHeaderWidgetData(listWidget: List<ShopHeaderWidgetUiModel>) {
         shopPageHeaderAdapter = ShopPageHeaderAdapter(
             ShopPageHeaderAdapterTypeFactory(
-                shopHeaderBasicInfoWidgetListener,
-                shopPerformanceWidgetBadgeTextValueListener,
-                shopPerformanceWidgetImageOnlyListener,
-                shopActionButtonWidgetChatButtonComponentListener,
-                shopActionButtonWidgetFollowButtonComponentListener,
-                shopActionButtonWidgetNoteButtonComponentListener,
+                shopPageHeaderBasicInfoWidgetListener,
+                shopPageHeaderPerformanceWidgetBadgeTextValueListener,
+                shopPageHeaderPerformanceWidgetImageOnlyListener,
+                shopPageHeaderActionButtonWidgetChatButtonComponentListener,
+                shopPageHeaderActionButtonWidgetFollowButtonComponentListener,
+                shopPageHeaderActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
-                shopPlayWidgetListener,
-                shopPerformanceWidgetImageTextListener
+                shopPagePlayWidgetListener,
+                shopPageHeaderPerformanceWidgetImageTextListener
             )
         )
         rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

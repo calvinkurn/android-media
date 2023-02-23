@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderActionButtonWidgetViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPerformanceWidgetViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderActionButtonWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderBasicInfoWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
@@ -19,15 +19,15 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 
 class ShopPageHeaderAdapterTypeFactory(
-    private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
-    private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
-    private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
-    private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
+    private val shopPageHeaderBasicInfoWidgetListener: ShopPageHeaderBasicInfoWidgetViewHolder.Listener,
+    private val shopPageHeaderPerformanceWidgetBadgeTextValueListener: ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+    private val shopPageHeaderPerformanceWidgetImageOnlyListener: ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetChatButtonComponentListener: ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetFollowButtonComponentListener: ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
     private val sgcPlayWidget: ShopPageTrackingSGCPlayWidget?,
-    private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
-    private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
+    private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
+    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
 ) : BaseAdapterTypeFactory() {
 
     private var adapterShopHeader: ShopPageHeaderAdapter? = null
@@ -38,34 +38,34 @@ class ShopPageHeaderAdapterTypeFactory(
 
     fun type(model: ShopHeaderWidgetUiModel): Int {
         return when (model.type.toLowerCase()) {
-            SHOP_BASIC_INFO.toLowerCase() -> ShopHeaderBasicInfoWidgetViewHolder.LAYOUT
+            SHOP_BASIC_INFO.toLowerCase() -> ShopPageHeaderBasicInfoWidgetViewHolder.LAYOUT
             SHOP_PERFORMANCE.toLowerCase() -> ShopHeaderPerformanceWidgetViewHolder.LAYOUT
-            SHOP_ACTION.toLowerCase() -> ShopHeaderActionButtonWidgetViewHolder.LAYOUT
-            SHOP_PLAY.toLowerCase() -> ShopHeaderPlayWidgetViewHolder.LAYOUT
+            SHOP_ACTION.toLowerCase() -> ShopPageHeaderActionButtonWidgetViewHolder.LAYOUT
+            SHOP_PLAY.toLowerCase() -> ShopPageHeaderPlayWidgetViewHolder.LAYOUT
             else -> HideViewHolder.LAYOUT
         }
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ShopHeaderBasicInfoWidgetViewHolder.LAYOUT -> ShopHeaderBasicInfoWidgetViewHolder(parent, shopHeaderBasicInfoWidgetListener)
+            ShopPageHeaderBasicInfoWidgetViewHolder.LAYOUT -> ShopPageHeaderBasicInfoWidgetViewHolder(parent, shopPageHeaderBasicInfoWidgetListener)
             ShopHeaderPerformanceWidgetViewHolder.LAYOUT -> ShopHeaderPerformanceWidgetViewHolder(
                 parent,
-                shopPerformanceWidgetBadgeTextValueListener,
-                shopPerformanceWidgetImageOnlyListener,
-                shopPerformanceWidgetImageTextListener
+                shopPageHeaderPerformanceWidgetBadgeTextValueListener,
+                shopPageHeaderPerformanceWidgetImageOnlyListener,
+                shopPageHeaderPerformanceWidgetImageTextListener
             )
-            ShopHeaderActionButtonWidgetViewHolder.LAYOUT -> ShopHeaderActionButtonWidgetViewHolder(
+            ShopPageHeaderActionButtonWidgetViewHolder.LAYOUT -> ShopPageHeaderActionButtonWidgetViewHolder(
                 parent,
-                shopActionButtonWidgetChatButtonComponentListener,
-                shopActionButtonWidgetFollowButtonComponentListener,
-                shopActionButtonWidgetNoteButtonComponentListener,
+                shopPageHeaderActionButtonWidgetChatButtonComponentListener,
+                shopPageHeaderActionButtonWidgetFollowButtonComponentListener,
+                shopPageHeaderActionButtonWidgetNoteButtonComponentListener,
                 adapterShopHeader
             )
-            ShopHeaderPlayWidgetViewHolder.LAYOUT -> ShopHeaderPlayWidgetViewHolder(
+            ShopPageHeaderPlayWidgetViewHolder.LAYOUT -> ShopPageHeaderPlayWidgetViewHolder(
                 parent,
                 sgcPlayWidget,
-                shopPlayWidgetListener
+                shopPagePlayWidgetListener
             )
             else -> super.createViewHolder(parent, type)
         }

@@ -13,7 +13,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopPerformanceWidgetImageOnlyComponentViewHolder(
+class ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder(
     itemView: View,
     private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
     private val listener: Listener

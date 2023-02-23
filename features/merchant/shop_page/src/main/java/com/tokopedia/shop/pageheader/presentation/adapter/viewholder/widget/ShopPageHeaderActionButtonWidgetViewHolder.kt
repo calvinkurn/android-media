@@ -7,20 +7,20 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopHeaderButtonWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.ShopPageActionButtonWidgetMarginItemDivider
-import com.tokopedia.shop.pageheader.presentation.adapter.ShopActionButtonWidgetAdapter
+import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderActionButtonWidgetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderActionButtonWidgetAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetNoteButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHeaderActionButtonWidgetViewHolder(
+class ShopPageHeaderActionButtonWidgetViewHolder(
     itemView: View,
-    private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-    private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetChatButtonComponentListener: ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetFollowButtonComponentListener: ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+    private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
     private val adapterShopHeader: ShopPageHeaderAdapter?
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
@@ -32,12 +32,12 @@ class ShopHeaderActionButtonWidgetViewHolder(
     private val recyclerViewButtonComponent: RecyclerView? = viewBinding?.rvButtonComponent
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
-        val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(
+        val shopActionButtonWidgetAdapter = ShopPageHeaderActionButtonWidgetAdapter(
             ShopHeaderActionButtonWidgetAdapterTypeFactory(
                 model,
-                shopActionButtonWidgetChatButtonComponentListener,
-                shopActionButtonWidgetFollowButtonComponentListener,
-                shopActionButtonWidgetNoteButtonComponentListener
+                shopPageHeaderActionButtonWidgetChatButtonComponentListener,
+                shopPageHeaderActionButtonWidgetFollowButtonComponentListener,
+                shopPageHeaderActionButtonWidgetNoteButtonComponentListener
             )
         )
         adapterShopHeader?.setAdapterWidgetButton(shopActionButtonWidgetAdapter)
