@@ -215,12 +215,6 @@ class LivenessFragment : BaseDaggerFragment(),
                         getString(R.string.liveness_failed_reason_multipleface))
                     changeTipTextView(R.string.liveness_failed_reason_multipleface)
                 }
-                WARN_MOUTH_OCCLUSION -> {
-                    viewBinding?.textTipView?.setText("Lepas Penghalang Mulut")
-                }
-                WARN_EYE_OCCLUSION -> {
-                    viewBinding?.textTipView?.setText("Lepas Penghalang Mata")
-                }
                 FACEINACTION -> {
                     livenessWarnState = null
                     showActionTipUIView()
