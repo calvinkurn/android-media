@@ -408,11 +408,12 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleSessionChange(agentMode: ReplyBubbleAttributes) {
-        if (agentMode.sessionChange.mode == MODE_AGENT) {
+        //TODO NEED TO OPEN THIS FOR REAL SCENNARIO
+        //if (agentMode.sessionChange.mode == MODE_AGENT) {
             view.sessionChangeStateHandler(true)
-        } else if (agentMode.sessionChange.mode == MODE_BOT) {
+        /*} else if (agentMode.sessionChange.mode == MODE_BOT) {
             view.sessionChangeStateHandler(false)
-        }
+        }*/
     }
 
     private fun getLiveChatQuickReply(): List<QuickReplyUiModel> {

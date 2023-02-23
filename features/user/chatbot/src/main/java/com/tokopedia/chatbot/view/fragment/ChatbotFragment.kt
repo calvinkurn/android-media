@@ -158,10 +158,15 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
+import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.chatbot.view.util.showToaster
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -277,7 +282,6 @@ class ChatbotFragment :
     private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
     private var replyBoxBottomSheetPlaceHolder: String = ""
     private var replyBoxBottomSheetTitle: String = ""
-    var xForReplyBubbleOnboarding: Int = 0
     var yForReplyBubbleOnboarding: Int = 0
     var replyBubbleOnBoardingHasBeenShow: Boolean = false
     var videoUploadOnBoardingHasBeenShow: Boolean = false
@@ -438,6 +442,7 @@ class ChatbotFragment :
         bigReplyBox?.replyBoxClickListener = this
         bigReplyBox?.sendButtonListener = this
     }
+
     private fun initSmoothScroller() {
         smoothScroll = SmoothScroller(context)
     }
@@ -648,12 +653,14 @@ class ChatbotFragment :
     }
 
     private fun goToOnboardingActivity() {
-        val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
-        val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
+        //TODO NEED TO OPEN THIS FOR REAL SCENNARIO
 
-        if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
-            return
-        }
+        /* val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
+         val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
+
+         if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
+             return
+         }*/
 
         val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
         intent.putExtra(Y_COORDINATE, yForReplyBubbleOnboarding)
@@ -1913,7 +1920,6 @@ class ChatbotFragment :
         recyclerView?.getChildAt(position - firstPosition)
             ?.getLocationOnScreen(location)
 
-        xForReplyBubbleOnboarding = location[0]
         yForReplyBubbleOnboarding = location[1]
         goToOnboardingActivity()
     }
@@ -2247,5 +2253,36 @@ class ChatbotFragment :
             getUserNameForReplyBubble.getUserName(messageUiModel)
         )
         replyBubbleBottomSheet?.dismiss()
+    }
+
+    private fun checkVideoUploadOnboardingStatus() {
+        getBindingView().coachMarkHelper.apply {
+            bringToFront()
+            visible()
+            isClickable = true
+            setOnClickListener {
+                videoUploadOnBoarding.dismiss()
+            }
+        }
+        //TODO NEED TO OPEN THIS FOR REAL SCENNARIO
+
+        /* val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
+         if (!hasBeenShown) {*/
+        showCoachMarkOfVideoReplay()
+        //}
+    }
+
+    private fun showCoachMarkOfVideoReplay() {
+        videoUploadOnBoarding.onboardingDismissListener = object : OnboardingVideoDismissListener {
+            override fun dismissVideoUploadOnBoarding() {
+                getBindingView().coachMarkHelper.gone()
+                smoothScrollToPosition(ZERO_POSITION)
+            }
+        }
+        if (smallReplyBox?.isVisible.orFalse()) {
+            getBindingView().smallReplyBox.showCoachMark(videoUploadOnBoarding)
+        } else {
+            getBindingView().bigReplyBox.showCoachMark(videoUploadOnBoarding)
+        }
     }
 }
