@@ -13,6 +13,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.TodoWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.TodoWidgetAdapter
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -79,6 +80,10 @@ class TodoWidgetViewHolder(
 
     private fun convertDataToMissionWidgetData(element: TodoWidgetListDataModel): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = mutableListOf()
+        val maxCardHeight = TodoWidgetUtil.findMaxTodoWidgetHeight(
+            element.todoWidgetList,
+            itemView.context
+        )
 
         for (todoWidget in element.todoWidgetList) {
             list.add(
