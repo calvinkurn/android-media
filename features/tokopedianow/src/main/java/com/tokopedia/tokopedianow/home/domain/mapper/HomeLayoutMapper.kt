@@ -16,6 +16,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CATEGORY
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.COUPON_CLAIM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
@@ -47,6 +48,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMappe
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
+import com.tokopedia.tokopedianow.home.domain.mapper.ClaimCouponMapper.mapToClaimCouponUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
@@ -62,6 +64,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSlide
 import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.createSwitcherUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemIndex
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
+import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
@@ -81,6 +84,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiMod
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -103,7 +107,8 @@ object HomeLayoutMapper {
         MIX_LEFT_CAROUSEL,
         MIX_LEFT_CAROUSEL_ATC,
         MEDIUM_PLAY_WIDGET,
-        SMALL_PLAY_WIDGET
+        SMALL_PLAY_WIDGET,
+        COUPON_CLAIM
     )
 
     fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList() {
@@ -228,6 +233,22 @@ object HomeLayoutMapper {
                 val layout = it.layout.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
+            val index = indexOf(it)
+            removeAt(index)
+            add(index, newItem)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeCatalogCouponList(
+        response: GetCatalogCouponListResponse
+    ) {
+        firstOrNull { it?.layout is HomeClaimCouponWidgetUiModel }?.let {
+            val item = it.layout as HomeClaimCouponWidgetUiModel
+            val layout = it.layout.copy(
+                id = item.id,
+                claimCouponList = listOf()
+            )
+            val newItem = HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             val index = indexOf(it)
             removeAt(index)
             add(index, newItem)
@@ -684,13 +705,14 @@ object HomeLayoutMapper {
 
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
-            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
+            CATEGORY -> mapToClaimCouponUiModel(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)
             SMALL_PLAY_WIDGET -> mapToSmallPlayWidget(response, notLoadedState)
+            COUPON_CLAIM -> mapToClaimCouponUiModel(response, notLoadedState)
             // endregion
             else -> null
         }

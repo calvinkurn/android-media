@@ -77,6 +77,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiMod
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder
@@ -97,6 +99,9 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidget
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSwitcherViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.HomeCouponWidgetItemListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -120,6 +125,7 @@ class HomeAdapterTypeFactory(
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null,
     private val productRecommendationBindOocListener: TokonowRecomBindPageNameListener? = null,
+    private val claimCouponWidgetItemListener: HomeCouponWidgetItemListener? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -155,6 +161,8 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeSwitcherUiModel): Int = HomeSwitcherViewHolder.LAYOUT
     override fun type(uiModel: HomeLeftCarouselAtcUiModel): Int = HomeLeftCarouselAtcViewHolder.LAYOUT
     override fun type(uiModel: HomePlayWidgetUiModel): Int = HomePlayWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeClaimCouponWidgetItemUiModel): Int = HomeClaimCouponWidgetItemViewHolder.LAYOUT
+    override fun type(uiModel: HomeClaimCouponWidgetUiModel): Int = HomeClaimCouponWidgetViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -200,6 +208,8 @@ class HomeAdapterTypeFactory(
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
             HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, rtrListener, rtrAnalytics)
             HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
+            HomeClaimCouponWidgetItemViewHolder.LAYOUT -> HomeClaimCouponWidgetItemViewHolder(view, claimCouponWidgetItemListener)
+            HomeClaimCouponWidgetViewHolder.LAYOUT -> HomeClaimCouponWidgetViewHolder(view, claimCouponWidgetItemListener)
             // endregion
 
             // region Global Home Component

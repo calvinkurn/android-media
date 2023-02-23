@@ -154,6 +154,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
@@ -259,7 +260,8 @@ class TokoNowHomeFragment : Fragment(),
                 playWidgetCoordinator = createPlayWidgetCoordinator(),
                 rtrListener = createRealTimeRecommendationListener(),
                 rtrAnalytics = rtrAnalytics,
-                productRecommendationBindOocListener = createProductRecomOocCallback()
+                productRecommendationBindOocListener = createProductRecomOocCallback(),
+                claimCouponWidgetItemListener = createClaimCouponWidgetCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -1134,6 +1136,30 @@ class TokoNowHomeFragment : Fragment(),
                 }
             }
         }
+
+        observe(viewModelTokoNow.couponClaimed) {
+            when (it) {
+                is Success -> {
+                    val couponClaimed = it.data
+                    if (couponClaimed.code == "not logged in") {
+                        RouteManager.route(context, ApplinkConst.LOGIN)
+                    } else {
+                        showToaster(
+                            message = "Selamat, kupon berhasil diklaim! Lihat kupon saya sekarang",
+                            actionText = "Lihat",
+                            type = TYPE_NORMAL,
+                            onClickActionBtn = {
+                                RouteManager.route(context, couponClaimed.appLink)
+                            }
+                        )
+                    }
+                }
+                is Fail -> showToaster(
+                    message = it.throwable.message ?: "Ada yang salah. Silakan coba lagi",
+                    type = TYPE_ERROR
+                )
+            }
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -1881,6 +1907,10 @@ class TokoNowHomeFragment : Fragment(),
         return HomeRealTimeRecomAnalytics(userSession)
     }
 
+    private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetItemCallback {
+        return ClaimCouponWidgetItemCallback(viewModelTokoNow)
+    }
+
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {
         return HomeCategoryMenuCallback(
             analytics = analytics,
@@ -1948,4 +1978,5 @@ class TokoNowHomeFragment : Fragment(),
     private fun openWebView(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?titlebar=false&url=${linkUrl}")
     }
+
 }
