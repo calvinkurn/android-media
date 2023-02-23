@@ -16,6 +16,7 @@ import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.watch.TokopediaWatchActivity
 import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {

@@ -14,8 +14,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultSameSessionRecommendationLayoutBinding
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback.FeedbackItem
 import com.tokopedia.search.utils.addItemDecorationIfNotExists

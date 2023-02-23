@@ -27,47 +27,45 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        setUpViewAccountLinking()
+        setUpViewKtp()
+        setUpViewSelfie()
     }
 
-    private fun initView() {
-        binding?.apply {
-            tvTitle.text = if (source.isEmpty()) {
-                getString(R.string.goto_kyc_onboard_non_progressive_title_account_page)
-            } else {
-                getString(R.string.goto_kyc_onboard_non_progressive_title_not_account_page, source)
-            }
-
-            layoutAccountLinking.imgItemOnboard.loadImageWithoutPlaceholder(
+    private fun setUpViewAccountLinking() {
+        binding?.layoutAccountLinking?.apply {
+            imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_account_linking)
-            )
-            layoutKtp.imgItemOnboard.loadImageWithoutPlaceholder(
-                getString(R.string.img_url_goto_kyc_onboard_ktp)
-            )
-            layoutSelfie.imgItemOnboard.loadImageWithoutPlaceholder(
-                getString(R.string.img_url_goto_kyc_onboard_selfie)
             )
 
             layoutAccountLinking.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_title)
             if (isAccountLinked) {
-                layoutAccountLinking.tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                     R.drawable.ic_checklist_circle_green, 0)
             }
 
-            layoutAccountLinking.tvItemSubtitle.text = if (isAccountLinked) {
+            tvItemSubtitle.text = if (isAccountLinked) {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_subtitle_linked)
             } else {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked)
             }
+        }
+    }
+
+    private fun setUpViewKtp() {
+        binding?.layoutKtp?.apply {
+            imgItemOnboard.loadImageWithoutPlaceholder(
+                getString(R.string.img_url_goto_kyc_onboard_ktp)
+            )
 
             layoutKtp.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_title)
             if (isKtpTaken) {
-                layoutKtp.tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                     R.drawable.ic_checklist_circle_green, 0)
-                layoutKtp.tvShowFile.show()
+                tvShowFile.show()
             }
 
-            layoutKtp.tvItemSubtitle.text = if (isKtpTaken) {
+            tvItemSubtitle.text = if (isKtpTaken) {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken)
             } else {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
@@ -75,6 +73,14 @@ class OnboardNonProgressiveBottomSheet(private val source: String = "", private 
 
             layoutSelfie.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
             layoutSelfie.tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle)
+        }
+    }
+
+    private fun setUpViewSelfie() {
+        binding?.layoutSelfie?.apply {
+            imgItemOnboard.loadImageWithoutPlaceholder(
+                getString(R.string.img_url_goto_kyc_onboard_selfie)
+            )
         }
     }
 

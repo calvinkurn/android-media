@@ -162,6 +162,20 @@ class GotoKycTransparentFragment: BaseDaggerFragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
+    private fun directTocKyc() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.KYC_INFO_BASE)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "GET_PROJECT_ID_FROM_VIEW_MODEL")
+        startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun directToGotoKyc() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.GOTO_KYC)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "GET_PROJECT_ID_FROM_VIEW_MODEL")
+        startActivity(intent)
+        activity?.finish()
+    }
+
     override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {

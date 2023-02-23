@@ -59,7 +59,6 @@ import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
@@ -82,9 +81,7 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterViewDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListenerDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
@@ -125,7 +122,6 @@ class ProductListFragment: BaseDaggerFragment(),
     ProductListSectionContract.View,
     ProductListener,
     RecommendationListener,
-    InspirationCarouselListener,
     QuickFilterElevation,
     ChooseAddressListener,
     ProductListParameterListener,
@@ -453,7 +449,14 @@ class ProductListFragment: BaseDaggerFragment(),
                 this,
             ),
             recommendationListener = this,
-            inspirationCarouselListener = this,
+            inspirationCarouselListener = InspirationCarouselListenerDelegate(
+                this,
+                activity,
+                this,
+                trackingQueue,
+                getUserId(),
+                presenter
+            ),
             broadMatchListener = BroadMatchListenerDelegate(
                 presenter,
                 productCardLifecycleObserver,
@@ -1191,160 +1194,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
                 return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
             } ?: 0
-    //endregion
-
-    //region Inspiration Carousel
-    override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {
-        redirectionStartActivity(product.applink, product.url)
-
-        val products = ArrayList<Any>()
-        products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
-
-        InspirationCarouselTracking.trackEventClickInspirationCarouselInfoProduct(
-            product.inspirationCarouselType,
-            queryKey,
-            products,
-        )
-    }
-
-    override fun onInspirationCarouselSeeAllClicked(
-        inspirationCarouselDataViewOption: InspirationCarouselDataView.Option,
-    ) {
-        redirectionStartActivity(inspirationCarouselDataViewOption.applink, inspirationCarouselDataViewOption.url)
-
-        InspirationCarouselTracking.trackCarouselClickSeeAll(
-            queryKey,
-            inspirationCarouselDataViewOption,
-        )
-    }
-
-    override fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselDataView.Option) {
-        redirectionStartActivity(option.bannerApplinkUrl, option.bannerLinkUrl)
-
-        InspirationCarouselTracking.trackEventClickInspirationCarouselGridBanner(
-                option.inspirationCarouselType, queryKey, option.getBannerDataLayer(queryKey), getUserId()
-        )
-    }
-
-    override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {
-        val trackingQueue = trackingQueue ?: return
-
-        val products = ArrayList<Any>()
-        products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
-
-        InspirationCarouselTracking.trackImpressionInspirationCarouselInfo(
-                trackingQueue,
-                product.inspirationCarouselType,
-                queryKey,
-                products
-        )
-    }
-
-    override fun onInspirationCarouselListProductImpressed(
-        product: InspirationCarouselDataView.Option.Product
-    ) {
-        presenter?.onInspirationCarouselProductImpressed(product)
-    }
-
-    override fun onInspirationCarouselListProductClicked(
-        product: InspirationCarouselDataView.Option.Product
-    ) {
-        presenter?.onInspirationCarouselProductClick(product)
-    }
-
-    override fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
-        val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(product, searchParameter)
-
-        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
-    }
-
-    override fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
-        val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(product, searchParameter)
-
-        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
-    }
-
-    override fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product, searchParameter)
-
-        InspirationCarouselTracking.trackCarouselClick(data)
-    }
-
-    override fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product, searchParameter)
-
-        InspirationCarouselTracking.trackCarouselClick(data)
-    }
-
-    override fun onInspirationCarouselGridProductImpressed(
-        product: InspirationCarouselDataView.Option.Product
-    ) {
-        presenter?.onInspirationCarouselProductImpressed(product)
-    }
-
-    override fun onInspirationCarouselGridProductClicked(
-        product: InspirationCarouselDataView.Option.Product
-    ) {
-        presenter?.onInspirationCarouselProductClick(product)
-    }
-
-    override fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product, searchParameter)
-        val trackingQueue = trackingQueue ?: return
-
-        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
-    }
-
-    override fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product, searchParameter)
-
-        InspirationCarouselTracking.trackCarouselClick(data)
-    }
-
-    override fun onInspirationCarouselChipsProductClicked(
-        product: InspirationCarouselDataView.Option.Product
-    ) {
-        presenter?.onInspirationCarouselProductClick(product)
-    }
-
-    override fun onImpressedInspirationCarouselChipsProduct(
-        product: InspirationCarouselDataView.Option.Product,
-    ) {
-        presenter?.onInspirationCarouselProductImpressed(product)
-    }
-
-    override fun onInspirationCarouselChipsSeeAllClicked(
-        inspirationCarouselDataViewOption: InspirationCarouselDataView.Option,
-    ) {
-        redirectionStartActivity(
-            inspirationCarouselDataViewOption.applink,
-            inspirationCarouselDataViewOption.url
-        )
-
-        InspirationCarouselTracking.trackCarouselClickSeeAll(
-            queryKey,
-            inspirationCarouselDataViewOption,
-        )
-    }
-
-    override fun onInspirationCarouselChipsClicked(
-        inspirationCarouselAdapterPosition: Int,
-        inspirationCarouselViewModel: InspirationCarouselDataView,
-        inspirationCarouselOption: InspirationCarouselDataView.Option,
-    ) {
-        presenter?.onInspirationCarouselChipsClick(
-            adapterPosition = inspirationCarouselAdapterPosition,
-            inspirationCarouselViewModel = inspirationCarouselViewModel,
-            clickedInspirationCarouselOption = inspirationCarouselOption,
-            searchParameter = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
-        )
-    }
-
-    override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {
-        InspirationCarouselTracking.trackCarouselClickSeeAll(queryKey, option)
-    }
     //endregion
 
     //region on boarding / coachmark
