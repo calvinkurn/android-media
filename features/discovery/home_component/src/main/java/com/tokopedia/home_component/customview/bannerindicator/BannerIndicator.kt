@@ -33,7 +33,7 @@ class BannerIndicator : LinearLayout {
         private const val MAXIMUM_PROGRESS = 100
         private const val SCROLL_TRANSITION_DURATION = 5000L
         private const val WIDTH_MINIMUM_PROGRESS = 6
-        private const val WIDTH_MAXIMUM_PROGRESS = 46
+        private const val WIDTH_MAXIMUM_PROGRESS = 48
     }
 
     private val marginHorizontalProgress = 2f.toDpInt()
