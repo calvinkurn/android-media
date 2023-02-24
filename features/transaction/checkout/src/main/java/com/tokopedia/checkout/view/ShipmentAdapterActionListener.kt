@@ -66,7 +66,7 @@ interface ShipmentAdapterActionListener {
         recipientAddressModel: RecipientAddressModel?,
         shipmentCartItemModel: ShipmentCartItemModel?,
         position: Int,
-        selectedShippingCourierUiModels: List<ShippingCourierUiModel?>?
+        selectedShippingCourierUiModels: List<ShippingCourierUiModel>?
     )
 
     fun hideSoftKeyboard()
@@ -90,7 +90,7 @@ interface ShipmentAdapterActionListener {
     fun hasSelectTradeInLocation(): Boolean
     fun onTradeInAddressTabChanged(addressPosition: Int)
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel?)
-    fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean?, listAllPromoCodes: List<String?>?)
+    fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean?, listAllPromoCodes: List<String>)
     fun onSendAnalyticsViewPromoCheckoutApplied()
     fun onCheckShippingCompletionClicked()
     fun onShowTickerShippingCompletion()
@@ -125,6 +125,6 @@ interface ShipmentAdapterActionListener {
     fun onChangeScheduleDelivery(
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?,
         position: Int,
-        donePublisher: PublishSubject<Boolean?>?
+        donePublisher: PublishSubject<Boolean>
     )
 }

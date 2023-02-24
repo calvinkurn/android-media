@@ -109,7 +109,7 @@ interface ShipmentContract {
 
         fun cancelAllCourierPromo()
         fun updateCourierBottomssheetHasData(
-            shippingCourierUiModels: List<ShippingCourierUiModel?>?,
+            shippingCourierUiModels: List<ShippingCourierUiModel>?,
             cartPosition: Int,
             shipmentCartItemModel: ShipmentCartItemModel?,
             preOrderModel: PreOrderModel?
@@ -309,7 +309,7 @@ interface ShipmentContract {
             shipmentCartItemModel: ShipmentCartItemModel?,
             shopShipmentList: List<ShopShipment?>?,
             isInitialLoad: Boolean,
-            products: ArrayList<Product?>?,
+            products: ArrayList<Product>,
             cartString: String?,
             isTradeInDropOff: Boolean,
             recipientAddressModel: RecipientAddressModel?,
@@ -331,7 +331,7 @@ interface ShipmentContract {
             locationPass: LocationPass?
         )
 
-        fun cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata?>?)
+        fun cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>?)
         fun cancelAutoApplyPromoStackLogistic(
             itemPosition: Int,
             promoCode: String?,
@@ -356,7 +356,7 @@ interface ShipmentContract {
             orderNumber: Int
         )
 
-        fun getShippingCourierViewModelsState(orderNumber: Int): List<ShippingCourierUiModel?>?
+        fun getShippingCourierViewModelsState(orderNumber: Int): List<ShippingCourierUiModel>?
         var couponStateChanged: Boolean
         val codData: CodModel?
         val campaignTimer: CampaignTimerUi?
@@ -405,7 +405,7 @@ interface ShipmentContract {
         fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
         val shipmentUpsellModel: ShipmentUpsellModel?
         val shipmentNewUpsellModel: ShipmentNewUpsellModel?
-        fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String?>?, ArrayList<String?>?>?
+        fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String?>, ArrayList<String?>>
         fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
         fun validateClearAllBoPromo()
         fun doUnapplyBo(uniqueId: String?, promoCode: String?)

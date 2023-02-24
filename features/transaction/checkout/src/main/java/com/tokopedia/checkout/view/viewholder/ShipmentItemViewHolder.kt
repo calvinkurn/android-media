@@ -201,7 +201,7 @@ class ShipmentItemViewHolder(
     private var tvAddOnCostLabel: Typography
     private var tvAddOnPrice: Typography
     private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
-    private var scheduleDeliveryDonePublisher: PublishSubject<Boolean?>? = null
+    private var scheduleDeliveryDonePublisher: PublishSubject<Boolean>? = null
     private var scheduleDeliverySubscription: Subscription? = null
     private var plusCoachmarkPrefs: PlusCoachmarkPrefs
 
@@ -2031,7 +2031,7 @@ class ShipmentItemViewHolder(
                 mActionListener?.onChangeScheduleDelivery(
                     scheduleDeliveryUiModel,
                     position,
-                    scheduleDeliveryDonePublisher
+                    scheduleDeliveryDonePublisher!!
                 )
                 scheduleDeliveryDonePublisher
             }

@@ -1,1606 +1,1683 @@
-package com.tokopedia.checkout.view;
+package com.tokopedia.checkout.view
 
-import static com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_LABEL_TRADE_IN_CHECKOUT_EE;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER_ID;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
-import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
-import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CART_RESULT_CODE;
-import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE;
-import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LATITUDE;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LONGITUDE;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.text.TextUtils;
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
-
-import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.analytics.performance.util.EmbraceKey;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
-import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
-import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
-import com.tokopedia.checkout.analytics.CornerAnalytics;
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
-import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
-import com.tokopedia.checkout.domain.model.checkout.Prompt;
-import com.tokopedia.checkout.domain.model.checkout.TrackerData;
-import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
-import com.tokopedia.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.checkout.view.di.CheckoutModule;
-import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
-import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
-import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
-import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
-import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
-import com.tokopedia.checkout.webview.UpsellWebViewActivity;
-import com.tokopedia.coachmark.CoachMark2;
-import com.tokopedia.coachmark.CoachMark2Item;
-import com.tokopedia.coachmark.CoachMarkPreference;
-import com.tokopedia.common.payment.PaymentConstant;
-import com.tokopedia.common.payment.model.PaymentPassData;
-import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult;
-import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow;
-import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper;
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
-import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
-import com.tokopedia.logisticCommon.data.constant.ManageAddressSource;
-import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
-import com.tokopedia.logisticCommon.data.entity.address.Token;
-import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
-import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
-import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
-import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel;
-import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
-import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant;
-import com.tokopedia.purchase_platform.common.constant.CartConstant;
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
-import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
-import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet;
-import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
-import com.tokopedia.purchase_platform.common.utils.Utils;
-import com.tokopedia.purchase_platform.common.utils.UtilsKt;
-import com.tokopedia.unifycomponents.TimerUnify;
-import com.tokopedia.unifycomponents.Toaster;
-import com.tokopedia.unifyprinciples.Typography;
-import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.utils.currency.CurrencyFormatUtil;
-import com.tokopedia.utils.time.TimeHelper;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
-import kotlin.Unit;
-import rx.Emitter;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
-import timber.log.Timber;
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.EmbraceKey
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.checkout.R
+import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
+import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
+import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapAddOnBottomSheetParam
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapAvailableBottomSheetOrderLevelData
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapAvailableBottomSheetProductLevelData
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBottomSheetOrderLevelData
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBottomSheetProductLevelData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.checkout.CheckoutData
+import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
+import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorApplyBo
+import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorCheckout
+import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorLoadCheckoutPage
+import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorLoadCourier
+import com.tokopedia.checkout.view.ShipmentContract.AnalyticsActionListener
+import com.tokopedia.checkout.view.adapter.ShipmentAdapter
+import com.tokopedia.checkout.view.converter.RatesDataConverter
+import com.tokopedia.checkout.view.converter.RatesDataConverter.Companion.getLogisticPromoCode
+import com.tokopedia.checkout.view.di.CheckoutModule
+import com.tokopedia.checkout.view.di.DaggerCheckoutComponent
+import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener
+import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog.Companion.newInstance
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
+import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
+import com.tokopedia.checkout.webview.CheckoutWebViewActivity.Companion.newInstance
+import com.tokopedia.checkout.webview.UpsellWebViewActivity.Companion.getStartIntent
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference.hasShown
+import com.tokopedia.coachmark.CoachMarkPreference.setShown
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
+import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_REF
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.getLocalizingAddressData
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.updateLocalizingAddressDataFromOther
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.updateTokoNowData
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.CourierItemData.Companion.clone
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCartViewPromoMessage
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutClickPilihPromoLainOnBottomsheetPromoError
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutClickPromoSection
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutViewBottomsheetPromoError
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutViewPromoAlreadyApplied
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.constant.ARGS_APPLIED_MVC_CART_STRINGS
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
+import com.tokopedia.purchase_platform.common.constant.ARGS_CHOSEN_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
+import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LATITUDE
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LONGITUDE
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED
+import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
+import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.Utils.setToasterCustomBottomHeight
+import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TimerUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
+import com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorString
+import com.tokopedia.utils.time.TimeHelper.timeBetweenRFC3339
+import com.tokopedia.utils.time.TimeHelper.timeSinceNow
+import rx.Emitter
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
+import rx.schedulers.Schedulers
+import rx.subjects.PublishSubject
+import timber.log.Timber
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * @author Irfan Khoirul on 23/04/18.
  * Originaly authored by Aghny, Angga, Kris
  */
-
-public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
-        ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
-        ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
-        PromoNotEligibleActionListener, SellerCashbackListener,
-        ExpireTimeDialogListener, UploadPrescriptionListener {
-
-    private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
-    private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
-    private static final int REQUEST_CODE_PROMO = 954;
-    public static final int REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021;
-    public static final int REQUEST_CODE_MINI_CONSULTATION = 10022;
-    private static final int REQUEST_CODE_UPSELL = 777;
-    private static final int ADD_ON_STATUS_ACTIVE = 1;
-    private static final int ADD_ON_STATUS_DISABLE = 2;
-
-    private static final String SHIPMENT_TRACE = "mp_shipment";
-
-    private static final String KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids";
-    public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
-    public static final String ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID";
-    public static final String ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE";
-    public static final String ARG_IS_PLUS_SELECTED = "ARG_IS_PLUS_SELECTED";
-    private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
-    private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
-    public static String EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string";
-
-    private static final String KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark";
-
-    private static final long TOASTER_THROTTLE = 2000;
-
-    private RecyclerView rvShipment;
-    private SwipeToRefresh swipeToRefresh;
-    private LinearLayout llNetworkErrorView;
-    private AlertDialog progressDialogNormal;
-    private ShippingCourierBottomsheet shippingCourierBottomsheet;
-    private PerformanceMonitoring shipmentTracePerformance;
-    private boolean isShipmentTraceStopped;
-    private String cornerId;
-    private PromoNotEligibleBottomSheet promoNotEligibleBottomsheet;
+class ShipmentFragment :
+    BaseCheckoutFragment(),
+    ShipmentContract.View,
+    AnalyticsActionListener,
+    ShipmentAdapterActionListener,
+    ShippingDurationBottomsheetListener,
+    ShippingCourierBottomsheetListener,
+    PromoNotEligibleActionListener,
+    SellerCashbackListener,
+    ExpireTimeDialogListener,
+    UploadPrescriptionListener {
+    private var rvShipment: RecyclerView? = null
+    private var swipeToRefresh: SwipeToRefresh? = null
+    private var llNetworkErrorView: LinearLayout? = null
+    private var progressDialogNormal: AlertDialog? = null
+    private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
+    private var shipmentTracePerformance: PerformanceMonitoring? = null
+    private var isShipmentTraceStopped = false
+    var cornerId: String? = null
+    private var promoNotEligibleBottomsheet: PromoNotEligibleBottomSheet? = null
 
     @Inject
-    ShipmentAdapter shipmentAdapter;
-    @Inject
-    ShipmentContract.Presenter shipmentPresenter;
-    @Inject
-    RatesDataConverter ratesDataConverter;
-    @Inject
-    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
-    @Inject
-    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    @Inject
-    CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
-    @Inject
-    CornerAnalytics mTrackerCorner;
-    @Inject
-    UserSessionInterface userSessionInterface;
-    @Inject
-    CheckoutTradeInAnalytics checkoutTradeInAnalytics;
-    @Inject
-    CheckoutEgoldAnalytics checkoutEgoldAnalytics;
-    @Inject
-    ShippingCourierConverter shippingCourierConverter;
-    @Inject
-    EPharmacyAnalytics ePharmacyAnalytics;
+    lateinit var shipmentAdapter: ShipmentAdapter
 
-    SaveInstanceCacheManager saveInstanceCacheManager;
-    TickerAnnouncementHolderData savedTickerAnnouncementModel;
-    List<ShipmentCartItemModel> savedShipmentCartItemModelList;
-    ShipmentCostModel savedShipmentCostModel;
-    EgoldAttributeModel savedEgoldAttributeModel;
-    RecipientAddressModel savedRecipientAddressModel;
-    ShipmentDonationModel savedShipmentDonationModel;
-    ArrayList<ShipmentCrossSellModel> savedListShipmentCrossSellModel;
-    BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
-    ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
-    LastApplyUiModel savedLastApplyData;
-    UploadPrescriptionUiModel savedUploadPrescriptionUiModel;
+    @Inject
+    lateinit var shipmentPresenter: ShipmentContract.Presenter
 
-    private boolean hasClearPromoBeforeCheckout = false;
-    private boolean hasRunningApiCall = false;
-    private ArrayList<String> bboPromoCodes = new ArrayList<>();
-    private int shipmentLoadingIndex = -1;
+    @Inject
+    lateinit var ratesDataConverter: RatesDataConverter
 
-    private Boolean isPlusSelected = null;
+    @Inject
+    lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
 
-    private Subscription delayScrollToFirstShopSubscription;
-    private Subscription delayScrollToCoachmarkEpharmacySubscription;
+    @Inject
+    lateinit var checkoutAnalyticsChangeAddress: CheckoutAnalyticsChangeAddress
 
-    private Subscription toasterThrottleSubscription;
-    private Emitter<String> toasterEmitter;
+    @Inject
+    lateinit var mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection
+
+    @Inject
+    lateinit var mTrackerCorner: CornerAnalytics
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var checkoutTradeInAnalytics: CheckoutTradeInAnalytics
+
+    @Inject
+    lateinit var checkoutEgoldAnalytics: CheckoutEgoldAnalytics
+
+    @Inject
+    lateinit var shippingCourierConverter: ShippingCourierConverter
+
+    @Inject
+    lateinit var ePharmacyAnalytics: EPharmacyAnalytics
+    var saveInstanceCacheManager: SaveInstanceCacheManager? = null
+    var savedTickerAnnouncementModel: TickerAnnouncementHolderData? = null
+    var savedShipmentCartItemModelList: List<ShipmentCartItemModel?>? = null
+    var savedShipmentCostModel: ShipmentCostModel? = null
+    var savedEgoldAttributeModel: EgoldAttributeModel? = null
+    var savedRecipientAddressModel: RecipientAddressModel? = null
+    var savedShipmentDonationModel: ShipmentDonationModel? = null
+    var savedListShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel?>? = null
+    var benefitSummaryInfoUiModel: BenefitSummaryInfoUiModel? = null
+    var savedShipmentButtonPaymentModel: ShipmentButtonPaymentModel? = null
+    var savedLastApplyData: LastApplyUiModel? = null
+    var savedUploadPrescriptionUiModel: UploadPrescriptionUiModel? = null
+    private var hasClearPromoBeforeCheckout = false
+    private var hasRunningApiCall = false
+    private var bboPromoCodes = ArrayList<String>()
+    private var shipmentLoadingIndex = -1
+    private var isPlusSelected: Boolean? = null
+    private var delayScrollToFirstShopSubscription: Subscription? = null
+    private var delayScrollToCoachmarkEpharmacySubscription: Subscription? = null
+    private var toasterThrottleSubscription: Subscription? = null
+    private var toasterEmitter: Emitter<String?>? = null
 
     // count down component
-    private View cdLayout;
-    private TimerUnify cdView;
-    private Typography cdText;
-
-    public static ShipmentFragment newInstance(boolean isOneClickShipment,
-                                               String leasingId,
-                                               String pageSource,
-                                               boolean isPlusSelected,
-                                               Bundle bundle) {
-        if (bundle == null) {
-            bundle = new Bundle();
-        }
-        bundle.putString(ARG_CHECKOUT_LEASING_ID, leasingId);
-        if (leasingId != null && !leasingId.isEmpty()) {
-            bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, true);
-        } else {
-            bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
-        }
-        bundle.putString(ARG_CHECKOUT_PAGE_SOURCE, pageSource);
-        bundle.putBoolean(ARG_IS_PLUS_SELECTED, isPlusSelected);
-        ShipmentFragment shipmentFragment = new ShipmentFragment();
-        shipmentFragment.setArguments(bundle);
-
-        return shipmentFragment;
-    }
-
-    @Override
-    protected void initInjector() {
-        if (getActivity() != null) {
-            BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
+    private var cdLayout: View? = null
+    private var cdView: TimerUnify? = null
+    private var cdText: Typography? = null
+    override fun initInjector() {
+        if (activity != null) {
+            val baseMainApplication = activity!!.application as BaseMainApplication
             DaggerCheckoutComponent.builder()
-                    .baseAppComponent(baseMainApplication.getBaseAppComponent())
-                    .checkoutModule(new CheckoutModule(this))
-                    .build()
-                    .inject(this);
+                .baseAppComponent(baseMainApplication.baseAppComponent)
+                .checkoutModule(CheckoutModule(this))
+                .build()
+                .inject(this)
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getContext() != null) {
-            saveInstanceCacheManager = new SaveInstanceCacheManager(getContext(), savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (context != null) {
+            saveInstanceCacheManager = SaveInstanceCacheManager(context!!, savedInstanceState)
         }
         if (savedInstanceState != null) {
-            savedShipmentCartItemModelList = saveInstanceCacheManager.get(ShipmentCartItemModel.class.getSimpleName(),
-                    (new TypeToken<ArrayList<ShipmentCartItemModel>>() {
-                    }).getType());
+            savedShipmentCartItemModelList =
+                saveInstanceCacheManager!!.get<List<ShipmentCartItemModel?>>(
+                    ShipmentCartItemModel::class.java.simpleName,
+                    object : TypeToken<ArrayList<ShipmentCartItemModel?>?>() {}.type
+                )
             if (savedShipmentCartItemModelList != null) {
-                savedTickerAnnouncementModel = saveInstanceCacheManager.get(TickerAnnouncementHolderData.class.getSimpleName(), TickerAnnouncementHolderData.class);
-                savedRecipientAddressModel = saveInstanceCacheManager.get(RecipientAddressModel.class.getSimpleName(), RecipientAddressModel.class);
-                savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
-                savedEgoldAttributeModel = saveInstanceCacheManager.get(EgoldAttributeModel.class.getSimpleName(), EgoldAttributeModel.class);
-                savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
-                savedListShipmentCrossSellModel = saveInstanceCacheManager.get(ShipmentCrossSellModel.class.getSimpleName(), (new TypeToken<ArrayList<ShipmentCrossSellModel>>() {
-                }).getType());
-                savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
-                savedLastApplyData = saveInstanceCacheManager.get(LastApplyUiModel.class.getSimpleName(), LastApplyUiModel.class);
-                savedUploadPrescriptionUiModel = saveInstanceCacheManager.get(UploadPrescriptionUiModel.class.getSimpleName(), UploadPrescriptionUiModel.class);
+                savedTickerAnnouncementModel =
+                    saveInstanceCacheManager!!.get<TickerAnnouncementHolderData>(
+                        TickerAnnouncementHolderData::class.java.simpleName,
+                        TickerAnnouncementHolderData::class.java
+                    )
+                savedRecipientAddressModel = saveInstanceCacheManager!!.get<RecipientAddressModel>(
+                    RecipientAddressModel::class.java.simpleName,
+                    RecipientAddressModel::class.java
+                )
+                savedShipmentCostModel = saveInstanceCacheManager!!.get<ShipmentCostModel>(
+                    ShipmentCostModel::class.java.simpleName,
+                    ShipmentCostModel::class.java
+                )
+                savedEgoldAttributeModel = saveInstanceCacheManager!!.get<EgoldAttributeModel>(
+                    EgoldAttributeModel::class.java.simpleName,
+                    EgoldAttributeModel::class.java
+                )
+                savedShipmentDonationModel = saveInstanceCacheManager!!.get<ShipmentDonationModel>(
+                    ShipmentDonationModel::class.java.simpleName,
+                    ShipmentDonationModel::class.java
+                )
+                savedListShipmentCrossSellModel =
+                    saveInstanceCacheManager!!.get<ArrayList<ShipmentCrossSellModel?>>(
+                        ShipmentCrossSellModel::class.java.simpleName,
+                        object : TypeToken<ArrayList<ShipmentCrossSellModel?>?>() {}.type
+                    )
+                savedShipmentButtonPaymentModel =
+                    saveInstanceCacheManager!!.get<ShipmentButtonPaymentModel>(
+                        ShipmentButtonPaymentModel::class.java.simpleName,
+                        ShipmentButtonPaymentModel::class.java
+                    )
+                savedLastApplyData = saveInstanceCacheManager!!.get<LastApplyUiModel>(
+                    LastApplyUiModel::class.java.simpleName,
+                    LastApplyUiModel::class.java
+                )
+                savedUploadPrescriptionUiModel =
+                    saveInstanceCacheManager!!.get<UploadPrescriptionUiModel>(
+                        UploadPrescriptionUiModel::class.java.simpleName,
+                        UploadPrescriptionUiModel::class.java
+                    )
             }
         }
-
-        shipmentPresenter.attachView(this);
-        shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
+        shipmentPresenter.attachView(this)
+        shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE)
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
+    override fun onStop() {
+        super.onStop()
+        hideLoading()
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    override fun onDestroyView() {
+        super.onDestroyView()
         if (delayScrollToFirstShopSubscription != null) {
-            delayScrollToFirstShopSubscription.unsubscribe();
+            delayScrollToFirstShopSubscription!!.unsubscribe()
         }
         if (delayScrollToCoachmarkEpharmacySubscription != null) {
-            delayScrollToCoachmarkEpharmacySubscription.unsubscribe();
+            delayScrollToCoachmarkEpharmacySubscription!!.unsubscribe()
         }
         if (toasterThrottleSubscription != null) {
-            toasterThrottleSubscription.unsubscribe();
+            toasterThrottleSubscription!!.unsubscribe()
         }
-        shippingCourierBottomsheet = null;
-        CountDownTimer countDownTimer = cdView.getTimer();
-        if (countDownTimer != null) countDownTimer.cancel();
-        shipmentPresenter.detachView();
+        shippingCourierBottomsheet = null
+        val countDownTimer = cdView!!.timer
+        countDownTimer?.cancel()
+        shipmentPresenter.detachView()
     }
 
-    @Override
-    public void onDestroy() {
-        shipmentAdapter.clearCompositeSubscription();
-        super.onDestroy();
+    override fun onDestroy() {
+        shipmentAdapter.clearCompositeSubscription()
+        super.onDestroy()
     }
 
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
+    override fun getOptionsMenuEnable(): Boolean {
+        return false
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_shipment;
+    override fun getFragmentLayout(): Int {
+        return R.layout.fragment_shipment
     }
 
-    @Override
-    protected void initView(View view) {
-        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        rvShipment = view.findViewById(R.id.rv_shipment);
-        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
-        cdLayout = view.findViewById(R.id.partial_countdown);
-        cdView = view.findViewById(R.id.count_down);
-        cdText = view.findViewById(R.id.tv_count_down);
-
-        progressDialogNormal = new AlertDialog.Builder(getActivity())
-                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
-                .setCancelable(false)
-                .create();
-
-        ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
-        rvShipment.addItemDecoration(new ShipmentItemDecoration());
+    override fun initView(view: View) {
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout)
+        rvShipment = view.findViewById(R.id.rv_shipment)
+        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
+        cdLayout = view.findViewById(R.id.partial_countdown)
+        cdView = view.findViewById(R.id.count_down)
+        cdText = view.findViewById(R.id.tv_count_down)
+        progressDialogNormal = AlertDialog.Builder(activity!!)
+            .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
+            .setCancelable(false)
+            .create()
+        (rvShipment?.getItemAnimator() as SimpleItemAnimator?)?.supportsChangeAnimations = false
+        rvShipment?.addItemDecoration(ShipmentItemDecoration())
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        checkCampaignTimer();
-        restoreProgressLoading();
+    override fun onResume() {
+        super.onResume()
+        checkCampaignTimer()
+        restoreProgressLoading()
     }
 
-    public boolean onBackPressed() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventTradeInClickBackButton(isTradeInByDropOff());
+    fun onBackPressed(): Boolean {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow()
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickBackButton(isTradeInByDropOff)
         }
-        boolean validatePrescriptionOnBackPressed = shipmentPresenter.validatePrescriptionOnBackPressed();
+        val validatePrescriptionOnBackPressed =
+            shipmentPresenter.validatePrescriptionOnBackPressed()
         if (validatePrescriptionOnBackPressed) {
-            finish();
+            finish()
         }
-        return validatePrescriptionOnBackPressed;
+        return validatePrescriptionOnBackPressed
     }
 
-    public void finish() {
-        if (getActivity() != null) {
-            releaseBookingIfAny();
-            shipmentPresenter.clearAllBoOnTemporaryUpsell();
-            getActivity().setResult(getResultCode());
-            getActivity().finish();
+    fun finish() {
+        if (activity != null) {
+            releaseBookingIfAny()
+            shipmentPresenter.clearAllBoOnTemporaryUpsell()
+            activity!!.setResult(resultCode)
+            activity!!.finish()
         }
     }
 
-    private void restoreProgressLoading() {
+    private fun restoreProgressLoading() {
         if (hasRunningApiCall) {
-            showLoading();
+            showLoading()
         }
     }
 
-    @Override
-    public void setHasRunningApiCall(boolean hasRunningApiCall) {
-        this.hasRunningApiCall = hasRunningApiCall;
+    override fun setHasRunningApiCall(hasRunningApiCall: Boolean) {
+        this.hasRunningApiCall = hasRunningApiCall
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setBackground();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setBackground()
         if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
             shipmentPresenter.processInitialLoadCheckoutPage(
-                    false, isOneClickShipment(), isTradeIn(), true,
-                    false, null, getDeviceId(), getCheckoutLeasingId(),
-                    isPlusSelected()
-            );
+                false, isOneClickShipment, isTradeIn, true,
+                false, null, deviceId, checkoutLeasingId,
+                isPlusSelected()
+            )
         } else {
-            shipmentPresenter.setTickerAnnouncementHolderData(savedTickerAnnouncementModel);
-            shipmentPresenter.setShipmentCartItemModelList(savedShipmentCartItemModelList);
-            shipmentPresenter.setRecipientAddressModel(savedRecipientAddressModel);
-            shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
-            shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
-            shipmentPresenter.setListShipmentCrossSellModel(savedListShipmentCrossSellModel);
-            shipmentPresenter.setShipmentButtonPaymentModel(savedShipmentButtonPaymentModel);
-            shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
-            shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
-            shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
-            shipmentPresenter.setLastApplyData(savedLastApplyData);
-            shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel);
-            renderCheckoutPage(true, false, isOneClickShipment());
-            swipeToRefresh.setEnabled(false);
+            shipmentPresenter.tickerAnnouncementHolderData = savedTickerAnnouncementModel!!
+            shipmentPresenter.shipmentCartItemModelList = savedShipmentCartItemModelList
+            shipmentPresenter.recipientAddressModel = savedRecipientAddressModel
+            shipmentPresenter.shipmentCostModel = savedShipmentCostModel
+            shipmentPresenter.shipmentDonationModel = savedShipmentDonationModel
+            shipmentPresenter.listShipmentCrossSellModel = savedListShipmentCrossSellModel
+            shipmentPresenter.shipmentButtonPaymentModel = savedShipmentButtonPaymentModel
+            shipmentPresenter.egoldAttributeModel = savedEgoldAttributeModel
+            shipmentAdapter.lastChooseCourierItemPosition =
+                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION)
+            shipmentAdapter.lastServiceId =
+                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID)
+            shipmentPresenter.lastApplyData = savedLastApplyData
+            shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel)
+            renderCheckoutPage(true, false, isOneClickShipment)
+            swipeToRefresh!!.isEnabled = false
         }
     }
 
-    private void setBackground() {
-        Activity activity = getActivity();
-        if (activity != null) {
-            activity.getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N50));
-        }
+    private fun setBackground() {
+        val activity: Activity? = activity
+        activity?.window?.decorView?.setBackgroundColor(
+            ContextCompat.getColor(
+                activity,
+                com.tokopedia.unifyprinciples.R.color.Unify_N50
+            )
+        )
     }
 
-    private String getDeviceId() {
-        if (getArguments() != null && getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID) != null) {
-            return getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID);
-        }
-        return "";
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        saveInstanceCacheManager.onSave(outState);
-        if (shipmentPresenter.getShipmentCartItemModelList() != null) {
-            saveInstanceCacheManager.put(TickerAnnouncementHolderData.class.getSimpleName(), shipmentPresenter.getTickerAnnouncementHolderData());
-            saveInstanceCacheManager.put(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
-            saveInstanceCacheManager.put(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
-            saveInstanceCacheManager.put(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
-            saveInstanceCacheManager.put(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
-            saveInstanceCacheManager.put(ShipmentButtonPaymentModel.class.getSimpleName(), shipmentPresenter.getShipmentButtonPaymentModel());
-            outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
-            outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.getLastServiceId());
-            saveInstanceCacheManager.put(UploadPrescriptionUiModel.class.getSimpleName(), shipmentPresenter.getUploadPrescriptionUiModel());
+    private val deviceId: String?
+        private get() = if (arguments != null && arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID) != null) {
+            arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID)
         } else {
-            saveInstanceCacheManager.put(ShipmentCartItemModel.class.getSimpleName(), null);
+            ""
+        }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        saveInstanceCacheManager!!.onSave(outState)
+        if (shipmentPresenter.shipmentCartItemModelList != null) {
+            saveInstanceCacheManager!!.put(
+                TickerAnnouncementHolderData::class.java.simpleName,
+                shipmentPresenter.tickerAnnouncementHolderData
+            )
+            saveInstanceCacheManager!!.put(
+                ShipmentCartItemModel::class.java.simpleName,
+                ArrayList(
+                    shipmentPresenter.shipmentCartItemModelList
+                )
+            )
+            saveInstanceCacheManager!!.put(
+                RecipientAddressModel::class.java.simpleName,
+                shipmentPresenter.recipientAddressModel
+            )
+            saveInstanceCacheManager!!.put(
+                ShipmentCostModel::class.java.simpleName,
+                shipmentPresenter.shipmentCostModel
+            )
+            saveInstanceCacheManager!!.put(
+                ShipmentDonationModel::class.java.simpleName,
+                shipmentPresenter.shipmentDonationModel
+            )
+            saveInstanceCacheManager!!.put(
+                ShipmentButtonPaymentModel::class.java.simpleName,
+                shipmentPresenter.shipmentButtonPaymentModel
+            )
+            outState.putInt(
+                DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION,
+                shipmentAdapter.lastChooseCourierItemPosition
+            )
+            outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.lastServiceId)
+            saveInstanceCacheManager!!.put(
+                UploadPrescriptionUiModel::class.java.simpleName,
+                shipmentPresenter.uploadPrescriptionUiModel
+            )
+        } else {
+            saveInstanceCacheManager!!.put(ShipmentCartItemModel::class.java.simpleName, null)
         }
     }
 
-    private boolean isOneClickShipment() {
-        return getArguments() != null && getArguments().getBoolean(ARG_IS_ONE_CLICK_SHIPMENT);
-    }
-
-    private String getCheckoutLeasingId() {
-        String leasingId = "0";
-        if (getArguments() != null && getArguments().getString(ARG_CHECKOUT_LEASING_ID) != null &&
-                !getArguments().getString(ARG_CHECKOUT_LEASING_ID).equalsIgnoreCase("null")) {
-            leasingId = getArguments().getString(ARG_CHECKOUT_LEASING_ID);
+    private val isOneClickShipment: Boolean
+        private get() = arguments != null && arguments!!.getBoolean(ARG_IS_ONE_CLICK_SHIPMENT)
+    private val checkoutLeasingId: String?
+        private get() {
+            var leasingId: String? = "0"
+            if (arguments != null && arguments!!.getString(ARG_CHECKOUT_LEASING_ID) != null &&
+                !arguments!!.getString(ARG_CHECKOUT_LEASING_ID).equals("null", ignoreCase = true)
+            ) {
+                leasingId = arguments!!.getString(ARG_CHECKOUT_LEASING_ID)
+            }
+            return leasingId
         }
-        return leasingId;
-    }
-
-    private boolean isTradeIn() {
-        return getArguments() != null && getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "") != null &&
-                getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").length() > 0;
-    }
-
-    private String getCheckoutPageSource() {
-        String pageSource = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP;
-        if (getArguments() != null && getArguments().getString(ARG_CHECKOUT_PAGE_SOURCE) != null) {
-            pageSource = getArguments().getString(ARG_CHECKOUT_PAGE_SOURCE);
+    private val isTradeIn: Boolean
+        private get() = arguments != null && arguments!!.getString(
+            ShipmentFormRequest.EXTRA_DEVICE_ID,
+            ""
+        ) != null && arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").length > 0
+    private val checkoutPageSource: String?
+        private get() {
+            var pageSource: String? = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
+            if (arguments != null && arguments!!.getString(ARG_CHECKOUT_PAGE_SOURCE) != null) {
+                pageSource = arguments!!.getString(ARG_CHECKOUT_PAGE_SOURCE)
+            }
+            return pageSource
         }
-        return pageSource;
-    }
 
-    private boolean isPlusSelected() {
-        if (this.isPlusSelected == null) {
-            if (getArguments() != null) {
-                this.isPlusSelected = getArguments().getBoolean(ARG_IS_PLUS_SELECTED, false);
+    private fun isPlusSelected(): Boolean {
+        if (isPlusSelected == null) {
+            if (arguments != null) {
+                isPlusSelected = arguments!!.getBoolean(ARG_IS_PLUS_SELECTED, false)
             } else {
-                this.isPlusSelected = false;
+                isPlusSelected = false
             }
         }
-        return this.isPlusSelected;
+        return isPlusSelected!!
     }
 
-    private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
-                                      TickerAnnouncementHolderData tickerAnnouncementHolderData,
-                                      RecipientAddressModel recipientAddressModel,
-                                      ShipmentUpsellModel shipmentUpsellModel,
-                                      ShipmentNewUpsellModel shipmentNewUpsellModel,
-                                      List<ShipmentCartItemModel> shipmentCartItemModelList,
-                                      ShipmentDonationModel shipmentDonationModel,
-                                      List<ShipmentCrossSellModel> shipmentCrossSellModelList,
-                                      LastApplyUiModel lastApplyUiModel,
-                                      ShipmentCostModel shipmentCostModel,
-                                      EgoldAttributeModel egoldAttributeModel,
-                                      ShipmentButtonPaymentModel shipmentButtonPaymentModel,
-                                      UploadPrescriptionUiModel uploadPrescriptionUiModel,
-                                      boolean isInitialRender,
-                                      boolean isReloadAfterPriceChangeHigher,
-                                      boolean isLocalReload) {
-        shipmentAdapter.clearData();
-        rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvShipment.setAdapter(shipmentAdapter);
-
-        shipmentAdapter.addTickerErrorData(shipmentTickerErrorModel);
-
+    private fun initRecyclerViewData(
+        shipmentTickerErrorModel: ShipmentTickerErrorModel?,
+        tickerAnnouncementHolderData: TickerAnnouncementHolderData?,
+        recipientAddressModel: RecipientAddressModel?,
+        shipmentUpsellModel: ShipmentUpsellModel?,
+        shipmentNewUpsellModel: ShipmentNewUpsellModel?,
+        shipmentCartItemModelList: List<ShipmentCartItemModel?>?,
+        shipmentDonationModel: ShipmentDonationModel?,
+        shipmentCrossSellModelList: List<ShipmentCrossSellModel?>?,
+        lastApplyUiModel: LastApplyUiModel?,
+        shipmentCostModel: ShipmentCostModel?,
+        egoldAttributeModel: EgoldAttributeModel?,
+        shipmentButtonPaymentModel: ShipmentButtonPaymentModel?,
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel?,
+        isInitialRender: Boolean,
+        isReloadAfterPriceChangeHigher: Boolean,
+        isLocalReload: Boolean
+    ) {
+        shipmentAdapter.clearData()
+        rvShipment!!.layoutManager = LinearLayoutManager(activity)
+        rvShipment!!.adapter = shipmentAdapter
+        shipmentAdapter.addTickerErrorData(shipmentTickerErrorModel)
         if (tickerAnnouncementHolderData != null) {
-            shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData);
+            shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData)
         }
-
         if (recipientAddressModel != null) {
-            shipmentAdapter.addAddressShipmentData(recipientAddressModel);
+            shipmentAdapter.addAddressShipmentData(recipientAddressModel)
         }
-        if (shipmentUpsellModel.isShow()) {
-            shipmentAdapter.addUpsellData(shipmentUpsellModel);
+        if (shipmentUpsellModel!!.isShow) {
+            shipmentAdapter.addUpsellData(shipmentUpsellModel)
         }
-        if (shipmentNewUpsellModel.isShow()) {
-            shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel);
+        if (shipmentNewUpsellModel!!.isShow) {
+            shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel)
         }
-        isPlusSelected = shipmentNewUpsellModel.isSelected();
-        shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
-        StringBuilder cartIdsStringBuilder = new StringBuilder();
-        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
-            if (shipmentCartItemModelList.get(i).getCartItemModels() != null &&
-                    shipmentCartItemModelList.get(i).getCartItemModels().size() > 0) {
-                for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
-                    cartIdsStringBuilder.append(cartItemModel.getCartId());
-                    cartIdsStringBuilder.append(",");
+        isPlusSelected = shipmentNewUpsellModel.isSelected
+        shipmentAdapter.addCartItemDataList(shipmentCartItemModelList)
+        val cartIdsStringBuilder = StringBuilder()
+        for (i in shipmentCartItemModelList!!.indices) {
+            if (shipmentCartItemModelList[i]!!.cartItemModels != null &&
+                shipmentCartItemModelList[i]!!.cartItemModels.size > 0
+            ) {
+                for ((cartId) in shipmentCartItemModelList[i]!!.cartItemModels) {
+                    cartIdsStringBuilder.append(cartId)
+                    cartIdsStringBuilder.append(",")
                 }
             }
         }
-        cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
-
-        boolean hasEpharmacyWidget = false;
-        if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload()) {
-            shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
-            hasEpharmacyWidget = true;
+        cartIdsStringBuilder.replace(
+            cartIdsStringBuilder.lastIndexOf(","),
+            cartIdsStringBuilder.lastIndexOf(",") + 1,
+            ""
+        )
+        var hasEpharmacyWidget = false
+        if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.showImageUpload) {
+            shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel)
+            hasEpharmacyWidget = true
         }
-
         if (shipmentDonationModel != null) {
-            if (!shipmentDonationModel.getDonation().getTitle().isEmpty() && shipmentDonationModel.getDonation().getNominal() != 0) {
-                shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
-                if (shipmentDonationModel.isChecked() && shipmentDonationModel.isEnabled()) {
-                    checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+            if (!shipmentDonationModel.donation.title.isEmpty() && shipmentDonationModel.donation.nominal != 0) {
+                shipmentAdapter.addShipmentDonationModel(shipmentDonationModel)
+                if (shipmentDonationModel.isChecked && shipmentDonationModel.isEnabled) {
+                    checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(
+                        userSessionInterface.userId
+                    )
                 }
             }
         }
-
-        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
-            shipmentAdapter.updateEgold(false);
-            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible) {
+            shipmentAdapter.updateEgold(false)
+            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel)
         }
-
-        if (!shipmentCrossSellModelList.isEmpty()) {
-            shipmentAdapter.addListShipmentCrossSellModel(shipmentCrossSellModelList);
-            for (int i = 0; i < shipmentCrossSellModelList.size(); i++) {
-                CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
-                String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
-                String digitalProductId = crossSellModel.getId();
-                String eventLabel = digitalCategoryName + " - " + digitalProductId;
-                String digitalProductName = crossSellModel.getInfo().getTitle();
-
-                checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
-                        String.valueOf(i + 1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
+        if (!shipmentCrossSellModelList!!.isEmpty()) {
+            shipmentAdapter.addListShipmentCrossSellModel(shipmentCrossSellModelList)
+            for (i in shipmentCrossSellModelList.indices) {
+                val (digitalProductId, _, _, _, info, orderSummary) = shipmentCrossSellModelList[i]!!.crossSellModel
+                val digitalCategoryName = orderSummary.title
+                val eventLabel = "$digitalCategoryName - $digitalProductId"
+                val digitalProductName = info.title
+                checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(
+                    userSessionInterface.userId,
+                    (i + 1).toString(),
+                    eventLabel,
+                    digitalProductName,
+                    getCrossSellChildCategoryId(shipmentCartItemModelList)
+                )
             }
         }
-
-        if (shipmentCartItemModelList.size() > 0) {
+        if (shipmentCartItemModelList.size > 0) {
             // Don't show donation, egold, promo section if all shop is error
-            int errorShopCount = 0;
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                if (shipmentCartItemModel.isError()) {
-                    errorShopCount++;
+            var errorShopCount = 0
+            for (shipmentCartItemModel in shipmentCartItemModelList) {
+                if (shipmentCartItemModel!!.isError) {
+                    errorShopCount++
                 }
             }
-            if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size()) {
-                if (lastApplyUiModel != null && !lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
-                    PromoRevampAnalytics.INSTANCE.eventCartViewPromoMessage(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
+            if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size) {
+                if (lastApplyUiModel != null && !lastApplyUiModel.additionalInfo.errorDetail.message.isEmpty()) {
+                    eventCartViewPromoMessage(lastApplyUiModel.additionalInfo.errorDetail.message)
                 }
-                shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel);
+                shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel)
             }
         }
-
-        shipmentAdapter.addShipmentCostData(shipmentCostModel);
-        shipmentAdapter.updateShipmentSellerCashbackVisibility();
-
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventViewCheckoutPageTradeIn();
+        shipmentAdapter.addShipmentCostData(shipmentCostModel)
+        shipmentAdapter.updateShipmentSellerCashbackVisibility()
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventViewCheckoutPageTradeIn()
         }
-
-        shipmentAdapter.addShipmentButtonPaymentModel(shipmentButtonPaymentModel);
-        if (shipmentCartItemModelList.size() > 0) {
-            addShippingCompletionTicker(shipmentCartItemModelList.get(0).isEligibleNewShippingExperience());
+        shipmentAdapter.addShipmentButtonPaymentModel(shipmentButtonPaymentModel)
+        if (shipmentCartItemModelList.size > 0) {
+            addShippingCompletionTicker(shipmentCartItemModelList[0]!!.isEligibleNewShippingExperience)
         }
-
         if (isInitialRender) {
-            sendEEStep2();
+            sendEEStep2()
         }
         if (!isLocalReload) {
-            sendErrorAnalytics();
+            sendErrorAnalytics()
         }
-
         if (isReloadAfterPriceChangeHigher) {
-            delayScrollToFirstShop();
+            delayScrollToFirstShop()
         } else if (hasEpharmacyWidget) {
-            triggerEpharmacyCoachmark(uploadPrescriptionUiModel);
+            triggerEpharmacyCoachmark(uploadPrescriptionUiModel)
         }
     }
 
-    private void triggerEpharmacyCoachmark(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+    private fun triggerEpharmacyCoachmark(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
         delayScrollToCoachmarkEpharmacySubscription = Observable.just(uploadPrescriptionUiModel)
-                .delay(1000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<UploadPrescriptionUiModel>() {
-                    @Override
-                    public void onCompleted() {
+            .delay(1000, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Subscriber<UploadPrescriptionUiModel?>() {
+                override fun onCompleted() {}
+                override fun onError(e: Throwable) {
+                    Timber.d(e)
+                }
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e);
-                    }
-
-                    @Override
-                    public void onNext(UploadPrescriptionUiModel UploadPrescriptionUiModel1) {
-                        if (!isUnsubscribed() && ShipmentFragment.this.getActivityContext() != null) {
-                            if (UploadPrescriptionUiModel1.getConsultationFlow()) {
-                                shipmentPresenter.fetchEpharmacyData();
-                            }
+                override fun onNext(UploadPrescriptionUiModel1: UploadPrescriptionUiModel?) {
+                    if (!isUnsubscribed && activityContext != null) {
+                        if (UploadPrescriptionUiModel1?.consultationFlow == true) {
+                            shipmentPresenter?.fetchEpharmacyData()
                         }
                     }
-                });
+                }
+            })
     }
 
-    @Override
-    public void showCoachMarkEpharmacy(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
-        if (getActivityContext() != null && !CoachMarkPreference.INSTANCE.hasShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY)) {
-            int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
-            rvShipment.scrollToPosition(uploadPrescriptionPosition);
-            rvShipment.post(() -> {
-                RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
-                if (viewHolder instanceof UploadPrescriptionViewHolder) {
-                    CoachMark2Item item = new CoachMark2Item(
-                            viewHolder.itemView,
-                            getActivityContext().getString(R.string.checkout_epharmacy_coachmark_title),
-                            getActivityContext().getString(R.string.checkout_epharmacy_coachmark_description),
-                            CoachMark2.POSITION_TOP
-                    );
-                    ArrayList<CoachMark2Item> list = new ArrayList<>();
-                    list.add(item);
-                    CoachMark2 coachMark = new CoachMark2(requireContext());
-                    coachMark.showCoachMark(list, null, 0);
-                    CoachMarkPreference.INSTANCE.setShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY, true);
+    override fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+        if (activityContext != null && !hasShown(
+                activityContext!!,
+                KEY_PREFERENCE_COACHMARK_EPHARMACY
+            )
+        ) {
+            val uploadPrescriptionPosition = shipmentAdapter.uploadPrescriptionPosition
+            rvShipment!!.scrollToPosition(uploadPrescriptionPosition)
+            rvShipment!!.post {
+                val viewHolder =
+                    rvShipment!!.findViewHolderForAdapterPosition(uploadPrescriptionPosition)
+                if (viewHolder is UploadPrescriptionViewHolder) {
+                    val item = CoachMark2Item(
+                        viewHolder.itemView,
+                        activityContext!!.getString(R.string.checkout_epharmacy_coachmark_title),
+                        activityContext!!.getString(R.string.checkout_epharmacy_coachmark_description),
+                        CoachMark2.POSITION_TOP
+                    )
+                    val list = ArrayList<CoachMark2Item>()
+                    list.add(item)
+                    val coachMark = CoachMark2(requireContext())
+                    coachMark.showCoachMark(list, null, 0)
+                    setShown(activityContext!!, KEY_PREFERENCE_COACHMARK_EPHARMACY, true)
                     ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
-                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
-                            uploadPrescriptionUiModel.getEnablerNames(),
-                            uploadPrescriptionUiModel.getShopIds(),
-                            uploadPrescriptionUiModel.getCartIds()
-                    );
+                        uploadPrescriptionUiModel!!.epharmacyGroupIds,
+                        uploadPrescriptionUiModel.enablerNames,
+                        uploadPrescriptionUiModel.shopIds,
+                        uploadPrescriptionUiModel.cartIds
+                    )
                 }
-            });
-        }
-    }
-
-    private ArrayList<Long> getCrossSellChildCategoryId(List<ShipmentCartItemModel> shipmentCartItemModelList) {
-        ArrayList<Long> childCategoryIds = new ArrayList<>();
-        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
-            for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
-                childCategoryIds.add(cartItemModel.getProductCatId());
             }
         }
-        return childCategoryIds;
     }
 
-    private void addShippingCompletionTicker(boolean isEligibleNewShippingExperience) {
+    private fun getCrossSellChildCategoryId(shipmentCartItemModelList: List<ShipmentCartItemModel?>?): ArrayList<Long> {
+        val childCategoryIds = ArrayList<Long>()
+        for (i in shipmentCartItemModelList!!.indices) {
+            for ((_, _, _, _, productCatId) in shipmentCartItemModelList[i]!!.cartItemModels) {
+                childCategoryIds.add(productCatId)
+            }
+        }
+        return childCategoryIds
+    }
+
+    private fun addShippingCompletionTicker(isEligibleNewShippingExperience: Boolean) {
         if (isEligibleNewShippingExperience) {
-            shipmentAdapter.updateShippingCompletionTickerVisibility();
+            shipmentAdapter.updateShippingCompletionTickerVisibility()
         }
     }
 
-    private void delayScrollToFirstShop() {
+    private fun delayScrollToFirstShop() {
         delayScrollToFirstShopSubscription = Observable.timer(1000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Long>() {
-                    @Override
-                    public void onCompleted() {
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Subscriber<Long>() {
+                override fun onCompleted() {}
+                override fun onError(e: Throwable) {
+                    e.printStackTrace()
+                }
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-                        if (!isUnsubscribed()) {
-                            if (rvShipment.getLayoutManager() != null) {
-                                LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(rvShipment.getContext()) {
-                                    @Override
-                                    protected int getVerticalSnapPreference() {
-                                        return SNAP_TO_START;
+                override fun onNext(aLong: Long) {
+                    if (!isUnsubscribed) {
+                        if (rvShipment!!.layoutManager != null) {
+                            val linearSmoothScroller: LinearSmoothScroller =
+                                object : LinearSmoothScroller(
+                                    rvShipment!!.context
+                                ) {
+                                    override fun getVerticalSnapPreference(): Int {
+                                        return SNAP_TO_START
                                     }
-                                };
-                                linearSmoothScroller.setTargetPosition(shipmentAdapter.getFirstShopPosition());
-                                rvShipment.getLayoutManager().startSmoothScroll(linearSmoothScroller);
-                            }
+                                }
+                            linearSmoothScroller.targetPosition =
+                                shipmentAdapter.firstShopPosition
+                            rvShipment!!.layoutManager!!.startSmoothScroll(linearSmoothScroller)
                         }
                     }
-                });
+                }
+            })
     }
 
-    private void sendEEStep2() {
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
-            List<DataCheckoutRequest> dataCheckoutRequests = null;
-            if (shipmentCartItemModel.isSaveStateFlag()) {
-                dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                        shipmentCartItemModel.getCartString(), "", "", ""
-                );
+    private fun sendEEStep2() {
+        for (shipmentCartItemModel in shipmentAdapter.shipmentCartItemModelList) {
+            var dataCheckoutRequests: List<DataCheckoutRequest?>? = null
+            dataCheckoutRequests = if (shipmentCartItemModel.isSaveStateFlag) {
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    shipmentCartItemModel.cartString,
+                    "",
+                    "",
+                    ""
+                )
             } else {
-                dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                        shipmentCartItemModel.getCartString(), "", "", String.valueOf(shipmentCartItemModel.getSpId())
-                );
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    shipmentCartItemModel.cartString,
+                    "",
+                    "",
+                    shipmentCartItemModel.spId.toString()
+                )
             }
-            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
+            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
         }
-
-        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
+        val dataCheckoutRequests =
+            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
+                shipmentAdapter.shipmentCartItemModelList
+            )
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                dataCheckoutRequests,
-                null,
-                EnhancedECommerceActionField.STEP_2,
-                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
-                ConstantTransactionAnalytics.EventLabel.SUCCESS,
-                getCheckoutLeasingId(),
-                getCheckoutPageSource());
+            dataCheckoutRequests,
+            null,
+            EnhancedECommerceActionField.STEP_2,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
+            ConstantTransactionAnalytics.EventLabel.SUCCESS,
+            checkoutLeasingId,
+            checkoutPageSource
+        )
     }
 
-    private void sendErrorAnalytics() {
-        if (shipmentPresenter.getShipmentTickerErrorModel().isError()) {
-            onViewTickerPaymentError(shipmentPresenter.getShipmentTickerErrorModel().getErrorMessage());
+    private fun sendErrorAnalytics() {
+        if (shipmentPresenter.shipmentTickerErrorModel!!.isError) {
+            onViewTickerPaymentError(shipmentPresenter.shipmentTickerErrorModel!!.errorMessage)
         }
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
-            if (shipmentCartItemModel.isError() && !TextUtils.isEmpty(shipmentCartItemModel.getErrorTitle())) {
-                onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), shipmentCartItemModel.getErrorTitle());
-            } else if (!shipmentCartItemModel.isError() && shipmentCartItemModel.isHasUnblockingError()
-                    && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
-                onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), shipmentCartItemModel.getUnblockingErrorMessage());
+        for (shipmentCartItemModel in shipmentAdapter.shipmentCartItemModelList) {
+            if (shipmentCartItemModel.isError && !TextUtils.isEmpty(shipmentCartItemModel.errorTitle)) {
+                onViewTickerOrderError(
+                    shipmentCartItemModel.shopId.toString(),
+                    shipmentCartItemModel.errorTitle
+                )
+            } else if ((
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
+            ) {
+                onViewTickerOrderError(
+                    shipmentCartItemModel.shopId.toString(),
+                    shipmentCartItemModel.unblockingErrorMessage
+                )
             }
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                if (cartItemModel.isError() && !TextUtils.isEmpty(cartItemModel.getErrorMessage())) {
-                    onViewTickerProductError(String.valueOf(shipmentCartItemModel.getShopId()), cartItemModel.getErrorMessage());
+            for ((_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, isError, _, errorMessage) in shipmentCartItemModel.cartItemModels) {
+                if (isError && !TextUtils.isEmpty(errorMessage)) {
+                    onViewTickerProductError(shipmentCartItemModel.shopId.toString(), errorMessage)
                 }
             }
         }
     }
 
-    @Override
-    public void showInitialLoading() {
-        swipeToRefresh.setRefreshing(true);
+    override fun showInitialLoading() {
+        swipeToRefresh!!.isRefreshing = true
     }
 
-    @Override
-    public void hideInitialLoading() {
-        swipeToRefresh.setRefreshing(false);
-        swipeToRefresh.setEnabled(false);
+    override fun hideInitialLoading() {
+        swipeToRefresh!!.isRefreshing = false
+        swipeToRefresh!!.isEnabled = false
     }
 
-    @Override
-    public void showLoading() {
-        if (progressDialogNormal != null && !progressDialogNormal.isShowing()) {
-            progressDialogNormal.show();
+    override fun showLoading() {
+        if (progressDialogNormal != null && !progressDialogNormal!!.isShowing) {
+            progressDialogNormal!!.show()
         }
     }
 
-    @Override
-    public void hideLoading() {
-        if (progressDialogNormal != null && progressDialogNormal.isShowing()) {
-            progressDialogNormal.dismiss();
+    override fun hideLoading() {
+        if (progressDialogNormal != null && progressDialogNormal!!.isShowing) {
+            progressDialogNormal!!.dismiss()
         }
-        swipeToRefresh.setEnabled(false);
+        swipeToRefresh!!.isEnabled = false
     }
 
-    @Override
-    public void showToastNormal(String message) {
+    override fun showToastNormal(message: String?) {
         if (toasterEmitter == null) {
-            toasterThrottleSubscription = Observable.create((Action1<Emitter<String>>) emitter -> {
-                        toasterEmitter = emitter;
-                    }, Emitter.BackpressureMode.BUFFER)
+            toasterThrottleSubscription =
+                Observable.create<String?>(
+                    Action1<Emitter<String?>?> { emitter: Emitter<String?>? ->
+                        toasterEmitter = emitter
+                    },
+                    Emitter.BackpressureMode.BUFFER
+                )
                     .throttleFirst(TOASTER_THROTTLE, TimeUnit.MILLISECONDS)
-                    .subscribe(s -> {
-                        if (getView() != null && getActivity() != null) {
-                            initializeToasterLocation();
-                            String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
-                            View.OnClickListener listener = view -> {
-                            };
-                            Toaster.build(getView(), s, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, listener)
-                                    .show();
+                    .subscribe { s: String? ->
+                        if (view != null && activity != null) {
+                            initializeToasterLocation()
+                            val actionText =
+                                activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                            val listener = View.OnClickListener { _: View? -> }
+                            Toaster.build(view!!, s!!, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, listener)
+                                .show()
                         }
-                    });
+                    }
         }
-        toasterEmitter.onNext(message);
+        toasterEmitter!!.onNext(message)
     }
 
     @SuppressLint("WrongConstant")
-    @Override
-    public void showToastError(String message) {
-        if (getView() != null && getActivity() != null) {
-            initializeToasterLocation();
+    override fun showToastError(message: String?) {
+        var message = message
+        if (view != null && activity != null) {
+            initializeToasterLocation()
             if (TextUtils.isEmpty(message)) {
-                message = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message);
+                message =
+                    activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
             }
-            if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
-                renderErrorPage(message);
+            if (shipmentAdapter == null || shipmentAdapter.itemCount == 0) {
+                renderErrorPage(message)
             } else {
-                View.OnClickListener listener = view -> {
-                };
-                String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
-                Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener)
-                        .show();
+                val listener = View.OnClickListener { view: View? -> }
+                val actionText =
+                    activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                Toaster.build(view!!, message!!, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener)
+                    .show()
             }
         }
     }
 
-    public void initializeToasterLocation() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) rvShipment.getLayoutManager();
-        if (layoutManager == null) {
-            return;
+    fun initializeToasterLocation() {
+        val layoutManager = rvShipment!!.layoutManager as LinearLayoutManager?
+            ?: return
+        val lastItemPosition = layoutManager.findLastVisibleItemPosition()
+        if (lastItemPosition == RecyclerView.NO_POSITION || shipmentAdapter.shipmentDataList == null || lastItemPosition >= shipmentAdapter.shipmentDataList.size) {
+            return
         }
-        int lastItemPosition = layoutManager.findLastVisibleItemPosition();
-        if (lastItemPosition == RecyclerView.NO_POSITION ||
-                shipmentAdapter.getShipmentDataList() == null ||
-                lastItemPosition >= shipmentAdapter.getShipmentDataList().size()) {
-            return;
-        }
-        if (shipmentAdapter.getShipmentDataList().get(lastItemPosition) instanceof ShipmentButtonPaymentModel) {
-            Utils.setToasterCustomBottomHeight(getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48));
+        if (shipmentAdapter.shipmentDataList[lastItemPosition] is ShipmentButtonPaymentModel) {
+            setToasterCustomBottomHeight(
+                context!!.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48)
+            )
         } else {
-            Utils.setToasterCustomBottomHeight(getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
+            setToasterCustomBottomHeight(
+                context!!.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
+            )
         }
     }
 
-    @Override
-    public void renderErrorPage(String message) {
-        rvShipment.setVisibility(View.GONE);
-        llNetworkErrorView.setVisibility(View.VISIBLE);
-        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        llNetworkErrorView.setVisibility(View.GONE);
-                        rvShipment.setVisibility(View.VISIBLE);
-                        shipmentPresenter.processInitialLoadCheckoutPage(
-                                false, isOneClickShipment(), isTradeIn(), true,
-                                false, null, getDeviceId(), getCheckoutLeasingId(),
-                                isPlusSelected()
-                        );
-                    }
-                });
-
-    }
-
-    @Override
-    public void onCacheExpired(String message) {
-        if (getActivity() != null && getView() != null) {
-            Intent intent = new Intent();
-            intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message);
-            getActivity().setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent);
-            getActivity().finish();
-        }
-    }
-
-    @Override
-    public void onShipmentAddressFormEmpty() {
-        if (getActivity() != null) {
-            getActivity().finish();
-        }
-    }
-
-    @Override
-    public void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment) {
-        RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-        shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding());
-        setCampaignTimer();
-        initRecyclerViewData(
-                shipmentPresenter.getShipmentTickerErrorModel(),
-                shipmentPresenter.getTickerAnnouncementHolderData(),
-                recipientAddressModel,
-                shipmentPresenter.getShipmentUpsellModel(),
-                shipmentPresenter.getShipmentNewUpsellModel(),
-                shipmentPresenter.getShipmentCartItemModelList(),
-                shipmentPresenter.getShipmentDonationModel(),
-                shipmentPresenter.getListShipmentCrossSellModel(),
-                shipmentPresenter.getLastApplyData(),
-                shipmentPresenter.getShipmentCostModel(),
-                shipmentPresenter.getEgoldAttributeModel(),
-                shipmentPresenter.getShipmentButtonPaymentModel(),
-                shipmentPresenter.getUploadPrescriptionUiModel(),
-                isInitialRender,
-                isReloadAfterPriceChangeHigher,
-                false
-        );
-    }
-
-    @Override
-    public void stopTrace() {
-        if (!isShipmentTraceStopped) {
-            shipmentTracePerformance.stopTrace();
-            isShipmentTraceStopped = true;
-        }
-    }
-
-    @Override
-    public void stopEmbraceTrace() {
-        Map<String, Object> emptyMap = new HashMap<>();
-        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap);
-    }
-
-    @Override
-    public void renderDataChanged() {
-        initRecyclerViewData(
-                shipmentPresenter.getShipmentTickerErrorModel(),
-                shipmentPresenter.getTickerAnnouncementHolderData(),
-                shipmentPresenter.getRecipientAddressModel(),
-                shipmentPresenter.getShipmentUpsellModel(),
-                shipmentPresenter.getShipmentNewUpsellModel(),
-                shipmentPresenter.getShipmentCartItemModelList(),
-                shipmentPresenter.getShipmentDonationModel(),
-                shipmentPresenter.getListShipmentCrossSellModel(),
-                shipmentPresenter.getLastApplyData(),
-                shipmentPresenter.getShipmentCostModel(),
-                shipmentPresenter.getEgoldAttributeModel(),
-                shipmentPresenter.getShipmentButtonPaymentModel(),
-                shipmentPresenter.getUploadPrescriptionUiModel(),
-                false,
-                false,
-                true
-        );
-    }
-
-    @Override
-    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData, boolean isEligibleForRevampAna) {
-        Token token = new Token();
-        token.setUt(shipmentAddressFormData.getKeroUnixTime());
-        token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
-
-        if (isEligibleForRevampAna) {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
-            intent.putExtra(KERO_TOKEN, token);
-            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
-            intent.putExtra(PARAM_SOURCE, AddEditAddressSource.CART.getSource());
-            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
-        } else {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-            intent.putExtra(KERO_TOKEN, token);
-            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
-            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
-        }
-    }
-
-    @Override
-    public void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState) {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
-        intent.putExtra(EXTRA_PREVIOUS_STATE_ADDRESS, addressState);
-        intent.putExtra(EXTRA_IS_FROM_CHECKOUT_SNIPPET, true);
-        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CART.getSource());
-        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
-    }
-
-    @Override
-    public void renderCheckoutCartSuccess(CheckoutData checkoutData) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setRedirectUrl(checkoutData.getRedirectUrl());
-        paymentPassData.setTransactionId(checkoutData.getTransactionId());
-        paymentPassData.setPaymentId(checkoutData.getPaymentId());
-        paymentPassData.setCallbackSuccessUrl(checkoutData.getCallbackSuccessUrl());
-        paymentPassData.setCallbackFailedUrl(checkoutData.getCallbackFailedUrl());
-        paymentPassData.setQueryString(checkoutData.getQueryString());
-
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
-        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
-        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearPromoBeforeCheckout);
-        startActivityForResult(intent, PaymentConstant.REQUEST_CODE);
-    }
-
-    @Override
-    public void renderCheckoutPriceUpdated(PriceValidationData priceValidationData) {
-        if (getActivity() != null) {
-            com.tokopedia.checkout.domain.model.checkout.MessageData messageData =
-                    priceValidationData.getMessage();
-            DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-            priceValidationDialog.setTitle(messageData.getTitle());
-            priceValidationDialog.setDescription(messageData.getDesc());
-            priceValidationDialog.setPrimaryCTAText(messageData.getAction());
-            priceValidationDialog.setPrimaryCTAClickListener(() -> {
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, isOneClickShipment(), isTradeIn(), true,
-                        true, null, getDeviceId(), getCheckoutLeasingId(),
+    override fun renderErrorPage(message: String?) {
+        rvShipment!!.visibility = View.GONE
+        llNetworkErrorView!!.visibility = View.VISIBLE
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            llNetworkErrorView,
+            message,
+            object : NetworkErrorHelper.RetryClickedListener {
+                override fun onRetryClicked() {
+                    llNetworkErrorView!!.visibility = View.GONE
+                    rvShipment!!.visibility = View.VISIBLE
+                    shipmentPresenter.processInitialLoadCheckoutPage(
+                        false, isOneClickShipment, isTradeIn, true,
+                        false, null, deviceId, checkoutLeasingId,
                         isPlusSelected()
-                );
-                priceValidationDialog.dismiss();
-                return Unit.INSTANCE;
-            });
-
-            priceValidationDialog.show();
-
-            StringBuilder eventLabelBuilder = new StringBuilder();
-            TrackerData trackerData = priceValidationData.getTrackerData();
-            eventLabelBuilder.append(trackerData.getProductChangesType());
-            eventLabelBuilder.append(" - ");
-            eventLabelBuilder.append(trackerData.getCampaignType());
-            eventLabelBuilder.append(" - ");
-            eventLabelBuilder.append(TextUtils.join(",", trackerData.getProductIds()));
-
-            checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
-        }
-    }
-
-    @Override
-    public void renderCheckoutCartError(String message) {
-        if (message.contains("Pre Order") && message.contains("Corner"))
-            mTrackerCorner.sendViewCornerPoError();
-        showToastError(message);
-    }
-
-    @Override
-    public void renderPrompt(Prompt prompt) {
-        Activity activity = getActivity();
-        if (activity != null) {
-            DialogUnify promptDialog = new DialogUnify(activity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-            promptDialog.setTitle(prompt.getTitle());
-            promptDialog.setDescription(prompt.getDescription());
-            promptDialog.setPrimaryCTAText(prompt.getButton().getText());
-            promptDialog.setPrimaryCTAClickListener(() -> {
-                Activity mActivity = getActivity();
-                if (mActivity != null) {
-                    if (!TextUtils.isEmpty(prompt.getButton().getLink())) {
-                        RouteManager.route(mActivity, prompt.getButton().getLink());
-                    }
-                    mActivity.finish();
+                    )
                 }
-                return Unit.INSTANCE;
-            });
-            promptDialog.setOverlayClose(false);
-            promptDialog.setCancelable(false);
-            promptDialog.show();
+            }
+        )
+    }
+
+    override fun onCacheExpired(message: String?) {
+        if (activity != null && view != null) {
+            val intent = Intent()
+            intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message)
+            activity!!.setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent)
+            activity!!.finish()
         }
     }
 
-    @Override
-    public void sendAnalyticsChoosePaymentMethodFailed(String errorMessage) {
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventClickBayarTradeInFailed();
+    override fun onShipmentAddressFormEmpty() {
+        if (activity != null) {
+            activity!!.finish()
         }
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage);
     }
 
-    public void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast) {
-        if (!noToast && !shipmentAdapter.isCourierPromoStillExist()) {
-            if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
-                showToastNormal(validateUsePromoRevampUiModel.getMessage().get(0));
+    override fun renderCheckoutPage(
+        isInitialRender: Boolean,
+        isReloadAfterPriceChangeHigher: Boolean,
+        isOneClickShipment: Boolean
+    ) {
+        val recipientAddressModel = shipmentPresenter.recipientAddressModel
+        shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding)
+        setCampaignTimer()
+        initRecyclerViewData(
+            shipmentPresenter.shipmentTickerErrorModel,
+            shipmentPresenter.tickerAnnouncementHolderData,
+            recipientAddressModel,
+            shipmentPresenter.shipmentUpsellModel,
+            shipmentPresenter.shipmentNewUpsellModel,
+            shipmentPresenter.shipmentCartItemModelList,
+            shipmentPresenter.shipmentDonationModel,
+            shipmentPresenter.listShipmentCrossSellModel,
+            shipmentPresenter.lastApplyData,
+            shipmentPresenter.shipmentCostModel,
+            shipmentPresenter.egoldAttributeModel,
+            shipmentPresenter.shipmentButtonPaymentModel,
+            shipmentPresenter.uploadPrescriptionUiModel,
+            isInitialRender,
+            isReloadAfterPriceChangeHigher,
+            false
+        )
+    }
+
+    override fun stopTrace() {
+        if (!isShipmentTraceStopped) {
+            shipmentTracePerformance!!.stopTrace()
+            isShipmentTraceStopped = true
+        }
+    }
+
+    override fun stopEmbraceTrace() {
+        val emptyMap: Map<String, Any> = HashMap()
+        stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
+    }
+
+    override fun renderDataChanged() {
+        initRecyclerViewData(
+            shipmentPresenter.shipmentTickerErrorModel,
+            shipmentPresenter.tickerAnnouncementHolderData,
+            shipmentPresenter.recipientAddressModel,
+            shipmentPresenter.shipmentUpsellModel,
+            shipmentPresenter.shipmentNewUpsellModel,
+            shipmentPresenter.shipmentCartItemModelList,
+            shipmentPresenter.shipmentDonationModel,
+            shipmentPresenter.listShipmentCrossSellModel,
+            shipmentPresenter.lastApplyData,
+            shipmentPresenter.shipmentCostModel,
+            shipmentPresenter.egoldAttributeModel,
+            shipmentPresenter.shipmentButtonPaymentModel,
+            shipmentPresenter.uploadPrescriptionUiModel,
+            false,
+            false,
+            true
+        )
+    }
+
+    override fun renderCheckoutPageNoAddress(
+        shipmentAddressFormData: CartShipmentAddressFormData?,
+        isEligibleForRevampAna: Boolean
+    ) {
+        val token = Token()
+        token.ut = shipmentAddressFormData!!.keroUnixTime
+        token.districtRecommendation = shipmentAddressFormData.keroDiscomToken
+        if (isEligibleForRevampAna) {
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+            intent.putExtra(KERO_TOKEN, token)
+            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER)
+            intent.putExtra(PARAM_SOURCE, AddEditAddressSource.CART.source)
+            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)
+        } else {
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            intent.putExtra(KERO_TOKEN, token)
+            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER)
+            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)
+        }
+    }
+
+    override fun renderCheckoutPageNoMatchedAddress(
+        cartShipmentAddressFormData: CartShipmentAddressFormData?,
+        addressState: Int
+    ) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        intent.putExtra(EXTRA_PREVIOUS_STATE_ADDRESS, addressState)
+        intent.putExtra(EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CART.source)
+        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
+    }
+
+    override fun renderCheckoutCartSuccess(checkoutData: CheckoutData?) {
+        val paymentPassData = PaymentPassData()
+        paymentPassData.redirectUrl = checkoutData!!.redirectUrl
+        paymentPassData.transactionId = checkoutData.transactionId
+        paymentPassData.paymentId = checkoutData.paymentId
+        paymentPassData.callbackSuccessUrl = checkoutData.callbackSuccessUrl
+        paymentPassData.callbackFailedUrl = checkoutData.callbackFailedUrl
+        paymentPassData.queryString = checkoutData.queryString
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(
+            PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+            hasClearPromoBeforeCheckout
+        )
+        startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+    }
+
+    override fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData?) {
+        if (activity != null) {
+            val (title, desc, action) = priceValidationData!!.message
+            val priceValidationDialog =
+                DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            priceValidationDialog.setTitle(title)
+            priceValidationDialog.setDescription(desc)
+            priceValidationDialog.setPrimaryCTAText(action)
+            priceValidationDialog.setPrimaryCTAClickListener {
+                shipmentPresenter.processInitialLoadCheckoutPage(
+                    true, isOneClickShipment, isTradeIn, true,
+                    true, null, deviceId, checkoutLeasingId,
+                    isPlusSelected()
+                )
+                priceValidationDialog.dismiss()
+                Unit
+            }
+            priceValidationDialog.show()
+            val eventLabelBuilder = StringBuilder()
+            val (productChangesType, campaignType, productIds) = priceValidationData.trackerData
+            eventLabelBuilder.append(productChangesType)
+            eventLabelBuilder.append(" - ")
+            eventLabelBuilder.append(campaignType)
+            eventLabelBuilder.append(" - ")
+            eventLabelBuilder.append(TextUtils.join(",", productIds))
+            checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString())
+        }
+    }
+
+    override fun renderCheckoutCartError(message: String?) {
+        if (message!!.contains("Pre Order") && message.contains("Corner")) mTrackerCorner.sendViewCornerPoError()
+        showToastError(message)
+    }
+
+    override fun renderPrompt(prompt: Prompt?) {
+        val activity: Activity? = activity
+        if (activity != null) {
+            val promptDialog =
+                DialogUnify(activity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            promptDialog.setTitle(prompt!!.title)
+            promptDialog.setDescription(prompt.description)
+            promptDialog.setPrimaryCTAText(prompt.button.text)
+            promptDialog.setPrimaryCTAClickListener {
+                val mActivity: Activity? = getActivity()
+                if (mActivity != null) {
+                    if (!TextUtils.isEmpty(prompt.button.link)) {
+                        RouteManager.route(mActivity, prompt.button.link)
+                    }
+                    mActivity.finish()
+                }
+                Unit
+            }
+            promptDialog.setOverlayClose(false)
+            promptDialog.setCancelable(false)
+            promptDialog.show()
+        }
+    }
+
+    override fun sendAnalyticsChoosePaymentMethodFailed(errorMessage: String?) {
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventClickBayarTradeInFailed()
+        }
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(
+            errorMessage
+        )
+    }
+
+    override fun renderPromoCheckoutFromCourierSuccess(
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
+        itemPosition: Int,
+        noToast: Boolean
+    ) {
+        if (!noToast && !shipmentAdapter.isCourierPromoStillExist) {
+            if (validateUsePromoRevampUiModel!!.message.size > 0) {
+                showToastNormal(validateUsePromoRevampUiModel.message[0])
             }
         }
-        setCourierPromoApplied(itemPosition);
-        updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
+        setCourierPromoApplied(itemPosition)
+        updateButtonPromoCheckout(validateUsePromoRevampUiModel!!.promoUiModel, true)
     }
 
-    @Override
-    public void setCourierPromoApplied(int itemPosition) {
-        shipmentAdapter.setCourierPromoApplied(itemPosition);
+    override fun setCourierPromoApplied(itemPosition: Int) {
+        shipmentAdapter.setCourierPromoApplied(itemPosition)
     }
 
-    @Override
-    public void renderErrorCheckPromoShipmentData(String message) {
-        showToastError(message);
-        shipmentAdapter.resetCourierPromoState();
+    override fun renderErrorCheckPromoShipmentData(message: String?) {
+        showToastError(message)
+        shipmentAdapter.resetCourierPromoState()
     }
 
-    public void setBenefitSummaryInfoUiModel(BenefitSummaryInfoUiModel benefitSummaryInfoUiModel) {
-        this.benefitSummaryInfoUiModel = benefitSummaryInfoUiModel;
-    }
-
-    @Override
-    public void renderEditAddressSuccess(String latitude, String longitude) {
-        shipmentAdapter.updateShipmentDestinationPinpoint(latitude, longitude);
-        int position = shipmentAdapter.getLastChooseCourierItemPosition();
-
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
+    override fun renderEditAddressSuccess(latitude: String?, longitude: String?) {
+        shipmentAdapter.updateShipmentDestinationPinpoint(latitude, longitude)
+        val position = shipmentAdapter.lastChooseCourierItemPosition
+        val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
         if (shipmentCartItemModel != null) {
-            shippingCourierBottomsheet = null;
-            RecipientAddressModel recipientAddressModel;
-            if (shipmentPresenter.getRecipientAddressModel() != null) {
-                recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-                if (shipmentCartItemModel.isDisableChangeCourier()) {
+            shippingCourierBottomsheet = null
+            val recipientAddressModel: RecipientAddressModel?
+            if (shipmentPresenter.recipientAddressModel != null) {
+                recipientAddressModel = shipmentPresenter.recipientAddressModel
+                if (shipmentCartItemModel.isDisableChangeCourier) {
                     // refresh page
                     shipmentPresenter.processInitialLoadCheckoutPage(
-                            true, isOneClickShipment(), isTradeIn(), true,
-                            false, null, getDeviceId(), getCheckoutLeasingId(),
-                            isPlusSelected()
-                    );
+                        true, isOneClickShipment, isTradeIn, true,
+                        false, null, deviceId, checkoutLeasingId,
+                        isPlusSelected()
+                    )
                 } else {
-                    onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position);
+                    onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
                 }
             }
         }
     }
 
-    @Override
-    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates) {
-        if (getContext() != null) {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
-            if (shipmentCartItemModel == null) return;
-
-            shipmentCartItemModel.setStateLoadingCourierState(false);
+    override fun renderCourierStateSuccess(
+        courierItemData: CourierItemData?,
+        itemPosition: Int,
+        isTradeInDropOff: Boolean,
+        isForceReloadRates: Boolean
+    ) {
+        if (context != null) {
+            val shipmentCartItemModel =
+                shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
+                    ?: return
+            shipmentCartItemModel.isStateLoadingCourierState = false
             if (isTradeInDropOff) {
-                shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
+                shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData)
             } else {
-                boolean shouldValidatePromo = !isForceReloadRates && courierItemData.getSelectedShipper().getLogPromoCode() != null && courierItemData.getSelectedShipper().getLogPromoCode().length() > 0;
+                val shouldValidatePromo =
+                    !isForceReloadRates && courierItemData!!.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.length > 0
                 if (shouldValidatePromo) {
-                    String cartString = shipmentCartItemModel.getCartString();
-
-                    ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
-                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                            if (!ordersItem.getCodes().contains(courierItemData.getSelectedShipper().getLogPromoCode())) {
-                                ordersItem.getCodes().add(courierItemData.getSelectedShipper().getLogPromoCode());
+                    val cartString = shipmentCartItemModel.cartString
+                    val validateUsePromoRequest = generateValidateUsePromoRequest()
+                    for (ordersItem in validateUsePromoRequest!!.orders) {
+                        if (ordersItem.uniqueId == shipmentCartItemModel.cartString) {
+                            if (!ordersItem.codes.contains(courierItemData!!.selectedShipper.logPromoCode)) {
+                                ordersItem.codes.add(courierItemData.selectedShipper.logPromoCode!!)
                             }
-                            ordersItem.setShippingId(courierItemData.getSelectedShipper().getShipperId());
-                            ordersItem.setSpId(courierItemData.getSelectedShipper().getShipperProductId());
-                            ordersItem.setFreeShippingMetadata(courierItemData.getSelectedShipper().getFreeShippingMetadata());
-                            ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                            ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
-                            ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
-                                    .get(0).getPreOrderDurationDay());
-                            ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                            ordersItem.setBoCampaignId(courierItemData.getSelectedShipper().getBoCampaignId());
-                            ordersItem.setShippingSubsidy(courierItemData.getSelectedShipper().getShippingSubsidy());
-                            ordersItem.setBenefitClass(courierItemData.getSelectedShipper().getBenefitClass());
-                            ordersItem.setShippingPrice(courierItemData.getSelectedShipper().getShippingRate());
-                            ordersItem.setEtaText(courierItemData.getSelectedShipper().getEtaText());
-                            ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
-                            break;
+                            ordersItem.shippingId = courierItemData.selectedShipper.shipperId
+                            ordersItem.spId = courierItemData.selectedShipper.shipperProductId
+                            ordersItem.freeShippingMetadata =
+                                courierItemData.selectedShipper.freeShippingMetadata
+                            ordersItem.shopId = shipmentCartItemModel.shopId
+                            ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
+                            ordersItem.poDuration =
+                                shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
+                            ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
+                            ordersItem.boCampaignId = courierItemData.selectedShipper.boCampaignId
+                            ordersItem.shippingSubsidy =
+                                courierItemData.selectedShipper.shippingSubsidy
+                            ordersItem.benefitClass = courierItemData.selectedShipper.benefitClass
+                            ordersItem.shippingPrice =
+                                courierItemData.selectedShipper.shippingRate.toDouble()
+                            ordersItem.etaText = courierItemData.selectedShipper.etaText!!
+                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
+                            break
                         }
                     }
-
-                    List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
-                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0 && !shipmentCartItemModel.isFreeShippingPlus()) {
-                        for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
-                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                                if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
-                                        tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
-                                        tmpShipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                                        tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
-                                        !tmpShipmentCartItemModel.isFreeShippingPlus()
+                    val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
+                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size > 0 && !shipmentCartItemModel.isFreeShippingPlus) {
+                        for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                            for ((_, _, codes, uniqueId) in validateUsePromoRequest.orders) {
+                                if (shipmentCartItemModel.cartString != tmpShipmentCartItemModel.cartString && tmpShipmentCartItemModel.cartString == uniqueId && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                                    !tmpShipmentCartItemModel.isFreeShippingPlus
                                 ) {
-                                    ordersItem.getCodes().remove(tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getLogPromoCode());
+                                    codes.remove(tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode)
                                 }
                             }
                         }
                     }
-
-                    shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest, courierItemData.getSelectedShipper().getLogPromoCode(), true);
+                    shipmentPresenter.doValidateUseLogisticPromo(
+                        itemPosition,
+                        cartString,
+                        validateUsePromoRequest,
+                        courierItemData!!.selectedShipper.logPromoCode,
+                        true
+                    )
                 }
-                checkCourierPromo(courierItemData, itemPosition);
-                shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false, shouldValidatePromo);
-                if (!shouldValidatePromo && shipmentPresenter.getLogisticDonePublisher() != null) {
-                    shipmentPresenter.getLogisticDonePublisher().onCompleted();
+                checkCourierPromo(courierItemData, itemPosition)
+                shipmentAdapter.setSelectedCourier(
+                    itemPosition,
+                    courierItemData,
+                    false,
+                    shouldValidatePromo
+                )
+                if (!shouldValidatePromo && shipmentPresenter.logisticDonePublisher != null) {
+                    shipmentPresenter.logisticDonePublisher!!.onCompleted()
                 }
             }
-            onNeedUpdateViewItem(itemPosition);
-            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+            onNeedUpdateViewItem(itemPosition)
+            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
         }
     }
 
-    @Override
-    public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff, boolean isBoAutoApplyFlow) {
-        if (getContext() != null) {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+    override fun renderCourierStateFailed(
+        itemPosition: Int,
+        isTradeInDropOff: Boolean,
+        isBoAutoApplyFlow: Boolean
+    ) {
+        if (context != null) {
+            val shipmentCartItemModel =
+                shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
             if (shipmentCartItemModel != null) {
-                shipmentCartItemModel.setStateLoadingCourierState(false);
+                shipmentCartItemModel.isStateLoadingCourierState = false
                 if (isTradeInDropOff) {
-                    shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+                    shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState = true
                 } else {
-                    shipmentCartItemModel.setStateHasLoadCourierState(true);
+                    shipmentCartItemModel.isStateHasLoadCourierState = true
                 }
-                if (!shipmentCartItemModel.getBoCode().isEmpty()) {
-                    shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
-                    shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
-                    shipmentCartItemModel.setBoCode("");
-                    showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
+                if (!shipmentCartItemModel.boCode.isEmpty()) {
+                    shipmentPresenter.cancelAutoApplyPromoStackLogistic(
+                        itemPosition,
+                        shipmentCartItemModel.boCode,
+                        shipmentCartItemModel
+                    )
+                    shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(
+                        shipmentCartItemModel.cartString,
+                        shipmentCartItemModel.boCode
+                    )
+                    shipmentCartItemModel.boCode = ""
+                    showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message))
                 } else if (isBoAutoApplyFlow) {
-                    showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
+                    showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message))
                 }
-                onNeedUpdateViewItem(itemPosition);
+                onNeedUpdateViewItem(itemPosition)
             }
         }
     }
 
-    @Override
-    public void cancelAllCourierPromo() {
-        shipmentAdapter.cancelAllCourierPromo();
+    override fun cancelAllCourierPromo() {
+        shipmentAdapter.cancelAllCourierPromo()
     }
 
-    @Override
-    public void navigateToSetPinpoint(String message, LocationPass locationPass) {
-        sendAnalyticsOnClickEditPinPointErrorValidation(message);
-        if (getView() != null) {
-            LayoutInflater inflater = getLayoutInflater();
-            View layout = inflater.inflate(R.layout.toast_rectangle, getView().findViewById(R.id.toast_layout));
-
-            TextView tvMessage = layout.findViewById(R.id.tv_message);
-            tvMessage.setText(message);
-
-            Toast toast = new Toast(getActivity());
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.setView(layout);
-            toast.show();
+    override fun navigateToSetPinpoint(message: String?, locationPass: LocationPass?) {
+        sendAnalyticsOnClickEditPinPointErrorValidation(message)
+        if (view != null) {
+            val inflater = layoutInflater
+            val layout =
+                inflater.inflate(R.layout.toast_rectangle, view!!.findViewById(R.id.toast_layout))
+            val tvMessage = layout.findViewById<TextView>(R.id.tv_message)
+            tvMessage.text = message
+            val toast = Toast(activity)
+            toast.duration = Toast.LENGTH_LONG
+            toast.view = layout
+            toast.show()
         } else {
-            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
         }
-        if (getActivity() != null) {
-            navigateToPinpointActivity(locationPass);
+        if (activity != null) {
+            navigateToPinpointActivity(locationPass)
         }
     }
 
-    public void sendAnalyticsOnClickEditPinPointErrorValidation(String message) {
-        checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(message);
+    override fun sendAnalyticsOnClickEditPinPointErrorValidation(message: String?) {
+        checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(
+            message!!
+        )
     }
 
-    @Override
-    public Activity getActivityContext() {
-        return getActivity();
-    }
+    override val activityContext: Activity
+        get() = activity!!
 
-    @Override
-    public void sendEnhancedEcommerceAnalyticsCheckout(@NonNull Map<String, ?> stringObjectMap, @NonNull Map<String, String> tradeInCustomDimension, @Nullable String transactionId, @NonNull String userId, boolean promoFlag, @NonNull String eventCategory, @NonNull String eventAction, @NonNull String eventLabel) {
+    override fun sendEnhancedEcommerceAnalyticsCheckout(
+        stringObjectMap: Map<String, Any>,
+        tradeInCustomDimension: Map<String, String>,
+        transactionId: String?,
+        userId: String,
+        promoFlag: Boolean,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
-        );
-        checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
+            stringObjectMap,
+            tradeInCustomDimension,
+            transactionId,
+            userId,
+            promoFlag,
+            eventCategory,
+            eventAction,
+            eventLabel
+        )
+        checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout()
     }
 
-    @Override
-    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(@Nullable String eventLabel, @Nullable String userId, @Nullable List<?> listProducts) {
-        checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(eventLabel, userId, listProducts);
+    override fun sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(
+        eventLabel: String?,
+        userId: String?,
+        listProducts: List<*>?
+    ) {
+        checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(
+            eventLabel!!,
+            userId!!,
+            listProducts
+        )
     }
 
-    @Override
-    public void sendAnalyticsOnClickChooseOtherAddressShipment() {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihAlamatLain();
+    override fun sendAnalyticsOnClickChooseOtherAddressShipment() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihAlamatLain()
     }
 
-    @Override
-    public void sendAnalyticsOnClickTopDonation() {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickTopDonasi();
+    override fun sendAnalyticsOnClickTopDonation() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickTopDonasi()
     }
 
-    @Override
-    public void sendAnalyticsOnClickChangeAddress() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat();
+    override fun sendAnalyticsOnClickChangeAddress() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat()
     }
 
-    public String getCornerId() {
-        return cornerId;
-    }
-
-    public void setCornerId(String cornerId) {
-        this.cornerId = cornerId;
-    }
-
-    @Override
-    public void renderChangeAddressSuccess(boolean refreshCheckoutPage) {
+    override fun renderChangeAddressSuccess(refreshCheckoutPage: Boolean) {
         if (refreshCheckoutPage) {
             shipmentPresenter.processInitialLoadCheckoutPage(
-                    true, isOneClickShipment(), isTradeIn(), true,
-                    false, shipmentAdapter.getAddressShipmentData().getCornerId(), getDeviceId(), getCheckoutLeasingId(),
-                    isPlusSelected()
-            );
+                true, isOneClickShipment, isTradeIn, true,
+                false, shipmentAdapter.addressShipmentData.cornerId, deviceId, checkoutLeasingId,
+                isPlusSelected()
+            )
         }
     }
 
-    @Override
-    public void renderChangeAddressFailed(boolean refreshCheckoutPageIfSuccess) {
-        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-        if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
-            recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN);
-            recipientAddressModel.setIgnoreSelectionAction(true);
-        } else if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
+    override fun renderChangeAddressFailed(refreshCheckoutPageIfSuccess: Boolean) {
+        val recipientAddressModel = shipmentAdapter.addressShipmentData
+        if (recipientAddressModel.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
+            recipientAddressModel.selectedTabIndex =
+                RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
+            recipientAddressModel.isIgnoreSelectionAction = true
+        } else if (recipientAddressModel.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
             if (refreshCheckoutPageIfSuccess) {
-                recipientAddressModel.setLocationDataModel(null);
-                recipientAddressModel.setDropOffAddressDetail("");
-                recipientAddressModel.setDropOffAddressName("");
+                recipientAddressModel.locationDataModel = null
+                recipientAddressModel.dropOffAddressDetail = ""
+                recipientAddressModel.dropOffAddressName = ""
             } else {
-                recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
-                recipientAddressModel.setIgnoreSelectionAction(true);
+                recipientAddressModel.selectedTabIndex =
+                    RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT
+                recipientAddressModel.isIgnoreSelectionAction = true
             }
         }
-        onNeedUpdateViewItem(shipmentAdapter.getRecipientAddressModelPosition());
+        onNeedUpdateViewItem(shipmentAdapter.recipientAddressModelPosition)
     }
 
-    @Override
-    public List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList,
-                                                                boolean isAnalyticsPurpose) {
-        ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose);
-        return requestData.getCheckoutRequestData();
+    override fun generateNewCheckoutRequest(
+        shipmentCartItemModelList: List<ShipmentCartItemModel?>?,
+        isAnalyticsPurpose: Boolean
+    ): List<DataCheckoutRequest?>? {
+        val requestData =
+            shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose)
+        return requestData.checkoutRequestData
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        hideLoading();
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        hideLoading()
         if (requestCode == PaymentConstant.REQUEST_CODE) {
-            onResultFromPayment(resultCode, data);
+            onResultFromPayment(resultCode, data)
         } else if (requestCode == LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY) {
-            onResultFromAddNewAddress(resultCode, data);
+            onResultFromAddNewAddress(resultCode, data)
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
-            onResultFromRequestCodeAddressOptions(resultCode, data);
+            onResultFromRequestCodeAddressOptions(resultCode, data)
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
-            onResultFromCourierPinpoint(resultCode, data);
+            onResultFromCourierPinpoint(resultCode, data)
         } else if (requestCode == REQUEST_CODE_EDIT_ADDRESS) {
-            onResultFromEditAddress();
+            onResultFromEditAddress()
         } else if (requestCode == LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN) {
-            onResultFromSetTradeInPinpoint(data);
+            onResultFromSetTradeInPinpoint(data)
         } else if (requestCode == REQUEST_CODE_PROMO) {
-            onResultFromPromo(resultCode, data);
+            onResultFromPromo(resultCode, data)
         } else if (requestCode == REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET) {
-            onUpdateResultAddOnProductLevelBottomSheet(data);
+            onUpdateResultAddOnProductLevelBottomSheet(data)
         } else if (requestCode == REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET) {
-            onUpdateResultAddOnOrderLevelBottomSheet(data);
+            onUpdateResultAddOnOrderLevelBottomSheet(data)
         } else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
-            onUploadPrescriptionResult(data, false);
+            onUploadPrescriptionResult(data, false)
         } else if (requestCode == REQUEST_CODE_MINI_CONSULTATION) {
-            onMiniConsultationResult(resultCode, data);
+            onMiniConsultationResult(resultCode, data)
         } else if (requestCode == REQUEST_CODE_UPSELL) {
-            onResultFromUpsell(data);
+            onResultFromUpsell(data)
         }
     }
 
     // Re-fetch rates to get promo mvc icon for all order, except already reloaded unique ids
-    private void reloadCourierForMvc(ArrayList<String> appliedMvcCartStrings, ArrayList<String> reloadedUniqueIds) {
-        List<Object> object = shipmentAdapter.getShipmentDataList();
-        if (object != null && object.size() > 0) {
-            for (int i = 0; i < object.size(); i++) {
-                if (object.get(i) instanceof ShipmentCartItemModel) {
-                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object.get(i);
-                    if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(shipmentCartItemModel.getCartString()) && !reloadedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
-                        prepareReloadRates(i, false);
-                    } else if (!reloadedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
-                        prepareReloadRates(i, true);
+    private fun reloadCourierForMvc(
+        appliedMvcCartStrings: ArrayList<String?>?,
+        reloadedUniqueIds: ArrayList<String?>?
+    ) {
+        val `object` = shipmentAdapter.shipmentDataList
+        if (`object` != null && `object`.size > 0) {
+            for (i in `object`.indices) {
+                if (`object`[i] is ShipmentCartItemModel) {
+                    val shipmentCartItemModel = `object`[i] as ShipmentCartItemModel
+                    if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(
+                            shipmentCartItemModel.cartString
+                        ) && !reloadedUniqueIds!!.contains(shipmentCartItemModel.cartString)
+                    ) {
+                        prepareReloadRates(i, false)
+                    } else if (!reloadedUniqueIds!!.contains(shipmentCartItemModel.cartString)) {
+                        prepareReloadRates(i, true)
                     }
                 }
             }
         }
     }
 
-    private void onResultFromPromo(int resultCode, Intent data) {
+    private fun onResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (data.getStringExtra(ARGS_PROMO_ERROR) != null
-                    && Objects.equals(data.getStringExtra(ARGS_PROMO_ERROR), ARGS_FINISH_ERROR) && getActivity() != null) {
-                getActivity().finish();
+            if (data!!.getStringExtra(ARGS_PROMO_ERROR) != null && data.getStringExtra(
+                    ARGS_PROMO_ERROR
+                ) == ARGS_FINISH_ERROR && activity != null
+            ) {
+                activity!!.finish()
             } else {
-                shipmentPresenter.setCouponStateChanged(true);
-                ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
+                shipmentPresenter.couponStateChanged = true
+                val validateUsePromoRequest =
+                    data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
                 if (validateUsePromoRequest != null) {
-                    boolean stillHasPromo = false;
-                    for (String promoGlobalCode : validateUsePromoRequest.getCodes()) {
-                        if (promoGlobalCode.length() > 0) {
-                            stillHasPromo = true;
-                            break;
+                    var stillHasPromo = false
+                    for (promoGlobalCode in validateUsePromoRequest.codes) {
+                        if (promoGlobalCode.length > 0) {
+                            stillHasPromo = true
+                            break
                         }
                     }
-
                     if (!stillHasPromo) {
-                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                            for (String promoMerchantCode : ordersItem.getCodes()) {
-                                if (promoMerchantCode.length() > 0) {
-                                    stillHasPromo = true;
-                                    break;
+                        for ((_, _, codes) in validateUsePromoRequest.orders) {
+                            for (promoMerchantCode in codes) {
+                                if (promoMerchantCode.length > 0) {
+                                    stillHasPromo = true
+                                    break
                                 }
                             }
                         }
                     }
-
-                    ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                    val validateUsePromoRevampUiModel =
+                        data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
+                            ARGS_VALIDATE_USE_DATA_RESULT
+                        )
                     if (validateUsePromoRevampUiModel != null) {
-                        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                                if (voucherOrdersItemUiModel.getUniqueId().equals(ordersItem.getUniqueId()) && voucherOrdersItemUiModel.isTypeLogistic()) {
-                                    ordersItem.getCodes().remove(voucherOrdersItemUiModel.getCode());
+                        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                            for ((_, _, codes, uniqueId) in validateUsePromoRequest.orders) {
+                                if (voucherOrdersItemUiModel.uniqueId == uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
+                                    codes.remove(voucherOrdersItemUiModel.code)
                                 }
                             }
                         }
                     }
-
-                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
                     if (!stillHasPromo) {
-                        doResetButtonPromoCheckout();
+                        doResetButtonPromoCheckout()
                     }
                 }
-
-                ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
-                ArrayList<String> reloadedUniqueIds = new ArrayList<>();
+                val validateUsePromoRevampUiModel =
+                    data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
+                        ARGS_VALIDATE_USE_DATA_RESULT
+                    )
+                var reloadedUniqueIds = ArrayList<String?>()
                 if (validateUsePromoRevampUiModel != null) {
-                    String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
-                    shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
-                    doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
-                    updatePromoTrackingData(validateUsePromoRevampUiModel.getPromoUiModel().getTrackingDetailUiModels());
-                    sendEEStep3();
-                    Pair<ArrayList<String>, ArrayList<String>> validateBoResult = shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
-                    reloadedUniqueIds = validateBoResult.first;
-                    ArrayList<String> unappliedUniqueIds = validateBoResult.second;
-                    if (messageInfo.length() > 0) {
-                        showToastNormal(messageInfo);
-                    } else if (unappliedUniqueIds.size() > 0) {
+                    val messageInfo =
+                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
+                    shipmentPresenter.validateUsePromoRevampUiModel =
+                        validateUsePromoRevampUiModel
+                    doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
+                    updatePromoTrackingData(validateUsePromoRevampUiModel.promoUiModel.trackingDetailUiModels)
+                    sendEEStep3()
+                    val validateBoResult =
+                        shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel)
+                    reloadedUniqueIds = validateBoResult.first
+                    val unappliedUniqueIds = validateBoResult.second
+                    if (messageInfo.length > 0) {
+                        showToastNormal(messageInfo)
+                    } else if (unappliedUniqueIds!!.size > 0) {
                         // when messageInfo is empty and has unapplied BO show hard coded toast
-                        showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message));
+                        showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message))
                     }
-                    doSetPromoBenefit(validateUsePromoRevampUiModel.getPromoUiModel().getBenefitSummaryInfoUiModel().getSummaries(), true);
+                    doSetPromoBenefit(
+                        validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries,
+                        true
+                    )
                 }
-
-                ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT);
+                val clearPromoUiModel =
+                    data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
                 if (clearPromoUiModel != null) {
-                    PromoUiModel promoUiModel = new PromoUiModel();
-                    promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
-
-                    TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
-                    if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
-                        tickerAnnouncementHolderData.setTitle("");
-                        tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
-                        updateTickerAnnouncementMessage();
+                    val promoUiModel = PromoUiModel()
+                    promoUiModel.titleDescription =
+                        clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+                    val tickerAnnouncementHolderData =
+                        shipmentPresenter.tickerAnnouncementHolderData
+                    if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.successDataModel.tickerMessage)) {
+                        tickerAnnouncementHolderData.title = ""
+                        tickerAnnouncementHolderData.message =
+                            clearPromoUiModel.successDataModel.tickerMessage
+                        updateTickerAnnouncementMessage()
                     }
-
-                    doUpdateButtonPromoCheckout(promoUiModel);
-                    shipmentPresenter.setValidateUsePromoRevampUiModel(null);
-                    shipmentPresenter.validateClearAllBoPromo();
-                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false);
+                    doUpdateButtonPromoCheckout(promoUiModel)
+                    shipmentPresenter.validateUsePromoRevampUiModel = null
+                    shipmentPresenter.validateClearAllBoPromo()
+                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false)
                 }
-
-                boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
-                ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
+                val requiredToReloadRatesForMvcCourier =
+                    data.getBooleanExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
+                val appliedMvcCartStrings =
+                    data.getStringArrayListExtra(ARGS_APPLIED_MVC_CART_STRINGS)
                 if (requiredToReloadRatesForMvcCourier) {
-                    reloadCourierForMvc(appliedMvcCartStrings, reloadedUniqueIds);
+                    reloadCourierForMvc(appliedMvcCartStrings, reloadedUniqueIds)
                 }
             }
         }
     }
 
-    public void onResultFromEditAddress() {
+    fun onResultFromEditAddress() {
         shipmentPresenter.processInitialLoadCheckoutPage(
-                true, isOneClickShipment(), isTradeIn(), true,
-                false, null, getDeviceId(), getCheckoutLeasingId(),
-                isPlusSelected()
-        );
+            true, isOneClickShipment, isTradeIn, true,
+            false, null, deviceId, checkoutLeasingId,
+            isPlusSelected()
+        )
     }
 
-    private void onResultFromCourierPinpoint(int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
-            LocationPass locationPass = data.getExtras().getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
+    private fun onResultFromCourierPinpoint(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data!!.extras != null) {
+            val locationPass =
+                data.extras!!.getParcelable<LocationPass>(LogisticConstant.EXTRA_EXISTING_LOCATION)
             if (locationPass != null) {
-                int index = shipmentAdapter.getLastChooseCourierItemPosition();
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);
-                shipmentPresenter.editAddressPinpoint(locationPass.getLatitude(), locationPass.getLongitude(),
-                        shipmentCartItemModel, locationPass);
+                val index = shipmentAdapter.lastChooseCourierItemPosition
+                val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index)
+                shipmentPresenter.editAddressPinpoint(
+                    locationPass.latitude,
+                    locationPass.longitude,
+                    shipmentCartItemModel,
+                    locationPass
+                )
             }
         } else {
-            shipmentAdapter.setLastServiceId(0);
+            shipmentAdapter.lastServiceId = 0
         }
     }
 
-    private void onResultFromPayment(int resultCode, Intent data) {
-        switch (resultCode) {
-            case PaymentConstant.PAYMENT_FAILED:
-            case PaymentConstant.PAYMENT_CANCELLED:
-                if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, false)) {
+    private fun onResultFromPayment(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            PaymentConstant.PAYMENT_FAILED, PaymentConstant.PAYMENT_CANCELLED -> {
+                if (data != null && data.getBooleanExtra(
+                        PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                        false
+                    )
+                ) {
                     shipmentPresenter.processInitialLoadCheckoutPage(
-                            true, isOneClickShipment(), isTradeIn(), true,
-                            false, null, getDeviceId(), getCheckoutLeasingId(),
-                            isPlusSelected()
-                    );
+                        true, isOneClickShipment, isTradeIn, true,
+                        false, null, deviceId, checkoutLeasingId,
+                        isPlusSelected()
+                    )
                 }
-                if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)) {
-                    showToastError(getString(R.string.checkout_label_payment_try_again));
+                if (data != null && data.getBooleanExtra(
+                        PaymentConstant.EXTRA_PAGE_TIME_OUT,
+                        false
+                    )
+                ) {
+                    showToastError(getString(R.string.checkout_label_payment_try_again))
                 }
-                break;
-            default:
-                Activity activity = getActivity();
-                if (activity != null) activity.finish();
-                break;
+            }
+            else -> {
+                val activity: Activity? = activity
+                activity?.finish()
+            }
         }
     }
 
-    private void updatePromoTrackingData(List<TrackingDetailsItemUiModel> trackingDetailsItemUiModels) {
-        List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
-        if (dataList == null) return;
-        for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                if (trackingDetailsItemUiModels.size() > 0) {
-                    for (TrackingDetailsItemUiModel trackingDetailsItemUiModel : trackingDetailsItemUiModels) {
-                        if (trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
-                                cartItemModel.getAnalyticsProductCheckoutData() != null) {
-                            cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailsItemUiModel.getPromoCodesTracking());
-                            cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailsItemUiModel.getPromoDetailsTracking());
+    private fun updatePromoTrackingData(trackingDetailsItemUiModels: List<TrackingDetailsItemUiModel>) {
+        val dataList = shipmentAdapter.shipmentCartItemModelList ?: return
+        for (shipmentCartItemModel in dataList) {
+            for ((_, _, _, productId, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, analyticsProductCheckoutData) in shipmentCartItemModel.cartItemModels) {
+                if (trackingDetailsItemUiModels.size > 0) {
+                    for ((promoDetailsTracking, productId1, promoCodesTracking) in trackingDetailsItemUiModels) {
+                        if (productId1 == productId &&
+                            analyticsProductCheckoutData != null
+                        ) {
+                            analyticsProductCheckoutData.promoCode = promoCodesTracking
+                            analyticsProductCheckoutData.promoDetails = promoDetailsTracking
                         }
                     }
                 }
@@ -1608,1574 +1685,1798 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void clearPromoTrackingData() {
-        List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
-        if (dataList == null) return;
-        for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                if (cartItemModel.getAnalyticsProductCheckoutData() != null) {
-                    cartItemModel.getAnalyticsProductCheckoutData().setPromoCode("");
-                    cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails("");
+    private fun clearPromoTrackingData() {
+        val dataList = shipmentAdapter.shipmentCartItemModelList ?: return
+        for (shipmentCartItemModel in dataList) {
+            for ((_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, analyticsProductCheckoutData) in shipmentCartItemModel.cartItemModels) {
+                if (analyticsProductCheckoutData != null) {
+                    analyticsProductCheckoutData.promoCode = ""
+                    analyticsProductCheckoutData.promoDetails = ""
                 }
             }
         }
     }
 
-    private void onResultFromAddNewAddress(int resultCode, Intent data) {
-        Activity activity = getActivity();
+    private fun onResultFromAddNewAddress(resultCode: Int, data: Intent?) {
+        val activity: Activity? = activity
         if (activity != null) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                activity.finish();
+                activity.finish()
             } else {
                 if (data != null) {
-                    SaveAddressDataModel addressDataModel = data.getParcelableExtra(LogisticConstant.EXTRA_ADDRESS_NEW);
-                    if (addressDataModel != null) {
-                        updateLocalCacheAddressData(addressDataModel);
-                    }
+                    val addressDataModel = data.getParcelableExtra<SaveAddressDataModel>(
+                        LogisticConstant.EXTRA_ADDRESS_NEW
+                    )
+                    addressDataModel?.let { updateLocalCacheAddressData(it) }
                 }
                 shipmentPresenter.processInitialLoadCheckoutPage(
-                        false, isOneClickShipment(), isTradeIn(), false,
-                        false, null, getDeviceId(), getCheckoutLeasingId(),
-                        isPlusSelected()
-                );
+                    false, isOneClickShipment, isTradeIn, false,
+                    false, null, deviceId, checkoutLeasingId,
+                    isPlusSelected()
+                )
             }
         }
     }
 
-    private void onResultFromRequestCodeAddressOptions(int resultCode, Intent data) {
-        switch (resultCode) {
-            case CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS:
-                RecipientAddressModel currentAddress = shipmentAdapter.getAddressShipmentData();
-                ChosenAddressModel chosenAddressModel = data.getParcelableExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
+    private fun onResultFromRequestCodeAddressOptions(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS -> {
+                val currentAddress = shipmentAdapter.addressShipmentData
+                val chosenAddressModel =
+                    data!!.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)
                 if (currentAddress != null && chosenAddressModel != null) {
-                    shipmentPresenter.changeShippingAddress(currentAddress, chosenAddressModel, isOneClickShipment(), false, false, true);
+                    shipmentPresenter.changeShippingAddress(
+                        currentAddress,
+                        chosenAddressModel,
+                        isOneClickShipment,
+                        false,
+                        false,
+                        true
+                    )
                 }
-                break;
-
-            case Activity.RESULT_CANCELED:
-                if (getActivity() != null && data == null && shipmentPresenter.getShipmentCartItemModelList() == null) {
-                    getActivity().finish();
-                }
-                break;
-
-            default:
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                        false, isOneClickShipment(), isTradeIn(), false,
-                        false, null, getDeviceId(), getCheckoutLeasingId(),
-                        isPlusSelected()
-                );
-                break;
+            }
+            Activity.RESULT_CANCELED -> if (activity != null && data == null && shipmentPresenter.shipmentCartItemModelList == null) {
+                activity!!.finish()
+            }
+            else -> shipmentPresenter.processInitialLoadCheckoutPage(
+                false, isOneClickShipment, isTradeIn, false,
+                false, null, deviceId, checkoutLeasingId,
+                isPlusSelected()
+            )
         }
     }
 
-    @Override
-    public void onChangeAddress() {
-        sendAnalyticsOnClickChangeAddress();
-        sendAnalyticsOnClickChooseOtherAddressShipment();
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventTradeInClickChangeAddress();
+    override fun onChangeAddress() {
+        sendAnalyticsOnClickChangeAddress()
+        sendAnalyticsOnClickChooseOtherAddressShipment()
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickChangeAddress()
         }
-
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
-        intent.putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true);
-        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CHECKOUT.getSource());
-        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        intent.putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CHECKOUT.source)
+        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
     }
 
-    @Override
-    public ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
-                                                     RecipientAddressModel recipientAddressModel) {
-        ShipmentDetailData shipmentDetailData;
-        ShipmentDetailData oldShipmentDetailData = null;
-        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-            oldShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+    override fun getShipmentDetailData(
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        recipientAddressModel: RecipientAddressModel?
+    ): ShipmentDetailData? {
+        val shipmentDetailData: ShipmentDetailData
+        var oldShipmentDetailData: ShipmentDetailData? = null
+        if (shipmentCartItemModel!!.selectedShipmentDetailData != null &&
+            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null
+        ) {
+            oldShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
         }
-        shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentCartItemModel,
-                recipientAddressModel);
-        if (oldShipmentDetailData != null && oldShipmentDetailData.getSelectedCourier() != null) {
-            shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
+        shipmentDetailData = ratesDataConverter.getShipmentDetailData(
+            shipmentCartItemModel,
+            recipientAddressModel!!
+        )
+        if (oldShipmentDetailData != null && oldShipmentDetailData.selectedCourier != null) {
+            shipmentDetailData.selectedCourier = oldShipmentDetailData.selectedCourier
         }
-        shipmentDetailData.setTradein(isTradeIn());
-
-        return shipmentDetailData;
+        shipmentDetailData.isTradein = isTradeIn
+        return shipmentDetailData
     }
 
-    @Override
-    public void sendAnalyticsOnClickSubtotal() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickSubtotal();
+    override fun sendAnalyticsOnClickSubtotal() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickSubtotal()
     }
 
-    @Override
-    public void sendAnalyticsOnClickChecklistShipmentRecommendationDuration(String duration) {
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickChecklistPilihDurasiPengiriman(duration);
+    override fun sendAnalyticsOnClickChecklistShipmentRecommendationDuration(duration: String?) {
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickChecklistPilihDurasiPengiriman(
+            duration
+        )
     }
 
-    @Override
-    public void sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(String courier) {
-        checkoutAnalyticsCourierSelection.eventViewCourierCourierSelectionViewPreselectedCourierOption(courier);
+    override fun sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(courier: String?) {
+        checkoutAnalyticsCourierSelection.eventViewCourierCourierSelectionViewPreselectedCourierOption(
+            courier
+        )
     }
 
-    @Override
-    public void sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(int shippingProductId) {
-        checkoutAnalyticsCourierSelection.eventViewPreselectedCourierOption(shippingProductId);
+    override fun sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(shippingProductId: Int) {
+        checkoutAnalyticsCourierSelection.eventViewPreselectedCourierOption(shippingProductId)
     }
 
-    @Override
-    public void sendAnalyticsOnDisplayDurationThatContainPromo(boolean isCourierPromo, String duration) {
-        checkoutAnalyticsCourierSelection.eventViewDuration(isCourierPromo, duration);
+    override fun sendAnalyticsOnDisplayDurationThatContainPromo(
+        isCourierPromo: Boolean,
+        duration: String?
+    ) {
+        checkoutAnalyticsCourierSelection.eventViewDuration(isCourierPromo, duration)
     }
 
-    @Override
-    public void sendAnalyticsOnDisplayLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId) {
-        checkoutAnalyticsCourierSelection.eventViewCourierOption(isCourierPromo, shippingProductId);
+    override fun sendAnalyticsOnDisplayLogisticThatContainPromo(
+        isCourierPromo: Boolean,
+        shippingProductId: Int
+    ) {
+        checkoutAnalyticsCourierSelection.eventViewCourierOption(
+            isCourierPromo,
+            shippingProductId
+        )
     }
 
-    @Override
-    public void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh) {
-        checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(isCourierPromo, duration, isCod, shippingPriceMin, shippingPriceHigh);
+    override fun sendAnalyticsOnClickDurationThatContainPromo(
+        isCourierPromo: Boolean,
+        duration: String?,
+        isCod: Boolean,
+        shippingPriceMin: String?,
+        shippingPriceHigh: String?
+    ) {
+        checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(
+            isCourierPromo,
+            duration,
+            isCod,
+            shippingPriceMin!!,
+            shippingPriceHigh!!
+        )
     }
 
-    @Override
-    public void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod) {
-        checkoutAnalyticsCourierSelection.eventClickChangeCourierOption(isCourierPromo, shippingProductId, isCod);
+    override fun sendAnalyticsOnClickLogisticThatContainPromo(
+        isCourierPromo: Boolean,
+        shippingProductId: Int,
+        isCod: Boolean
+    ) {
+        checkoutAnalyticsCourierSelection.eventClickChangeCourierOption(
+            isCourierPromo,
+            shippingProductId,
+            isCod
+        )
     }
 
-    @Override
-    public void sendAnalyticsOnClickChangeCourierShipmentRecommendation(ShipmentCartItemModel shipmentCartItemModel) {
-        String label = "";
-        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getOntimeDelivery() != null) {
-            OntimeDelivery otdg = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getOntimeDelivery();
-            if (otdg.getAvailable()) {
-                label = getString(R.string.otdg_gtm_label);
+    override fun sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel: ShipmentCartItemModel?) {
+        var label = ""
+        if (shipmentCartItemModel!!.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.ontimeDelivery != null) {
+            val otdg =
+                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.ontimeDelivery
+            if (otdg!!.available) {
+                label = getString(R.string.otdg_gtm_label)
             }
         }
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahKurir(label);
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahKurir(label)
     }
 
-    public void sendAnalyticsOnClickChangeDurationShipmentRecommendation() {
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahDurasi();
+    override fun sendAnalyticsOnClickChangeDurationShipmentRecommendation() {
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahDurasi()
     }
 
-    @Override
-    public void sendAnalyticsOnClickCheckBoxDropShipperOption() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickDropship();
+    override fun sendAnalyticsOnClickCheckBoxDropShipperOption() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickDropship()
     }
 
-    @Override
-    public void sendAnalyticsOnClickCheckBoxInsuranceOption() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickAsuransiPengiriman();
+    override fun sendAnalyticsOnClickCheckBoxInsuranceOption() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickAsuransiPengiriman()
     }
 
-    @Override
-    public void sendAnalyticsScreenName(String screenName) {
-        checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), screenName);
+    override fun sendAnalyticsScreenName(screenName: String?) {
+        checkoutAnalyticsCourierSelection.sendScreenName(activity, screenName!!)
     }
 
-    @Override
-    public void sendAnalyticsCourierNotComplete() {
-        checkoutAnalyticsCourierSelection.eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete();
+    override fun sendAnalyticsCourierNotComplete() {
+        checkoutAnalyticsCourierSelection.eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete()
     }
 
-    @Override
-    public void sendAnalyticsPromoRedState() {
-        checkoutAnalyticsCourierSelection.eventClickBuyPromoRedState();
+    override fun sendAnalyticsPromoRedState() {
+        checkoutAnalyticsCourierSelection.eventClickBuyPromoRedState()
     }
 
-    @Override
-    public void sendAnalyticsDropshipperNotComplete() {
-        checkoutAnalyticsCourierSelection.eventClickBuyCourierSelectionClickBayarFailedDropshipper();
+    override fun sendAnalyticsDropshipperNotComplete() {
+        checkoutAnalyticsCourierSelection.eventClickBuyCourierSelectionClickBayarFailedDropshipper()
     }
 
-    @Override
-    public void sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration() {
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickXPadaDurasiPengiriman();
+    override fun sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration() {
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickXPadaDurasiPengiriman()
     }
 
-    @Override
-    public void sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier() {
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickXPadaKurirPengiriman();
+    override fun sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier() {
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickXPadaKurirPengiriman()
     }
 
-    @Override
-    public void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId) {
-        checkoutAnalyticsCourierSelection.eventViewInformationAndWarningTickerInCheckout(tickerId);
+    override fun sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerId: String?) {
+        checkoutAnalyticsCourierSelection.eventViewInformationAndWarningTickerInCheckout(tickerId!!)
     }
 
-    @Override
-    public void sendAnalyticsViewPromoAfterAdjustItem(String msg) {
-        checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg);
+    override fun sendAnalyticsViewPromoAfterAdjustItem(msg: String?) {
+        checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg!!)
     }
 
-    @Override
-    public void onTotalPaymentChange(String totalPayment, boolean enable) {
-        ShipmentButtonPaymentModel shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel();
-        shipmentButtonPaymentModel.setTotalPrice(totalPayment);
-        shipmentButtonPaymentModel.setEnable(enable);
-        onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
+    override fun onTotalPaymentChange(totalPayment: String?, enable: Boolean) {
+        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPaymentModel
+        shipmentButtonPaymentModel!!.totalPrice = totalPayment!!
+        shipmentButtonPaymentModel.enable = enable
+        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
-    @Override
-    public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString, boolean forceHitValidateUse, boolean skipValidateUse) {
-        boolean stillHasPromo = false;
-        ValidateUsePromoRequest lastValidateUseRequest = shipmentPresenter.getLastValidateUseRequest();
+    override fun onFinishChoosingShipment(
+        lastSelectedCourierOrder: Int,
+        lastSelectedCourierOrderCartString: String?,
+        forceHitValidateUse: Boolean,
+        skipValidateUse: Boolean
+    ) {
+        var stillHasPromo = false
+        val lastValidateUseRequest = shipmentPresenter.lastValidateUseRequest
         if (lastValidateUseRequest != null) {
-            if (lastValidateUseRequest.getCodes().size() > 0) {
-                stillHasPromo = true;
+            if (lastValidateUseRequest.codes.size > 0) {
+                stillHasPromo = true
             } else {
-                for (OrdersItem ordersItem : lastValidateUseRequest.getOrders()) {
-                    if (ordersItem.getCodes().size() > 0) {
-                        stillHasPromo = true;
-                        break;
+                for ((_, _, codes) in lastValidateUseRequest.orders) {
+                    if (codes.size > 0) {
+                        stillHasPromo = true
+                        break
                     }
                 }
             }
         } else {
-            LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+            val lastApplyUiModel = shipmentPresenter.lastApplyData
             if (lastApplyUiModel != null) {
-                if (lastApplyUiModel.getCodes().size() > 0) {
-                    stillHasPromo = true;
+                if (lastApplyUiModel.codes.size > 0) {
+                    stillHasPromo = true
                 } else {
-                    if (lastApplyUiModel.getVoucherOrders().size() > 0) {
-                        for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyUiModel.getVoucherOrders()) {
-                            if (voucherOrder.getCode().length() > 0) {
-                                stillHasPromo = true;
-                                break;
+                    if (lastApplyUiModel.voucherOrders.size > 0) {
+                        for ((code) in lastApplyUiModel.voucherOrders) {
+                            if (code.length > 0) {
+                                stillHasPromo = true
+                                break
                             }
                         }
                     }
                 }
             }
         }
-
         if (stillHasPromo && !skipValidateUse) {
-            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest().copyJava(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
+            shipmentPresenter.checkPromoCheckoutFinalShipment(
+                generateValidateUsePromoRequest()!!.copyJava(),
+                lastSelectedCourierOrder,
+                lastSelectedCourierOrderCartString
+            )
         } else {
-            clearPromoTrackingData();
+            clearPromoTrackingData()
             if (forceHitValidateUse) {
-                shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest().copyJava(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
+                shipmentPresenter.checkPromoCheckoutFinalShipment(
+                    generateValidateUsePromoRequest()!!.copyJava(),
+                    lastSelectedCourierOrder,
+                    lastSelectedCourierOrderCartString
+                )
             } else {
-                sendEEStep3();
+                sendEEStep3()
             }
         }
     }
 
-    private void sendEEStep3() {
-        List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
-        if (shipmentCartItemModels == null) return;
+    private fun sendEEStep3() {
+        val shipmentCartItemModels = shipmentAdapter.shipmentCartItemModelList ?: return
 
         // if one of courier reseted because of apply promo logistic (PSL) and eventually not eligible after hit validate use, don't send EE
-        boolean courierHasReseted = false;
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-            ShipmentDetailData selectedShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+        var courierHasReseted = false
+        for (shipmentCartItemModel in shipmentCartItemModels) {
+            val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
             if (selectedShipmentDetailData == null) {
-                courierHasReseted = true;
-                break;
+                courierHasReseted = true
+                break
             }
-            CourierItemData selectedCourier = selectedShipmentDetailData.getSelectedCourier();
+            val selectedCourier = selectedShipmentDetailData.selectedCourier
             if (selectedCourier == null) {
-                courierHasReseted = true;
-                break;
+                courierHasReseted = true
+                break
             }
-            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                    shipmentCartItemModel.getCartString(),
-                    String.valueOf(selectedCourier.getSelectedShipper().getServiceId()),
-                    String.valueOf(selectedCourier.getSelectedShipper().getShipperPrice()),
-                    String.valueOf(shipmentCartItemModel.getSpId())
-            );
-            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
+            val dataCheckoutRequests =
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    shipmentCartItemModel.cartString,
+                    selectedCourier.selectedShipper.serviceId.toString(),
+                    selectedCourier.selectedShipper.shipperPrice.toString(),
+                    shipmentCartItemModel.spId.toString()
+                )
+            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
         }
-
         if (!courierHasReseted) {
-            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
+            val dataCheckoutRequests =
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
+                    shipmentAdapter.shipmentCartItemModelList
+                )
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                    dataCheckoutRequests,
-                    null,
-                    EnhancedECommerceActionField.STEP_3,
-                    ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                    ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
-                    "",
-                    getCheckoutLeasingId(),
-                    getCheckoutPageSource());
+                dataCheckoutRequests,
+                null,
+                EnhancedECommerceActionField.STEP_3,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
+                "",
+                checkoutLeasingId,
+                checkoutPageSource
+            )
         }
     }
 
-    @Override
-    public void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData) {
-        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
+    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest?>?) {
+        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData)
     }
 
     // Project ARMY, clear from promo BBO ticker
-    @Override
-    public void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel) {
-        checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic();
-        shipmentPresenter.cancelAutoApplyPromoStackLogistic(position, pslCode, shipmentCartItemModel);
-        shipmentAdapter.cancelAllCourierPromo();
+    override fun onCancelVoucherLogisticClicked(
+        pslCode: String?,
+        position: Int,
+        shipmentCartItemModel: ShipmentCartItemModel?
+    ) {
+        checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic()
+        shipmentPresenter.cancelAutoApplyPromoStackLogistic(
+            position,
+            pslCode,
+            shipmentCartItemModel
+        )
+        shipmentAdapter.cancelAllCourierPromo()
     }
 
-    @Override
-    public void onDataEnableToCheckout() {
-        shipmentAdapter.updateCheckoutButtonData(null);
+    override fun onDataEnableToCheckout() {
+        shipmentAdapter.updateCheckoutButtonData(null)
     }
 
-    @Override
-    public void onDataDisableToCheckout(String message) {
-        shipmentAdapter.updateCheckoutButtonData(null);
+    override fun onDataDisableToCheckout(message: String?) {
+        shipmentAdapter.updateCheckoutButtonData(null)
     }
 
-    @Override
-    public void onCheckoutValidationResult(boolean result, Object shipmentData, int errorPosition, boolean epharmacyError) {
+    override fun onCheckoutValidationResult(
+        result: Boolean,
+        shipmentData: Any?,
+        errorPosition: Int,
+        epharmacyError: Boolean
+    ) {
         if (shipmentData == null && result) {
-            if (shipmentPresenter.isIneligiblePromoDialogEnabled()) {
-                ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
-                ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
+            if (shipmentPresenter.isIneligiblePromoDialogEnabled) {
+                val notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
+                val validateUsePromoRevampUiModel =
+                    shipmentPresenter.validateUsePromoRevampUiModel
                 if (validateUsePromoRevampUiModel != null) {
-                    if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
-                        NotEligiblePromoHolderdata notEligiblePromoHolderdata = new NotEligiblePromoHolderdata();
-                        notEligiblePromoHolderdata.setPromoTitle(validateUsePromoRevampUiModel.getPromoUiModel().getTitleDescription());
-                        if (validateUsePromoRevampUiModel.getPromoUiModel().getCodes().size() > 0) {
-                            notEligiblePromoHolderdata.setPromoCode(validateUsePromoRevampUiModel.getPromoUiModel().getCodes().get(0));
+                    if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                        val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                        notEligiblePromoHolderdata.promoTitle =
+                            validateUsePromoRevampUiModel.promoUiModel.titleDescription
+                        if (validateUsePromoRevampUiModel.promoUiModel.codes.size > 0) {
+                            notEligiblePromoHolderdata.promoCode =
+                                validateUsePromoRevampUiModel.promoUiModel.codes[0]
                         }
-                        notEligiblePromoHolderdata.setShopName("Kode promo");
-                        notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_GLOBAL());
-                        notEligiblePromoHolderdata.setShowShopSection(true);
-                        notEligiblePromoHolderdata.setErrorMessage(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
-                        notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata);
+                        notEligiblePromoHolderdata.shopName = "Kode promo"
+                        notEligiblePromoHolderdata.iconType = TYPE_ICON_GLOBAL
+                        notEligiblePromoHolderdata.showShopSection = true
+                        notEligiblePromoHolderdata.errorMessage =
+                            validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                        notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
                     }
-
-                    List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrdersItemUiModels = validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels();
-                    if (voucherOrdersItemUiModels.size() > 0) {
-                        for (int i = 0; i < voucherOrdersItemUiModels.size(); i++) {
-                            PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel = voucherOrdersItemUiModels.get(i);
-                            if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                                NotEligiblePromoHolderdata notEligiblePromoHolderdata = new NotEligiblePromoHolderdata();
-                                notEligiblePromoHolderdata.setPromoTitle(voucherOrdersItemUiModel.getTitleDescription());
-                                notEligiblePromoHolderdata.setPromoCode(voucherOrdersItemUiModel.getCode());
-                                notEligiblePromoHolderdata.setUniqueId(voucherOrdersItemUiModel.getUniqueId());
-                                for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
-                                    if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
-                                        notEligiblePromoHolderdata.setShopName(shipmentCartItemModel.getShopName());
-                                        notEligiblePromoHolderdata.setShopBadge(shipmentCartItemModel.getShopTypeInfoData().getShopBadge());
-                                        break;
+                    val voucherOrdersItemUiModels =
+                        validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
+                    if (voucherOrdersItemUiModels.size > 0) {
+                        for (i in voucherOrdersItemUiModels.indices) {
+                            val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
+                            if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                                val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                                notEligiblePromoHolderdata.promoTitle =
+                                    voucherOrdersItemUiModel.titleDescription
+                                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.code
+                                notEligiblePromoHolderdata.uniqueId =
+                                    voucherOrdersItemUiModel.uniqueId
+                                for (shipmentCartItemModel in shipmentAdapter.shipmentCartItemModelList) {
+                                    if (shipmentCartItemModel.cartString == voucherOrdersItemUiModel.uniqueId) {
+                                        notEligiblePromoHolderdata.shopName =
+                                            shipmentCartItemModel.shopName!!
+                                        notEligiblePromoHolderdata.shopBadge =
+                                            shipmentCartItemModel.shopTypeInfoData.shopBadge
+                                        break
                                     }
                                 }
-
                                 if (i <= 0) {
-                                    notEligiblePromoHolderdata.setShowShopSection(true);
-                                } else if (voucherOrdersItemUiModels.get(i - 1).getUniqueId().length() > 0 && voucherOrdersItemUiModel.getUniqueId().length() > 0 && voucherOrdersItemUiModels.get(i - 1).getUniqueId().equals(voucherOrdersItemUiModel.getUniqueId())) {
-                                    notEligiblePromoHolderdata.setShowShopSection(false);
+                                    notEligiblePromoHolderdata.showShopSection = true
+                                } else if (voucherOrdersItemUiModels[i - 1].uniqueId.length > 0 && voucherOrdersItemUiModel.uniqueId.length > 0 && voucherOrdersItemUiModels[i - 1].uniqueId == voucherOrdersItemUiModel.uniqueId) {
+                                    notEligiblePromoHolderdata.showShopSection = false
                                 } else {
-                                    notEligiblePromoHolderdata.setShowShopSection(true);
+                                    notEligiblePromoHolderdata.showShopSection = true
                                 }
-                                notEligiblePromoHolderdata.setErrorMessage(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
-                                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata);
+                                notEligiblePromoHolderdata.errorMessage =
+                                    validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
                             }
                         }
                     }
                 }
-
-                sendAnalyticsEpharmacyClickPembayaran();
-                if (notEligiblePromoHolderdataList.size() > 0) {
-                    hasClearPromoBeforeCheckout = true;
-                    shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
+                sendAnalyticsEpharmacyClickPembayaran()
+                if (notEligiblePromoHolderdataList.size > 0) {
+                    hasClearPromoBeforeCheckout = true
+                    shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList)
                 } else {
-                    hasClearPromoBeforeCheckout = false;
-                    doCheckout();
+                    hasClearPromoBeforeCheckout = false
+                    doCheckout()
                 }
             } else {
-                boolean hasRedStatePromo = false;
-                String errorMessage = "";
-                ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
+                var hasRedStatePromo = false
+                var errorMessage = ""
+                val validateUsePromoRevampUiModel =
+                    shipmentPresenter.validateUsePromoRevampUiModel
                 if (validateUsePromoRevampUiModel != null) {
-                    if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
-                        hasRedStatePromo = true;
-                        errorMessage = validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText();
+                    if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                        hasRedStatePromo = true
+                        errorMessage =
+                            validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
                     } else {
-                        List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrdersItemUiModels = validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels();
-                        if (validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels().size() > 0) {
-                            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : voucherOrdersItemUiModels) {
-                                if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                                    hasRedStatePromo = true;
-                                    errorMessage = voucherOrdersItemUiModel.getMessageUiModel().getText();
-                                    break;
+                        val voucherOrdersItemUiModels =
+                            validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
+                        if (validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.size > 0) {
+                            for ((_, _, _, _, _, _, _, _, _, _, messageUiModel) in voucherOrdersItemUiModels) {
+                                if (messageUiModel.state == "red") {
+                                    hasRedStatePromo = true
+                                    errorMessage = messageUiModel.text
+                                    break
                                 }
                             }
                         }
                     }
                 }
-
                 if (hasRedStatePromo) {
-                    hasRunningApiCall = false;
-                    hideLoading();
-                    showToastError(errorMessage);
-                    sendAnalyticsPromoRedState();
+                    hasRunningApiCall = false
+                    hideLoading()
+                    showToastError(errorMessage)
+                    sendAnalyticsPromoRedState()
                 } else {
-                    sendAnalyticsEpharmacyClickPembayaran();
-                    doCheckout();
+                    sendAnalyticsEpharmacyClickPembayaran()
+                    doCheckout()
                 }
             }
         } else if (shipmentData != null && !result) {
-            hasRunningApiCall = false;
-            hideLoading();
-            sendAnalyticsDropshipperNotComplete();
+            hasRunningApiCall = false
+            hideLoading()
+            sendAnalyticsDropshipperNotComplete()
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
-                rvShipment.smoothScrollToPosition(errorPosition);
-                onDataDisableToCheckout(null);
-                String message = getActivity().getString(R.string.message_error_dropshipper_empty);
-                showToastNormal(message);
-                ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
-                ((ShipmentCartItemModel) shipmentData).setStateAllItemViewExpanded(false);
-                onNeedUpdateViewItem(errorPosition);
+                rvShipment!!.smoothScrollToPosition(errorPosition)
+                onDataDisableToCheckout(null)
+                val message = activity!!.getString(R.string.message_error_dropshipper_empty)
+                showToastNormal(message)
+                (shipmentData as ShipmentCartItemModel).isStateDropshipperHasError = true
+                shipmentData.isStateAllItemViewExpanded = false
+                onNeedUpdateViewItem(errorPosition)
             }
         } else if (shipmentData == null) {
-            hasRunningApiCall = false;
-            hideLoading();
-            if (isTradeIn()) {
-                checkoutTradeInAnalytics.eventClickBayarCourierNotComplete();
+            hasRunningApiCall = false
+            hideLoading()
+            if (isTradeIn) {
+                checkoutTradeInAnalytics.eventClickBayarCourierNotComplete()
             }
             if (!epharmacyError) {
-                sendAnalyticsCourierNotComplete();
+                sendAnalyticsCourierNotComplete()
             }
-            checkShippingCompletion(true, epharmacyError);
+            checkShippingCompletion(true, epharmacyError)
         }
     }
 
-    private void doCheckout() {
-        shipmentPresenter.processSaveShipmentState();
-        shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId(), isPlusSelected());
+    private fun doCheckout() {
+        shipmentPresenter.processSaveShipmentState()
+        shipmentPresenter.processCheckout(
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff,
+            deviceId,
+            cornerId,
+            checkoutLeasingId,
+            isPlusSelected()
+        )
     }
 
-    @Override
-    public void onPriorityChecked(int position) {
-        if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> {
-                shipmentAdapter.updateShipmentCostModel();
-                shipmentAdapter.updateItemAndTotalCost(position);
-            });
+    override fun onPriorityChecked(position: Int) {
+        if (rvShipment!!.isComputingLayout) {
+            rvShipment!!.post {
+                shipmentAdapter.updateShipmentCostModel()
+                shipmentAdapter.updateItemAndTotalCost(position)
+            }
         } else {
-            shipmentAdapter.updateShipmentCostModel();
-            shipmentAdapter.updateItemAndTotalCost(position);
+            shipmentAdapter.updateShipmentCostModel()
+            shipmentAdapter.updateItemAndTotalCost(position)
         }
     }
 
-    @Override
-    public void onInsuranceChecked(final int position) {
-        if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> {
-                shipmentAdapter.updateShipmentCostModel();
-                shipmentAdapter.updateItemAndTotalCost(position);
-                shipmentAdapter.updateInsuranceTncVisibility();
-            });
+    override fun onInsuranceChecked(position: Int) {
+        if (rvShipment!!.isComputingLayout) {
+            rvShipment!!.post {
+                shipmentAdapter.updateShipmentCostModel()
+                shipmentAdapter.updateItemAndTotalCost(position)
+                shipmentAdapter.updateInsuranceTncVisibility()
+            }
         } else {
-            shipmentAdapter.updateShipmentCostModel();
-            shipmentAdapter.updateItemAndTotalCost(position);
-            shipmentAdapter.updateInsuranceTncVisibility();
+            shipmentAdapter.updateShipmentCostModel()
+            shipmentAdapter.updateItemAndTotalCost(position)
+            shipmentAdapter.updateInsuranceTncVisibility()
         }
     }
 
-    @Override
-    public void onNeedUpdateViewItem(final int position) {
-        if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> shipmentAdapter.notifyItemChanged(position));
+    override fun onNeedUpdateViewItem(position: Int) {
+        if (rvShipment!!.isComputingLayout) {
+            rvShipment!!.post { shipmentAdapter.notifyItemChanged(position) }
         } else {
-            shipmentAdapter.notifyItemChanged(position);
+            shipmentAdapter.notifyItemChanged(position)
         }
     }
 
-    @Override
-    public void onSubTotalItemClicked(int position) {
-        sendAnalyticsOnClickSubtotal();
+    override fun onSubTotalItemClicked(position: Int) {
+        sendAnalyticsOnClickSubtotal()
     }
 
-    @Override
-    public void onInsuranceTncClicked() {
-        Intent intent = CheckoutWebViewActivity.Companion.newInstance(getContext(),
-                CartConstant.TERM_AND_CONDITION_URL,
-                getString(R.string.title_activity_checkout_tnc_webview));
-        startActivity(intent);
+    override fun onInsuranceTncClicked() {
+        val intent = newInstance(
+            context!!,
+            CartConstant.TERM_AND_CONDITION_URL,
+            getString(R.string.title_activity_checkout_tnc_webview)
+        )
+        startActivity(intent)
     }
 
-    @Override
-    public void onPriorityTncClicker() {
-        Intent intent = CheckoutWebViewActivity.Companion.newInstance(getContext(),
-                CartConstant.PRIORITY_TNC_URL,
-                getString(R.string.title_activity_checkout_tnc_webview));
-        startActivity(intent);
+    override fun onPriorityTncClicker() {
+        val intent = newInstance(
+            context!!,
+            CartConstant.PRIORITY_TNC_URL,
+            getString(R.string.title_activity_checkout_tnc_webview)
+        )
+        startActivity(intent)
     }
 
-    @Override
-    public void onOntimeDeliveryClicked(String url) {
-        Intent intent = CheckoutWebViewActivity.Companion.newInstance(getContext(), url,
-                getString(R.string.title_activity_checkout_tnc_webview));
-        startActivity(intent);
+    override fun onOntimeDeliveryClicked(url: String?) {
+        val intent = newInstance(
+            context!!,
+            url!!,
+            getString(R.string.title_activity_checkout_tnc_webview)
+        )
+        startActivity(intent)
     }
 
-    @Override
-    public void onNeedUpdateRequestData() {
-        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false);
+    override fun onNeedUpdateRequestData() {
+        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
 
-    @Override
-    public void onDropshipCheckedForTrackingAnalytics() {
-        sendAnalyticsOnClickCheckBoxDropShipperOption();
+    override fun onDropshipCheckedForTrackingAnalytics() {
+        sendAnalyticsOnClickCheckBoxDropShipperOption()
     }
 
-    @Override
-    public void onInsuranceCheckedForTrackingAnalytics() {
-        sendAnalyticsOnClickCheckBoxInsuranceOption();
-
+    override fun onInsuranceCheckedForTrackingAnalytics() {
+        sendAnalyticsOnClickCheckBoxInsuranceOption()
     }
 
-    @Override
-    public void onDonationChecked(boolean checked) {
-        if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> shipmentAdapter.updateDonation(checked));
+    override fun onDonationChecked(checked: Boolean) {
+        if (rvShipment!!.isComputingLayout) {
+            rvShipment!!.post { shipmentAdapter.updateDonation(checked) }
         } else {
-            shipmentAdapter.updateDonation(checked);
+            shipmentAdapter.updateDonation(checked)
         }
-        if (checked) sendAnalyticsOnClickTopDonation();
-        checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventTradeInClickDonationOption(isTradeInByDropOff(), checked);
+        if (checked) sendAnalyticsOnClickTopDonation()
+        checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickDonationOption(isTradeInByDropOff, checked)
         }
     }
 
-    @Override
-    public void onCrossSellItemChecked(boolean checked, CrossSellModel crossSellModel, int index) {
-        if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> shipmentAdapter.updateCrossSell(checked, crossSellModel));
+    override fun onCrossSellItemChecked(
+        checked: Boolean,
+        crossSellModel: CrossSellModel?,
+        index: Int
+    ) {
+        if (rvShipment!!.isComputingLayout) {
+            rvShipment!!.post { shipmentAdapter.updateCrossSell(checked, crossSellModel) }
         } else {
-            shipmentAdapter.updateCrossSell(checked, crossSellModel);
+            shipmentAdapter.updateCrossSell(checked, crossSellModel)
         }
-
-        String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
-        String digitalProductId = crossSellModel.getId();
-        String eventLabel = digitalCategoryName + " - " + digitalProductId;
-        String digitalProductName = crossSellModel.getInfo().getTitle();
-
-        List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
-        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(checked, userSessionInterface.getUserId(), String.valueOf(index), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModels));
+        val digitalCategoryName = crossSellModel!!.orderSummary.title
+        val digitalProductId = crossSellModel.id
+        val eventLabel = "$digitalCategoryName - $digitalProductId"
+        val digitalProductName = crossSellModel.info.title
+        val shipmentCartItemModels = shipmentAdapter.shipmentCartItemModelList
+        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(
+            checked,
+            userSessionInterface.userId,
+            index.toString(),
+            eventLabel,
+            digitalProductName,
+            getCrossSellChildCategoryId(shipmentCartItemModels)
+        )
     }
 
-    @Override
-    public void onEgoldChecked(boolean checked) {
-        shipmentAdapter.updateEgold(checked);
-        checkoutEgoldAnalytics.eventClickEgoldRoundup(checked);
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff(), checked);
+    override fun onEgoldChecked(checked: Boolean) {
+        shipmentAdapter.updateEgold(checked)
+        checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff, checked)
         }
     }
 
-    @Override
-    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
-        shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+    override fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?) {
+        shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
     }
 
-    @Override
-    protected String getScreenName() {
-        if (isOneClickShipment()) {
-            return ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT;
+    override fun getScreenName(): String {
+        return if (isOneClickShipment) {
+            ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT
         } else {
-            return ConstantTransactionAnalytics.ScreenName.CHECKOUT;
+            ConstantTransactionAnalytics.ScreenName.CHECKOUT
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Activity activity = getActivity();
+    override fun onStart() {
+        super.onStart()
+        val activity: Activity? = activity
         if (activity != null) {
-            sendAnalyticsScreenName(getScreenName());
-            if (isTradeIn()) {
-                checkoutTradeInAnalytics.sendOpenScreenName(isTradeInByDropOff(), activity);
+            sendAnalyticsScreenName(screenName)
+            if (isTradeIn) {
+                checkoutTradeInAnalytics.sendOpenScreenName(isTradeInByDropOff, activity)
             }
         }
     }
 
-    @Override
-    public void setStateLoadingCourierStateAtIndex(int index, boolean isLoading) {
-        shipmentLoadingIndex = isLoading ? index : -1;
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);
-        shipmentCartItemModel.setStateLoadingCourierState(isLoading);
-        onNeedUpdateViewItem(index);
+    override fun setStateLoadingCourierStateAtIndex(index: Int, isLoading: Boolean) {
+        shipmentLoadingIndex = if (isLoading) index else -1
+        val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index)
+        shipmentCartItemModel.isStateLoadingCourierState = isLoading
+        onNeedUpdateViewItem(index)
     }
 
-    @Override
-    public void onLogisticPromoChosen(@Nullable List<ShippingCourierUiModel> shippingCourierUiModels,
-                                      @Nullable ShippingCourierUiModel courierData, @Nullable RecipientAddressModel recipientAddressModel,
-                                      int cartPosition, @Nullable ServiceData serviceData, boolean flagNeedToSetPinpoint,
-                                      @Nullable String promoCode, int selectedServiceId, @NotNull LogisticPromoUiModel logisticPromo) {
-        checkoutAnalyticsCourierSelection.eventClickPromoLogisticTicker(promoCode);
-        setStateLoadingCourierStateAtIndex(cartPosition, true);
-        CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemDataWithPromo(courierData, logisticPromo);
-        onShippingDurationChoosen(shippingCourierUiModels, courierItemData, recipientAddressModel,
-                cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint,
-                false, false, false);
-        String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
+    override fun onLogisticPromoChosen(
+        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        courierData: ShippingCourierUiModel?,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int,
+        serviceData: ServiceData?,
+        flagNeedToSetPinpoint: Boolean,
+        promoCode: String?,
+        selectedServiceId: Int,
+        logisticPromo: LogisticPromoUiModel
+    ) {
+        checkoutAnalyticsCourierSelection.eventClickPromoLogisticTicker(promoCode)
+        setStateLoadingCourierStateAtIndex(cartPosition, true)
+        val courierItemData = shippingCourierConverter.convertToCourierItemDataWithPromo(
+            courierData!!,
+            logisticPromo
+        )
+        onShippingDurationChoosen(
+            shippingCourierUiModels, courierItemData, recipientAddressModel,
+            cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint,
+            false, false, false
+        )
+        val cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).cartString
         if (!flagNeedToSetPinpoint) {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition);
-            ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
-            if (promoCode != null && promoCode.length() > 0) {
-                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
-                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+            val shipmentCartItemModel =
+                shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition)
+            val validateUsePromoRequest = generateValidateUsePromoRequest()
+            if (promoCode != null && promoCode.length > 0) {
+                for ((_, _, codes, uniqueId) in validateUsePromoRequest!!.orders) {
+                    if (uniqueId == shipmentCartItemModel.cartString && !codes.contains(promoCode)) {
+                        if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                             // remove previous logistic promo code
-                            ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                            codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                         }
-                        ordersItem.getCodes().add(promoCode);
-                        break;
+                        codes.add(promoCode)
+                        break
                     }
                 }
             }
-
-            List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
-            if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0 && !shipmentCartItemModel.isFreeShippingPlus()) {
-                for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
-                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
-                                tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
-                                tmpShipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
-                                !tmpShipmentCartItemModel.isFreeShippingPlus()) {
-                            ordersItem.getCodes().remove(tmpShipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+            val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
+            if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size > 0 && !shipmentCartItemModel.isFreeShippingPlus) {
+                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                    for ((_, _, codes, uniqueId) in validateUsePromoRequest!!.orders) {
+                        if (shipmentCartItemModel.cartString != tmpShipmentCartItemModel.cartString && tmpShipmentCartItemModel.cartString == uniqueId && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                            !tmpShipmentCartItemModel.isFreeShippingPlus
+                        ) {
+                            codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                         }
                     }
                 }
             }
-
-            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                    ordersItem.setSpId(courierItemData.getShipperProductId());
-                    ordersItem.setShippingId(courierItemData.getShipperId());
-                    ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
-                    ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                    ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
-                    ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
-                            .get(0).getPreOrderDurationDay());
-                    ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                    ordersItem.setBoCampaignId(courierItemData.getBoCampaignId());
-                    ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
-                    ordersItem.setBenefitClass(courierItemData.getBenefitClass());
-                    ordersItem.setShippingPrice(courierItemData.getShippingRate());
-                    ordersItem.setEtaText(courierItemData.getEtaText());
-                    break;
+            for (ordersItem in validateUsePromoRequest!!.orders) {
+                if (ordersItem.uniqueId == shipmentCartItemModel.cartString) {
+                    ordersItem.spId = courierItemData.shipperProductId
+                    ordersItem.shippingId = courierItemData.shipperId
+                    ordersItem.freeShippingMetadata = courierItemData.freeShippingMetadata
+                    ordersItem.shopId = shipmentCartItemModel.shopId
+                    ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
+                    ordersItem.poDuration =
+                        shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
+                    ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
+                    ordersItem.boCampaignId = courierItemData.boCampaignId
+                    ordersItem.shippingSubsidy = courierItemData.shippingSubsidy
+                    ordersItem.benefitClass = courierItemData.benefitClass
+                    ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
+                    ordersItem.etaText = courierItemData.etaText!!
+                    break
                 }
             }
-            shipmentPresenter.doValidateUseLogisticPromo(cartPosition, cartString, validateUsePromoRequest, promoCode, true);
+            shipmentPresenter.doValidateUseLogisticPromo(
+                cartPosition,
+                cartString,
+                validateUsePromoRequest,
+                promoCode,
+                true
+            )
         }
     }
 
-    @Override
-    public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels, ShippingCourierUiModel selectedCourier, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, ServiceData serviceData, boolean flagNeedToSetPinpoint, boolean isDurationClick, boolean isClearPromo) {
-        CourierItemData courierItemData = null;
+    override fun onShippingDurationChoosen(
+        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        selectedCourier: ShippingCourierUiModel?,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int,
+        selectedServiceId: Int,
+        serviceData: ServiceData?,
+        flagNeedToSetPinpoint: Boolean,
+        isDurationClick: Boolean,
+        isClearPromo: Boolean
+    ) {
+        var courierItemData: CourierItemData? = null
         if (selectedCourier != null) {
-            courierItemData = shippingCourierConverter.convertToCourierItemData(selectedCourier, null);
+            courierItemData =
+                shippingCourierConverter.convertToCourierItemData(selectedCourier, null)
         }
-        onShippingDurationChoosen(shippingCourierUiModels, courierItemData, recipientAddressModel,
-                cartPosition, selectedServiceId, serviceData,
-                flagNeedToSetPinpoint, isDurationClick, isClearPromo, false);
+        onShippingDurationChoosen(
+            shippingCourierUiModels, courierItemData, recipientAddressModel,
+            cartPosition, selectedServiceId, serviceData,
+            flagNeedToSetPinpoint, isDurationClick, isClearPromo, false
+        )
     }
 
-    public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                          CourierItemData recommendedCourier,
-                                          RecipientAddressModel recipientAddressModel,
-                                          int cartItemPosition, int selectedServiceId,
-                                          ServiceData serviceData, boolean flagNeedToSetPinpoint,
-                                          boolean isDurationClick, boolean isClearPromo, boolean skipCheckAllCourier) {
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventClickKurirTradeIn(serviceData.getServiceName());
+    fun onShippingDurationChoosen(
+        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        recommendedCourier: CourierItemData?,
+        recipientAddressModel: RecipientAddressModel?,
+        cartItemPosition: Int,
+        selectedServiceId: Int,
+        serviceData: ServiceData?,
+        flagNeedToSetPinpoint: Boolean,
+        isDurationClick: Boolean,
+        isClearPromo: Boolean,
+        skipCheckAllCourier: Boolean
+    ) {
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventClickKurirTradeIn(serviceData!!.serviceName)
         }
-        sendAnalyticsOnClickChecklistShipmentRecommendationDuration(serviceData.getServiceName());
+        sendAnalyticsOnClickChecklistShipmentRecommendationDuration(serviceData!!.serviceName)
         // Has courier promo means that one of duration has promo, not always current selected duration.
         // It's for analytics purpose
-        if (shippingCourierUiModels.size() > 0) {
-            ServiceData serviceDataTracker = shippingCourierUiModels.get(0).getServiceData();
+        if (shippingCourierUiModels!!.size > 0) {
+            val serviceDataTracker = shippingCourierUiModels[0].serviceData
             sendAnalyticsOnClickDurationThatContainPromo(
-                    (serviceDataTracker.getIsPromo() == 1),
-                    serviceDataTracker.getServiceName(),
-                    (serviceDataTracker.getCodData().getIsCod() == 1),
-                    Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMinPrice(), false)),
-                    Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMaxPrice(), false))
-            );
+                serviceDataTracker.isPromo == 1,
+                serviceDataTracker.serviceName,
+                serviceDataTracker.codData.isCod == 1,
+                removeDecimalSuffix(
+                    convertPriceValueToIdrFormat(
+                        serviceDataTracker.rangePrice.minPrice,
+                        false
+                    )
+                ),
+                removeDecimalSuffix(
+                    convertPriceValueToIdrFormat(
+                        serviceDataTracker.rangePrice.maxPrice,
+                        false
+                    )
+                )
+            )
         }
         if (flagNeedToSetPinpoint) {
             // If instant courier and has not set pinpoint
-            shipmentAdapter.setLastServiceId(selectedServiceId);
-            setPinpoint(cartItemPosition);
+            shipmentAdapter.lastServiceId = selectedServiceId
+            setPinpoint(cartItemPosition)
         } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
-            List<ShopShipment> shopShipments = shipmentCartItemModel.getShopShipmentList();
-            onChangeShippingCourier(recipientAddressModel, shipmentCartItemModel, cartItemPosition, shippingCourierUiModels);
+            val shipmentCartItemModel =
+                shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition)
+            val shopShipments = shipmentCartItemModel.shopShipmentList
+            onChangeShippingCourier(
+                recipientAddressModel,
+                shipmentCartItemModel,
+                cartItemPosition,
+                shippingCourierUiModels
+            )
         } else {
-            if (recommendedCourier.isUsePinPoint()
-                    && (recipientAddressModel.getLatitude() == null ||
-                    recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
-                    recipientAddressModel.getLongitude() == null ||
-                    recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
-                setPinpoint(cartItemPosition);
+            if (recommendedCourier.isUsePinPoint &&
+                (
+                    recipientAddressModel!!.latitude == null ||
+                        recipientAddressModel.latitude.equals(
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
+                        recipientAddressModel.longitude.equals("0", ignoreCase = true)
+                    )
+            ) {
+                setPinpoint(cartItemPosition)
             } else {
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
-
-                if (isTradeInByDropOff()) {
-                    shipmentAdapter.setSelectedCourierTradeInPickup(recommendedCourier);
-                    shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+                val shipmentCartItemModel =
+                    shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition)
+                if (isTradeInByDropOff) {
+                    shipmentAdapter.setSelectedCourierTradeInPickup(recommendedCourier)
+                    shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
                 } else {
-                    sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.getName());
-                    sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
+                    sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.name)
+                    sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.shipperProductId)
 
                     // Clear logistic voucher data when any duration is selected and voucher is not null
-                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
-                            !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) && isClearPromo) {
-                        String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
-                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
-                        ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+                    if (shipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                        !TextUtils.isEmpty(shipmentCartItemModel.voucherLogisticItemUiModel!!.code) && isClearPromo
+                    ) {
+                        val promoLogisticCode =
+                            shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(
+                            0,
+                            promoLogisticCode,
+                            shipmentCartItemModel
+                        )
+                        val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest
                         if (validateUsePromoRequest != null) {
-                            if (shipmentCartItemModel.isFreeShippingPlus()) {
-                                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                                    if (ordersItem != null && ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
-                                            ordersItem.getCodes().size() > 0) {
-                                        ordersItem.getCodes().remove(promoLogisticCode);
+                            if (shipmentCartItemModel.isFreeShippingPlus) {
+                                for (ordersItem in validateUsePromoRequest.orders) {
+                                    if (ordersItem != null && ordersItem.uniqueId == shipmentCartItemModel.cartString && ordersItem.codes.size > 0) {
+                                        ordersItem.codes.remove(promoLogisticCode)
                                     }
                                 }
-                            }
-                            else {
-                                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                                    if (ordersItem != null && ordersItem.getCodes().size() > 0) {
-                                        ordersItem.getCodes().remove(promoLogisticCode);
+                            } else {
+                                for (ordersItem in validateUsePromoRequest.orders) {
+                                    if (ordersItem != null && ordersItem.codes.size > 0) {
+                                        ordersItem.codes.remove(promoLogisticCode)
                                     }
                                 }
                             }
                         }
-                        shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-                        setBenefitSummaryInfoUiModel(null);
-                        shipmentAdapter.clearTotalPromoStackAmount();
-                        shipmentAdapter.updateShipmentCostModel();
-                        shipmentAdapter.updateCheckoutButtonData(null);
+                        shipmentCartItemModel.voucherLogisticItemUiModel = null
+                        benefitSummaryInfoUiModel = null
+                        shipmentAdapter.clearTotalPromoStackAmount()
+                        shipmentAdapter.updateShipmentCostModel()
+                        shipmentAdapter.updateCheckoutButtonData(null)
                     }
-                    shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier, true, false);
-                    shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-                    shipmentAdapter.setShippingCourierViewModels(shippingCourierUiModels, recommendedCourier, cartItemPosition);
-                    if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
-                        checkCourierPromo(recommendedCourier, cartItemPosition);
+                    shipmentAdapter.setSelectedCourier(
+                        cartItemPosition,
+                        recommendedCourier,
+                        true,
+                        false
+                    )
+                    shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
+                    shipmentAdapter.setShippingCourierViewModels(
+                        shippingCourierUiModels,
+                        recommendedCourier,
+                        cartItemPosition
+                    )
+                    if (!TextUtils.isEmpty(recommendedCourier.promoCode) && isDurationClick) {
+                        checkCourierPromo(recommendedCourier, cartItemPosition)
                     }
                 }
             }
         }
     }
 
-    private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
-        if (!TextUtils.isEmpty(courierItemData.getPromoCode())) {
-            String promoCode = courierItemData.getPromoCode();
-            shipmentPresenter.processCheckPromoCheckoutCodeFromSelectedCourier(promoCode, itemPosition, false);
+    private fun checkCourierPromo(courierItemData: CourierItemData?, itemPosition: Int) {
+        if (!TextUtils.isEmpty(courierItemData!!.promoCode)) {
+            val promoCode = courierItemData.promoCode
+            shipmentPresenter.processCheckPromoCheckoutCodeFromSelectedCourier(
+                promoCode,
+                itemPosition,
+                false
+            )
         }
     }
 
-    @Override
-    public void onNoCourierAvailable(String message) {
-        if (message.contains(getString(R.string.corner_error_stub)))
-            mTrackerCorner.sendViewCornerError();
-        if (getActivity() != null) {
-            checkoutAnalyticsCourierSelection.eventViewCourierImpressionErrorCourierNoAvailable();
-
-            GeneralBottomSheet generalBottomSheet = new GeneralBottomSheet();
-            generalBottomSheet.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
-            generalBottomSheet.setDesc(message);
-            generalBottomSheet.setButtonText(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
-            generalBottomSheet.setIcon(R.drawable.checkout_module_ic_dropshipper);
-            generalBottomSheet.setButtonOnClickListener(bottomSheet -> {
-                bottomSheet.dismiss();
-                return Unit.INSTANCE;
-            });
-            generalBottomSheet.show(getActivity(), getParentFragmentManager());
+    override fun onNoCourierAvailable(message: String?) {
+        if (message!!.contains(getString(R.string.corner_error_stub))) mTrackerCorner.sendViewCornerError()
+        if (activity != null) {
+            checkoutAnalyticsCourierSelection.eventViewCourierImpressionErrorCourierNoAvailable()
+            val generalBottomSheet = GeneralBottomSheet()
+            generalBottomSheet.setTitle(activity!!.getString(R.string.label_no_courier_bottomsheet_title))
+            generalBottomSheet.setDesc(message)
+            generalBottomSheet.setButtonText(activity!!.getString(R.string.label_no_courier_bottomsheet_button))
+            generalBottomSheet.setIcon(R.drawable.checkout_module_ic_dropshipper)
+            generalBottomSheet.setButtonOnClickListener { bottomSheet: BottomSheetUnify ->
+                bottomSheet.dismiss()
+                Unit
+            }
+            generalBottomSheet.show(activity!!, parentFragmentManager)
         }
-
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventTradeInClickCourierGetOutOfCoverageError(isTradeInByDropOff());
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickCourierGetOutOfCoverageError(
+                isTradeInByDropOff
+            )
         }
     }
 
-    @Override
-    public void onShippingDurationButtonCloseClicked() {
-        sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
+    override fun onShippingDurationButtonCloseClicked() {
+        sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration()
     }
 
-    @Override
-    public void onShowDurationListWithCourierPromo(boolean isCourierPromo, String duration) {
-        sendAnalyticsOnDisplayDurationThatContainPromo(isCourierPromo, duration);
+    override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
+        sendAnalyticsOnDisplayDurationThatContainPromo(isCourierPromo, duration)
     }
 
-    @Override
-    public void onShowLogisticPromo(@NonNull List<LogisticPromoUiModel> listLogisticPromo) {
-        for (LogisticPromoUiModel promoLogistic: listLogisticPromo) {
-            checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(promoLogistic.getPromoCode());
-            if (promoLogistic.getDisabled()) {
-                checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(promoLogistic.getPromoCode());
+    override fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {
+        for ((promoCode, _, _, _, _, _, _, _, _, _, _, _, _, _, _, disabled) in listLogisticPromo) {
+            checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(promoCode)
+            if (disabled) {
+                checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(promoCode)
             }
         }
     }
 
-    @Override
-    public void onCourierChoosen(ShippingCourierUiModel shippingCourierUiModel, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
-                                 int cartItemPosition, boolean isCod, boolean isPromoCourier, boolean isNeedPinpoint, List<ShippingCourierUiModel> shippingCourierList) {
-        sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId(), isCod);
-        if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
-                recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
-                recipientAddressModel.getLongitude() == null ||
-                recipientAddressModel.getLongitude().equalsIgnoreCase("0")))) {
-            setPinpoint(cartItemPosition);
+    override fun onCourierChoosen(
+        shippingCourierUiModel: ShippingCourierUiModel,
+        courierItemData: CourierItemData,
+        recipientAddressModel: RecipientAddressModel?,
+        cartItemPosition: Int,
+        isCod: Boolean,
+        isPromoCourier: Boolean,
+        isNeedPinpoint: Boolean,
+        shippingCourierList: List<ShippingCourierUiModel>
+    ) {
+        sendAnalyticsOnClickLogisticThatContainPromo(
+            isPromoCourier,
+            courierItemData.shipperProductId,
+            isCod
+        )
+        if (isNeedPinpoint || courierItemData.isUsePinPoint && (
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
+                        "0",
+                        ignoreCase = true
+                    ) || recipientAddressModel.longitude == null ||
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
+        ) {
+            setPinpoint(cartItemPosition)
         } else {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData, true, false);
-            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                shipmentCartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierList);
+            val shipmentCartItemModel =
+                shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData, true, false)
+            if (shipmentCartItemModel.selectedShipmentDetailData != null) {
+                shipmentCartItemModel.selectedShipmentDetailData!!.shippingCourierViewModels =
+                    shippingCourierList
             }
-            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-            checkCourierPromo(courierItemData, cartItemPosition);
+            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
+            checkCourierPromo(courierItemData, cartItemPosition)
         }
     }
 
-    @Override
-    public void onCourierShipmentRecommendationCloseClicked() {
-        sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier();
+    override fun onCourierShipmentRecommendationCloseClicked() {
+        sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier()
     }
 
-    private void setPinpoint(int cartItemPosition) {
-        shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
-        LocationPass locationPass = new LocationPass();
-        if (shipmentAdapter.getAddressShipmentData() != null) {
-            locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
-            locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
-            navigateToPinpointActivity(locationPass);
+    private fun setPinpoint(cartItemPosition: Int) {
+        shipmentAdapter.lastChooseCourierItemPosition = cartItemPosition
+        val locationPass = LocationPass()
+        if (shipmentAdapter.addressShipmentData != null) {
+            locationPass.cityName = shipmentAdapter.addressShipmentData.cityName
+            locationPass.districtName =
+                shipmentAdapter.addressShipmentData.destinationDistrictName
+            navigateToPinpointActivity(locationPass)
         }
     }
 
-    private void navigateToPinpointActivity(LocationPass locationPass) {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+    private fun navigateToPinpointActivity(locationPass: LocationPass?) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        val bundle = Bundle()
+        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
     }
 
-    @Override
-    public void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
-                                         RecipientAddressModel recipientAddressModel,
-                                         int cartPosition) {
+    override fun onChangeShippingDuration(
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int
+    ) {
         if (shipmentLoadingIndex == -1) {
-            sendAnalyticsOnClickChangeDurationShipmentRecommendation();
-            if (isTradeIn()) {
-                checkoutTradeInAnalytics.eventTradeInClickCourierOption(isTradeInByDropOff());
+            sendAnalyticsOnClickChangeDurationShipmentRecommendation()
+            if (isTradeIn) {
+                checkoutTradeInAnalytics.eventTradeInClickCourierOption(isTradeInByDropOff)
             }
-            showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, cartPosition);
+            showShippingDurationBottomsheet(
+                shipmentCartItemModel,
+                recipientAddressModel,
+                cartPosition
+            )
         }
     }
 
-    private void showShippingDurationBottomsheet(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, int cartPosition) {
-        if (shipmentCartItemModel.getShopShipmentList() == null || shipmentCartItemModel.getShopShipmentList().size() == 0) {
-            onNoCourierAvailable(getString(com.tokopedia.logisticcart.R.string.label_no_courier_bottomsheet_message));
+    private fun showShippingDurationBottomsheet(
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int
+    ) {
+        if (shipmentCartItemModel!!.shopShipmentList == null || shipmentCartItemModel.shopShipmentList!!.size == 0) {
+            onNoCourierAvailable(getString(com.tokopedia.logisticcart.R.string.label_no_courier_bottomsheet_message))
         } else {
-            ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel, recipientAddressModel);
-            int codHistory = -1;
-            if (shipmentPresenter.getCodData() != null) {
-                codHistory = shipmentPresenter.getCodData().getCounterCod();
+            val shipmentDetailData =
+                getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
+            var codHistory = -1
+            if (shipmentPresenter.codData != null) {
+                codHistory = shipmentPresenter.codData!!.counterCod
             }
-            Activity activity = getActivity();
+            val activity: Activity? = activity
             if (shipmentDetailData != null && activity != null) {
-                String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
-                ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
-                ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
-                shippingDurationBottomsheet.show(activity, getParentFragmentManager(), this,
-                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
-                        recipientAddressModel, cartPosition, codHistory,
-                        shipmentCartItemModel.isLeasingProduct(), pslCode, products,
-                        shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
-                        isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
-                        shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()),
-                        shipmentPresenter.getCartDataForRates(), false);
+                val pslCode = getLogisticPromoCode(shipmentCartItemModel)
+                val products = getProductForRatesRequest(shipmentCartItemModel)
+                val shippingDurationBottomsheet = ShippingDurationBottomsheet()
+                shippingDurationBottomsheet.show(
+                    activity,
+                    parentFragmentManager,
+                    this,
+                    shipmentDetailData,
+                    shipmentAdapter.lastServiceId,
+                    shipmentCartItemModel.shopShipmentList!!,
+                    recipientAddressModel,
+                    cartPosition,
+                    codHistory,
+                    shipmentCartItemModel.isLeasingProduct,
+                    pslCode,
+                    products,
+                    shipmentCartItemModel.cartString!!,
+                    shipmentCartItemModel.isOrderPrioritasDisable,
+                    isTradeInByDropOff,
+                    shipmentCartItemModel.isFulfillment,
+                    shipmentCartItemModel.shipmentCartData!!.preOrderDuration,
+                    shipmentPresenter.generateRatesMvcParam(
+                        shipmentCartItemModel.cartString
+                    )!!,
+                    shipmentPresenter.cartDataForRates!!,
+                    false
+                )
             }
         }
     }
 
-    private ArrayList<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
-        ArrayList<Product> products = new ArrayList<>();
-        if (shipmentCartItemModel != null && shipmentCartItemModel.getCartItemModels() != null) {
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                if (!cartItemModel.isError()) {
-                    Product product = new Product();
-                    product.setProductId(cartItemModel.getProductId());
-                    product.setFreeShipping(cartItemModel.isFreeShipping());
-                    product.setFreeShippingTc(cartItemModel.isFreeShippingExtra());
-
-                    products.add(product);
+    private fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<Product> {
+        val products = ArrayList<Product>()
+        if (shipmentCartItemModel != null && shipmentCartItemModel.cartItemModels != null) {
+            for ((_, _, _, productId, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, isError, _, _, _, _, _, _, _, _, _, _, _, _, _, isFreeShipping, isFreeShippingExtra) in shipmentCartItemModel.cartItemModels) {
+                if (!isError) {
+                    val product = Product()
+                    product.productId = productId
+                    product.isFreeShipping = isFreeShipping
+                    product.isFreeShippingTc = isFreeShippingExtra
+                    products.add(product)
                 }
             }
         }
-
-        return products;
+        return products
     }
 
-    @Override
-    public void onChangeShippingCourier(RecipientAddressModel recipientAddressModel,
-                                        ShipmentCartItemModel shipmentCartItemModel,
-                                        int cartPosition,
-                                        List<ShippingCourierUiModel> selectedShippingCourierUiModels) {
+    override fun onChangeShippingCourier(
+        recipientAddressModel: RecipientAddressModel?,
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        cartPosition: Int,
+        selectedShippingCourierUiModels: List<ShippingCourierUiModel>?
+    ) {
         if (shipmentLoadingIndex == -1) {
-            List<ShippingCourierUiModel> shippingCourierUiModels;
-            if (selectedShippingCourierUiModels != null) {
-                shippingCourierUiModels = selectedShippingCourierUiModels;
-            } else {
-                shippingCourierUiModels = shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels();
+            var shippingCourierUiModels: List<ShippingCourierUiModel>?
+            shippingCourierUiModels = selectedShippingCourierUiModels
+                ?: shipmentCartItemModel!!.selectedShipmentDetailData!!.shippingCourierViewModels
+            sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel)
+            if (shippingCourierUiModels == null || shippingCourierUiModels.size == 0 &&
+                shipmentPresenter.getShippingCourierViewModelsState(shipmentCartItemModel!!.orderNumber) != null
+            ) {
+                shippingCourierUiModels = shipmentPresenter.getShippingCourierViewModelsState(
+                    shipmentCartItemModel!!.orderNumber
+                )
             }
-            sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel);
-            if (shippingCourierUiModels == null || shippingCourierUiModels.size() == 0 &&
-                    shipmentPresenter.getShippingCourierViewModelsState(shipmentCartItemModel.getOrderNumber()) != null) {
-                shippingCourierUiModels = shipmentPresenter.getShippingCourierViewModelsState(shipmentCartItemModel.getOrderNumber());
-            }
-            Activity activity = getActivity();
+            val activity: Activity? = activity
             if (activity != null) {
-                shippingCourierBottomsheet = new ShippingCourierBottomsheet();
-                shippingCourierBottomsheet.show(activity, getFragmentManager(), this,
-                        shippingCourierUiModels, recipientAddressModel, cartPosition, false);
-                if (shippingCourierUiModels != null) {
-                    checkHasCourierPromo(shippingCourierUiModels);
-                }
+                shippingCourierBottomsheet = ShippingCourierBottomsheet()
+                shippingCourierBottomsheet!!.show(
+                    activity,
+                    fragmentManager!!,
+                    this,
+                    shippingCourierUiModels,
+                    recipientAddressModel,
+                    cartPosition,
+                    false
+                )
+                shippingCourierUiModels?.let { checkHasCourierPromo(it) }
             }
         }
     }
 
-    private void reloadCourier(ShipmentCartItemModel shipmentCartItemModel, int cartPosition, boolean skipMvc) {
-        if (shipmentCartItemModel != null && shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-            if (shipmentCartItemModel.getSelectedShipmentDetailData().getShopId() == null) {
-                shipmentCartItemModel.getSelectedShipmentDetailData().setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
+    private fun reloadCourier(
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        cartPosition: Int,
+        skipMvc: Boolean
+    ) {
+        if (shipmentCartItemModel != null && shipmentCartItemModel.selectedShipmentDetailData != null) {
+            if (shipmentCartItemModel.selectedShipmentDetailData!!.shopId == null) {
+                shipmentCartItemModel.selectedShipmentDetailData!!.shopId =
+                    shipmentCartItemModel.shopId.toString()
             }
-            shipmentCartItemModel.getSelectedShipmentDetailData().setTradein(isTradeIn());
-            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+            shipmentCartItemModel.selectedShipmentDetailData!!.isTradein = isTradeIn
+            if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
                 shipmentPresenter.processGetCourierRecommendation(
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId(),
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId(),
-                        cartPosition,
-                        shipmentCartItemModel.getSelectedShipmentDetailData(),
-                        shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), false,
-                        getProductForRatesRequest(shipmentCartItemModel), shipmentCartItemModel.getCartString(),
-                        isTradeInByDropOff(), shipmentAdapter.getAddressShipmentData(), cartPosition > -1, skipMvc);
+                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.shipperId,
+                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.shipperProductId,
+                    cartPosition,
+                    shipmentCartItemModel.selectedShipmentDetailData,
+                    shipmentCartItemModel,
+                    shipmentCartItemModel.shopShipmentList,
+                    false,
+                    getProductForRatesRequest(shipmentCartItemModel),
+                    shipmentCartItemModel.cartString,
+                    isTradeInByDropOff,
+                    shipmentAdapter.addressShipmentData,
+                    cartPosition > -1,
+                    skipMvc
+                )
             }
         }
     }
 
-    private void checkHasCourierPromo(List<ShippingCourierUiModel> shippingCourierUiModels) {
-        boolean hasCourierPromo = false;
-        for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
-            if (!TextUtils.isEmpty(shippingCourierUiModel.getProductData().getPromoCode())) {
-                hasCourierPromo = true;
-                break;
+    private fun checkHasCourierPromo(shippingCourierUiModels: List<ShippingCourierUiModel?>) {
+        var hasCourierPromo = false
+        for (shippingCourierUiModel in shippingCourierUiModels) {
+            if (!TextUtils.isEmpty(shippingCourierUiModel!!.productData.promoCode)) {
+                hasCourierPromo = true
+                break
             }
         }
         if (hasCourierPromo) {
-            for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
+            for (shippingCourierUiModel in shippingCourierUiModels) {
                 sendAnalyticsOnDisplayLogisticThatContainPromo(
-                        !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getPromoCode()),
-                        shippingCourierUiModel.getProductData().getShipperProductId()
-                );
+                    !TextUtils.isEmpty(shippingCourierUiModel!!.productData.promoCode),
+                    shippingCourierUiModel.productData.shipperProductId
+                )
             }
         }
     }
 
-    @Override
-    public void hideSoftKeyboard() {
-        if (getActivity() != null) {
-            KeyboardHandler.hideSoftKeyboard(getActivity());
-        }
-    }
-
-    @Override
-    public void onLoadShippingState(int shipperId, int spId, int itemPosition,
-                                    ShipmentDetailData shipmentDetailData,
-                                    ShipmentCartItemModel shipmentCartItemModel,
-                                    List<ShopShipment> shopShipmentList,
-                                    boolean isTradeInDropOff) {
-        if (shopShipmentList != null && shopShipmentList.size() > 0) {
-            shipmentDetailData.setTradein(isTradeIn());
-            shipmentPresenter.processGetCourierRecommendation(
-                    shipperId, spId, itemPosition, shipmentDetailData,
-                    shipmentCartItemModel, shopShipmentList, true,
-                    getProductForRatesRequest(shipmentCartItemModel),
-                    shipmentCartItemModel.getCartString(), isTradeInDropOff,
-                    shipmentAdapter.getAddressShipmentData(), false, false);
-        }
-    }
-
-    @Override
-    public void onCourierPromoCanceled(String shipperName, String promoCode) {
-        if (shipmentAdapter.isCourierPromoStillExist()) {
-            showToastError(String.format(getString(com.tokopedia.logisticcart.R.string.message_cannot_apply_courier_promo), shipperName));
-        }
-    }
-
-    @Override
-    public void onPurchaseProtectionLogicError() {
-        String message = getString(R.string.error_dropshipper);
-        showToastError(message);
-    }
-
-    @Override
-    public void onPurchaseProtectionChangeListener(int position) {
-        if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> {
-                shipmentAdapter.updateShipmentCostModel();
-                shipmentAdapter.updateItemAndTotalCost(position);
-                shipmentAdapter.updateInsuranceTncVisibility();
-            });
-        } else {
-            shipmentAdapter.updateShipmentCostModel();
-            shipmentAdapter.updateItemAndTotalCost(position);
-            shipmentAdapter.updateInsuranceTncVisibility();
-        }
-    }
-
-    @Override
-    public void navigateToProtectionMore(CartItemModel cartItemModel) {
-        Activity activity = getActivity();
+    override fun hideSoftKeyboard() {
         if (activity != null) {
-            mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
-                    cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
-                    cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
-            Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalFintech.INSURANCE_INFO);
-            intent.putExtra(ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL, cartItemModel.getProtectionLinkUrl());
-            startActivity(intent);
+            KeyboardHandler.hideSoftKeyboard(activity)
         }
     }
 
-    @Override
-    public void onProcessToPayment() {
-        showLoading();
-        shipmentAdapter.checkDropshipperValidation();
+    override fun onLoadShippingState(
+        shipperId: Int,
+        spId: Int,
+        itemPosition: Int,
+        shipmentDetailData: ShipmentDetailData?,
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        shopShipmentList: List<ShopShipment?>?,
+        isTradeInDropOff: Boolean
+    ) {
+        if (shopShipmentList != null && shopShipmentList.size > 0) {
+            shipmentDetailData!!.isTradein = isTradeIn
+            shipmentPresenter.processGetCourierRecommendation(
+                shipperId, spId, itemPosition, shipmentDetailData,
+                shipmentCartItemModel, shopShipmentList, true,
+                getProductForRatesRequest(shipmentCartItemModel),
+                shipmentCartItemModel!!.cartString, isTradeInDropOff,
+                shipmentAdapter.addressShipmentData, false, false
+            )
+        }
     }
 
-    public int getResultCode() {
-        if (shipmentPresenter.getCouponStateChanged()) {
-            return RESULT_CODE_COUPON_STATE_CHANGED;
+    override fun onCourierPromoCanceled(shipperName: String?, promoCode: String?) {
+        if (shipmentAdapter.isCourierPromoStillExist) {
+            showToastError(
+                String.format(
+                    getString(com.tokopedia.logisticcart.R.string.message_cannot_apply_courier_promo),
+                    shipperName
+                )
+            )
+        }
+    }
+
+    override fun onPurchaseProtectionLogicError() {
+        val message = getString(R.string.error_dropshipper)
+        showToastError(message)
+    }
+
+    override fun onPurchaseProtectionChangeListener(position: Int) {
+        if (rvShipment!!.isComputingLayout) {
+            rvShipment!!.post {
+                shipmentAdapter.updateShipmentCostModel()
+                shipmentAdapter.updateItemAndTotalCost(position)
+                shipmentAdapter.updateInsuranceTncVisibility()
+            }
         } else {
-            return Activity.RESULT_CANCELED;
+            shipmentAdapter.updateShipmentCostModel()
+            shipmentAdapter.updateItemAndTotalCost(position)
+            shipmentAdapter.updateInsuranceTncVisibility()
         }
     }
 
-    void releaseBookingIfAny() {
-        if (cdLayout.getVisibility() == View.VISIBLE) {
-            shipmentPresenter.releaseBooking();
+    override fun navigateToProtectionMore(cartItemModel: CartItemModel?) {
+        val activity: Activity? = activity
+        if (activity != null) {
+            mTrackerPurchaseProtection.eventClickOnPelajari(
+                userSessionInterface.userId,
+                cartItemModel!!.protectionTitle,
+                cartItemModel.protectionPricePerProduct,
+                cartItemModel.analyticsProductCheckoutData.productCategoryId
+            )
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalFintech.INSURANCE_INFO)
+            intent.putExtra(
+                ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
+                cartItemModel.protectionLinkUrl
+            )
+            startActivity(intent)
         }
     }
 
-    @Override
-    public void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel) {
+    override fun onProcessToPayment() {
+        showLoading()
+        shipmentAdapter.checkDropshipperValidation()
+    }
+
+    val resultCode: Int
+        get() = if (shipmentPresenter.couponStateChanged) {
+            RESULT_CODE_COUPON_STATE_CHANGED
+        } else {
+            Activity.RESULT_CANCELED
+        }
+
+    fun releaseBookingIfAny() {
+        if (cdLayout!!.visibility == View.VISIBLE) {
+            shipmentPresenter.releaseBooking()
+        }
+    }
+
+    override fun updateCourierBottomsheetHasNoData(
+        cartPosition: Int,
+        shipmentCartItemModel: ShipmentCartItemModel?
+    ) {
         if (shippingCourierBottomsheet != null) {
-            shippingCourierBottomsheet.setShippingCourierViewModels(null, cartPosition, null);
+            shippingCourierBottomsheet!!.setShippingCourierViewModels(null, cartPosition, null)
         }
     }
 
-    @Override
-    public void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition, ShipmentCartItemModel shipmentCartItemModel, PreOrderModel preOrderModel) {
+    override fun updateCourierBottomssheetHasData(
+        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        cartPosition: Int,
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        preOrderModel: PreOrderModel?
+    ) {
         if (shippingCourierBottomsheet != null) {
-            shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierUiModels, cartPosition, preOrderModel);
+            shippingCourierBottomsheet!!.setShippingCourierViewModels(
+                shippingCourierUiModels,
+                cartPosition,
+                preOrderModel
+            )
         }
     }
 
-    @Override
-    public ValidateUsePromoRequest generateValidateUsePromoRequest() {
-        ArrayList<String> bboPromoCodes = new ArrayList<>();
-        if (shipmentPresenter.getLastValidateUseRequest() != null) {
+    override fun generateValidateUsePromoRequest(): ValidateUsePromoRequest? {
+        val bboPromoCodes = ArrayList<String>()
+        return if (shipmentPresenter.lastValidateUseRequest != null) {
             // Update param if have done param data generation before
-            ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
-            List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                    if (shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
-                        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                            if (!ordersItem.getCodes().contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
-                                ordersItem.getCodes().add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+            val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest
+            val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList
+            for (shipmentCartItemModel in shipmentCartItemModelList) {
+                for (ordersItem in validateUsePromoRequest!!.orders) {
+                    if (shipmentCartItemModel.cartString == ordersItem.uniqueId) {
+                        if (shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                            if (!ordersItem.codes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
+                                ordersItem.codes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                             }
-                            if (!bboPromoCodes.contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
-                                bboPromoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                            if (!bboPromoCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
+                                bboPromoCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                             }
                         }
-                        setValidateUseSpIdParam(shipmentCartItemModel, ordersItem);
+                        setValidateUseSpIdParam(shipmentCartItemModel, ordersItem)
                     }
                 }
             }
-            if (isTradeIn()) {
-                validateUsePromoRequest.setTradeIn(1);
-                validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
+            if (isTradeIn) {
+                validateUsePromoRequest!!.isTradeIn = 1
+                validateUsePromoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
             }
-            if (isOneClickShipment()) {
-                validateUsePromoRequest.setCartType("ocs");
+            if (isOneClickShipment) {
+                validateUsePromoRequest!!.cartType = "ocs"
             } else {
-                validateUsePromoRequest.setCartType("default");
+                validateUsePromoRequest!!.cartType = "default"
             }
-            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-            this.bboPromoCodes = bboPromoCodes;
-            return validateUsePromoRequest;
+            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
+            this.bboPromoCodes = bboPromoCodes
+            validateUsePromoRequest
         } else {
             // First param data generation / initialization
-            ValidateUsePromoRequest validateUsePromoRequest = new ValidateUsePromoRequest();
-            ArrayList<OrdersItem> listOrderItem = new ArrayList<>();
-
-            List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
-            LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+            val validateUsePromoRequest = ValidateUsePromoRequest()
+            val listOrderItem = ArrayList<OrdersItem>()
+            val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList
+            val lastApplyUiModel = shipmentPresenter.lastApplyData
             if (shipmentCartItemModelList != null) {
-                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                    OrdersItem ordersItem = new OrdersItem();
-                    ArrayList<ProductDetailsItem> productDetailsItems = new ArrayList<>();
-                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                        if (!cartItemModel.isError()) {
-                            ProductDetailsItem productDetail = new ProductDetailsItem();
-                            productDetail.setProductId(cartItemModel.getProductId());
-                            productDetail.setQuantity(cartItemModel.getQuantity());
-                            long tmpBundleId = 0;
+                for (shipmentCartItemModel in shipmentCartItemModelList) {
+                    val ordersItem = OrdersItem()
+                    val productDetailsItems = ArrayList<ProductDetailsItem>()
+                    for ((_, _, _, productId, _, _, _, _, _, _, _, _, _, _, _, quantity, _, _, _, _, _, _, _, _, _, isError, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, bundleId) in shipmentCartItemModel.cartItemModels) {
+                        if (!isError) {
+                            val productDetail = ProductDetailsItem()
+                            productDetail.productId = productId
+                            productDetail.quantity = quantity
+                            var tmpBundleId: Long = 0
                             try {
-                                tmpBundleId = Long.parseLong(cartItemModel.getBundleId());
-                            } catch (NumberFormatException e) {
+                                tmpBundleId = bundleId.toLong()
+                            } catch (e: NumberFormatException) {
                             }
-                            productDetail.setBundleId(tmpBundleId);
-                            productDetailsItems.add(productDetail);
+                            productDetail.bundleId = tmpBundleId
+                            productDetailsItems.add(productDetail)
                         }
                     }
-                    ordersItem.setProductDetails(productDetailsItems);
-
-                    ArrayList<String> listOrderCodes = new ArrayList<>();
+                    ordersItem.productDetails = productDetailsItems
+                    val listOrderCodes = ArrayList<String>()
                     if (lastApplyUiModel != null) {
-                        for (LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel : lastApplyUiModel.getVoucherOrders()) {
-                            if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyVoucherOrdersItemUiModel.getUniqueId())) {
-                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.getCode()) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
-                                    listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
+                        for (lastApplyVoucherOrdersItemUiModel in lastApplyUiModel.voucherOrders) {
+                            if (shipmentCartItemModel.cartString.equals(
+                                    lastApplyVoucherOrdersItemUiModel.uniqueId,
+                                    ignoreCase = true
+                                )
+                            ) {
+                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.code) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
+                                    listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.code)
                                 }
-                                break;
+                                break
                             }
                         }
                     }
                     // Add data BBO
-                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                        if (!listOrderCodes.contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
-                            listOrderCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                        if (!listOrderCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
+                            listOrderCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                         }
-                        if (!bboPromoCodes.contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
-                            bboPromoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        if (!bboPromoCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
+                            bboPromoCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                         }
                     }
-                    ordersItem.setCodes(listOrderCodes);
-                    ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
-                    ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                    ordersItem.setBoType(shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType());
-                    ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
-                    ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay());
-                    ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                    setValidateUseSpIdParam(shipmentCartItemModel, ordersItem);
-                    listOrderItem.add(ordersItem);
+                    ordersItem.codes = listOrderCodes
+                    ordersItem.uniqueId = shipmentCartItemModel.cartString!!
+                    ordersItem.shopId = shipmentCartItemModel.shopId
+                    ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
+                    ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
+                    ordersItem.poDuration =
+                        shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
+                    ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
+                    setValidateUseSpIdParam(shipmentCartItemModel, ordersItem)
+                    listOrderItem.add(ordersItem)
                 }
             }
-            validateUsePromoRequest.setOrders(listOrderItem);
-            validateUsePromoRequest.setState(PARAM_CHECKOUT);
-            validateUsePromoRequest.setCartType(PARAM_DEFAULT);
-            validateUsePromoRequest.setSkipApply(0);
-            if (isTradeIn()) {
-                validateUsePromoRequest.setTradeIn(1);
-                validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
+            validateUsePromoRequest.orders = listOrderItem
+            validateUsePromoRequest.state = PARAM_CHECKOUT
+            validateUsePromoRequest.cartType = PARAM_DEFAULT
+            validateUsePromoRequest.skipApply = 0
+            if (isTradeIn) {
+                validateUsePromoRequest.isTradeIn = 1
+                validateUsePromoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
             }
-
             if (lastApplyUiModel != null) {
-                ArrayList<String> globalPromoCodes = new ArrayList<>();
-                if (lastApplyUiModel.getCodes().size() > 0) {
-                    for (String code : lastApplyUiModel.getCodes()) {
-                        if (code.length() > 0 && !globalPromoCodes.contains(code)) {
-                            globalPromoCodes.add(code);
+                val globalPromoCodes = ArrayList<String>()
+                if (lastApplyUiModel.codes.size > 0) {
+                    for (code in lastApplyUiModel.codes) {
+                        if (code.length > 0 && !globalPromoCodes.contains(code)) {
+                            globalPromoCodes.add(code)
                         }
                     }
                 }
-                validateUsePromoRequest.setCodes(globalPromoCodes);
+                validateUsePromoRequest.codes = globalPromoCodes
             }
-            if (isOneClickShipment()) {
-                validateUsePromoRequest.setCartType("ocs");
+            if (isOneClickShipment) {
+                validateUsePromoRequest.cartType = "ocs"
             } else {
-                validateUsePromoRequest.setCartType("default");
+                validateUsePromoRequest.cartType = "default"
             }
-            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-            this.bboPromoCodes = bboPromoCodes;
-            return validateUsePromoRequest;
+            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
+            this.bboPromoCodes = bboPromoCodes
+            validateUsePromoRequest
         }
     }
 
-    private void setValidateUseSpIdParam(ShipmentCartItemModel shipmentCartItemModel, OrdersItem ordersItem) {
-        if (shipmentCartItemModel.getSelectedShipmentDetailData() == null) {
-            ordersItem.setShippingId(0);
-            ordersItem.setSpId(0);
-            ordersItem.setFreeShippingMetadata("");
-            ordersItem.setBoCampaignId(0);
-            ordersItem.setBenefitClass("");
-            ordersItem.setShippingSubsidy(0);
-            ordersItem.setShippingPrice(0);
-            ordersItem.setEtaText("");
-            ordersItem.setValidationMetadata("");
+    private fun setValidateUseSpIdParam(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        ordersItem: OrdersItem
+    ) {
+        if (shipmentCartItemModel.selectedShipmentDetailData == null) {
+            ordersItem.shippingId = 0
+            ordersItem.spId = 0
+            ordersItem.freeShippingMetadata = ""
+            ordersItem.boCampaignId = 0
+            ordersItem.benefitClass = ""
+            ordersItem.shippingSubsidy = 0
+            ordersItem.shippingPrice = 0.0
+            ordersItem.etaText = ""
+            ordersItem.validationMetadata = ""
         } else {
-            if (isTradeInByDropOff()) {
-                if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
-                    ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
-                    ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
-                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                        ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
-                        ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getBenefitClass());
-                        ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShippingSubsidy());
-                        ordersItem.setShippingPrice(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShippingRate());
-                        ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getEtaText());
-                        ordersItem.setBoCampaignId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getBoCampaignId());
+            if (isTradeInByDropOff) {
+                if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
+                    ordersItem.shippingId =
+                        shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperId
+                    ordersItem.spId =
+                        shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperProductId
+                    if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                        ordersItem.freeShippingMetadata =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.freeShippingMetadata
+                        ordersItem.benefitClass =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.benefitClass
+                        ordersItem.shippingSubsidy =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shippingSubsidy
+                        ordersItem.shippingPrice =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shippingRate.toDouble()
+                        ordersItem.etaText =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.etaText!!
+                        ordersItem.boCampaignId =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.boCampaignId
                     } else {
-                        ordersItem.setFreeShippingMetadata("");
-                        ordersItem.setBoCampaignId(0);
-                        ordersItem.setBenefitClass("");
-                        ordersItem.setShippingSubsidy(0);
-                        ordersItem.setShippingPrice(0);
-                        ordersItem.setEtaText("");
+                        ordersItem.freeShippingMetadata = ""
+                        ordersItem.boCampaignId = 0
+                        ordersItem.benefitClass = ""
+                        ordersItem.shippingSubsidy = 0
+                        ordersItem.shippingPrice = 0.0
+                        ordersItem.etaText = ""
                     }
-                    ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
+                    ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
                 } else {
-                    ordersItem.setShippingId(0);
-                    ordersItem.setSpId(0);
-                    ordersItem.setFreeShippingMetadata("");
-                    ordersItem.setBoCampaignId(0);
-                    ordersItem.setBenefitClass("");
-                    ordersItem.setShippingSubsidy(0);
-                    ordersItem.setShippingPrice(0);
-                    ordersItem.setEtaText("");
-                    ordersItem.setValidationMetadata("");
+                    ordersItem.shippingId = 0
+                    ordersItem.spId = 0
+                    ordersItem.freeShippingMetadata = ""
+                    ordersItem.boCampaignId = 0
+                    ordersItem.benefitClass = ""
+                    ordersItem.shippingSubsidy = 0
+                    ordersItem.shippingPrice = 0.0
+                    ordersItem.etaText = ""
+                    ordersItem.validationMetadata = ""
                 }
             } else {
-                if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                    ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getShipperId());
-                    ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getShipperProductId());
-                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                        ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getFreeShippingMetadata());
-                        ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getBenefitClass());
-                        ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getShippingSubsidy());
-                        ordersItem.setShippingPrice(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getShippingRate());
-                        ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getEtaText());
-                        ordersItem.setBoCampaignId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getBoCampaignId());
+                if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
+                    ordersItem.shippingId =
+                        shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperId
+                    ordersItem.spId =
+                        shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperProductId
+                    if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                        ordersItem.freeShippingMetadata =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.freeShippingMetadata
+                        ordersItem.benefitClass =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.benefitClass
+                        ordersItem.shippingSubsidy =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shippingSubsidy
+                        ordersItem.shippingPrice =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shippingRate.toDouble()
+                        ordersItem.etaText =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.etaText!!
+                        ordersItem.boCampaignId =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.boCampaignId
                     } else {
-                        ordersItem.setFreeShippingMetadata("");
-                        ordersItem.setBoCampaignId(0);
-                        ordersItem.setBenefitClass("");
-                        ordersItem.setShippingSubsidy(0);
-                        ordersItem.setShippingPrice(0);
-                        ordersItem.setEtaText("");
+                        ordersItem.freeShippingMetadata = ""
+                        ordersItem.boCampaignId = 0
+                        ordersItem.benefitClass = ""
+                        ordersItem.shippingSubsidy = 0
+                        ordersItem.shippingPrice = 0.0
+                        ordersItem.etaText = ""
                     }
-                    ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
+                    ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
                 } else {
-                    ordersItem.setShippingId(0);
-                    ordersItem.setSpId(0);
-                    ordersItem.setFreeShippingMetadata("");
-                    ordersItem.setBoCampaignId(0);
-                    ordersItem.setBenefitClass("");
-                    ordersItem.setShippingSubsidy(0);
-                    ordersItem.setShippingPrice(0);
-                    ordersItem.setEtaText("");
-                    ordersItem.setValidationMetadata("");
+                    ordersItem.shippingId = 0
+                    ordersItem.spId = 0
+                    ordersItem.freeShippingMetadata = ""
+                    ordersItem.boCampaignId = 0
+                    ordersItem.benefitClass = ""
+                    ordersItem.shippingSubsidy = 0
+                    ordersItem.shippingPrice = 0.0
+                    ordersItem.etaText = ""
+                    ordersItem.validationMetadata = ""
                 }
             }
         }
     }
 
-    @Override
-    public PromoRequest generateCouponListRecommendationRequest() {
-        PromoRequest promoRequest = new PromoRequest();
-        ArrayList<Order> listOrderItem = new ArrayList<>();
-
-        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+    override fun generateCouponListRecommendationRequest(): PromoRequest? {
+        val promoRequest = PromoRequest()
+        val listOrderItem = ArrayList<Order>()
+        val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList
         if (shipmentCartItemModelList != null) {
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                Order ordersItem = new Order();
-                ArrayList<ProductDetail> productDetailsItems = new ArrayList<>();
-                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                    if (!cartItemModel.isError()) {
-                        ProductDetail productDetail = new ProductDetail();
-                        productDetail.setProductId(cartItemModel.getProductId());
-                        productDetail.setQuantity(cartItemModel.getQuantity());
-                        long tmpBundleId = 0;
+            for (shipmentCartItemModel in shipmentCartItemModelList) {
+                val ordersItem = Order()
+                val productDetailsItems = ArrayList<ProductDetail>()
+                for ((_, _, _, productId, _, _, _, _, _, _, _, _, _, _, _, quantity, _, _, _, _, _, _, _, _, _, isError, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, bundleId) in shipmentCartItemModel.cartItemModels) {
+                    if (!isError) {
+                        val productDetail = ProductDetail()
+                        productDetail.productId = productId
+                        productDetail.quantity = quantity
+                        var tmpBundleId: Long = 0
                         try {
-                            tmpBundleId = Long.parseLong(cartItemModel.getBundleId());
-                        } catch (NumberFormatException e) {
+                            tmpBundleId = bundleId.toLong()
+                        } catch (e: NumberFormatException) {
                         }
-                        productDetail.setBundleId(tmpBundleId);
-                        productDetailsItems.add(productDetail);
+                        productDetail.bundleId = tmpBundleId
+                        productDetailsItems.add(productDetail)
                     }
                 }
-                ordersItem.setProduct_details(productDetailsItems);
-                ordersItem.setChecked(true);
-
-                ArrayList<String> listCodes = new ArrayList<>();
-                if (shipmentCartItemModel.getListPromoCodes() != null) {
-                    for (String code : shipmentCartItemModel.getListPromoCodes()) {
-                        listCodes.add(code);
+                ordersItem.product_details = productDetailsItems
+                ordersItem.isChecked = true
+                val listCodes = ArrayList<String>()
+                if (shipmentCartItemModel.listPromoCodes != null) {
+                    for (code in shipmentCartItemModel.listPromoCodes!!) {
+                        listCodes.add(code)
                     }
                 }
-                ordersItem.setCodes(listCodes);
-                ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
-                ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                ordersItem.setBoType(shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType());
-                ordersItem.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
-                if (shipmentCartItemModel.getSelectedShipmentDetailData() == null) {
-                    ordersItem.setShippingId(0);
-                    ordersItem.setSpId(0);
-                    ordersItem.setFreeShippingMetadata("");
-                    ordersItem.setValidationMetadata("");
+                ordersItem.codes = listCodes
+                ordersItem.uniqueId = shipmentCartItemModel.cartString!!
+                ordersItem.shopId = shipmentCartItemModel.shopId
+                ordersItem.boType = shipmentCartItemModel.shipmentCartData!!.boMetadata!!.boType
+                ordersItem.isInsurancePrice = if (shipmentCartItemModel.isInsurance) 1 else 0
+                if (shipmentCartItemModel.selectedShipmentDetailData == null) {
+                    ordersItem.shippingId = 0
+                    ordersItem.spId = 0
+                    ordersItem.freeShippingMetadata = ""
+                    ordersItem.validationMetadata = ""
                 } else {
-                    if (isTradeInByDropOff()) {
-                        if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
-                            ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
-                            ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
-                            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                                ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
+                    if (isTradeInByDropOff) {
+                        if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
+                            ordersItem.shippingId =
+                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperId
+                            ordersItem.spId =
+                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperProductId
+                            if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                                ordersItem.freeShippingMetadata =
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.freeShippingMetadata
                             } else {
-                                ordersItem.setFreeShippingMetadata("");
+                                ordersItem.freeShippingMetadata = ""
                             }
-                            ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
+                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
                         } else {
-                            ordersItem.setShippingId(0);
-                            ordersItem.setSpId(0);
-                            ordersItem.setFreeShippingMetadata("");
-                            ordersItem.setValidationMetadata("");
+                            ordersItem.shippingId = 0
+                            ordersItem.spId = 0
+                            ordersItem.freeShippingMetadata = ""
+                            ordersItem.validationMetadata = ""
                         }
                     } else {
-                        if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                            ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getShipperId());
-                            ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getShipperProductId());
-                            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                                ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getFreeShippingMetadata());
+                        if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
+                            ordersItem.shippingId =
+                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperId
+                            ordersItem.spId =
+                                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.shipperProductId
+                            if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                                ordersItem.freeShippingMetadata =
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.freeShippingMetadata
                             } else {
-                                ordersItem.setFreeShippingMetadata("");
+                                ordersItem.freeShippingMetadata = ""
                             }
-                            ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
+                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
                         } else {
-                            ordersItem.setShippingId(0);
-                            ordersItem.setSpId(0);
-                            ordersItem.setFreeShippingMetadata("");
-                            ordersItem.setValidationMetadata("");
+                            ordersItem.shippingId = 0
+                            ordersItem.spId = 0
+                            ordersItem.freeShippingMetadata = ""
+                            ordersItem.validationMetadata = ""
                         }
                     }
                 }
-                listOrderItem.add(ordersItem);
+                listOrderItem.add(ordersItem)
             }
         }
-        promoRequest.setOrders(listOrderItem);
-        promoRequest.setState(PARAM_CHECKOUT);
-        if (isOneClickShipment()) {
-            promoRequest.setCartType("ocs");
+        promoRequest.orders = listOrderItem
+        promoRequest.state = PARAM_CHECKOUT
+        if (isOneClickShipment) {
+            promoRequest.cartType = "ocs"
         } else {
-            promoRequest.setCartType(PARAM_DEFAULT);
+            promoRequest.cartType = PARAM_DEFAULT
         }
-
-        if (isTradeIn()) {
-            promoRequest.setTradeIn(1);
-            promoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
+        if (isTradeIn) {
+            promoRequest.isTradeIn = 1
+            promoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
         }
-
-        LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+        val lastApplyUiModel = shipmentPresenter.lastApplyData
         if (lastApplyUiModel != null) {
-            ArrayList<String> globalPromoCodes = new ArrayList<>();
-            if (lastApplyUiModel.getCodes().size() > 0) {
-                globalPromoCodes.addAll(lastApplyUiModel.getCodes());
+            val globalPromoCodes = ArrayList<String>()
+            if (lastApplyUiModel.codes.size > 0) {
+                globalPromoCodes.addAll(lastApplyUiModel.codes)
             }
-            promoRequest.setCodes(globalPromoCodes);
+            promoRequest.codes = globalPromoCodes
         }
-
-        return promoRequest;
+        return promoRequest
     }
 
-    @Override
-    public void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo) {
+    override fun onSuccessClearPromoLogistic(position: Int, isLastAppliedPromo: Boolean) {
         if (position != 0) {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-            shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-            onNeedUpdateViewItem(position);
+            val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
+            shipmentCartItemModel.voucherLogisticItemUiModel = null
+            onNeedUpdateViewItem(position)
         }
-
         if (isLastAppliedPromo) {
-            doResetButtonPromoCheckout();
+            doResetButtonPromoCheckout()
         }
-        shipmentAdapter.checkHasSelectAllCourier(false, -1, "", true, false);
+        shipmentAdapter.checkHasSelectAllCourier(false, -1, "", true, false)
     }
 
-    @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId,
-                                                                                 String deviceModel,
-                                                                                 long devicePrice,
-                                                                                 String diagnosticId) {
-        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
-
-        String eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION;
-        String eventAction = ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN;
-        String eventLabel = ConstantTransactionAnalytics.EventLabel.SUCCESS;
-        Map<String, String> tradeInCustomDimension = new HashMap<>();
-        if (isTradeIn()) {
-            eventCategory = EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
-            eventLabel = String.format(Locale.getDefault(), EVENT_LABEL_TRADE_IN_CHECKOUT_EE,
-                    deviceModel, devicePrice, diagnosticId);
-            tradeInCustomDimension.put(KEY_USER_ID, userSessionInterface.getUserId());
-            tradeInCustomDimension.put(KEY_BUSINESS_UNIT, VALUE_TRADE_IN);
-            if (isTradeInByDropOff()) {
-                eventAction = EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
-                tradeInCustomDimension.put(KEY_SCREEN_NAME, SCREEN_NAME_DROP_OFF_ADDRESS);
+    override fun triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
+        transactionId: String?,
+        deviceModel: String?,
+        devicePrice: Long,
+        diagnosticId: String?
+    ) {
+        val dataCheckoutRequests =
+            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
+                shipmentAdapter.shipmentCartItemModelList
+            )
+        var eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION
+        var eventAction = ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN
+        var eventLabel = ConstantTransactionAnalytics.EventLabel.SUCCESS
+        val tradeInCustomDimension: MutableMap<String?, String?> = HashMap()
+        if (isTradeIn) {
+            eventCategory =
+                CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN
+            eventLabel = String.format(
+                Locale.getDefault(),
+                CheckoutTradeInAnalytics.EVENT_LABEL_TRADE_IN_CHECKOUT_EE,
+                deviceModel,
+                devicePrice,
+                diagnosticId
+            )
+            tradeInCustomDimension[CheckoutTradeInAnalytics.KEY_USER_ID] =
+                userSessionInterface.userId
+            tradeInCustomDimension[CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT] =
+                CheckoutTradeInAnalytics.VALUE_TRADE_IN
+            if (isTradeInByDropOff) {
+                eventAction = CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET
+                tradeInCustomDimension[CheckoutTradeInAnalytics.KEY_SCREEN_NAME] =
+                    CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS
             } else {
-                eventAction = EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
-                tradeInCustomDimension.put(KEY_SCREEN_NAME, SCREEN_NAME_NORMAL_ADDRESS);
+                eventAction = CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL
+                tradeInCustomDimension[CheckoutTradeInAnalytics.KEY_SCREEN_NAME] =
+                    CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS
             }
         }
-
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                dataCheckoutRequests,
-                tradeInCustomDimension,
-                EnhancedECommerceActionField.STEP_4,
-                eventCategory,
-                eventAction,
-                eventLabel,
-                getCheckoutLeasingId(),
-                getCheckoutPageSource());
+            dataCheckoutRequests,
+            tradeInCustomDimension,
+            EnhancedECommerceActionField.STEP_4,
+            eventCategory,
+            eventAction,
+            eventLabel,
+            checkoutLeasingId,
+            checkoutPageSource
+        )
     }
 
-    @Override
-    public void resetCourier(int position) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-        resetCourier(shipmentCartItemModel);
+    override fun resetCourier(position: Int) {
+        val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
+        resetCourier(shipmentCartItemModel)
     }
 
-    @Override
-    public void clearTotalBenefitPromoStacking() {
-        shipmentAdapter.clearTotalPromoStackAmount();
-        shipmentAdapter.updateShipmentCostModel();
+    override fun clearTotalBenefitPromoStacking() {
+        shipmentAdapter.clearTotalPromoStackAmount()
+        shipmentAdapter.updateShipmentCostModel()
     }
 
     // Keep this method
-    private void showPromoNotEligibleDialog(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList, int requestCode) {
-        FragmentActivity activity = getActivity();
+    private fun showPromoNotEligibleDialog(
+        notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>,
+        requestCode: Int
+    ) {
+        val activity = activity
         if (activity != null) {
             if (promoNotEligibleBottomsheet == null) {
-                promoNotEligibleBottomsheet = new PromoNotEligibleBottomSheet(notEligiblePromoHolderdataList, this);
+                promoNotEligibleBottomsheet =
+                    PromoNotEligibleBottomSheet(notEligiblePromoHolderdataList, this)
             }
-            promoNotEligibleBottomsheet.setDismissListener(() -> {
-                checkoutAnalyticsCourierSelection.eventClickBatalOnErrorPromoConfirmation();
-                return Unit.INSTANCE;
-            });
-            promoNotEligibleBottomsheet.setNotEligiblePromoHolderDataList(notEligiblePromoHolderdataList);
-            promoNotEligibleBottomsheet.show(activity, getParentFragmentManager());
-            checkoutAnalyticsCourierSelection.eventViewPopupErrorPromoConfirmation();
-            PromoRevampAnalytics.INSTANCE.eventCheckoutViewBottomsheetPromoError();
+            promoNotEligibleBottomsheet!!.dismissListener = {
+                checkoutAnalyticsCourierSelection.eventClickBatalOnErrorPromoConfirmation()
+                Unit
+            }
+            promoNotEligibleBottomsheet!!.notEligiblePromoHolderDataList =
+                notEligiblePromoHolderdataList
+            promoNotEligibleBottomsheet!!.show(activity, parentFragmentManager)
+            checkoutAnalyticsCourierSelection.eventViewPopupErrorPromoConfirmation()
+            eventCheckoutViewBottomsheetPromoError()
         }
     }
 
-    @Override
-    public void onButtonContinueClicked() {
+    override fun onButtonContinueClicked() {
         if (promoNotEligibleBottomsheet != null) {
-            checkoutAnalyticsCourierSelection.eventClickLanjutkanOnErrorPromoConfirmation();
-            ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList = promoNotEligibleBottomsheet.getNotEligiblePromoHolderDataList();
-            promoNotEligibleBottomsheet.dismiss();
-            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList);
+            checkoutAnalyticsCourierSelection.eventClickLanjutkanOnErrorPromoConfirmation()
+            val notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata> =
+                promoNotEligibleBottomsheet!!.notEligiblePromoHolderDataList
+            promoNotEligibleBottomsheet!!.dismiss()
+            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList)
         }
     }
 
-    @Override
-    public void onButtonChooseOtherPromo() {
+    override fun onButtonChooseOtherPromo() {
         if (promoNotEligibleBottomsheet != null) {
-            promoNotEligibleBottomsheet.dismiss();
-            PromoRevampAnalytics.INSTANCE.eventCheckoutClickPilihPromoLainOnBottomsheetPromoError();
-            ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
-            PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
-            intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE, PAGE_CHECKOUT);
-            intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST, promoRequestParam);
-            intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
-            intent.putStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES, bboPromoCodes);
-            setChosenAddressForTradeInDropOff(intent);
-            setPromoExtraMvcLockCourierFlow(intent);
-
-            startActivityForResult(intent, REQUEST_CODE_PROMO);
+            promoNotEligibleBottomsheet!!.dismiss()
+            eventCheckoutClickPilihPromoLainOnBottomsheetPromoError()
+            val validateUseRequestParam = generateValidateUsePromoRequest()
+            val promoRequestParam = generateCouponListRecommendationRequest()
+            val intent = RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+            )
+            intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+            intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+            intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes)
+            setChosenAddressForTradeInDropOff(intent)
+            setPromoExtraMvcLockCourierFlow(intent)
+            startActivityForResult(intent, REQUEST_CODE_PROMO)
         }
     }
 
-    @Override
-    public void onShow() {
-        //no op
+    override fun onShow() {
+        // no op
     }
 
-    @Override
-    public void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList) {
-        ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
+    override fun removeIneligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>) {
+        val validateUsePromoRevampUiModel = shipmentPresenter.validateUsePromoRevampUiModel
         if (validateUsePromoRevampUiModel != null) {
-            if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
-                validateUsePromoRevampUiModel.getPromoUiModel().getCodes().clear();
+            if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                validateUsePromoRevampUiModel.promoUiModel.codes.clear()
             }
-
-            ArrayList<PromoCheckoutVoucherOrdersItemUiModel> deletedVoucherOrder = new ArrayList<>();
-            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel :
-                    validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                    deletedVoucherOrder.add(voucherOrdersItemUiModel);
+            val deletedVoucherOrder = ArrayList<PromoCheckoutVoucherOrdersItemUiModel>()
+            for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                    deletedVoucherOrder.add(voucherOrdersItemUiModel)
                 }
             }
-
-            if (deletedVoucherOrder.size() > 0) {
-                for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : deletedVoucherOrder) {
-                    validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels().remove(voucherOrdersItemUiModel);
+            if (deletedVoucherOrder.size > 0) {
+                for (voucherOrdersItemUiModel in deletedVoucherOrder) {
+                    validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.remove(
+                        voucherOrdersItemUiModel
+                    )
                 }
             }
         }
-
-        doCheckout();
+        doCheckout()
     }
 
-    @Override
-    public void updateTickerAnnouncementMessage() {
-        int index = shipmentAdapter.getTickerAnnouncementHolderDataIndex();
+    override fun updateTickerAnnouncementMessage() {
+        val index = shipmentAdapter.tickerAnnouncementHolderDataIndex
         if (index != RecyclerView.NO_POSITION) {
             // If ticker exist, update the view
-            onNeedUpdateViewItem(index);
+            onNeedUpdateViewItem(index)
         } else {
             // If ticker not exist, add ticker to list, then update the list
-            TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
-            shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData);
-            if (rvShipment.isComputingLayout()) {
-                rvShipment.post(this::onAddTickerAnnouncementMessage);
+            val tickerAnnouncementHolderData = shipmentPresenter.tickerAnnouncementHolderData
+            shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData)
+            if (rvShipment!!.isComputingLayout) {
+                rvShipment!!.post { onAddTickerAnnouncementMessage() }
             } else {
-                onAddTickerAnnouncementMessage();
+                onAddTickerAnnouncementMessage()
             }
         }
     }
 
-    private void onAddTickerAnnouncementMessage() {
-        if (!rvShipment.canScrollVertically(-1)) {
-            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION);
-            rvShipment.scrollToPosition(0);
+    private fun onAddTickerAnnouncementMessage() {
+        if (!rvShipment!!.canScrollVertically(-1)) {
+            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION)
+            rvShipment!!.scrollToPosition(0)
         } else {
-            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION);
+            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION)
         }
     }
 
-    @Override
-    public void setPromoBenefit(List<SummariesItemUiModel> summariesUiModels) {
-        shipmentAdapter.setPromoBenefit(summariesUiModels);
-        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    override fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel?>?) {
+        shipmentAdapter.setPromoBenefit(summariesUiModels)
+        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
     }
 
-    @Override
-    public void resetPromoBenefit() {
-        shipmentAdapter.resetPromoBenefit();
-        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
-        shipmentAdapter.updateShipmentCostModel();
+    override fun resetPromoBenefit() {
+        shipmentAdapter.resetPromoBenefit()
+        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+        shipmentAdapter.updateShipmentCostModel()
     }
 
-    @Override
-    public void onChangeTradeInDropOffClicked(String latitude, String longitude) {
-        checkoutTradeInAnalytics.eventTradeInClickPilihIndomaret();
-        Intent dropOffIntent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER);
-        dropOffIntent.putExtra(EXTRA_DROPOFF_LATITUDE, latitude);
-        dropOffIntent.putExtra(EXTRA_DROPOFF_LONGITUDE, longitude);
-        startActivityForResult(dropOffIntent, LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
+    override fun onChangeTradeInDropOffClicked(latitude: String?, longitude: String?) {
+        checkoutTradeInAnalytics.eventTradeInClickPilihIndomaret()
+        val dropOffIntent =
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.DROPOFF_PICKER)
+        dropOffIntent.putExtra(EXTRA_DROPOFF_LATITUDE, latitude)
+        dropOffIntent.putExtra(EXTRA_DROPOFF_LONGITUDE, longitude)
+        startActivityForResult(dropOffIntent, LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN)
     }
 
     /*
@@ -3183,981 +3484,1160 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
      * Little caveat: what if device's time is tempered and not synchronized with server?
      * Later: consider serverTimeOffset, need more time
      * */
-    private void checkCampaignTimer() {
-        if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
-            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
-            long diff = TimeHelper.timeSinceNow(timer.getTimerExpired());
-            showCampaignTimerExpiredDialog(timer, diff, checkoutAnalyticsCourierSelection);
+    private fun checkCampaignTimer() {
+        if (shipmentPresenter.campaignTimer != null && shipmentPresenter.campaignTimer!!.showTimer) {
+            val timer = shipmentPresenter.campaignTimer
+            val diff = timeSinceNow(timer!!.timerExpired)
+            showCampaignTimerExpiredDialog(timer, diff, checkoutAnalyticsCourierSelection)
         }
     }
 
-    private void showCampaignTimerExpiredDialog(CampaignTimerUi timer, long diff, CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection) {
-        if (isAdded()) {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            if (diff <= 0 && fragmentManager != null) {
-                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this);
-                dialog.show(fragmentManager, "expired dialog");
+    private fun showCampaignTimerExpiredDialog(
+        timer: CampaignTimerUi?,
+        diff: Long,
+        checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
+    ) {
+        if (isAdded) {
+            val fragmentManager = parentFragmentManager
+            if (diff <= 0) {
+                val dialog = newInstance(timer!!, checkoutAnalyticsCourierSelection, this)
+                dialog.show(fragmentManager, "expired dialog")
             }
         }
     }
 
-    private void setCampaignTimer() {
-        CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
-        if (timer != null && timer.getShowTimer()) {
-            long diff = TimeHelper.timeBetweenRFC3339(timer.getTimerServer(), timer.getTimerExpired());
-            cdLayout.setVisibility(View.VISIBLE);
-            cdText.setText(timer.getTimerDescription());
-            cdView.setRemainingMilliseconds(diff);
-
-            cdView.setOnFinish(() -> {
-                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, ShipmentFragment.this);
-                dialog.show(getFragmentManager(), "expired dialog");
-                return Unit.INSTANCE;
-            });
+    private fun setCampaignTimer() {
+        val timer = shipmentPresenter.campaignTimer
+        if (timer != null && timer.showTimer) {
+            val diff = timeBetweenRFC3339(timer.timerServer, timer.timerExpired)
+            cdLayout!!.visibility = View.VISIBLE
+            cdText!!.text = timer.timerDescription
+            cdView!!.remainingMilliseconds = diff
+            cdView!!.onFinish = {
+                val dialog =
+                    newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
+                dialog.show(fragmentManager!!, "expired dialog")
+            }
         }
     }
 
-    private void onResultFromSetTradeInPinpoint(Intent data) {
+    private fun onResultFromSetTradeInPinpoint(data: Intent?) {
         if (data != null) {
-            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
-            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+            val locationDataModel =
+                data.getParcelableExtra<LocationDataModel>(LogisticConstant.RESULT_DATA_STORE_LOCATION)
+            val recipientAddressModel = shipmentAdapter.addressShipmentData
             if (recipientAddressModel != null) {
-                recipientAddressModel.setLocationDataModel(locationDataModel);
-                recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
-                recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, null, true, true, true, true);
+                recipientAddressModel.locationDataModel = locationDataModel
+                recipientAddressModel.dropOffAddressName = locationDataModel!!.addrName
+                recipientAddressModel.dropOffAddressDetail = locationDataModel.address1
+                shipmentPresenter.changeShippingAddress(
+                    recipientAddressModel,
+                    null,
+                    true,
+                    true,
+                    true,
+                    true
+                )
             }
         }
     }
 
-    private void onUpdateResultAddOnProductLevelBottomSheet(Intent data) {
+    private fun onUpdateResultAddOnProductLevelBottomSheet(data: Intent?) {
         if (data != null) {
-            SaveAddOnStateResult saveAddOnStateResult = data.getParcelableExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT);
-            shipmentPresenter.updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult);
+            val saveAddOnStateResult =
+                data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            shipmentPresenter.updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult)
         }
     }
 
-    private void onUpdateResultAddOnOrderLevelBottomSheet(Intent data) {
+    private fun onUpdateResultAddOnOrderLevelBottomSheet(data: Intent?) {
         if (data != null) {
-            SaveAddOnStateResult saveAddOnStateResult = data.getParcelableExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT);
-            shipmentPresenter.updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult);
+            val saveAddOnStateResult =
+                data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            shipmentPresenter.updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult)
         }
     }
 
-    @Override
-    public boolean isTradeInByDropOff() {
-        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-        if (recipientAddressModel == null) return false;
-        return recipientAddressModel.getSelectedTabIndex() == 1;
+    override val isTradeInByDropOff: Boolean
+        get() {
+            val recipientAddressModel = shipmentAdapter.addressShipmentData ?: return false
+            return recipientAddressModel.selectedTabIndex == 1
+        }
+
+    override fun hasSelectTradeInLocation(): Boolean {
+        val recipientAddressModel = shipmentAdapter.addressShipmentData ?: return false
+        return recipientAddressModel.locationDataModel != null
     }
 
-    @Override
-    public boolean hasSelectTradeInLocation() {
-        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-        if (recipientAddressModel == null) return false;
-        return recipientAddressModel.getLocationDataModel() != null;
-    }
-
-    @Override
-    public void onTradeInAddressTabChanged(int addressPosition) {
-        int cartItemPosition = addressPosition + 1;
-        onNeedUpdateViewItem(cartItemPosition);
-        onNeedUpdateViewItem(addressPosition);
-
-        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-        if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
-            checkoutTradeInAnalytics.eventClickJemputTab();
-            if (recipientAddressModel.getLocationDataModel() != null) {
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, null, true, false, true, true);
+    override fun onTradeInAddressTabChanged(addressPosition: Int) {
+        val cartItemPosition = addressPosition + 1
+        onNeedUpdateViewItem(cartItemPosition)
+        onNeedUpdateViewItem(addressPosition)
+        val recipientAddressModel = shipmentAdapter.addressShipmentData
+        if (recipientAddressModel.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
+            checkoutTradeInAnalytics.eventClickJemputTab()
+            if (recipientAddressModel.locationDataModel != null) {
+                shipmentPresenter.changeShippingAddress(
+                    recipientAddressModel,
+                    null,
+                    true,
+                    false,
+                    true,
+                    true
+                )
             }
         } else {
-            checkoutTradeInAnalytics.eventClickDropOffTab();
-            if (recipientAddressModel.getLocationDataModel() != null) {
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, null, true, true, true, true);
+            checkoutTradeInAnalytics.eventClickDropOffTab()
+            if (recipientAddressModel.locationDataModel != null) {
+                shipmentPresenter.changeShippingAddress(
+                    recipientAddressModel,
+                    null,
+                    true,
+                    true,
+                    true,
+                    true
+                )
             }
         }
     }
 
-    @Override
-    public void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel) {
-        if (lastApplyUiModel == null) return;
-
-        ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
-        PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
-
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
-        intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE, PAGE_CHECKOUT);
-        intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST, promoRequestParam);
-        intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
-        intent.putStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES, bboPromoCodes);
-        setChosenAddressForTradeInDropOff(intent);
-        setPromoExtraMvcLockCourierFlow(intent);
-
-        startActivityForResult(intent, REQUEST_CODE_PROMO);
-
-        if (isTradeIn()) {
-            checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff());
+    override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel?) {
+        if (lastApplyUiModel == null) return
+        val validateUseRequestParam = generateValidateUsePromoRequest()
+        val promoRequestParam = generateCouponListRecommendationRequest()
+        val intent =
+            RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes)
+        setChosenAddressForTradeInDropOff(intent)
+        setPromoExtraMvcLockCourierFlow(intent)
+        startActivityForResult(intent, REQUEST_CODE_PROMO)
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff)
         }
     }
 
-    private void setChosenAddressForTradeInDropOff(Intent intent) {
-        Activity activity = getActivity();
-        RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-        if (activity != null && isTradeInByDropOff() && recipientAddressModel != null) {
-            LocalCacheModel localizingAddressData = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(activity.getApplicationContext());
-            LocationDataModel locationDataModel = recipientAddressModel.getLocationDataModel();
-            ChosenAddress chosenAddress;
-            if (locationDataModel != null) {
-                chosenAddress = new ChosenAddress(
-                        ChosenAddress.MODE_ADDRESS,
-                        locationDataModel.getAddrId(),
-                        locationDataModel.getDistrict(),
-                        locationDataModel.getPostalCode(),
-                        (!TextUtils.isEmpty(locationDataModel.getLatitude()) && !TextUtils.isEmpty(locationDataModel.getLongitude())) ? locationDataModel.getLatitude() + "," + locationDataModel.getLongitude() : "",
-                        new ChosenAddressTokonow(
-                                localizingAddressData.getShop_id(),
-                                localizingAddressData.getWarehouse_id(),
-                                localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+    private fun setChosenAddressForTradeInDropOff(intent: Intent) {
+        val activity: Activity? = activity
+        val recipientAddressModel = shipmentPresenter.recipientAddressModel
+        if (activity != null && isTradeInByDropOff && recipientAddressModel != null) {
+            val (_, _, _, _, _, _, _, shop_id, warehouse_id, warehouses, service_type) = getLocalizingAddressData(
+                activity.applicationContext
+            )
+            val locationDataModel = recipientAddressModel.locationDataModel
+            val chosenAddress: ChosenAddress
+            chosenAddress = if (locationDataModel != null) {
+                ChosenAddress(
+                    ChosenAddress.MODE_ADDRESS,
+                    locationDataModel.addrId,
+                    locationDataModel.district,
+                    locationDataModel.postalCode,
+                    if (!TextUtils.isEmpty(locationDataModel.latitude) && !TextUtils.isEmpty(
+                            locationDataModel.longitude
                         )
-                );
+                    ) {
+                        locationDataModel.latitude + "," + locationDataModel.longitude
+                    } else {
+                        ""
+                    },
+                    ChosenAddressTokonow(
+                        shop_id,
+                        warehouse_id,
+                        warehouses,
+                        service_type
+                    )
+                )
             } else {
-                chosenAddress = new ChosenAddress(
-                        ChosenAddress.MODE_ADDRESS,
-                        recipientAddressModel.getId(),
-                        recipientAddressModel.getDestinationDistrictId(),
-                        recipientAddressModel.getPostalCode(),
-                        (!TextUtils.isEmpty(recipientAddressModel.getLatitude()) && !TextUtils.isEmpty(recipientAddressModel.getLongitude())) ? recipientAddressModel.getLatitude() + "," + recipientAddressModel.getLongitude() : "",
-                        new ChosenAddressTokonow(
-                                localizingAddressData.getShop_id(),
-                                localizingAddressData.getWarehouse_id(),
-                                localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+                ChosenAddress(
+                    ChosenAddress.MODE_ADDRESS,
+                    recipientAddressModel.id,
+                    recipientAddressModel.destinationDistrictId,
+                    recipientAddressModel.postalCode,
+                    if (!TextUtils.isEmpty(recipientAddressModel.latitude) && !TextUtils.isEmpty(
+                            recipientAddressModel.longitude
                         )
-                );
+                    ) {
+                        recipientAddressModel.latitude + "," + recipientAddressModel.longitude
+                    } else {
+                        ""
+                    },
+                    ChosenAddressTokonow(
+                        shop_id,
+                        warehouse_id,
+                        warehouses,
+                        service_type
+                    )
+                )
             }
-            intent.putExtra(ARGS_CHOSEN_ADDRESS, chosenAddress);
+            intent.putExtra(ARGS_CHOSEN_ADDRESS, chosenAddress)
         }
     }
 
-    private void setPromoExtraMvcLockCourierFlow(Intent intent) {
-        boolean promoMvcLockCourierFlow = false;
-        if (shipmentPresenter.getValidateUsePromoRevampUiModel() != null) {
-            if (!shipmentPresenter.getValidateUsePromoRevampUiModel().getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds().isEmpty()) {
-                promoMvcLockCourierFlow = true;
+    private fun setPromoExtraMvcLockCourierFlow(intent: Intent) {
+        var promoMvcLockCourierFlow = false
+        if (shipmentPresenter.validateUsePromoRevampUiModel != null) {
+            if (!shipmentPresenter.validateUsePromoRevampUiModel!!.promoUiModel.additionalInfoUiModel.promoSpIds.isEmpty()) {
+                promoMvcLockCourierFlow = true
             }
-        } else if (shipmentPresenter.getLastApplyData() != null) {
-            if (!shipmentPresenter.getLastApplyData().getAdditionalInfo().getPromoSpIds().isEmpty()) {
-                promoMvcLockCourierFlow = true;
+        } else if (shipmentPresenter.lastApplyData != null) {
+            if (!shipmentPresenter.lastApplyData!!.additionalInfo.promoSpIds.isEmpty()) {
+                promoMvcLockCourierFlow = true
             }
         }
-        intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow);
+        intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
     }
 
-    @Override
-    public void updateButtonPromoCheckout(PromoUiModel promoUiModel, boolean isNeedToHitValidateFinal) {
-        doUpdateButtonPromoCheckout(promoUiModel);
-        updatePromoTrackingData(promoUiModel.getTrackingDetailUiModels());
-        sendEEStep3();
-        updateLogisticPromoData(promoUiModel);
-        boolean hasSetAllCourier = doSetPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries(), true);
+    override fun updateButtonPromoCheckout(
+        promoUiModel: PromoUiModel?,
+        isNeedToHitValidateFinal: Boolean
+    ) {
+        doUpdateButtonPromoCheckout(promoUiModel)
+        updatePromoTrackingData(promoUiModel!!.trackingDetailUiModels)
+        sendEEStep3()
+        updateLogisticPromoData(promoUiModel)
+        val hasSetAllCourier =
+            doSetPromoBenefit(promoUiModel.benefitSummaryInfoUiModel.summaries, true)
         if (hasSetAllCourier) {
             // Check if need to hit validate final, if so then hit validate final by checking is all courier have been selected
             if (isNeedToHitValidateFinal) {
-                shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false);
+                shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false)
             }
         }
     }
 
-    private boolean doSetPromoBenefit(List<SummariesItemUiModel> summariesUiModels, boolean forceSetPromoBenefit) {
-        boolean hasSetAllCourier = shipmentAdapter.hasSetAllCourier();
+    private fun doSetPromoBenefit(
+        summariesUiModels: List<SummariesItemUiModel?>,
+        forceSetPromoBenefit: Boolean
+    ): Boolean {
+        val hasSetAllCourier = shipmentAdapter.hasSetAllCourier()
         if (hasSetAllCourier || forceSetPromoBenefit) {
-            resetPromoBenefit();
-            setPromoBenefit(summariesUiModels);
-            shipmentAdapter.updateShipmentCostModel();
+            resetPromoBenefit()
+            setPromoBenefit(summariesUiModels)
+            shipmentAdapter.updateShipmentCostModel()
         }
-        return hasSetAllCourier;
+        return hasSetAllCourier
     }
 
-    private void doUpdateButtonPromoCheckout(PromoUiModel promoUiModel) {
-        shipmentAdapter.updatePromoCheckoutData(promoUiModel);
-        onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
+    private fun doUpdateButtonPromoCheckout(promoUiModel: PromoUiModel?) {
+        shipmentAdapter.updatePromoCheckoutData(promoUiModel)
+        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
     }
 
-    @Override
-    public void doResetButtonPromoCheckout() {
-        shipmentAdapter.resetPromoCheckoutData();
-        onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
-        resetPromoBenefit();
-        clearPromoTrackingData();
+    override fun doResetButtonPromoCheckout() {
+        shipmentAdapter.resetPromoCheckoutData()
+        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
+        resetPromoBenefit()
+        clearPromoTrackingData()
     }
 
-    @Override
-    public void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes) {
-        PromoRevampAnalytics.INSTANCE.eventCheckoutClickPromoSection(listAllPromoCodes, isApplied, userSessionInterface.getUserId());
+    override fun onSendAnalyticsClickPromoCheckout(
+        isApplied: Boolean?,
+        listAllPromoCodes: List<String>
+    ) {
+        eventCheckoutClickPromoSection(
+            listAllPromoCodes,
+            isApplied!!,
+            userSessionInterface.userId
+        )
     }
 
-    @Override
-    public void onSendAnalyticsViewPromoCheckoutApplied() {
-        PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoAlreadyApplied();
+    override fun onSendAnalyticsViewPromoCheckoutApplied() {
+        eventCheckoutViewPromoAlreadyApplied()
     }
 
-    private void updateLogisticPromoData(PromoUiModel promoUiModel) {
-        List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
-        if (shipmentCartItemModels == null) return;
-        List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrdersItemUiModels = promoUiModel.getVoucherOrderUiModels();
-        for (PromoCheckoutVoucherOrdersItemUiModel promoCheckoutVoucherOrdersItemUiModel : voucherOrdersItemUiModels) {
-            if (promoCheckoutVoucherOrdersItemUiModel.getSuccess() && promoCheckoutVoucherOrdersItemUiModel.getType().equals("logistic")) {
-                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-                    if (shipmentCartItemModel.getCartString().equals(promoCheckoutVoucherOrdersItemUiModel.getUniqueId())) {
-                        VoucherLogisticItemUiModel log = new VoucherLogisticItemUiModel();
-                        log.setCode(promoCheckoutVoucherOrdersItemUiModel.getCode());
-                        log.setCouponDesc(promoCheckoutVoucherOrdersItemUiModel.getTitleDescription());
-                        log.setCouponAmount(getFormattedCurrency(promoCheckoutVoucherOrdersItemUiModel.getDiscountAmount()));
-                        log.setCouponAmountRaw(promoCheckoutVoucherOrdersItemUiModel.getDiscountAmount());
-                        MessageUiModel messageUiModel = new MessageUiModel();
-                        messageUiModel.setColor(promoCheckoutVoucherOrdersItemUiModel.getMessageUiModel().getColor());
-                        messageUiModel.setState(promoCheckoutVoucherOrdersItemUiModel.getMessageUiModel().getState());
-                        messageUiModel.setText(promoCheckoutVoucherOrdersItemUiModel.getMessageUiModel().getText());
-                        log.setMessage(messageUiModel);
-                        shipmentCartItemModel.setVoucherLogisticItemUiModel(log);
-
-                        onNeedUpdateViewItem(shipmentAdapter.getShipmentCartItemModelPosition(shipmentCartItemModel));
+    private fun updateLogisticPromoData(promoUiModel: PromoUiModel?) {
+        val shipmentCartItemModels = shipmentAdapter.shipmentCartItemModelList ?: return
+        val voucherOrdersItemUiModels = promoUiModel!!.voucherOrderUiModels
+        for ((code, uniqueId, _, discountAmount, _, titleDescription, _, _, _, type, messageUiModel1, _, _, _, _, success) in voucherOrdersItemUiModels) {
+            if (success && type == "logistic") {
+                for (shipmentCartItemModel in shipmentCartItemModels) {
+                    if (shipmentCartItemModel.cartString == uniqueId) {
+                        val log = VoucherLogisticItemUiModel()
+                        log.code = code
+                        log.couponDesc = titleDescription
+                        log.couponAmount = getFormattedCurrency(discountAmount)
+                        log.couponAmountRaw = discountAmount
+                        val messageUiModel = MessageUiModel()
+                        messageUiModel.color = messageUiModel1.color
+                        messageUiModel.state = messageUiModel1.state
+                        messageUiModel.text = messageUiModel1.text
+                        log.message = messageUiModel
+                        shipmentCartItemModel.voucherLogisticItemUiModel = log
+                        onNeedUpdateViewItem(
+                            shipmentAdapter.getShipmentCartItemModelPosition(
+                                shipmentCartItemModel
+                            )
+                        )
                     }
                 }
-            } else if (!promoCheckoutVoucherOrdersItemUiModel.getSuccess() && UtilsKt.isNullOrEmpty(promoCheckoutVoucherOrdersItemUiModel.getType())) {
-                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-                    if (shipmentCartItemModel.getCartString().equals(promoCheckoutVoucherOrdersItemUiModel.getUniqueId()) &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getLogPromoCode().equals(promoCheckoutVoucherOrdersItemUiModel.getCode())) {
-                        resetCourier(shipmentCartItemModel);
+            } else if (!success && isNullOrEmpty(type)) {
+                for (shipmentCartItemModel in shipmentCartItemModels) {
+                    if (shipmentCartItemModel.cartString == uniqueId && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode == code) {
+                        resetCourier(shipmentCartItemModel)
                     }
                 }
             }
         }
     }
 
-    private String getFormattedCurrency(Long price) {
-        if (price == 0) {
-            return "";
+    private fun getFormattedCurrency(price: Long): String {
+        return if (price == 0L) {
+            ""
+        } else {
+            getThousandSeparatorString(
+                price.toDouble(),
+                false,
+                0
+            ).formattedString
         }
-        return com.tokopedia.utils.currency.CurrencyFormatUtil.INSTANCE.getThousandSeparatorString(price, false, 0).getFormattedString();
     }
 
-    @Override
-    public void resetCourier(ShipmentCartItemModel shipmentCartItemModel) {
-        int index = shipmentAdapter.getShipmentDataList().indexOf(shipmentCartItemModel);
+    override fun resetCourier(shipmentCartItemModel: ShipmentCartItemModel?) {
+        val index = shipmentAdapter.shipmentDataList.indexOf(shipmentCartItemModel)
         if (index != -1) {
-            ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+            val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest
             if (validateUsePromoRequest != null) {
-                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                        String redStateBBOCode = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getLogPromoCode();
-                        ordersItem.getCodes().remove(redStateBBOCode);
+                for ((_, _, codes, uniqueId) in validateUsePromoRequest.orders) {
+                    if (uniqueId == shipmentCartItemModel!!.cartString && shipmentCartItemModel.selectedShipmentDetailData != null && shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null) {
+                        val redStateBBOCode =
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                        codes.remove(redStateBBOCode)
                     }
                 }
             }
-
-            shipmentAdapter.resetCourier(index);
-            addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
+            shipmentAdapter.resetCourier(index)
+            addShippingCompletionTicker(shipmentCartItemModel!!.isEligibleNewShippingExperience)
         }
     }
 
-    @Override
-    public void resetAllCourier() {
-        shipmentAdapter.resetAllCourier();
+    override fun resetAllCourier() {
+        shipmentAdapter.resetAllCourier()
     }
 
-    @Override
-    public void onCheckShippingCompletionClicked() {
-        checkoutAnalyticsCourierSelection.clickCekOnSummaryTransactionTickerCourierNotComplete(userSessionInterface.getUserId());
-        checkShippingCompletion(false, false);
+    override fun onCheckShippingCompletionClicked() {
+        checkoutAnalyticsCourierSelection.clickCekOnSummaryTransactionTickerCourierNotComplete(
+            userSessionInterface.userId
+        )
+        checkShippingCompletion(false, false)
     }
 
-    private void checkShippingCompletion(boolean isTriggeredByPaymentButton, boolean epharmacyError) {
-        if (getActivity() != null) {
-            List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
-            if (isTradeInByDropOff()) {
-                int position = 0;
-                for (int i = 0; i < shipmentDataList.size(); i++) {
-                    if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
-                        position = i;
-                        break;
+    private fun checkShippingCompletion(
+        isTriggeredByPaymentButton: Boolean,
+        epharmacyError: Boolean
+    ) {
+        if (activity != null) {
+            val shipmentDataList = shipmentAdapter.shipmentDataList
+            if (isTradeInByDropOff) {
+                var position = 0
+                for (i in shipmentDataList.indices) {
+                    if (shipmentDataList[i] is ShipmentCartItemModel) {
+                        position = i
+                        break
                     }
                 }
-
                 if (isTriggeredByPaymentButton) {
-                    showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
+                    showToastNormal(activity!!.getString(R.string.message_error_courier_not_selected))
                 }
-
-                rvShipment.smoothScrollToPosition(position);
+                rvShipment!!.smoothScrollToPosition(position)
             } else {
-                int notSelectCourierCount = 0;
-                int firstFoundPosition = 0;
-                for (int i = 0; i < shipmentDataList.size(); i++) {
-                    if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
-                        ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                        if (!shipmentCartItemModel.isError() && (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null)) {
+                var notSelectCourierCount = 0
+                var firstFoundPosition = 0
+                for (i in shipmentDataList.indices) {
+                    if (shipmentDataList[i] is ShipmentCartItemModel) {
+                        val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
+                        if (!shipmentCartItemModel.isError && (shipmentCartItemModel.selectedShipmentDetailData == null || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier == null)) {
                             if (firstFoundPosition == 0) {
-                                firstFoundPosition = i;
+                                firstFoundPosition = i
                             }
-                            shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
-                            shipmentCartItemModel.setStateAllItemViewExpanded(false);
-                            shipmentCartItemModel.setShippingBorderRed(isTriggeredByPaymentButton);
-                            onNeedUpdateViewItem(i);
-                            notSelectCourierCount++;
+                            shipmentCartItemModel.isTriggerShippingVibrationAnimation = true
+                            shipmentCartItemModel.isStateAllItemViewExpanded = false
+                            shipmentCartItemModel.isShippingBorderRed = isTriggeredByPaymentButton
+                            onNeedUpdateViewItem(i)
+                            notSelectCourierCount++
                         }
-                    } else if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
-                        UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                        RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
-                        if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                    } else if (shipmentDataList[i] is UploadPrescriptionUiModel) {
+                        val uploadPrescriptionUiModel =
+                            shipmentDataList[i] as UploadPrescriptionUiModel
+                        val viewHolder = rvShipment!!.findViewHolderForAdapterPosition(i)
+                        if (viewHolder is UploadPrescriptionViewHolder) {
                             if (epharmacyError) {
-                                String toasterMessage;
-                                if (uploadPrescriptionUiModel.getConsultationFlow()) {
-                                    toasterMessage = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found);
+                                var toasterMessage: String
+                                toasterMessage = if (uploadPrescriptionUiModel.consultationFlow) {
+                                    activity!!.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
                                 } else {
-                                    toasterMessage = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found);
+                                    activity!!.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found)
                                 }
                                 if (firstFoundPosition == 0) {
-                                    showToastError(toasterMessage);
-                                    firstFoundPosition = i;
+                                    showToastError(toasterMessage)
+                                    firstFoundPosition = i
                                 }
-                                uploadPrescriptionUiModel.setError(true);
-                                onNeedUpdateViewItem(i);
-                                if (uploadPrescriptionUiModel.getConsultationFlow()) {
+                                uploadPrescriptionUiModel.isError = true
+                                onNeedUpdateViewItem(i)
+                                if (uploadPrescriptionUiModel.consultationFlow) {
                                     ePharmacyAnalytics.clickPilihPembayaran(
-                                            ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
-                                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
-                                            false,
-                                            toasterMessage
-                                    );
+                                        viewHolder.getButtonNotes(),
+                                        uploadPrescriptionUiModel.epharmacyGroupIds,
+                                        false,
+                                        toasterMessage
+                                    )
                                 }
                             }
                         }
                     }
                 }
-
                 if (isTriggeredByPaymentButton && notSelectCourierCount > 0) {
                     if (notSelectCourierCount == 1) {
-                        showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
+                        showToastNormal(activity!!.getString(R.string.message_error_courier_not_selected))
                     } else {
-                        showToastNormal(String.format(getString(R.string.message_error_multiple_courier_not_selected), notSelectCourierCount));
+                        showToastNormal(
+                            String.format(
+                                getString(R.string.message_error_multiple_courier_not_selected),
+                                notSelectCourierCount
+                            )
+                        )
                     }
                 }
-
-                rvShipment.smoothScrollToPosition(firstFoundPosition);
+                rvShipment!!.smoothScrollToPosition(firstFoundPosition)
             }
         }
     }
 
-    @Override
-    public void onShowTickerShippingCompletion() {
-        checkoutAnalyticsCourierSelection.eventViewSummaryTransactionTickerCourierNotComplete(userSessionInterface.getUserId());
+    override fun onShowTickerShippingCompletion() {
+        checkoutAnalyticsCourierSelection.eventViewSummaryTransactionTickerCourierNotComplete(
+            userSessionInterface.userId
+        )
     }
 
-    @Override
-    public void onCashbackUpdated(int amount) {
+    override fun onCashbackUpdated(amount: Int) {
         // No-op
     }
 
-    @Override
-    public void onPrimaryCTAClicked() {
-        releaseBookingIfAny();
+    override fun onPrimaryCTAClicked() {
+        releaseBookingIfAny()
     }
 
-    @Override
-    public void onClickTradeInInfo() {
-        checkoutTradeInAnalytics.eventTradeInClickInformation(isTradeInByDropOff());
-        FragmentManager fragmentManager = getFragmentManager();
-        Context context = getContext();
+    override fun onClickTradeInInfo() {
+        checkoutTradeInAnalytics.eventTradeInClickInformation(isTradeInByDropOff)
+        val fragmentManager = fragmentManager
+        val context = context
         if (fragmentManager != null && context != null) {
-            TradeInInfoBottomsheetHelperKt.showTradeInInfoBottomsheet(fragmentManager, context);
+            showTradeInInfoBottomsheet(fragmentManager, context)
         }
     }
 
-    @Override
-    public void onClickSwapInIndomaret() {
-        checkoutTradeInAnalytics.eventTradeInClickTukarDiIndomaret();
+    override fun onClickSwapInIndomaret() {
+        checkoutTradeInAnalytics.eventTradeInClickTukarDiIndomaret()
     }
 
-    @Override
-    public void onSwapInUserAddress() {
-        checkoutTradeInAnalytics.eventTradeInClickTukarDiAlamatmu();
+    override fun onSwapInUserAddress() {
+        checkoutTradeInAnalytics.eventTradeInClickTukarDiAlamatmu()
     }
 
-    @Override
-    public FragmentManager getCurrentFragmentManager() {
-        return getParentFragmentManager();
-    }
+    override val currentFragmentManager: FragmentManager
+        get() = parentFragmentManager
 
-    @Override
-    public void scrollToPositionWithOffset(int position, float dy) {
-        RecyclerView.LayoutManager layoutManager = rvShipment.getLayoutManager();
+    override fun scrollToPositionWithOffset(position: Int, dy: Float) {
+        val layoutManager = rvShipment!!.layoutManager
         if (layoutManager != null) {
-            ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(position, (int) dy);
+            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, dy.toInt())
         }
     }
 
-    private void onViewTickerProductError(String shopId, String errorMessage) {
-        checkoutAnalyticsCourierSelection.eventViewTickerProductLevelErrorInCheckoutPage(shopId, errorMessage);
+    private fun onViewTickerProductError(shopId: String, errorMessage: String) {
+        checkoutAnalyticsCourierSelection.eventViewTickerProductLevelErrorInCheckoutPage(
+            shopId,
+            errorMessage
+        )
     }
 
-    private void onViewTickerOrderError(String shopId, String errorMessage) {
-        checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(shopId, errorMessage);
+    private fun onViewTickerOrderError(shopId: String, errorMessage: String?) {
+        checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(
+            shopId,
+            errorMessage!!
+        )
     }
 
-    private void onViewTickerPaymentError(String errorMessage) {
-        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-            checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
+    private fun onViewTickerPaymentError(errorMessage: String) {
+        val shipmentCartItemModelList = shipmentPresenter.shipmentCartItemModelList
+        for (shipmentCartItemModel in shipmentCartItemModelList!!) {
+            checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(
+                shipmentCartItemModel!!.shopId.toString(),
+                errorMessage
+            )
         }
     }
 
-    @Override
-    public void onClickLihatOnTickerOrderError(String shopId, String errorMessage) {
-        checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(shopId, errorMessage);
+    override fun onClickLihatOnTickerOrderError(shopId: String?, errorMessage: String?) {
+        checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(
+            shopId!!,
+            errorMessage!!
+        )
     }
 
-    @Override
-    public void onClickRefreshErrorLoadCourier() {
-        checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier();
+    override fun onClickRefreshErrorLoadCourier() {
+        checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier()
     }
 
-    @Override
-    public void onViewErrorInCourierSection(String errorMessage) {
-        checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage);
+    override fun onViewErrorInCourierSection(errorMessage: String?) {
+        checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage!!)
     }
 
-    @Override
-    public void onClickSetPinpoint(int position) {
-        setPinpoint(position);
+    override fun onClickSetPinpoint(position: Int) {
+        setPinpoint(position)
     }
 
-    @Override
-    public void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder);
-        if (shipmentCartItemModel != null) {
-            reloadCourier(shipmentCartItemModel, lastSelectedCourierOrder, skipMvc);
-        }
+    override fun prepareReloadRates(lastSelectedCourierOrder: Int, skipMvc: Boolean) {
+        val shipmentCartItemModel =
+            shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder)
+        shipmentCartItemModel?.let { reloadCourier(it, lastSelectedCourierOrder, skipMvc) }
     }
 
-    @Override
-    public void updateLocalCacheAddressData(UserAddress userAddress) {
-        Activity activity = getActivity();
+    override fun updateLocalCacheAddressData(userAddress: UserAddress?) {
+        val activity: Activity? = activity
         if (activity != null) {
-            LocalCacheModel localCache = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(activity);
-            UserAddressTokoNow newTokoNowData = userAddress.getTokoNow();
-            if (userAddress.getState() == UserAddress.STATE_ADDRESS_ID_NOT_MATCH || localCache.getAddress_id().isEmpty() || localCache.getAddress_id().equals("0")) {
-                ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
-                        activity,
-                        userAddress.getAddressId(),
-                        userAddress.getCityId(),
-                        userAddress.getDistrictId(),
-                        userAddress.getLatitude(),
-                        userAddress.getLongitude(),
-                        String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
-                        userAddress.getPostalCode(),
-                        newTokoNowData.isModified() ? newTokoNowData.getShopId() : localCache.getShop_id(),
-                        newTokoNowData.isModified() ? newTokoNowData.getWarehouseId() : localCache.getWarehouse_id(),
-                        newTokoNowData.isModified() ? TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()) : localCache.getWarehouses(),
-                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type(),
-                        ""
-                );
-            } else if (newTokoNowData.isModified()) {
-                ChooseAddressUtils.INSTANCE.updateTokoNowData(
-                        activity,
-                        newTokoNowData.getWarehouseId(),
-                        newTokoNowData.getShopId(),
-                        TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()),
-                        newTokoNowData.getServiceType()
-                );
+            val (address_id, _, _, _, _, _, _, shop_id, warehouse_id, warehouses, service_type) = getLocalizingAddressData(
+                activity
+            )
+            val (isModified, shopId, warehouseId, warehouses1, serviceType) = userAddress!!.tokoNow
+            if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH || address_id.isEmpty() || address_id == "0") {
+                updateLocalizingAddressDataFromOther(
+                    activity,
+                    userAddress.addressId,
+                    userAddress.cityId,
+                    userAddress.districtId,
+                    userAddress.latitude,
+                    userAddress.longitude,
+                    String.format("%s %s", userAddress.addressName, userAddress.receiverName),
+                    userAddress.postalCode,
+                    if (isModified) shopId else shop_id,
+                    if (isModified) warehouseId else warehouse_id,
+                    if (isModified) {
+                        mapWarehousesAddAddressModelToLocal(
+                            warehouses1
+                        )
+                    } else {
+                        warehouses
+                    },
+                    if (isModified) serviceType else service_type,
+                    ""
+                )
+            } else if (isModified) {
+                updateTokoNowData(
+                    activity,
+                    warehouseId,
+                    shopId,
+                    mapWarehousesAddAddressModelToLocal(warehouses1),
+                    serviceType
+                )
             }
         }
     }
 
-    @Override
-    public void openAddOnProductLevelBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
-        if (getActivity() != null) {
-            AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
-            AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+    override fun openAddOnProductLevelBottomSheet(
+        cartItemModel: CartItemModel?,
+        addOnWordingModel: AddOnWordingModel?
+    ) {
+        if (activity != null) {
+            val addOnsDataModel = cartItemModel!!.addOnProductLevelModel
+            val addOnBottomSheetModel = addOnsDataModel.addOnsBottomSheetModel
 
             // No need to open add on bottom sheet if action = 0
-            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
-
-            AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
-            UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
-
-            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_DISABLE) {
-                unavailableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel, cartItemModel);
+            if (addOnsDataModel.addOnsButtonModel.action == 0) return
+            var availableBottomSheetData = AvailableBottomSheetData()
+            var unavailableBottomSheetData = UnavailableBottomSheetData()
+            if (addOnsDataModel.status == ADD_ON_STATUS_DISABLE) {
+                unavailableBottomSheetData =
+                    mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel, cartItemModel)
             }
-
-            if (cartItemModel.getAddOnProductLevelModel().getStatus() == ADD_ON_STATUS_ACTIVE) {
-                availableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapAvailableBottomSheetProductLevelData(addOnWordingModel, cartItemModel);
+            if (cartItemModel.addOnProductLevelModel.status == ADD_ON_STATUS_ACTIVE) {
+                availableBottomSheetData = mapAvailableBottomSheetProductLevelData(
+                    addOnWordingModel!!,
+                    cartItemModel
+                )
             }
-
-            AddOnProductData addOnProductData = ShipmentAddOnMapper.INSTANCE.mapAddOnBottomSheetParam(addOnsDataModel, availableBottomSheetData, unavailableBottomSheetData);
-
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
-            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
-            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_CHECKOUT);
-            startActivityForResult(intent, REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET);
-            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(String.valueOf(cartItemModel.getProductId()));
+            val addOnProductData = mapAddOnBottomSheetParam(
+                addOnsDataModel,
+                availableBottomSheetData,
+                unavailableBottomSheetData
+            )
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_CHECKOUT)
+            startActivityForResult(intent, REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET)
+            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(cartItemModel.productId.toString())
         }
     }
 
-    @Override
-    public void openAddOnOrderLevelBottomSheet(ShipmentCartItemModel shipmentCartItemModel, AddOnWordingModel addOnWordingModel) {
-        if (getActivity() != null && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-            AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
-            AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+    override fun openAddOnOrderLevelBottomSheet(
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        addOnWordingModel: AddOnWordingModel?
+    ) {
+        if (activity != null && shipmentCartItemModel!!.addOnsOrderLevelModel != null) {
+            val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
+            val addOnBottomSheetModel = addOnsDataModel!!.addOnsBottomSheetModel
 
             // No need to open add on bottom sheet if action = 0
-            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
-
-            AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
-            UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
-
-            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_DISABLE) {
-                unavailableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapUnavailableBottomSheetOrderLevelData(addOnBottomSheetModel, shipmentCartItemModel);
+            if (addOnsDataModel.addOnsButtonModel.action == 0) return
+            var availableBottomSheetData = AvailableBottomSheetData()
+            var unavailableBottomSheetData = UnavailableBottomSheetData()
+            if (addOnsDataModel.status == ADD_ON_STATUS_DISABLE) {
+                unavailableBottomSheetData = mapUnavailableBottomSheetOrderLevelData(
+                    addOnBottomSheetModel,
+                    shipmentCartItemModel
+                )
             }
-
-            if (addOnsDataModel.getStatus() == ADD_ON_STATUS_ACTIVE) {
-                availableBottomSheetData = ShipmentAddOnMapper.INSTANCE.mapAvailableBottomSheetOrderLevelData(addOnWordingModel, shipmentCartItemModel);
+            if (addOnsDataModel.status == ADD_ON_STATUS_ACTIVE) {
+                availableBottomSheetData = mapAvailableBottomSheetOrderLevelData(
+                    addOnWordingModel!!,
+                    shipmentCartItemModel
+                )
             }
-
-            AddOnProductData addOnProductData = ShipmentAddOnMapper.INSTANCE.mapAddOnBottomSheetParam(addOnsDataModel, availableBottomSheetData, unavailableBottomSheetData);
-
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.ADD_ON_GIFTING);
-            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData);
-            startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET);
-
-            if (shipmentCartItemModel.getCartString() != null) {
-                checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(shipmentCartItemModel.getCartString());
+            val addOnProductData = mapAddOnBottomSheetParam(
+                addOnsDataModel,
+                availableBottomSheetData,
+                unavailableBottomSheetData
+            )
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
+            startActivityForResult(intent, REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET)
+            if (shipmentCartItemModel.cartString != null) {
+                checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(shipmentCartItemModel.cartString!!)
             }
         }
     }
 
-    @Override
-    public void addOnProductLevelImpression(String productId) {
-        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId);
+    override fun addOnProductLevelImpression(productId: String?) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId!!)
     }
 
-    @Override
-    public void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList) {
-        ArrayList<String> listCartString = new ArrayList<>();
-        for (CartItemModel cartItemModel : cartItemModelList) {
-            listCartString.add(cartItemModel.getCartString());
+    override fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel?>?) {
+        val listCartString = ArrayList<String>()
+        for (cartItemModel in cartItemModelList!!) {
+            listCartString.add(cartItemModel!!.cartString)
         }
-        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString());
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString())
     }
 
-    @Override
-    public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel, String buttonText, String buttonNotes) {
-        if (!uploadPrescriptionUiModel.getConsultationFlow()) {
-            ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
-            Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
-            uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
-            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
+    override fun uploadPrescriptionAction(
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+        buttonText: String,
+        buttonNotes: String
+    ) {
+        if (!uploadPrescriptionUiModel.consultationFlow) {
+            ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.checkoutId)
+            val uploadPrescriptionIntent = RouteManager.getIntent(
+                activityContext,
+                UploadPrescriptionViewHolder.EPharmacyAppLink
+            )
+            uploadPrescriptionIntent.putExtra(
+                EXTRA_CHECKOUT_ID_STRING,
+                uploadPrescriptionUiModel.checkoutId
+            )
+            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION)
         } else {
-            Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink);
-            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION);
-            ePharmacyAnalytics.clickLampirkanResepDokter(uploadPrescriptionUiModel.getWidgetState(),
-                    buttonText,
-                    buttonNotes,
-                    uploadPrescriptionUiModel.getEpharmacyGroupIds(),
-                    uploadPrescriptionUiModel.getEnablerNames(),
-                    uploadPrescriptionUiModel.getShopIds(),
-                    uploadPrescriptionUiModel.getCartIds()
-            );
+            val uploadPrescriptionIntent = RouteManager.getIntent(
+                activityContext,
+                UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink
+            )
+            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION)
+            ePharmacyAnalytics.clickLampirkanResepDokter(
+                uploadPrescriptionUiModel.getWidgetState(),
+                buttonText,
+                buttonNotes,
+                uploadPrescriptionUiModel.epharmacyGroupIds,
+                uploadPrescriptionUiModel.enablerNames,
+                uploadPrescriptionUiModel.shopIds,
+                uploadPrescriptionUiModel.cartIds
+            )
         }
     }
 
-    private void onUploadPrescriptionResult(Intent data, boolean isApi) {
-        if (data != null && data.getExtras() != null &&
-                data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && getActivity() != null) {
-            UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
-            ArrayList<String> prescriptions = data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA);
-            uploadModel.setError(false);
-            if (!isApi || (prescriptions != null && !prescriptions.isEmpty())) {
-                shipmentPresenter.setPrescriptionIds(prescriptions);
+    private fun onUploadPrescriptionResult(data: Intent?, isApi: Boolean) {
+        if (data != null && data.extras != null &&
+            data.extras!!.containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && activity != null
+        ) {
+            val uploadModel = shipmentPresenter.uploadPrescriptionUiModel
+            val prescriptions = data.extras!!.getStringArrayList(
+                KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA
+            )
+            uploadModel!!.isError = false
+            if (!isApi || prescriptions != null && !prescriptions.isEmpty()) {
+                shipmentPresenter.setPrescriptionIds(prescriptions)
             }
             if (!isApi) {
-                showToastNormal(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text));
+                showToastNormal(activity!!.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text))
             }
-            updateUploadPrescription(uploadModel);
+            updateUploadPrescription(uploadModel)
         }
     }
 
-    private void onMiniConsultationResult(int resultCode, Intent data) {
+    private fun onMiniConsultationResult(resultCode: Int, data: Intent?) {
         if (resultCode == EPHARMACY_REDIRECT_CART_RESULT_CODE) {
-            finish();
+            finish()
         } else if (resultCode == EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE) {
             if (data == null) {
-                return;
+                return
             }
-            ArrayList<EPharmacyMiniConsultationResult> results = data.getParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA);
+            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult?>(
+                EPHARMACY_CONSULTATION_RESULT_EXTRA
+            )
             if (results != null) {
-                shipmentPresenter.setMiniConsultationResult(results);
+                shipmentPresenter.setMiniConsultationResult(results)
             }
         }
     }
 
-    @Override
-    public void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
-        shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel);
+    override fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+        shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel)
     }
 
-    @Override
-    public void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel) {
-        checkoutAnalyticsCourierSelection.eventViewGotoplusUpsellTicker();
+    override fun onViewUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?) {
+        checkoutAnalyticsCourierSelection.eventViewGotoplusUpsellTicker()
     }
 
-    @Override
-    public void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel) {
-        if (getContext() != null) {
-            checkoutAnalyticsCourierSelection.eventClickGotoplusUpsellTicker();
-            RouteManager.route(getContext(), shipmentUpsellModel.getAppLink());
+    override fun onClickUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?) {
+        if (context != null) {
+            checkoutAnalyticsCourierSelection.eventClickGotoplusUpsellTicker()
+            RouteManager.route(context, shipmentUpsellModel!!.appLink)
         }
     }
 
-    @Override
-    public void onViewNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
-        checkoutAnalyticsCourierSelection.eventViewNewUpsell(shipmentUpsellModel.isSelected());
+    override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
+        checkoutAnalyticsCourierSelection.eventViewNewUpsell(shipmentUpsellModel!!.isSelected)
     }
 
-    @Override
-    public void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
-        startActivityForResult(UpsellWebViewActivity.Companion.getStartIntent(requireContext(), shipmentUpsellModel.getAppLink(), true, true, false, ""), REQUEST_CODE_UPSELL);
-        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected());
+    override fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
+        startActivityForResult(
+            getStartIntent(
+                requireContext(),
+                shipmentUpsellModel!!.appLink,
+                true,
+                true,
+                false,
+                ""
+            ),
+            REQUEST_CODE_UPSELL
+        )
+        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected)
     }
 
-    @Override
-    public void onClickCancelNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
-        isPlusSelected = false;
-        shipmentPresenter.cancelUpsell(true, isOneClickShipment(), isTradeIn(), true,
-                false, null, getDeviceId(), getCheckoutLeasingId(),
-                isPlusSelected());
-        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected());
+    override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
+        isPlusSelected = false
+        shipmentPresenter.cancelUpsell(
+            true, isOneClickShipment, isTradeIn, true,
+            false, null, deviceId, checkoutLeasingId,
+            isPlusSelected()
+        )
+        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel!!.isSelected)
     }
 
-    @Override
-    public void onViewFreeShippingPlusBadge() {
-        checkoutAnalyticsCourierSelection.eventViewGotoplusTicker();
+    override fun onViewFreeShippingPlusBadge() {
+        checkoutAnalyticsCourierSelection.eventViewGotoplusTicker()
     }
 
-    @Override
-    public void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher) {
-        if (getView() != null) {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                    shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
-                CourierItemData newCourierItemData = CourierItemData.clone(courierItemData, scheduleDeliveryUiModel);
-                boolean hasNoPromo = TextUtils.isEmpty(courierItemData.getSelectedShipper().getLogPromoCode()) && TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode());
-
-                if (scheduleDeliveryUiModel.isSelected()) {
-                    shipmentCartItemModel.setScheduleDate(scheduleDeliveryUiModel.getScheduleDate());
-                    shipmentCartItemModel.setTimeslotId(scheduleDeliveryUiModel.getTimeslotId());
-                    shipmentCartItemModel.setValidationMetadata(scheduleDeliveryUiModel.getDeliveryProduct().getValidationMetadata());
+    override fun onChangeScheduleDelivery(
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel?,
+        position: Int,
+        donePublisher: PublishSubject<Boolean>
+    ) {
+        if (view != null) {
+            val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
+            if (shipmentCartItemModel.selectedShipmentDetailData != null &&
+                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null
+            ) {
+                val courierItemData =
+                    shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier
+                val newCourierItemData = clone(courierItemData!!, scheduleDeliveryUiModel!!)
+                val hasNoPromo =
+                    TextUtils.isEmpty(courierItemData.selectedShipper.logPromoCode) && TextUtils.isEmpty(
+                        newCourierItemData.selectedShipper.logPromoCode
+                    )
+                if (scheduleDeliveryUiModel.isSelected) {
+                    shipmentCartItemModel.scheduleDate = scheduleDeliveryUiModel.scheduleDate
+                    shipmentCartItemModel.timeslotId = scheduleDeliveryUiModel.timeslotId
+                    shipmentCartItemModel.validationMetadata =
+                        scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+                } else {
+                    shipmentCartItemModel.scheduleDate = ""
+                    shipmentCartItemModel.timeslotId = 0
+                    shipmentCartItemModel.validationMetadata = ""
                 }
-                else {
-                    shipmentCartItemModel.setScheduleDate("");
-                    shipmentCartItemModel.setTimeslotId(0);
-                    shipmentCartItemModel.setValidationMetadata("");
-                }
-
-                SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
-                boolean shouldValidateUse = selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty();
-                boolean hasCheckAllCourier = shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false);
-                boolean haveToClearCache = shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
-                        !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) &&
-                        TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode());
-
-                boolean shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier;
-                boolean shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier;
-
-                shipmentPresenter.setScheduleDeliveryMapData(shipmentCartItemModel.getCartString(), new ShipmentScheduleDeliveryMapData(
+                val (_, _, _, shipperId, shipperProductId, _, _, _, _, _, _, _, logPromoCode, _, shippingRate, _, _, _, _, _, _, _, etaText, _, _, _, freeShippingMetadata, benefitClass, shippingSubsidy, boCampaignId) = newCourierItemData.selectedShipper
+                val shouldValidateUse = logPromoCode != null && !logPromoCode.isEmpty()
+                val hasCheckAllCourier =
+                    shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+                val haveToClearCache = shipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                    !TextUtils.isEmpty(shipmentCartItemModel.voucherLogisticItemUiModel!!.code) &&
+                    TextUtils.isEmpty(newCourierItemData.selectedShipper.logPromoCode)
+                val shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier
+                val shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier
+                shipmentPresenter.setScheduleDeliveryMapData(
+                    shipmentCartItemModel.cartString,
+                    ShipmentScheduleDeliveryMapData(
                         donePublisher,
                         shouldStopInClearCache,
                         shouldStopInDoValidateUseLogistic
-                ));
-
+                    )
+                )
                 if (haveToClearCache) {
-                    String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
-                    shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
-                    ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+                    val promoLogisticCode = shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                    shipmentPresenter.cancelAutoApplyPromoStackLogistic(
+                        0,
+                        promoLogisticCode,
+                        shipmentCartItemModel
+                    )
+                    val validateUsePromoRequest = shipmentPresenter.lastValidateUseRequest
                     if (validateUsePromoRequest != null) {
-                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                            if (ordersItem != null && ordersItem.getCodes().size() > 0) {
-                                ordersItem.getCodes().remove(promoLogisticCode);
+                        for (ordersItem in validateUsePromoRequest.orders) {
+                            if (ordersItem != null && ordersItem.codes.size > 0) {
+                                ordersItem.codes.remove(promoLogisticCode)
                             }
                         }
                     }
-                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-                    setBenefitSummaryInfoUiModel(null);
-                    shipmentAdapter.clearTotalPromoStackAmount();
-                    shipmentAdapter.updateShipmentCostModel();
-                    shipmentAdapter.updateCheckoutButtonData(null);
+                    shipmentCartItemModel.voucherLogisticItemUiModel = null
+                    benefitSummaryInfoUiModel = null
+                    shipmentAdapter.clearTotalPromoStackAmount()
+                    shipmentAdapter.updateShipmentCostModel()
+                    shipmentAdapter.updateCheckoutButtonData(null)
                 }
-
-                shipmentAdapter.setSelectedCourier(position, newCourierItemData, true, shouldValidateUse);
-                shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-
+                shipmentAdapter.setSelectedCourier(
+                    position,
+                    newCourierItemData,
+                    true,
+                    shouldValidateUse
+                )
+                shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
                 if (shouldValidateUse) {
-                    ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
-                    if (selectedShipperModel.getLogPromoCode() != null && selectedShipperModel.getLogPromoCode().length() > 0) {
-                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                            if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(newCourierItemData.getSelectedShipper().getLogPromoCode())) {
-                                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                    val validateUsePromoRequest = generateValidateUsePromoRequest()
+                    if (logPromoCode != null && logPromoCode.length > 0) {
+                        for ((_, _, codes, uniqueId) in validateUsePromoRequest!!.orders) {
+                            if (uniqueId == shipmentCartItemModel.cartString && !codes.contains(
+                                    newCourierItemData.selectedShipper.logPromoCode
+                                )
+                            ) {
+                                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                                     // remove previous logistic promo code
-                                    ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                                    codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                                 }
-                                ordersItem.getCodes().add(selectedShipperModel.getLogPromoCode());
-                                break;
+                                codes.add(logPromoCode)
+                                break
                             }
                         }
                     }
-
-                    List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
-                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
-                        for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
-                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                                if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
-                                        tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
-                                        tmpShipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                                    ordersItem.getCodes().remove(tmpShipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
+                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size > 0) {
+                        for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                            for ((_, _, codes, uniqueId) in validateUsePromoRequest!!.orders) {
+                                if (shipmentCartItemModel.cartString != tmpShipmentCartItemModel.cartString && tmpShipmentCartItemModel.cartString == uniqueId && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                                    codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
                                 }
                             }
                         }
                     }
-
-                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                            ordersItem.setSpId(selectedShipperModel.getShipperProductId());
-                            ordersItem.setShippingId(selectedShipperModel.getShipperId());
-                            ordersItem.setFreeShippingMetadata(selectedShipperModel.getFreeShippingMetadata());
-                            ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                            ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
-                            ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
-                                    .get(0).getPreOrderDurationDay());
-                            ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                            ordersItem.setBoCampaignId(selectedShipperModel.getBoCampaignId());
-                            ordersItem.setShippingSubsidy(selectedShipperModel.getShippingSubsidy());
-                            ordersItem.setBenefitClass(selectedShipperModel.getBenefitClass());
-                            ordersItem.setShippingPrice(selectedShipperModel.getShippingRate());
-                            ordersItem.setEtaText(selectedShipperModel.getEtaText());
-                            ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
-                            break;
+                    for (ordersItem in validateUsePromoRequest!!.orders) {
+                        if (ordersItem.uniqueId == shipmentCartItemModel.cartString) {
+                            ordersItem.spId = shipperProductId
+                            ordersItem.shippingId = shipperId
+                            ordersItem.freeShippingMetadata = freeShippingMetadata
+                            ordersItem.shopId = shipmentCartItemModel.shopId
+                            ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
+                            ordersItem.poDuration =
+                                shipmentCartItemModel.cartItemModels[0].preOrderDurationDay
+                            ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
+                            ordersItem.boCampaignId = boCampaignId
+                            ordersItem.shippingSubsidy = shippingSubsidy
+                            ordersItem.benefitClass = benefitClass
+                            ordersItem.shippingPrice = shippingRate.toDouble()
+                            ordersItem.etaText = etaText!!
+                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
+                            break
                         }
                     }
                     shipmentPresenter.doValidateUseLogisticPromo(
-                            position,
-                            shipmentCartItemModel.getCartString(),
-                            validateUsePromoRequest,
-                            selectedShipperModel.getLogPromoCode(),
-                            false
-                    );
-                }
-                else if ((!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier) || hasNoPromo) {
-                    donePublisher.onCompleted();
+                        position,
+                        shipmentCartItemModel.cartString,
+                        validateUsePromoRequest,
+                        logPromoCode,
+                        false
+                    )
+                } else if (!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier || hasNoPromo) {
+                    donePublisher!!.onCompleted()
                 }
             }
         }
     }
 
-    @Override
-    public void onInsuranceInfoTooltipClickedTrackingAnalytics() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionInsuranceInfoTooltip(userSessionInterface.getUserId());
+    override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionInsuranceInfoTooltip(
+            userSessionInterface.userId
+        )
     }
 
-    private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
-        Activity activity = getActivity();
+    private fun updateLocalCacheAddressData(saveAddressDataModel: SaveAddressDataModel) {
+        val activity: Activity? = activity
         if (activity != null) {
-            ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
-                    activity,
-                    String.valueOf(saveAddressDataModel.getId()),
-                    String.valueOf(saveAddressDataModel.getCityId()),
-                    String.valueOf(saveAddressDataModel.getDistrictId()),
-                    saveAddressDataModel.getLatitude(),
-                    saveAddressDataModel.getLongitude(),
-                    String.format("%s %s", saveAddressDataModel.getAddressName(), saveAddressDataModel.getReceiverName()),
-                    saveAddressDataModel.getPostalCode(),
-                    String.valueOf(saveAddressDataModel.getShopId()),
-                    String.valueOf(saveAddressDataModel.getWarehouseId()),
-                    TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.getWarehouses()),
-                    saveAddressDataModel.getServiceType(),
-                    ""
-            );
+            updateLocalizingAddressDataFromOther(
+                activity,
+                saveAddressDataModel.id.toString(),
+                saveAddressDataModel.cityId.toString(),
+                saveAddressDataModel.districtId.toString(),
+                saveAddressDataModel.latitude,
+                saveAddressDataModel.longitude,
+                String.format(
+                    "%s %s",
+                    saveAddressDataModel.addressName,
+                    saveAddressDataModel.receiverName
+                ),
+                saveAddressDataModel.postalCode,
+                saveAddressDataModel.shopId.toString(),
+                saveAddressDataModel.warehouseId.toString(),
+                mapWarehousesAddAddressModelToLocal(saveAddressDataModel.warehouses),
+                saveAddressDataModel.serviceType,
+                ""
+            )
         }
     }
 
-    @Override
-    public void logOnErrorLoadCheckoutPage(Throwable throwable) {
-        CheckoutLogger.INSTANCE.logOnErrorLoadCheckoutPage(throwable, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
+    override fun logOnErrorLoadCheckoutPage(throwable: Throwable?) {
+        logOnErrorLoadCheckoutPage(throwable!!, isOneClickShipment, isTradeIn, isTradeInByDropOff)
     }
 
-    @Override
-    public void logOnErrorLoadCourier(Throwable throwable, int itemPosition, String boPromoCode) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+    override fun logOnErrorLoadCourier(
+        throwable: Throwable?,
+        itemPosition: Int,
+        boPromoCode: String?
+    ) {
+        val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
         if (shipmentCartItemModel != null) {
-            CheckoutLogger.INSTANCE.logOnErrorLoadCourier(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
+            logOnErrorLoadCourier(
+                throwable!!,
+                shipmentCartItemModel,
+                isOneClickShipment,
+                isTradeIn,
+                isTradeInByDropOff,
+                boPromoCode!!
+            )
         }
     }
 
-    @Override
-    public void logOnErrorApplyBo(Throwable throwable, int itemPosition, String boPromoCode) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+    override fun logOnErrorApplyBo(throwable: Throwable?, itemPosition: Int, boPromoCode: String?) {
+        val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
         if (shipmentCartItemModel != null) {
-            CheckoutLogger.INSTANCE.logOnErrorApplyBo(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
+            logOnErrorApplyBo(
+                throwable!!,
+                shipmentCartItemModel,
+                isOneClickShipment,
+                isTradeIn,
+                isTradeInByDropOff,
+                boPromoCode!!
+            )
         }
     }
 
-    @Override
-    public void logOnErrorApplyBo(Throwable throwable, ShipmentCartItemModel shipmentCartItemModel, String boPromoCode) {
-        CheckoutLogger.INSTANCE.logOnErrorApplyBo(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
+    override fun logOnErrorApplyBo(
+        throwable: Throwable?,
+        shipmentCartItemModel: ShipmentCartItemModel?,
+        boPromoCode: String?
+    ) {
+        logOnErrorApplyBo(
+            throwable!!,
+            shipmentCartItemModel!!,
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff,
+            boPromoCode!!
+        )
     }
 
-    @Override
-    public void logOnErrorCheckout(Throwable throwable, String request) {
-        CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
+    override fun logOnErrorCheckout(throwable: Throwable?, request: String?) {
+        logOnErrorCheckout(
+            throwable!!,
+            request!!,
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff
+        )
     }
 
-    @Override
-    public void showPopUp(PopUpData popUpData) {
-        if (getActivity() != null) {
-            DialogUnify popUpDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-            popUpDialog.setTitle(popUpData.getTitle());
-            popUpDialog.setDescription(popUpData.getDescription());
-            popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
-            popUpDialog.setPrimaryCTAClickListener(() -> {
-                popUpDialog.dismiss();
-                return Unit.INSTANCE;
-            });
-
-            popUpDialog.show();
+    override fun showPopUp(popUpData: PopUpData?) {
+        if (activity != null) {
+            val popUpDialog =
+                DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            popUpDialog.setTitle(popUpData!!.title)
+            popUpDialog.setDescription(popUpData.description)
+            popUpDialog.setPrimaryCTAText(popUpData.button.text)
+            popUpDialog.setPrimaryCTAClickListener {
+                popUpDialog.dismiss()
+                Unit
+            }
+            popUpDialog.show()
         }
     }
 
-    @Override
-    public void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier) {
+    override fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int) {
         // identifier : 0 = product level, 1  = order level
         if (identifier == 0) {
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnProductLevelPosition());
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.addOnProductLevelPosition)
         } else {
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition());
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.addOnOrderLevelPosition)
         }
-        shipmentAdapter.updateShipmentCostModel();
-        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+        shipmentAdapter.updateShipmentCostModel()
+        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
     }
 
-    @Override
-    public void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds) {
-        if (getActivity() != null) {
-            List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
-            int firstFoundPosition = 0;
-            shipment_loop:
-            for (int i = 0; i < shipmentDataList.size(); i++) {
-                if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
-                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                    for (String uniqueId : unappliedBoPromoUniqueIds) {
-                        if (Objects.equals(shipmentCartItemModel.getCartString(), uniqueId) &&
-                                (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null)) {
-                            firstFoundPosition = i;
-                            shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
-                            shipmentCartItemModel.setStateAllItemViewExpanded(false);
-                            shipmentCartItemModel.setShippingBorderRed(true);
-                            onNeedUpdateViewItem(i);
-                            break shipment_loop;
+    override fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String?>?) {
+        if (activity != null) {
+            val shipmentDataList = shipmentAdapter.shipmentDataList
+            var firstFoundPosition = 0
+            shipment_loop@ for (i in shipmentDataList.indices) {
+                if (shipmentDataList[i] is ShipmentCartItemModel) {
+                    val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
+                    for (uniqueId in unappliedBoPromoUniqueIds!!) {
+                        if (shipmentCartItemModel.cartString == uniqueId &&
+                            (shipmentCartItemModel.selectedShipmentDetailData == null || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier == null)
+                        ) {
+                            firstFoundPosition = i
+                            shipmentCartItemModel.isTriggerShippingVibrationAnimation = true
+                            shipmentCartItemModel.isStateAllItemViewExpanded = false
+                            shipmentCartItemModel.isShippingBorderRed = true
+                            onNeedUpdateViewItem(i)
+                            break@shipment_loop
                         }
                     }
                 }
             }
-
-            rvShipment.smoothScrollToPosition(firstFoundPosition);
+            rvShipment!!.smoothScrollToPosition(firstFoundPosition)
         }
     }
 
-    @Override
-    public int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId) {
-        for (int i = 0; i < shipmentAdapter.getShipmentDataList().size(); i++) {
-            final Object adapterItem = shipmentAdapter.getShipmentDataList().get(i);
-            if (adapterItem instanceof ShipmentCartItemModel
-                    && Objects.equals(((ShipmentCartItemModel) adapterItem).getCartString(), uniqueId)) {
-                return i;
+    override fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int {
+        for (i in shipmentAdapter.shipmentDataList.indices) {
+            val adapterItem = shipmentAdapter.shipmentDataList[i]
+            if (adapterItem is ShipmentCartItemModel && adapterItem.cartString == uniqueId) {
+                return i
             }
         }
-        return -1;
+        return -1
     }
 
-    @Nullable
-    @Override
-    public ShipmentCartItemModel getShipmentCartItemModel(int adapterPosition) {
-        return shipmentAdapter.getShipmentCartItemModelByIndex(adapterPosition);
+    override fun getShipmentCartItemModel(adapterPosition: Int): ShipmentCartItemModel? {
+        return shipmentAdapter.getShipmentCartItemModelByIndex(adapterPosition)
     }
 
-    private void onResultFromUpsell(Intent data) {
+    private fun onResultFromUpsell(data: Intent?) {
         if (data != null && data.hasExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED)) {
-            isPlusSelected = data.getBooleanExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false);
+            isPlusSelected = data.getBooleanExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false)
             shipmentPresenter.processInitialLoadCheckoutPage(
-                    true, isOneClickShipment(), isTradeIn(), true,
-                    false, null, getDeviceId(), getCheckoutLeasingId(),
-                    isPlusSelected()
-            );
+                true, isOneClickShipment, isTradeIn, true,
+                false, null, deviceId, checkoutLeasingId,
+                isPlusSelected()
+            )
         }
     }
 
-    @Override
-    public void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
-        final ArrayList<String> epharmacyGroupIds = uploadPrescriptionUiModel.getEpharmacyGroupIds();
-        final boolean hasAttachedPrescription = uploadPrescriptionUiModel.getUploadedImageCount() > 0 || uploadPrescriptionUiModel.getHasInvalidPrescription();
-        DialogUnify reminderDialog = new DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-        reminderDialog.setTitle(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_title));
-        reminderDialog.setDescription(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_description));
-        reminderDialog.setPrimaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_positive_button));
-        reminderDialog.setSecondaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_negative_button));
-        reminderDialog.setPrimaryCTAClickListener(() -> {
+    override fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+        val epharmacyGroupIds = uploadPrescriptionUiModel!!.epharmacyGroupIds
+        val hasAttachedPrescription =
+            uploadPrescriptionUiModel.uploadedImageCount > 0 || uploadPrescriptionUiModel.hasInvalidPrescription
+        val reminderDialog =
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        reminderDialog.setTitle(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_title))
+        reminderDialog.setDescription(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_description))
+        reminderDialog.setPrimaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_positive_button))
+        reminderDialog.setSecondaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_negative_button))
+        reminderDialog.setPrimaryCTAClickListener {
             ePharmacyAnalytics.clickLanjutBayarInAbandonPage(
-                    epharmacyGroupIds,
-                    hasAttachedPrescription
-            );
-            reminderDialog.dismiss();
-            return Unit.INSTANCE;
-        });
-        reminderDialog.setSecondaryCTAClickListener(() -> {
-            ePharmacyAnalytics.clickKeluarInAbandonPage(
-                    epharmacyGroupIds,
-                    hasAttachedPrescription
-            );
-            reminderDialog.dismiss();
-            finish();
-            return Unit.INSTANCE;
-        });
-        reminderDialog.show();
-        ePharmacyAnalytics.viewAbandonCheckoutPage(getActivity(),
                 epharmacyGroupIds,
-                hasAttachedPrescription);
+                hasAttachedPrescription
+            )
+            reminderDialog.dismiss()
+            Unit
+        }
+        reminderDialog.setSecondaryCTAClickListener {
+            ePharmacyAnalytics.clickKeluarInAbandonPage(
+                epharmacyGroupIds,
+                hasAttachedPrescription
+            )
+            reminderDialog.dismiss()
+            finish()
+            Unit
+        }
+        reminderDialog.show()
+        ePharmacyAnalytics.viewAbandonCheckoutPage(
+            activity!!,
+            epharmacyGroupIds,
+            hasAttachedPrescription
+        )
     }
 
-    private void sendAnalyticsEpharmacyClickPembayaran() {
-        List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
-        for (int i = shipmentDataList.size() - 1; i >= 0; i--) {
-            if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
-                UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                if (uploadPrescriptionUiModel.getConsultationFlow() && uploadPrescriptionUiModel.getShowImageUpload()) {
-                    RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
-                    if (viewHolder instanceof UploadPrescriptionViewHolder) {
+    private fun sendAnalyticsEpharmacyClickPembayaran() {
+        val shipmentDataList = shipmentAdapter.shipmentDataList
+        for (i in shipmentDataList.indices.reversed()) {
+            if (shipmentDataList[i] is UploadPrescriptionUiModel) {
+                val (showImageUpload, _, _, _, epharmacyGroupIds, _, _, _, _, _, consultationFlow) = shipmentDataList[i] as UploadPrescriptionUiModel
+                if (consultationFlow && showImageUpload) {
+                    val viewHolder = rvShipment!!.findViewHolderForAdapterPosition(i)
+                    if (viewHolder is UploadPrescriptionViewHolder) {
                         ePharmacyAnalytics.clickPilihPembayaran(
-                                ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
-                                uploadPrescriptionUiModel.getEpharmacyGroupIds(),
-                                false,
-                                "success"
-                        );
+                            viewHolder.getButtonNotes(),
+                            epharmacyGroupIds,
+                            false,
+                            "success"
+                        )
                     }
                 }
-                break;
+                break
             }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_CODE_EDIT_ADDRESS = 11
+        private const val REQUEST_CODE_COURIER_PINPOINT = 13
+        private const val REQUEST_CODE_PROMO = 954
+        const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
+        const val REQUEST_CODE_MINI_CONSULTATION = 10022
+        private const val REQUEST_CODE_UPSELL = 777
+        private const val ADD_ON_STATUS_ACTIVE = 1
+        private const val ADD_ON_STATUS_DISABLE = 2
+        private const val SHIPMENT_TRACE = "mp_shipment"
+        private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
+        const val ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT"
+        const val ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID"
+        const val ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE"
+        const val ARG_IS_PLUS_SELECTED = "ARG_IS_PLUS_SELECTED"
+        private const val DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION =
+            "LAST_CHOOSE_COURIER_ITEM_POSITION"
+        private const val DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID"
+        var EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
+        private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
+        private const val TOASTER_THROTTLE: Long = 2000
+        fun newInstance(
+            isOneClickShipment: Boolean,
+            leasingId: String?,
+            pageSource: String?,
+            isPlusSelected: Boolean,
+            bundle: Bundle?
+        ): ShipmentFragment {
+            var bundle = bundle
+            if (bundle == null) {
+                bundle = Bundle()
+            }
+            bundle.putString(ARG_CHECKOUT_LEASING_ID, leasingId)
+            if (leasingId != null && !leasingId.isEmpty()) {
+                bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, true)
+            } else {
+                bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment)
+            }
+            bundle.putString(ARG_CHECKOUT_PAGE_SOURCE, pageSource)
+            bundle.putBoolean(ARG_IS_PLUS_SELECTED, isPlusSelected)
+            val shipmentFragment = ShipmentFragment()
+            shipmentFragment.arguments = bundle
+            return shipmentFragment
         }
     }
 }
