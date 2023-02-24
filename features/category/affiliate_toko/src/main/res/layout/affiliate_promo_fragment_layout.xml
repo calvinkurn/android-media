@@ -81,7 +81,7 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
                         app:cardCornerRadius="8dp"
-                        app:layout_constraintBottom_toTopOf="@id/heading_gamification_entry_card"
+                        app:layout_constraintBottom_toTopOf="@id/gamification_container"
                         app:layout_constraintTop_toBottomOf="@id/promotion_info_desc"
                         app:layout_goneMarginBottom="16dp">
 
@@ -158,45 +158,61 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.tokopedia.unifycomponents.CardUnify2>
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/heading_gamification_entry_card"
+                    <LinearLayout
+                        android:id="@+id/gamification_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/promotion_info_card"
-                        android:text="@string/mau_bonus_hingga_jutaan"
-                        app:typographyType="heading_3"
-                        app:typographyWeight="bold" />
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/promotion_info_card">
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/subtitle_gamification_entry_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="4dp"
-                        android:text="@string/ikutan_main_misi_komisi_aja_yuk"
-                        app:layout_constraintTop_toBottomOf="@id/heading_gamification_entry_card"
-                        app:typographyType="display_3"
-                        app:typographyWeight="reguler" />
-
-                    <com.tokopedia.unifycomponents.CardUnify2
-                        android:id="@+id/gamification_entry_card_banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/subtitle_gamification_entry_card"
-                        app:cardCornerRadius="8dp"
-                        app:layout_goneMarginBottom="16dp">
-
-                        <com.tokopedia.unifycomponents.ImageUnify
-                            android:id="@+id/bg_gamification"
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/heading_gamification_entry_card"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/asset/banner-gamification-Phase1.png" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/mau_bonus_hingga_jutaan"
+                            app:typographyType="heading_3"
+                            app:typographyWeight="bold" />
 
-                    </com.tokopedia.unifycomponents.CardUnify2>
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/subtitle_gamification_entry_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/ikutan_main_misi_komisi_aja_yuk"
+
+                            app:typographyType="display_3"
+                            app:typographyWeight="reguler" />
+
+                        <com.tokopedia.unifycomponents.CardUnify2
+                            android:id="@+id/gamification_entry_card_banner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="12dp"
+                            app:cardCornerRadius="8dp"
+                            app:layout_goneMarginBottom="16dp">
+
+                            <com.tokopedia.unifycomponents.ImageUnify
+                                android:id="@+id/bg_gamification"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/asset/banner-gamification-Phase1.png" />
+
+                        </com.tokopedia.unifycomponents.CardUnify2>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ssa_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/gamification_container">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/heading_card_ssa_entry"
@@ -204,8 +220,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/gamification_entry_card_banner"
                         android:text="@string/otw_jadi_sultan_komisi"
+                        app:layout_constraintTop_toBottomOf="@id/gamification_container"
                         app:typographyType="heading_3"
                         app:typographyWeight="bold" />
 
@@ -216,7 +232,6 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="4dp"
                         android:text="@string/dengan_promosiin_toko_komisi_ekstra"
-                        app:layout_constraintTop_toBottomOf="@id/heading_card_ssa_entry"
                         app:typographyType="display_3"
                         app:typographyWeight="reguler" />
 
@@ -227,8 +242,7 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/subtitle_card_ssa_entry">
+                        app:layout_constraintBottom_toBottomOf="parent">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -291,6 +305,8 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.tokopedia.unifycomponents.CardUnify2>
+
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>

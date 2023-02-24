@@ -2,6 +2,8 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
 import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
@@ -35,9 +37,9 @@ class AffiliatePromoViewModel @Inject constructor(
             ""
         ) == AFFILIATE_SSA_SHOP
 
-    fun isAffiliateGamificationEnabled() = remoteConfig.getBoolean("affil_banner_gami", false)
+    fun isAffiliateGamificationEnabled() = remoteConfig.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false)
 
-    fun affilateRedirection() = remoteConfig.getString("affil_gami_disco", "")
+    fun affiliateRedirection() = remoteConfig.getString(AFFILIATE_GAMIFICATION_REDIRECTION, "")
 
     fun getSearch(productLink: String) {
         progressBar.value = true
