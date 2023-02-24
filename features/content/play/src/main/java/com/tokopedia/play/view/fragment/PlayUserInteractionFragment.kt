@@ -146,7 +146,7 @@ class PlayUserInteractionFragment @Inject constructor(
     EngagementCarouselViewComponent.Listener,
     ExploreWidgetViewComponent.Listener {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
-    private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
+    private val gradientBackgroundView by viewComponent { GradientBackgroundViewComponent(it) }
     private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
     private val partnerInfoView by viewComponentOrNull { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
@@ -1442,12 +1442,15 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun gradientBackgroundViewOnStateChanged(
         videoOrientation: VideoOrientation = playViewModel.videoOrientation,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (bottomInsets.isAnyShown ||
             (videoOrientation.isHorizontal && orientation.isPortrait)
         ) {
             gradientBackgroundView.hide()
+        } else if (isFreezeOrBanned) {
+            gradientBackgroundView.showTop()
         } else {
             gradientBackgroundView.show()
         }
