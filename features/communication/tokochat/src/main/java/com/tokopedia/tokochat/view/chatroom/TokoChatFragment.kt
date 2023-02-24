@@ -991,7 +991,6 @@ open class TokoChatFragment :
                 element.imageId,
                 getOrderState(),
                 viewModel.tkpdOrderId,
-                viewModel.channelId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
             )
@@ -1003,7 +1002,6 @@ open class TokoChatFragment :
             element.imageId,
             getOrderState(),
             viewModel.tkpdOrderId,
-            viewModel.channelId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
         )
@@ -1017,7 +1015,6 @@ open class TokoChatFragment :
                 element.imageId,
                 getOrderState(),
                 viewModel.tkpdOrderId,
-                viewModel.channelId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
             )
