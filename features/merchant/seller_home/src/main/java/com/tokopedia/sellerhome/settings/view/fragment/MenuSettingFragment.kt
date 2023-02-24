@@ -304,7 +304,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                     return try {
                         showPersonaCoachMark(this)
                         super.scrollVerticallyBy(dy, recycler, state)
-                    } catch (e: IndexOutOfBoundsException) {
+                    } catch (@Suppress("SwallowedException") e: IndexOutOfBoundsException) {
                         Int.ZERO
                     }
                 }

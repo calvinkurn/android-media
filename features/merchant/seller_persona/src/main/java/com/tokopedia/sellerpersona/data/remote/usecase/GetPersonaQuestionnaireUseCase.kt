@@ -32,7 +32,7 @@ class GetPersonaQuestionnaireUseCase @Inject constructor(
                 throw MessageErrorException(response.data?.errorMsg.orEmpty())
             }
             return mapper.mapToUiModel(response.data?.questionnaire)
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             throw RuntimeException(e.message)
         }
     }

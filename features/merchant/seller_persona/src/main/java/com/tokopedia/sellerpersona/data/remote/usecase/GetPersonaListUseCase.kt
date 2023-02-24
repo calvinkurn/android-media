@@ -31,7 +31,7 @@ class GetPersonaListUseCase @Inject constructor(
                 throw MessageErrorException(response.data.errorMsg)
             }
             return mapper.mapToUiModel(response.data.personaList)
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             throw RuntimeException(e.message)
         }
     }
