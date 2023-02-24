@@ -29,7 +29,10 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.home.view.model.BannerType
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -193,7 +196,9 @@ class ShopHomeNplCampaignViewHolder(
                     val clickableBannerAreaWidth = (getScreenWidth() * PADDING_LEFT_PERCENTAGE).toInt()
                     productListCampaignAdapter?.clearAllElements()
                     if (productList.isNotEmpty())
-                        productListCampaignAdapter?.addElement(ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth))
+                        productListCampaignAdapter?.addElement(
+                            ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth)
+                        )
                     productListCampaignAdapter?.addElement(productList)
                     isNestedScrollingEnabled = false
                     adapter = productListCampaignAdapter

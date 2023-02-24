@@ -394,7 +394,7 @@ class ShopPageProductListFragment :
                     ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickProduct(
                         isLogin,
                         getSelectedEtalaseChip(),
-                        if (isOwner) "" else FEATURED_PRODUCT,
+                        FEATURED_PRODUCT,
                         CustomDimensionShopPageAttribution.create(
                             shopId,
                             isOfficialStore,
@@ -415,7 +415,7 @@ class ShopPageProductListFragment :
                     ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickProduct(
                         isLogin,
                         getSelectedEtalaseChip(),
-                        if (isOwner) "" else getSelectedEtalaseChip(),
+                        getSelectedEtalaseChip(),
                         CustomDimensionShopPageAttribution.create(
                             shopId,
                             isOfficialStore,
@@ -439,7 +439,7 @@ class ShopPageProductListFragment :
                     ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(
                         isLogin,
                         getSelectedEtalaseChip(),
-                        if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
+                        shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
                         CustomDimensionShopPageAttribution.create(
                             shopId,
                             isOfficialStore,
@@ -474,7 +474,7 @@ class ShopPageProductListFragment :
                 ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.impressionProductList(
                     isLogin,
                     getSelectedEtalaseChip(),
-                    if (isOwner) "" else FEATURED_PRODUCT,
+                    FEATURED_PRODUCT,
                     CustomDimensionShopPageAttribution.create(
                         shopId,
                         isOfficialStore,
@@ -519,7 +519,7 @@ class ShopPageProductListFragment :
                 ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.impressionProductList(
                     isLogin,
                     getSelectedEtalaseChip(),
-                    if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
+                    shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
                     CustomDimensionShopPageAttribution.create(
                         shopId,
                         isOfficialStore,
