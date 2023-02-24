@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addphone
 
-//import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
