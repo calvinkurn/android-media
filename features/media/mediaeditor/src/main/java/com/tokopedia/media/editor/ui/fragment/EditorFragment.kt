@@ -21,13 +21,17 @@ import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
+import com.tokopedia.media.editor.ui.activity.main.EditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.component.DrawerUiComponent
 import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.checkMemoryOverflow
 import com.tokopedia.media.editor.utils.cropCenterImage
+import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.getRunnable
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
@@ -121,23 +125,42 @@ class EditorFragment @Inject constructor(
         val data = listData[currentProcess]
         data.isAutoCropped = true
         if (data.editList.size == 0 && !data.isVideo) {
-            loadImageWithEmptyTarget(requireContext(),
-                data.getImageUrl(),
-                properties = {},
-                mediaTarget = MediaBitmapEmptyTarget(
-                    onReady = { bitmap ->
-                        imageCrop(bitmap, data.getOriginalUrl())
-                        thumbnailDrawerComponent.refreshItem(
-                            currentProcess,
-                            viewModel.editStateList.values.toList()
-                        )
-                        iterateCrop(listData, currentProcess + 1)
-                    },
-                    onCleared = {},
-                    onFailed = {
-                        iterateCrop(listData, currentProcess + 1)
+            val filePath = data.getOriginalUrl()
+            var memoryOverflow: Boolean
+
+            getImageSize(filePath).apply {
+                val usageEstimation = first * second * 4
+                memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
+            }
+
+            if (memoryOverflow) {
+                Handler().postDelayed(getRunnable {
+                    try {
+                        (activity as EditorActivity).showMemoryLimitDialog(true)
+                    } catch (e: Exception) {
                     }
-                ))
+                    loader?.dismiss()
+                }, 2000)
+                return
+            } else {
+                loadImageWithEmptyTarget(requireContext(),
+                    filePath,
+                    properties = {},
+                    mediaTarget = MediaBitmapEmptyTarget(
+                        onReady = { bitmap ->
+                            imageCrop(bitmap, data.getOriginalUrl())
+                            thumbnailDrawerComponent.refreshItem(
+                                currentProcess,
+                                viewModel.editStateList.values.toList()
+                            )
+                            iterateCrop(listData, currentProcess + 1)
+                        },
+                        onCleared = {},
+                        onFailed = {
+                            iterateCrop(listData, currentProcess + 1)
+                        }
+                    ))
+            }
         } else {
             iterateCrop(listData, currentProcess + 1)
         }

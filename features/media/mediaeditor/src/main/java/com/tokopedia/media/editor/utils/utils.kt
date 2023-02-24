@@ -1,8 +1,11 @@
 package com.tokopedia.media.editor.utils
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import androidx.core.content.ContextCompat
@@ -144,4 +147,22 @@ fun Fragment.getRunnable(action: () -> Unit): Runnable {
 fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
     val imagePxDrawThreshold = 25_000_000 // 25 million pixel
     return (width * height) >= imagePxDrawThreshold
+}
+
+fun getImageSize(path: String): Pair<Int, Int>{
+    return try {
+        val option = BitmapFactory.Options()
+        option.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(path, option)
+        return Pair(option.outWidth, option.outHeight)
+    } catch (e: Exception) {
+        Pair(0, 0)
+    }
+}
+
+fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
+    val mi = ActivityManager.MemoryInfo()
+    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    activityManager.getMemoryInfo(mi)
+    return mi.availMem > memoryUsage
 }

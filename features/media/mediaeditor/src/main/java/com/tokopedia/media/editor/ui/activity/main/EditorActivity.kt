@@ -47,6 +47,22 @@ class EditorActivity : BaseEditorActivity() {
         ).get(EditorViewModel::class.java)
     }
 
+    fun showMemoryLimitDialog(isFinishActivity: Boolean = false) {
+        DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(editorR.string.editor_activity_memory_dialog_title))
+            setDescription(getString(editorR.string.editor_activity_memory_dialog_desc))
+
+            dialogPrimaryCTA.apply {
+                text = getString(editorR.string.editor_activity_memory_dialog_primary_button_text)
+            }.setOnClickListener {
+                this.dismiss()
+                if (isFinishActivity) finish()
+            }
+
+            show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
@@ -92,11 +108,16 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == DetailEditorActivity.EDITOR_RESULT_CODE) {
-            val editorDetailResultData =
-                data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
-            editorDetailResultData?.let {
-                viewModel.addEditState(it.originalUrl, it)
+        when (resultCode) {
+            DetailEditorActivity.EDITOR_RESULT_CODE -> {
+                val editorDetailResultData =
+                    data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
+                editorDetailResultData?.let {
+                    viewModel.addEditState(it.originalUrl, it)
+                }
+            }
+            DetailEditorActivity.EDITOR_ERROR_CODE -> {
+                showMemoryLimitDialog()
             }
         }
     }

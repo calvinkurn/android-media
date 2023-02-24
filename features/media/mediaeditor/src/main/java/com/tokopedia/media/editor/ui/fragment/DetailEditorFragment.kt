@@ -38,6 +38,7 @@ import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
+import com.tokopedia.media.editor.ui.activity.main.EditorActivity
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
@@ -50,6 +51,8 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.getRunnable
 import com.tokopedia.media.editor.utils.checkBitmapSizeOverflow
+import com.tokopedia.media.editor.utils.checkMemoryOverflow
+import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -911,13 +914,18 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun finishPage() {
+    private fun finishPage(isMemoryLimit: Boolean = false) {
         val intent = Intent()
 
-        if (data.isToolRemoveBackground()) data.clearValue()
+        if (isMemoryLimit) {
+            activity?.setResult(DetailEditorActivity.EDITOR_ERROR_CODE, intent)
+        } else {
+            if (data.isToolRemoveBackground()) data.clearValue()
 
-        intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
-        activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
+            intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
+            activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
+        }
+
         activity?.finish()
     }
 
@@ -940,49 +948,62 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.hide()
         viewBinding?.imgViewPreview?.visible()
 
-        loadImageWithEmptyTarget(requireContext(),
-            url,
-            properties = {},
-            mediaTarget = MediaBitmapEmptyTarget(
-                onReady = { bitmap ->
-                    originalImageWidth = bitmap.width
-                    originalImageHeight = bitmap.height
+        var memoryOverflow: Boolean
 
-                    viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
+        getImageSize(url).apply {
+            val usageEstimation = first * second * 4
+            memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
+        }
 
-                    if (readPreviousValue) {
-                        readPreviousState()
-                        viewBinding?.imgViewPreview?.let {
-                            setOverlaySize(
-                                getDisplayedImageSize(
-                                    viewBinding?.imgViewPreview,
-                                    it.drawable.toBitmap()
+        if (memoryOverflow) {
+            Handler().postDelayed(getRunnable {
+                finishPage(true)
+            },1000)
+        } else {
+            loadImageWithEmptyTarget(requireContext(),
+                url,
+                properties = {},
+                mediaTarget = MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        originalImageWidth = bitmap.width
+                        originalImageHeight = bitmap.height
+
+                        viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
+
+                        if (readPreviousValue) {
+                            readPreviousState()
+                            viewBinding?.imgViewPreview?.let {
+                                setOverlaySize(
+                                    getDisplayedImageSize(
+                                        viewBinding?.imgViewPreview,
+                                        it.drawable.toBitmap()
+                                    )
                                 )
+                            }
+                        } else {
+                            implementedBaseBitmap = bitmap
+                            viewBinding?.imgViewPreview?.post {
+                                setOverlaySize(
+                                    getDisplayedImageSize(
+                                        viewBinding?.imgViewPreview,
+                                        bitmap
+                                    )
+                                )
+                            }
+                        }
+
+                        if (data.isToolWatermark()) {
+                            setWatermarkDrawerItem(bitmap)
+                            watermarkComponent.setWatermarkTypeSelected(
+                                WatermarkType.map(data.watermarkMode?.watermarkType)
                             )
                         }
-                    } else {
-                        implementedBaseBitmap = bitmap
-                        viewBinding?.imgViewPreview?.post {
-                            setOverlaySize(
-                                getDisplayedImageSize(
-                                    viewBinding?.imgViewPreview,
-                                    bitmap
-                                )
-                            )
-                        }
-                    }
 
-                    if (data.isToolWatermark()) {
-                        setWatermarkDrawerItem(bitmap)
-                        watermarkComponent.setWatermarkTypeSelected(
-                            WatermarkType.map(data.watermarkMode?.watermarkType)
-                        )
-                    }
-
-                    onImageReady()
-                },
-                onCleared = {}
-            ))
+                        onImageReady()
+                    },
+                    onCleared = {}
+                ))
+        }
     }
 
     private fun setOverlaySize(displaySize: Pair<Float, Float>?) {
