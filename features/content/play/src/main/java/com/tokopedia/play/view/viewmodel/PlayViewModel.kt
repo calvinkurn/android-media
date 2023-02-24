@@ -1272,9 +1272,10 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updatePartnerInfo(channelData)
-        if (!channelData.status.channelStatus.statusType.isFreeze) {
-            updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
-        }
+//        if (!channelData.status.channelStatus.statusType.isFreeze) {
+//            updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
+//        }
+        updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
     }
 
     /**

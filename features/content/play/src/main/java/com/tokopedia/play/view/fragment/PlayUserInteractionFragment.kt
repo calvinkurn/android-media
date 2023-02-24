@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -852,7 +853,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.status)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderAddressWidget(state.address)
 
@@ -1478,13 +1479,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun statsInfoViewOnStateChanged(
         channelType: PlayChannelType = playViewModel.channelType,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
-        if (isFreezeOrBanned) {
-            statsInfoView.hide()
-        } else if (!bottomInsets.isAnyShown && orientation.isPortrait) {
+        if (!bottomInsets.isAnyShown && orientation.isPortrait) {
             statsInfoView.show()
         } else {
             statsInfoView.hide()
@@ -1638,9 +1636,9 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        partner: PlayPartnerInfo
+        status: PlayStatusUiModel,
     ) {
-        if (!bottomInsets.isAnyShown && !address.shouldShow) {
+        if (!bottomInsets.isAnyShown && !address.shouldShow && status.channelStatus.statusType.isActive) {
             productSeeMoreView?.show()
         } else {
             productSeeMoreView?.hide()
@@ -1688,7 +1686,6 @@ class PlayUserInteractionFragment @Inject constructor(
         getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
 
         if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned || status.channelStatus.statusType.isArchive) {
-            gradientBackgroundView.hide()
             likeCountView.hide()
             likeView.hide()
             quickReplyView?.hide()
@@ -1705,7 +1702,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
             videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
             toolbarViewOnStateChanged(isFreezeOrBanned = true)
-            statsInfoViewOnStateChanged(isFreezeOrBanned = true)
             pinnedViewOnStateChanged(isFreezeOrBanned = true)
 
             /**

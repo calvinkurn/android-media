@@ -21,6 +21,18 @@
         />
 
     <include
+        android:id="@+id/view_end_live_info"
+        layout="@layout/view_end_live_info"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <include
         android:id="@+id/view_gradient_background"
         layout="@layout/view_gradient_background"
         android:layout_width="@dimen/layout_lvl0"
@@ -216,18 +228,6 @@
         tools:visibility="visible" />
 
     <include
-        android:id="@+id/view_end_live_info"
-        layout="@layout/view_end_live_info"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <include
         android:id="@+id/view_toolbar_room"
         layout="@layout/view_toolbar_room"
         android:layout_width="@dimen/layout_lvl0"
@@ -275,7 +275,8 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/v_engagement_widget" />
+        app:layout_constraintTop_toBottomOf="@id/scrollable_host_engagement"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
