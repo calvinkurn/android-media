@@ -1334,14 +1334,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
-                                                       Map<String, String> tradeInCustomDimension,
-                                                       String transactionId,
-                                                       String userId,
-                                                       boolean promoFlag,
-                                                       String eventCategory,
-                                                       String eventAction,
-                                                       String eventLabel) {
+    public void sendEnhancedEcommerceAnalyticsCheckout(@NonNull Map<String, ?> stringObjectMap, @NonNull Map<String, String> tradeInCustomDimension, @Nullable String transactionId, @NonNull String userId, boolean promoFlag, @NonNull String eventCategory, @NonNull String eventAction, @NonNull String eventLabel) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
                 stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
         );
@@ -1349,7 +1342,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel, String userId, List<Object> listProducts) {
+    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(@Nullable String eventLabel, @Nullable String userId, @Nullable List<?> listProducts) {
         checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(eventLabel, userId, listProducts);
     }
 

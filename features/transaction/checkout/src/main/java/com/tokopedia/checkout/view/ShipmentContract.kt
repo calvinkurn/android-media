@@ -1,454 +1,436 @@
-package com.tokopedia.checkout.view;
+package com.tokopedia.checkout.view
 
-import android.app.Activity;
-import android.util.Pair;
-
-import androidx.annotation.Nullable;
-
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
-import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
-import com.tokopedia.checkout.domain.model.checkout.Prompt;
-import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
-import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
-import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult;
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
-import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import rx.subjects.PublishSubject;
+import android.app.Activity
+import android.util.Pair
+import com.tokopedia.abstraction.base.view.listener.CustomerView
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.checkout.CheckoutData
+import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
+import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticcart.shipping.model.CodModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import rx.subjects.PublishSubject
 
 /**
  * @author Irfan Khoirul on 24/04/18.
  */
-
-public interface ShipmentContract {
-
-    interface View extends CustomerView {
-        void showInitialLoading();
-
-        void hideInitialLoading();
-
-        void showLoading();
-
-        void hideLoading();
-
-        void showToastNormal(String message);
-
-        void showToastError(String message);
-
-        void renderErrorPage(String message);
-
-        void onCacheExpired(String message);
-
-        void onShipmentAddressFormEmpty();
-
-        void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
-
-        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isEligibleForRevampAna);
-
-        void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState);
-
-        void renderDataChanged();
-
-        void renderCheckoutCartSuccess(CheckoutData checkoutData);
-
-        void renderCheckoutCartError(String message);
-
-        void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
-
-        void renderPrompt(Prompt prompt);
-
-        void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
-
-        void renderErrorCheckPromoShipmentData(String message);
-
-        void renderEditAddressSuccess(String latitude, String longitude);
-
-        void renderChangeAddressSuccess(boolean refreshCheckoutPage);
-
-        void renderChangeAddressFailed(boolean refreshCheckoutPageIfSuccess);
-
-        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates);
-
-        void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff, boolean isBoAutoApplyFlow);
-
-        void cancelAllCourierPromo();
-
-        void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition,
-                                              ShipmentCartItemModel shipmentCartItemModel, PreOrderModel preOrderModel);
-
-        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel);
-
-        void navigateToSetPinpoint(String message, LocationPass locationPass);
-
-        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList, boolean isAnalyticsPurpose);
-
-        Activity getActivityContext();
-
-        void setCourierPromoApplied(int itemPosition);
-
-        void stopTrace();
-
-        void stopEmbraceTrace();
-
-        void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
-
-        void resetCourier(int position);
-
-        ValidateUsePromoRequest generateValidateUsePromoRequest();
-
-        PromoRequest generateCouponListRecommendationRequest();
-
-        void clearTotalBenefitPromoStacking();
-
-        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId,
-                                                                              String deviceModel,
-                                                                              long devicePrice,
-                                                                              String diagnosticId);
-
-        void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
-
-        void updateTickerAnnouncementMessage();
-
-        void resetPromoBenefit();
-
-        void setPromoBenefit(List<SummariesItemUiModel> summariesUiModels);
-
-        boolean isTradeInByDropOff();
-
-        void updateButtonPromoCheckout(PromoUiModel promoUiModel, boolean isNeedToHitValidateFinal);
-
-        void doResetButtonPromoCheckout();
-
-        void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
-
-        void setHasRunningApiCall(boolean hasRunningApiCall);
-
-        void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc);
-
-        void updateLocalCacheAddressData(UserAddress userAddress);
-
-        void resetAllCourier();
-
-        void setStateLoadingCourierStateAtIndex(int index, boolean isLoading);
-
-        void logOnErrorLoadCheckoutPage(Throwable throwable);
-
-        void logOnErrorLoadCourier(Throwable throwable, int itemPosition, String boPromoCode);
-
-        void logOnErrorApplyBo(Throwable throwable, int itemPosition, String boPromoCode);
-
-        void logOnErrorApplyBo(Throwable throwable, ShipmentCartItemModel shipmentCartItemModel, String boPromoCode);
-
-        void logOnErrorCheckout(Throwable throwable, String request);
-
-        void showPopUp(PopUpData popUpData);
-
-        void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
-
-        void onNeedUpdateViewItem(int position);
-
-        void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds);
-
-        int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId);
-
-        @Nullable
-        ShipmentCartItemModel getShipmentCartItemModel(int position);
-
-        ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
-                                                 RecipientAddressModel recipientAddressModel);
-
-        void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel);
-
-        void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
-
-        void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
+interface ShipmentContract {
+    interface View : CustomerView {
+        fun showInitialLoading()
+        fun hideInitialLoading()
+        fun showLoading()
+        fun hideLoading()
+        fun showToastNormal(message: String?)
+        fun showToastError(message: String?)
+        fun renderErrorPage(message: String?)
+        fun onCacheExpired(message: String?)
+        fun onShipmentAddressFormEmpty()
+        fun renderCheckoutPage(
+            isInitialRender: Boolean,
+            isReloadAfterPriceChangeHigher: Boolean,
+            isOneClickShipment: Boolean
+        )
+
+        fun renderCheckoutPageNoAddress(
+            cartShipmentAddressFormData: CartShipmentAddressFormData?,
+            isEligibleForRevampAna: Boolean
+        )
+
+        fun renderCheckoutPageNoMatchedAddress(
+            cartShipmentAddressFormData: CartShipmentAddressFormData?,
+            addressState: Int
+        )
+
+        fun renderDataChanged()
+        fun renderCheckoutCartSuccess(checkoutData: CheckoutData?)
+        fun renderCheckoutCartError(message: String?)
+        fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData?)
+        fun renderPrompt(prompt: Prompt?)
+        fun renderPromoCheckoutFromCourierSuccess(
+            validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
+            itemPosition: Int,
+            noToast: Boolean
+        )
+
+        fun renderErrorCheckPromoShipmentData(message: String?)
+        fun renderEditAddressSuccess(latitude: String?, longitude: String?)
+        fun renderChangeAddressSuccess(refreshCheckoutPage: Boolean)
+        fun renderChangeAddressFailed(refreshCheckoutPageIfSuccess: Boolean)
+        fun renderCourierStateSuccess(
+            courierItemData: CourierItemData?,
+            itemPosition: Int,
+            isTradeInDropOff: Boolean,
+            isForceReloadRates: Boolean
+        )
+
+        fun renderCourierStateFailed(
+            itemPosition: Int,
+            isTradeInDropOff: Boolean,
+            isBoAutoApplyFlow: Boolean
+        )
+
+        fun cancelAllCourierPromo()
+        fun updateCourierBottomssheetHasData(
+            shippingCourierUiModels: List<ShippingCourierUiModel?>?,
+            cartPosition: Int,
+            shipmentCartItemModel: ShipmentCartItemModel?,
+            preOrderModel: PreOrderModel?
+        )
+
+        fun updateCourierBottomsheetHasNoData(
+            cartPosition: Int,
+            shipmentCartItemModel: ShipmentCartItemModel?
+        )
+
+        fun navigateToSetPinpoint(message: String?, locationPass: LocationPass?)
+        fun generateNewCheckoutRequest(
+            shipmentCartItemModelList: List<ShipmentCartItemModel?>?,
+            isAnalyticsPurpose: Boolean
+        ): List<DataCheckoutRequest?>?
+
+        val activityContext: Activity
+        fun setCourierPromoApplied(itemPosition: Int)
+        fun stopTrace()
+        fun stopEmbraceTrace()
+        fun onSuccessClearPromoLogistic(position: Int, isLastAppliedPromo: Boolean)
+        fun resetCourier(position: Int)
+        fun generateValidateUsePromoRequest(): ValidateUsePromoRequest?
+        fun generateCouponListRecommendationRequest(): PromoRequest?
+        fun clearTotalBenefitPromoStacking()
+        fun triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
+            transactionId: String?,
+            deviceModel: String?,
+            devicePrice: Long,
+            diagnosticId: String?
+        )
+
+        fun removeIneligiblePromo(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>)
+        fun updateTickerAnnouncementMessage()
+        fun resetPromoBenefit()
+        fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel?>?)
+        val isTradeInByDropOff: Boolean
+        fun updateButtonPromoCheckout(
+            promoUiModel: PromoUiModel?,
+            isNeedToHitValidateFinal: Boolean
+        )
+
+        fun doResetButtonPromoCheckout()
+        fun resetCourier(shipmentCartItemModel: ShipmentCartItemModel?)
+        fun setHasRunningApiCall(hasRunningApiCall: Boolean)
+        fun prepareReloadRates(lastSelectedCourierOrder: Int, skipMvc: Boolean)
+        fun updateLocalCacheAddressData(userAddress: UserAddress?)
+        fun resetAllCourier()
+        fun setStateLoadingCourierStateAtIndex(index: Int, isLoading: Boolean)
+        fun logOnErrorLoadCheckoutPage(throwable: Throwable?)
+        fun logOnErrorLoadCourier(throwable: Throwable?, itemPosition: Int, boPromoCode: String?)
+        fun logOnErrorApplyBo(throwable: Throwable?, itemPosition: Int, boPromoCode: String?)
+        fun logOnErrorApplyBo(
+            throwable: Throwable?,
+            shipmentCartItemModel: ShipmentCartItemModel?,
+            boPromoCode: String?
+        )
+
+        fun logOnErrorCheckout(throwable: Throwable?, request: String?)
+        fun showPopUp(popUpData: PopUpData?)
+        fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int)
+        fun onNeedUpdateViewItem(position: Int)
+        fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String?>?)
+        fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int
+        fun getShipmentCartItemModel(position: Int): ShipmentCartItemModel?
+        fun getShipmentDetailData(
+            shipmentCartItemModel: ShipmentCartItemModel?,
+            recipientAddressModel: RecipientAddressModel?
+        ): ShipmentDetailData?
+
+        fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel?)
+        fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel?)
+        fun showCoachMarkEpharmacy(epharmacyGroupIds: UploadPrescriptionUiModel?)
     }
 
     interface AnalyticsActionListener {
-        void sendAnalyticsChoosePaymentMethodFailed(String errorMessage);
+        fun sendAnalyticsChoosePaymentMethodFailed(errorMessage: String?)
+        fun sendEnhancedEcommerceAnalyticsCheckout(
+            stringObjectMap: Map<String, Any>,
+            tradeInCustomDimension: Map<String, String>,
+            transactionId: String?,
+            userId: String,
+            promoFlag: Boolean,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String
+        )
 
-        void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
-                                                    Map<String, String> tradeInCustomDimension,
-                                                    String transactionId,
-                                                    String userId,
-                                                    boolean promoFlag,
-                                                    String eventCategory,
-                                                    String eventAction,
-                                                    String eventLabel);
+        fun sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(
+            eventLabel: String?,
+            userId: String?,
+            listProducts: List<Any?>?
+        )
 
-        void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel,
-                                                                         String userId,
-                                                                         List<Object> listProducts);
+        fun sendAnalyticsOnClickChooseOtherAddressShipment()
+        fun sendAnalyticsOnClickTopDonation()
+        fun sendAnalyticsOnClickChangeAddress()
+        fun sendAnalyticsOnClickSubtotal()
+        fun sendAnalyticsOnClickCheckBoxDropShipperOption()
+        fun sendAnalyticsOnClickCheckBoxInsuranceOption()
+        fun sendAnalyticsScreenName(screenName: String?)
+        fun sendAnalyticsOnClickEditPinPointErrorValidation(message: String?)
+        fun sendAnalyticsCourierNotComplete()
+        fun sendAnalyticsPromoRedState()
+        fun sendAnalyticsDropshipperNotComplete()
+        fun sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration()
+        fun sendAnalyticsOnClickChecklistShipmentRecommendationDuration(duration: String?)
+        fun sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(courier: String?)
+        fun sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel: ShipmentCartItemModel?)
+        fun sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier()
+        fun sendAnalyticsOnClickChangeDurationShipmentRecommendation()
+        fun sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(shippingProductId: Int)
+        fun sendAnalyticsOnDisplayDurationThatContainPromo(
+            isCourierPromo: Boolean,
+            duration: String?
+        )
 
-        void sendAnalyticsOnClickChooseOtherAddressShipment();
+        fun sendAnalyticsOnDisplayLogisticThatContainPromo(
+            isCourierPromo: Boolean,
+            shippingProductId: Int
+        )
 
-        void sendAnalyticsOnClickTopDonation();
+        fun sendAnalyticsOnClickDurationThatContainPromo(
+            isCourierPromo: Boolean,
+            duration: String?,
+            isCod: Boolean,
+            shippingPriceMin: String?,
+            shippingPriceHigh: String?
+        )
 
-        void sendAnalyticsOnClickChangeAddress();
+        fun sendAnalyticsOnClickLogisticThatContainPromo(
+            isCourierPromo: Boolean,
+            shippingProductId: Int,
+            isCod: Boolean
+        )
 
-        void sendAnalyticsOnClickSubtotal();
-
-        void sendAnalyticsOnClickCheckBoxDropShipperOption();
-
-        void sendAnalyticsOnClickCheckBoxInsuranceOption();
-
-        void sendAnalyticsScreenName(String screenName);
-
-        void sendAnalyticsOnClickEditPinPointErrorValidation(String message);
-
-        void sendAnalyticsCourierNotComplete();
-
-        void sendAnalyticsPromoRedState();
-
-        void sendAnalyticsDropshipperNotComplete();
-
-        void sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
-
-        void sendAnalyticsOnClickChecklistShipmentRecommendationDuration(String duration);
-
-        void sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(String courier);
-
-        void sendAnalyticsOnClickChangeCourierShipmentRecommendation(ShipmentCartItemModel shipmentCartItemModel);
-
-        void sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier();
-
-        void sendAnalyticsOnClickChangeDurationShipmentRecommendation();
-
-        void sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(int shippingProductId);
-
-        void sendAnalyticsOnDisplayDurationThatContainPromo(boolean isCourierPromo, String duration);
-
-        void sendAnalyticsOnDisplayLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
-
-        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh);
-
-        void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod);
-
-        void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId);
-
-        void sendAnalyticsViewPromoAfterAdjustItem(String msg);
+        fun sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerId: String?)
+        fun sendAnalyticsViewPromoAfterAdjustItem(msg: String?)
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-
-        PublishSubject<Boolean> getLogisticDonePublisher();
-
-        void setScheduleDeliveryMapData(String cartString, ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData);
-
-        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
-                                            boolean isTradeIn, boolean skipUpdateOnboardingState,
-                                            boolean isReloadAfterPriceChangeHinger,
-                                            String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
-
-        void processCheckout(boolean isOneClickShipment, boolean isTradeIn,
-                             boolean isTradeInDropOff, String deviceId,
-                             String cornerId, String leasingId, boolean isPlusSelected);
-
-        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
-
-        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode, boolean showLoading);
-
-        void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
-
-        void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
-
-        void processSaveShipmentState();
-
-        void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
-                                             ShipmentDetailData shipmentDetailData,
-                                             ShipmentCartItemModel shipmentCartItemModel,
-                                             List<ShopShipment> shopShipmentList,
-                                             boolean isInitialLoad, ArrayList<Product> products,
-                                             String cartString, boolean isTradeInDropOff,
-                                             RecipientAddressModel recipientAddressModel,
-                                             boolean isForceReload, boolean skipMvc);
-
-        RecipientAddressModel getRecipientAddressModel();
-
-        void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
-
-        List<ShipmentCartItemModel> getShipmentCartItemModelList();
-
-        void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList);
-
-        void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList);
-
-        ShipmentCostModel getShipmentCostModel();
-
-        EgoldAttributeModel getEgoldAttributeModel();
-
-        ShipmentTickerErrorModel getShipmentTickerErrorModel();
-
-        TickerAnnouncementHolderData getTickerAnnouncementHolderData();
-
-        void setTickerAnnouncementHolderData(TickerAnnouncementHolderData tickerAnnouncementHolderData);
-
-        void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
-
-        void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel);
-
-        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
-
-        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList);
-
-        void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode, ShipmentCartItemModel shipmentCartItemModel);
-
-        void cancelAutoApplyPromoStackAfterClash(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
-
-        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
-                                   ChosenAddressModel chosenAddressModel,
-                                   boolean isOneClickShipment,
-                                   boolean isTradeInDropOff,
-                                   boolean isHandleFallback,
-                                   boolean reloadCheckoutPage);
-
-        void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
-
-        ShipmentDonationModel getShipmentDonationModel();
-
-        void setListShipmentCrossSellModel(ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel);
-
-        ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel();
-
-        void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel);
-
-        ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
-
-        void setShippingCourierViewModelsState(List<ShippingCourierUiModel> shippingCourierUiModelsState,
-                                               int orderNumber);
-
-        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int orderNumber);
-
-        void setCouponStateChanged(boolean appliedCoupon);
-
-        boolean getCouponStateChanged();
-
-        CodModel getCodData();
-
-        CampaignTimerUi getCampaignTimer();
-
-        boolean isShowOnboarding();
-
-        void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
-                                                           Map<String, String> tradeInCustomDimension,
-                                                           String step,
-                                                           String eventCategory,
-                                                           String eventAction,
-                                                           String eventLabel,
-                                                           String leasingId,
-                                                           String pageSource);
-
-        List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
-
-        List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(List<ShipmentCartItemModel> shipmentCartItemModels);
-
-        boolean isIneligiblePromoDialogEnabled();
-
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
-
-        void releaseBooking();
-
-        void fetchEpharmacyData();
-
-        void setPrescriptionIds(ArrayList<String> prescriptionIds);
-
-        void setMiniConsultationResult(ArrayList<EPharmacyMiniConsultationResult> results);
-
-        void setLastApplyData(LastApplyUiModel lastApplyData);
-
-        LastApplyUiModel getLastApplyData();
-
-        void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
-
-        ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
-
-        void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest);
-
-        ValidateUsePromoRequest getLastValidateUseRequest();
-
-        void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel);
-
-        UploadPrescriptionUiModel getUploadPrescriptionUiModel();
-
-        String generateRatesMvcParam(String cartString);
-
-        String getCartDataForRates();
-
-        void setCheckoutData(CheckoutData checkoutData);
-
-        void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
-
-        void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
-
-        ShipmentUpsellModel getShipmentUpsellModel();
-
-        ShipmentNewUpsellModel getShipmentNewUpsellModel();
-
-        Pair<ArrayList<String>, ArrayList<String>> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
-
-        void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
-
-        void validateClearAllBoPromo();
-
-        void doUnapplyBo(String uniqueId, String promoCode);
-
-        List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel);
-
-        void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel);
-
-        void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
-
-        void hitClearAllBo();
-
-        void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
-                          boolean isTradeIn, boolean skipUpdateOnboardingState,
-                          boolean isReloadAfterPriceChangeHinger,
-                          String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
-
-        void clearAllBoOnTemporaryUpsell();
-
-        boolean validatePrescriptionOnBackPressed();
+    interface Presenter : CustomerPresenter<View?> {
+        val logisticDonePublisher: PublishSubject<Boolean?>?
+        fun setScheduleDeliveryMapData(
+            cartString: String?,
+            shipmentScheduleDeliveryMapData: ShipmentScheduleDeliveryMapData?
+        )
+
+        fun processInitialLoadCheckoutPage(
+            isReloadData: Boolean,
+            isOneClickShipment: Boolean,
+            isTradeIn: Boolean,
+            skipUpdateOnboardingState: Boolean,
+            isReloadAfterPriceChangeHinger: Boolean,
+            cornerId: String?,
+            deviceId: String?,
+            leasingId: String?,
+            isPlusSelected: Boolean
+        )
+
+        fun processCheckout(
+            isOneClickShipment: Boolean,
+            isTradeIn: Boolean,
+            isTradeInDropOff: Boolean,
+            deviceId: String?,
+            cornerId: String?,
+            leasingId: String?,
+            isPlusSelected: Boolean
+        )
+
+        fun checkPromoCheckoutFinalShipment(
+            validateUsePromoRequest: ValidateUsePromoRequest?,
+            lastSelectedCourierOrderIndex: Int,
+            cartString: String?
+        )
+
+        fun doValidateUseLogisticPromo(
+            cartPosition: Int,
+            cartString: String?,
+            validateUsePromoRequest: ValidateUsePromoRequest?,
+            promoCode: String?,
+            showLoading: Boolean
+        )
+
+        fun processCheckPromoCheckoutCodeFromSelectedCourier(
+            promoCode: String?,
+            itemPosition: Int,
+            noToast: Boolean
+        )
+
+        fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel?)
+        fun processSaveShipmentState()
+        fun processGetCourierRecommendation(
+            shipperId: Int,
+            spId: Int,
+            itemPosition: Int,
+            shipmentDetailData: ShipmentDetailData?,
+            shipmentCartItemModel: ShipmentCartItemModel?,
+            shopShipmentList: List<ShopShipment?>?,
+            isInitialLoad: Boolean,
+            products: ArrayList<Product?>?,
+            cartString: String?,
+            isTradeInDropOff: Boolean,
+            recipientAddressModel: RecipientAddressModel?,
+            isForceReload: Boolean,
+            skipMvc: Boolean
+        )
+
+        var recipientAddressModel: RecipientAddressModel?
+        var shipmentCartItemModelList: List<ShipmentCartItemModel?>?
+        fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest?>?)
+        var shipmentCostModel: ShipmentCostModel?
+        var egoldAttributeModel: EgoldAttributeModel?
+        val shipmentTickerErrorModel: ShipmentTickerErrorModel?
+        var tickerAnnouncementHolderData: TickerAnnouncementHolderData
+        fun editAddressPinpoint(
+            latitude: String?,
+            longitude: String?,
+            shipmentCartItemModel: ShipmentCartItemModel?,
+            locationPass: LocationPass?
+        )
+
+        fun cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata?>?)
+        fun cancelAutoApplyPromoStackLogistic(
+            itemPosition: Int,
+            promoCode: String?,
+            shipmentCartItemModel: ShipmentCartItemModel?
+        )
+
+        fun cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel: ClashingInfoDetailUiModel?)
+        fun changeShippingAddress(
+            newRecipientAddressModel: RecipientAddressModel?,
+            chosenAddressModel: ChosenAddressModel?,
+            isOneClickShipment: Boolean,
+            isTradeInDropOff: Boolean,
+            isHandleFallback: Boolean,
+            reloadCheckoutPage: Boolean
+        )
+
+        var shipmentDonationModel: ShipmentDonationModel?
+        var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel?>?
+        var shipmentButtonPaymentModel: ShipmentButtonPaymentModel?
+        fun setShippingCourierViewModelsState(
+            shippingCourierUiModelsState: List<ShippingCourierUiModel?>?,
+            orderNumber: Int
+        )
+
+        fun getShippingCourierViewModelsState(orderNumber: Int): List<ShippingCourierUiModel?>?
+        var couponStateChanged: Boolean
+        val codData: CodModel?
+        val campaignTimer: CampaignTimerUi?
+        val isShowOnboarding: Boolean
+        fun triggerSendEnhancedEcommerceCheckoutAnalytics(
+            dataCheckoutRequests: List<DataCheckoutRequest?>?,
+            tradeInCustomDimension: Map<String?, String?>?,
+            step: String?,
+            eventCategory: String?,
+            eventAction: String?,
+            eventLabel: String?,
+            leasingId: String?,
+            pageSource: String?
+        )
+
+        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+            cartString: String?,
+            shippingDuration: String?,
+            shippingPrice: String?,
+            courierName: String?
+        ): List<DataCheckoutRequest?>?
+
+        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel?>?): List<DataCheckoutRequest?>?
+        val isIneligiblePromoDialogEnabled: Boolean
+        fun generateCheckoutRequest(
+            analyticsDataCheckoutRequests: List<DataCheckoutRequest?>?,
+            isDonation: Int,
+            crossSellModelArrayList: ArrayList<ShipmentCrossSellModel?>?,
+            leasingId: String?
+        ): CheckoutRequest?
+
+        fun releaseBooking()
+        fun fetchEpharmacyData()
+        fun setPrescriptionIds(prescriptionIds: ArrayList<String?>?)
+        fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult?>?)
+        var lastApplyData: LastApplyUiModel?
+        var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?
+        fun setLatValidateUseRequest(latValidateUseRequest: ValidateUsePromoRequest?)
+        val lastValidateUseRequest: ValidateUsePromoRequest?
+        fun setUploadPrescriptionData(uploadPrescriptionUiModel: UploadPrescriptionUiModel?)
+        val uploadPrescriptionUiModel: UploadPrescriptionUiModel?
+        fun generateRatesMvcParam(cartString: String?): String?
+        val cartDataForRates: String?
+        fun setCheckoutData(checkoutData: CheckoutData?)
+        fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
+        fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
+        val shipmentUpsellModel: ShipmentUpsellModel?
+        val shipmentNewUpsellModel: ShipmentNewUpsellModel?
+        fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String?>?, ArrayList<String?>?>?
+        fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
+        fun validateClearAllBoPromo()
+        fun doUnapplyBo(uniqueId: String?, promoCode: String?)
+        fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): List<Product?>?
+        fun processBoPromoCourierRecommendation(
+            itemPosition: Int,
+            voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel?,
+            shipmentCartItemModel: ShipmentCartItemModel?
+        )
+
+        fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel?)
+        fun hitClearAllBo()
+        fun cancelUpsell(
+            isReloadData: Boolean,
+            isOneClickShipment: Boolean,
+            isTradeIn: Boolean,
+            skipUpdateOnboardingState: Boolean,
+            isReloadAfterPriceChangeHinger: Boolean,
+            cornerId: String?,
+            deviceId: String?,
+            leasingId: String?,
+            isPlusSelected: Boolean
+        )
+
+        fun clearAllBoOnTemporaryUpsell()
+        fun validatePrescriptionOnBackPressed(): Boolean
     }
-
 }
