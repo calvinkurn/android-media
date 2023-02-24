@@ -62,7 +62,7 @@ class FeedXHomeUseCase @Inject constructor(
                 }
               }
             }
-            
+
             fragment FeedXCardBanners on FeedXCardBanners {
               id
               items {
@@ -75,86 +75,10 @@ class FeedXHomeUseCase @Inject constructor(
               publishedAt
               mods
             }
-            
+
             fragment FeedXCardPost on FeedXCardPost {
-              ...FeedXCardWithProductTag
-            }
-            
-            fragment FeedXCardPlay on FeedXCardPlay {
-              playChannelID
-              ...FeedXCardWithProductTag
-            }
-            
-            fragment FeedXCardTopAds on FeedXCardTopAds {
-              id
-              author {
-                ...FeedXAuthor
-              }
-              promos
-              items {
-                id
-                product {
-                  ...FeedXProduct
-                }
-                mods
-              }
-              publishedAt
-              mods
-            }
-            
-            fragment FeedXCardProductsHighlight on FeedXCardProductsHighlight {
-              ...FeedXCard
-              type
-              hasVoucher
-              cta {
-                text
-                subtitle
-                color
-                colorGradient {
-                  color
-                  position
-                }
-                __typename
-              }
-              ribbonImageURL
-              campaign {
-                id
-                status
-                name
-                shortName
-                startTime
-                endTime
-                restrictions {
-                  label
-                  isActive
-                  __typename
-                }
-              }
-              appLinkProductList
-              webLinkProductList
-              maximumDiscountPercentage
-              maximumDiscountPercentageFmt
-              totalProducts
-              products {
-                ...FeedXProduct
-                priceMasked
-                priceMaskedFmt
-                stockWording
-                stockSoldPercentage
-                cartable
-                isCashback
-                cashbackFmt
-              }
-            }
-            
-            fragment FeedXCardPlaceholder on FeedXCardPlaceholder {
               id
               type
-              mods
-            }
-            
-            fragment FeedXCard on FeedXCard {
-              id
               author {
                 ...FeedXAuthor
               }
@@ -207,41 +131,178 @@ class FeedXHomeUseCase @Inject constructor(
               }
             }
             
-            fragment FeedXCardWithProductTag on FeedXCardWithProductTag {
-              ...FeedXCard
-              actionButtonLabel
-              actionButtonOperationWeb
-              actionButtonOperationApp
-              reportable
-              media {
-                id
-                type
-                coverURL
-                mediaURL
-                appLink
-                webLink
-                tagging {
-                  tagIndex
-                  posX
-                  posY
+            fragment FeedXCardPlay on FeedXCardPlay {
+              playChannelID
+              id
+              type
+              author {
+                ...FeedXAuthor
+              }
+              title
+              subTitle
+              text
+              appLink
+              webLink
+              like {
+                label
+                count
+                countFmt
+                likedBy
+                isLiked
+                mods
+              }
+              comments {
+                label
+                count
+                countFmt
+                items {
+                  id
+                  author {
+                    ...FeedXAuthor
+                  }
+                  text
+                  mods
                 }
                 mods
               }
-              mediaRatio {
-                width
-                height
-              }
-              tags {
-                ...FeedXProduct
-              }
-              hashtagApplinkFmt
-              hashtagWebLinkFmt
-              views {
+              share {
                 label
+                operation
+                mods
+              }
+              followers {
+                label
+                isFollowed
                 count
                 countFmt
                 mods
               }
+              publishedAt
+              mods
+              editable
+              deletable
+              detailScore {
+                label
+                value
+              }
+            }
+            
+            fragment FeedXCardTopAds on FeedXCardTopAds {
+              id
+              author {
+                ...FeedXAuthor
+              }
+              promos
+              items {
+                id
+                product {
+                  ...FeedXProduct
+                }
+                mods
+              }
+              publishedAt
+              mods
+            }
+            
+            fragment FeedXCardProductsHighlight on FeedXCardProductsHighlight {
+              id
+              type
+              author {
+                ...FeedXAuthor
+              }
+              title
+              subTitle
+              text
+              appLink
+              webLink
+              like {
+                label
+                count
+                countFmt
+                likedBy
+                isLiked
+                mods
+              }
+              comments {
+                label
+                count
+                countFmt
+                items {
+                  id
+                  author {
+                    ...FeedXAuthor
+                  }
+                  text
+                  mods
+                }
+                mods
+              }
+              share {
+                label
+                operation
+                mods
+              }
+              followers {
+                label
+                isFollowed
+                count
+                countFmt
+                mods
+              }
+              publishedAt
+              mods
+              editable
+              deletable
+              detailScore {
+                label
+                value
+              }
+              hasVoucher
+              cta {
+                text
+                subtitle
+                color
+                colorGradient {
+                  color
+                  position
+                }
+                __typename
+              }
+              ribbonImageURL
+              campaign {
+                id
+                status
+                name
+                shortName
+                startTime
+                endTime
+                restrictions {
+                  label
+                  isActive
+                  __typename
+                }
+              }
+              appLinkProductList
+              webLinkProductList
+              maximumDiscountPercentage
+              maximumDiscountPercentageFmt
+              totalProducts
+              products {
+                ...FeedXProduct
+                priceMasked
+                priceMaskedFmt
+                stockWording
+                stockSoldPercentage
+                cartable
+                isCashback
+                cashbackFmt
+              }
+            }
+            
+            fragment FeedXCardPlaceholder on FeedXCardPlaceholder {
+              id
+              type
+              mods
             }
             
             fragment FeedXAuthor on FeedXAuthor {
@@ -265,7 +326,7 @@ class FeedXHomeUseCase @Inject constructor(
               star
               price
               priceFmt
-              isDiscount
+              isDiscountÏ
               discount
               discountFmt
               priceOriginal
@@ -277,6 +338,7 @@ class FeedXHomeUseCase @Inject constructor(
               bebasOngkirStatus
               bebasOngkirURL
               shopID
+              shopName
               mods
             }
         """
