@@ -94,6 +94,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -121,6 +122,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -146,6 +148,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -170,6 +173,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -197,6 +201,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -224,6 +229,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -248,6 +254,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -272,6 +279,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -296,6 +304,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -323,6 +332,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -349,6 +359,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -376,6 +387,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -403,6 +415,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -430,6 +443,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -454,6 +468,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -493,6 +508,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -517,6 +533,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -555,6 +572,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -600,6 +618,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -632,6 +651,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -822,6 +842,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -846,6 +867,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -878,6 +900,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -927,6 +950,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -977,6 +1001,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1003,6 +1028,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1032,6 +1058,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1056,6 +1083,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1089,6 +1117,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1120,6 +1149,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1151,6 +1181,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1182,6 +1213,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1211,6 +1243,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1244,6 +1277,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1269,6 +1303,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1299,6 +1334,7 @@ class OrderSummaryPageRobot {
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
@@ -1404,7 +1440,7 @@ class OrderSummaryPageRobot {
                 object :
                     BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
-                        // no op
+                        /* no-op */
                     }
 
                     override fun matches(item: Any?): Boolean {
