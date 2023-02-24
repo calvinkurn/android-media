@@ -5,17 +5,17 @@ import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummar
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 
 data class MiniCartListUiModel(
-        var title: String = "",
-        var maximumShippingWeight: Int = 0,
-        var maximumShippingWeightErrorMessage: String = "",
-        var miniCartWidgetUiModel: MiniCartWidgetData = MiniCartWidgetData(),
-        var miniCartSummaryTransactionUiModel: MiniCartSummaryTransactionUiModel = MiniCartSummaryTransactionUiModel(),
-        var visitables: MutableList<Visitable<*>> = mutableListOf(),
-        var chatVisitables: MutableList<Visitable<*>> = mutableListOf(),
-        var isFirstLoad: Boolean = false,
-        var needToCalculateAfterLoad: Boolean = false,
-        var availableProductIds: ArrayList<String> = arrayListOf(),
-        var availableBundleIds: ArrayList<String> = arrayListOf()
+    var title: String = "",
+    var maximumShippingWeight: Int = 0,
+    var maximumShippingWeightErrorMessage: String = "",
+    var miniCartWidgetUiModel: MiniCartWidgetData = MiniCartWidgetData(),
+    var miniCartSummaryTransactionUiModel: MiniCartSummaryTransactionUiModel = MiniCartSummaryTransactionUiModel(),
+    var visitables: MutableList<Visitable<*>> = mutableListOf(),
+    var chatVisitables: MutableList<Visitable<*>> = mutableListOf(),
+    var isFirstLoad: Boolean = false,
+    var needToCalculateAfterLoad: Boolean = false,
+    var availableProductIds: ArrayList<String> = arrayListOf(),
+    var availableBundleIds: ArrayList<String> = arrayListOf()
 ) {
 
     fun getMiniCartProductUiModelList(): List<MiniCartProductUiModel> {
@@ -79,5 +79,4 @@ data class MiniCartListUiModel(
 
         return unavailableProducts
     }
-
 }

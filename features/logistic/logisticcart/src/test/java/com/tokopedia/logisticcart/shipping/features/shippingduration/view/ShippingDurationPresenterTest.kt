@@ -356,8 +356,8 @@ class ShippingDurationPresenterTest {
     }
 
     /*
-    * convertServiceListToUiModel
-    */
+     * convertServiceListToUiModel
+     */
 
     @Test
     fun `When service list has service with ui rates hidden Then dont show in bottomsheet`() {
@@ -561,7 +561,7 @@ class ShippingDurationPresenterTest {
 
     /*
     OnChooseDuration
-    */
+     */
 
     @Test
     fun `When in checkout and year end promotion toggle is on and service is pinpoint error Then set pinpoint error flag`() {
@@ -1168,8 +1168,8 @@ class ShippingDurationPresenterTest {
     }
 
     /*
-    * OnLogisticPromoClicked
-    */
+     * OnLogisticPromoClicked
+     */
 
     @Test
     fun `When select promo logistic Then send courier data and service data from promo logistic data`() {

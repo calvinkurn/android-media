@@ -68,6 +68,6 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
                     }
                 }
             }
-            """.trimIndent()
+        """.trimIndent()
     }
 }

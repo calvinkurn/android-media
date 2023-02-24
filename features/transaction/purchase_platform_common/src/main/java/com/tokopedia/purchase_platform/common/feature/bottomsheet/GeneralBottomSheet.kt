@@ -50,7 +50,7 @@ class GeneralBottomSheet {
             isSkipCollapseState = true
             overlayClickDismiss = true
             clearContentPadding = true
-            val binding = LayoutGeneralBottomSheetBinding.inflate(LayoutInflater.from(context), null ,false)
+            val binding = LayoutGeneralBottomSheetBinding.inflate(LayoutInflater.from(context), null, false)
             setupChildView(binding)
             setChild(binding.root)
         }

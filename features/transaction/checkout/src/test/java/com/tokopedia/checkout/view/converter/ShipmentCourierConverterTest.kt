@@ -251,5 +251,4 @@ class ShipmentCourierConverterTest {
             courierItemData.scheduleDeliveryUiModel!!.deliveryProduct.validationMetadata
         )
     }
-
 }
