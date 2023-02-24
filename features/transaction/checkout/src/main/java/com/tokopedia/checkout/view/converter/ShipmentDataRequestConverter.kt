@@ -84,9 +84,10 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         shopProductCheckout.isTokoNow = shipmentCartItemModel.isTokoNow
         shopProductCheckout.needToSendValidationMetadata = false
         shopProductCheckout.validationMetadata = ""
-        if (shipmentCartItemModel.addOnsOrderLevelModel != null) {
+        val addOnsOrderLevelModel = shipmentCartItemModel.addOnsOrderLevelModel
+        if (addOnsOrderLevelModel != null) {
             shopProductCheckout.giftingAddOnOrderLevel =
-                convertGiftingAddOnModelRequest(shipmentCartItemModel.addOnsOrderLevelModel)
+                convertGiftingAddOnModelRequest(addOnsOrderLevelModel)
         }
         return shopProductCheckout
     }
@@ -115,12 +116,17 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                 val shippingInfoCheckoutRequest = ShippingInfoCheckoutRequest()
                 shippingInfoCheckoutRequest.shippingId = selectedShipper.shipperId
                 shippingInfoCheckoutRequest.spId = selectedShipper.shipperProductId
-                if (courierItemData.scheduleDeliveryUiModel != null && courierItemData.scheduleDeliveryUiModel!!.isSelected) {
+                val scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel
+                if (scheduleDeliveryUiModel?.isSelected == true) {
                     shippingInfoCheckoutRequest.ratesId =
-                        if (courierItemData.scheduleDeliveryUiModel!!.ratesId != 0L) courierItemData.scheduleDeliveryUiModel!!.ratesId.toString() else ""
+                        if (scheduleDeliveryUiModel.ratesId != 0L) {
+                            scheduleDeliveryUiModel.ratesId.toString()
+                        } else {
+                            ""
+                        }
                 } else {
                     shippingInfoCheckoutRequest.ratesId =
-                        if (shipmentDetailData.shippingCourierViewModels != null) shipmentDetailData.shippingCourierViewModels!![0].ratesId else ""
+                        shipmentDetailData.shippingCourierViewModels?.first()?.ratesId ?: ""
                 }
                 shippingInfoCheckoutRequest.checksum = selectedShipper.checksum
                 shippingInfoCheckoutRequest.ut = selectedShipper.ut
@@ -132,9 +138,9 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                 shopProductCheckout.fcancelPartial =
                     if (shipmentDetailData.usePartialOrder) 1 else 0
                 shopProductCheckout.finsurance =
-                    if (shipmentDetailData.useInsurance != null && shipmentDetailData.useInsurance!!) 1 else 0
+                    if (shipmentDetailData.useInsurance == true) 1 else 0
                 shopProductCheckout.isOrderPriority =
-                    if (shipmentDetailData.isOrderPriority != null && shipmentDetailData.isOrderPriority!!) 1 else 0
+                    if (shipmentDetailData.isOrderPriority == true) 1 else 0
                 shopProductCheckout.isPreorder =
                     if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
                 shopProductCheckout.shopId = shipmentCartItemModel.shopId
@@ -148,10 +154,11 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                 shopProductCheckout.validationMetadata = shipmentCartItemModel.validationMetadata
                 val promoCodes = ArrayList<String>()
                 val promoRequests: MutableList<PromoRequest> = ArrayList()
-                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                    promoCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
+                if (voucherLogisticItemUiModel != null) {
+                    promoCodes.add(voucherLogisticItemUiModel.code)
                     val promoRequest = PromoRequest()
-                    promoRequest.code = shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                    promoRequest.code = voucherLogisticItemUiModel.code
                     promoRequest.type = PromoRequest.TYPE_LOGISTIC
                     promoRequests.add(promoRequest)
                     shopProductCheckout.freeShippingMetadata = selectedShipper.freeShippingMetadata
@@ -160,7 +167,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                 if (promoCodes.size > 0) {
                     shopProductCheckout.promoCodes = promoCodes
                 }
-                if (shipmentDetailData.useDropshipper != null && shipmentDetailData.useDropshipper!!) {
+                if (shipmentDetailData.useDropshipper == true) {
                     val dropshipDataCheckoutRequest = DropshipDataCheckoutRequest()
                     dropshipDataCheckoutRequest.name = shipmentDetailData.dropshipperName
                     dropshipDataCheckoutRequest.telpNo = shipmentDetailData.dropshipperPhone
@@ -169,9 +176,10 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                 } else {
                     shopProductCheckout.isDropship = 0
                 }
-                if (shipmentCartItemModel.addOnsOrderLevelModel != null) {
+                val addOnsOrderLevelModel = shipmentCartItemModel.addOnsOrderLevelModel
+                if (addOnsOrderLevelModel != null) {
                     shopProductCheckout.giftingAddOnOrderLevel =
-                        convertGiftingAddOnModelRequest(shipmentCartItemModel.addOnsOrderLevelModel)
+                        convertGiftingAddOnModelRequest(addOnsOrderLevelModel)
                 }
                 if (shipmentCartItemModel.hasEthicalProducts) {
                     for (cartItemModel in shipmentCartItemModel.cartItemModels) {
@@ -212,12 +220,13 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         var courierId = ""
         var serviceId = ""
         var shippingPrice = ""
-        if (shipmentDetailData?.selectedCourier != null) {
+        val selectedCourier = shipmentDetailData?.selectedCourier
+        if (selectedCourier != null) {
             courierId =
-                shipmentDetailData.selectedCourier!!.selectedShipper.shipperProductId.toString()
-            serviceId = shipmentDetailData.selectedCourier!!.selectedShipper.serviceId.toString()
+                selectedCourier.selectedShipper.shipperProductId.toString()
+            serviceId = selectedCourier.selectedShipper.serviceId.toString()
             shippingPrice =
-                shipmentDetailData.selectedCourier!!.selectedShipper.shipperPrice.toString()
+                selectedCourier.selectedShipper.shipperPrice.toString()
         }
         val productDataCheckoutRequest = ProductDataCheckoutRequest()
         productDataCheckoutRequest.productId = cartItem.productId
@@ -276,15 +285,15 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         return productDataCheckoutRequest
     }
 
-    private fun convertGiftingAddOnModelRequest(addOnsDataModel: AddOnsDataModel?): ArrayList<AddOnGiftingRequest> {
+    private fun convertGiftingAddOnModelRequest(addOnsDataModel: AddOnsDataModel): ArrayList<AddOnGiftingRequest> {
         val listAddOnProductRequest = ArrayList<AddOnGiftingRequest>()
-        if (addOnsDataModel!!.status == 1) {
-            for ((_, addOnId, addOnMetadata, addOnQty) in addOnsDataModel.addOnsDataItemModelList) {
+        if (addOnsDataModel.status == 1) {
+            for (addOnItem in addOnsDataModel.addOnsDataItemModelList) {
                 val addOnGiftingRequest = AddOnGiftingRequest()
-                addOnGiftingRequest.itemId = addOnId
+                addOnGiftingRequest.itemId = addOnItem.addOnId
                 addOnGiftingRequest.itemType = "add_ons"
-                addOnGiftingRequest.itemQty = addOnQty.toInt()
-                addOnGiftingRequest.itemMetadata = _gson.toJson(addOnMetadata)
+                addOnGiftingRequest.itemQty = addOnItem.addOnQty.toInt()
+                addOnGiftingRequest.itemMetadata = _gson.toJson(addOnItem.addOnMetadata)
                 listAddOnProductRequest.add(addOnGiftingRequest)
             }
         }
@@ -321,9 +330,10 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         fun generateRatesFeature(courierItemData: CourierItemData): RatesFeature {
             val result = RatesFeature()
             val otdg = OntimeDeliveryGuarantee()
-            if (courierItemData.selectedShipper.ontimeDelivery != null) {
-                otdg.available = courierItemData.selectedShipper.ontimeDelivery!!.available
-                otdg.duration = courierItemData.selectedShipper.ontimeDelivery!!.value
+            val ontimeDelivery = courierItemData.selectedShipper.ontimeDelivery
+            if (ontimeDelivery != null) {
+                otdg.available = ontimeDelivery.available
+                otdg.duration = ontimeDelivery.value
             }
             result.ontimeDeliveryGuarantee = otdg
             return result

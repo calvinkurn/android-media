@@ -38,7 +38,9 @@ class CheckoutWebViewActivity : BaseSimpleWebViewActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                if (mCallerCode == CALLER_CODE_COD) mCodTracker!!.eventClickXPadaSyarat()
+                if (mCallerCode == CALLER_CODE_COD) {
+                    mCodTracker?.eventClickXPadaSyarat()
+                }
                 onBackPressed()
                 return true
             }

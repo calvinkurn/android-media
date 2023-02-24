@@ -19,7 +19,7 @@ import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
-import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import javax.inject.Inject
 
@@ -33,22 +33,14 @@ class ShipmentDataConverter @Inject constructor() {
         if (cartShipmentAddressFormData.groupAddress.isNotEmpty()) {
             var defaultAddress: UserAddress? = null
             var tradeInDropOffAddress: UserAddress? = null
-            if (cartShipmentAddressFormData.addressesData != null && cartShipmentAddressFormData.addressesData!!.data != null) {
-                if (cartShipmentAddressFormData.addressesData!!.data!!.defaultAddress != null &&
-                    isNotNullOrEmptyOrZero(
-                            cartShipmentAddressFormData.addressesData!!.data!!.defaultAddress!!.addressId
-                        )
-                ) {
-                    defaultAddress =
-                        cartShipmentAddressFormData.addressesData!!.data!!.defaultAddress
+            val addressesData = cartShipmentAddressFormData.addressesData
+            val data = addressesData?.data
+            if (data != null) {
+                if (data.defaultAddress?.addressId?.isNotBlankOrZero() == true) {
+                    defaultAddress = data.defaultAddress
                 }
-                if (cartShipmentAddressFormData.addressesData!!.data!!.tradeInAddress != null &&
-                    isNotNullOrEmptyOrZero(
-                            cartShipmentAddressFormData.addressesData!!.data!!.tradeInAddress!!.addressId
-                        )
-                ) {
-                    tradeInDropOffAddress =
-                        cartShipmentAddressFormData.addressesData!!.data!!.tradeInAddress
+                if (data.tradeInAddress?.addressId?.isNotBlankOrZero() == true) {
+                    tradeInDropOffAddress = data.tradeInAddress
                 }
             }
             var isTradeIn = false
@@ -63,7 +55,9 @@ class ShipmentDataConverter @Inject constructor() {
                                 break
                             }
                         }
-                        if (foundData) break
+                        if (foundData) {
+                            break
+                        }
                     }
                 }
             }
@@ -71,17 +65,16 @@ class ShipmentDataConverter @Inject constructor() {
                 createRecipientAddressModel(defaultAddress, tradeInDropOffAddress, isTradeIn)
             recipientAddressModel.selectedTabIndex =
                 RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT
-            if (cartShipmentAddressFormData.addressesData != null) {
-                recipientAddressModel.disabledAddress =
-                    cartShipmentAddressFormData.addressesData!!.disableTabs
-                if (cartShipmentAddressFormData.addressesData!!.active.equals(
+            if (addressesData != null) {
+                recipientAddressModel.disabledAddress = addressesData.disableTabs
+                if (addressesData.active.equals(
                         AddressesData.DEFAULT_ADDRESS,
                         ignoreCase = true
                     )
                 ) {
                     recipientAddressModel.selectedTabIndex =
                         RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT
-                } else if (cartShipmentAddressFormData.addressesData!!.active.equals(
+                } else if (addressesData.active.equals(
                         AddressesData.TRADE_IN_ADDRESS,
                         ignoreCase = true
                     )
@@ -96,10 +89,11 @@ class ShipmentDataConverter @Inject constructor() {
     }
 
     fun getShipmentDonationModel(cartShipmentAddressFormData: CartShipmentAddressFormData): ShipmentDonationModel? {
-        return if (cartShipmentAddressFormData.donation != null) {
+        val donation = cartShipmentAddressFormData.donation
+        return if (donation != null) {
             val shipmentDonationModel = ShipmentDonationModel()
-            shipmentDonationModel.isChecked = cartShipmentAddressFormData.donation!!.isChecked
-            shipmentDonationModel.donation = cartShipmentAddressFormData.donation!!
+            shipmentDonationModel.isChecked = donation.isChecked
+            shipmentDonationModel.donation = donation
             shipmentDonationModel
         } else {
             null
@@ -269,11 +263,11 @@ class ShipmentDataConverter @Inject constructor() {
         shipmentCartItemModel: ShipmentCartItemModel,
         userAddress: UserAddress,
         groupShop: GroupShop,
-        keroToken: String?,
+        keroToken: String,
         keroUnixTime: String,
         hasTradeInDropOffAddress: Boolean,
         orderIndex: Int,
-        addOnWording: AddOnWordingData?,
+        addOnWording: AddOnWordingData,
         username: String
     ) {
         shipmentCartItemModel.shopShipmentList = groupShop.shopShipments
@@ -350,7 +344,7 @@ class ShipmentDataConverter @Inject constructor() {
                 userAddress,
                 groupShop,
                 shipmentCartItemModel,
-                keroToken!!,
+                keroToken,
                 keroUnixTime
             )
     }
@@ -359,7 +353,7 @@ class ShipmentDataConverter @Inject constructor() {
         products: List<Product>,
         groupShop: GroupShop,
         username: String,
-        receiverName: String?
+        receiverName: String
     ): List<CartItemModel> {
         val cartItemModels: MutableList<CartItemModel> = ArrayList()
         for (product in products) {
@@ -372,7 +366,7 @@ class ShipmentDataConverter @Inject constructor() {
         product: Product,
         groupShop: GroupShop,
         username: String,
-        receiverName: String?
+        receiverName: String
     ): CartItemModel {
         val cartItemModel = CartItemModel()
         cartItemModel.cartId = product.cartId
@@ -449,16 +443,16 @@ class ShipmentDataConverter @Inject constructor() {
         cartItemModel.addOnProductLevelModel = product.addOnProduct
         cartItemModel.ethicalDrugDataModel = product.ethicalDrugs
         cartItemModel.addOnDefaultFrom = username
-        cartItemModel.addOnDefaultTo = receiverName!!
+        cartItemModel.addOnDefaultTo = receiverName
         cartItemModel.cartString = groupShop.cartString
         cartItemModel.warehouseId = groupShop.fulfillmentId.toString()
         cartItemModel.isTokoCabang = groupShop.isFulfillment
         return cartItemModel
     }
 
-    private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData?): AddOnWordingModel {
+    private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData): AddOnWordingModel {
         val addOnWordingModel = AddOnWordingModel()
-        addOnWordingModel.onlyGreetingCard = addOnWordingData!!.onlyGreetingCard
+        addOnWordingModel.onlyGreetingCard = addOnWordingData.onlyGreetingCard
         addOnWordingModel.packagingAndGreetingCard = addOnWordingData.packagingAndGreetingCard
         addOnWordingModel.invoiceNotSendToRecipient = addOnWordingData.invoiceNotSendToRecipient
         return addOnWordingModel

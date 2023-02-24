@@ -20,8 +20,8 @@ class RatesDataConverter @Inject constructor() {
         recipientAddressModel: RecipientAddressModel
     ): ShipmentDetailData {
         val shipmentDetailData = ShipmentDetailData()
-        val shipmentCartData = shipmentCartItemModel.shipmentCartData
-        shipmentCartData!!.destinationAddress = recipientAddressModel.street
+        val shipmentCartData = shipmentCartItemModel.shipmentCartData!!
+        shipmentCartData.destinationAddress = recipientAddressModel.street
         shipmentCartData.destinationDistrictId = recipientAddressModel.destinationDistrictId
         shipmentCartData.destinationLatitude = recipientAddressModel.latitude
         shipmentCartData.destinationLongitude = recipientAddressModel.longitude
@@ -82,7 +82,7 @@ class RatesDataConverter @Inject constructor() {
         shipmentCartData.weightActual = totalWeightActual.toDouble()
         shipmentCartData.preOrderDuration = preOrderDuration
         shipmentCartData.isFulfillment = shipmentCartItemModel.isFulfillment
-        shipmentCartData.shopTier = shipmentCartItemModel.shopTypeInfoData!!.shopTier
+        shipmentCartData.shopTier = shipmentCartItemModel.shopTypeInfoData.shopTier
         return shipmentCartData
     }
 
@@ -169,11 +169,7 @@ class RatesDataConverter @Inject constructor() {
     companion object {
         @JvmStatic
         fun getLogisticPromoCode(itemModel: ShipmentCartItemModel): String {
-            return if (itemModel.voucherLogisticItemUiModel != null) {
-                itemModel.voucherLogisticItemUiModel!!.code
-            } else {
-                ""
-            }
+            return itemModel.voucherLogisticItemUiModel?.code ?: ""
         }
     }
 }
