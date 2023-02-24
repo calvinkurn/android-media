@@ -36,7 +36,7 @@ import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHead
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 
-class ShopPageHeaderHeaderActivity :
+class ShopPageHeaderActivity :
     BaseSimpleActivity(),
     HasComponent<ShopComponent>,
     HasSharedViewModel,
@@ -50,7 +50,7 @@ class ShopPageHeaderHeaderActivity :
         const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
 
         @JvmStatic
-        fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageHeaderHeaderActivity::class.java)
+        fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageHeaderActivity::class.java)
             .apply {
                 putExtra(SHOP_ID, shopId)
                 putExtra(SHOP_REF, shopRef)

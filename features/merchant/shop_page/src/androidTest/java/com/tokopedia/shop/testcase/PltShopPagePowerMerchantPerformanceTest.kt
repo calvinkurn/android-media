@@ -9,8 +9,8 @@ import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.environment.InstrumentationShopPageHeaderTestActivity
 import com.tokopedia.shop.mock.ShopPageMockResponseConfig
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderHeaderActivity
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderHeaderActivity.Companion.FORCE_NOT_SHOWING_HOME_TAB
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity.Companion.FORCE_NOT_SHOWING_HOME_TAB
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
@@ -40,7 +40,7 @@ class PltShopPagePowerMerchantPerformanceTest {
         context?.let {
             setupGraphqlMockResponse(ShopPageMockResponseConfig())
             val intent = Intent()
-            intent.putExtra(ShopPageHeaderHeaderActivity.SHOP_ID, SAMPLE_SHOP_ID)
+            intent.putExtra(ShopPageHeaderActivity.SHOP_ID, SAMPLE_SHOP_ID)
             intent.putExtra(FORCE_NOT_SHOWING_HOME_TAB, true)
             activityRule.launchActivity(intent)
         }

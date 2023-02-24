@@ -46,7 +46,7 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SH
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderHeaderActivity.Companion.SHOP_ID
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity.Companion.SHOP_ID
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory

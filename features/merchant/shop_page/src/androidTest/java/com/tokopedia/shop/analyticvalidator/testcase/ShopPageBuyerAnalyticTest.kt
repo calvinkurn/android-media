@@ -22,7 +22,7 @@ import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil.clickTabLayoutPosition
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderHeaderActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
@@ -47,7 +47,7 @@ class ShopPageBuyerAnalyticTest {
     }
 
     @get:Rule
-    var headerActivityRule: IntentsTestRule<ShopPageHeaderHeaderActivity> = IntentsTestRule(ShopPageHeaderHeaderActivity::class.java, false, false)
+    var headerActivityRule: IntentsTestRule<ShopPageHeaderActivity> = IntentsTestRule(ShopPageHeaderActivity::class.java, false, false)
 
     @get:Rule
     var cassavaRule = CassavaTestRule()

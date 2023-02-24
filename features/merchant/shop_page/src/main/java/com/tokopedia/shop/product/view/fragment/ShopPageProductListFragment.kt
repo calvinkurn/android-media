@@ -82,7 +82,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewM
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderHeaderActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -1108,7 +1108,7 @@ class ShopPageProductListFragment :
     }
 
     private fun stopMonitoringPerformance() {
-        (activity as? ShopPageHeaderHeaderActivity)?.stopShopProductTabPerformanceMonitoring()
+        (activity as? ShopPageHeaderActivity)?.stopShopProductTabPerformanceMonitoring()
     }
 
     private fun isShopProductTabSelected(): Boolean {
