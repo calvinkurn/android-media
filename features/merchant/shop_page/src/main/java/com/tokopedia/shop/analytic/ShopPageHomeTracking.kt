@@ -201,6 +201,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
@@ -2597,6 +2598,7 @@ class ShopPageHomeTracking(
         } else {
             joinDash(bundleId, bundleName, bundlePriceCut)
         }
+        val itemListValue = joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE)
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to PROMO_VIEW,
             EVENT_ACTION to joinDash(IMPRESSION, MULTIPLE_BUNDLE_WIDGET),
@@ -2605,7 +2607,8 @@ class ShopPageHomeTracking(
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             SHOP_ID to shopId,
-            USER_ID to userId
+            USER_ID to userId,
+            TRACKER_ID to TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET,
         )
         eventMap[ECOMMERCE] = mutableMapOf(
             PROMO_VIEW to mutableMapOf(
@@ -2613,6 +2616,9 @@ class ShopPageHomeTracking(
                     mutableMapOf(
                         DIMENSION_117 to MULTIPLE_BUNDLE_WIDGET,
                         DIMENSION_118 to bundleId,
+                        DIMENSION_40 to itemListValue,
+                        DIMENSION_87 to ShopPageTrackingConstant.SHOP_PAGE,
+                        CREATIVE to "",
                         NAME to bundleName,
                         ID to bundleId,
                         PRICE to bundlePrice,
