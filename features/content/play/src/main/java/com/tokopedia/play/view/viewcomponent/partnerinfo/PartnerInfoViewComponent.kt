@@ -27,6 +27,7 @@ class PartnerInfoViewComponent(
         btnFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
         }
+        btnFollow.ellipsize = null
     }
 
     fun setInfo(info: PlayPartnerInfo) {
