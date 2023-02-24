@@ -141,6 +141,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_BO_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NOT_SEARCH_RESULT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PACKAGE_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
@@ -182,6 +183,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_CLICKED
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK
@@ -2572,14 +2574,15 @@ class ShopPageHomeTracking(
         }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             EVENT to CLICK_PG,
-            EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, selectedPackage),
+            EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, PACKAGE_VARIANT),
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
             EVENT_LABEL to eventLabel,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to productId,
             SHOP_ID to shopId,
-            USER_ID to userId
+            USER_ID to userId,
+            TRACKER_ID to TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT
         )
         sendDataLayerEvent(eventMap)
     }

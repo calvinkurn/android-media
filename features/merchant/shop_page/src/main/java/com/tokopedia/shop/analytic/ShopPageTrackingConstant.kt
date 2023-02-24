@@ -130,6 +130,7 @@ object ShopPageTrackingConstant {
     const val SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX = "click search box"
     const val PRODUCT_LIST_IMPRESSION_SHOP_DECOR = "product list impression - shop decor"
     const val CLICK_PRODUCT_SHOP_DECOR = "click product - shop decor"
+    const val PACKAGE_VARIANT = "package variant"
 
     // label
     const val CLICK_SHARE = "click share"
@@ -435,6 +436,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK = "27071"
         const val TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET = "25639"
         const val TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET = "25641"
+        const val TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT = "25642"
 
     }
 
