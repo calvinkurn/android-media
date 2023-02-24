@@ -209,6 +209,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _createAffiliateCookieAtcProduct
     private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
 
+    val isShowHomeTabConfettiLiveData: LiveData<Boolean>
+        get() = _isShowHomeTabConfettiLiveData
+    private val _isShowHomeTabConfettiLiveData = MutableLiveData<Boolean>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -269,14 +273,20 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun getMerchantVoucherCoupon(shopId: String, context: Context?, shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
+    fun getMerchantVoucherCoupon(
+        shopId: String,
+        context: Context?,
+        shopHomeVoucherUiModel: ShopHomeVoucherUiModel
+    ) {
         launchCatchError(dispatcherProvider.io, block = {
             var uiModel = shopHomeVoucherUiModel
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
+            val widgetMasterId = uiModel.widgetMasterId
             uiModel = uiModel.copy(
                 data = ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId),
                 isError = false
             )
+            uiModel.widgetMasterId = widgetMasterId
             val code = response.data?.resultStatus?.code
             if (code != CODE_STATUS_SUCCESS) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
@@ -843,7 +853,8 @@ class ShopHomeViewModel @Inject constructor(
                 isLogin,
                 isThematicWidgetShown,
                 isEnableDirectPurchase,
-                shopId
+                shopId,
+                listWidgetLayout
             )
             updateProductCardQuantity(listShopHomeWidget.toMutableList())
             val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, Visitable<*>?>().apply {
@@ -1267,5 +1278,19 @@ class ShopHomeViewModel @Inject constructor(
             it.name == ShopPageTabName.HOME
         } ?: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
         return ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(layoutData.data.homeLayoutData)
+    }
+
+    fun checkShowConfetti(
+        listShopHomeWidgetData: List<BaseShopHomeWidgetUiModel>,
+        showConfetti: Boolean
+    ) {
+        val anyFestivityWidget = listShopHomeWidgetData.any {
+            it.isFestivity
+        }
+        if(anyFestivityWidget && showConfetti) {
+            _isShowHomeTabConfettiLiveData.postValue(true)
+        } else {
+            _isShowHomeTabConfettiLiveData.postValue(false)
+        }
     }
 }

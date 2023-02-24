@@ -3,10 +3,12 @@ package com.tokopedia.productbundlewidget.presentation
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
@@ -111,12 +113,29 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         listener?.impressionMultipleBundle(selectedMultipleBundle, bundlePosition)
     }
 
+    override fun impressionProductBundleMultiple(
+        bundle: BundleUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundlePosition: Int
+    ) {
+        listener?.impressionMultipleBundle(bundle, selectedMultipleBundle, bundlePosition)
+    }
+
     override fun impressionProductItemBundleMultiple(
         selectedProduct: BundleProductUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int
     ) {
         listener?.impressionMultipleBundleProduct(selectedProduct, selectedMultipleBundle)
+    }
+
+    override fun impressionProductItemBundleMultiple(
+        bundle: BundleUiModel,
+        selectedProduct: BundleProductUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        productItemPosition: Int
+    ) {
+        listener?.impressionMultipleBundleProduct(bundle, selectedProduct, selectedMultipleBundle)
     }
 
     override fun onAttachedToWindow() {
@@ -192,6 +211,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     fun setTitleText(text: String) {
         tfTitle?.setTextAndCheckShow(text)
+    }
+
+    fun setTitleTextColor(@ColorRes color: Int) {
+        tfTitle?.setTextColor(MethodChecker.getColor(context, color))
     }
 
     fun setListener(listener: ProductBundleWidgetListener) {

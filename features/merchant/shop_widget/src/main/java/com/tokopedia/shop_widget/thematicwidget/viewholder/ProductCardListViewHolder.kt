@@ -8,20 +8,20 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.util.ProductCardMapper.mapToProductCardCampaignModel
-import com.tokopedia.shop_widget.databinding.ItemProductCardBinding
+import com.tokopedia.shop_widget.databinding.ItemProductCardListBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ProductCardViewHolder(
+class ProductCardListViewHolder(
     itemView: View,
     private var listener: ProductCardListener? = null
 ): AbstractViewHolder<ProductCardUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_product_card
+        val LAYOUT = R.layout.item_product_card_list
     }
 
-    private var binding: ItemProductCardBinding? by viewBinding()
+    private var binding: ItemProductCardListBinding? by viewBinding()
 
     override fun bind(element: ProductCardUiModel) {
         binding?.productCardGridView?.apply {
