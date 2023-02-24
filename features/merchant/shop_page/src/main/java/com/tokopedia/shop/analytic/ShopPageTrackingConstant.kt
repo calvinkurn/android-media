@@ -430,6 +430,10 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_ALL_PRODUCT_IMPRESSION = "21759"
         const val TRACKER_ID_CLICK_SHOP_DECOR = "21831"
         const val TRACKER_ID_IMPRESSION_SHOP_DECOR = "21833"
+        const val TRACKER_ID_THEMATIC_WIDGET_IMPRESSION = "27069"
+        const val TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION = "27070"
+        const val TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK = "27071"
+
     }
 
     object Key {

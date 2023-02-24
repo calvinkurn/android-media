@@ -206,6 +206,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
@@ -1738,7 +1741,7 @@ class ShopPageHomeTracking(
                 putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
                 putString(ITEM_LIST, itemList)
                 putParcelableArrayList(
-                    PROMOTIONS,
+                    ITEMS,
                     arrayListOf(
                         createCampaignProductItems(
                             position,
@@ -1818,7 +1821,7 @@ class ShopPageHomeTracking(
                 putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
                 putString(ITEM_LIST, itemList)
                 putParcelableArrayList(
-                    PROMOTIONS,
+                    ITEMS,
                     arrayListOf(
                         createCampaignProductItems(
                             position,
@@ -2695,6 +2698,7 @@ class ShopPageHomeTracking(
                     )
                 )
             )
+            putString(TRACKER_ID, TRACKER_ID_THEMATIC_WIDGET_IMPRESSION)
         }
         sendEnhanceEcommerceDataLayerEvent(VIEW_ITEM, bundle)
     }
@@ -2719,6 +2723,8 @@ class ShopPageHomeTracking(
             userId = userId,
             shopId = shopId
         ).apply {
+            val itemListValue = joinDash(VALUE_SHOP_PAGE_THEMATIC, campaignId)
+            putString(ITEM_LIST, itemListValue)
             val items = arrayListOf<Bundle>()
             products.forEachIndexed { position, productCardUiModel ->
                 items.add(
@@ -2726,11 +2732,14 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = productCardUiModel.id.orEmpty(),
                         productName = productCardUiModel.name.orEmpty(),
-                        productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong()
+                        productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong(),
+                        itemListValue = itemListValue
                     )
                 )
             }
             putParcelableArrayList(ITEMS, items)
+            putString(TRACKER_ID, TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION)
+            putString(PRODUCT_ID, products.firstOrNull()?.id.orEmpty())
         }
         sendEnhanceEcommerceDataLayerEvent(VIEW_ITEM_LIST, bundle)
     }
@@ -2756,7 +2765,8 @@ class ShopPageHomeTracking(
             userId = userId,
             shopId = shopId
         ).apply {
-            putString(ITEM_LIST, joinDash(VALUE_SHOP_PAGE_THEMATIC, campaignId))
+            val itemListValue = joinDash(VALUE_SHOP_PAGE_THEMATIC, campaignId)
+            putString(ITEM_LIST, itemListValue)
             putParcelableArrayList(
                 ITEMS,
                 arrayListOf(
@@ -2764,10 +2774,13 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = product.id.orEmpty(),
                         productName = product.name.orEmpty(),
-                        productPrice = product.displayedPrice?.getDigits().orZero().toLong()
+                        productPrice = product.displayedPrice?.getDigits().orZero().toLong(),
+                        itemListValue = itemListValue
                     )
                 )
             )
+            putString(TRACKER_ID, TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_CLICK)
+            putString(PRODUCT_ID, product.id.orEmpty())
         }
         sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
     }
@@ -2851,8 +2864,8 @@ class ShopPageHomeTracking(
             putString(TrackAppUtils.EVENT_LABEL, label)
             putString(BUSINESS_UNIT, PHYSICAL_GOODS)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-            putString(SHOP_ID, userId)
-            putString(USER_ID, shopId)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
         }
     }
 
@@ -2865,7 +2878,16 @@ class ShopPageHomeTracking(
         }
     }
 
-    private fun getItemsCampaignBundle(position: Int, productId: String, productName: String, productPrice: Long, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
+    private fun getItemsCampaignBundle(
+        position: Int,
+        productId: String,
+        productName: String,
+        productPrice: Long,
+        productBrand: String = "",
+        productCategory: String = "",
+        productVariant: String = "",
+        itemListValue: String
+    ): Bundle {
         return Bundle().apply {
             putString(INDEX, position.toString())
             putString(ITEM_BRAND, productBrand)
@@ -2873,6 +2895,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, productId)
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, productVariant)
+            putString(DIMENSION_40, itemListValue)
             putLong(PRICE, productPrice)
         }
     }
