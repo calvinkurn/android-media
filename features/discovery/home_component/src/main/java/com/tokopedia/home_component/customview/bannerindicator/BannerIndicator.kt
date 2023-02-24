@@ -36,6 +36,8 @@ class BannerIndicator : LinearLayout {
         private const val WIDTH_MAXIMUM_PROGRESS = 48
         private const val ALPHA_PROGRESS = 0.44
         private const val CONST_FULL_PROGRESS = 0.56
+        private const val MINIMUM_PROGRESS_ALPHA = 0
+        private const val MAXIMUM_PROGRESS_ALPHA = 1f
     }
 
     private val marginHorizontalProgress = 2f.toDpInt()
@@ -58,7 +60,7 @@ class BannerIndicator : LinearLayout {
         this.listener = listener
     }
 
-    private fun addProgressBar(tag: Int) {
+    private fun addProgressBar() {
         val progressBarTheme =
             ContextThemeWrapper(context, com.tokopedia.home_component.R.style.IndicatorBanner)
         val progress = ProgressBar(progressBarTheme, null, Int.ZERO)
@@ -84,7 +86,7 @@ class BannerIndicator : LinearLayout {
         this.totalBanner = totalBanner
         if (totalBanner > Int.ONE) {
             for (i in Int.ZERO until totalBanner) {
-                addProgressBar(i)
+                addProgressBar()
             }
             getChildProgressBar(Int.ZERO)?.let {
                 initialAnimate(it, Int.ZERO)
@@ -109,7 +111,7 @@ class BannerIndicator : LinearLayout {
 
         val maxAnimatorSet = AnimatorSet()
         maxAnimatorSet.play(maximizeAnimator)
-        maxAnimatorSet.interpolator = LinearInterpolator()
+        maxAnimatorSet.interpolator = BannerRevampViewHolder.manualScrollInterpolator
         maxAnimatorSet.start()
     }
 
@@ -132,7 +134,6 @@ class BannerIndicator : LinearLayout {
                 } else {
                     Int.ZERO
                 }
-                listener?.onChangePosition(nextTransition)
                 android.os.Handler(Looper.getMainLooper()).postDelayed(
                     {
                         bannerAnimatorSet.removeAllListeners()
@@ -141,6 +142,7 @@ class BannerIndicator : LinearLayout {
                         getChildProgressBar(nextTransition % totalBanner)?.let {
                             maximizeAnimator(it, nextTransition)
                         }
+                        listener?.onChangePosition(nextTransition)
                     },
                     NO_DELAY
                 )
@@ -151,10 +153,7 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.start()
     }
 
-    private val alpha = 44
-
     private fun minimizeIndicatorBanner(progressIndicator: ProgressBar) {
-//        progressIndicator.progress = Int.ZERO
         val minimizeAnimator = ValueAnimator
             .ofInt(WIDTH_MAXIMUM_PROGRESS, WIDTH_MINIMUM_PROGRESS)
             .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
@@ -166,13 +165,13 @@ class BannerIndicator : LinearLayout {
             progressIndicator.layoutParams?.width = value.toPx()
             progressIndicator.requestLayout()
             if (value == WIDTH_MINIMUM_PROGRESS) {
-                progressIndicator.progress = 0
-                progressIndicator.alpha = 1.0f
+                progressIndicator.progress = MINIMUM_PROGRESS_ALPHA
+                progressIndicator.alpha = MAXIMUM_PROGRESS_ALPHA
             }
         }
         val minAnimatorSet = AnimatorSet()
         minAnimatorSet.play(minimizeAnimator)
-        minAnimatorSet.interpolator = LinearInterpolator()
+        minAnimatorSet.interpolator = BannerRevampViewHolder.manualScrollInterpolator
         minAnimatorSet.start()
     }
 
