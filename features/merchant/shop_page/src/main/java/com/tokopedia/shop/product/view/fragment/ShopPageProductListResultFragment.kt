@@ -974,8 +974,7 @@ class ShopPageProductListResultFragment :
                 navSource,
                 shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
                 userId,
-                "",
-                selectedEtalaseName
+                ""
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -1029,8 +1028,7 @@ class ShopPageProductListResultFragment :
                 navSource,
                 shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
                 userId,
-                "",
-                selectedEtalaseName
+                ""
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(

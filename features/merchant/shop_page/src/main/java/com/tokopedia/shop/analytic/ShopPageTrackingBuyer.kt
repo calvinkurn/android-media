@@ -579,14 +579,13 @@ class ShopPageTrackingBuyer(
         navSource: String,
         sortAndFilterValue: String = "",
         userId: String,
-        selectedTabName: String,
-        selectedEtalaseName: String
+        selectedTabName: String
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign, isUpcoming, selectedEtalaseChipName, etalaseType)
         val etalaseChip = String.format(
             ShopPageTrackingConstant.SELECTED_ETALASE_CHIP,
-            selectedEtalaseName
+            etalaseNameTrackerString
         )
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
             ShopPageTrackingConstant.SEARCH_RESULT
@@ -745,14 +744,13 @@ class ShopPageTrackingBuyer(
         navSource: String,
         sortAndFilterValue: String = "",
         userId: String,
-        selectedTabName: String,
-        selectedEtalaseName: String
+        selectedTabName: String
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign, isUpcoming, selectedEtalaseChipName, etalaseType)
         val etalaseChip = String.format(
             ShopPageTrackingConstant.SELECTED_ETALASE_CHIP,
-            selectedEtalaseName
+            etalaseNameTrackerString
         )
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
             ShopPageTrackingConstant.SEARCH_RESULT
