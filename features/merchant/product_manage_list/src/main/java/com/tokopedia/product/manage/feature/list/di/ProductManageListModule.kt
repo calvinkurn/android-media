@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
 import com.tokopedia.gm.common.data.source.GMCommonDataSource
-import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -40,12 +39,6 @@ class ProductManageListModule(private val context: Context) {
     fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
                                      @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
-    }
-
-    @Provides
-    @ProductManageListScope
-    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
-        return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
     @ProductManageListScope
