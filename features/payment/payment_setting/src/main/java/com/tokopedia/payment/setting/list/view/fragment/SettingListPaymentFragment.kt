@@ -148,9 +148,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             SettingBannerModel.CODE_ACTIVATION -> {
                 analytics.sendEventClickBannerUserCobrandActivate()
             }
-            SettingBannerModel.CODE_SAVE_CARD -> {
-                analytics.sendEventClickBannerUserCobrandAdd()
-            }
         }
     }
 
@@ -164,6 +161,9 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             }
             SettingBannerModel.CODE_ACTIVATION -> {
                 analytics.sendEventViewBannerUserCobrandActivate()
+            }
+            SettingBannerModel.CODE_SAVE_CARD -> {
+                analytics.sendEventViewBannerUserCobrandAdd()
             }
         }
     }

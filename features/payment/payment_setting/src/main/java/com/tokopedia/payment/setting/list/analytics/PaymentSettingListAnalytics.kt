@@ -86,9 +86,9 @@ class PaymentSettingListAnalytics @Inject constructor(val userSessionInterface: 
         sendGeneralEvent(map)
     }
 
-    fun sendEventClickBannerUserCobrandAdd() {
+    fun sendEventViewBannerUserCobrandAdd() {
         val map = TrackAppUtils.gtmData(
-            Event.SELECT_CONTENT,
+            Event.VIEW_ITEM,
             Category.CREDIT_CARD_SETTING_PAGE_COBRAND,
             Action.CLICK_BANNER_USER_COBRAND_ADD,
             ""
