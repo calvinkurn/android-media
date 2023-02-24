@@ -262,7 +262,7 @@ class PlayActivity :
     @OptIn(ExperimentalTime::class)
     private fun observeChannelList() {
         viewModel.observableChannelIdsResult.observe(this) {
-            when (it.state) {
+            when (val state = it.state) {
                 PageResultState.Loading -> {
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                     if (it.currentValue.isEmpty()) ivLoading.show() else ivLoading.hide()
@@ -272,10 +272,12 @@ class PlayActivity :
                     ivLoading.hide()
                     if (it.currentValue.isEmpty()) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
-                is PageResultState.Success -> {
+                is PageResultState.Success -> run {
                     pageMonitoring.startRenderPerformanceMonitoring()
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
+
+                    if (!state.isFirstPage) return@run
 
                     lifecycleScope.launchWhenResumed {
                         delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))

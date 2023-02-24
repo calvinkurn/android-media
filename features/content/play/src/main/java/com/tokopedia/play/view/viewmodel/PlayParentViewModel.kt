@@ -121,7 +121,8 @@ class PlayParentViewModel @AssistedInject constructor(
     }
 
     private fun getChannelDetailsWithRecom(nextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey) {
-        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId) {
+        val isFirstPage = nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId
+        if (isFirstPage) {
             _observableFirstChannelEvent.value = Event(Unit)
             playChannelStateStorage.clearData()
         }
@@ -150,13 +151,13 @@ class PlayParentViewModel @AssistedInject constructor(
                     state = when {
                         playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true -> PageResultState.Upcoming(channelId = channelId)
                         playChannelStateStorage.getData(channelId)?.status?.channelStatus?.statusType?.isArchive == true -> PageResultState.Archived(playChannelStateStorage.getData(channelId)?.status?.config?.archivedModel ?: ArchivedUiModel.Empty)
-                        else -> PageResultState.Success(pageInfo = PageInfo.Unknown)
+                        else -> PageResultState.Success(pageInfo = PageInfo.Unknown, isFirstPage)
                     }
                 )
             } ?: run {
                 _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
-                    state = PageResultState.Success(pageInfo = PageInfo.Unknown)
+                    state = PageResultState.Success(pageInfo = PageInfo.Unknown, isFirstPage)
                 )
             }
 
