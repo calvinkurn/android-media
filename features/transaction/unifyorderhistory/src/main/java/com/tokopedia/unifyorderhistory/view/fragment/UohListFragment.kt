@@ -2106,7 +2106,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             } else {
                 var intent = Intent()
                 if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-                    intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+                    intent = RouteManager.getIntent(context, String.format(Locale.US, "%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
                 } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
                     intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
                 }
