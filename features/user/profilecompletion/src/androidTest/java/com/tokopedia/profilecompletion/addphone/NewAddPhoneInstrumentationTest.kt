@@ -18,7 +18,6 @@ import com.tokopedia.profilecompletion.common.stub.GraphqlRepositoryStub
 import com.tokopedia.profilecompletion.common.stub.di.DaggerTestProfileCompletionComponent
 import com.tokopedia.profilecompletion.common.stub.di.TestProfileCompletionSettingModule
 import com.tokopedia.profilecompletion.common.stub.di.createProfileCompletionComponent
-//import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
