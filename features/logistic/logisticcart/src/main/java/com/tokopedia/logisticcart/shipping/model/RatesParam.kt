@@ -45,7 +45,8 @@ data class RatesParam(
     var is_fulfillment: Boolean = false,
     var mvc: String = "",
     var bo_metadata: String = "",
-    var cart_data: String = ""
+    var cart_data: String = "",
+    var warehouse_id: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -77,7 +78,8 @@ data class RatesParam(
         mvc = builder.mvc,
         bo_metadata = builder.boMetadata,
         cart_data = builder.cartData,
-        occ = builder.occ
+        occ = builder.occ,
+        warehouse_id = builder.warehouseId
     )
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -111,7 +113,8 @@ data class RatesParam(
         "mvc" to mvc,
         "po_time" to po_time,
         "is_fulfillment" to is_fulfillment,
-        "bo_metadata" to bo_metadata
+        "bo_metadata" to bo_metadata,
+        "warehouse_id" to warehouse_id
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
@@ -196,6 +199,8 @@ data class RatesParam(
         var occ: String = "0"
         var cartData: String = ""
             private set
+        var warehouseId: String = ""
+            private set
 
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
 
@@ -210,6 +215,8 @@ data class RatesParam(
         fun isOcc(isOcc: Boolean) = apply { this.occ = if (isOcc) "1" else "0" }
 
         fun cartData(cartData: String) = apply { this.cartData = cartData }
+
+        fun warehouseId(warehouseId: String) = apply { this.warehouseId = warehouseId }
 
         fun build() = RatesParam(this)
     }

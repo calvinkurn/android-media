@@ -1,8 +1,7 @@
-package com.tokopedia.search.result.product.inspirationwidget.size
+package com.tokopedia.search.result.product.inspirationwidget.filter
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetFilter
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetOption
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetDataView
@@ -10,9 +9,9 @@ import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVi
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 
-class InspirationSizeDataView(
+class InspirationFilterDataView(
     override val data: InspirationWidgetDataView = InspirationWidgetDataView(),
-    val optionSizeData: List<InspirationSizeOptionDataView> = listOf(),
+    val optionSizeData: List<InspirationFilterOptionDataView> = listOf(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.Both,
 ): InspirationWidgetVisitable {
 
@@ -28,14 +27,10 @@ class InspirationSizeDataView(
             data: SearchProductModel.InspirationWidgetData,
             keyword: String,
             dimension90: String,
-        ): InspirationSizeDataView {
-            return InspirationSizeDataView(
-                data = InspirationWidgetDataView(
-                    title = data.title,
-                    type = data.type,
-                    position = data.position,
-                ),
-                optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(
+        ): InspirationFilterDataView {
+            return InspirationFilterDataView(
+                data = InspirationWidgetDataView.create(data),
+                optionSizeData = data.inspirationWidgetOptions.mapToInspirationFilterOptionDataView(
                     data.type,
                     keyword,
                     dimension90,
@@ -45,20 +40,20 @@ class InspirationSizeDataView(
             )
         }
 
-        private fun List<InspirationWidgetOption>.mapToInspirationSizeOptionDataView(
+        private fun List<InspirationWidgetOption>.mapToInspirationFilterOptionDataView(
             inspirationCardType: String,
             keyword: String,
             dimension90: String,
             title: String,
             trackingOption: Int
         ) = this.map { optionModel ->
-            InspirationSizeOptionDataView(
+            InspirationFilterOptionDataView(
                 text = optionModel.text,
                 img = optionModel.img,
                 url = optionModel.url,
                 hexColor = optionModel.color,
                 applink = optionModel.applink,
-                filters = optionModel.filters.toInspirationSizeOptionFiltersDataView(),
+                option = optionModel.asOption(),
                 inspirationCardType = inspirationCardType,
                 componentId = optionModel.componentId,
                 keyword = keyword,
@@ -67,12 +62,5 @@ class InspirationSizeDataView(
                 trackingOption = trackingOption
             )
         }
-
-        private fun InspirationWidgetFilter.toInspirationSizeOptionFiltersDataView() =
-            InspirationSizeOptionFiltersDataView(
-                key = this.key,
-                name = this.name,
-                value = this.value
-            )
     }
 }

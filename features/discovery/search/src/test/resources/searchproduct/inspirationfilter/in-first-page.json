@@ -1105,7 +1105,10 @@
     "data": [
       {
         "title": "Tampilkan Atasan Wanita dengan ukuran:",
-        "type": "size_perso",
+        "type": "type",
+        "header_title": "Agar produk tetap segar sampai tujuan",
+        "header_subtitle": "Bisa pakai rekomendasi pengiriman cepat berikut, lho.",
+        "layout": "filter",
         "position": 0,
         "options": [
           {
@@ -1184,6 +1187,9 @@
       {
         "title": "Size perso position 14",
         "type": "size_perso",
+        "header_title": "Agar produk tetap segar sampai tujuan",
+        "header_subtitle": "Bisa pakai rekomendasi pengiriman cepat berikut, lho.",
+        "layout": "filter",
         "position": 14,
         "options": [
           {

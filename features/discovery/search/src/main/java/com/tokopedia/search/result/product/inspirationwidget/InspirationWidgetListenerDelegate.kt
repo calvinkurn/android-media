@@ -1,19 +1,22 @@
 package com.tokopedia.search.result.product.inspirationwidget
 
 import android.content.Context
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeOptionDataView
-import com.tokopedia.search.utils.addFilterOrigin
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterListener
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterOptionDataView
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
+import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.search.utils.manualFilterToggleMap
+import com.tokopedia.search.utils.originFilterMap
 import com.tokopedia.track.TrackApp
 
 class InspirationWidgetListenerDelegate(
@@ -22,7 +25,7 @@ class InspirationWidgetListenerDelegate(
     private val filterController: FilterController,
     private val parameterListener: ProductListParameterListener,
 ): InspirationCardListener,
-    InspirationSizeListener,
+    InspirationFilterListener,
     QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
@@ -39,34 +42,85 @@ class InspirationWidgetListenerDelegate(
         InspirationWidgetTracking.trackEventClickInspirationCardOption(label)
     }
 
-    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView) {
+    override fun onInspirationFilterOptionClicked(sizeOptionDataView: InspirationFilterOptionDataView) {
         val option = sizeOptionDataView.option
         val isFilterSelectedReversed = !isFilterSelected(option)
 
-        trackInspirationSizeOptionClick(isFilterSelectedReversed, sizeOptionDataView)
+        trackInspirationFilterOptionClick(isFilterSelectedReversed, sizeOptionDataView)
 
-        applyInspirationSizeFilter(option, isFilterSelectedReversed)
+        applyInspirationFilter(
+            option,
+            isFilterSelectedReversed,
+            sizeOptionDataView.componentId
+        )
     }
 
     override fun isFilterSelected(option: Option?): Boolean {
         option ?: return false
 
-        return filterController.getFilterViewState(option)
+        return if (option.isPriceRange) filterController.isPriceRangeFilterSelected(option)
+        else filterController.getFilterViewState(option)
     }
 
-    private fun trackInspirationSizeOptionClick(
+    private fun FilterController.isPriceRangeFilterSelected(option: Option) =
+        option.valMin == getMinPrice()
+            && option.valMax == getMaxPrice()
+
+    private fun FilterController.getMinPrice(): String =
+        getParameter()[SearchApiConst.PMIN] ?: ""
+
+    private fun FilterController.getMaxPrice(): String =
+        getParameter()[SearchApiConst.PMAX] ?: ""
+
+    private fun trackInspirationFilterOptionClick(
         isFilterSelected: Boolean,
-        sizeOptionDataView: InspirationSizeOptionDataView,
+        sizeOptionDataView: InspirationFilterOptionDataView,
     ) {
         if (isFilterSelected)
             sizeOptionDataView.click(TrackApp.getInstance().gtm)
     }
 
-    private fun applyInspirationSizeFilter(option: Option, isFilterSelected: Boolean) {
-        filterController.setFilter(option, isFilterSelected)
+    private fun applyInspirationFilter(
+        option: Option,
+        isFilterSelected: Boolean,
+        componentId: String,
+    ) {
+        applyFilterToFilterController(option, isFilterSelected)
 
-        val queryParams = filterController.getParameter().addFilterOrigin()
+        val queryParams = filterController.getParameter() +
+            originFilterMap() +
+            componentIdMap(componentId) +
+            manualFilterToggleMap()
+
         parameterListener.refreshSearchParameter(queryParams)
         parameterListener.reloadData()
+    }
+
+    private fun applyFilterToFilterController(option: Option, isFilterSelected: Boolean) {
+        if (option.isPriceRange)
+            applyPriceRangeFilter(option, isFilterSelected)
+        else
+            applyRegularFilter(option, isFilterSelected)
+    }
+
+    private fun applyPriceRangeFilter(option: Option, isFilterSelected: Boolean) {
+        val valMin = if (isFilterSelected) option.valMin else ""
+        val valMax = if (isFilterSelected) option.valMax else ""
+
+        filterController.setFilter(
+            Option(name = "", key = Option.KEY_PRICE_MIN, value = valMin),
+            isFilterApplied = valMin != "",
+            isCleanUpExistingFilterWithSameKey = true
+        )
+
+        filterController.setFilter(
+            Option(name = "", key = Option.KEY_PRICE_MAX, value = valMax),
+            isFilterApplied = valMax != "",
+            isCleanUpExistingFilterWithSameKey = true
+        )
+    }
+
+    private fun applyRegularFilter(option: Option, isFilterSelected: Boolean) {
+        filterController.setFilter(option, isFilterSelected)
     }
 }

@@ -15,7 +15,13 @@ open class DeleteTemplateUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<DeleteTemplateUseCase.Param, ChatDeleteTemplateResponse>(dispatcher.io) {
 
-    override fun graphqlQuery(): String = QUERY
+    override fun graphqlQuery(): String = """
+        mutation chatDeleteTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_TEMPLATE_INDEX: Int!) {
+          chatDeleteTemplate($PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_TEMPLATE_INDEX: $$PARAM_TEMPLATE_INDEX){
+            success
+          }
+        }
+    """.trimIndent()
 
     override suspend fun execute(params: Param): ChatDeleteTemplateResponse {
         return repository.request(graphqlQuery(), params)
@@ -32,12 +38,5 @@ open class DeleteTemplateUseCase @Inject constructor(
     companion object {
         private const val PARAM_IS_SELLER = "isSeller"
         private const val PARAM_TEMPLATE_INDEX = "templateIndex"
-        val QUERY = """
-            mutation chatDeleteTemplate($$PARAM_IS_SELLER: Boolean!, $$PARAM_TEMPLATE_INDEX: Int!) {
-              chatDeleteTemplate($PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_TEMPLATE_INDEX: $$PARAM_TEMPLATE_INDEX){
-                success
-              }
-            }
-        """.trimIndent()
     }
 }
