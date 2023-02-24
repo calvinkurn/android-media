@@ -120,7 +120,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun configFestivity() {
-        val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_text_color)
+        val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         textTitle?.setTextColor(festivityTextColor)
         textTimeDescription?.setTextColor(festivityTextColor)
         textSeeAll?.setTextColor(festivityTextColor)

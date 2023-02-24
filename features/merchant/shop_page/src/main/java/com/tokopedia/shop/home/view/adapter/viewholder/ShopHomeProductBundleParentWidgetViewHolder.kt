@@ -81,7 +81,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     private fun configFestivity() {
-        val festivityTextColorRes = com.tokopedia.shop.common.R.color.dms_shop_festivity_text_color
+        val festivityTextColorRes = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         productBundleWidgetView?.setTitleTextColor(festivityTextColorRes)
     }
 

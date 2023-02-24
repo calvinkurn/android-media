@@ -144,7 +144,7 @@ class DynamicHeaderCustomView: FrameLayout {
     }
 
     fun configFestivity(){
-        val festivityTextColor = MethodChecker.getColor(context, com.tokopedia.shop.common.R.color.dms_shop_festivity_text_color)
+        val festivityTextColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         tpTitle?.setTextColor(festivityTextColor)
         tpSubtitle?.setTextColor(festivityTextColor)
         tpSeeAll?.setTextColor(festivityTextColor)
