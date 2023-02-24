@@ -5,6 +5,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.FloatRange
@@ -18,6 +20,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 /**
  * Created by kenny.hadisaputra on 22/02/23
  */
+@SuppressLint("ClickableViewAccessibility")
 class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
     container, R.id.view_vertical_swipe_coachmark,
 ) {
@@ -25,6 +28,14 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
     private val binding = ViewVerticalSwipeCoachmarkBinding.bind(rootView)
 
     private var mAnimator: Animator? = null
+
+    init {
+        binding.root.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
+            hideAnimated()
+            false
+        }
+    }
 
     fun showAnimated() {
         invisible()
