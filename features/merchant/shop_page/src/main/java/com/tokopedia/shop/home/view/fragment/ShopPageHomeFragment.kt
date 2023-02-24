@@ -2374,31 +2374,29 @@ open class ShopPageHomeFragment :
     ) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
-            shopPageHomeTracking.clickProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(shopHomeAdapter.getAllProductWidgetPosition()),
-                ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
-                "",
-                "",
-                0,
-                CustomDimensionShopPageAttribution.create(
+            if(!isOwner) {
+                shopPageHomeTracking.clickProduct(
+                    isLogin,
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopName,
+                    ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
+                    CustomDimensionShopPageAttribution.create(
+                        shopId,
+                        isOfficialStore,
+                        isGoldMerchant,
+                        shopHomeProductViewModel.id,
+                        shopAttribution,
+                        shopRef,
+                        shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                        shopHomeProductViewModel.isShowFreeOngkir
+                    ),
+                    shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
                     shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id,
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
-                ),
-                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
-            )
+                    getSelectedTabName()
+                )
+            }
             goToPDP(it.productUrl)
         }
     }
@@ -2409,31 +2407,29 @@ open class ShopPageHomeFragment :
     ) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
-            shopPageHomeTracking.impressionProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel.name ?: "",
-                shopHomeProductViewModel.id ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                shopName,
-                ShopUtil.getActualPositionFromIndex(shopHomeAdapter.getAllProductWidgetPosition()),
-                ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
-                "",
-                "",
-                0,
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopHomeProductViewModel.id,
-                    shopAttribution,
-                    shopRef,
-                    shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopHomeProductViewModel.isShowFreeOngkir
-                ),
-                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
-            )
+            if(!isOwner) {
+                shopPageHomeTracking.impressionProduct(
+                    isLogin,
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopName,
+                    ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
+                    CustomDimensionShopPageAttribution.create(
+                        shopId,
+                        isOfficialStore,
+                        isGoldMerchant,
+                        shopHomeProductViewModel.id,
+                        shopAttribution,
+                        shopRef,
+                        shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                        shopHomeProductViewModel.isShowFreeOngkir
+                    ),
+                    shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                    userId,
+                    getSelectedTabName()
+                )
+            }
         }
     }
 

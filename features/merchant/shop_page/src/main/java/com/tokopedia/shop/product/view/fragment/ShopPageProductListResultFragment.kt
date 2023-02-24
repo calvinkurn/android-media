@@ -953,7 +953,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.clickProductSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -970,11 +969,13 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
                 navSource,
-                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                "",
+                selectedEtalaseName
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -1007,7 +1008,6 @@ class ShopPageProductListResultFragment :
             val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
                 shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.impressionProductListSearchResult(
-                isMyShop,
                 isLogin,
                 getSelectedEtalaseChip(),
                 "",
@@ -1024,11 +1024,13 @@ class ShopPageProductListResultFragment :
                 shopId.orEmpty(),
                 isEtalaseCampaign,
                 shopProductUiModel.isUpcoming,
-                keyword,
                 shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
                 shopName.orEmpty(),
                 navSource,
-                shopProductFilterParameter?.getListFilterForTracking().orEmpty()
+                shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                userId,
+                "",
+                selectedEtalaseName
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(

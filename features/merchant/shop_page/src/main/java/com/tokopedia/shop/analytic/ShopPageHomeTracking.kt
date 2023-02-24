@@ -15,6 +15,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_CL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD_TO_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BOE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BO_PRODUCT
@@ -84,6 +85,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_CLICKED
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_CLICK_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_CLICK_REMINDER
@@ -137,6 +140,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_BO_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NOT_SEARCH_RESULT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
@@ -159,6 +163,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ENTRY_POINT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECTED_ETALASE_CHIP
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME
@@ -177,6 +182,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_CLICKED
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_DELETE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_QUANTITY
@@ -487,30 +494,32 @@ class ShopPageHomeTracking(
     }
 
     fun impressionProduct(
-        isOwner: Boolean,
         isLogin: Boolean,
-        layoutId: String,
         productName: String,
         productId: String,
         productDisplayedPrice: String,
         shopName: String,
-        verticalPosition: Int,
         horizontalPosition: Int,
-        widgetId: String,
-        widgetName: String,
-        widgetOption: Int,
         customDimensionShopPage: CustomDimensionShopPageAttribution,
-        sortAndFilterValue: String = ""
+        sortAndFilterValue: String,
+        userId: String,
+        selectedTabName: String
     ) {
-        val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
-        val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, layoutId, widgetNameEventValue)
+        val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
+        val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
+        val eventLabel = joinDash(ALL_ETALASE, loginNonLoginEventValue, NOT_SEARCH_RESULT)
         val eventMap = createMap(
             PRODUCT_VIEW,
-            getShopPageCategory(isOwner),
-            eventAction,
-            "",
+            SHOP_PAGE_BUYER,
+            ALL_PRODUCT_IMPRESSION,
+            eventLabel,
             customDimensionShopPage
         )
+        eventMap[TRACKER_ID] = TRACKER_ID_ALL_PRODUCT_IMPRESSION
+        eventMap[BUSINESS_UNIT] = PHYSICAL_GOODS
+        eventMap[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        eventMap[ITEM_LIST] = listEventValue
         eventMap[ECOMMERCE] = mutableMapOf(
             CURRENCY_CODE to IDR,
             IMPRESSIONS to mutableListOf(
@@ -519,17 +528,16 @@ class ShopPageHomeTracking(
                     productId,
                     productDisplayedPrice,
                     shopName,
-                    verticalPosition,
                     horizontalPosition,
-                    widgetId,
-                    widgetNameEventValue,
-                    widgetOption,
-                    isLogin,
                     customDimensionShopPage,
-                    sortAndFilterValue
+                    sortAndFilterValue,
+                    listEventValue,
+                    selectedTabName
                 )
             )
         )
+        eventMap[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        eventMap[USER_ID] = userId
         sendDataLayerEvent(eventMap)
     }
 
@@ -597,38 +605,31 @@ class ShopPageHomeTracking(
     }
 
     fun clickProduct(
-        isOwner: Boolean,
         isLogin: Boolean,
-        layoutId: String,
         productName: String,
         productId: String,
         productDisplayedPrice: String,
         shopName: String,
-        verticalPosition: Int,
         horizontalPosition: Int,
-        widgetId: String,
-        widgetName: String,
-        widgetOption: Int,
         customDimensionShopPage: CustomDimensionShopPageAttribution,
-        sortAndFilterValue: String = ""
+        sortAndFilterValue: String,
+        userId: String,
+        selectedTabName: String
     ) {
-        val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
-        val eventAction = joinDash(CLICK_PRODUCT, HOME_TAB, layoutId, widgetNameEventValue)
-        val listEventValue = createProductListValue(
-            isLogin,
-            verticalPosition,
-            widgetId,
-            widgetNameEventValue,
-            widgetOption,
-            customDimensionShopPage
-        )
+        val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
+        val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
+        val eventLabel = joinDash(ALL_ETALASE, loginNonLoginEventValue, NOT_SEARCH_RESULT)
         val eventMap = createMap(
             PRODUCT_CLICK,
-            getShopPageCategory(isOwner),
-            eventAction,
-            productId,
+            SHOP_PAGE_BUYER,
+            ALL_PRODUCT_CLICKED,
+            eventLabel,
             customDimensionShopPage
         )
+        eventMap[TRACKER_ID] = TRACKER_ID_ALL_PRODUCT_CLICKED
+        eventMap[BUSINESS_UNIT] = PHYSICAL_GOODS
+        eventMap[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         eventMap[ECOMMERCE] = mutableMapOf(
             CLICK to mutableMapOf(
                 ACTION_FIELD to mutableMapOf(LIST to listEventValue),
@@ -638,18 +639,17 @@ class ShopPageHomeTracking(
                         productId,
                         productDisplayedPrice,
                         shopName,
-                        verticalPosition,
                         horizontalPosition,
-                        widgetId,
-                        widgetNameEventValue,
-                        widgetOption,
-                        isLogin,
                         customDimensionShopPage,
-                        sortAndFilterValue
+                        sortAndFilterValue,
+                        listEventValue,
+                        selectedTabName
                     )
                 )
             )
         )
+        eventMap[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        eventMap[USER_ID] = userId
         sendDataLayerEvent(eventMap)
     }
 
@@ -1149,23 +1149,12 @@ class ShopPageHomeTracking(
         productId: String,
         productDisplayedPrice: String,
         shopName: String,
-        verticalPosition: Int,
         horizontalPosition: Int,
-        widgetId: String,
-        widgetNameEventValue: String,
-        widgetOption: Int,
-        isLogin: Boolean,
         customDimensionShopPage: CustomDimensionShopPageAttribution,
-        sortAndFilterValue: String
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String
     ): Map<String, Any> {
-        val listEventValue = createProductListValue(
-            isLogin,
-            verticalPosition,
-            widgetId,
-            widgetNameEventValue,
-            widgetOption,
-            customDimensionShopPage
-        )
         val boe = if (customDimensionShopPage.isFulfillmentExist == true && customDimensionShopPage.isFreeOngkirActive == true) {
             BOE
         } else if (customDimensionShopPage.isFulfillmentExist != true && customDimensionShopPage.isFreeOngkirActive == true) {
@@ -1179,7 +1168,7 @@ class ShopPageHomeTracking(
             PRICE to formatPrice(productDisplayedPrice),
             BRAND to shopName,
             CATEGORY to NONE,
-            VARIANT to NONE,
+            VARIANT to selectedTabName,
             LIST to listEventValue,
             POSITION to horizontalPosition,
             DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),

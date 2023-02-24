@@ -136,6 +136,7 @@ object ShopPageTrackingConstant {
     const val CLICK_BOTTOMSHEET_DISMISS_BUTTON = "x button"
     const val CLICK_CART_BUTTON = "click my cart"
     const val SEARCH_RESULT = "search result"
+    const val NOT_SEARCH_RESULT = "not"
     const val CLICK_OPEN_OPERATIONAL_SHOP = "click open operational shop"
     const val CLICK_HOW_TO_ACTIVATE_SHOP = "click how to activate shop"
     const val CLICK_MENU_FROM_MORE_MENU = "click menu from more menu"
@@ -392,6 +393,9 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL = "click Lihat Semua widget campaign"
         const val CAMPAIGN_WIDGET_CLICK_REMINDER = "click Ingatkan widget campaign"
         const val CAMPAIGN_WIDGET_CLICK_BANNER = "click banner widget campaign"
+        const val ALL_PRODUCT_CLICKED = "click product - etalase chip"
+        const val ALL_PRODUCT_IMPRESSION = "product list impression - etalase chip"
+
     }
 
     object EventCategory {
@@ -422,6 +426,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL = "41204"
         const val TRACKER_ID_CAMPAIGN_WIDGET_CLICK_REMINDER = "41205"
         const val TRACKER_ID_CAMPAIGN_WIDGET_CLICK_BANNER = "41206"
+        const val TRACKER_ID_ALL_PRODUCT_CLICKED = "21760"
+        const val TRACKER_ID_ALL_PRODUCT_IMPRESSION = "21759"
     }
 
     object Key {
