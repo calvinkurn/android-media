@@ -17,12 +17,6 @@ object AnchorTabMapper {
     const val KEYWOARD_CHANNEL_GROUP_ID = "channelgroupid_"
 
     /**
-     * true : to allow show item tab but notclickable if there is empty feParam
-     * false : remove item tab has empty feParam
-     */
-    private const val ALLOW_ITEM_ANCHOR_TAB_NOT_CLICKABLE = false
-
-    /**
      * Mapping layout list to list menu Anchor tab
      */
     fun GetHomeAnchorTabResponse.GetHomeIconV2.mapMenuList(): List<AnchorTabUiModel> {
@@ -32,21 +26,19 @@ object AnchorTabMapper {
 
             val channelGroupId = if (homeIcon.feParam.isNotEmpty()) {
                 val listFeParam = splitKeyValueAnchorTabParam(homeIcon.feParam).orEmpty()
-                val valueAnchorIdentifier = listFeParam.getValue(KEY_ANCHOR_IDENTIFIER).toString()
-                valueAnchorIdentifier.replace(KEYWOARD_CHANNEL_GROUP_ID, "")
+                if (listFeParam.containsKey(KEY_ANCHOR_IDENTIFIER)) {
+                    val valueAnchorIdentifier = listFeParam.getValue(KEY_ANCHOR_IDENTIFIER).toString()
+                    valueAnchorIdentifier.replace(KEYWOARD_CHANNEL_GROUP_ID, "")
+                } else {
+                    homeIcon.feParam
+                }
             } else {
                 homeIcon.feParam
             }
 
-            when {
-                channelGroupId.isNotEmpty() -> {
-                    val anchorTab = mapItemAnchorTab(homeIcon, channelGroupId)
-                    listMenu.add(anchorTab)
-                }
-                isAllowItemAnchorTabNotClickable() -> {
-                    val anchorTab = mapItemAnchorTab(homeIcon, channelGroupId)
-                    listMenu.add(anchorTab)
-                }
+            if (channelGroupId.isNotEmpty()) {
+                val anchorTab = mapItemAnchorTab(homeIcon, channelGroupId)
+                listMenu.add(anchorTab)
             }
         }
 
@@ -63,10 +55,6 @@ object AnchorTabMapper {
             homeIcon.imageUrl,
             channelGroupId
         )
-    }
-
-    private fun isAllowItemAnchorTabNotClickable(): Boolean {
-        return ALLOW_ITEM_ANCHOR_TAB_NOT_CLICKABLE
     }
 
     private fun splitKeyValueAnchorTabParam(url: String): Map<String, String>? {
