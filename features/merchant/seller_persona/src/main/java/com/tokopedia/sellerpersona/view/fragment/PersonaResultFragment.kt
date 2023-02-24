@@ -221,6 +221,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             imgSpResultBackdrop.loadImage(persona.backgroundImage)
             rvSpResultInfoList.adapter = PersonaSimpleListAdapter().apply {
                 setItems(persona.itemList)
+                isSelectedMode = true
             }
             tvSpSellerType.text = String.format(PERSONA_TITLE, persona.headerTitle)
             tvSpSellerTypeNote.text = root.context.getString(

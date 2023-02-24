@@ -17,7 +17,7 @@ class PersonaSimpleListAdapter : Adapter<PersonaSimpleListAdapter.ResultViewHold
 
     private var itemClickListener: (() -> Unit)? = null
     private val items: MutableList<String> = mutableListOf()
-    var isSelected: Boolean = false
+    var isSelectedMode: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -45,10 +45,6 @@ class PersonaSimpleListAdapter : Adapter<PersonaSimpleListAdapter.ResultViewHold
         }
     }
 
-    fun setOnItemClickListener(callback: () -> Unit) {
-        this.itemClickListener = callback
-    }
-
     inner class ResultViewHolder(
         private val binding: ItemPersonaSimpleListBinding
     ) : ViewHolder(binding.root) {
@@ -57,7 +53,7 @@ class PersonaSimpleListAdapter : Adapter<PersonaSimpleListAdapter.ResultViewHold
             with(binding) {
                 tvSpResultInfoItem.text = item
 
-                val textColor = if (isSelected) {
+                val textColor = if (isSelectedMode) {
                     root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                 } else {
                     root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)

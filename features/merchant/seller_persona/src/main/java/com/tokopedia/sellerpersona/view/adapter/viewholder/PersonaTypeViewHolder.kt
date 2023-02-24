@@ -87,7 +87,7 @@ class PersonaTypeViewHolder(
                     imgSpItemPersonaType.loadImage(R.drawable.sp_bg_seller_type_inactive)
                 }
             }
-            optionAdapter.isSelected = element.isSelected
+            optionAdapter.isSelectedMode = element.isSelected
             optionAdapter.notifyAdapter()
         }
     }
@@ -102,7 +102,7 @@ class PersonaTypeViewHolder(
             adapter = optionAdapter
 
             optionAdapter.setItems(element.itemList)
-            optionAdapter.isSelected = element.isSelected
+            optionAdapter.isSelectedMode = element.isSelected
             optionAdapter.notifyAdapter()
         }
     }
