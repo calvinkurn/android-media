@@ -55,5 +55,4 @@ class ToolbarPromoCheckout : Toolbar {
             listener?.onClickInputCode()
         }
     }
-
 }

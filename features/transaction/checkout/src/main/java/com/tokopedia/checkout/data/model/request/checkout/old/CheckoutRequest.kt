@@ -31,7 +31,7 @@ data class CheckoutRequest(
     @SerializedName("feature_type")
     var featureType: Int = 0,
     @SerializedName("cross_sell")
-    var crossSell: CrossSellRequest? = null,
+    var crossSell: CrossSellRequest? = null
 ) : Parcelable {
 
     val protectionAnalyticsData: ArrayList<String>
