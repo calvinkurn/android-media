@@ -124,7 +124,7 @@ class SearchBarViewModel @Inject constructor(
             val sortedKeywords = updatedList.sortedBy { it.position }
             searchParameter.setSearchQueries(sortedKeywords.map { it.keyword })
             _searchBarKeywords.value = sortedKeywords
-        } else if (keywords.isEmpty()){
+        } else if (keywords.isEmpty()) {
             searchParameter.setSearchQuery(keyword.keyword)
         }
         _searchParameterLiveData.value = searchParameter
@@ -133,19 +133,18 @@ class SearchBarViewModel @Inject constructor(
 
     fun onKeywordAdded(query: String?) {
         if (!query.isNullOrBlank()) {
-            val keyword = activeKeyword
             val currentKeywords = _searchBarKeywords.value ?: emptyList()
-            val cleanedQuery = keyword.keyword.trim()
+            val cleanedQuery = activeKeyword.keyword.trim()
             val hasMaxKeywords = currentKeywords.size > 2
             val hasSameKeyword = currentKeywords.any { cleanedQuery == it.keyword }
             if (hasMaxKeywords || hasSameKeyword) return
             val addedKeyword = if (coachMarkLocalCache.shouldShowAddedKeywordCoachMark()) {
                 coachMarkLocalCache.markShowAddedKeywordCoachMark()
-                keyword.copy(
+                activeKeyword.copy(
                     keyword = cleanedQuery,
                     shouldShowCoachMark = true,
                 )
-            } else keyword.copy(keyword = cleanedQuery)
+            } else activeKeyword.copy(keyword = cleanedQuery)
             val keywords = currentKeywords + addedKeyword
             val sortedKeywords = keywords.sortWithNewIndex()
             val newKeyword = SearchBarKeyword(
@@ -164,8 +163,22 @@ class SearchBarViewModel @Inject constructor(
     }
 
     fun onKeywordSelected(keyword: SearchBarKeyword) {
-        activeKeyword = keyword
-        _activeKeywordLiveData.value = keyword
+        if (!keyword.isSelected) {
+            activeKeyword = keyword.copy(
+                isSelected = true
+            )
+            _activeKeywordLiveData.value = activeKeyword
+            _searchBarKeywords.value = _searchBarKeywords.value.orEmpty().map {
+                if (it.position == keyword.position) activeKeyword else it.copy(isSelected = false)
+            }
+        } else {
+            activeKeyword = SearchBarKeyword(position = _searchBarKeywords.value.orEmpty().size)
+            _activeKeywordLiveData.value = activeKeyword
+            _searchBarKeywords.value = _searchBarKeywords.value.orEmpty().map {
+                it.copy(isSelected = false)
+            }
+        }
+        updateSearchBarState()
     }
 
     private fun List<SearchBarKeyword>.sortWithNewIndex(): List<SearchBarKeyword> {
@@ -199,7 +212,9 @@ class SearchBarViewModel @Inject constructor(
         val currentState = currentSearchBarState
         if (!currentState.isMpsEnabled) return
         val searchBarKeywordSize = _searchBarKeywords.value?.size.orZero()
-        val shouldEnableAddButton = searchBarKeywordSize < 3
+        val isActiveKeywordNotInKeywordList = _searchBarKeywords.value.orEmpty()
+            .none { it.position == activeKeyword.position }
+        val shouldEnableAddButton = searchBarKeywordSize < 3 && isActiveKeywordNotInKeywordList
         val allowKeyboardDismiss = searchBarKeywordSize == 0
         val shouldDisplayMpsPlaceHolder = searchBarKeywordSize != 0
         val shouldShowMpsCoachMark = coachMarkLocalCache.shouldShowPlusIconCoachMark()
@@ -271,9 +286,22 @@ class SearchBarViewModel @Inject constructor(
 
     fun getSubmitSearchParameter(): SearchParameter {
         val searchParameter = SearchParameter(activeSearchParameter)
-        val keywords = _searchBarKeywords.value ?: emptyList()
+        val currentKeywords = _searchBarKeywords.value ?: emptyList()
+        val isActiveKeywordNotBlank = activeKeyword.keyword.isNotBlank()
+        val isActiveKeywordNotInKeywordList = activeKeyword !in currentKeywords
+        val isKeywordListNotFull = currentKeywords.size < 3
+        val isActiveKeywordNeedToBeAdded = isActiveKeywordNotBlank
+            && isActiveKeywordNotInKeywordList
+            && isKeywordListNotFull
+        val keywords = if (isActiveKeywordNeedToBeAdded) {
+            currentKeywords + activeKeyword
+        } else {
+            currentKeywords
+        }
         if (keywords.size == 1) {
             searchParameter.setSearchQuery(keywords.first().keyword)
+        } else {
+            searchParameter.setSearchQueries(keywords.map { it.keyword })
         }
         return searchParameter
     }

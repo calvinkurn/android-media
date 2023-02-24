@@ -482,6 +482,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
     override fun onKeywordSelected(searchBarKeyword: SearchBarKeyword) {
         viewModel?.onKeywordSelected(searchBarKeyword)
+        searchBarKeywordAdapter?.let { adapter ->
+            val itemIndex = adapter.currentList.indexOfFirst { it == searchBarKeyword }
+            if (itemIndex != -1) rvSearchBarKeyword.scrollToPosition(itemIndex)
+        }
     }
 
     override fun showAddedKeywordCoachMark(view: View) {

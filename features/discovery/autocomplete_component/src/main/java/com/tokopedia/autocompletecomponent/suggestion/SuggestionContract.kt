@@ -108,6 +108,8 @@ interface SuggestionContract {
     interface Presenter : CustomerPresenter<View> {
         fun getSearchParameter(): Map<String, String>
 
+        fun getActiveKeyword() : SearchBarKeyword
+
         fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword)
 
         fun setIsTyping(isTyping: Boolean)

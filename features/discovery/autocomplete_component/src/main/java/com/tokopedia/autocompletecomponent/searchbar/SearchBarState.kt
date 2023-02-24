@@ -4,7 +4,7 @@ data class SearchBarState(
     val isMpsEnabled: Boolean = false,
     val isMpsAnimationEnabled: Boolean = false,
     val shouldShowCoachMark: Boolean = false,
-    val isAddButtonEnabled: Boolean = true,
+    val isAddButtonEnabled: Boolean = false,
     val isKeyboardDismissEnabled: Boolean = true,
     val hasHintOrPlaceHolder: Boolean = false,
     val hintText: String = "",

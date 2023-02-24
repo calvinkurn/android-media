@@ -97,8 +97,12 @@ class SuggestionPresenter @Inject constructor(
         return searchParameter
     }
 
+    override fun getActiveKeyword(): SearchBarKeyword {
+        return activeKeyword
+    }
+
     private fun getQueryKey(): String {
-        return searchParameter[SearchApiConst.Q] ?: ""
+        return searchParameter[SearchApiConst.Q] ?: activeKeyword.keyword
     }
 
     override fun setIsTyping(isTyping: Boolean) {

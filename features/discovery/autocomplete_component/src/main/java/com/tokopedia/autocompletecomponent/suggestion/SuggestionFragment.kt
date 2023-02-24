@@ -158,6 +158,9 @@ class SuggestionFragment :
             SEARCH_PARAMETER,
             HashMap<String, Any>(presenter.getSearchParameter())
         )
+        val activeKeyword = presenter.getActiveKeyword()
+        outState.putInt(ACTIVE_KEYWORD_POSITION, activeKeyword.position)
+        outState.putString(ACTIVE_KEYWORD_VALUE, activeKeyword.keyword)
     }
 
     fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword) {
@@ -366,6 +369,8 @@ class SuggestionFragment :
             it is SuggestionSingleLineDataDataView && it.data.type == TYPE_KEYWORD
         }
         val view = recyclerViewSuggestion?.layoutManager?.getChildAt(lastKeywordItemPosition) ?: return
+
+        if (coachMark != null) return
 
         buildCoachMark2 {
             presenter?.markSuggestionCoachMark()
