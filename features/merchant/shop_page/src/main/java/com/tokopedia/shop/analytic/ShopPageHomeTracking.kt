@@ -198,7 +198,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
@@ -2478,10 +2478,11 @@ class ShopPageHomeTracking(
         } else {
             joinDash(bundleId, bundleName, bundlePriceCut)
         }
+        val itemList = joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE)
         val itemBundle = Bundle().apply {
             putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
+            putString(DIMENSION_40, itemList)
             putString(DIMENSION_87, ShopPageTrackingConstant.SHOP_PAGE)
             putString(INDEX, bundlePosition.toString())
             putString(ITEM_BRAND, "")
@@ -2501,7 +2502,7 @@ class ShopPageHomeTracking(
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(SHOP_ID, shopId)
         bundle.putString(USER_ID, userId)
-        bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
+        bundle.putString(ITEM_LIST, itemList)
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
         sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
@@ -2525,10 +2526,12 @@ class ShopPageHomeTracking(
         } else {
             joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage)
         }
+        val itemList = joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE)
         val itemBundle = Bundle().apply {
             putString(DIMENSION_117, VALUE_SINGLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE))
+            putString(DIMENSION_40, itemList)
+            putString(DIMENSION_87, ShopPageTrackingConstant.SHOP_PAGE)
             putString(INDEX, bundlePosition.toString())
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
@@ -2542,13 +2545,13 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, SINGLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
         bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
-        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_SINGLE_BUNDLE)
+        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(PRODUCT_ID, clickedProduct.productId)
-        bundle.putString(SHOP_ID, userId)
-        bundle.putString(USER_ID, shopId)
-        bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
+        bundle.putString(SHOP_ID, shopId)
+        bundle.putString(USER_ID, userId)
+        bundle.putString(ITEM_LIST, itemList)
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
         sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
