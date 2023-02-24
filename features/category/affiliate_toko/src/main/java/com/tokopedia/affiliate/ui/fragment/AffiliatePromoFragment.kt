@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -120,7 +121,7 @@ class AffiliatePromoFragment :
         view?.findViewById<ImageUnify>(R.id.icon_more)?.setOnClickListener {
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
-        view?.findViewById<LinearLayout>(R.id.ssa_container)?.setOnClickListener {
+        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.setOnClickListener {
             sendClickEvent()
             context?.let {
                 startActivity(
@@ -132,7 +133,7 @@ class AffiliatePromoFragment :
 
         view?.findViewById<LinearLayout>(R.id.gamification_container)?.isVisible = affiliatePromoViewModel.isAffiliateGamificationEnabled()
 
-        view?.findViewById<LinearLayout>(R.id.gamification_container)?.setOnClickListener{
+        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.setOnClickListener{
             val urlRedirectionAppLink = affiliatePromoViewModel.affiliateRedirection()
             if(urlRedirectionAppLink.isNotEmpty()){
                 RouteManager.route(context, urlRedirectionAppLink)
