@@ -60,7 +60,7 @@ class BannerIndicator : LinearLayout {
         this.listener = listener
     }
 
-    private fun addProgressBar(tag: Int) {
+    private fun addProgressBar() {
         val progressBarTheme =
             ContextThemeWrapper(context, com.tokopedia.home_component.R.style.IndicatorBanner)
         val progress = ProgressBar(progressBarTheme, null, Int.ZERO)
@@ -86,7 +86,7 @@ class BannerIndicator : LinearLayout {
         this.totalBanner = totalBanner
         if (totalBanner > Int.ONE) {
             for (i in Int.ZERO until totalBanner) {
-                addProgressBar(i)
+                addProgressBar()
             }
             getChildProgressBar(Int.ZERO)?.let {
                 initialAnimate(it, Int.ZERO)
