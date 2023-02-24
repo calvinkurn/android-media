@@ -3,16 +3,24 @@ package com.tokopedia.login_helper.presentation.viewmodel
 import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.login_helper.R
+import com.tokopedia.login_helper.data.response.LoginDataResponse
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
+import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.login_helper.util.exception.ErrorGetAdminTypeException
+import com.tokopedia.login_helper.util.exception.GoToActivationPageException
+import com.tokopedia.login_helper.util.exception.GoToSecurityQuestionException
+import com.tokopedia.login_helper.util.exception.LocationAdminRedirectionException
+import com.tokopedia.login_helper.util.exception.ShowLocationAdminPopupException
+import com.tokopedia.login_helper.util.exception.ShowPopupErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
@@ -29,6 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 class LoginHelperViewModel @Inject constructor(
@@ -71,11 +80,17 @@ class LoginHelperViewModel @Inject constructor(
             block = {
                 val response =  getUserDetailsRestUseCase.executeOnBackground()
                 Log.d("FATAL", "callTheAPi: ${response}")
+       //         updateUserDataList(convertToUserListUiModel(response))
             },
             onError = {
+                updateUserDataList(Fail(it))
                 Log.d("FATAL", "callTheAPi: ${it.message}")
             }
         )
+    }
+
+    private fun convertToUserListUiModel(typeRestResponseMap: Map<Type, RestResponse>): LoginDataResponse {
+        return typeRestResponseMap[LoginDataResponse::class.java]?.getData() as LoginDataResponse
     }
 
     private fun loginUser(email: String, password: String) {
@@ -93,14 +108,13 @@ class LoginHelperViewModel @Inject constructor(
                         updateLoginToken(Fail(it))
                     },
                     onShowPopupError = {
-                        Log.d("FATAL", "on show popup error: a")
+                        updateLoginToken(Fail(ShowPopupErrorException()))
                     },
                     onGoToActivationPage = {
-                        Log.d("FATAL", "go to activation page : a")
+                        updateLoginToken(Fail(GoToActivationPageException()))
                     },
                     onGoToSecurityQuestion = {
-                        updateLoginToken(Fail(LoginHelperException()))
-                        Log.d("FATAL", "loginUsergoto security question: ")
+                        updateLoginToken(Fail(GoToSecurityQuestionException()))
                     }
                 )
             } else {
@@ -121,13 +135,13 @@ class LoginHelperViewModel @Inject constructor(
             },
             getAdminTypeUseCase = getAdminTypeUseCase,
             showLocationAdminPopUp = {
-             //   mutableShowLocationAdminPopUp.value = Success(true)
+                updateProfileResponse(Fail(ShowLocationAdminPopupException()))
             },
             onLocationAdminRedirection = {
-           //     mutableAdminRedirection.value = Success(true)
+                updateProfileResponse(Fail(LocationAdminRedirectionException()))
             },
             showErrorGetAdminType = {
-       //         mutableShowLocationAdminPopUp.value = Fail(it)
+                updateProfileResponse(Fail(ErrorGetAdminTypeException()))
             }
         ))
     }
@@ -148,6 +162,13 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
+    private fun updateUserDataList(userDataList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>) {
+        _uiState.update {
+            it.copy(
+                loginDataList = userDataList
+            )
+        }
+    }
 
     private fun changeEnvType(envType: LoginHelperEnvType) {
         _uiState.update {

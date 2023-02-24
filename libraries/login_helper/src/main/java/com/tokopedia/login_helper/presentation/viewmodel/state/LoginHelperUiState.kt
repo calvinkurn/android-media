@@ -7,7 +7,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 
 data class LoginHelperUiState(
     val envType: LoginHelperEnvType = LoginHelperEnvType.STAGING,
-    val loginData: LoginDataUiModel? = null,
+    val loginDataList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null,
     val loginToken: com.tokopedia.usecase.coroutines.Result<LoginToken>? = null,
     val profilePojo: com.tokopedia.usecase.coroutines.Result<ProfilePojo>? = null
 )

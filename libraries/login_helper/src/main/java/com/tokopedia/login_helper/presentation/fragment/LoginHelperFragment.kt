@@ -8,25 +8,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.login_helper.R
 import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
+import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperException
 import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperViewModel
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperUiState
-import com.tokopedia.login_helper.util.showToaster
 import com.tokopedia.login_helper.util.showToasterError
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.Env
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -65,7 +66,6 @@ class LoginHelperFragment : BaseDaggerFragment() {
         observeUiState()
         observeUiAction()
         setEnvValue()
-
         binding?.apply {
             loginBtn.setOnClickListener {
                 viewModel.processEvent(LoginHelperEvent.LoginUser(
@@ -96,6 +96,7 @@ class LoginHelperFragment : BaseDaggerFragment() {
 
     private fun handleUiState(state: LoginHelperUiState) {
         setEnvTypeChip(state.envType)
+        handleLoginUserDataList(state.loginDataList)
         handleLoginToken(state.loginToken)
         handleProfileResponse(state.profilePojo)
     }
@@ -103,7 +104,12 @@ class LoginHelperFragment : BaseDaggerFragment() {
     private fun handleAction(action: LoginHelperAction) {
         when (action) {
             is LoginHelperAction.TapBackAction -> backToPreviousScreen()
+            is LoginHelperAction.GoToLoginPage -> goToLoginPage()
         }
+    }
+
+    private fun goToLoginPage() {
+        RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGIN)
     }
 
     private fun setEnvTypeChip(envType: LoginHelperEnvType) {
@@ -125,20 +131,20 @@ class LoginHelperFragment : BaseDaggerFragment() {
         header.setUpHeader()
     }
 
-    //TODO Fix : Does not work
     private fun FragmentLoginHelperBinding.handleChipClick() {
         loginHelperChipStaging.setOnClickListener {
-           view?.showToaster(
-                context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_warning_chip_click)
-                    .toBlankOrString()
-            )
+            showChipToasterError()
         }
         loginHelperChipProd.setOnClickListener {
-            view?.showToaster(
-                context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_warning_chip_click)
-                    .toBlankOrString()
-            )
+            showChipToasterError()
         }
+    }
+
+    private fun FragmentLoginHelperBinding.showChipToasterError() {
+        footer.showToasterError(
+            context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_warning_chip_click)
+                .toBlankOrString()
+        )
     }
 
     private fun HeaderUnify.setUpHeader() {
@@ -156,53 +162,59 @@ class LoginHelperFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleLoginToken(loginToken: Result<LoginToken>?) {
-        when(loginToken) {
-           is Success -> {
-               handleLoginTokenSuccess(loginToken.data)
-           }
+    private fun handleLoginUserDataList(loginDataList: Result<LoginDataUiModel>?) {
+        when(loginDataList) {
+            is Success -> {
+
+            }
             is Fail -> {
-                handleLoginTokenFailure(loginToken.throwable)
+                handleLoginUserDataListFailure(loginDataList.throwable)
             }
         }
     }
 
-    private fun handleLoginTokenSuccess(data: LoginToken) {
-        //Call for user Profile
-        view.showToaster(
-            context?.resources?.getString(R.string.login_helper_exception_text).toBlankOrString()
-        )
-        viewModel.getUserInfo()
+    private fun handleLoginUserDataListFailure(throwable: Throwable) {
+        binding?.globalError?.run{
+            setActionClickListener {
+                viewModel.processEvent(LoginHelperEvent.GetLoginData)
+            }
+            show()
+        }
     }
 
-    private fun handleLoginTokenFailure(throwable: Throwable) {
-        view.let {
-            if (throwable is LoginHelperException)
-                it.showToasterError("Login Helper Exception")
-            else
-                it.showToasterError(throwable.message.toString())
+    private fun handleLoginToken(loginToken: Result<LoginToken>?) {
+        when(loginToken) {
+           is Success -> {
+               handleLoginTokenSuccess()
+           }
+            is Fail -> {
+               handleFailure(loginToken.throwable)
+            }
         }
+    }
+
+    private fun handleLoginTokenSuccess() {
+        viewModel.getUserInfo()
     }
 
     private fun handleProfileResponse(profilePojo: Result<ProfilePojo>?) {
         when(profilePojo) {
             is Success -> {
-                handleProfileResponseSuccess(profilePojo.data)
+                handleProfileResponseSuccess()
             }
             is Fail -> {
-                handleProfileResponseFailure(profilePojo.throwable)
+                handleFailure(profilePojo.throwable)
             }
         }
     }
 
-    private fun handleProfileResponseSuccess(data: ProfilePojo) {
-        view?.let { Toaster.build(it,data.toString(), Toaster.LENGTH_LONG).show() }
-    }
+    private fun handleProfileResponseSuccess() = Unit
 
-    private fun handleProfileResponseFailure(throwable: Throwable) {
-        view?.let { Toaster.build(it,throwable.message.toString(), Toaster.LENGTH_LONG).show() }
+    private fun handleFailure(throwable: Throwable) {
+        binding?.footer?.showToasterError(throwable.message.toString(),"Go to Login") {
+            RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGIN)
+        }
     }
-
 
     override fun getScreenName(): String {
         return context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_header_title)

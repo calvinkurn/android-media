@@ -38,13 +38,17 @@ private fun View?.showToasterWithCta(message: String, ctaText: String) {
     }
 }
 
-fun View?.showToasterError(errorMessage: String, ctaText: String = "") {
+fun View?.showToasterError(
+    errorMessage: String,
+    ctaText: String = "",
+    clickListener: (View) -> Unit = {}
+) {
     if (this == null) return
 
     if (ctaText.isEmpty()) {
         showToasterError(errorMessage)
     } else {
-        showToasterErrorWithCta(errorMessage, ctaText)
+        showToasterErrorWithCta(errorMessage, ctaText, clickListener)
     }
 }
 
@@ -61,13 +65,14 @@ private fun View?.showToasterError(message: String) {
     }
 }
 
-private fun View?.showToasterErrorWithCta(message: String, ctaText: String) {
+private fun View?.showToasterErrorWithCta(message: String, ctaText: String, clickListener: (View) -> Unit) {
     Toaster.build(
         this ?: return,
         message,
         Toaster.LENGTH_LONG,
         Toaster.TYPE_ERROR,
-        ctaText
+        ctaText,
+        clickListener = clickListener
     ).apply {
         anchorView = this@showToasterErrorWithCta
         show()

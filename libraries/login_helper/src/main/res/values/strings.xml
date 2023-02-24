@@ -4,10 +4,4 @@
     <string name="login_helper_env_prod">Production</string>
     <string name="login_helper_total_users">Total Users</string>
     <string name="login_helper_warning_chip_click">You can not change the environment type. It is set via developer options.</string>
-<!--    <string name="login_helper_error_go_to_security_questions">Account not whitelisted. Go To Security Questions got called. Please try another account.</string>-->
-<!--    <string name="login_helper_error_show_popup">Account not whitelisted. Show Error Popup got called. Please try another account.</string>-->
-<!--    <string name="login_helper_error_go_to_activation_page">Account not whitelisted. Go to activation page got called. Please try another account.</string>-->
-<!--    <string name="login_helper_error_show_location_admin_popup">Account not whitelisted. Show Location Admin popup got called. Please try another account.</string>-->
-<!--    <string name="login_helper_error_location_admin_redirection">Account not whitelisted. Location admin redirection got called. Please try another account.</string>-->
-    <string name="login_helper_exception_text">Login Helper Exception. Please try with a different account.</string>
 </resources>
