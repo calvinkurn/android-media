@@ -1,7 +1,6 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
-import android.os.Parcelable
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.digitsOnly
@@ -46,13 +45,10 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PG
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_RECOMMENDATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_SHOP_DECOR
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REMINDER_FLASH_SALE_WIDGET
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC_BUTTON_FLASH_SALE_WIDGET
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE
@@ -198,7 +194,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
@@ -2366,7 +2362,7 @@ class ShopPageHomeTracking(
         atcBundleModel: AddToCartBundleModel,
         bundleName: String,
         bundleId: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         quantity: String,
         shopName: String,
         shopType: String,
@@ -2388,7 +2384,7 @@ class ShopPageHomeTracking(
                     bundleId = bundleId,
                     cartId = productDataModel.cartId,
                     bundleName = bundleName,
-                    bundlePrice = bundlePrice,
+                    bundlePrice = formatPrice(bundlePrice),
                     quantity = quantity,
                     shopName = shopName,
                     shopId = productDataModel.shopId,
@@ -2415,7 +2411,7 @@ class ShopPageHomeTracking(
         atcBundleModel: AddToCartBundleModel,
         bundleName: String,
         bundleId: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         quantity: String,
         shopName: String,
         shopType: String,
@@ -2471,7 +2467,7 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         bundlePosition: Int,
         clickedProduct: ShopHomeBundleProductUiModel,
         isFestivity: Boolean
@@ -2486,28 +2482,29 @@ class ShopPageHomeTracking(
             putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
             putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
+            putString(DIMENSION_87, ShopPageTrackingConstant.SHOP_PAGE)
             putString(INDEX, bundlePosition.toString())
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
             putString(ITEM_ID, bundleId)
             putString(ITEM_NAME, bundleName)
             putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
+            putString(PRICE, formatPrice(bundlePrice))
         }
 
         bundle.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, PRODUCT))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
         bundle.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
-        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_MULTIPLE_BUNDLE)
+        bundle.putString(TRACKER_ID, TRACKER_ID_CLICK_MULTIPLE_BUNDLE_PRODUCT)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-        bundle.putString(SHOP_ID, userId)
-        bundle.putString(USER_ID, shopId)
+        bundle.putString(SHOP_ID, shopId)
+        bundle.putString(USER_ID, userId)
         bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
-        sendEnhanceEcommerceDataLayerEvent(PRODUCT_CLICK, bundle)
+        sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
     }
 
     fun clickOnSingleBundleProduct(
@@ -2516,7 +2513,7 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         bundlePosition: Int,
         clickedProduct: ShopHomeBundleProductUiModel,
         selectedPackage: String,
@@ -2538,7 +2535,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, bundleId)
             putString(ITEM_NAME, bundleName)
             putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
+            putString(PRICE, formatPrice(bundlePrice))
         }
 
         bundle.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
@@ -2554,7 +2551,7 @@ class ShopPageHomeTracking(
         bundle.putString(ITEM_LIST, joinDash(SHOPPAGE, bundleName))
         bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
 
-        sendEnhanceEcommerceDataLayerEvent(PRODUCT_CLICK, bundle)
+        sendEnhanceEcommerceDataLayerEvent(SELECT_CONTENT, bundle)
     }
 
     fun onTrackSingleVariantChange(
@@ -2593,7 +2590,7 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         bundlePosition: Int,
         isFestivity: Boolean
     ) {
@@ -2625,7 +2622,7 @@ class ShopPageHomeTracking(
                         CREATIVE to "",
                         NAME to bundleName,
                         ID to bundleId,
-                        PRICE to bundlePrice,
+                        PRICE to formatPrice(bundlePrice),
                         POSITION to bundlePosition
                     )
                 )
@@ -2641,7 +2638,7 @@ class ShopPageHomeTracking(
         bundleId: String,
         bundleName: String,
         bundlePriceCut: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         bundlePosition: Int,
         isFestivity: Boolean
     ) {
@@ -2674,7 +2671,7 @@ class ShopPageHomeTracking(
                         CREATIVE to "",
                         NAME to bundleName,
                         ID to bundleId,
-                        PRICE to bundlePrice,
+                        PRICE to formatPrice(bundlePrice),
                         POSITION to bundlePosition
                     )
                 )
@@ -2838,7 +2835,7 @@ class ShopPageHomeTracking(
         bundleId: String,
         cartId: String,
         bundleName: String,
-        bundlePrice: Long,
+        bundlePrice: String,
         quantity: String,
         shopName: String,
         shopId: String,
@@ -2863,7 +2860,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, bundleId)
             putString(ITEM_NAME, bundleName)
             putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
+            putString(PRICE, formatPrice(bundlePrice))
             putString(QUANTITY, quantity)
             putString(SHOP_ID, shopId)
             putString(SHOP_NAME, shopName)

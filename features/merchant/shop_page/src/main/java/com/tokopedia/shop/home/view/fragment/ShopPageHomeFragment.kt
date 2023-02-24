@@ -1800,7 +1800,7 @@ open class ShopPageHomeFragment :
             bundleId = selectedMultipleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-            bundlePrice = selectedMultipleBundle.displayPriceRaw,
+            bundlePrice = selectedMultipleBundle.displayPrice,
             bundlePosition = bundlePosition,
             isFestivity = selectedMultipleBundle.isFestivity
         )
@@ -1843,7 +1843,7 @@ open class ShopPageHomeFragment :
             bundleId = selectedMultipleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-            bundlePrice = selectedMultipleBundle.displayPriceRaw,
+            bundlePrice = selectedMultipleBundle.displayPrice,
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct,
             isFestivity = selectedMultipleBundle.isFestivity
@@ -1889,7 +1889,7 @@ open class ShopPageHomeFragment :
             bundleId = selectedSingleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-            bundlePrice = selectedSingleBundle.displayPriceRaw,
+            bundlePrice = selectedSingleBundle.displayPrice,
             bundlePosition = bundlePosition,
             isFestivity = selectedSingleBundle.isFestivity
         )
@@ -1913,7 +1913,7 @@ open class ShopPageHomeFragment :
             bundleId = selectedSingleBundle.bundleId,
             bundleName = bundleName,
             bundlePriceCut = selectedSingleBundle.discountPercentage.toString(),
-            bundlePrice = selectedSingleBundle.displayPriceRaw,
+            bundlePrice = selectedSingleBundle.displayPrice,
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct,
             selectedPackage = selectedSingleBundle.minOrderWording,
@@ -2061,7 +2061,7 @@ open class ShopPageHomeFragment :
                 atcBundleModel = atcBundleModel,
                 bundleName = bundleName,
                 bundleId = shopHomeProductBundleDetailUiModel.bundleId,
-                bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
+                bundlePrice = shopHomeProductBundleDetailUiModel.displayPrice,
                 quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
                 shopName = shopName,
                 shopType = customDimensionShopPage.shopType.orEmpty(),
@@ -2075,7 +2075,7 @@ open class ShopPageHomeFragment :
                 atcBundleModel = atcBundleModel,
                 bundleName = bundleName,
                 bundleId = shopHomeProductBundleDetailUiModel.bundleId,
-                bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
+                bundlePrice = shopHomeProductBundleDetailUiModel.displayPrice,
                 quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
                 shopName = shopName,
                 shopType = customDimensionShopPage.shopType.orEmpty(),
