@@ -14,9 +14,11 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_R
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.TickerDataProvider
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
@@ -29,7 +31,6 @@ import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressRespon
 import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsReceiverResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsSenderResponse
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsReceiverUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
@@ -597,7 +598,7 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `WHEN setupTicker with ticker type info THEN return TickerModel with TYPE_INFORMATION`() {
-        val tickerType = ManageAddressViewModel.TICKER_INFO_TYPE
+        val tickerType = TargetedTickerMapper.TICKER_INFO_TYPE
         val response = TickerDataProvider.provideDummy()
         val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
         coEvery { tickerUseCase.invoke(any()) } returns response
@@ -613,7 +614,7 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `WHEN setupTicker with ticker type warning THEN return TickerModel with TYPE_WARNING`() {
-        val tickerType = ManageAddressViewModel.TICKER_WARNING_TYPE
+        val tickerType = TargetedTickerMapper.TICKER_WARNING_TYPE
         val response = TickerDataProvider.provideDummy()
         val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
         coEvery { tickerUseCase.invoke(any()) } returns response
@@ -629,7 +630,7 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `WHEN setupTicker with ticker type error THEN return TickerModel with TYPE_ERROR`() {
-        val tickerType = ManageAddressViewModel.TICKER_ERROR_TYPE
+        val tickerType = TargetedTickerMapper.TICKER_ERROR_TYPE
         val response = TickerDataProvider.provideDummy()
         val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
         coEvery { tickerUseCase.invoke(any()) } returns response

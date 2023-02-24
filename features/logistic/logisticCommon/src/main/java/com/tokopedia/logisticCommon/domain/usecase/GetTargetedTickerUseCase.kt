@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.domain.usecase
+package com.tokopedia.logisticCommon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -6,8 +6,8 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.manageaddress.domain.request.shareaddress.GetTargetedTickerParam
-import com.tokopedia.manageaddress.domain.response.GetTargetedTickerResponse
+import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
+import com.tokopedia.logisticCommon.domain.response.GetTargetedTickerResponse
 import javax.inject.Inject
 
 class GetTargetedTickerUseCase @Inject constructor(

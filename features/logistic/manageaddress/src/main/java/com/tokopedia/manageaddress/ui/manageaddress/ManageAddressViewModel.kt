@@ -14,23 +14,21 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.toUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.model.TickerModel
+import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendEmptySpace
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHyperlinkText
+import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import com.tokopedia.manageaddress.domain.model.TickerModel
-import com.tokopedia.manageaddress.domain.request.shareaddress.GetTargetedTickerParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsReceiverParam
 import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsSenderParam
-import com.tokopedia.manageaddress.domain.response.GetTargetedTickerResponse
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsReceiverUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
@@ -40,7 +38,6 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESS
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -63,9 +60,6 @@ class ManageAddressViewModel @Inject constructor(
 
     companion object {
         const val STATUS_SUCCESS = 1
-        const val TICKER_INFO_TYPE = "info"
-        const val TICKER_WARNING_TYPE = "warning"
-        const val TICKER_ERROR_TYPE = "danger"
     }
 
     var token: Token? = null
@@ -393,53 +387,6 @@ class ManageAddressViewModel @Inject constructor(
         }, onError = {
                 _tickerState.value = Fail(it)
             })
-    }
-
-    private fun GetTargetedTickerResponse.GetTargetedTickerData.toUiModel(): TickerModel {
-        return TickerModel(
-            item = this.list.sortedBy { it.priority }.map {
-                TickerModel.TickerItem(
-                    id = it.id,
-                    type = it.toTickerType(),
-                    title = it.title,
-                    content = it.generateContent(),
-                    linkUrl = it.action.getUrl(),
-                    priority = it.priority
-                )
-            }
-        )
-    }
-
-    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.Action.getUrl(): String {
-        return this.appURL.ifEmpty { this.webURL }
-    }
-
-    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.generateContent(): String {
-        return java.lang.StringBuilder().apply {
-            append(this@generateContent.content)
-            this@generateContent.action.takeIf { it.label.isNotEmpty() }?.let {
-                    action ->
-                appendEmptySpace()
-                appendHyperlinkText(label = action.label, url = action.getUrl())
-            }
-        }.toString()
-    }
-
-    private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.toTickerType(): Int {
-        return when (this.type.lowercase()) {
-            TICKER_INFO_TYPE -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
-            TICKER_WARNING_TYPE -> {
-                Ticker.TYPE_WARNING
-            }
-            TICKER_ERROR_TYPE -> {
-                Ticker.TYPE_ERROR
-            }
-            else -> {
-                Ticker.TYPE_INFORMATION
-            }
-        }
     }
 
     override fun onCleared() {
