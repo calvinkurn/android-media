@@ -436,7 +436,10 @@ class MultipleProductBundleFragment :
     private fun renderShopInfoLayout(binding: FragmentMultipleProductBundleBinding?, shopInformation: ShopInformation) {
         binding?.shopInfoHeaderLayout?.run {
             Typography.isFontTypeOpenSauceOne = true
-            this.iuShopBadge.setImageUrl(shopInformation.shopBadge)
+            if (shopInformation.shopBadge.isNotBlank()) {
+                this.iuShopBadge.show()
+                this.iuShopBadge.setImageUrl(shopInformation.shopBadge)
+            }
             this.tpgShopName.run {
                 this.text = shopInformation.shopName
             }

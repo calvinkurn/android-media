@@ -9,6 +9,7 @@
         android:id="@+id/iu_shop_badge"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

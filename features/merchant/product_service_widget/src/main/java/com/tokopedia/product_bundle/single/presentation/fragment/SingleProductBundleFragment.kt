@@ -423,7 +423,10 @@ class SingleProductBundleFragment(
         shopInformation: ShopInformation
     ) {
         binding?.shopInfoHeaderLayout?.tpgShopName?.text = shopInformation.shopName
-        binding?.shopInfoHeaderLayout?.iuShopBadge?.setImageUrl(shopInformation.shopBadge)
+        if (shopInformation.shopBadge.isNotBlank()) {
+            binding?.shopInfoHeaderLayout?.iuShopBadge?.show()
+            binding?.shopInfoHeaderLayout?.iuShopBadge?.setImageUrl(shopInformation.shopBadge)
+        }
     }
     private fun renderTotalSoldInfo(binding: FragmentSingleProductBundleBinding?, totalSold: Int) {
         if (totalSold.isMoreThanZero()) {
