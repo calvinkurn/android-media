@@ -58,7 +58,7 @@ interface ShipmentContract {
         fun hideInitialLoading()
         fun showLoading()
         fun hideLoading()
-        fun showToastNormal(message: String?)
+        fun showToastNormal(message: String)
         fun showToastError(message: String?)
         fun renderErrorPage(message: String?)
         fun onCacheExpired(message: String?)
@@ -120,7 +120,7 @@ interface ShipmentContract {
             shipmentCartItemModel: ShipmentCartItemModel?
         )
 
-        fun navigateToSetPinpoint(message: String?, locationPass: LocationPass?)
+        fun navigateToSetPinpoint(message: String, locationPass: LocationPass?)
         fun generateNewCheckoutRequest(
             shipmentCartItemModelList: List<ShipmentCartItemModel?>?,
             isAnalyticsPurpose: Boolean
@@ -132,7 +132,7 @@ interface ShipmentContract {
         fun stopEmbraceTrace()
         fun onSuccessClearPromoLogistic(position: Int, isLastAppliedPromo: Boolean)
         fun resetCourier(position: Int)
-        fun generateValidateUsePromoRequest(): ValidateUsePromoRequest?
+        fun generateValidateUsePromoRequest(): ValidateUsePromoRequest
         fun generateCouponListRecommendationRequest(): PromoRequest?
         fun clearTotalBenefitPromoStacking()
         fun triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
@@ -163,13 +163,13 @@ interface ShipmentContract {
         fun logOnErrorLoadCourier(throwable: Throwable?, itemPosition: Int, boPromoCode: String?)
         fun logOnErrorApplyBo(throwable: Throwable?, itemPosition: Int, boPromoCode: String?)
         fun logOnErrorApplyBo(
-            throwable: Throwable?,
-            shipmentCartItemModel: ShipmentCartItemModel?,
-            boPromoCode: String?
+            throwable: Throwable,
+            shipmentCartItemModel: ShipmentCartItemModel,
+            boPromoCode: String
         )
 
-        fun logOnErrorCheckout(throwable: Throwable?, request: String?)
-        fun showPopUp(popUpData: PopUpData?)
+        fun logOnErrorCheckout(throwable: Throwable, request: String)
+        fun showPopUp(popUpData: PopUpData)
         fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int)
         fun onNeedUpdateViewItem(position: Int)
         fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String?>?)
@@ -178,7 +178,7 @@ interface ShipmentContract {
         fun getShipmentDetailData(
             shipmentCartItemModel: ShipmentCartItemModel?,
             recipientAddressModel: RecipientAddressModel?
-        ): ShipmentDetailData?
+        ): ShipmentDetailData
 
         fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel?)
         fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel?)
@@ -189,7 +189,7 @@ interface ShipmentContract {
         fun sendAnalyticsChoosePaymentMethodFailed(errorMessage: String?)
         fun sendEnhancedEcommerceAnalyticsCheckout(
             stringObjectMap: Map<String, Any>,
-            tradeInCustomDimension: Map<String, String>,
+            tradeInCustomDimension: Map<String, String>?,
             transactionId: String?,
             userId: String,
             promoFlag: Boolean,
@@ -211,7 +211,7 @@ interface ShipmentContract {
         fun sendAnalyticsOnClickCheckBoxDropShipperOption()
         fun sendAnalyticsOnClickCheckBoxInsuranceOption()
         fun sendAnalyticsScreenName(screenName: String?)
-        fun sendAnalyticsOnClickEditPinPointErrorValidation(message: String?)
+        fun sendAnalyticsOnClickEditPinPointErrorValidation(message: String)
         fun sendAnalyticsCourierNotComplete()
         fun sendAnalyticsPromoRedState()
         fun sendAnalyticsDropshipperNotComplete()
@@ -349,7 +349,7 @@ interface ShipmentContract {
         )
 
         var shipmentDonationModel: ShipmentDonationModel?
-        var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel?>?
+        var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?
         var shipmentButtonPaymentModel: ShipmentButtonPaymentModel?
         fun setShippingCourierViewModelsState(
             shippingCourierUiModelsState: List<ShippingCourierUiModel?>?,
