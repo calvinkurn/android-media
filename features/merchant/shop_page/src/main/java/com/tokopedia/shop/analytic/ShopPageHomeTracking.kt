@@ -205,6 +205,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_THEMATIC_WIDGET_IMPRESSION
@@ -2654,15 +2655,20 @@ class ShopPageHomeTracking(
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to productId,
+            TRACKER_ID to TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET,
             SHOP_ID to shopId,
             USER_ID to userId
         )
+        val itemListValue = joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE)
         eventMap[ECOMMERCE] = mutableMapOf(
             PROMO_VIEW to mutableMapOf(
                 PROMOTIONS to listOf(
                     mutableMapOf(
                         DIMENSION_117 to SINGLE_BUNDLE_WIDGET,
                         DIMENSION_118 to bundleId,
+                        DIMENSION_40 to itemListValue,
+                        DIMENSION_87 to ShopPageTrackingConstant.SHOP_PAGE,
+                        CREATIVE to "",
                         NAME to bundleName,
                         ID to bundleId,
                         PRICE to bundlePrice,
