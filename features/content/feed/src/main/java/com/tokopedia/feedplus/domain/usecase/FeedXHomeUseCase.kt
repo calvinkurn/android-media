@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.domain.usecase
 
+import com.tokopedia.feedplus.data.FeedXHomeEntity
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,10 +14,10 @@ import javax.inject.Inject
 @GqlQuery(FeedXHomeUseCase.QUERY_NAME, FeedXHomeUseCase.QUERY)
 class FeedXHomeUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<Any>(graphqlRepository) {
+) : GraphqlUseCase<FeedXHomeEntity.Response>(graphqlRepository) {
 
     init {
-        setTypeClass(Any::class.java)
+        setTypeClass(FeedXHomeEntity.Response::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setGraphqlQuery(FeedXHomeQuery())
     }
@@ -279,7 +280,6 @@ class FeedXHomeUseCase @Inject constructor(
                 restrictions {
                   label
                   isActive
-                  __typename
                 }
               }
               appLinkProductList
