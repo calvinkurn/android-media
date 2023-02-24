@@ -151,7 +151,6 @@ class ProductDetailActivityTest {
     fun validateClickBuyIsNonLogin() {
         actionTest {
             clearLogin()
-            Thread.sleep(500L)
             selectVariantFromVbs()
             clickBuyNow()
         } assertTest {
@@ -166,7 +165,6 @@ class ProductDetailActivityTest {
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
             clearLogin()
-            Thread.sleep(500L)
             selectVariantFromVbs()
             clickAddToCart()
         } assertTest {
