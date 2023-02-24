@@ -127,6 +127,8 @@ class ProductCarouselViewHolder private constructor() {
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
             }
+
+            binding.lblProductNumber.setLabel(item.number)
         }
 
         private fun getInfo(item: PlayProductUiModel.Product): CharSequence {

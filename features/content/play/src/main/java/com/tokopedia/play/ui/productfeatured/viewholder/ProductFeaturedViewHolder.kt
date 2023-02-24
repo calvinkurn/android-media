@@ -57,6 +57,8 @@ class ProductFeaturedViewHolder(
             if (item.applink.isNullOrEmpty()) return@setOnClickListener
             listener.onClickProductCard(item, adapterPosition)
         }
+
+        binding.lblProductNumber.setLabel(item.number)
     }
 
     companion object {

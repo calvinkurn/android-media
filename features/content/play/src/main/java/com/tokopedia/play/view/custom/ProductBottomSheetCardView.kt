@@ -122,6 +122,8 @@ class ProductBottomSheetCardView(
 
         binding.btnProductFirst.generateButton(firstButton.color)
         binding.btnProductSecond.generateButton(lastButton.color)
+
+        binding.lblProductNumber.setLabel(item.number)
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {

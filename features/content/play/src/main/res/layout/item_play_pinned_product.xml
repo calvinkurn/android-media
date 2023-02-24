@@ -179,6 +179,17 @@
             app:unifyButtonVariant="filled"
             />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_product_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:labelType="general_dark_grey"
+            app:layout_constraintStart_toStartOf="@+id/img_product"
+            app:layout_constraintTop_toTopOf="@+id/img_product"
+            tools:labelTitle="1" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify2>
