@@ -199,9 +199,11 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
@@ -2218,29 +2220,29 @@ class ShopPageHomeTracking(
         } else {
             eventLabel
         }
-        val eventMap: MutableMap<String, Any> = mutableMapOf(
-            EVENT to PROMO_VIEW,
-            EVENT_ACTION to ACTION_SHOP_DECOR_IMPRESSION,
-            EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to eventLabel,
-            BUSINESS_UNIT to PHYSICAL_GOODS,
-            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            ECOMMERCE to mutableMapOf(
-                PROMO_VIEW to mutableMapOf(
-                    PROMOTIONS to mutableListOf(
-                        mutableMapOf(
-                            CREATIVE to decorWidgetName,
-                            ID to widgetId,
-                            NAME to VALUE_SHOP_DECOR,
-                            POSITION to widgetPosition
-                        )
-                    )
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM)
+            putString(EVENT_ACTION, ACTION_SHOP_DECOR_IMPRESSION)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabel)
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_SHOP_DECOR)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(CREATIVE_NAME, decorWidgetName)
+                        putInt(CREATIVE_SLOT, widgetPosition)
+                        putString(ITEM_ID, widgetId)
+                        putString(ITEM_NAME, VALUE_SHOP_DECOR)
+                    }
                 )
-            ),
-            SHOP_ID to shopId,
-            USER_ID to userId
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
     }
 
     fun onClickedShopHomeWidget(
@@ -2264,29 +2266,29 @@ class ShopPageHomeTracking(
         } else {
             eventLabel
         }
-        val eventMap: MutableMap<String, Any> = mutableMapOf(
-            EVENT to CLICK_SHOP_PAGE,
-            EVENT_ACTION to ACTION_SHOP_DECOR_CLICK,
-            EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to eventLabel,
-            BUSINESS_UNIT to PHYSICAL_GOODS,
-            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            ECOMMERCE to mutableMapOf(
-                PROMO_CLICK to mutableMapOf(
-                    PROMOTIONS to mutableListOf(
-                        mutableMapOf(
-                            CREATIVE to decorWidgetName,
-                            ID to widgetId,
-                            NAME to VALUE_SHOP_DECOR,
-                            POSITION to widgetPosition
-                        )
-                    )
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, ACTION_SHOP_DECOR_CLICK)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabel)
+            putString(TRACKER_ID, TRACKER_ID_CLICK_SHOP_DECOR)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(CREATIVE_NAME, decorWidgetName)
+                        putInt(CREATIVE_SLOT, widgetPosition)
+                        putString(ITEM_ID, widgetId)
+                        putString(ITEM_NAME, VALUE_SHOP_DECOR)
+                    }
                 )
-            ),
-            SHOP_ID to shopId,
-            USER_ID to userId
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
     }
 
     fun sendUserViewHomeTabWidgetTracker(
