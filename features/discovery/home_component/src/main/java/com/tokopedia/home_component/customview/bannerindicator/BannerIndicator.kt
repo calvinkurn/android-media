@@ -34,6 +34,8 @@ class BannerIndicator : LinearLayout {
         private const val SCROLL_TRANSITION_DURATION = 5000L
         private const val WIDTH_MINIMUM_PROGRESS = 6
         private const val WIDTH_MAXIMUM_PROGRESS = 48
+        private const val ALPHA_PROGRESS = 0.44
+        private const val CONST_FULL_PROGRESS = 0.56
     }
 
     private val marginHorizontalProgress = 2f.toDpInt()
@@ -149,15 +151,24 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.start()
     }
 
+    private val alpha = 44
+
     private fun minimizeIndicatorBanner(progressIndicator: ProgressBar) {
-        progressIndicator.progress = Int.ZERO
+//        progressIndicator.progress = Int.ZERO
         val minimizeAnimator = ValueAnimator
             .ofInt(WIDTH_MAXIMUM_PROGRESS, WIDTH_MINIMUM_PROGRESS)
             .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
         minimizeAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
+            val alpha =
+                (value.toFloat() - WIDTH_MINIMUM_PROGRESS) / (WIDTH_MAXIMUM_PROGRESS - WIDTH_MINIMUM_PROGRESS) * CONST_FULL_PROGRESS + ALPHA_PROGRESS
+            progressIndicator.alpha = alpha.toFloat()
             progressIndicator.layoutParams?.width = value.toPx()
             progressIndicator.requestLayout()
+            if (value == WIDTH_MINIMUM_PROGRESS) {
+                progressIndicator.progress = 0
+                progressIndicator.alpha = 1.0f
+            }
         }
         val minAnimatorSet = AnimatorSet()
         minAnimatorSet.play(minimizeAnimator)

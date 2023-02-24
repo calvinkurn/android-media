@@ -134,7 +134,7 @@ class BannerRevampViewHolder(
         if (position == Int.ZERO) {
             binding?.rvBannerRevamp?.smoothScrollToPosition(position)
         } else {
-            binding?.rvBannerRevamp?.smoothScrollBy(width - paddings, 0, null, FLING_DURATION_OLD)
+            binding?.rvBannerRevamp?.smoothScrollBy(width - paddings, 0, null, FLING_DURATION)
         }
     }
 
