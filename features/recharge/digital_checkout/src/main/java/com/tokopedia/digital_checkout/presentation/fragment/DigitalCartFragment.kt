@@ -613,10 +613,12 @@ class DigitalCartFragment :
                 }
                 PaymentConstant.PAYMENT_FAILED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled_or_failed))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 PaymentConstant.PAYMENT_CANCELLED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 else -> getCartAfterCheckout()
@@ -934,6 +936,11 @@ class DigitalCartFragment :
                 getOperatorName()
             )
         }
+    }
+
+    private fun resetCrossSellData() {
+        viewModel.requestCheckoutParam.isSubscriptionChecked = false
+        viewModel.requestCheckoutParam.crossSellProducts = hashMapOf()
     }
 
     private fun getPromoDigitalModel(): PromoDigitalModel =
