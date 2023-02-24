@@ -77,19 +77,19 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check create voucher appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/create-voucher"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-mvc/create/{voucher_type}/"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
     @Test
     fun `check voucher list appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/voucher-list"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-mvc/list/{voucher_status}/"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
     @Test
     fun `check voucher detail appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/voucher-detail"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-mvc/detail/{voucher_id}/"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
