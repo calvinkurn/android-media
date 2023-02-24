@@ -75,4 +75,12 @@ class SellerHomeSharedPref @Inject constructor(
         val key = String.format(KEY_PERSONA_POPUP, userId)
         sharedPref.edit().putBoolean(key, false).apply()
     }
+
+    fun getBoolean(key: String, defValue: Boolean = false): Boolean {
+        return sharedPref.getBoolean(key, defValue)
+    }
+
+    fun putBoolean(key: String, value: Boolean) {
+        sharedPref.edit().putBoolean(key, value).apply()
+    }
 }

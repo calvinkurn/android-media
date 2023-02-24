@@ -92,36 +92,39 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     }
 
     private fun setupOnBackPressed() {
-        val paramPersona = args.paramPersona
-        if (paramPersona.isNotBlank()) {
-            activity?.onBackPressedDispatcher?.addCallback(
-                viewLifecycleOwner, backPressedCallback
-            )
-        }
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner, backPressedCallback
+        )
     }
 
     private fun handleOnBackPressed() {
         context?.let {
-            val dialog = DialogUnify(
-                it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
-            )
-            with(dialog) {
-                setTitle(it.getString(R.string.sp_poup_exit_title))
-                setDescription(it.getString(R.string.sp_popup_exit_result_description))
-                setPrimaryCTAText(it.getString(R.string.sp_popup_exit_result_primary_cta))
-                setPrimaryCTAClickListener {
-                    dismiss()
-                }
-                setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
-                setSecondaryCTAClickListener {
-                    dismiss()
-                    if (sharedPref.isFirstVisit) {
-                        val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
-                        RouteManager.route(it, appLink)
+            val paramPersona = args.paramPersona
+            val isAnyChanges = binding?.switchSpActivatePersona?.isChecked != isPersonaActive
+            if (paramPersona.isNotBlank() || (paramPersona.isBlank() && isAnyChanges)) {
+                val dialog = DialogUnify(
+                    it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
+                )
+                with(dialog) {
+                    setTitle(it.getString(R.string.sp_poup_exit_title))
+                    setDescription(it.getString(R.string.sp_popup_exit_result_description))
+                    setPrimaryCTAText(it.getString(R.string.sp_popup_exit_result_primary_cta))
+                    setPrimaryCTAClickListener {
+                        dismiss()
                     }
-                    activity?.finish()
+                    setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
+                    setSecondaryCTAClickListener {
+                        dismiss()
+                        if (sharedPref.isFirstVisit) {
+                            val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
+                            RouteManager.route(it, appLink)
+                        }
+                        activity?.finish()
+                    }
+                    show()
                 }
-                show()
+            } else {
+                activity?.finish()
             }
         }
     }
@@ -143,9 +146,9 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     private fun goToSellerHome() {
         activity?.let {
             val toasterMessage = if (isPersonaActive) {
-                it.getString(R.string.sp_persona_toggle_to_inactive_toaster_message)
-            } else {
                 it.getString(R.string.sp_persona_toggle_to_active_toaster_message)
+            } else {
+                it.getString(R.string.sp_persona_toggle_to_inactive_toaster_message)
             }
             val param = mapOf(
                 SellerHomeApplinkConst.TOASTER_MESSAGE to toasterMessage,

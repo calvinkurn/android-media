@@ -45,7 +45,7 @@ class MenuSettingAdapter(
         private const val DEVELOPER_OPTION_INDEX_FROM_LAST = 4
         private const val SCREEN_RECORDER_INDEX_FROM_LAST = 3
         private const val SOCIAL_EXPIRED_DATE = 1646326800000 //04-03-2022
-        private const val PERSONA_EXPIRED_DATE = 1679241600000 //04-03-2022
+        private const val PERSONA_EXPIRED_DATE = OtherMenuAdapter.PERSONA_EXPIRED_DATE
     }
 
     var menuSetingAccess = MenuSettingAccess()
@@ -251,7 +251,7 @@ class MenuSettingAdapter(
             if (sellerHomeSharedPref.shouldShowPersonaEntryPoint(userSession.userId)) {
                 menuList.add(
                     MenuItemUiModel(
-                        it.getString(R.string.setting_seller_persona),
+                        title = it.getString(R.string.setting_seller_persona),
                         tag = getPersonaTag(),
                         clickAction = {
                             SettingSellerPersonaTracking.sendSettingsClickSellerPersonaEvent()
