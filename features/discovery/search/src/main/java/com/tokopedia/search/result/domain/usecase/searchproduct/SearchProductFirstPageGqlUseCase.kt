@@ -419,6 +419,8 @@ class SearchProductFirstPageGqlUseCase(
                               key
                               name
                               value
+                              val_min
+                              val_max
                             }
                         }
                         tracking_option

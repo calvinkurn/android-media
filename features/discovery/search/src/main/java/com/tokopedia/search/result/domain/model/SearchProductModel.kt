@@ -1115,6 +1115,8 @@ data class SearchProductModel(
             key = filters.key,
             value = filters.value,
             name = filters.name,
+            valMin = filters.valMin,
+            valMax = filters.valMax,
         )
     }
 
@@ -1130,6 +1132,14 @@ data class SearchProductModel(
         @SerializedName("value")
         @Expose
         val value: String = "",
+
+        @SerializedName("val_min")
+        @Expose
+        val valMin: String = "",
+
+        @SerializedName("val_max")
+        @Expose
+        val valMax: String = "",
     )
 
     data class Violation(

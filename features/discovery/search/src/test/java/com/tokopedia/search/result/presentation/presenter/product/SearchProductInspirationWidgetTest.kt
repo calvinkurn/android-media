@@ -581,8 +581,10 @@ internal class SearchProductInspirationWidgetTest: ProductListPresenterTestFixtu
         applink shouldBe inspirationWidgetOption.applink
         hexColor shouldBe inspirationWidgetOption.color
         inspirationCardType shouldBe type
-        filters.key shouldBe inspirationWidgetOption.filters.key
-        filters.name shouldBe inspirationWidgetOption.filters.name
-        filters.value shouldBe inspirationWidgetOption.filters.value
+        option.key shouldBe inspirationWidgetOption.filters.key
+        option.name shouldBe inspirationWidgetOption.filters.name
+        option.value shouldBe inspirationWidgetOption.filters.value
+        option.valMin shouldBe inspirationWidgetOption.filters.valMin
+        option.valMax shouldBe inspirationWidgetOption.filters.valMax
     }
 }

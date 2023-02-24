@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationwidget
 
 import android.content.Context
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.search.result.product.ProductListParameterListener
@@ -57,8 +58,19 @@ class InspirationWidgetListenerDelegate(
     override fun isFilterSelected(option: Option?): Boolean {
         option ?: return false
 
-        return filterController.getFilterViewState(option)
+        return if (option.isPriceRange) filterController.isPriceRangeFilterSelected(option)
+        else filterController.getFilterViewState(option)
     }
+
+    private fun FilterController.isPriceRangeFilterSelected(option: Option) =
+        option.valMin == getMinPrice()
+            && option.valMax == getMaxPrice()
+
+    private fun FilterController.getMinPrice(): String =
+        getParameter()[SearchApiConst.PMIN] ?: ""
+
+    private fun FilterController.getMaxPrice(): String =
+        getParameter()[SearchApiConst.PMAX] ?: ""
 
     private fun trackInspirationFilterOptionClick(
         isFilterSelected: Boolean,
@@ -73,7 +85,7 @@ class InspirationWidgetListenerDelegate(
         isFilterSelected: Boolean,
         componentId: String,
     ) {
-        filterController.setFilter(option, isFilterSelected)
+        applyFilterToFilterController(option, isFilterSelected)
 
         val queryParams = filterController.getParameter() +
             originFilterMap() +
@@ -82,5 +94,33 @@ class InspirationWidgetListenerDelegate(
 
         parameterListener.refreshSearchParameter(queryParams)
         parameterListener.reloadData()
+    }
+
+    private fun applyFilterToFilterController(option: Option, isFilterSelected: Boolean) {
+        if (option.isPriceRange)
+            applyPriceRangeFilter(option, isFilterSelected)
+        else
+            applyRegularFilter(option, isFilterSelected)
+    }
+
+    private fun applyPriceRangeFilter(option: Option, isFilterSelected: Boolean) {
+        val valMin = if (isFilterSelected) option.valMin else ""
+        val valMax = if (isFilterSelected) option.valMax else ""
+
+        filterController.setFilter(
+            Option(name = "", key = Option.KEY_PRICE_MIN, value = valMin),
+            isFilterApplied = valMin != "",
+            isCleanUpExistingFilterWithSameKey = true
+        )
+
+        filterController.setFilter(
+            Option(name = "", key = Option.KEY_PRICE_MAX, value = valMax),
+            isFilterApplied = valMax != "",
+            isCleanUpExistingFilterWithSameKey = true
+        )
+    }
+
+    private fun applyRegularFilter(option: Option, isFilterSelected: Boolean) {
+        filterController.setFilter(option, isFilterSelected)
     }
 }
