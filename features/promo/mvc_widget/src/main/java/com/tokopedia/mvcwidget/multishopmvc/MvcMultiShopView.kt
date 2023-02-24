@@ -14,8 +14,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.MVCActivityCallbacks
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
@@ -34,7 +34,9 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class MvcMultiShopView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var ivShopIcon: AppCompatImageView? = null
@@ -71,18 +73,18 @@ class MvcMultiShopView @JvmOverloads constructor(
         tvDealsCouponTwo = findViewById(R.id.tv_deals_coupon2)
     }
 
-    fun setTracker(mvcTrackerImpl: MvcTrackerImpl){
+    fun setTracker(mvcTrackerImpl: MvcTrackerImpl) {
         mvcActivityCallbacks.mvcTrackerImpl = mvcTrackerImpl
         tracker.trackerImpl = mvcTrackerImpl
     }
 
-    fun setMultiShopModel(item: MultiShopModel , @MvcSource source: Int) {
+    fun setMultiShopModel(item: MultiShopModel, @MvcSource source: Int) {
         mvcActivityCallbacks.hashCodeForMVC = item.hashCode()
         item.shopIcon.let {
             if (it.isNotEmpty()) {
                 ivShopIcon?.loadImage(it)
                 ivShopIcon?.show()
-            }else{
+            } else {
                 ivShopIcon?.hide()
             }
         }
@@ -149,17 +151,18 @@ class MvcMultiShopView @JvmOverloads constructor(
             parentContainer?.background?.colorFilter = PorterDuffColorFilter(
                 MethodChecker.getColor(
                     parentContainer?.context,
-                    com.tokopedia.unifyprinciples.R.color.dark_N75
-                ), PorterDuff.Mode.SRC_IN
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700
+                ),
+                PorterDuff.Mode.SRC_IN
             )
         }
 
         tvShopName?.setOnClickListener {
-            shopClickListener(item,source)
+            shopClickListener(item, source)
         }
 
         ivShopChevron?.setOnClickListener {
-            shopClickListener(item,source)
+            shopClickListener(item, source)
         }
 
         ivCouponOne?.setOnClickListener {
@@ -189,16 +192,16 @@ class MvcMultiShopView @JvmOverloads constructor(
         }
 
         tvCashBackTitle?.setOnClickListener {
-            cardClickEvent(it.context, item, CLICK_COUPON_TITLE,source)
+            cardClickEvent(it.context, item, CLICK_COUPON_TITLE, source)
         }
         tvCashBackValue?.setOnClickListener {
-            cardClickEvent(it.context, item, CLICK_COUPON_TITLE,source)
+            cardClickEvent(it.context, item, CLICK_COUPON_TITLE, source)
         }
         tvCouponCount?.setOnClickListener {
-            cardClickEvent(it.context, item, CLICK_COUPON_TITLE,source)
+            cardClickEvent(it.context, item, CLICK_COUPON_TITLE, source)
         }
         this.setOnClickListener {
-            cardClickEvent(it.context,item,CLICK_PRODUCT_CARD,source)
+            cardClickEvent(it.context, item, CLICK_PRODUCT_CARD, source)
         }
     }
 
@@ -211,7 +214,7 @@ class MvcMultiShopView @JvmOverloads constructor(
         val shopName = item.shopName
         val shopApplink = item.applink
         val shopId = item.id
-        (context.applicationContext as Application).let {app->
+        (context.applicationContext as Application).let { app ->
             app.unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
             app.registerActivityLifecycleCallbacks(mvcActivityCallbacks)
         }
@@ -272,7 +275,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             mvcSource,
             UserSession(context).userId,
             productPosition,
-            "mvc section - $shopName",
+            "mvc section - $shopName"
         )
     }
 
@@ -298,6 +301,7 @@ class MvcMultiShopView @JvmOverloads constructor(
         const val className = "com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView"
         const val FIRST_PRODUCT_POSITION = 0
         const val SECOND_PRODUCT_POSITION = 1
+
 //        Since we use same method sendCouponClickEvent() for all events, we send product position
 //        as -1 for all events other than product click events.
         const val PRODUCT_POSITION_NA = -1

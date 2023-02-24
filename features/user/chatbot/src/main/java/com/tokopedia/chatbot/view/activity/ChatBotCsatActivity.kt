@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.csat_rating.activity.BottomSheetProvideRatingActivity
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class ChatBotCsatActivity : BottomSheetProvideRatingActivity() {
 
@@ -44,7 +45,7 @@ class ChatBotCsatActivity : BottomSheetProvideRatingActivity() {
             model?.csat?.reasons?.let {
                 for (reason in it) {
                     val badCsatReasonListItem = BadCsatReasonListItem()
-                    badCsatReasonListItem.id = reason.code ?: 0
+                    badCsatReasonListItem.id = reason.code.orZero().toLong()
                     badCsatReasonListItem.message = reason.text
                     list.add(badCsatReasonListItem)
                 }

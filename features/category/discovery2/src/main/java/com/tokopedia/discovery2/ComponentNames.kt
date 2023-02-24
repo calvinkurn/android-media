@@ -52,6 +52,7 @@ enum class ComponentNames(val componentName: String) {
     // Product Card Horizontal Carousel
     ProductCardCarousel("product_card_carousel"),
     ProductCardCarouselItem("product_card_carousel_item"),
+    ProductCardCarouselItemList("product_card_carousel_item_list"),
 
     // Product Card Sprint Sale
     ProductCardSprintSale("product_card_sprint_sale"),

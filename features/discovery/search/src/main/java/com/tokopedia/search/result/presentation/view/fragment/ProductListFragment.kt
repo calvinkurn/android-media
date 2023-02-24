@@ -579,10 +579,6 @@ class ProductListFragment: BaseDaggerFragment(),
         recyclerViewUpdater.setItems(list)
     }
 
-    override fun addRecommendationList(list: List<Visitable<*>>) {
-        recyclerViewUpdater.appendItems(list)
-    }
-
     override fun addLoading() {
         recyclerViewUpdater.addLoading()
     }

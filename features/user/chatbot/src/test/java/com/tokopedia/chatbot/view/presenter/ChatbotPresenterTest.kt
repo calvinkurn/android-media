@@ -63,7 +63,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -100,7 +100,7 @@ class ChatbotPresenterTest {
     private lateinit var getExistingChatUseCase: GetExistingChatUseCase
     private lateinit var userSession: UserSessionInterface
     private lateinit var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper
-    private lateinit var tkpdAuthInterceptor: TkpdAuthInterceptor
+    private lateinit var tkpdAuthInterceptor: TkpdOldAuthInterceptor
     private lateinit var fingerprintInterceptor: FingerprintInterceptor
     private lateinit var sendChatRatingUseCase: SendChatRatingUseCase
     private lateinit var submitCsatRatingUseCase: SubmitCsatRatingUseCase
@@ -1008,7 +1008,7 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `handleAttachment When receiving attachment type 13 to open csat`() {
+    fun `handleAttachment When receiving attachment type 13 to open csat with new flow(2 screens)`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(

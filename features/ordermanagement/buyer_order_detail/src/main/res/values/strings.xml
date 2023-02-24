@@ -75,4 +75,7 @@
 
     <!--Resolution-->
     <string name="order_resolution_deadline_label">Batas respons</string>
+
+    <string name="buyer_order_detail_product_list_collapse">Tampilkan Lebih Sedikit</string>
+    <string name="buyer_order_detail_product_list_expand">+%d Barang Lainnya</string>
 </resources>

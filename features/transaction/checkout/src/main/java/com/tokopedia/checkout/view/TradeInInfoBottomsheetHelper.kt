@@ -17,7 +17,6 @@ const val TRADE_IN_NORMAL_IMAGE_URL = "https://images.tokopedia.net/timi/desc-ti
 const val TRADE_IN_DROP_OFF_IMAGE_URL = "https://images.tokopedia.net/timi/Ditukar%20Di%20Indomaret@3x.png"
 
 fun showTradeInInfoBottomsheet(fragmentManager: FragmentManager, context: Context) {
-
     BottomSheetUnify().apply {
         val view = View.inflate(context, R.layout.layout_bottomsheet_trade_in_info, null)
         setupContent(view, context)

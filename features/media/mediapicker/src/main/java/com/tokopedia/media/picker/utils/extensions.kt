@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.picker.common.PickerParam
 
 fun Context.goToSettings(): Intent {
     return Intent().apply {
@@ -30,6 +29,17 @@ fun isOppoManufacturer(): Boolean {
     return Build.MANUFACTURER.contains("oppo", ignoreCase = true)
 }
 
-fun PickerParam.generateKey(): String {
-    return this.pageSourceName() + this.subPageSourceName()
+fun <T> List<T>.flattenFilter(predicate: (T) -> Boolean): Pair<List<T>, List<T>> {
+    val firstList = mutableListOf<T>()
+    val twoList = mutableListOf<T>()
+
+    map {
+        if (predicate(it)) {
+            firstList.add(it)
+        } else {
+            twoList.add(it)
+        }
+    }
+
+    return Pair(firstList, twoList)
 }

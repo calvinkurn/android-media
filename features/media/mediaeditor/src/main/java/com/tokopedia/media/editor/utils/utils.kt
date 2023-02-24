@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.analytics.*
 import com.tokopedia.media.editor.data.repository.WatermarkType
@@ -135,4 +136,13 @@ fun cropCenterImage(
         return Pair(bitmapResult, cropDetail)
     }
     return null
+}
+
+// validation for each delay to make sure fragment still exist
+fun Fragment.getRunnable(action: () -> Unit): Runnable {
+    return Runnable {
+        if (isAdded) {
+            action()
+        }
+    }
 }
