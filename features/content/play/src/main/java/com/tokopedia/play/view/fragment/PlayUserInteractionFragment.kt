@@ -156,7 +156,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val shareExperienceView by viewComponentOrNull { ShareExperienceViewComponent(it, R.id.view_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
-    private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
+    private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.scrollable_host_chat) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
@@ -175,7 +175,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
-    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
+    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(
+        listener = this,
+        resId = R.id.scrollable_host_engagement,
+        scope = viewLifecycleOwner.lifecycleScope,
+        container = it
+    ) }
 
     /**
      * Interactive

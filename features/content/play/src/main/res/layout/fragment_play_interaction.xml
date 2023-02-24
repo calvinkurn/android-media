@@ -163,18 +163,18 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned"
         app:layout_constraintEnd_toStartOf="@id/view_like"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:lockScroll="true"
+        tools:visibility="visible"
         >
 
         <com.tokopedia.play.view.custom.PlayChatListView
             android:id="@+id/view_chat_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:visibility="visible"
             />
 
     </com.tokopedia.play.util.scroll.NestedScrollableHost>
@@ -377,8 +377,6 @@
             layout="@layout/view_small_engagement_widget"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
-            tools:visibility="visible"
             />
 
     </com.tokopedia.play.util.scroll.NestedScrollableHost>
