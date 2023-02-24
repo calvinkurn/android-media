@@ -326,7 +326,7 @@ class FeedXHomeUseCase @Inject constructor(
               star
               price
               priceFmt
-              isDiscountÏ
+              isDiscount
               discount
               discountFmt
               priceOriginal
