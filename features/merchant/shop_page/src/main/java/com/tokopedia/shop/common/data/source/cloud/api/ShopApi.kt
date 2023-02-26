@@ -2,7 +2,6 @@ package com.tokopedia.shop.common.data.source.cloud.api
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSortList
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 import retrofit2.Response
 import retrofit2.http.GET
@@ -17,6 +16,4 @@ interface ShopApi {
     @GET
     fun getShopProductList(@Url url: String?, @QueryMap params: Map<String?, String?>?): Observable<Response<DataResponse<PagingList<ShopProduct?>?>?>?>?
 
-    @GET
-    fun getDynamicFilter(@Url url: String?, @QueryMap params: Map<String?, String?>?): Observable<Response<DataResponse<ShopProductSortList?>?>?>?
 }
