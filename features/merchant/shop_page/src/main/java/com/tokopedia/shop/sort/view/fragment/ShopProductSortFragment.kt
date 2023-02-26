@@ -124,7 +124,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
                 when (it) {
                     is Success -> {
                         val sortListData = it.data.sortList
-                        val etalaseListData = it.data.etalaseList
+                        renderList(list = sortListData, hasNextPage = false)
                     }
                     is Fail -> {
 //                        showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
