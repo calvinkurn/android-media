@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -14,28 +17,37 @@ import com.tokopedia.shop.sort.di.module.ShopProductSortModule
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop.sort.view.adapter.ShopProductSortAdapterTypeFactory
 import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.shop.sort.view.presenter.ShopProductSortPresenter
+import com.tokopedia.shop.sort.view.viewmodel.ShopProductSortViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
  * Created by normansyahputa on 2/23/18.
  */
 class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory>() {
-    @kotlin.jvm.JvmField
+//    @kotlin.jvm.JvmField
     @Inject
-    var shopProductFilterPresenter: ShopProductSortPresenter? = null
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+//    var shopProductFilterPresenter: ShopProductSortPresenter? = null
     private var sortName: String? = null
     private var shopFilterFragmentListener: ShopProductSortFragmentListener? = null
+    private var viewModel: ShopProductSortViewModel? = null
+
     override fun loadData(i: Int) {
-        shopProductFilterPresenter?.getShopFilterList()
+        viewModel?.getShopSortListData()
+//        shopProductFilterPresenter?.getShopFilterList()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (shopProductFilterPresenter != null) {
-            shopProductFilterPresenter?.detachView()
-        }
+        viewModel?.flush()
+//        if (shopProductFilterPresenter != null) {
+//            shopProductFilterPresenter?.detachView()
+//        }
     }
 
     override fun onAttach(context: Context) {
@@ -47,7 +59,8 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopProductFilterPresenter?.attachView(this)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductSortViewModel::class.java)
+//        shopProductFilterPresenter?.attachView(this)
         activity?.window?.decorView?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
@@ -80,6 +93,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
             )
             getRecyclerView(view)?.clipToPadding = false
         }
+        observeLiveData()
     }
 
     override fun getAdapterTypeFactory(): ShopProductSortAdapterTypeFactory {
@@ -101,6 +115,23 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onItemClicked(filterModel: ShopProductSortModel?) {
         shopFilterFragmentListener?.select(filterModel?.key, filterModel?.value, filterModel?.name)
+    }
+
+    private fun observeLiveData() {
+        viewModel?.shopSortListData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        val sortListData = it.data.sortList
+                        val etalaseListData = it.data.etalaseList
+                    }
+                    is Fail -> {
+//                        showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
+                    }
+                }
+            }
+        )
     }
 
     companion object {
