@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -17,10 +18,9 @@ import com.tokopedia.shop.sort.di.module.ShopProductSortModule
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop.sort.view.adapter.ShopProductSortAdapterTypeFactory
 import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener
-import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.shop.sort.view.presenter.ShopProductSortPresenter
 import com.tokopedia.shop.sort.view.viewmodel.ShopProductSortViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -32,22 +32,18 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 //    @kotlin.jvm.JvmField
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-//    var shopProductFilterPresenter: ShopProductSortPresenter? = null
+
     private var sortName: String? = null
     private var shopFilterFragmentListener: ShopProductSortFragmentListener? = null
     private var viewModel: ShopProductSortViewModel? = null
 
     override fun loadData(i: Int) {
         viewModel?.getShopSortListData()
-//        shopProductFilterPresenter?.getShopFilterList()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel?.flush()
-//        if (shopProductFilterPresenter != null) {
-//            shopProductFilterPresenter?.detachView()
-//        }
     }
 
     override fun onAttach(context: Context) {
@@ -60,7 +56,6 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductSortViewModel::class.java)
-//        shopProductFilterPresenter?.attachView(this)
         activity?.window?.decorView?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
@@ -127,11 +122,17 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
                         renderList(list = sortListData, hasNextPage = false)
                     }
                     is Fail -> {
-//                        showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
+                        showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
                     }
                 }
             }
         )
+    }
+
+    private fun showToasterError(message: String) {
+        activity?.let {
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     companion object {
