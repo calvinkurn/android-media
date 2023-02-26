@@ -22,7 +22,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-@Module
+@Module(includes = [ShopProductSortViewModelModule::class])
 class ShopProductSortModule {
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
