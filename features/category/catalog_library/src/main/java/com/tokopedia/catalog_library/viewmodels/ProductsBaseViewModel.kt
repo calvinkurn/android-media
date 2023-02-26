@@ -3,10 +3,7 @@ package com.tokopedia.catalog_library.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogProductDataModel
+import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
@@ -95,7 +92,12 @@ class ProductsBaseViewModel @Inject constructor(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 title,
-                null
+                null,
+                marginForTitle = if (categoryName == "") {
+                    Margin(36, 16, 0, 16)
+                } else {
+                    Margin(32, 16, 0, 16)
+                }
             )
             visitableList.add(productHeaderModel)
         }

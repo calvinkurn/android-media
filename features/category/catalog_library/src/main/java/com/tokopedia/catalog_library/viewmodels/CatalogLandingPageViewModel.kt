@@ -89,7 +89,9 @@ class CatalogLandingPageViewModel @Inject constructor(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 "Top 5 ${data.catalogGetList.categoryName.lowercase()} terlaris di toped",
-                getTopFiveVisitableList(data.catalogGetList.catalogsProduct)
+                getTopFiveVisitableList(data.catalogGetList.catalogsProduct),
+                marginForTitle = Margin(0, 16, 12, 16),
+                marginForRV = Margin(12, 0, 0, 16)
             )
         listOfComponents.add(catalogTopFiveDataModel)
 
@@ -120,7 +122,8 @@ class CatalogLandingPageViewModel @Inject constructor(
                 getMostViralVisitableList(
                     data.catalogGetList.catalogsProduct,
                     data.catalogGetList.categoryName
-                )
+                ),
+                marginForTitle = Margin(16, 6, 0, 6)
             )
         listOfComponents.add(catalogMostViralDataModel)
 
