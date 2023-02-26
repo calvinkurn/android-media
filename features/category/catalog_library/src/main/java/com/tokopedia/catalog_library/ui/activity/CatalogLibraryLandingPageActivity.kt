@@ -8,16 +8,16 @@ import com.tokopedia.kotlin.extensions.view.hide
 
 class CatalogLibraryLandingPageActivity : BaseSimpleActivity() {
 
-    private var categoryIdentifier = ""
+    private var categoryId = ""
 
     override fun getNewFragment(): Fragment {
         toolbar?.hide()
         extractParameters()
-        return CatalogLandingPageFragment.newInstance(categoryIdentifier)
+        return CatalogLandingPageFragment.newInstance(categoryId)
     }
 
     private fun extractParameters() {
         val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-        categoryIdentifier = if (pathSegments.size > 1) pathSegments[1] ?: "" else ""
+        categoryId = if (pathSegments.size > 1) pathSegments[1] ?: "" else ""
     }
 }

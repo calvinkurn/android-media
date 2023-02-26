@@ -29,7 +29,7 @@ class CatalogLandingPageViewModel @Inject constructor(
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
 
     fun getCatalogTopFiveData(
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int
     ) {
@@ -37,14 +37,14 @@ class CatalogLandingPageViewModel @Inject constructor(
         catalogTopFiveUseCase.getCatalogProductsData(
             ::onAvailableCatalogTopFiveData,
             ::onFailLandingPageData,
-            categoryIdentifier,
+            categoryId,
             sortType,
             rows
         )
     }
 
     fun getCatalogMostViralData(
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int
     ) {
@@ -52,7 +52,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         catalogMostViralUseCase.getCatalogProductsData(
             ::onAvailableCatalogMostViralData,
             ::onFailLandingPageData,
-            categoryIdentifier,
+            categoryId,
             sortType,
             rows
         )

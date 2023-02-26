@@ -38,10 +38,10 @@ class CatalogSpecialItemViewHolder(
         specialLayout.background = view.context.getDrawable(R.drawable.squircle)
         specialTitle.text = specialDataListItem?.name ?: ""
         specialTitle.setOnClickListener {
-            catalogLibraryListener.onCategoryItemClicked(specialDataListItem?.categoryIdentifier)
+            catalogLibraryListener.onCategoryItemClicked(specialDataListItem?.id.toString())
         }
         specialLayout.setOnClickListener {
-            catalogLibraryListener.onCategoryItemClicked(specialDataListItem?.categoryIdentifier)
+            catalogLibraryListener.onCategoryItemClicked(specialDataListItem?.id.toString())
         }
     }
 }

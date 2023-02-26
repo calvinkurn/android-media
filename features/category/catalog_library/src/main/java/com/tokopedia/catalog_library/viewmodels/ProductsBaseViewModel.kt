@@ -25,7 +25,7 @@ class ProductsBaseViewModel @Inject constructor(
         _shimmerLiveData
 
     fun getCatalogListData(
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int,
         page: Int = 1
@@ -35,7 +35,7 @@ class ProductsBaseViewModel @Inject constructor(
         catalogProductsUseCase.getCatalogProductsData(
             ::onAvailableCatalogListData,
             ::onFailHomeData,
-            categoryIdentifier,
+            categoryId,
             sortType,
             rows,
             page

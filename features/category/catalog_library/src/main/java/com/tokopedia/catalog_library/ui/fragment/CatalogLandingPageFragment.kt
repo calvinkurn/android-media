@@ -39,7 +39,7 @@ import javax.inject.Inject
 class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     private var globalError: GlobalError? = null
-    private var categoryIdentifierStr = ""
+    private var categoryIdStr = ""
     private var categoryName = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
 
@@ -70,11 +70,11 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         }
 
     companion object {
-        const val ARG_CATEGORY_IDENTIFIER = "ARG_CATEGORY_IDENTIFIER"
-        fun newInstance(categoryIdentifier: String?): CatalogLandingPageFragment {
+        const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
+        fun newInstance(categoryId: String?): CatalogLandingPageFragment {
             return CatalogLandingPageFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_CATEGORY_IDENTIFIER, categoryIdentifier)
+                    putString(ARG_CATEGORY_ID, categoryId)
                 }
             }
         }
@@ -107,13 +107,13 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         super.onViewCreated(view, savedInstanceState)
         extractArguments()
         initViews(view)
-        setCategory(categoryIdentifierStr)
+        setCategory(categoryIdStr)
         setUpBase()
         initData()
     }
 
     private fun extractArguments() {
-        categoryIdentifierStr = arguments?.getString(ARG_CATEGORY_IDENTIFIER, "") ?: ""
+        categoryIdStr = arguments?.getString(ARG_CATEGORY_ID, "") ?: ""
     }
 
     private fun initViews(view: View) {
@@ -199,12 +199,12 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
 
     private fun getDataFromViewModel() {
         landingPageViewModel.getCatalogTopFiveData(
-            categoryIdentifierStr,
+            categoryIdStr,
             SORT_TYPE_TOP_FIVE,
             TOTAL_ROWS_TOP_FIVE
         )
         landingPageViewModel.getCatalogMostViralData(
-            categoryIdentifierStr,
+            categoryIdStr,
             SORT_TYPE_VIRAL,
             TOTAL_ROWS_VIRAL
         )

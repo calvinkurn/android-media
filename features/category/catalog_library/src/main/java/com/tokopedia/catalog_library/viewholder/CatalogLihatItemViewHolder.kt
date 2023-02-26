@@ -41,14 +41,14 @@ class CatalogLihatItemViewHolder(
         lihatItemTitle?.setOnClickListener {
             it.setOnClickListener {
                 catalogLibraryListener.onCategoryItemClicked(
-                    childDataItem?.categoryIdentifier ?: ""
+                    childDataItem?.categoryId ?: ""
                 )
             }
         }
         lihatExpandedItemLayout?.background = view.context.getDrawable(R.drawable.squircle)
         lihatExpandedItemLayout?.setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(
-                childDataItem?.categoryIdentifier ?: ""
+                childDataItem?.categoryId ?: ""
             )
         }
     }
