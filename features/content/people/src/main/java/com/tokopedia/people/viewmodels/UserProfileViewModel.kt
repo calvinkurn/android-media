@@ -218,13 +218,10 @@ class UserProfileViewModel @AssistedInject constructor(
                 if(!isRefresh && currVideoPostModel.nextCursor.isEmpty()) return@launchCatchError
                 if(currVideoPostModel.isLoading) return@launchCatchError
 
-                val loaderStatus = if(isRefresh)
-                    UserPlayVideoUiModel.Status.LoadingShimmer
-                else UserPlayVideoUiModel.Status.Loading
-
                 _videoPostContent.update {
                     it.copy(
-                        status = loaderStatus
+                        status = UserPlayVideoUiModel.Status.Loading,
+                        items = if(isRefresh) emptyList() else it.items
                     )
                 }
 
@@ -233,7 +230,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
                 _videoPostContent.update {
                     it.copy(
-                        items = if(isRefresh) result.items else it.items + result.items,
+                        items = it.items + result.items,
                         nextCursor = result.nextCursor,
                         status = UserPlayVideoUiModel.Status.Success,
                     )

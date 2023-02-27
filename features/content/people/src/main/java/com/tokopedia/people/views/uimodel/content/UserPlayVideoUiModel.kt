@@ -12,10 +12,10 @@ data class UserPlayVideoUiModel(
 ) {
 
     val isLoading: Boolean
-        get() = status == Status.Loading || status == Status.LoadingShimmer
+        get() = status == Status.Loading
 
     enum class Status {
-        Loading, LoadingShimmer, Success, Error, Unknown
+        Loading, Success, Error, Unknown
     }
 
     companion object {

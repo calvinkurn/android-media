@@ -292,8 +292,9 @@ class UserProfileVideoFragment @Inject constructor(
         if(prev == curr) return
 
         when(curr.status) {
-            UserPlayVideoUiModel.Status.LoadingShimmer -> {
-                binding.userVideoContainer.displayedChild = PAGE_LOADING
+            UserPlayVideoUiModel.Status.Loading -> {
+                if(curr.items.isEmpty())
+                    binding.userVideoContainer.displayedChild = PAGE_LOADING
             }
             UserPlayVideoUiModel.Status.Success -> {
                 if(curr.items.isEmpty()) {
