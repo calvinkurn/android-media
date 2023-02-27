@@ -1982,6 +1982,9 @@ class NewShopPageFragment :
                             setInitialProductListData(it)
                         }
                         setListWidgetLayoutData(it.data.homeLayoutData)
+                        setHomeTabListBackgroundColor(it.listBackgroundColor)
+                        setHomeTabBackgroundPatternImage(it.backgroundImage)
+                        setHomeTabLottieUrl(it.lottieUrl)
                     }
                 }
                 ShopPageTabName.PRODUCT -> {

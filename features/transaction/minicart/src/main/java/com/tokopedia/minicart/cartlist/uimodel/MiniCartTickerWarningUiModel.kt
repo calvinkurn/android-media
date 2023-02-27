@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 
 data class MiniCartTickerWarningUiModel(
-        var warningMessage: String = ""
+    var warningMessage: String = ""
 ) : Visitable<MiniCartListAdapterTypeFactory> {
 
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int {
@@ -13,8 +13,7 @@ data class MiniCartTickerWarningUiModel(
 
     fun deepCopy(): MiniCartTickerWarningUiModel {
         return MiniCartTickerWarningUiModel(
-                warningMessage = this.warningMessage
+            warningMessage = this.warningMessage
         )
     }
-
 }

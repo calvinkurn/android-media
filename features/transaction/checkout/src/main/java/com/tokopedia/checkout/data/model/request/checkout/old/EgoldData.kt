@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class EgoldData(
-        @SerializedName("is_egold")
-        var isEgold: Boolean = false,
-        @SerializedName("gold_amount")
-        var egoldAmount: Long = 0
+    @SerializedName("is_egold")
+    var isEgold: Boolean = false,
+    @SerializedName("gold_amount")
+    var egoldAmount: Long = 0
 ) : Parcelable

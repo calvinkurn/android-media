@@ -12,16 +12,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.HeightMeasureListener
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
@@ -78,30 +73,89 @@ class ShopHomeFlashSaleViewHolder(
     init {
         setupClickListener(listener)
         setupProductCardCarouselView(productCarouselView)
-        setupWidgetImpressionListener(uiModel)
     }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
+        productCarouselAdapter.parentPosition = ShopUtil.getActualPositionFromIndex(adapterPosition)
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.totalProduct.orZero()
+        setupWidgetImpressionListener(uiModel)
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
+        setupFlashSaleCountDownTimer(element)
+        if (!GlobalConfig.isSellerApp())
+            setupFlashSaleReminder(flashSaleItem)
+        setupProductCardCarousel(element)
+        checkFestivity(element)
+    }
+
+    private fun checkFestivity(element: ShopHomeFlashSaleUiModel) {
+        if (element.isFestivity) {
+            configFestivity()
+        } else {
+            configNonFestivity(element)
+        }
+    }
+
+    private fun configNonFestivity(element: ShopHomeFlashSaleUiModel) {
+        val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        flashSaleCampaignNameView?.setTextColor(defaultTitleColor)
+        timerDescriptionView?.setTextColor(defaultSubTitleColor)
+        ctaSeeAllView?.setTextColor(defaultCtaColor)
+        tncInfoIconView?.setColorFilter(defaultInformationIconColor)
+        timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        val flashSaleItem = element.data?.firstOrNull()
         setupFlashSaleBackgroundView(
             productList = flashSaleItem?.productList.orEmpty(),
             startBackGroundColor = flashSaleItem?.firstBackgroundColor,
             endBackGroundColor = flashSaleItem?.secondBackgroundColor
         )
-        setupFlashSaleCountDownTimer(element)
-        if (!GlobalConfig.isSellerApp())
-            setupFlashSaleReminder(flashSaleItem)
-        setupProductCardCarousel(element)
+        configMarginNonFestivity()
+    }
+
+    private fun configFestivity() {
+        val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        flashSaleCampaignNameView?.setTextColor(festivityTextColor)
+        timerDescriptionView?.setTextColor(festivityTextColor)
+        ctaSeeAllView?.setTextColor(festivityTextColor)
+        tncInfoIconView?.setColorFilter(festivityTextColor)
+        timerView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+        singleBackGroundView?.hide()
+        doubleBackGroundView?.hide()
+        multipleBackGroundView?.hide()
+        configMarginFestivity()
+    }
+
+    private fun configMarginFestivity(){
+        val rvLayoutParams = productCarouselView?.layoutParams as? ConstraintLayout.LayoutParams
+        rvLayoutParams?.setMargins(
+            rvLayoutParams.leftMargin,
+            Int.ZERO,
+            rvLayoutParams.rightMargin,
+            rvLayoutParams.bottomMargin
+        )
+        productCarouselView?.layoutParams = rvLayoutParams
+    }
+
+    private fun configMarginNonFestivity(){
+        val rvLayoutParams = productCarouselView?.layoutParams as? ConstraintLayout.LayoutParams
+        rvLayoutParams?.setMargins(
+            rvLayoutParams.leftMargin,
+            12f.dpToPx().toInt(),
+            rvLayoutParams.rightMargin,
+            rvLayoutParams.bottomMargin
+        )
+        productCarouselView?.layoutParams = rvLayoutParams
     }
 
     private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel?) {
         uiModel?.data?.firstOrNull()?.let {
             itemView.addOnImpressionListener(uiModel.impressHolder) {
-                listener.onFlashSaleWidgetImpressed(uiModel, adapterPosition)
+                listener.onFlashSaleWidgetImpressed(uiModel, ShopUtil.getActualPositionFromIndex(adapterPosition))
             }
         }
     }
@@ -277,10 +331,7 @@ class ShopHomeFlashSaleViewHolder(
         if (isOngoing) {
             flashSaleReminderView?.hide()
         } else {
-            flashSaleReminderView?.apply {
-                radius = NOTIFY_ME_WRAPPER_BORDER_RADIUS.dpToPx()
-                show()
-            }
+            flashSaleReminderView?.show()
         }
     }
 
