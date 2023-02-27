@@ -112,6 +112,8 @@ class OrderSummaryPageRobot {
                 }
             )
         )
+        // Wait for bottomsheet to fully open
+        Thread.sleep(1000)
         if (func != null) {
             AddressBottomSheetRobot().apply(func)
         }
@@ -140,6 +142,8 @@ class OrderSummaryPageRobot {
                 }
             )
         )
+        // Wait for bottomsheet to fully open
+        Thread.sleep(1000)
         DurationBottomSheetRobot().apply(func)
     }
 
@@ -1440,7 +1444,7 @@ class OrderSummaryPageRobot {
                 object :
                     BaseMatcher<RecyclerView.ViewHolder?>() {
                     override fun describeTo(description: Description?) {
-                        /* no-op */
+                        // no op
                     }
 
                     override fun matches(item: Any?): Boolean {
