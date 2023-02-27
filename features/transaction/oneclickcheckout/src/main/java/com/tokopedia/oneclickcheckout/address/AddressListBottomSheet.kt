@@ -144,14 +144,12 @@ class AddressListBottomSheet(
                 val param = GetTargetedTickerParam(page = "todo", target = listOf())
                 val response = getTargetedTicker(param)
                 val model = response.getTargetedTickerData.toUiModel()
-                binding?.tickerOccAddressList?.let { ticker ->
-                    ticker.renderTargetedTickerView(
-                        context,
-                        model,
-                        onClickApplink = { listener.onClickAddressTickerApplink(it) },
-                        onClickUrl = { listener.onClickAddressTickerUrl(it) }
-                    )
-                }
+                binding?.tickerOccAddressList?.renderTargetedTickerView(
+                    context,
+                    model,
+                    onClickApplink = { listener.onClickAddressTickerApplink(it) },
+                    onClickUrl = { listener.onClickAddressTickerUrl(it) }
+                )
             } catch (e: java.lang.Exception) {
                 binding?.tickerOccAddressList?.gone()
             }

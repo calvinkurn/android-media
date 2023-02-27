@@ -16,18 +16,7 @@ object TargetedTickerHelper {
         onClickUrl: (String) -> Unit
     ) {
         if (model.item.isNotEmpty()) {
-            val message = ArrayList<TickerData>()
-            for (tickerItem in model.item) {
-                message.add(
-                    TickerData(
-                        tickerItem.title,
-                        tickerItem.content,
-                        tickerItem.type,
-                        true,
-                        tickerItem.linkUrl
-                    )
-                )
-            }
+            val message = model.toTickerData()
             val tickerPageAdapter = TickerPagerAdapter(context, message)
             tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
@@ -44,5 +33,21 @@ object TargetedTickerHelper {
         } else {
             this.visibility = View.GONE
         }
+    }
+
+    private fun TickerModel.toTickerData(): ArrayList<TickerData> {
+        val message = ArrayList<TickerData>()
+        for (tickerItem in this.item) {
+            message.add(
+                TickerData(
+                    tickerItem.title,
+                    tickerItem.content,
+                    tickerItem.type,
+                    true,
+                    tickerItem.linkUrl
+                )
+            )
+        }
+        return message
     }
 }
