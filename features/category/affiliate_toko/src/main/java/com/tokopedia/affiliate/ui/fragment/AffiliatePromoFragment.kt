@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -45,7 +44,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -133,9 +131,9 @@ class AffiliatePromoFragment :
 
         view?.findViewById<LinearLayout>(R.id.gamification_container)?.isVisible = affiliatePromoViewModel.isAffiliateGamificationEnabled()
 
-        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.setOnClickListener{
+        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.setOnClickListener {
             val urlRedirectionAppLink = affiliatePromoViewModel.affiliateRedirection()
-            if(urlRedirectionAppLink.isNotEmpty()){
+            if (urlRedirectionAppLink.isNotEmpty()) {
                 RouteManager.route(context, urlRedirectionAppLink)
             }
         }
