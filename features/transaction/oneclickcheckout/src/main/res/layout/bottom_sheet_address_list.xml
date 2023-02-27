@@ -5,6 +5,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_occ_address_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerShapeType="full"
+        android:visibility="gone"/>
+
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_input_view"
         android:layout_width="match_parent"

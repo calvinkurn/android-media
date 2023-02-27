@@ -12,12 +12,19 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.toUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderView
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
@@ -25,7 +32,12 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetAddressListBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.net.ConnectException
@@ -33,7 +45,11 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
-class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, private val listener: AddressListBottomSheetListener) : CoroutineScope {
+class AddressListBottomSheet(
+    private val useCase: GetAddressCornerUseCase,
+    private val getTargetedTicker: GetTargetedTickerUseCase,
+    private val listener: AddressListBottomSheetListener
+) : CoroutineScope {
 
     private var bottomSheet: BottomSheetUnify? = null
 
@@ -103,20 +119,43 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         binding.apply {
             adapter = AddressListItemAdapter(getAddressAdapterListener())
             rvAddressList.adapter = adapter
-            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val linearLayoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rvAddressList.layoutManager = linearLayoutManager
             rvAddressList.clearOnScrollListeners()
-            endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    loadMore()
+            endlessScrollListener =
+                object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                        loadMore()
+                    }
                 }
-            }
             endlessScrollListener?.let {
                 rvAddressList.addOnScrollListener(it)
             }
         }
 
         initSearchView(context, binding)
+        initAddressTicker(context)
+    }
+
+    private fun initAddressTicker(context: Context) {
+        launch {
+            try {
+                val param = GetTargetedTickerParam(page = "todo", target = listOf())
+                val response = getTargetedTicker(param)
+                val model = response.getTargetedTickerData.toUiModel()
+                binding?.tickerOccAddressList?.let { ticker ->
+                    model.renderView(
+                        context,
+                        ticker,
+                        onClickApplink = { listener.onClickAddressTickerApplink(it) },
+                        onClickUrl = { listener.onClickAddressTickerUrl(it) })
+                }
+
+            } catch (e: java.lang.Exception) {
+                binding?.tickerOccAddressList?.gone()
+            }
+        }
     }
 
     private fun getAddressAdapterListener(): AddressListItemAdapter.OnSelectedListener {
@@ -145,7 +184,8 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
             searchInputView.clearListener = {
                 searchAddress("")
             }
-            searchInputView.searchBarPlaceholder = context.getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
+            searchInputView.searchBarPlaceholder =
+                context.getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
         }
 
         searchAddress("")
@@ -153,7 +193,10 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
 
     private fun openSoftKeyboard() {
         binding?.searchInputView?.searchBarTextField?.let {
-            (it.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+            (it.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
+                it,
+                InputMethodManager.SHOW_IMPLICIT
+            )
         }
     }
 
@@ -164,7 +207,9 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
             }
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {
-                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+                        GlobalError.NO_CONNECTION
+                    )
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
                     else -> {
@@ -206,8 +251,10 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                     searchInputView.visible()
                     rvAddressList.scrollToPosition(0)
                     rvAddressList.visible()
-                    adapter?.setData(addressList.data.listAddress, addressList.data.hasNext
-                            ?: false)
+                    adapter?.setData(
+                        addressList.data.listAddress, addressList.data.hasNext
+                            ?: false
+                    )
                     endlessScrollListener?.resetState()
                     endlessScrollListener?.setHasNextPage(addressList.data.hasNext ?: false)
                 }
@@ -261,25 +308,25 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         OccIdlingResource.increment()
         compositeSubscription.add(
             useCase.execute(query, addressState, getLocalCacheAddressId().toLongOrZero(), true)
-                    .subscribe(object : rx.Observer<AddressListModel> {
-                        override fun onError(e: Throwable?) {
-                            onChangeData(OccState.Failed(Failure(e)))
-                            OccIdlingResource.decrement()
-                            isLoadingMore = false
-                        }
+                .subscribe(object : rx.Observer<AddressListModel> {
+                    override fun onError(e: Throwable?) {
+                        onChangeData(OccState.Failed(Failure(e)))
+                        OccIdlingResource.decrement()
+                        isLoadingMore = false
+                    }
 
-                        override fun onNext(t: AddressListModel) {
-                            token = t.token
-                            logicSelection(t)
-                            savedQuery = query
-                            page = 1
-                            isLoadingMore = false
-                        }
+                    override fun onNext(t: AddressListModel) {
+                        token = t.token
+                        logicSelection(t)
+                        savedQuery = query
+                        page = 1
+                        isLoadingMore = false
+                    }
 
-                        override fun onCompleted() {
-                            OccIdlingResource.decrement()
-                        }
-                    })
+                    override fun onCompleted() {
+                        OccIdlingResource.decrement()
+                    }
+                })
         )
     }
 
@@ -288,28 +335,38 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toLongOrZero(), true)
-                        .subscribe(object : rx.Observer<AddressListModel> {
-                            override fun onError(e: Throwable?) {
-                                onChangeData(OccState.Failed(Failure(e)))
-                                OccIdlingResource.decrement()
-                                isLoadingMore = false
-                            }
+                useCase.loadMore(
+                    savedQuery,
+                    ++this.page,
+                    addressState,
+                    getLocalCacheAddressId().toLongOrZero(),
+                    true
+                )
+                    .subscribe(object : rx.Observer<AddressListModel> {
+                        override fun onError(e: Throwable?) {
+                            onChangeData(OccState.Failed(Failure(e)))
+                            OccIdlingResource.decrement()
+                            isLoadingMore = false
+                        }
 
-                            override fun onNext(t: AddressListModel) {
-                                logicSelection(t, isLoadMore = true)
-                            }
+                        override fun onNext(t: AddressListModel) {
+                            logicSelection(t, isLoadMore = true)
+                        }
 
-                            override fun onCompleted() {
-                                OccIdlingResource.decrement()
-                                isLoadingMore = false
-                            }
-                        })
+                        override fun onCompleted() {
+                            OccIdlingResource.decrement()
+                            isLoadingMore = false
+                        }
+                    })
             )
         }
     }
 
-    private fun logicSelection(addressListModel: AddressListModel, isLoadMore: Boolean = false, isChangeSelection: Boolean = false) {
+    private fun logicSelection(
+        addressListModel: AddressListModel,
+        isLoadMore: Boolean = false,
+        isChangeSelection: Boolean = false
+    ) {
         launch {
             OccIdlingResource.increment()
             withContext(Dispatchers.Default) {
@@ -325,7 +382,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                 }
                 addressListModel.listAddress = if (isLoadMore) {
                     (this@AddressListBottomSheet.addressListModel?.listAddress
-                            ?: emptyList()) + addressList
+                        ?: emptyList()) + addressList
                 } else {
                     addressList
                 }
@@ -334,11 +391,13 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                 }
             }
             this@AddressListBottomSheet.addressListModel = addressListModel
-            onChangeData(if (isLoadMore || isChangeSelection) {
-                OccState.Success(addressListModel)
-            } else {
-                OccState.FirstLoad(addressListModel)
-            })
+            onChangeData(
+                if (isLoadMore || isChangeSelection) {
+                    OccState.Success(addressListModel)
+                } else {
+                    OccState.FirstLoad(addressListModel)
+                }
+            )
             OccIdlingResource.decrement()
         }
     }
@@ -350,6 +409,10 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         fun onSelect(addressModel: RecipientAddressModel)
 
         fun onAddAddress(token: Token?)
+
+        fun onClickAddressTickerApplink(applink: String)
+
+        fun onClickAddressTickerUrl(url: String)
     }
 
     companion object {

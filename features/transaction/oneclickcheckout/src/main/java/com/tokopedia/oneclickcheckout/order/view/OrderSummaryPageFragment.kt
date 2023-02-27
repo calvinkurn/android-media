@@ -55,6 +55,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
@@ -152,6 +153,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var getAddressCornerUseCase: Lazy<GetAddressCornerUseCase>
+
+    @Inject
+    lateinit var getTargetedTickerUseCase: Lazy<GetTargetedTickerUseCase>
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -1466,6 +1470,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
                 AddressListBottomSheet(
                     getAddressCornerUseCase.get(),
+                    getTargetedTickerUseCase.get(),
                     object : AddressListBottomSheet.AddressListBottomSheetListener {
                         override fun onSelect(addressModel: RecipientAddressModel) {
                             orderSummaryAnalytics.eventClickSelectedAddressOption(addressModel.id, userSession.get().userId)
@@ -1474,6 +1479,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
                         override fun onAddAddress(token: Token?) {
                             viewModel.checkUserEligibilityForAnaRevamp(token)
+                        }
+
+                        override fun onClickAddressTickerApplink(applink: String) {
+                            startActivity(RouteManager.getIntent(context, applink))
+                        }
+
+                        override fun onClickAddressTickerUrl(url: String) {
+                            RouteManager.route(
+                                context,
+                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                            )
                         }
                     }
                 ).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
