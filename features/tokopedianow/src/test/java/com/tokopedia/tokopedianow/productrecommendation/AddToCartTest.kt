@@ -238,4 +238,5 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.miniCartUpdate.verifyValueEquals(null)
         viewModel.miniCartRemove.verifyValueEquals(null)
     }
+
 }
