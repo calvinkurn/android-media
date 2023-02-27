@@ -3,6 +3,7 @@ package com.tokopedia.logisticseller.ui.reschedulepickup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,6 +16,7 @@ import com.tokopedia.logisticseller.domain.usecase.SaveReschedulePickupUseCase
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +30,10 @@ class ReschedulePickupComposeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ReschedulePickupState())
     val uiState: StateFlow<ReschedulePickupState> = _uiState.asStateFlow()
+
+    private val _errorState = SingleLiveEvent<String>()
+    val errorState: LiveData<String>
+        get() = _errorState
 
     var input by mutableStateOf(ReschedulePickupInput())
         private set
@@ -44,8 +50,7 @@ class ReschedulePickupComposeViewModel @Inject constructor(
                     _uiState.value =
                         ReschedulePickupMapper.mapToState(response.mpLogisticGetReschedulePickup)
                 } else {
-                    _uiState.value =
-                        ReschedulePickupState(error = "Data Reschedule Pickup tidak ditemukan")
+                    _errorState.value = "Data Reschedule Pickup tidak ditemukan"
                 }
             },
             onError = { _uiState.value = ReschedulePickupState(error = it.message.orEmpty()) }
@@ -98,7 +103,10 @@ class ReschedulePickupComposeViewModel @Inject constructor(
     private fun validateInput() {
         val state = _uiState.value
         val isValid =
-            input.day.isNotEmpty() && input.time.isNotEmpty() && validateReason(input.reason, state.reason)
+            input.day.isNotEmpty() && input.time.isNotEmpty() && validateReason(
+                input.reason,
+                state.reason
+            )
         _uiState.value = state.copy(valid = isValid)
     }
 
@@ -147,9 +155,7 @@ class ReschedulePickupComposeViewModel @Inject constructor(
             },
             onError = {
                 val state = _uiState.value
-                _uiState.value = state.copy(
-                    error = it.message.orEmpty()
-                )
+                _errorState.value = it.message.orEmpty()
             }
         )
     }

@@ -70,7 +70,7 @@ class ReschedulePickupComposeViewModelTest {
             // when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
             // then
-            assert(reschedulePickupViewModel.uiState.value.error == "Data Reschedule Pickup tidak ditemukan")
+            assert(reschedulePickupViewModel.errorState.value == "Data Reschedule Pickup tidak ditemukan")
         }
 
     @Test
@@ -81,7 +81,7 @@ class ReschedulePickupComposeViewModelTest {
             // when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
             // then
-            assert(reschedulePickupViewModel.uiState.value.error == defaultThrowable.message)
+            assert(reschedulePickupViewModel.errorState.value == defaultThrowable.message)
         }
 
     @Test
@@ -107,7 +107,7 @@ class ReschedulePickupComposeViewModelTest {
                 "12345"
             )
             // then
-            assert(reschedulePickupViewModel.uiState.value.error == defaultThrowable.message)
+            assert(reschedulePickupViewModel.errorState.value == defaultThrowable.message)
         }
 
     @Test

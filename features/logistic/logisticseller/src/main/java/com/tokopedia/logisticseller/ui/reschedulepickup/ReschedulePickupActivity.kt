@@ -3,6 +3,7 @@ package com.tokopedia.logisticseller.ui.reschedulepickup
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
@@ -16,6 +17,7 @@ import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.di.DaggerReschedulePickupComponent
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class ReschedulePickupActivity : AppCompatActivity() {
@@ -41,6 +43,7 @@ class ReschedulePickupActivity : AppCompatActivity() {
         intent?.let {
             orderId = it.getStringExtra(LogisticSellerConst.PARAM_ORDER_ID).orEmpty()
         }
+        observeErrorState()
         setContent {
             NestTheme {
                 ReschedulePickupScreen(
@@ -66,11 +69,29 @@ class ReschedulePickupActivity : AppCompatActivity() {
         getInitialData()
     }
 
+    private fun observeErrorState() {
+        viewModel.errorState.observe(this) {
+            showToaster(it)
+        }
+    }
+
     private fun onClickDialogButton(success: Boolean) {
         viewModel.setDialogState(false)
         if (success) {
             setResult(Activity.RESULT_OK, Intent())
             finish()
+        }
+    }
+
+    private fun showToaster(message: String) {
+        val rootView: View? = this.window.decorView.findViewById(android.R.id.content)
+        rootView?.let {
+            Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
