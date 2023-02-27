@@ -85,7 +85,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -132,7 +132,7 @@ class ChatbotViewModelTest {
     private lateinit var getExistingChatUseCase: GetExistingChatUseCase
     private lateinit var userSession: UserSessionInterface
     private lateinit var chatBotWebSocketMessageMapper: com.tokopedia.chatbot.chatbot2.domain.mapper.ChatBotWebSocketMessageMapper
-    private lateinit var tkpdAuthInterceptor: TkpdAuthInterceptor
+    private lateinit var tkpdAuthInterceptor: TkpdOldAuthInterceptor
     private lateinit var fingerprintInterceptor: FingerprintInterceptor
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
     private lateinit var uploaderUseCase: UploaderUseCase

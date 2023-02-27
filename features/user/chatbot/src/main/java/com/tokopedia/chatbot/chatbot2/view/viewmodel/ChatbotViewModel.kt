@@ -112,7 +112,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -146,7 +146,7 @@ class ChatbotViewModel @Inject constructor(
     var getExistingChatUseCase: GetExistingChatUseCase,
     var userSession: UserSessionInterface,
     private var chatBotWebSocketMessageMapper: com.tokopedia.chatbot.chatbot2.domain.mapper.ChatBotWebSocketMessageMapper,
-    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+    private val tkpdAuthInterceptor: TkpdOldAuthInterceptor,
     private val fingerprintInterceptor: FingerprintInterceptor,
     private val getExistingChatMapper: ChatbotGetExistingChatMapper,
     private val uploaderUseCase: UploaderUseCase,

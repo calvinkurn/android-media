@@ -14,7 +14,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -56,8 +56,8 @@ class ChatbotModule {
         @ApplicationContext context: Context,
         networkRouter: NetworkRouter,
         userSessionInterface: UserSessionInterface
-    ): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
+    ): TkpdOldAuthInterceptor {
+        return TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ChatbotScope
@@ -96,13 +96,13 @@ class ChatbotModule {
     @ChatbotScope
     @Provides
     fun provideChatbotWebSocket(
-        tkpdAuthInterceptor: TkpdAuthInterceptor,
+        tkpdOldAuthInterceptor: TkpdOldAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
         userSession: UserSessionInterface,
         dispatcher: CoroutineDispatchers
     ): ChatbotWebSocket {
         return ChatbotWebSocketImpl(
-            arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor),
+            arrayListOf(tkpdOldAuthInterceptor, fingerprintInterceptor),
             userSession.accessToken,
             dispatcher
         )
