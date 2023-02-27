@@ -2,14 +2,15 @@
 <com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
-    android:layout_width="192dp"
-    android:layout_height="340dp"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     app:rcl_cornerRadius="@dimen/layout_lvl1">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="0.56"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
