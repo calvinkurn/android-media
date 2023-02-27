@@ -36,6 +36,10 @@ class KycSharedPreferenceImpl @Inject constructor(
         return sharedPreferences.getString(key, "").orEmpty()
     }
 
+    override fun removeStringCache(key: String) {
+        sharedPreferences.edit().remove(key).apply()
+    }
+
     private val String.toPreservedByteArray: ByteArray
         get() {
             return this.toByteArray(Charsets.ISO_8859_1)
@@ -53,4 +57,5 @@ interface KycSharedPreference {
     fun removeCache(key: String)
     fun saveStringCache(key: String, value: String)
     fun getStringCache(key: String): String
+    fun removeStringCache(key: String)
 }

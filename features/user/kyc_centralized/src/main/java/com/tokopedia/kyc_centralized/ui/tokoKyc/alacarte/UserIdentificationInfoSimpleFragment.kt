@@ -129,6 +129,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     private fun finishAndRedirectKycResult() {
         activity?.let {
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
             it.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_REDIRECT_URL, redirectUrl)
             })
@@ -150,6 +151,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
                     }
                 }
                 else -> {
+                    kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
                     activity?.setResult(resultCode)
                     activity?.finish()
                 }

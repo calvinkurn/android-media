@@ -429,6 +429,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
                 KycStatus.BLACKLISTED -> analytics?.eventClickOnButtonBlacklistPage()
                 else -> {}
             }
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
             activity?.finish()
         }
     }
@@ -453,6 +454,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
             showStatusPending()
             analytics?.eventViewSuccessSnackbarPendingPage()
         } else if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
             activity?.finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -468,6 +470,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     private fun goToCallBackUrl(callback: String?): View.OnClickListener {
         return View.OnClickListener { v: View? ->
             if (callback != null) {
+                kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
                 RouteManager.route(activity, callback)
                 activity?.finish()
             }
