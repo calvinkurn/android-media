@@ -103,7 +103,8 @@ class DtHomeFragment :
         private const val CLICK_TIME_INTERVAL: Long = 500
 
         private const val SHARE_LINK_TITLE = "Dilayani Tokopedia | Tokopedia"
-        private const val SHARE_LINK_URL = "https://www.tokopedia.com/dilayani-tokopedia"
+        private const val SHARE_LINK_URL =
+            "https://333-beta-feature.tokopedia.com/dilayani-tokopedia" // this temporary, change before prod
         private const val SHARE_LINK_THUMBNAIL_IMAGE =
             "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
         private const val SHARE_LINK_OG_IMAGE =
@@ -243,8 +244,8 @@ class DtHomeFragment :
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int) {
-                var scrollPosition =
-                    adapter.data.indexOf(viewModelDtHome.getPositionUsingGroupId(anchorTabUiModel.groupId)?.layout)
+                val groupIdAnchorTab = anchorTabUiModel.groupId
+                var scrollPosition = adapter.data.indexOf(viewModelDtHome.getPositionUsingGroupId(groupIdAnchorTab)?.layout)
                 // handle 0 value
                 if (position != 0 && scrollPosition == 0) return
                 if (scrollPosition == -1) return
@@ -795,9 +796,7 @@ class DtHomeFragment :
          * get position from anchor tab using visitable
          * select and scroll tab anchor from pisition
          */
-        if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList()
-            .isNotEmpty()
-        ) {
+        if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
             val anchorTabUiModel = viewModelDtHome.getAnchorTabByVisitablePosition(visiblePosition)
             val indexAnchorTab = viewModelDtHome.menuList?.indexOf(anchorTabUiModel)
 
