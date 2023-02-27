@@ -12,7 +12,7 @@ data class ProductShopReviewUiModel(
     val reviews: List<Review> = emptyList()
 ) {
     data class Review(
-        val talkId: String = "",
+        val id: String = "",
         val userImage: String = "",
         val userName: String = "",
         val userTitle: String = "",

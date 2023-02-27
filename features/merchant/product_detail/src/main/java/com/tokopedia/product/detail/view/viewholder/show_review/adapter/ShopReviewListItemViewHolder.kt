@@ -83,7 +83,7 @@ class ShopReviewListItemViewHolder(
             root.setOnClickDebounceListener {
                 listener.onShopReviewSeeMore(
                     appLink = appLink,
-                    eventLabel = uiModel.talkId,
+                    eventLabel = uiModel.id,
                     trackData = trackData
                 )
             }

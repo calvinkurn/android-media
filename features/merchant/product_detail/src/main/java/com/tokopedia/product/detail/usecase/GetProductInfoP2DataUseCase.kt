@@ -583,6 +583,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     userSubtitle
                     reviewText 
                     applink
+                    reviewID
                 }
             }
           }

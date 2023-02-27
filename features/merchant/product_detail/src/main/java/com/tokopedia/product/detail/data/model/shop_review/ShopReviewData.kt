@@ -42,7 +42,10 @@ data class ShopReviewData(
         val reviewText: String = "",
         @SerializedName("applink")
         @Expose
-        val appLink: String = ""
+        val appLink: String = "",
+        @SerializedName("reviewID")
+        @Expose
+        val reviewID: String = ""
     )
 }
 
@@ -52,7 +55,8 @@ internal fun ShopReviewData.Review.asUiModel() = ProductShopReviewUiModel.Review
     userTitle = userTitle,
     userSubtitle = userSubtitle,
     reviewText = reviewText,
-    appLink = appLink
+    appLink = appLink,
+    id = reviewID
 )
 
 internal fun List<ShopReviewData.Review>.asUiModel() = map {
