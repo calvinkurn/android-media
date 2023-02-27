@@ -46,9 +46,9 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
-import com.tokopedia.tokopedianow.home.domain.mapper.ClaimCouponMapper.mapToClaimCouponUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
@@ -240,16 +240,24 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.mapHomeCatalogCouponList(
-        response: GetCatalogCouponListResponse
+        response: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList? = null,
+        @TokoNowLayoutState state: Int
     ) {
         firstOrNull { it?.layout is HomeClaimCouponWidgetUiModel }?.let {
             val item = it.layout as HomeClaimCouponWidgetUiModel
+            val couponList = response.mapToClaimCouponWidgetUiModelList(item)
+
             val layout = it.layout.copy(
                 id = item.id,
-                claimCouponList = listOf()
+                claimCouponList = couponList,
+                state = state
             )
-            val newItem = HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
+            val newItem = HomeLayoutItemUiModel(
+                layout = layout,
+                state = HomeLayoutItemState.LOADED
+            )
             val index = indexOf(it)
+
             removeAt(index)
             add(index, newItem)
         }
@@ -705,14 +713,15 @@ object HomeLayoutMapper {
 
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
-            CATEGORY -> mapToClaimCouponUiModel(response, notLoadedState)
+//            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
+            CATEGORY -> mapToClaimCouponWidgetUiModel(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)
             SMALL_PLAY_WIDGET -> mapToSmallPlayWidget(response, notLoadedState)
-            COUPON_CLAIM -> mapToClaimCouponUiModel(response, notLoadedState)
+            COUPON_CLAIM -> mapToClaimCouponWidgetUiModel(response, notLoadedState)
             // endregion
             else -> null
         }

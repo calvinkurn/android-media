@@ -154,9 +154,11 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeCategoryMenuCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -261,7 +263,8 @@ class TokoNowHomeFragment : Fragment(),
                 rtrListener = createRealTimeRecommendationListener(),
                 rtrAnalytics = rtrAnalytics,
                 productRecommendationBindOocListener = createProductRecomOocCallback(),
-                claimCouponWidgetItemListener = createClaimCouponWidgetCallback()
+                claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
+                claimCouponWidgetListener = createClaimCouponWidgetCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -1141,12 +1144,12 @@ class TokoNowHomeFragment : Fragment(),
             when (it) {
                 is Success -> {
                     val couponClaimed = it.data
-                    if (couponClaimed.code == "not logged in") {
+                    if (couponClaimed.code == COUPON_STATUS_LOGIN) {
                         RouteManager.route(context, ApplinkConst.LOGIN)
                     } else {
                         showToaster(
-                            message = "Selamat, kupon berhasil diklaim! Lihat kupon saya sekarang",
-                            actionText = "Lihat",
+                            message = getString(R.string.tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_description),
+                            actionText = getString(R.string.tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_cta),
                             type = TYPE_NORMAL,
                             onClickActionBtn = {
                                 RouteManager.route(context, couponClaimed.appLink)
@@ -1155,7 +1158,7 @@ class TokoNowHomeFragment : Fragment(),
                     }
                 }
                 is Fail -> showToaster(
-                    message = it.throwable.message ?: "Ada yang salah. Silakan coba lagi",
+                    message = it.throwable.message ?: getString(R.string.tokopedianow_claim_coupon_widget_coupon_claimed_toaster_error_description_default),
                     type = TYPE_ERROR
                 )
             }
@@ -1907,8 +1910,15 @@ class TokoNowHomeFragment : Fragment(),
         return HomeRealTimeRecomAnalytics(userSession)
     }
 
-    private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetItemCallback {
-        return ClaimCouponWidgetItemCallback(viewModelTokoNow)
+    private fun createClaimCouponWidgetItemCallback(): ClaimCouponWidgetItemCallback {
+        return ClaimCouponWidgetItemCallback(
+            viewModel = viewModelTokoNow,
+            context = context
+        )
+    }
+
+    private fun createClaimCouponWidgetCallback(): ClaimCouponWidgetCallback {
+        return ClaimCouponWidgetCallback(viewModelTokoNow)
     }
 
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {

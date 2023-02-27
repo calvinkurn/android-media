@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -113,6 +112,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -386,11 +386,38 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun claimCoupon(catalogId: String) {
+    fun getCatalogCouponList(slugs: List<String>) {
+        launchCatchError(block = {
+            val response = getCatalogCouponListUseCase.execute(
+                categorySlug = "katalog",
+                catalogSlugs = slugs
+            )
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                response = response,
+                state = TokoNowLayoutState.SHOW
+            )
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+            _homeLayoutList.postValue(Success(data))
+        }) {
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                state = TokoNowLayoutState.HIDE
+            )
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+            _homeLayoutList.postValue(Success(data))
+        }
+    }
+
+    fun claimCoupon(catalogId: Int) {
         launchCatchError(block = {
             if (userSession.isLoggedIn) {
                 val response = redeemCouponUseCase.execute(
-                    catalogId = catalogId.toIntSafely(),
+                    catalogId = catalogId,
                     isGift = 0,
                     giftUserId = 0,
                     giftEmail = String.EMPTY,
@@ -413,7 +440,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 _couponClaimed.postValue(
                     Success(
                         HomeClaimCouponDataModel(
-                            code = "Not Logged In"
+                            code = COUPON_STATUS_LOGIN
                         )
                     )
                 )
@@ -684,7 +711,7 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
-            is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync().await()
+            is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -732,15 +759,20 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getCatalogCouponListAsync(): Deferred<Unit?> {
+    private suspend fun getCatalogCouponListAsync(item: HomeClaimCouponWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = getCatalogCouponListUseCase.execute(
                 categorySlug = "katalog",
-                catalogSlugs = listOf("MZTFLI26DISCO")
+                catalogSlugs = item.slugs
             )
-            homeLayoutItemList.mapHomeCatalogCouponList(response)
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                response = response,
+                state = TokoNowLayoutState.SHOW
+            )
         }) {
-
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                state = TokoNowLayoutState.HIDE
+            )
         }
     }
 

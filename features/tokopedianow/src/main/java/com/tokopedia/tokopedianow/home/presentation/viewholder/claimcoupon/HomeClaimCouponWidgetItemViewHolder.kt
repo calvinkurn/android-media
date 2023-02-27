@@ -14,12 +14,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeClaimCouponWidgetItemViewHolder(
     itemView: View,
-    private val listener: HomeCouponWidgetItemListener? = null
+    private val listener: HomeClaimCouponWidgetItemListener? = null
 ) : AbstractViewHolder<HomeClaimCouponWidgetItemUiModel>(itemView) {
 
     companion object {
         const val COUPON_STATUS_COMPLETED = "Habis"
         const val COUPON_STATUS_CLAIMED = "Klaim"
+        const val COUPON_STATUS_LOGIN = "Login"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_claim_coupon_widget_item
@@ -28,15 +29,11 @@ class HomeClaimCouponWidgetItemViewHolder(
     private var binding: ItemTokopedianowClaimCouponWidgetItemBinding? by viewBinding()
 
     override fun bind(item: HomeClaimCouponWidgetItemUiModel) {
-        setData(item)
-    }
-
-    private fun setData(item: HomeClaimCouponWidgetItemUiModel) {
         binding?.apply {
             initImage(item)
             initButton(item)
             root.setOnClickListener {
-                listener?.onCouponWidgetClicked()
+                listener?.onCouponWidgetClicked(item.appLink)
             }
         }
     }
@@ -44,11 +41,11 @@ class HomeClaimCouponWidgetItemViewHolder(
     private fun ItemTokopedianowClaimCouponWidgetItemBinding.initImage(
         item: HomeClaimCouponWidgetItemUiModel
     ) {
-        iuCouponImageDouble.showIfWithBlock(item.isDouble) {
+        iuCouponSmallImage.showIfWithBlock(item.isDouble) {
             loadImage(item.smallImageUrlMobile)
         }
 
-        iuCouponImage.showIfWithBlock(!item.isDouble) {
+        iuCouponLargeImage.showIfWithBlock(!item.isDouble) {
             loadImage(item.imageUrlMobile)
         }
     }
@@ -56,10 +53,10 @@ class HomeClaimCouponWidgetItemViewHolder(
     private fun ItemTokopedianowClaimCouponWidgetItemBinding.initButton(
         item: HomeClaimCouponWidgetItemUiModel
     ) {
-        val status = item.status
+        val couponCode = item.couponCode
         btnClaim.buttonSize = if (item.isDouble) UnifyButton.Size.MICRO else UnifyButton.Size.SMALL
-        btnClaim.text = if (status == COUPON_STATUS_COMPLETED || status.isBlank()) COUPON_STATUS_COMPLETED else status
-        btnClaim.isEnabled = status == COUPON_STATUS_CLAIMED
+        btnClaim.text = if (couponCode == COUPON_STATUS_COMPLETED || couponCode.isBlank()) COUPON_STATUS_COMPLETED else couponCode
+        btnClaim.isEnabled = couponCode == COUPON_STATUS_CLAIMED
         if (btnClaim.isEnabled) {
             btnClaim.isInverse = true
             btnClaim.buttonVariant = UnifyButton.Variant.GHOST
@@ -74,9 +71,9 @@ class HomeClaimCouponWidgetItemViewHolder(
         }
     }
 
-    interface HomeCouponWidgetItemListener {
-        fun onClaimButtonClicked(catalogId: String)
-        fun onCouponWidgetClicked()
+    interface HomeClaimCouponWidgetItemListener {
+        fun onClaimButtonClicked(catalogId: Int)
+        fun onCouponWidgetClicked(appLink: String)
     }
 
 }

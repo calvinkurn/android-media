@@ -1,48 +1,78 @@
 package com.tokopedia.tokopedianow.home.domain.model
 
+import com.google.gson.annotations.SerializedName
+
 data class GetCatalogCouponListResponse(
-    val data: Data
+    @SerializedName("tokopointsCatalogWithCouponList")
+    val tokopointsCatalogWithCouponList: TokopointsCatalogWithCouponList
 ) {
-    data class Data(
-        val tokopointsCatalogWithCouponList: TokopointsCatalogWithCouponList
+    data class TokopointsCatalogWithCouponList(
+        @SerializedName("catalogWithCouponList")
+        val catalogWithCouponList: List<CatalogWithCoupon>,
+        @SerializedName("resultStatus")
+        val resultStatus: ResultStatus
     ) {
-        data class TokopointsCatalogWithCouponList(
-            val catalogWithCouponList: List<CatalogWithCoupon>,
-            val resultStatus: ResultStatus
-        ) {
-            data class CatalogWithCoupon(
-                val appLink: String,
-                val baseCode: String,
-                val buttonStr: String,
-                val catalogType: Int,
-                val couponCode: String,
-                val cta: String,
-                val ctaDesktop: String,
-                val disableErrorMessage: String,
-                val id: Int,
-                val imageUrl: String,
-                val imageUrlMobile: String,
-                val isDisabled: Boolean,
-                val isDisabledButton: Boolean,
-                val minimumUsage: String,
-                val minimumUsageLabel: String,
-                val promoID: Int,
-                val quota: Int,
-                val slug: String,
-                val smallImageUrl: String,
-                val smallImageUrlMobile: String,
-                val subTitle: String,
-                val thumbnailUrl: String,
-                val thumbnailUrlMobile: String,
-                val title: String,
-                val upperTextDesc: List<Any>,
-                val url: String
-            )
-            data class ResultStatus(
-                val code: String,
-                val message: List<Any>,
-                val status: String
-            )
-        }
+        data class CatalogWithCoupon(
+            @SerializedName("appLink")
+            val appLink: String,
+            @SerializedName("baseCode")
+            val baseCode: String,
+            @SerializedName("buttonStr")
+            val buttonStr: String,
+            @SerializedName("catalogType")
+            val catalogType: Int,
+            @SerializedName("couponCode")
+            val couponCode: String,
+            @SerializedName("cta")
+            val cta: String,
+            @SerializedName("ctaDesktop")
+            val ctaDesktop: String,
+            @SerializedName("disableErrorMessage")
+            val disableErrorMessage: String,
+            @SerializedName("id")
+            val id: Int,
+            @SerializedName("imageUrl")
+            val imageUrl: String,
+            @SerializedName("imageUrlMobile")
+            val imageUrlMobile: String,
+            @SerializedName("isDisabled")
+            val isDisabled: Boolean,
+            @SerializedName("isDisabledButton")
+            val isDisabledButton: Boolean,
+            @SerializedName("minimumUsage")
+            val minimumUsage: String,
+            @SerializedName("minimumUsageLabel")
+            val minimumUsageLabel: String,
+            @SerializedName("promoID")
+            val promoID: Int,
+            @SerializedName("quota")
+            val quota: Int,
+            @SerializedName("slug")
+            val slug: String,
+            @SerializedName("smallImageUrl")
+            val smallImageUrl: String,
+            @SerializedName("smallImageUrlMobile")
+            val smallImageUrlMobile: String,
+            @SerializedName("subTitle")
+            val subTitle: String,
+            @SerializedName("thumbnailUrl")
+            val thumbnailUrl: String,
+            @SerializedName("thumbnailUrlMobile")
+            val thumbnailUrlMobile: String,
+            @SerializedName("title")
+            val title: String,
+            @SerializedName("upperTextDesc")
+            val upperTextDesc: List<String>,
+            @SerializedName("url")
+            val url: String
+        )
+        data class ResultStatus(
+            @SerializedName("code")
+            val code: String,
+            @SerializedName("message")
+            val message: List<String>,
+            @SerializedName("status")
+            val status: String
+        )
     }
 }
