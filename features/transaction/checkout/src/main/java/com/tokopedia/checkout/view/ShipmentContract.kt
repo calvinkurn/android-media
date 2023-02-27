@@ -95,7 +95,7 @@ interface ShipmentContract {
         fun renderChangeAddressSuccess(refreshCheckoutPage: Boolean)
         fun renderChangeAddressFailed(refreshCheckoutPageIfSuccess: Boolean)
         fun renderCourierStateSuccess(
-            courierItemData: CourierItemData?,
+            courierItemData: CourierItemData,
             itemPosition: Int,
             isTradeInDropOff: Boolean,
             isForceReloadRates: Boolean
@@ -122,9 +122,9 @@ interface ShipmentContract {
 
         fun navigateToSetPinpoint(message: String, locationPass: LocationPass?)
         fun generateNewCheckoutRequest(
-            shipmentCartItemModelList: List<ShipmentCartItemModel?>?,
+            shipmentCartItemModelList: List<ShipmentCartItemModel>?,
             isAnalyticsPurpose: Boolean
-        ): List<DataCheckoutRequest?>?
+        ): List<DataCheckoutRequest>
 
         val activityContext: Activity
         fun setCourierPromoApplied(itemPosition: Int)
@@ -145,15 +145,15 @@ interface ShipmentContract {
         fun removeIneligiblePromo(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>)
         fun updateTickerAnnouncementMessage()
         fun resetPromoBenefit()
-        fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel?>?)
+        fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel>)
         val isTradeInByDropOff: Boolean
         fun updateButtonPromoCheckout(
-            promoUiModel: PromoUiModel?,
+            promoUiModel: PromoUiModel,
             isNeedToHitValidateFinal: Boolean
         )
 
         fun doResetButtonPromoCheckout()
-        fun resetCourier(shipmentCartItemModel: ShipmentCartItemModel?)
+        fun resetCourier(shipmentCartItemModel: ShipmentCartItemModel)
         fun setHasRunningApiCall(hasRunningApiCall: Boolean)
         fun prepareReloadRates(lastSelectedCourierOrder: Int, skipMvc: Boolean)
         fun updateLocalCacheAddressData(userAddress: UserAddress?)
@@ -318,11 +318,11 @@ interface ShipmentContract {
         )
 
         var recipientAddressModel: RecipientAddressModel?
-        var shipmentCartItemModelList: List<ShipmentCartItemModel?>?
+        var shipmentCartItemModelList: List<ShipmentCartItemModel>?
         fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest?>?)
         var shipmentCostModel: ShipmentCostModel?
         var egoldAttributeModel: EgoldAttributeModel?
-        val shipmentTickerErrorModel: ShipmentTickerErrorModel?
+        val shipmentTickerErrorModel: ShipmentTickerErrorModel
         var tickerAnnouncementHolderData: TickerAnnouncementHolderData
         fun editAddressPinpoint(
             latitude: String?,
