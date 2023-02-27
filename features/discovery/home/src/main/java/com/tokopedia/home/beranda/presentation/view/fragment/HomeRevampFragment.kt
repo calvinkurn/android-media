@@ -900,15 +900,19 @@ open class HomeRevampFragment :
         }
     }
 
+    override fun goToLogin() {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+        }
+    }
+
     private fun initStickyLogin() {
         stickyLoginView?.page = StickyLoginConstant.Page.HOME
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                context?.let {
-                    val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                    startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
-                }
+                goToLogin()
             }
 
             override fun onDismiss() {

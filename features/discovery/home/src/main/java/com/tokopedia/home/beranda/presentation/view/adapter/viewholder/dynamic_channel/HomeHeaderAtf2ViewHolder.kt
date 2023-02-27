@@ -13,6 +13,7 @@ import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
+import com.tokopedia.usercomponents.loginwidget.view.LoginWidgetListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -35,6 +36,7 @@ class HomeHeaderAtf2ViewHolder(
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace()
         renderHeader()
+        renderLoginWidget()
         element.headerDataModel?.let {
             renderBalanceLayout(
                 it.homeBalanceModel,
@@ -43,6 +45,16 @@ class HomeHeaderAtf2ViewHolder(
         }
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
+    }
+
+    private fun renderLoginWidget() {
+        binding?.loginWidgetAtf2?.setListener(
+            listener = object : LoginWidgetListener {
+                override fun goToLogin() {
+                    listener.goToLogin()
+                }
+            }
+        )
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
