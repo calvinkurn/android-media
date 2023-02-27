@@ -944,9 +944,13 @@ class ProductListPresenter @Inject constructor(
 
         if (!willProcessFilter) return
 
+        view.setAutoFilterToggle(searchProductModel.backendFiltersToggle)
+
         processDefaultQuickFilter(searchProductModel)
         initFilterController(searchProductModel)
         processQuickFilter(searchProductModel.quickFilterModel)
+
+        view.setSortFilterIndicatorCounter()
     }
 
     private fun processDefaultQuickFilter(searchProductModel: SearchProductModel) {

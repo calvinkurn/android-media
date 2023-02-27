@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.converter
 
-//class ShipmentDataConverterTest {
+// class ShipmentDataConverterTest {
 //
 //    private val shipmentDataConverter = ShipmentDataConverter()
 //
@@ -122,4 +122,4 @@ package com.tokopedia.checkout.view.converter
 //        // Then
 //        assertNull(result.first().freeShippingBadgeUrl)
 //    }
-//}
+// }

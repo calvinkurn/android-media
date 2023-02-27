@@ -72,10 +72,10 @@ ext {
     playServiceFirebaseFirestore = '17.1.2'
     playServiceAds = '17.1.0'
     playServiceTagManager = '17.0.0'
-    playServiceMeasurementBase = '18.0.0'
-    playServiceMeasurementApi = '18.0.0'
+    playServiceMeasurementBase = '19.0.2'
+    playServiceMeasurementApi = '19.0.2'
     playCastVersion = '21.0.1'
-    bomVersion = '26.2.0'
+    bomVersion = '28.4.2'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.7.2'
@@ -124,7 +124,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.24.1'
+    unifyIconsVersion = '1.0.25'
     unifyPrinciplesVersion = '1.4.4'
     unifyComponentsVersion = '1.2.26'
     unifyCoachMarkVersion = '1.2.21'

@@ -3,8 +3,8 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.updatecart.Data
@@ -289,9 +289,9 @@ class UpdateCartTest : BaseCartTest() {
         val boType = 0
         val cartItem = CartItemHolderData().apply {
             isSelected = true
-            shopBoAffordabilityData = CartShopBoAffordabilityData(
+            shopCartShopGroupTickerData = CartShopGroupTickerData(
                     tickerText = tickerText,
-                    state = CartShopBoAffordabilityState.SUCCESS_AFFORD
+                    state = CartShopGroupTickerState.SUCCESS_AFFORD
             )
             shopBoMetadata = BoMetadata(
                     boType = boType
@@ -331,9 +331,9 @@ class UpdateCartTest : BaseCartTest() {
         val boType = 0
         val cartItem = CartItemHolderData().apply {
             isSelected = true
-            shopBoAffordabilityData = CartShopBoAffordabilityData(
+            shopCartShopGroupTickerData = CartShopGroupTickerData(
                     tickerText = tickerText,
-                    state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD
+                    state = CartShopGroupTickerState.SUCCESS_NOT_AFFORD
             )
             shopBoMetadata = BoMetadata(
                     boType = boType
@@ -372,7 +372,7 @@ class UpdateCartTest : BaseCartTest() {
         val tickerText = ""
         val cartItem = CartItemHolderData().apply {
             isSelected = true
-            shopBoAffordabilityData = CartShopBoAffordabilityData(
+            shopCartShopGroupTickerData = CartShopGroupTickerData(
                     tickerText = tickerText
             )
         }

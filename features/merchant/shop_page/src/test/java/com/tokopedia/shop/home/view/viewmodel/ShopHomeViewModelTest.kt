@@ -346,7 +346,11 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = CODE_STATUS_SUCCESS, null, null, null), null, null, null))
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel()
+        )
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
@@ -356,7 +360,11 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } throws Throwable()
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel()
+        )
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Fail)
     }
@@ -373,7 +381,11 @@ class ShopHomeViewModelTest {
                 null
             )
         )
-        viewModel.getMerchantVoucherCoupon(mockShopId, null, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            null,
+            ShopHomeVoucherUiModel()
+        )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
 
         coEvery {
@@ -391,13 +403,21 @@ class ShopHomeViewModelTest {
                 null
             )
         )
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel()
+        )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(null)
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel()
+        )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
 
@@ -1504,7 +1524,15 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } returns ShopLayoutWidgetV2()
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                any()
+            ) } returns listOf(
                 ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
@@ -1557,7 +1585,15 @@ class ShopHomeViewModelTest {
             )
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                any()
+            ) } returns listOf(
                 resultWidget
             )
 
@@ -1589,7 +1625,15 @@ class ShopHomeViewModelTest {
             } returns ShopLayoutWidgetV2()
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                any()
+            ) } returns listOf(
                 ProductCardUiModel()
             )
 
@@ -2158,5 +2202,60 @@ class ShopHomeViewModelTest {
         )
         val result = viewModel.latestShopHomeWidgetLayoutData.value
         assert(result is Fail)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with empty widget and showConfetti is false, live data value should be false`() {
+        viewModel.checkShowConfetti(listOf(), false)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget without festivity and showConfetti is false, live data value should be false`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel())
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, false)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget without festivity and showConfetti is true, live data value should be false`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel())
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, true)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget festivity and showConfetti is true, live data value should be true`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel(
+                isFestivity = true
+            ))
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, true)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == true)
+    }
+
+    @Test
+    fun `when calling checkShowConfetti with widget festivity and showConfetti is false, live data value should be false`() {
+        val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(ShopHomeCarousellProductUiModel(
+                isFestivity = true
+            ))
+            add(ShopHomeCarousellProductUiModel())
+        }
+        viewModel.checkShowConfetti(listShopHomeWidgetUiModel, false)
+        val liveDataValue = viewModel.isShowHomeTabConfettiLiveData.value
+        assert(liveDataValue == false)
     }
 }
