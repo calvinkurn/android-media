@@ -59,6 +59,10 @@ class ImageGeneratorUseCase @Inject constructor(
             params
         )
     }
-    
+
+    /**
+     * SourceId and argument params can be found here:
+     * https://docs.google.com/spreadsheets/d/10Kee8re2G87hS5elK4XASlHYaav8nsvjjiU9L5qbGKQ/edit#gid=0
+     */
     data class Param(val sourceId: String, val arguments: Map<String, String>)
 }
