@@ -30,7 +30,7 @@ data class ShopProductCheckoutRequest(
     @SerializedName("promo_codes")
     var promoCodes: ArrayList<String>? = null,
     @SerializedName("promos")
-    var promos: List<PromoRequest>? = null,
+    var promos: ArrayList<PromoRequest>? = null,
     @SerializedName("is_order_priority")
     var isOrderPriority: Int = 0,
 

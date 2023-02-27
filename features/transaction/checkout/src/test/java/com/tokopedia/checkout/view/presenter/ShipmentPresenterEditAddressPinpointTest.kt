@@ -261,7 +261,7 @@ class ShipmentPresenterEditAddressPinpointTest {
         )
 
         every {
-            view.activityContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+            view.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         } returns errorMessage
 
         // When

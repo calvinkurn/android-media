@@ -56,7 +56,7 @@ import javax.inject.Named
         PurchasePlatformBaseModule::class
     ]
 )
-class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
+class CheckoutModule constructor(private val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope

@@ -152,15 +152,17 @@ class ShipmentPresenterEgoldTest {
         }
 
         // When
-        presenter.shipmentCostModel = ShipmentCostModel().apply {
-            totalPrice = 99750.0
-        }
+        presenter.setShipmentCostModel(
+            ShipmentCostModel().apply {
+                totalPrice = 99750.0
+            }
+        )
 
         // Then
         verify {
             view.renderDataChanged()
         }
-        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+        assert(presenter.egoldAttributeModel!!.buyEgoldValue == expectedEgoldValue)
     }
 
     @Test
@@ -175,24 +177,28 @@ class ShipmentPresenterEgoldTest {
         }
 
         // When
-        presenter.shipmentCostModel = ShipmentCostModel().apply {
-            totalPrice = 99750.0
-        }
+        presenter.setShipmentCostModel(
+            ShipmentCostModel().apply {
+                totalPrice = 99750.0
+            }
+        )
 
         // Then
         verify(inverse = true) {
             view.renderDataChanged()
         }
-        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+        assert(presenter.egoldAttributeModel!!.buyEgoldValue == expectedEgoldValue)
     }
 
     @Test
     fun `WHEN calculate egold value without tiering THEN should correctly calculated`() {
         // Given
         val expectedEgoldValue = 250L
-        presenter.shipmentCostModel = ShipmentCostModel().apply {
-            totalPrice = 99750.0
-        }
+        presenter.setShipmentCostModel(
+            ShipmentCostModel().apply {
+                totalPrice = 99750.0
+            }
+        )
         presenter.egoldAttributeModel = EgoldAttributeModel().apply {
             isTiering = false
             minEgoldRange = 50
@@ -206,16 +212,18 @@ class ShipmentPresenterEgoldTest {
         verify {
             view.renderDataChanged()
         }
-        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+        assert(presenter.egoldAttributeModel!!.buyEgoldValue == expectedEgoldValue)
     }
 
     @Test
     fun `WHEN calculate egold value with tiering THEN should correctly calculated`() {
         // Given
         val expectedEgoldValue = 5700L
-        presenter.shipmentCostModel = ShipmentCostModel().apply {
-            totalPrice = 50300.0
-        }
+        presenter.setShipmentCostModel(
+            ShipmentCostModel().apply {
+                totalPrice = 50300.0
+            }
+        )
         presenter.egoldAttributeModel = EgoldAttributeModel().apply {
             isTiering = true
             minEgoldRange = 50
@@ -255,16 +263,18 @@ class ShipmentPresenterEgoldTest {
         verify {
             view.renderDataChanged()
         }
-        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+        assert(presenter.egoldAttributeModel!!.buyEgoldValue == expectedEgoldValue)
     }
 
     @Test
     fun `GIVEN no match minimum total amount WHEN calculate egold value with tiering THEN should result 0 egold value`() {
         // Given
         val expectedEgoldValue = 0L
-        presenter.shipmentCostModel = ShipmentCostModel().apply {
-            totalPrice = 300.0
-        }
+        presenter.setShipmentCostModel(
+            ShipmentCostModel().apply {
+                totalPrice = 300.0
+            }
+        )
         presenter.egoldAttributeModel = EgoldAttributeModel().apply {
             isTiering = true
             minEgoldRange = 50
@@ -304,6 +314,6 @@ class ShipmentPresenterEgoldTest {
         verify {
             view.renderDataChanged()
         }
-        assert(presenter.egoldAttributeModel.buyEgoldValue == expectedEgoldValue)
+        assert(presenter.egoldAttributeModel!!.buyEgoldValue == expectedEgoldValue)
     }
 }

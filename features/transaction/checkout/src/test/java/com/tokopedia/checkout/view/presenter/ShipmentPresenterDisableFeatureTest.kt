@@ -199,10 +199,10 @@ class ShipmentPresenterDisableFeatureTest {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        presenter.shipmentCartItemModelList!!.each {
             cartItemModels.each {
                 assertEquals(
                     true,
@@ -251,10 +251,10 @@ class ShipmentPresenterDisableFeatureTest {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { assertEquals(true, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        presenter.shipmentCartItemModelList!!.each {
             cartItemModels.each {
                 assertEquals(
                     true,
@@ -303,10 +303,10 @@ class ShipmentPresenterDisableFeatureTest {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        presenter.shipmentCartItemModelList!!.each {
             cartItemModels.each {
                 assertEquals(
                     true,
@@ -355,10 +355,10 @@ class ShipmentPresenterDisableFeatureTest {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        presenter.shipmentCartItemModelList!!.each {
             cartItemModels.each {
                 assertEquals(
                     false,
@@ -407,10 +407,10 @@ class ShipmentPresenterDisableFeatureTest {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        presenter.shipmentCartItemModelList!!.each {
             cartItemModels.each {
                 assertEquals(
                     true,
@@ -459,10 +459,10 @@ class ShipmentPresenterDisableFeatureTest {
         )
 
         // Then
-        presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }
-        presenter.shipmentCartItemModelList.each { assertEquals(true, isOrderPrioritasDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isDropshipperDisable) }
+        presenter.shipmentCartItemModelList!!.each { assertEquals(true, isOrderPrioritasDisable) }
         assertNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        presenter.shipmentCartItemModelList!!.each {
             cartItemModels.each {
                 assertEquals(
                     false,

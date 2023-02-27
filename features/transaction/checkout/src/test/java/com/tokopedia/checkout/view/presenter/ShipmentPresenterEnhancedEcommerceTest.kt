@@ -259,7 +259,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
 
         // When
         val enhancedEcommerceData =
-            presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
+            presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")!!
 
         // Then
         val checkoutData =
@@ -294,7 +294,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
 
         // When
         val enhancedEcommerceData =
-            presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
+            presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")!!
 
         // Then
         val checkoutData =
@@ -329,7 +329,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
 
         // When
         val enhancedEcommerceData =
-            presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
+            presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")!!
 
         // Then
         val checkoutData =
@@ -356,7 +356,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -404,7 +404,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val pomlAutoApplied = true
         presenter.lastApplyData = LastApplyUiModel(
             additionalInfo = LastApplyAdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied)
@@ -456,7 +456,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
         // When
@@ -503,7 +503,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val pomlAutoApplied = true
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             PromoUiModel(additionalInfoUiModel = AdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied))

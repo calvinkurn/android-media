@@ -27,6 +27,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
@@ -312,12 +313,12 @@ class ShippingWidget : ConstraintLayout {
     fun setLabelSelectedShippingCourier(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             val courierName = "${selectedCourierItemData.name} (${
-                removeDecimalSuffix(
-                    convertPriceValueToIdrFormat(
-                        selectedCourierItemData.shipperPrice,
-                        false
-                    )
+            removeDecimalSuffix(
+                convertPriceValueToIdrFormat(
+                    selectedCourierItemData.shipperPrice,
+                    false
                 )
+            )
             })"
 
             if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
@@ -546,12 +547,12 @@ class ShippingWidget : ConstraintLayout {
             }
             if (selectedCourierItemData.estimatedTimeDelivery != null) {
                 val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${
-                    removeDecimalSuffix(
-                        convertPriceValueToIdrFormat(
-                            selectedCourierItemData.shipperPrice,
-                            false
-                        )
+                removeDecimalSuffix(
+                    convertPriceValueToIdrFormat(
+                        selectedCourierItemData.shipperPrice,
+                        false
                     )
+                )
                 })"
                 val htmlLinkHelper = HtmlLinkHelper(labelSelectedFreeShipping.context, titleText)
                 labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString
@@ -642,6 +643,8 @@ class ShippingWidget : ConstraintLayout {
 
     fun renderLoadingCourierState() {
         binding?.apply {
+            llShippingExperienceStateLoading.loaderUnify1.type = LoaderUnify.TYPE_RECT
+            llShippingExperienceStateLoading.loaderUnify2.type = LoaderUnify.TYPE_RECT
             llShippingExperienceStateLoading.root.visible()
             containerShippingExperience.gone()
             tradeInView.tvTradeInShippingPriceTitle.gone()
@@ -651,6 +654,8 @@ class ShippingWidget : ConstraintLayout {
 
     fun onLoadCourierStateData() {
         binding?.apply {
+            llShippingExperienceStateLoading.loaderUnify1.type = LoaderUnify.TYPE_RECT
+            llShippingExperienceStateLoading.loaderUnify2.type = LoaderUnify.TYPE_RECT
             llShippingExperienceStateLoading.root.visible()
             containerShippingExperience.gone()
         }

@@ -33,7 +33,7 @@ class ShipmentCartItemModel(
     var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
     var shopLocation: String? = null,
     var shopAlertMessage: String? = null,
-    var shopTypeInfoData: ShopTypeInfoData? = null,
+    var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     var isTokoNow: Boolean = false,
     var shopTickerTitle: String = "",
     var shopTicker: String = "",
@@ -145,7 +145,7 @@ class ShipmentCartItemModel(
         @JvmStatic
         fun clone(
             shipmentCartItemModel: ShipmentCartItemModel,
-            cartItemModels: List<CartItemModel>
+            cartItemModels: ArrayList<CartItemModel>
         ): ShipmentCartItemModel {
             val newShipmentCartItemModel = ShipmentCartItemModel()
             newShipmentCartItemModel.selectedShipmentDetailData =
