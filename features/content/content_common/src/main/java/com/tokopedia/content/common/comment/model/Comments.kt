@@ -37,16 +37,16 @@ data class Comments(
 
     data class CommentData(
         @SerializedName("isKol")
-        val isKOL: Boolean,
+        val isKOL: Boolean = false,
 
         @SerializedName("id")
-        val id: String,
+        val id: String = "",
 
         @SerializedName("linkDetail")
-        val linkDetail: LinkDetail,
+        val linkDetail: LinkDetail = LinkDetail(),
 
         @SerializedName("name")
-        val name: String,
+        val name: String = "",
 
         @SerializedName("firstName")
         val firstName: String = "",
@@ -58,7 +58,7 @@ data class Comments(
         val photo: String = "",
 
         @SerializedName("userID")
-        val userId: String,
+        val userId: String = "",
 
         @SerializedName("fullName")
         val fullName: String = "",

@@ -7,18 +7,18 @@ import com.google.gson.annotations.SerializedName
  */
 data class DeleteComment(
     @SerializedName("feedsCommentDeleteComment")
-    val data: Data,
+    val data: Data = Data(),
 ) {
     data class Data(
         @SerializedName("data")
-        val status: Status,
+        val status: Status = Status(),
 
         @SerializedName("error")
-        val error: String,
+        val error: String = "",
     )
 
     data class Status(
         @SerializedName("data")
-        val success: Long,
+        val success: Long = 0,
     )
 }
