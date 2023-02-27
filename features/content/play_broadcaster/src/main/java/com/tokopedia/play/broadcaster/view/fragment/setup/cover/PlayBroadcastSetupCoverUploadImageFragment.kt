@@ -108,7 +108,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             openCoverSetupFragment()
         }
         btnSetupCoverUploadImage.setOnClickListener {
-            if (btnSetupCoverUploadImage.isEnabled) mListener?.setupCoverButtonSaveClicked()
+            if (btnSetupCoverUploadImage.isEnabled) mListener?.dismissSetupCover()
         }
     }
 
@@ -120,7 +120,6 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
                         croppedCover.coverImage.toString().contains(HTTP)
                     ) {
                         binding.clCoverFormPreview.setCover(croppedCover.coverImage.toString())
-                        binding.btnSetupCoverUploadImage.isEnabled = true
                     } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
                         binding.clCoverFormPreview.setCover(croppedCover.localImage.toString())
                         binding.btnSetupCoverUploadImage.isEnabled = true
@@ -128,6 +127,10 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
                         binding.clCoverFormPreview.setInitialCover()
                         binding.btnSetupCoverUploadImage.isEnabled = false
                     }
+                }
+                is CoverSetupState.GeneratedCover.ImageCover -> {
+                    if (croppedCover.coverImage.isEmpty()) return@observe
+                    binding.clCoverFormPreview.setCover(croppedCover.coverImage)
                 }
                 else -> {}
             }

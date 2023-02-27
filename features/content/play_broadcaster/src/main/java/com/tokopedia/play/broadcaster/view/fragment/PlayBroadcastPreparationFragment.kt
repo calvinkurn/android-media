@@ -31,7 +31,6 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -45,8 +44,6 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccoun
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
@@ -204,7 +201,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        // TODO("Use uiState directly when uiState already return StateFlow")
                         return parentViewModel.productSectionList
                     }
 
@@ -561,6 +557,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         binding.viewPreparationMenu.isSetCoverChecked(false)
                     }
                 }
+                is CoverSetupState.GeneratedCover.ImageCover -> {
+                    binding.viewPreparationMenu.isSetCoverChecked(croppedCover.coverImage.isNotEmpty())
+                }
                 else -> {}
             }
         }
@@ -871,7 +870,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         openSetupProductBottomSheet()
     }
 
-    override fun setupCoverButtonSaveClicked() {
+    override fun dismissSetupCover() {
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
     }
 

@@ -65,6 +65,7 @@
     <string name="play_camera_timer_10_label">10s</string>
     <string name="play_camera_get_ready_label">Siap-siap, ya! Live akan segera dimulai~</string>
 
+    <string name="play_label_delete">Hapus</string>
     <string name="play_label_save">Simpan</string>
 
     <string name="play_live_broadcast_stat_info_default">0</string>
