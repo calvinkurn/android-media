@@ -8,8 +8,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Handler
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.utils.file.FileUtil
@@ -144,11 +146,18 @@ fun Fragment.getRunnable(action: () -> Unit): Runnable {
     }
 }
 
+fun Fragment.delay(action: () -> Unit, delayTime: Long) {
+    Handler().postDelayed(getRunnable {
+         action()
+    }, delayTime)
+}
+
 fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
     val imagePxDrawThreshold = 25_000_000 // 25 million pixel
     return (width * height) >= imagePxDrawThreshold
 }
 
+// get image size without load the image
 fun getImageSize(path: String): Pair<Int, Int>{
     return try {
         val option = BitmapFactory.Options()
@@ -157,6 +166,32 @@ fun getImageSize(path: String): Pair<Int, Int>{
         return Pair(option.outWidth, option.outHeight)
     } catch (e: Exception) {
         Pair(0, 0)
+    }
+}
+
+// scale down image size (if needed) until canvas draw limit size (25 million pixel)
+fun validateImageSize(source: Bitmap): Bitmap {
+    // used to decide scaled result value for each scaled down iteration
+    // each iteration will reduce image size 10% (100px -> 90px -> 81px -> etc)
+    val scaledFactor = 0.9f
+    return if (checkBitmapSizeOverflow(source.width.toFloat(), source.height.toFloat())) {
+        var newImageHeight = 0f
+        var newImageWidth = source.width.toFloat()
+        val sourceWidth = source.width
+        val sourceHeight = source.height
+        do {
+            newImageWidth *= scaledFactor
+            newImageHeight = (newImageWidth / sourceWidth) * sourceHeight
+        } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
+
+        return Bitmap.createScaledBitmap(
+            source,
+            newImageWidth.toInt(),
+            newImageHeight.toInt(),
+            true
+        )
+    } else {
+        source
     }
 }
 

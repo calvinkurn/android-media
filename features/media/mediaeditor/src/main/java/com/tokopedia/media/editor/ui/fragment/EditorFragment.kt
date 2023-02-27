@@ -30,6 +30,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.checkMemoryOverflow
 import com.tokopedia.media.editor.utils.cropCenterImage
+import com.tokopedia.media.editor.utils.delay
 import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.media.editor.utils.getRunnable
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -134,13 +135,13 @@ class EditorFragment @Inject constructor(
             }
 
             if (memoryOverflow) {
-                Handler().postDelayed(getRunnable {
+                delay({
                     try {
                         (activity as EditorActivity).showMemoryLimitDialog(true)
                     } catch (e: Exception) {
                     }
                     loader?.dismiss()
-                }, 2000)
+                }, DELAY_MEMORY_LIMIT_CALLBACK)
                 return
             } else {
                 loadImageWithEmptyTarget(requireContext(),
@@ -443,6 +444,7 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
+        private const val DELAY_MEMORY_LIMIT_CALLBACK = 2000L
     }
 
 }
