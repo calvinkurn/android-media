@@ -82,11 +82,11 @@
             android:id="@+id/rv_cover_template"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintVertical_weight="2.7"
             app:layout_constraintBottom_toTopOf="@id/pc_cover_template"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="2.7"
             tools:itemCount="1"
             tools:listitem="@layout/item_setup_cover_auto_generated" />
 
@@ -98,11 +98,11 @@
             android:orientation="horizontal"
             app:indicator_color="DEFAULT"
             app:indicator_type="CIRCLE"
-            app:layout_constraintVertical_weight="0.3"
             app:layout_constraintBottom_toTopOf="@id/tv_choose_template_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_cover_template"
+            app:layout_constraintVertical_weight="0.3"
             tools:listitem="@layout/item_setup_cover_auto_generated" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -111,12 +111,12 @@
             android:layout_height="0dp"
             android:layout_marginHorizontal="22dp"
             android:gravity="center"
-            app:layout_constraintVertical_weight="0.5"
             android:text="@string/play_prepare_cover_title_choose_template_description"
             app:layout_constraintBottom_toTopOf="@id/ll_button_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pc_cover_template"
+            app:layout_constraintVertical_weight="0.5"
             app:typographyType="body_2" />
 
         <LinearLayout
@@ -156,5 +156,13 @@
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/toaster_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
