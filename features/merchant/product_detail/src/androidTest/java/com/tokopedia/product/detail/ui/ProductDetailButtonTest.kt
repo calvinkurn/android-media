@@ -62,19 +62,22 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     }
 
     override fun before() {
-        customInterceptor.resetInterceptor()
         IdlingRegistry.getInstance().register(buttonIdlingResource)
-        createMockModelConfig()
+        customInterceptor.resetInterceptor()
     }
 
     @After
     fun after() {
-        IdlingRegistry.getInstance().unregister(buttonIdlingResource)
+        IdlingRegistry.getInstance().resources.forEach {
+            IdlingRegistry.getInstance().unregister(it)
+        }
+        activityCommonRule.finishActivity()
     }
 
     @Test
     fun sticky_login_non_login() {
-        InstrumentationAuthHelper.clearUserSession()
+        InstrumentationAuthHelper.logout()
+        createMockModelConfig()
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
         onView(withId(R.id.pdp_button_container)).assertVisible()
@@ -84,7 +87,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     @Test
     fun sticky_login_shows_login() {
         InstrumentationAuthHelper.login() // given user logged in
-
+        createMockModelConfig()
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
         onView(withId(R.id.pdp_button_container)).assertVisible()
@@ -93,13 +96,13 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_empty_button_initial_data() {
+        InstrumentationAuthHelper.logout()
         customInterceptor.customP1ResponsePath = RESPONSE_P1_NEGATIVE_CASE_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NEGATIVE_CASE_PATH
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
         onView(withId(R.id.btn_topchat)).assertVisible()
-
         onView(withId(R.id.btn_buy_now))
             .assertVisible()
             .check(matches(ViewMatchers.withText("Stok Kosong")))
@@ -118,6 +121,8 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_buy_atc_button_initial_data() {
+        InstrumentationAuthHelper.login()
+        createMockModelConfig()
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
         onView(withId(R.id.btn_topchat)).assertVisible()
@@ -136,6 +141,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     //region Error case
     @Test
     fun check_default_button_p2_error_product_empty() {
+        InstrumentationAuthHelper.login()
         customInterceptor.customP1ResponsePath = RESPONSE_P1_NEGATIVE_CASE_PATH
         customInterceptor.customP2ErrorResponsePath = "custom error"
 
@@ -160,6 +166,8 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_default_button_p2_error() {
+        InstrumentationAuthHelper.logout()
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_PATH
         customInterceptor.customP2ErrorResponsePath = "custom error"
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
@@ -310,7 +318,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_button_atc_non_variant_login_noMinicart_tokonow() {
-        // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
         InstrumentationAuthHelper.login() // given user logged in
 
         customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
@@ -341,7 +348,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     @Test
     fun click_button_atc_variant_login_noMinicart_tokonow() = runBlockingTest {
         check_button_atc_variant_noMinicart_tokonow_login()
-        customInterceptor.resetInterceptor()
         customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
 
         intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
@@ -408,12 +414,12 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     //region seller side
     @Test
     fun check_button_seller_side() {
-        InstrumentationAuthHelper.login() // given user logged in
-        InstrumentationAuthHelper.userSession {
+        // given user logged in
+        InstrumentationAuthHelper.login {
             setIsShopOwner(true)
             shopId = "1990266"
         }
-
+        createMockModelConfig()
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
         onView(withId(R.id.btn_topchat)).assertNotVisible()
