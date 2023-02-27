@@ -18,7 +18,6 @@ import com.tokopedia.tokopedianow.home.presentation.decoration.ClaimCouponWidget
 import com.tokopedia.tokopedianow.home.presentation.decoration.ClaimCouponWidgetItemDecoration.Companion.DOUBLE_SPAN_COUNT
 import com.tokopedia.tokopedianow.home.presentation.decoration.ClaimCouponWidgetItemDecoration.Companion.SINGLE_SPAN_COUNT
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemShimmeringUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -73,21 +72,10 @@ class HomeClaimCouponWidgetViewHolder(
         dynamicHeaderCustomView.show()
         dynamicHeaderCustomView.setModel(TokoNowDynamicHeaderUiModel(title = item.title))
 
-        adapter.submitList(listOf(HomeClaimCouponWidgetItemUiModel(
-            id = 121,
-            smallImageUrlMobile = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg",
-            imageUrlMobile = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg",
-            couponCode = "Klaim",
-            isDouble = false,
-            appLink = "tokopedia://now"
-        ), HomeClaimCouponWidgetItemUiModel(
-            id = 123,
-            smallImageUrlMobile = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg",
-            imageUrlMobile = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg",
-            couponCode = "Klaim",
-            isDouble = false,
-            appLink = "tokopedia://now"
-        )))
+        rvClaimWidgets.show()
+        item.claimCouponList?.let { claimCouponList ->
+            adapter.submitList(claimCouponList)
+        }
     }
 
     private fun ItemTokopedianowClaimCouponWidgetBinding.showErrorState(item: HomeClaimCouponWidgetUiModel) {

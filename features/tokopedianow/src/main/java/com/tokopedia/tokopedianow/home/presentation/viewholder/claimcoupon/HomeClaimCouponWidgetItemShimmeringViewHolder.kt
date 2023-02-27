@@ -24,11 +24,11 @@ class HomeClaimCouponWidgetItemShimmeringViewHolder (
     override fun bind(item: HomeClaimCouponWidgetItemShimmeringUiModel) {
         binding?.apply {
             if (item.isDouble) {
-                luCouponLargeImage.show()
-                luCouponSmallImage.hide()
-            } else {
                 luCouponLargeImage.hide()
                 luCouponSmallImage.show()
+            } else {
+                luCouponLargeImage.show()
+                luCouponSmallImage.hide()
             }
         }
     }

@@ -263,6 +263,35 @@ object HomeLayoutMapper {
         }
     }
 
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeClaimCouponList(
+        id: Int,
+        ctaText: String
+    ) {
+        firstOrNull { it?.layout is HomeClaimCouponWidgetUiModel }?.let {
+            val item = it.layout as HomeClaimCouponWidgetUiModel
+
+            val layout = it.layout.copy(
+                id = item.id,
+                claimCouponList = item.claimCouponList?.map { claimCoupon ->
+                    if (claimCoupon.id == id) {
+                        claimCoupon.copy(ctaText = ctaText)
+                    } else {
+                        claimCoupon
+                    }
+                },
+                state = item.state
+            )
+            val newItem = HomeLayoutItemUiModel(
+                layout = layout,
+                state = HomeLayoutItemState.LOADED
+            )
+            val index = indexOf(it)
+
+            removeAt(index)
+            add(index, newItem)
+        }
+    }
+
     fun MutableList<HomeLayoutItemUiModel?>.mapSharingEducationData(
         item: HomeSharingEducationWidgetUiModel
     ) {

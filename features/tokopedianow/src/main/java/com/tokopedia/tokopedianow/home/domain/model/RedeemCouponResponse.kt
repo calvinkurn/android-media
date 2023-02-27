@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class RedeemCouponResponse(
     @SerializedName("hachikoRedeem")
-    val hachikoRedeem: HachikoRedeem
+    val hachikoRedeem: HachikoRedeem? = null
 ) {
     data class HachikoRedeem(
         @SerializedName("coupons")
@@ -16,9 +16,7 @@ data class RedeemCouponResponse(
             @SerializedName("appLink")
             val appLink: String,
             @SerializedName("code")
-            val code: String,
-            @SerializedName("cta")
-            val cta: String,
+            val code: String
         )
     }
 }

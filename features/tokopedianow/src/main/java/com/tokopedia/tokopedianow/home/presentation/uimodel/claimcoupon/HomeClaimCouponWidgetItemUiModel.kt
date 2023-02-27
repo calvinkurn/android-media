@@ -7,7 +7,7 @@ data class HomeClaimCouponWidgetItemUiModel(
     val id: Int,
     val smallImageUrlMobile: String,
     val imageUrlMobile: String,
-    val couponCode: String,
+    val ctaText: String,
     val isDouble: Boolean,
     val appLink: String
 ): HomeLayoutUiModel(id.toString()) {

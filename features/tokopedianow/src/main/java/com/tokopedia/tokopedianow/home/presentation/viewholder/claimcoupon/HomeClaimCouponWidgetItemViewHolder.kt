@@ -19,7 +19,7 @@ class HomeClaimCouponWidgetItemViewHolder(
 
     companion object {
         const val COUPON_STATUS_COMPLETED = "Habis"
-        const val COUPON_STATUS_CLAIMED = "Klaim"
+        const val COUPON_STATUS_CLAIM = "Klaim"
         const val COUPON_STATUS_LOGIN = "Login"
 
         @LayoutRes
@@ -53,10 +53,10 @@ class HomeClaimCouponWidgetItemViewHolder(
     private fun ItemTokopedianowClaimCouponWidgetItemBinding.initButton(
         item: HomeClaimCouponWidgetItemUiModel
     ) {
-        val couponCode = item.couponCode
+        val ctaText = item.ctaText
         btnClaim.buttonSize = if (item.isDouble) UnifyButton.Size.MICRO else UnifyButton.Size.SMALL
-        btnClaim.text = if (couponCode == COUPON_STATUS_COMPLETED || couponCode.isBlank()) COUPON_STATUS_COMPLETED else couponCode
-        btnClaim.isEnabled = couponCode == COUPON_STATUS_CLAIMED
+        btnClaim.text = if (ctaText == COUPON_STATUS_COMPLETED || ctaText.isBlank()) COUPON_STATUS_COMPLETED else ctaText
+        btnClaim.isEnabled = ctaText == COUPON_STATUS_CLAIM
         if (btnClaim.isEnabled) {
             btnClaim.isInverse = true
             btnClaim.buttonVariant = UnifyButton.Variant.GHOST

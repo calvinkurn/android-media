@@ -13,20 +13,12 @@ internal object CatalogCouponListMapper {
     fun mapToClaimCouponWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
         val slugs = response.widgetParam.split("\\s*;\\s*")
 
-//        val categoryMenuUiModel = HomeClaimCouponWidgetUiModel(
-//            id = response.id,
-//            title = response.header.name,
-//            claimCouponList = listOf(),
-//            state = TokoNowLayoutState.LOADING,
-//            isDouble = response.type == RESPONSE_TYPE,
-//            slugs = slugs
-//        )
         val categoryMenuUiModel = HomeClaimCouponWidgetUiModel(
             id = response.id,
             title = response.header.name,
-            claimCouponList = null,
+            claimCouponList = listOf(),
             state = TokoNowLayoutState.LOADING,
-            isDouble = false,
+            isDouble = response.type == RESPONSE_TYPE,
             slugs = slugs
         )
         return HomeLayoutItemUiModel(categoryMenuUiModel, state)
@@ -40,7 +32,7 @@ internal object CatalogCouponListMapper {
                 id = coupon.id,
                 smallImageUrlMobile = coupon.smallImageUrlMobile,
                 imageUrlMobile = coupon.imageUrlMobile,
-                couponCode = coupon.couponCode,
+                ctaText = coupon.buttonStr,
                 isDouble = item.isDouble,
                 appLink = coupon.appLink
             )

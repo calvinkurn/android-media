@@ -14,6 +14,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -57,6 +58,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgres
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCatalogCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryMenuData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeClaimCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
@@ -418,12 +420,12 @@ class TokoNowHomeViewModel @Inject constructor(
             if (userSession.isLoggedIn) {
                 val response = redeemCouponUseCase.execute(
                     catalogId = catalogId,
-                    isGift = 0,
-                    giftUserId = 0,
+                    isGift = Int.ZERO,
+                    giftUserId = Int.ZERO,
                     giftEmail = String.EMPTY,
                     notes = String.EMPTY
                 )
-                val coupon = response.hachikoRedeem.coupons.firstOrNull()
+                val coupon = response.hachikoRedeem?.coupons?.firstOrNull()
                 _couponClaimed.postValue(
                     Success(
                         HomeClaimCouponDataModel(
@@ -431,6 +433,10 @@ class TokoNowHomeViewModel @Inject constructor(
                             code = coupon?.code.orEmpty()
                         )
                     )
+                )
+                homeLayoutItemList.mapHomeClaimCouponList(
+                    id = catalogId,
+                    ctaText = coupon?.code.orEmpty()
                 )
                 val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
