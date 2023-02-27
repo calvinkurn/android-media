@@ -36,7 +36,8 @@ data class VoucherConfiguration(
     val warehouseId: Long = 0,
     val isFinishFilledStepOne: Boolean = false,
     val isFinishFilledStepTwo: Boolean = false,
-    val isFinishFilledStepThree: Boolean = false
+    val isFinishFilledStepThree: Boolean = false,
+    val duplicatedVoucherId: Long = 0
 ) : Parcelable {
     fun isFinishedFillAllStep(): Boolean {
         return isFinishFilledStepOne && isFinishFilledStepTwo && isFinishFilledStepThree

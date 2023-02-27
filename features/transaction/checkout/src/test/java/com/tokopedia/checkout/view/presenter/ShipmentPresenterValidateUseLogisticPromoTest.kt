@@ -211,7 +211,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                     uniqueId = cartString,
                     code = promoCode + "m",
                     messageUiModel = MessageUiModel(state = "green", text = errorMessage)
-                ),
+                )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(

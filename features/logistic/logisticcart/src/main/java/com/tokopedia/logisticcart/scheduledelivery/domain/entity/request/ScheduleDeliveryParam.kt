@@ -44,7 +44,7 @@ data class ScheduleDeliveryParam(
     @SerializedName("order_value")
     val orderValue: Long = 0,
     @SerializedName("cart_data")
-    val cartData: String = "",
+    val cartData: String = ""
 ) {
 
     fun toMap() = mapOf(
