@@ -24,15 +24,16 @@
         android:id="@+id/helpfull_question_option"
         app:typographyType="body_2"
         tools:text="Ya, sudah membantu"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingRight="24dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toRightOf="@id/chat_rating"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/corner_image"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
@@ -40,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="12dp"
         android:contentDescription="@null"
+        android:id="@+id/corner_image"
         android:src="@drawable/ic_option_list_arrow"
         app:layout_constraintTop_toTopOf="@id/helpfull_question_option"
         app:layout_constraintRight_toRightOf="parent"
