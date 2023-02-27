@@ -1593,6 +1593,14 @@ class DigitalCartViewModelTest {
                     )
                 ),
                 isSubscription = false
+            ),
+            "Third" to DigitalCrossSellData(
+                product = FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = ""
+                    )
+                ),
+                isSubscription = true
             )
         )
     }
