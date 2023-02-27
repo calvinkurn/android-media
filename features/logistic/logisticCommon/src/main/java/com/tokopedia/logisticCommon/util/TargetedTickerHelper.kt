@@ -9,15 +9,15 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 
 object TargetedTickerHelper {
-    fun TickerModel.renderView(
+    fun Ticker.renderTargetedTickerView(
         context: Context,
-        ticker: Ticker,
+        model: TickerModel,
         onClickApplink: (String) -> Unit,
         onClickUrl: (String) -> Unit
     ) {
-        if (this.item.isNotEmpty()) {
+        if (model.item.isNotEmpty()) {
             val message = ArrayList<TickerData>()
-            for (tickerItem in item) {
+            for (tickerItem in model.item) {
                 message.add(
                     TickerData(
                         tickerItem.title,
@@ -39,10 +39,10 @@ object TargetedTickerHelper {
                     }
                 }
             })
-            ticker.addPagerView(tickerPageAdapter, message)
-            ticker.visibility = View.VISIBLE
+            this.addPagerView(tickerPageAdapter, message)
+            this.visibility = View.VISIBLE
         } else {
-            ticker.visibility = View.GONE
+            this.visibility = View.GONE
         }
     }
 }

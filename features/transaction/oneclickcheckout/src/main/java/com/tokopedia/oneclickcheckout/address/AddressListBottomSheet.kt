@@ -24,7 +24,7 @@ import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderView
+import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
@@ -145,13 +145,13 @@ class AddressListBottomSheet(
                 val response = getTargetedTicker(param)
                 val model = response.getTargetedTickerData.toUiModel()
                 binding?.tickerOccAddressList?.let { ticker ->
-                    model.renderView(
+                    ticker.renderTargetedTickerView(
                         context,
-                        ticker,
+                        model,
                         onClickApplink = { listener.onClickAddressTickerApplink(it) },
-                        onClickUrl = { listener.onClickAddressTickerUrl(it) })
+                        onClickUrl = { listener.onClickAddressTickerUrl(it) }
+                    )
                 }
-
             } catch (e: java.lang.Exception) {
                 binding?.tickerOccAddressList?.gone()
             }
@@ -252,7 +252,8 @@ class AddressListBottomSheet(
                     rvAddressList.scrollToPosition(0)
                     rvAddressList.visible()
                     adapter?.setData(
-                        addressList.data.listAddress, addressList.data.hasNext
+                        addressList.data.listAddress,
+                        addressList.data.hasNext
                             ?: false
                     )
                     endlessScrollListener?.resetState()
@@ -381,8 +382,10 @@ class AddressListBottomSheet(
                     }
                 }
                 addressListModel.listAddress = if (isLoadMore) {
-                    (this@AddressListBottomSheet.addressListModel?.listAddress
-                        ?: emptyList()) + addressList
+                    (
+                        this@AddressListBottomSheet.addressListModel?.listAddress
+                            ?: emptyList()
+                        ) + addressList
                 } else {
                     addressList
                 }

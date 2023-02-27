@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.TickerModel
+import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
@@ -33,9 +34,6 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -122,7 +120,7 @@ class ManageAddressFragment :
         viewModel.tickerState.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    showTicker(it.data.item)
+                    showTicker(it.data)
                 }
                 is Fail -> {
                     binding?.tickerManageAddress?.gone()
@@ -131,30 +129,26 @@ class ManageAddressFragment :
         }
     }
 
-    private fun showTicker(tickerItem: List<TickerModel.TickerItem>) {
-        if (tickerItem.isNotEmpty()) {
-            val message = ArrayList<TickerData>()
-            for (item in tickerItem) {
-                message.add(TickerData(item.title, item.content, item.type, true, item.linkUrl))
-            }
-            val tickerPageAdapter = TickerPagerAdapter(context, message)
-            tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    val appLink = linkUrl.toString()
-                    if (appLink.startsWith("tokopedia")) {
-                        startActivity(RouteManager.getIntent(context, appLink))
-                    } else {
-                        RouteManager.route(
+    private fun showTicker(tickerItem: TickerModel) {
+        context?.let {
+            binding?.tickerManageAddress?.renderTargetedTickerView(
+                it,
+                tickerItem,
+                onClickUrl = { url ->
+                    RouteManager.route(
+                        context,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                    )
+                },
+                onClickApplink = { applink ->
+                    startActivity(
+                        RouteManager.getIntent(
                             context,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, appLink)
+                            applink
                         )
-                    }
+                    )
                 }
-            })
-            binding?.tickerManageAddress?.addPagerView(tickerPageAdapter, message)
-            binding?.tickerManageAddress?.visible()
-        } else {
-            binding?.tickerManageAddress?.gone()
+            )
         }
     }
 
