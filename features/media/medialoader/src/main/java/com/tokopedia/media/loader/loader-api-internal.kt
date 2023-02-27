@@ -8,6 +8,7 @@ import com.tokopedia.media.loader.data.DEBUG_TIMBER_TAG
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.utils.LoaderRemoteConfig
 import com.tokopedia.media.loader.v1.LegacyMediaLoaderApi
 import timber.log.Timber
 
@@ -34,9 +35,11 @@ internal fun isImageLoaderV2(): Boolean {
 
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
+    val toggleNewApi = LoaderRemoteConfig.build(context)
+
     if (context.isValid()) {
         try {
-            if (isImageLoaderV2()) {
+            if (isImageLoaderV2() && toggleNewApi.isNewApiEnabled()) {
                 MediaLoaderApi.loadImage(
                     imageView = this,
                     properties = properties.setSource(source)
