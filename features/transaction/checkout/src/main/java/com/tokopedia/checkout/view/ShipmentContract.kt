@@ -81,17 +81,17 @@ interface ShipmentContract {
 
         fun renderDataChanged()
         fun renderCheckoutCartSuccess(checkoutData: CheckoutData?)
-        fun renderCheckoutCartError(message: String?)
+        fun renderCheckoutCartError(message: String)
         fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData?)
         fun renderPrompt(prompt: Prompt?)
         fun renderPromoCheckoutFromCourierSuccess(
-            validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
+            validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
             itemPosition: Int,
             noToast: Boolean
         )
 
         fun renderErrorCheckPromoShipmentData(message: String?)
-        fun renderEditAddressSuccess(latitude: String?, longitude: String?)
+        fun renderEditAddressSuccess(latitude: String, longitude: String)
         fun renderChangeAddressSuccess(refreshCheckoutPage: Boolean)
         fun renderChangeAddressFailed(refreshCheckoutPageIfSuccess: Boolean)
         fun renderCourierStateSuccess(
@@ -253,8 +253,8 @@ interface ShipmentContract {
     interface Presenter : CustomerPresenter<View?> {
         val logisticDonePublisher: PublishSubject<Boolean>?
         fun setScheduleDeliveryMapData(
-            cartString: String?,
-            shipmentScheduleDeliveryMapData: ShipmentScheduleDeliveryMapData?
+            cartString: String,
+            shipmentScheduleDeliveryMapData: ShipmentScheduleDeliveryMapData
         )
 
         fun processInitialLoadCheckoutPage(
@@ -287,9 +287,9 @@ interface ShipmentContract {
 
         fun doValidateUseLogisticPromo(
             cartPosition: Int,
-            cartString: String?,
-            validateUsePromoRequest: ValidateUsePromoRequest?,
-            promoCode: String?,
+            cartString: String,
+            validateUsePromoRequest: ValidateUsePromoRequest,
+            promoCode: String,
             showLoading: Boolean
         )
 
@@ -332,14 +332,14 @@ interface ShipmentContract {
             locationPass: LocationPass?
         )
 
-        fun cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>?)
+        fun cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>)
         fun cancelAutoApplyPromoStackLogistic(
             itemPosition: Int,
             promoCode: String,
-            shipmentCartItemModel: ShipmentCartItemModel?
+            shipmentCartItemModel: ShipmentCartItemModel
         )
 
-        fun cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel: ClashingInfoDetailUiModel?)
+        fun cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel: ClashingInfoDetailUiModel)
         fun changeShippingAddress(
             newRecipientAddressModel: RecipientAddressModel?,
             chosenAddressModel: ChosenAddressModel?,
@@ -355,7 +355,7 @@ interface ShipmentContract {
         fun setListShipmentCrossSellModel(listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?)
         var shipmentButtonPaymentModel: ShipmentButtonPaymentModel?
         fun setShippingCourierViewModelsState(
-            shippingCourierUiModelsState: List<ShippingCourierUiModel>?,
+            shippingCourierUiModelsState: List<ShippingCourierUiModel>,
             orderNumber: Int
         )
 
@@ -367,22 +367,22 @@ interface ShipmentContract {
         fun triggerSendEnhancedEcommerceCheckoutAnalytics(
             dataCheckoutRequests: List<DataCheckoutRequest>?,
             tradeInCustomDimension: Map<String, String>?,
-            step: String?,
-            eventCategory: String?,
-            eventAction: String?,
-            eventLabel: String?,
+            step: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
             leasingId: String?,
-            pageSource: String?
+            pageSource: String
         )
 
         fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-            cartString: String?,
-            shippingDuration: String?,
-            shippingPrice: String?,
-            courierName: String?
+            cartString: String,
+            shippingDuration: String,
+            shippingPrice: String,
+            courierName: String
         ): List<DataCheckoutRequest>?
 
-        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel?>?): List<DataCheckoutRequest>
+        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<DataCheckoutRequest>
         val isIneligiblePromoDialogEnabled: Boolean
         fun generateCheckoutRequest(
             analyticsDataCheckoutRequests: List<DataCheckoutRequest>?,
@@ -406,8 +406,8 @@ interface ShipmentContract {
         fun setCheckoutData(checkoutData: CheckoutData?)
         fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
         fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
-        val shipmentUpsellModel: ShipmentUpsellModel?
-        val shipmentNewUpsellModel: ShipmentNewUpsellModel?
+        val shipmentUpsellModel: ShipmentUpsellModel
+        val shipmentNewUpsellModel: ShipmentNewUpsellModel
         fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String?>, ArrayList<String?>>
         fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
         fun validateClearAllBoPromo()
@@ -419,7 +419,7 @@ interface ShipmentContract {
             shipmentCartItemModel: ShipmentCartItemModel?
         )
 
-        fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel?)
+        fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel)
         fun hitClearAllBo()
         fun cancelUpsell(
             isReloadData: Boolean,

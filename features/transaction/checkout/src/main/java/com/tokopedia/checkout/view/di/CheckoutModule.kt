@@ -60,7 +60,7 @@ class CheckoutModule constructor(private val shipmentFragment: ShipmentFragment)
 
     @Provides
     @CheckoutScope
-    fun provideContext(): Context = shipmentFragment.activityContext
+    fun provideContext(): Context = shipmentFragment.activityContext!!
 
     @Provides
     @CheckoutScope

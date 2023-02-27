@@ -46,7 +46,7 @@ class ShipmentCartItemModel(
     var addOnDefaultTo: String? = null,
 
     // Cart item state
-    var cartString: String? = null,
+    var cartString: String = "",
     var shippingId: Int = 0,
     var spId: Int = 0,
     var boCode: String = "",

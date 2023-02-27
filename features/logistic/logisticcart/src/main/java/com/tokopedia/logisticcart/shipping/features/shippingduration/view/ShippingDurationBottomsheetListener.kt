@@ -29,7 +29,7 @@ interface ShippingDurationBottomsheetListener {
         cartPosition: Int,
         serviceData: ServiceData?,
         flagNeedToSetPinpoint: Boolean,
-        promoCode: String?,
+        promoCode: String,
         selectedServiceId: Int,
         logisticPromo: LogisticPromoUiModel
     )

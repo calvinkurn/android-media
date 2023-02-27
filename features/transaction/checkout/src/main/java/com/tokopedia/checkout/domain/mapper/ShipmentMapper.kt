@@ -92,7 +92,6 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.Pu
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
-import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 
@@ -396,7 +395,7 @@ class ShipmentMapper @Inject constructor() {
             courier = ""
             shippingPrice = ""
             codFlag = cod.isCod.toString()
-            tokopediaCornerFlag = if (isNotNullOrEmptyOrZero(userAddress.cornerId)) {
+            tokopediaCornerFlag = if (userAddress.cornerId.isNotBlankOrZero()) {
                 true.toString()
             } else {
                 false.toString()

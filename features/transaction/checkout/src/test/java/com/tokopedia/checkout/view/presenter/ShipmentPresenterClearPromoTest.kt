@@ -833,7 +833,7 @@ class ShipmentPresenterClearPromoTest {
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
             cartItemModels = listOf(CartItemModel())
         )
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString!!, shipmentScheduleDeliveryMapData)
 
         // When
         presenter.cancelAutoApplyPromoStackLogistic(
@@ -870,7 +870,7 @@ class ShipmentPresenterClearPromoTest {
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
             cartItemModels = listOf(CartItemModel())
         )
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString!!, shipmentScheduleDeliveryMapData)
 
         // When
         presenter.cancelAutoApplyPromoStackLogistic(
