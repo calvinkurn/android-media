@@ -21,6 +21,7 @@ import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.profilecompletion.data.SkipOtpPinParam
 import com.tokopedia.profilecompletion.domain.CheckPinUseCase
 import com.tokopedia.profilecompletion.domain.CreatePinUseCase
 import com.tokopedia.profilecompletion.domain.SkipOtpPinUseCase
@@ -85,10 +86,8 @@ class AddChangePinViewModel @Inject constructor(
     val loadingState = MutableLiveData<Boolean>()
 
     fun addPin(token: String) {
-        val params = mapOf(ProfileCompletionQueryConstant.PARAM_TOKEN to token)
-
         launchCatchError(block = {
-            val response = createPinUseCase(params)
+            val response = createPinUseCase(token)
 
             when {
                 response.data.success -> mutableAddPinResponse.value = Success(response.data)
@@ -124,10 +123,8 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun checkPin(pin: String) {
-        val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
-
         launchCatchError(block = {
-            val response = checkPinUseCase(params)
+            val response = checkPinUseCase(pin)
 
             when {
                 response.data.valid -> mutableCheckPinResponse.value = Success(response.data)
@@ -186,10 +183,8 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun validatePin(pin: String) {
-        val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
-
         launchCatchError(block = {
-            val response = validatePinUseCase(params)
+            val response = validatePinUseCase(pin)
 
             when {
                 response.data.valid -> mutableValidatePinResponse.value = Success(response.data)
@@ -203,9 +198,9 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun checkSkipOtpPin(validateToken: String) {
-        val params = mapOf(
-            ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION,
-            ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN_SKIP_OTP to validateToken
+        val params = SkipOtpPinParam(
+            otpType = OTP_TYPE_SKIP_VALIDATION,
+            validateToken = validateToken
         )
 
         launchCatchError(block = {

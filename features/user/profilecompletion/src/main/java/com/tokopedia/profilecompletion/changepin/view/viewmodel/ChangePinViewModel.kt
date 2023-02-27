@@ -22,7 +22,10 @@ import com.tokopedia.profilecompletion.common.PinPreference
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
+import com.tokopedia.profilecompletion.data.ChangePinParam
+import com.tokopedia.profilecompletion.data.CheckPin2FAParam
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.profilecompletion.data.ResetPin2FAParam
 import com.tokopedia.profilecompletion.domain.ChangePinUseCase
 import com.tokopedia.profilecompletion.domain.CheckPin2FaUseCase
 import com.tokopedia.profilecompletion.domain.CheckPinUseCase
@@ -115,10 +118,8 @@ class ChangePinViewModel @Inject constructor(
     }
 
     fun validatePin(pin: String) {
-        val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
-
         launchCatchError(block = {
-            val response = validatePinUseCase(params)
+            val response = validatePinUseCase(pin)
 
             when {
                 response.data.valid -> mutableValidatePinResponse.value = Success(response.data)
@@ -156,11 +157,11 @@ class ChangePinViewModel @Inject constructor(
     }
 
     fun checkPin2FA(pin: String, validateToken: String, userId: String) {
-        val params = mapOf(
-            ProfileCompletionQueryConstant.PARAM_PIN to pin,
-            ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to validateToken,
-            ProfileCompletionQueryConstant.PARAM_ACTION to "reset",
-            ProfileCompletionQueryConstant.PARAM_USER_ID to userId.toIntOrZero()
+        val params = CheckPin2FAParam(
+            pin = pin,
+            validateToken = validateToken,
+            action = "reset",
+            userId = userId.toIntOrZero()
         )
 
         launchCatchError(block = {
@@ -178,10 +179,8 @@ class ChangePinViewModel @Inject constructor(
     }
 
     fun checkPin(pin: String) {
-        val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
-
         launchCatchError(block = {
-            val response = checkPinUseCase(params)
+            val response = checkPinUseCase(pin)
 
             when {
                 response.data.valid -> mutableCheckPinResponse.value = Success(response.data)
@@ -220,10 +219,10 @@ class ChangePinViewModel @Inject constructor(
     }
 
     fun resetPin2FA(userId: String, validateToken: String) {
-        val params = mapOf(
-            ProfileCompletionQueryConstant.PARAM_USER_ID to userId.toIntOrZero(),
-            ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to validateToken,
-            ProfileCompletionQueryConstant.PARAM_GRANT_TYPE to "extension"
+        val params = ResetPin2FAParam(
+            userId = userId.toIntOrZero(),
+            validateToken = validateToken,
+            grantType = "extension"
         )
         userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
 
@@ -254,12 +253,8 @@ class ChangePinViewModel @Inject constructor(
     }
 
     fun resetPin(validateToken: String) {
-        val params = mapOf(
-            ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
-        )
-
         launchCatchError(block = {
-            val response = resetPinUseCase(params)
+            val response = resetPinUseCase(validateToken)
 
             when {
                 response.data.success -> mutableResetPinResponse.value = Success(response.data)
@@ -297,10 +292,10 @@ class ChangePinViewModel @Inject constructor(
     }
 
     fun changePin(pin: String, pinConfirm: String, pinOld: String) {
-        val params = mapOf(
-            ProfileCompletionQueryConstant.PARAM_PIN to pin,
-            ProfileCompletionQueryConstant.PARAM_PIN_CONFIRM to pinConfirm,
-            ProfileCompletionQueryConstant.PARAM_PIN_OLD to pinOld
+        val params = ChangePinParam(
+            pin = pin,
+            pinConfirm = pinConfirm,
+            pinOld = pinOld
         )
 
         launchCatchError(block = {

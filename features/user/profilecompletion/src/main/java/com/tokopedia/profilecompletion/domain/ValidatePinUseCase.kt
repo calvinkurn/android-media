@@ -6,12 +6,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.addpin.data.ValidatePinPojo
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import javax.inject.Inject
 
 class ValidatePinUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, String>, ValidatePinPojo>(dispatchers.io) {
+) : CoroutineUseCase<String, ValidatePinPojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           query validatePin(${'$'}pin: String!) {
@@ -24,7 +25,8 @@ class ValidatePinUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, String>): ValidatePinPojo {
-        return repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: String): ValidatePinPojo {
+        val parameter = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to params)
+        return repository.request(graphqlQuery(), parameter)
     }
 }

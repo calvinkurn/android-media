@@ -6,12 +6,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinPojo
+import com.tokopedia.profilecompletion.data.SkipOtpPinParam
 import javax.inject.Inject
 
 class SkipOtpPinUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Any>, SkipOtpPinPojo>(dispatchers.io) {
+) : CoroutineUseCase<SkipOtpPinParam, SkipOtpPinPojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           query otp_skip_validation(${'$'}otpType: Int!, ${'$'}validateToken: String){
@@ -24,7 +25,7 @@ class SkipOtpPinUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, Any>): SkipOtpPinPojo {
+    override suspend fun execute(params: SkipOtpPinParam): SkipOtpPinPojo {
         return repository.request(graphqlQuery(), params)
     }
 

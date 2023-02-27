@@ -34,10 +34,8 @@ class ChangeNameViewModel @Inject constructor(
         get() = mutableUserProfileRole
 
     fun changePublicName(publicName: String) {
-        val params = mapOf(PARAM_NAME to publicName)
-
         launchCatchError(block = {
-            val response = changeNameUseCase(params)
+            val response = changeNameUseCase(publicName)
 
             val errorMessage = response.data.errors
             val isSuccess = response.data.isSuccess

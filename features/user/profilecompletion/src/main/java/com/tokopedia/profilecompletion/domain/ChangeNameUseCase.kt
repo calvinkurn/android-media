@@ -6,12 +6,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import javax.inject.Inject
 
 class ChangeNameUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, String>, ChangeNamePojo>(dispatchers.io) {
+) : CoroutineUseCase<String, ChangeNamePojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           mutation change_name(${'$'}name: String!) {
@@ -23,7 +24,8 @@ class ChangeNameUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, String>): ChangeNamePojo {
-        return repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: String): ChangeNamePojo {
+        val parameter = mapOf(ProfileCompletionQueryConstant.PARAM_NAME to params)
+        return repository.request(graphqlQuery(), parameter)
     }
 }
