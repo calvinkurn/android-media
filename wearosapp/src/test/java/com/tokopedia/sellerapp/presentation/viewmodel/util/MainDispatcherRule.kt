@@ -1,6 +1,6 @@
 package com.tokopedia.sellerapp.presentation.viewmodel.util
 
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.sellerapp.presentation.viewmodel.CoroutineTestDispatchersProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
