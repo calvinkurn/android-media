@@ -261,7 +261,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val isTitleMenuChecked: Boolean
         get() {
-            val title = _title.value
+            val title = getCurrentSetupDataStore().getTitle()
             return title is PlayTitleUiModel.HasTitle && title.title.isNotEmpty()
         }
 

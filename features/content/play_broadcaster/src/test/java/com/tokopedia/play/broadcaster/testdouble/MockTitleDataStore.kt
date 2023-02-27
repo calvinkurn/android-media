@@ -21,7 +21,7 @@ open class MockTitleDataStore(
     private val testModelBuilder = TestDoubleModelBuilder()
     private val titleDataStore = testModelBuilder.buildRealTitleDataStore(dispatchers)
 
-    override fun getObservableTitle(): MutableStateFlow<PlayTitleUiModel> {
+    override fun getObservableTitle(): Flow<PlayTitleUiModel> {
         return titleDataStore.getObservableTitle()
     }
 

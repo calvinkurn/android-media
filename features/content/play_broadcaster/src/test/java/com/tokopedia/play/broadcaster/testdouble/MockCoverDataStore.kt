@@ -9,7 +9,6 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import io.mockk.mockk
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Created by jegul on 25/09/20
@@ -26,7 +25,7 @@ class MockCoverDataStore(
         return realImpl.getObservableSelectedCover()
     }
 
-    override fun getSelectedCoverAsFlow(): MutableStateFlow<PlayCoverUiModel> {
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
         return realImpl.getSelectedCoverAsFlow()
     }
 

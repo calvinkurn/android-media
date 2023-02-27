@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -29,7 +27,7 @@ class CoverDataStoreImpl @Inject constructor(
         return _selectedCoverLiveData.asLiveData()
     }
 
-    override fun getSelectedCoverAsFlow(): MutableStateFlow<PlayCoverUiModel> {
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
         return _selectedCoverLiveData
     }
 
