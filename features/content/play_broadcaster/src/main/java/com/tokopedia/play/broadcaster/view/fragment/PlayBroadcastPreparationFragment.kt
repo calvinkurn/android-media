@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -747,11 +748,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         when (val croppedCover = state.croppedCover) {
             is CoverSetupState.Cropped.Uploaded -> {
-                if (croppedCover.coverImage.toString().isNotEmpty() &&
-                    croppedCover.coverImage.toString().contains("http")
-                ) {
+                if (URLUtil.isValidUrl(croppedCover.coverImage.toString())) {
                     binding.formCover.setCover(croppedCover.coverImage.toString())
-                } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
+                } else if (URLUtil.isValidUrl(croppedCover.localImage?.toString())) {
                     binding.formCover.setCover(croppedCover.localImage.toString())
                 } else {
                     binding.formCover.setInitialCover()
