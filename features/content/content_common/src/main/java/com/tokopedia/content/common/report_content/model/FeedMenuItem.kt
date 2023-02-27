@@ -9,5 +9,6 @@ data class FeedMenuItem(
 )
 enum class FeedMenuIdentifier(val value: String) {
     LAPORKAN("Report"),
-    MODE_NONTON("Clear Mode")
+    MODE_NONTON("Clear Mode"),
+    DELETE("Hapus")
 }
