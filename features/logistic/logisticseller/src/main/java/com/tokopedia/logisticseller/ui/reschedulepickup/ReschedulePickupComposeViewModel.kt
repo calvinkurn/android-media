@@ -62,7 +62,7 @@ class ReschedulePickupComposeViewModel @Inject constructor(
                     }
                 } else {
                     _errorState.value = ReschedulePickupErrorState(
-                        message = "Data Reschedule Pickup tidak ditemukan",
+                        message = DEFAULT_ERROR_MESSAGE,
                         action = RescheduleErrorAction.SHOW_EMPTY_STATE
                     )
                 }
@@ -141,9 +141,9 @@ class ReschedulePickupComposeViewModel @Inject constructor(
         val state = _uiState.value
         val error =
             if (reason.length < OTHER_REASON_MIN_CHAR) {
-                "Min. 15 karakter"
+                BELOW_MIN_CHAR_ERROR_MESSAGE
             } else if (reason.length >= OTHER_REASON_MAX_CHAR) {
-                "Sudah mencapai maks. char"
+                ABOVE_MAX_CHAR_ERROR_MESSAGE
             } else {
                 null
             }
@@ -198,6 +198,9 @@ class ReschedulePickupComposeViewModel @Inject constructor(
     }
 
     companion object {
+        private const val DEFAULT_ERROR_MESSAGE = "Data Reschedule Pickup tidak ditemukan"
+        private const val BELOW_MIN_CHAR_ERROR_MESSAGE = "Min. 15 karakter"
+        private const val ABOVE_MAX_CHAR_ERROR_MESSAGE = "Sudah mencapai maks. char"
         private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
         private const val OTHER_REASON_MIN_CHAR = 15
         private const val OTHER_REASON_MAX_CHAR = 160
