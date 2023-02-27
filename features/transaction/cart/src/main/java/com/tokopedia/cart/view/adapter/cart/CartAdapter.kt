@@ -147,7 +147,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             for (cartItemHolderData in data.productUiModelList) {
                                 if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
                                     cartItemHolderData.shopBoMetadata = data.boMetadata
-                                    cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                                    cartItemHolderData.shopCartShopGroupTickerData = data.cartShopGroupTicker
                                     cartItemDataList.add(cartItemHolderData)
                                 }
                             }
@@ -186,7 +186,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         val cartItemHolderDataList = data.productUiModelList
                         for (cartItemHolderData in cartItemHolderDataList) {
                             cartItemHolderData.shopBoMetadata = data.boMetadata
-                            cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                            cartItemHolderData.shopCartShopGroupTickerData = data.cartShopGroupTicker
                             cartItemDataList.add(cartItemHolderData)
                         }
                     }
@@ -211,7 +211,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             val cartItemHolderDataList = data.productUiModelList
                             for (cartItemHolderData in cartItemHolderDataList) {
                                 cartItemHolderData.shopBoMetadata = data.boMetadata
-                                cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                                cartItemHolderData.shopCartShopGroupTickerData = data.cartShopGroupTicker
                                 cartItemDataList.add(cartItemHolderData)
                             }
                         }
@@ -1076,7 +1076,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             data.isAllSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
                             data.isPartialSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
                             if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {
-                                actionListener.checkBoAffordability(data)
+                                actionListener.checkCartShopGroupTicker(data)
                             }
                             toBeUpdatedIndices.add(index)
                         }
@@ -1368,7 +1368,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (changeShopLevelCheckboxState) {
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
-                        actionListener.checkBoAffordability(data)
+                        actionListener.checkCartShopGroupTicker(data)
                     }
                 }
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {

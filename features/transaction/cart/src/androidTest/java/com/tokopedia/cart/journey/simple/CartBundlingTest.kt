@@ -16,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
-class CartBoAffordabilityTest {
+class CartBundlingTest {
 
     @get:Rule
     var activityRule =
@@ -34,17 +34,14 @@ class CartBoAffordabilityTest {
         setupGraphqlMockResponse {
             addMockResponse(
                 GET_CART_LIST_KEY,
-                InstrumentationMockHelper.getRawString(
-                    context,
-                    R.raw.cart_bo_affordability_response
-                ),
+                InstrumentationMockHelper.getRawString(context, R.raw.cart_bundling_response),
                 MockModelConfig.FIND_BY_CONTAINS
             )
             addMockResponse(
                 CART_SHOP_GROUP_TICKER_AGGREGATOR_KEY,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.cart_shop_group_ticker_aggregator_bo_afford_success_response
+                    R.raw.cart_shop_group_ticker_aggregator_cart_bundling_success_response
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -52,7 +49,7 @@ class CartBoAffordabilityTest {
     }
 
     @Test
-    fun tickerVisibilityTest() {
+    fun bundlingTickerVisibilityTest() {
         activityRule.launchActivity(null)
 
         cartPage {
@@ -60,17 +57,15 @@ class CartBoAffordabilityTest {
 
             assertMainContent()
 
+            assertCartShopViewHolderOnPosition(2) {
+                // given checked shop, normal product with no bundleIds, & enable cart bundling
+                // then should not show ticker
+                assertNotShowCartShopGroupTicker()
+            }
             assertCartShopViewHolderOnPosition(3) {
-                // given checked shop & enable bo affordability, then should show ticker
+                // given checked shop, normal product with bundleIds, & enable cart bundling
+                // then should show ticker
                 assertShowCartShopGroupTicker()
-            }
-            assertCartShopViewHolderOnPosition(4) {
-                // given unchecked shop & enable bo affordability, then should not show ticker
-                assertNotShowCartShopGroupTicker()
-            }
-            assertCartShopViewHolderOnPosition(5) {
-                // given checked shop & disable bo affordability, then should not show ticker
-                assertNotShowCartShopGroupTicker()
             }
 
             // Prevent glide crash
