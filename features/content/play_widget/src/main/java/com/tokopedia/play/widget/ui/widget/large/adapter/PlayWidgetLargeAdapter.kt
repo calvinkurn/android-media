@@ -11,7 +11,7 @@ class PlayWidgetLargeAdapter(
     cardChannelListener: PlayWidgetLargeViewHolder.Channel.Listener,
     cardBannerListener: PlayWidgetLargeViewHolder.Banner.Listener,
     cardTranscodeListener: PlayWidgetLargeViewHolder.Transcode.Listener,
-) : BaseDiffUtilAdapter<Any>() {
+) : BaseDiffUtilAdapter<PlayWidgetItemUiModel>() {
 
     init {
         delegatesManager
@@ -21,8 +21,8 @@ class PlayWidgetLargeAdapter(
     }
 
     override fun areItemsTheSame(
-        oldItem: Any,
-        newItem: Any
+        oldItem: PlayWidgetItemUiModel,
+        newItem: PlayWidgetItemUiModel
     ): Boolean {
         return if (oldItem is PlayWidgetChannelUiModel && newItem is PlayWidgetChannelUiModel) {
             oldItem.channelId == newItem.channelId
@@ -30,8 +30,8 @@ class PlayWidgetLargeAdapter(
     }
 
     override fun areContentsTheSame(
-        oldItem: Any,
-        newItem: Any
+        oldItem: PlayWidgetItemUiModel,
+        newItem: PlayWidgetItemUiModel
     ): Boolean {
         return oldItem == newItem
     }

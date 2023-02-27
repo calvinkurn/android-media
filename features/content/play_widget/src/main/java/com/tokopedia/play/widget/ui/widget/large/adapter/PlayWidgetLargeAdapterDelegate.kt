@@ -18,7 +18,7 @@ class PlayWidgetLargeAdapterDelegate {
 
     internal class Banner(
         private val cardBannerListener: PlayWidgetLargeViewHolder.Banner.Listener,
-    ) : TypedAdapterDelegate<PlayWidgetBannerUiModel, Any, PlayWidgetLargeViewHolder.Banner>(
+    ) : TypedAdapterDelegate<PlayWidgetBannerUiModel, PlayWidgetItemUiModel, PlayWidgetLargeViewHolder.Banner>(
         commonR.layout.view_play_empty
     ) {
 
@@ -39,7 +39,7 @@ class PlayWidgetLargeAdapterDelegate {
 
     internal class Channel(
         private val cardChannelListener: PlayWidgetLargeViewHolder.Channel.Listener,
-    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, Any, PlayWidgetLargeViewHolder.Channel>(
+    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetLargeViewHolder.Channel>(
         commonR.layout.view_play_empty
     ) {
 
@@ -66,7 +66,7 @@ class PlayWidgetLargeAdapterDelegate {
         }
 
         override fun isForViewType(
-            itemList: List<Any>,
+            itemList: List<PlayWidgetItemUiModel>,
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
@@ -81,12 +81,12 @@ class PlayWidgetLargeAdapterDelegate {
 
     internal class Transcode(
         private val cardTranscodeListener: PlayWidgetLargeViewHolder.Transcode.Listener
-    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, Any, PlayWidgetLargeViewHolder.Transcode>(commonR.layout.view_play_empty) {
+    ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayWidgetLargeViewHolder.Transcode>(commonR.layout.view_play_empty) {
 
         private val allowedTypes = listOf(PlayWidgetChannelType.Transcoding, PlayWidgetChannelType.FailedTranscoding)
 
         override fun isForViewType(
-            itemList: List<Any>,
+            itemList: List<PlayWidgetItemUiModel>,
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
