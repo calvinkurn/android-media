@@ -137,11 +137,11 @@ object BundleInfoToSingleProductBundleMapper {
     }
 
     private fun BundleInfo.isStockAvailable() = bundleItems.any {
-        it.stock > 0 || it.children.isStockAvailable()
+        it.stock >= it.minOrder || it.children.isStockAvailable()
     }
 
     private fun List<Child>.isStockAvailable() = any {
-        it.stock > 0
+        it.stock >= it.minOrder
     }
 
     private fun BundleInfo.isMinOrderValid() = bundleItems.any {
