@@ -15,7 +15,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Test
 
-class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
+class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while adding product to cart, the request should be success`() {
@@ -87,7 +87,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         mockMiniCartSimplifiedData(productId)
 
         val response = UpdateCartV2Data(
-            error = listOf(message),
+            error = listOf(message)
         )
 
         onUpdateItemCart_thenReturn(response)
@@ -144,7 +144,14 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
 
         viewModel.addProductToCart(position, quantity, shopId)
 
-        viewModel.miniCartRemove.verifySuccessEquals(Success(Pair(productId, response.data.message.joinToString(separator = ", "))))
+        viewModel.miniCartRemove.verifySuccessEquals(
+            Success(
+                Pair(
+                    productId,
+                    response.data.message.joinToString(separator = ", ")
+                )
+            )
+        )
     }
 
     @Test
@@ -238,5 +245,4 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.miniCartUpdate.verifyValueEquals(null)
         viewModel.miniCartRemove.verifyValueEquals(null)
     }
-
 }
