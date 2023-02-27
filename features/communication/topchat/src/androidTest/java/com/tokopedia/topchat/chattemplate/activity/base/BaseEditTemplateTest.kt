@@ -15,7 +15,6 @@ import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.stub.chattemplate.di.FakeTemplateActivityComponentFactory
-import com.tokopedia.topchat.stub.chattemplate.usecase.api.ChatTemplateApiStub
 import com.tokopedia.topchat.stub.chattemplate.view.activity.EditTemplateChatActivityStub
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +32,6 @@ abstract class BaseEditTemplateTest {
             .getInstrumentation().context.applicationContext
     protected open lateinit var activity: EditTemplateChatActivityStub
 
-    protected lateinit var chatTemplateApi: ChatTemplateApiStub
     private val fakeTemplateActivityComponentFactory = FakeTemplateActivityComponentFactory()
 
     protected val testTemplateList = arrayListOf(
@@ -47,15 +45,10 @@ abstract class BaseEditTemplateTest {
     @Before
     open fun before() {
         setupDaggerComponent()
-        setupResponse()
     }
 
     private fun setupDaggerComponent() {
         ActivityComponentFactory.instance = fakeTemplateActivityComponentFactory
-    }
-
-    private fun setupResponse() {
-        chatTemplateApi = fakeTemplateActivityComponentFactory.chatTemplateApiStub
     }
 
     protected fun launchActivity(

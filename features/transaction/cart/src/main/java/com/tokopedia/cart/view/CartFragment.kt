@@ -58,6 +58,8 @@ import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheet
+import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cart.view.compoundview.CartToolbar
@@ -102,6 +104,7 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -175,7 +178,8 @@ class CartFragment :
     RefreshHandler.OnRefreshHandlerListener,
     CartToolbarListener,
     TickerAnnouncementActionListener,
-    SellerCashbackListener {
+    SellerCashbackListener,
+    CartBundlingBottomSheetListener {
 
     private var binding by autoClearedNullable<FragmentCartBinding>()
 
@@ -273,6 +277,7 @@ class CartFragment :
         const val NAVIGATION_TOKONOW_HOME_PAGE = 678
         const val NAVIGATION_EDIT_BUNDLE = 789
         const val NAVIGATION_VERIFICATION = 890
+        const val NAVIGATION_APPLINK = 809
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
@@ -484,6 +489,7 @@ class CartFragment :
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_APPLINK -> refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -711,6 +717,13 @@ class CartFragment :
     private fun routeToApplink(appLink: String) {
         activity?.let {
             RouteManager.route(it, appLink)
+        }
+    }
+
+    private fun routeToApplinkWithResult(appLink: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, appLink)
+            startActivityForResult(intent, NAVIGATION_APPLINK)
         }
     }
 
@@ -1079,9 +1092,11 @@ class CartFragment :
                         }
 
                         override fun onCompleted() {
+                            // no-op
                         }
 
                         override fun onError(e: Throwable?) {
+                            // no-op
                         }
                     })
             )
@@ -1489,6 +1504,58 @@ class CartFragment :
 
     override fun onViewFreeShippingPlusBadge() {
         cartPageAnalytics.eventViewGotoplusTicker()
+    }
+
+    override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData) {
+        val bottomSheet = CartBundlingBottomSheet.newInstance(data)
+        bottomSheet.setListener(this)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onNewBundleProductAddedToCart() {
+        refreshCartWithSwipeToRefresh()
+    }
+
+    override fun onMultipleBundleActionButtonClicked(
+        selectedBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventClickCartBundlingBottomSheetBundleWidgetAction(
+            userSession.userId,
+            selectedBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE,
+            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedBundle)
+        )
+    }
+
+    override fun onSingleBundleActionButtonClicked(
+        selectedBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventClickCartBundlingBottomSheetBundleWidgetAction(
+            userSession.userId,
+            selectedBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE,
+            dPresenter.generateCartBundlingPromotionsAnalyticsData(selectedBundle)
+        )
+    }
+
+    override fun impressionMultipleBundle(
+        selectedMultipleBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
+            userSession.userId,
+            selectedMultipleBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_MULTIPLE
+        )
+    }
+
+    override fun impressionSingleBundle(
+        selectedBundle: BundleDetailUiModel
+    ) {
+        cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
+            userSession.userId,
+            selectedBundle.bundleId,
+            ConstantTransactionAnalytics.EventLabel.BUNDLE_TYPE_SINGLE
+        )
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
@@ -2102,7 +2169,7 @@ class CartFragment :
             isCollapsed = data.isCollapsed
             productSize += data.productUiModelList.size
             if (checked) {
-                checkBoAffordability(data)
+                checkCartShopGroupTicker(data)
             }
         }
         if (isCollapsed) {
@@ -2125,32 +2192,45 @@ class CartFragment :
         setGlobalDeleteVisibility()
     }
 
-    override fun onCartBoAffordabilityClicked(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.isTokoNow) {
-            routeToTokoNowHomePage()
-        } else {
-            routeToShopProductPage(cartShopHolderData.shopId)
+    override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
+        when (cartShopHolderData.cartShopGroupTicker.action) {
+            CartShopGroupTickerData.ACTION_REDIRECT_PAGE -> {
+                if (cartShopHolderData.cartShopGroupTicker.applink.isNotBlank()) {
+                    routeToApplinkWithResult(cartShopHolderData.cartShopGroupTicker.applink)
+                }
+            }
+            CartShopGroupTickerData.ACTION_OPEN_BOTTOM_SHEET_BUNDLING -> {
+                showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData)
+                cartPageAnalytics.eventClickCartShopGroupTickerForBundleCrossSell(
+                    cartShopHolderData.cartShopGroupTicker.tickerText
+                )
+            }
+            else -> {
+                // no-op
+            }
         }
-        cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-            cartShopHolderData.boAffordability.cartIds,
-            cartShopHolderData.shopId
-        )
+        if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability) {
+            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
+                cartShopHolderData.cartShopGroupTicker.cartIds,
+                cartShopHolderData.shopId
+            )
+        }
     }
 
-    override fun onCartBoAffordabilityRefreshClicked(
+    override fun onCartShopGroupTickerRefreshClicked(
         index: Int,
         cartShopHolderData: CartShopHolderData
     ) {
-        cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
+        cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
         cartShopHolderData.isNeedToRefreshWeight = true
         onNeedToUpdateViewItem(index)
-        dPresenter.checkBoAffordability(cartShopHolderData)
+        dPresenter.checkCartShopGroupTicker(cartShopHolderData)
     }
 
-    override fun onViewCartBoAffordabilityTicker(cartShopHolderData: CartShopHolderData) {
+    override fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
         cartPageAnalytics.eventViewBoTickerWording(
-            cartShopHolderData.boAffordability.state == CartShopBoAffordabilityState.SUCCESS_AFFORD,
-            cartShopHolderData.boAffordability.cartIds,
+            cartShopHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
+            cartShopHolderData.cartShopGroupTicker.cartIds,
             cartShopHolderData.shopId
         )
     }
@@ -2314,7 +2394,7 @@ class CartFragment :
     override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
         if (data != null) {
-            checkBoAffordability(data)
+            checkCartShopGroupTicker(data)
             onNeedToUpdateViewItem(index)
         }
     }
@@ -2323,14 +2403,14 @@ class CartFragment :
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
         if (data != null) {
             data.isNeedToRefreshWeight = true
-            checkBoAffordability(data)
+            checkCartShopGroupTicker(data)
             onNeedToUpdateViewItem(index)
         }
     }
 
     override fun onNeedToRefreshMultipleShop() {
         val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCountWithIterateFunction {
-            checkBoAffordability(it)
+            checkCartShopGroupTicker(it)
         }
         onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
@@ -4405,7 +4485,7 @@ class CartFragment :
         }
     }
 
-    override fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData) {
+    override fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
         if (data != null) {
             data.isNeedToRefreshWeight = true
@@ -4413,10 +4493,10 @@ class CartFragment :
         }
     }
 
-    override fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.boAffordability.enable && !cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
-            cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
-            dPresenter.checkBoAffordability(cartShopHolderData)
+    override fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.cartShopGroupTicker.enableCartAggregator && !cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
+            cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+            dPresenter.checkCartShopGroupTicker(cartShopHolderData)
         }
     }
 }

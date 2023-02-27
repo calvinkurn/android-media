@@ -152,7 +152,7 @@ class CartAdapter @Inject constructor(
                             for (cartItemHolderData in data.productUiModelList) {
                                 if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
                                     cartItemHolderData.shopBoMetadata = data.boMetadata
-                                    cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                                    cartItemHolderData.shopCartShopGroupTickerData = data.cartShopGroupTicker
                                     cartItemDataList.add(cartItemHolderData)
                                 }
                             }
@@ -191,7 +191,7 @@ class CartAdapter @Inject constructor(
                         val cartItemHolderDataList = data.productUiModelList
                         for (cartItemHolderData in cartItemHolderDataList) {
                             cartItemHolderData.shopBoMetadata = data.boMetadata
-                            cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                            cartItemHolderData.shopCartShopGroupTickerData = data.cartShopGroupTicker
                             cartItemDataList.add(cartItemHolderData)
                         }
                     }
@@ -216,7 +216,7 @@ class CartAdapter @Inject constructor(
                             val cartItemHolderDataList = data.productUiModelList
                             for (cartItemHolderData in cartItemHolderDataList) {
                                 cartItemHolderData.shopBoMetadata = data.boMetadata
-                                cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                                cartItemHolderData.shopCartShopGroupTickerData = data.cartShopGroupTicker
                                 cartItemDataList.add(cartItemHolderData)
                             }
                         }
@@ -1106,7 +1106,7 @@ class CartAdapter @Inject constructor(
                             data.isAllSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
                             data.isPartialSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
                             if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {
-                                actionListener.checkBoAffordability(data)
+                                actionListener.checkCartShopGroupTicker(data)
                             }
                             toBeUpdatedIndices.add(index)
                         }
@@ -1399,7 +1399,7 @@ class CartAdapter @Inject constructor(
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
                         indices.add(index)
-                        actionListener.checkBoAffordability(data)
+                        actionListener.checkCartShopGroupTicker(data)
                     }
                 }
                 is CartItemHolderData -> {
