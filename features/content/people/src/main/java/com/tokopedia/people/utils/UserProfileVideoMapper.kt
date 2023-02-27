@@ -97,7 +97,7 @@ private fun mapShare(item: PlayPostContentItem): PlayWidgetShareUiModel {
         item.share.text.replace(urlTemplate, item.share.redirectUrl)
     }
     else {
-        "${item.share.text}/n${item.share.redirectUrl}"
+        "${item.share.text}\n${item.share.redirectUrl}"
     }
 
     return PlayWidgetShareUiModel(

@@ -124,7 +124,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         val fullShareContent = try {
             shareResponse.text.replace("${'$'}{url}", shareResponse.redirectUrl)
         } catch (e: Throwable) {
-            "${shareResponse.text}/n${shareResponse.redirectUrl}"
+            "${shareResponse.text}\n${shareResponse.redirectUrl}"
         }
 
         return PlayShareInfoUiModel(
