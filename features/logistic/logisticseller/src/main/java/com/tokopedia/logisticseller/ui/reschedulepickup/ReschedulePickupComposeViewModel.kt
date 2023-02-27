@@ -154,7 +154,6 @@ class ReschedulePickupComposeViewModel @Inject constructor(
                 )
             },
             onError = {
-                val state = _uiState.value
                 _errorState.value = it.message.orEmpty()
             }
         )
