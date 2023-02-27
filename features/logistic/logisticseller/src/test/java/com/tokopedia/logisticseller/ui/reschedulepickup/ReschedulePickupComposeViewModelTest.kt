@@ -9,7 +9,10 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestData
 import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.REASON_MAX
 import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.REASON_MIN
 import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.REASON_MORE_MAX
+import com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupTestDataProvider.getRescheduleInfoWithErrorOrderData
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleErrorAction
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupErrorState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -70,7 +73,20 @@ class ReschedulePickupComposeViewModelTest {
             // when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
             // then
-            assert(reschedulePickupViewModel.errorState.value == "Data Reschedule Pickup tidak ditemukan")
+            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState("Data Reschedule Pickup tidak ditemukan", RescheduleErrorAction.SHOW_EMPTY_STATE))
+        }
+
+    @Test
+    fun `when get Reschedule Pickup order data is error then show toaster`() =
+        coroutineTestRule.runBlockingTest {
+            // given
+            val response = getRescheduleInfoWithErrorOrderData()
+            coEvery { getReschedulePickupUseCase(any()) } returns response
+
+            // when
+            reschedulePickupViewModel.getReschedulePickupDetail("12345")
+            // then
+            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState("error", RescheduleErrorAction.SHOW_TOASTER_FAILED_GET_RESCHEDULE))
         }
 
     @Test
@@ -81,7 +97,7 @@ class ReschedulePickupComposeViewModelTest {
             // when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
             // then
-            assert(reschedulePickupViewModel.errorState.value == defaultThrowable.message)
+            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState(defaultThrowable.message!!, RescheduleErrorAction.SHOW_EMPTY_STATE))
         }
 
     @Test
@@ -107,7 +123,7 @@ class ReschedulePickupComposeViewModelTest {
                 "12345"
             )
             // then
-            assert(reschedulePickupViewModel.errorState.value == defaultThrowable.message)
+            assert(reschedulePickupViewModel.errorState.value == ReschedulePickupErrorState(defaultThrowable.message!!, RescheduleErrorAction.SHOW_TOASTER_FAILED_SAVE_RESCHEDULE))
         }
 
     @Test

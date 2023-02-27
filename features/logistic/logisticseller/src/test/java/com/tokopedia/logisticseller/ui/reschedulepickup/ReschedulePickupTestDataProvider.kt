@@ -11,13 +11,33 @@ import java.io.IOException
 object ReschedulePickupTestDataProvider {
     const val REASON_BELOW_MIN = "reason below15"
     const val REASON_MIN = "reason more t15"
-    const val REASON_MAX = "reasonreasonreasonreasonreasonreasonreasonreasonreasonreasonreason reasonreasonreasonreasonreason reasonreasonreasonreasonreasonreason reasonreasonreasonreason"
-    const val REASON_MORE_MAX = "reasonreasonreasonreasonreasonreasonreasonreasonreasonreasonreason reasonreasonreasonreasonreason reasonreasonreasonreasonreasonreason reasonreasonreasonreasonre"
+    const val REASON_MAX =
+        "reasonreasonreasonreasonreasonreasonreasonreasonreasonreasonreason reasonreasonreasonreasonreason reasonreasonreasonreasonreasonreason reasonreasonreasonreason"
+    const val REASON_MORE_MAX =
+        "reasonreasonreasonreasonreasonreasonreasonreasonreasonreasonreason reasonreasonreasonreasonreason reasonreasonreasonreasonreasonreason reasonreasonreasonreasonre"
+
     fun getRescheduleInfo(): GetReschedulePickupResponse.Data =
         Gson().fromJson(
             getJsonFromAsset("mpLogisticGetReschedulePickup.json"),
             GetReschedulePickupResponse.Data::class.java
         )
+
+    fun getRescheduleInfoWithErrorOrderData(): GetReschedulePickupResponse.Data {
+        val default = GetReschedulePickupResponse.Data(
+            GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup(
+                data = listOf(
+                    GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem(
+                        orderData = listOf(
+                            GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData(
+                                errorMessage = "error"
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        return default
+    }
 
     fun getChosenDay(): RescheduleDayOptionModel {
         val response = getRescheduleInfo()
