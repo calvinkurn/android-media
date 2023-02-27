@@ -57,6 +57,7 @@ import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_R
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.MEDIA_BUTTON_TOGGLE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.R
@@ -82,15 +83,16 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.BigReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachmentBodyAttributes
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.MediaButtonAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
-import com.tokopedia.chatbot.domain.pojo.replyBox.BigReplyBoxAttribute
-import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
-import com.tokopedia.chatbot.domain.pojo.replyBox.ReplyBoxAttribute
-import com.tokopedia.chatbot.domain.pojo.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
@@ -437,18 +439,21 @@ class ChatbotPresenter @Inject constructor(
         val dynamicAttachmentContents =
             Gson().fromJson(pojo.attachment?.attributes, DynamicAttachment::class.java)
 
-        val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+        val dynamicAttachmentAttributes =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
-        if (Attachment34RenderType.mapTypeToDeviceType(replyBoxAttribute?.renderTarget)
+        if (Attachment34RenderType.mapTypeToDeviceType(dynamicAttachmentAttributes?.renderTarget)
             == Attachment34RenderType.RenderAttachment34
         ) {
-            when (replyBoxAttribute?.contentCode) {
+            when (dynamicAttachmentAttributes?.contentCode) {
                 TYPE_BIG_REPLY_BOX -> {
-                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToBigReplyBoxData(dynamicAttachmentAttributes.dynamicContent)
                 }
                 REPLY_BOX_TOGGLE_VALUE -> {
-                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToSmallReplyBoxData(dynamicAttachmentAttributes.dynamicContent)
+                }
+                MEDIA_BUTTON_TOGGLE -> {
+                    convertToMediaButtonToggleData(dynamicAttachmentAttributes.dynamicContent)
                 }
                 else -> {
                     // TODO need to show fallback message
@@ -480,6 +485,19 @@ class ChatbotPresenter @Inject constructor(
         handleSmallReplyBoxWS(smallReplyBoxContent)
     }
 
+    private fun convertToMediaButtonToggleData(dynamicContent: String?) {
+        if (dynamicContent == null)
+            return
+
+        val mediaButtonToggleContent = Gson().fromJson(
+            dynamicContent,
+            MediaButtonAttribute::class.java
+        )
+
+        handleMediaButtonWS(mediaButtonToggleContent)
+    }
+
+
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
         if (bigReplyBoxContent.isActive) {
             view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
@@ -494,19 +512,29 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    fun validateHistoryForAttachment34(replyBoxAttribute: ReplyBoxAttribute?): Boolean {
-        if (replyBoxAttribute == null) {
+    private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
+        if (mediaButtonToggleContent.isMediaButtonEnabled) {
+            view.handleAddAttachmentButtonViewState(true)
+            view.handleImageUploadButtonViewState(mediaButtonToggleContent.buttons?.isUploadImageEnabled ?: false)
+            view.handleVideoUploadButtonViewState(mediaButtonToggleContent.buttons?.isUploadVideoEnabled ?: false)
+        } else {
+            view.handleAddAttachmentButtonViewState(false)
+        }
+    }
+
+    fun validateHistoryForAttachment34(dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?): Boolean {
+        if (dynamicAttachmentBodyAttributes == null) {
             return false
         }
 
-        if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute.contentCode)) {
-            when (replyBoxAttribute.contentCode) {
+        if (CheckDynamicAttachmentValidity.checkValidity(dynamicAttachmentBodyAttributes.contentCode)) {
+            when (dynamicAttachmentBodyAttributes.contentCode) {
                 TYPE_BIG_REPLY_BOX -> {
-                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToBigReplyBoxData(dynamicAttachmentBodyAttributes.dynamicContent)
                     return true
                 }
                 REPLY_BOX_TOGGLE_VALUE -> {
-                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToSmallReplyBoxData(dynamicAttachmentBodyAttributes.dynamicContent)
                     return true
                 }
             }

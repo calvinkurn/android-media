@@ -91,7 +91,7 @@
             layout="@layout/chatbot_layout_rating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/spacing_lvl3"
+            android:elevation="8dp"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -142,7 +142,7 @@
         android:layout_above="@+id/footer"
         android:layout_below="@id/chatbot_ticker"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/unify_space_8">
+        android:layout_marginBottom="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -192,8 +192,8 @@
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/action"
             app:loader_type="circular"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center" />
 
     </LinearLayout>

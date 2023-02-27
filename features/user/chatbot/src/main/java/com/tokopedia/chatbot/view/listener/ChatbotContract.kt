@@ -81,6 +81,12 @@ interface ChatbotContract {
         fun setBigReplyBoxTitle(text: String, placeholder: String)
 
         fun hideReplyBox()
+
+        fun handleAddAttachmentButtonViewState(toShow: Boolean)
+
+        fun handleImageUploadButtonViewState(toShow: Boolean)
+
+        fun handleVideoUploadButtonViewState(toShow: Boolean)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
