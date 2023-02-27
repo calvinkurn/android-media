@@ -5,14 +5,14 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
 import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import javax.inject.Inject
 
 class CheckEmailUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, String>, CheckEmailPojo>(dispatchers.io) {
+) : CoroutineUseCase<String, CheckEmailPojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           mutation check_email(${'$'}email: String!) {
@@ -23,8 +23,9 @@ class CheckEmailUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, String>): CheckEmailPojo {
-        return repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: String): CheckEmailPojo {
+        val parameter = mapOf(ProfileCompletionQueryConstant.PARAM_EMAIL to params)
+        return repository.request(graphqlQuery(), parameter)
     }
 
 }

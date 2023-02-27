@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
+import com.tokopedia.profilecompletion.data.AddEmailParam
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_EMAIL
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN
@@ -28,10 +29,10 @@ class AddEmailViewModel @Inject constructor(
     val mutateAddEmailResponse = MutableLiveData<Result<AddEmailResult>>()
 
     fun mutateAddEmail(email: String, otpCode: String, validateToken: String) {
-        val params = mapOf(
-            PARAM_EMAIL to email,
-            PARAM_OTP_CODE to otpCode,
-            PARAM_VALIDATE_TOKEN to validateToken,
+        val params = AddEmailParam(
+            email = email,
+            otpCode = otpCode,
+            validateToken = validateToken,
         )
 
         launchCatchError(block = {
@@ -58,10 +59,8 @@ class AddEmailViewModel @Inject constructor(
     }
 
     fun checkEmail(email: String) {
-        val params = mapOf(PARAM_EMAIL to email)
-
         launchCatchError(block = {
-            val response = checkEmailUseCase(params)
+            val response = checkEmailUseCase(email)
 
             val errorMessage = response.data.errorMessage
             val isSuccess = response.data.isValid

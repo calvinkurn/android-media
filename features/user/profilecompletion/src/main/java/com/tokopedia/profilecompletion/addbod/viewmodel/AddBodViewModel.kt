@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.domain.AddBodUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,16 +19,14 @@ import javax.inject.Inject
 
 class AddBodViewModel @Inject constructor(
     private val addBodUseCase: AddBodUseCase,
-    private val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     val editBodUserProfileResponse = MutableLiveData<Result<AddBodData>>()
 
     fun editBodUserProfile(selectedDate: String) {
-        val params = mapOf(ProfileCompletionQueryConstant.PARAM_BOD to selectedDate)
-
         launchCatchError(block = {
-            val response = addBodUseCase(params).addBodData
+            val response = addBodUseCase(selectedDate).addBodData
 
             if (response.isSuccess) {
                 editBodUserProfileResponse.value = Success(response)

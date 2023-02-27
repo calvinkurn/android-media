@@ -6,12 +6,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
+import com.tokopedia.profilecompletion.data.AddEmailParam
 import javax.inject.Inject
 
 class AddEmailUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, String>, AddEmailPojo>(dispatchers.io) {
+) : CoroutineUseCase<AddEmailParam, AddEmailPojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           mutation add_email(${'$'}email: String!, ${'$'}otpCode: String!, ${'$'}validateToken: String) {
@@ -23,7 +24,7 @@ class AddEmailUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, String>): AddEmailPojo {
+    override suspend fun execute(params: AddEmailParam): AddEmailPojo {
         return repository.request(graphqlQuery(), params)
     }
 
