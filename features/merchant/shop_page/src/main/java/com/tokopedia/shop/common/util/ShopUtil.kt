@@ -2,8 +2,12 @@ package com.tokopedia.shop.common.util
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.text.TextUtils
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -143,5 +147,14 @@ object ShopUtil {
 
     fun String.isUrlJson(): Boolean {
         return endsWith(".json")
+    }
+
+    fun parseColorFromHexString(colorHex: String): Int {
+        return try {
+            Color.parseColor(colorHex)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            Int.ZERO
+        }
     }
 }
