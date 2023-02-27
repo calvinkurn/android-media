@@ -20,7 +20,7 @@ interface ShipmentAdapterActionListener {
     fun onCancelVoucherLogisticClicked(
         pslCode: String,
         position: Int,
-        shipmentCartItemModel: ShipmentCartItemModel?
+        shipmentCartItemModel: ShipmentCartItemModel
     )
 
     fun onDataEnableToCheckout()

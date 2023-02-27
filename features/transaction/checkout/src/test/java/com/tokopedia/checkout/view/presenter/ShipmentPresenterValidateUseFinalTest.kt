@@ -654,7 +654,7 @@ class ShipmentPresenterValidateUseFinalTest {
             cartItemModels = listOf(CartItemModel())
         )
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString!!, shipmentScheduleDeliveryMapData)
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
