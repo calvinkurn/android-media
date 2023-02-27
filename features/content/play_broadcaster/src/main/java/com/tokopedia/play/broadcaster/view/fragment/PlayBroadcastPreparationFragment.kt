@@ -54,6 +54,7 @@ import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroFaceFilterSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
@@ -447,7 +448,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         eventBus.emit(Event.ClickSetSchedule)
                     }
                     DynamicPreparationMenu.Menu.FaceFilter -> {
-                        /** TODO: handle this */
+                        PlayBroFaceFilterSetupBottomSheet.getFragment(
+                            childFragmentManager,
+                            requireContext().classLoader,
+                        ).show(childFragmentManager)
                     }
                 }
             }
