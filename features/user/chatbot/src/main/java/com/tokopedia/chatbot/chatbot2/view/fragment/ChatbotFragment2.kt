@@ -381,19 +381,41 @@ class ChatbotFragment2 :
     }
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
-        mCsatResponse = csatResponse
-        if (::mCsatResponse.isInitialized) {
-            getBindingView().listQuickReply.hide()
-            showCsatRatingView()
+        if (csatRemoteConfig) {
+            openCsatNewFlow(csatResponse)
+        } else {
+            openCsatOldFlow(csatResponse)
         }
     }
 
-    private fun showCsatRatingView() {
-        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+    private fun openCsatOldFlow(csatResponse: WebSocketCsatResponse) {
+        mCsatResponse = csatResponse
+        if (::mCsatResponse.isInitialized) {
+            getBindingView().listQuickReply.hide()
+            showCsatRatingViewOldFlow()
+        }
+    }
+
+    private fun openCsatNewFlow(csatResponse: WebSocketCsatResponse) {
+        mCsatResponse = csatResponse
+        if (::mCsatResponse.isInitialized) {
+            showCsatRatingViewNewFlow()
+        }
+    }
+
+    private fun showCsatRatingViewOldFlow() {
         getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
             mCsatResponse.attachment?.attributes?.title
-        hideKeyboard()
         getBindingView().chatbotViewHelpRate.layoutOfRate.show()
+        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+        hideKeyboard()
+    }
+
+    private fun showCsatRatingViewNewFlow() {
+        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+        hideKeyboard()
+        smallReplyBox?.hide()
+        onClickEmoji(RATING_FIVE)
     }
 
     private fun hideCsatRatingView() {
@@ -1326,6 +1348,7 @@ class ChatbotFragment2 :
         chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         viewModel.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
         getViewState()?.hideQuickReplyOnClick()
+        hideCsatRatingView()
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
@@ -1411,6 +1434,7 @@ class ChatbotFragment2 :
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
         viewModel.submitCsatRating(messageId, input)
+        getBindingView().listQuickReply.show()
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String {

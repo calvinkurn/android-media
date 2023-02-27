@@ -187,6 +187,7 @@ object ChatbotSendableWebSocketParam {
             addProperty("title", invoiceLinkPojo.attributes.title)
             addProperty("total_amount", invoiceLinkPojo.attributes.totalAmount)
             addProperty("used_by", usedBy)
+            addProperty("color", invoiceLinkPojo.attributes.color)
         }
 
         payload.addProperty("type", "Undefined")
