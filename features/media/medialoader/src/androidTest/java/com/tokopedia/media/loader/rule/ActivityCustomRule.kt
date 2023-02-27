@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader
+package com.tokopedia.media.loader.rule
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.rules.ExternalResource
@@ -12,11 +12,6 @@ open class ActivityCustomRule(
     override fun apply(base: Statement, description: Description): Statement =
         super.apply(inner.apply(base, description), description)
 
-    override fun before() {
-        // ... beforeActivityLaunched
-    }
-
-    override fun after() {
-        // ... afterActivityFinished
-    }
+    override fun before() = Unit
+    override fun after() = Unit
 }

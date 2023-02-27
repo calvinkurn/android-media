@@ -1,74 +1,32 @@
-package com.tokopedia.media.loader
+package com.tokopedia.media.loader.test
 
-import android.content.Context
 import android.view.View
-import android.widget.ImageView
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.media.loader.*
+import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.data.DEFAULT_ICON_SIZE
 import com.tokopedia.media.loader.data.Resize
-import com.tokopedia.media.loader.di.DaggerMediaLoaderComponent
-import com.tokopedia.media.loader.di.MediaLoaderModule
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
-class MediaLoaderTest {
+@UiTest
+class MediaLoaderTest : BaseTest() {
 
-    @get:Rule
-    val activityTestRule = object : ActivityCustomRule(
-        ActivityScenarioRule(
-            DebugMediaLoaderActivity::class.java
-        )
-    ) {
-        override fun before() {
-            super.before()
-            InstrumentationAuthHelper
-                .loginInstrumentationTestUser1()
-        }
-    }
-
-    private val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation()
-            .context
-            .applicationContext
-
-    private val interceptor = StubInterceptor()
-    private val countingIdlingResource = CountingIdlingResource("media-loader")
-
-    @Before
-    fun setUp() {
-        DaggerMediaLoaderComponent
-            .builder()
-            .mediaLoaderModule(
-                MediaLoaderModule(applicationContext)
-            )
-            .build()
-            .inject(interceptor)
-
-        Intents.init()
+    override fun setUp() {
+        super.setUp()
         countingIdlingResource.increment()
     }
 
-    @After
-    fun tearDown() {
+    override fun tearDown() {
         onImageView {
             it.clearImage()
         }
 
-        Intents.release()
+        super.tearDown()
     }
 
     @Test
@@ -329,16 +287,5 @@ class MediaLoaderTest {
 
     private fun View.takeEagerScreenshot(caseName: String) {
         CommonActions.takeScreenShotVisibleViewInScreen(this, "media_loader", caseName)
-    }
-
-    private fun onImageView(imgView: (ImageView) -> Unit) {
-        onView(withId(R.id.img_sample)).check { view, _ -> imgView(view as ImageView) }
-    }
-
-    companion object {
-        private const val secureImageUrl = "https://chat.tokopedia.com/tc/v1/download_secure/1844584535/2022-04-19/99f532b4-bfb0-11ec-9296-42010a2942a0"
-        private const val publicImageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/11/13/819f37fd-cff6-4212-ae58-5618ac2b5e07.jpg"
-        private const val iconUrl = "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/10/5/75f2fb8a-a4ca-4cd6-a166-7279daef1d5b.png"
-        private const val invalidUrl = "https://images.tokopedia.com/img/invalid_url.png"
     }
 }
