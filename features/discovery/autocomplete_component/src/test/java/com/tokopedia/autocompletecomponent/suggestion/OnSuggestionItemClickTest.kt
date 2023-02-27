@@ -339,7 +339,11 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
                 childItem,
             )
             suggestionView.dropKeyBoard()
-            suggestionView.route(childItem.applink, suggestionPresenter.getSearchParameter())
+            suggestionView.route(
+                childItem.applink,
+                suggestionPresenter.getSearchParameter(),
+                suggestionPresenter.getActiveKeyword(),
+            )
             suggestionView.finish()
         }
     }

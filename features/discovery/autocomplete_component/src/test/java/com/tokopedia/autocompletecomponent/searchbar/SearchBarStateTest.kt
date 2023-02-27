@@ -22,10 +22,9 @@ internal class SearchBarStateTest : SearchBarViewModelTestFixtures() {
         viewModel.enableMps()
 
         `Then verify coach mark local cache is called`()
-        `Then verify mps state`(SearchBarState(isMpsEnabled = true))
-    }
-
-    private fun `Then verify mps state`(mpsState: SearchBarState) {
-        viewModel.searchBarStateLiveData.value shouldBe mpsState
+        `Then verify mps state`(SearchBarState(
+            isMpsEnabled = true,
+            isAddButtonEnabled = true,
+        ))
     }
 }

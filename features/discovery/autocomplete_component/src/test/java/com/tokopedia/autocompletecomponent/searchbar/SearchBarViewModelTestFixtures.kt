@@ -98,4 +98,8 @@ internal open class SearchBarViewModelTestFixtures {
             coachMarkLocalCache.shouldShowPlusIconCoachMark()
         }
     }
+
+    protected fun `Then verify mps state`(mpsState: SearchBarState) {
+        viewModel.searchBarStateLiveData.value shouldBe mpsState
+    }
 }
