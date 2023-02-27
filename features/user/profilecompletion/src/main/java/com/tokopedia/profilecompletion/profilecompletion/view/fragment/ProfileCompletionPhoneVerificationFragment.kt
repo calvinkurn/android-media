@@ -30,7 +30,7 @@ class ProfileCompletionPhoneVerificationFragment : AddPhoneFragment() {
     private fun initView() {
         data = profileCompletionFragment?.data
         verifyButton = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
-        verifyButton?.text = resources.getString(R.string.continue_form)
+        verifyButton?.text = context?.resources?.getString(R.string.continue_form)
         verifyButton?.visibility = View.GONE
         txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
         txtSkip?.visibility = View.GONE

@@ -17,7 +17,7 @@ class ResetPinFragment : ChangePinFragment() {
         super.onViewCreated(view, savedInstanceState)
         inputNewPinState()
         if (activity is ChangePinActivity) (activity as ChangePinActivity).supportActionBar?.title =
-            resources.getString(R.string.change_pin_title_setting)
+            context?.resources?.getString(R.string.change_pin_title_setting)
     }
 
     override fun handleConfirmState(input: String) {

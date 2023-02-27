@@ -163,7 +163,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     private val draw: ProfileCompletionTextDrawable?
         get() {
             val drawable = context?.let { ProfileCompletionTextDrawable(it) }
-            drawable?.text = resources.getString(R.string.skip_form)
+            drawable?.text = content?.resources?.getString(R.string.skip_form)
             drawable?.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N500)
             return drawable
         }
@@ -221,7 +221,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         progressBarTop?.progress = currentData?.completion ?: 0
         txtPercent?.text = String.format("%s%%", progressBarTop?.progress.toString())
 
-        val colors = resources.getIntArray(R.array.green_indicator)
+        val colors = content?.resources?.getIntArray(R.array.green_indicator)
         var indexColor = (newValue - 50) / 10
         if (indexColor < 0) {
             indexColor = 0
@@ -233,7 +233,9 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         val runningBar =
             (shape?.findDrawableByLayerId(R.id.progress_col) as ScaleDrawable).drawable as GradientDrawable
 
-        runningBar.setColor(colors[indexColor])
+        colors?.apply {
+            runningBar.setColor(this[indexColor])
+        }
         runningBar.mutate()
     }
 
@@ -242,9 +244,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         pair: Pair<Int, Int>?
     ) {
         KeyboardHandler.DropKeyboard(activity, view)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            fragmentTransaction = childFragmentManager.beginTransaction()
-        }
+        fragmentTransaction = childFragmentManager.beginTransaction()
         pair?.let { fragmentTransaction?.setCustomAnimations(pair.first, pair.second) }
         chooseFragment(profileCompletionDataView)
     }

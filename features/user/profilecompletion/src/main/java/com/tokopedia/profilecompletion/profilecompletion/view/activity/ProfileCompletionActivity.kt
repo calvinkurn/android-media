@@ -51,9 +51,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(),
                 com.tokopedia.unifyprinciples.R.color.Unify_N500
             )
         )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 10f
-        }
+        toolbar.elevation = 10f
         toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, 30, toolbar.paddingBottom)
 
         val upArrow = ContextCompat.getDrawable(this, R.drawable.profilecompletion_ic_action_back)

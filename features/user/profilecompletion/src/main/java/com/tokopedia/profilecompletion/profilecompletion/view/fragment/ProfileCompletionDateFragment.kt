@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
@@ -114,7 +115,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
             val yearString = actxtYear?.text.toString()
 
             if (dateString.isNotEmpty() && yearString.isNotEmpty()) {
-                selectedDate = formatDateParam(yearString.toInt(), position, dateString.toInt())
+                selectedDate = formatDateParam(yearString.toIntOrZero(), position, dateString.toInt())
             }
 
             if (selectedDate.isNotEmpty()) {
@@ -130,7 +131,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.length == 4) {
-                    val theYear = charSequence.toString().toInt()
+                    val theYear = charSequence.toString().toIntOrZero()
                     if (theYear < YEAR_MIN) {
                         actxtYear?.setText(YEAR_MIN.toString())
                     } else if (theYear > YEAR_MAX) {
