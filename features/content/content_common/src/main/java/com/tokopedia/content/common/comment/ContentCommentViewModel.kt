@@ -66,7 +66,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
-                        list = if (it.list.isEmpty()) result.list else it.list + result.list
+                        list = it.list + result.list
                     )
                 }
                 _query.update {

@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class PostComment(
     @SerializedName("feedsCommentPostComment")
-    val parent: Parent,
+    val parent: Parent = Parent(),
 ) {
     data class Parent(
         @SerializedName("data")
-        val data: Comments.CommentData,
+        val data: Comments.CommentData = Comments.CommentData(),
 
         @SerializedName("error")
-        val error: String,
+        val error: String = "",
     )
 }
