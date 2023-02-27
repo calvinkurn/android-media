@@ -144,14 +144,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         viewModel.addProductToCart(position, quantity, shopId)
 
-        viewModel.miniCartRemove.verifySuccessEquals(
-            Success(
-                Pair(
-                    productId,
-                    response.data.message.joinToString(separator = ", ")
-                )
-            )
-        )
+        viewModel.miniCartRemove.verifySuccessEquals(Success(Pair(productId, response.data.message.joinToString(separator = ", "))))
     }
 
     @Test
