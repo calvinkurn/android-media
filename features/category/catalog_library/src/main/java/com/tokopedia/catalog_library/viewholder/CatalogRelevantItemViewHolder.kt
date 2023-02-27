@@ -51,16 +51,13 @@ class CatalogRelevantItemViewHolder(val view: View, private val catalogLibraryLi
     }
 
     override fun onViewAttachedToWindow() {
-        if (dataModel?.impressHolder?.isInvoke != true) {
-            dataModel?.relevantDataList?.let {
-                AnalyticsHomePage.sendImpressionOnRelevantCatalogsEvent(
-                    layoutPosition + 1,
-                    dataModel?.relevantDataList?.id.toString(),
-                    dataModel?.relevantDataList?.name ?: "",
-                    UserSession(itemView.context).userId
-                )
-                dataModel?.impressHolder?.invoke()
-            }
+        dataModel?.relevantDataList?.let {
+            catalogLibraryListener.relevantCategoryImpression(
+                layoutPosition + 1,
+                dataModel?.relevantDataList?.id.toString(),
+                dataModel?.relevantDataList?.name ?: "",
+                UserSession(itemView.context).userId
+            )
         }
     }
 }

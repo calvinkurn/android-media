@@ -87,6 +87,11 @@ class ProductsBaseViewModel @Inject constructor(
         } else {
             "Semua katalog ${categoryName.lowercase()}"
         }
+        val source = if (categoryName == "") {
+            CatalogLibraryConstant.SOURCE_HOMEPAGE
+        } else {
+            CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
+        }
         if (page == 1) {
             val productHeaderModel = CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
@@ -106,7 +111,9 @@ class ProductsBaseViewModel @Inject constructor(
                 CatalogProductDataModel(
                     CatalogLibraryConstant.CATALOG_PRODUCT,
                     "${CatalogLibraryConstant.CATALOG_PRODUCT}_${product.id}",
-                    product
+                    product,
+                    source,
+                    categoryName
                 )
             )
         }

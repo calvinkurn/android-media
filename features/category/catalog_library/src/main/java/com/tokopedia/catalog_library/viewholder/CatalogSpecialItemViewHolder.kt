@@ -62,17 +62,13 @@ class CatalogSpecialItemViewHolder(
     }
 
     override fun onViewAttachedToWindow() {
-        if (dataModel?.impressHolder?.isInvoke != true) {
-            dataModel?.specialDataListItem?.let {
-                AnalyticsHomePage.sendImpressionOnSpecialCategoriesEvent(
-                    layoutPosition + 1,
-                    dataModel?.specialDataListItem?.id.toString(),
-                    dataModel?.specialDataListItem?.name ?: "",
-                    UserSession(itemView.context).userId
-                )
-
-                dataModel?.impressHolder?.invoke()
-            }
+        dataModel?.specialDataListItem?.let {
+            catalogLibraryListener.specialCategoryImpression(
+                layoutPosition + 1,
+                dataModel?.specialDataListItem?.id.toString(),
+                dataModel?.specialDataListItem?.name ?: "",
+                UserSession(itemView.context).userId
+            )
         }
     }
 }

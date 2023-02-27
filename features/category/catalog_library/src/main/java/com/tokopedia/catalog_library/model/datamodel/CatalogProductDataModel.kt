@@ -8,7 +8,9 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class CatalogProductDataModel(
     val name: String = "",
     val type: String = "",
-    val catalogProduct: CatalogListResponse.CatalogGetList.CatalogsProduct
+    val catalogProduct: CatalogListResponse.CatalogGetList.CatalogsProduct,
+    val source: String = "",
+    val categoryName: String = ""
 ) : BaseCatalogLibraryDataModel {
     val impressHolder: ImpressHolder = ImpressHolder()
 

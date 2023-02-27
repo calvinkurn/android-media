@@ -17,6 +17,8 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDataModel
+import com.tokopedia.catalog_library.model.raw.CatalogListResponse
+import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.AnalyticsHomePage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
@@ -25,6 +27,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -56,6 +59,12 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
             this
         )
     }
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+    private val specialTrackingSet = HashSet<String>()
+    private val relevantTrackingSet = HashSet<String>()
+    private val catalogsTrackingSet = HashSet<String>()
 
     private val catalogHomeAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
@@ -212,5 +221,67 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     override fun onErrorFetchingProducts(throwable: Throwable) {
         // TODO shimmer remove or show whole error logic
         onError(throwable)
+    }
+
+    override fun specialCategoryImpression(
+        creativeSlot: Int,
+        itemId: String,
+        itemName: String,
+        userId: String
+    ) {
+        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES}-$creativeSlot"
+        if (!specialTrackingSet.contains(uniqueTrackingKey)) {
+            AnalyticsHomePage.sendImpressionOnSpecialCategoriesEvent(
+                trackingQueue,
+                creativeSlot,
+                itemId,
+                itemName,
+                userId
+            )
+            specialTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun relevantCategoryImpression(
+        creativeSlot: Int,
+        itemId: String,
+        itemName: String,
+        userId: String
+    ) {
+        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS}-$creativeSlot"
+        if (!relevantTrackingSet.contains(uniqueTrackingKey)) {
+            AnalyticsHomePage.sendImpressionOnRelevantCatalogsEvent(
+                trackingQueue,
+                creativeSlot,
+                itemId,
+                itemName,
+                userId
+            )
+            relevantTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun catalogProductsHomePageImpression(
+        catgoryName: String,
+        product: CatalogListResponse.CatalogGetList.CatalogsProduct,
+        position: Int,
+        userId: String
+    ) {
+        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_CATALOG_LIST}-$position"
+        if (!catalogsTrackingSet.contains(uniqueTrackingKey)) {
+            AnalyticsHomePage.sendImpressionOnCatalogListEvent(
+                trackingQueue,
+                catgoryName,
+                product,
+                position,
+                userId
+            )
+            catalogsTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
     }
 }

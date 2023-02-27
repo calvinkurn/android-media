@@ -7,7 +7,6 @@ import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companio
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_PROMOTIONS
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.KEYS.Companion.CATALOG_URL_KEY
 import com.tokopedia.catalog.model.raw.CatalogProductItem
-import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
@@ -21,18 +20,25 @@ object CatalogDetailAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    fun sendEvent(event: String, category: String,
-                  action: String, label: String, userId : String, catalogId: String, trackerId: String?="") {
-        HashMap<String,Any>().apply {
-            put(EventKeys.KEY_EVENT,event)
-            put(EventKeys.KEY_EVENT_CATEGORY,category)
-            put(EventKeys.KEY_EVENT_ACTION,action)
-            put(EventKeys.KEY_EVENT_LABEL,label)
-            put(EventKeys.KEY_USER_ID,userId)
-            put(EventKeys.KEY_CATALOG_ID,catalogId)
-            put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
-            put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
-            if(!trackerId.isNullOrEmpty()){
+    fun sendEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        userId: String,
+        catalogId: String,
+        trackerId: String? = ""
+    ) {
+        HashMap<String, Any>().apply {
+            put(EventKeys.KEY_EVENT, event)
+            put(EventKeys.KEY_EVENT_CATEGORY, category)
+            put(EventKeys.KEY_EVENT_ACTION, action)
+            put(EventKeys.KEY_EVENT_LABEL, label)
+            put(EventKeys.KEY_USER_ID, userId)
+            put(EventKeys.KEY_CATALOG_ID, catalogId)
+            put(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
+            put(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
+            if (!trackerId.isNullOrEmpty()) {
                 put(EventKeys.KEY_TRACKER_ID, trackerId)
             }
         }.also {
@@ -40,33 +46,45 @@ object CatalogDetailAnalytics {
         }
     }
 
-    fun sendSharingExperienceEvent(event: String,
-                  action: String, category: String, label: String, catalogId : String,
-                                   pageSource : String = "",userId : String) {
-        HashMap<String,Any>().apply {
-            put(EventKeys.KEY_EVENT,event)
-            put(EventKeys.KEY_EVENT_ACTION,action)
-            put(EventKeys.KEY_EVENT_CATEGORY,category)
-            put(EventKeys.KEY_EVENT_LABEL,label)
-            put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.SHARING_EXPERIENCE_BUSINESS_UNIT_VALUE)
-            put(EventKeys.KEY_CATALOG_ID,catalogId)
-            put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
-            if(pageSource.isNotBlank()){
-                put(EventKeys.KEY_PAGE_SOURCE,pageSource)
+    fun sendSharingExperienceEvent(
+        event: String,
+        action: String,
+        category: String,
+        label: String,
+        catalogId: String,
+        pageSource: String = "",
+        userId: String
+    ) {
+        HashMap<String, Any>().apply {
+            put(EventKeys.KEY_EVENT, event)
+            put(EventKeys.KEY_EVENT_ACTION, action)
+            put(EventKeys.KEY_EVENT_CATEGORY, category)
+            put(EventKeys.KEY_EVENT_LABEL, label)
+            put(EventKeys.KEY_BUSINESS_UNIT, EventKeys.SHARING_EXPERIENCE_BUSINESS_UNIT_VALUE)
+            put(EventKeys.KEY_CATALOG_ID, catalogId)
+            put(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
+            if (pageSource.isNotBlank()) {
+                put(EventKeys.KEY_PAGE_SOURCE, pageSource)
             }
-            if(userId.isNotBlank()){
-                put(EventKeys.KEY_USER_ID,userId)
-            }else {
-                put(EventKeys.KEY_USER_ID,"0")
+            if (userId.isNotBlank()) {
+                put(EventKeys.KEY_USER_ID, userId)
+            } else {
+                put(EventKeys.KEY_USER_ID, "0")
             }
         }.also {
             getTracker().sendGeneralEvent(it)
         }
     }
 
-    fun trackEventImpressionProductCard(catalogName : String, catalogId : String, catalogUrl : String, userId : String ,
-                                        item : CatalogProductItem, position : String,
-                                        searchFilterMap : HashMap<String,String>?){
+    fun trackEventImpressionProductCard(
+        catalogName: String,
+        catalogId: String,
+        catalogUrl: String,
+        userId: String,
+        item: CatalogProductItem,
+        position: String,
+        searchFilterMap: HashMap<String, String>?
+    ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         productMap[KEYS.BRAND] = KEYS.NONE_OTHER
@@ -81,9 +99,10 @@ object CatalogDetailAnalytics {
         list.add(productMap)
 
         val eCommerce = mapOf(
-                KEYS.CURRENCY_CODE to KEYS.IDR,
-                KEYS.IMPRESSION to list)
-        val map = HashMap<String,Any>()
+            KEYS.CURRENCY_CODE to KEYS.IDR,
+            KEYS.IMPRESSION to list
+        )
+        val map = HashMap<String, Any>()
         map[EventKeys.KEY_EVENT] = EventKeys.EVENT_NAME_PRODUCT_VIEW
         map[EventKeys.KEY_EVENT_CATEGORY] = CategoryKeys.PAGE_EVENT_CATEGORY
         map[EventKeys.KEY_EVENT_ACTION] = ActionKeys.IMPRESSION_PRODUCT
@@ -98,9 +117,15 @@ object CatalogDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun trackProductCardClick(catalogName : String, catalogId : String,  catalogUrl : String, userId : String ,
-                              item : CatalogProductItem, position : String ,
-                              searchFilterMap : HashMap<String,String>?) {
+    fun trackProductCardClick(
+        catalogName: String,
+        catalogId: String,
+        catalogUrl: String,
+        userId: String,
+        item: CatalogProductItem,
+        position: String,
+        searchFilterMap: HashMap<String, String>?
+    ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         productMap[KEYS.BRAND] = KEYS.NONE_OTHER
@@ -114,16 +139,15 @@ object CatalogDetailAnalytics {
         productMap[KEYS.VARIANT] = KEYS.NONE_OTHER
         list.add(productMap)
 
-
         val eCommerce = mapOf(
-                KEYS.CLICK to mapOf(
-                        KEYS.ACTION_FIELD to mapOf(
-                                KEYS.LIST to getCatalogTrackingUrl(catalogUrl)
-                        ),
-                        KEYS.PRODUCTS to list
-                )
+            KEYS.CLICK to mapOf(
+                KEYS.ACTION_FIELD to mapOf(
+                    KEYS.LIST to getCatalogTrackingUrl(catalogUrl)
+                ),
+                KEYS.PRODUCTS to list
+            )
         )
-        val map = HashMap<String,Any>()
+        val map = HashMap<String, Any>()
         map[EventKeys.KEY_EVENT] = EventKeys.EVENT_NAME_PRODUCT_CLICK
         map[EventKeys.KEY_EVENT_CATEGORY] = CategoryKeys.PAGE_EVENT_CATEGORY
         map[EventKeys.KEY_EVENT_ACTION] = ActionKeys.CLICK_PRODUCT
@@ -139,7 +163,7 @@ object CatalogDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun sendPromotionEvent (
+    fun sendPromotionEvent(
         event: String,
         action: String,
         category: String,
@@ -147,31 +171,31 @@ object CatalogDetailAnalytics {
         catalogId: String,
         position: Int,
         userId: String,
-        impressedCatalogId : String,
-        impressedCatalogName : String
-    ){
+        impressedCatalogId: String,
+        impressedCatalogName: String
+    ) {
         val bundle = Bundle()
         val itemBundle = Bundle().apply {
-            putString(EventKeys.KEY_ITEM_ID,impressedCatalogId)
-            putString(EventKeys.KEY_CREATIVE_NAME,impressedCatalogName)
+            putString(EventKeys.KEY_ITEM_ID, impressedCatalogId)
+            putString(EventKeys.KEY_CREATIVE_NAME, impressedCatalogName)
             putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
-            putString(EventKeys.KEY_ITEM_NAME,KATALOG_PiILIHAN_UNTUKMU)
+            putString(EventKeys.KEY_ITEM_NAME, KATALOG_PiILIHAN_UNTUKMU)
         }
-        bundle.putString(EventKeys.KEY_EVENT , event)
-        bundle.putString(EventKeys.KEY_EVENT_CATEGORY,category)
-        bundle.putString(EventKeys.KEY_EVENT_ACTION,action)
-        bundle.putString(EventKeys.KEY_EVENT_LABEL,eventLabel)
-        bundle.putString(EventKeys.KEY_CATALOG_ID,catalogId)
-        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE_CATALOG)
-        bundle.putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
-        bundle.putString(EventKeys.KEY_USER_ID,userId)
+        bundle.putString(EventKeys.KEY_EVENT, event)
+        bundle.putString(EventKeys.KEY_EVENT_CATEGORY, category)
+        bundle.putString(EventKeys.KEY_EVENT_ACTION, action)
+        bundle.putString(EventKeys.KEY_EVENT_LABEL, eventLabel)
+        bundle.putString(EventKeys.KEY_CATALOG_ID, catalogId)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE_CATALOG)
+        bundle.putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
+        bundle.putString(EventKeys.KEY_USER_ID, userId)
         bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
 
-        getTracker().sendEnhanceEcommerceEvent(event,bundle)
+        getTracker().sendEnhanceEcommerceEvent(event, bundle)
     }
 
-    fun sendImpressionEventInQueue (
-        trackingQueue : TrackingQueue,
+    fun sendImpressionEventInQueue(
+        trackingQueue: TrackingQueue,
         event: String,
         action: String,
         category: String,
@@ -179,21 +203,20 @@ object CatalogDetailAnalytics {
         catalogId: String,
         position: Int,
         userId: String,
-        impressedCatalogId : String,
-        impressedCatalogName : String,
-        impressedItemName : String,
-        impressionUniqueKey : String,
-    ){
-
+        impressedCatalogId: String,
+        impressedCatalogName: String,
+        impressedItemName: String,
+        impressionUniqueKey: String
+    ) {
         val list = ArrayList<Map<String, Any>>()
         val promotionMap = HashMap<String, Any>()
 
         promotionMap[EventKeys.KEY_ITEM_ID] = impressedCatalogId
         promotionMap[EventKeys.KEY_CREATIVE_NAME] = impressedCatalogName
-        promotionMap[EventKeys.KEY_CREATIVE_SLOT] =  (position + 1).toString()
+        promotionMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
         promotionMap[EventKeys.KEY_ITEM_NAME] = impressedItemName
         list.add(promotionMap)
-        val eventModel = EventModel(event,category,action,eventLabel)
+        val eventModel = EventModel(event, category, action, eventLabel)
         eventModel.key = impressionUniqueKey
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[EventKeys.KEY_CATALOG_ID] = catalogId
@@ -201,12 +224,17 @@ object CatalogDetailAnalytics {
         customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
 
-        trackingQueue.putEETracking(eventModel, hashMapOf (
-            KEY_ECOMMERCE to hashMapOf(
-                EVENT_PROMO_VIEW to hashMapOf(
-                    KEY_PROMOTIONS to  list)
-            )
-        ), customDimensionMap)
+        trackingQueue.putEETracking(
+            eventModel,
+            hashMapOf(
+                KEY_ECOMMERCE to hashMapOf(
+                    EVENT_PROMO_VIEW to hashMapOf(
+                        KEY_PROMOTIONS to list
+                    )
+                )
+            ),
+            customDimensionMap
+        )
     }
 
     interface EventKeys {
@@ -226,8 +254,8 @@ object CatalogDetailAnalytics {
             const val KEY_TRACKER_ID = "trackerId"
 
             const val KEY_PROMOTIONS = "promotions"
-            const val BUSINESS_UNIT_VALUE= "Physical Goods"
-            const val BUSINESS_UNIT_VALUE_CATALOG= "catalog"
+            const val BUSINESS_UNIT_VALUE = "Physical Goods"
+            const val BUSINESS_UNIT_VALUE_CATALOG = "catalog"
             const val SHARING_EXPERIENCE_BUSINESS_UNIT_VALUE = "sharingexperience"
             const val CURRENT_SITE_VALUE = "tokopediamarketplace"
 
@@ -247,7 +275,6 @@ object CatalogDetailAnalytics {
             const val KEY_ITEM_NAME = "item_name"
 
             const val EVENT_SELECT_CONTENT = "select_content"
-
         }
     }
 
@@ -293,7 +320,7 @@ object CatalogDetailAnalytics {
             const val CLICK_CLOSE_ON_IMAGE_REVIEW = "click close on image review"
             const val CLICK_GANTI_PERBANDINGAN = "click ganti perbandingan - perbandingan produk"
             const val CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK = "click search bar - perbandingan produk"
-            const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
+            const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK = "click bandingkan - perbandingan produk"
             const val CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK = "click next catalog page - perbandingan produk"
             const val CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK = "click drop up button - perbandingan produk"
             const val CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK = "click drop down button - perbandingan produk"
@@ -317,7 +344,6 @@ object CatalogDetailAnalytics {
 
             const val CLICK_FLOATING_BUTTON_PRODUCT = "click floating action button to product list"
             const val CLICK_FLOATING_BUTTON_LAST_SCROLL = "click floating action button to last scroll position"
-
         }
     }
 
@@ -346,7 +372,7 @@ object CatalogDetailAnalytics {
         }
     }
 
-    interface TrackerId{
+    interface TrackerId {
         companion object {
             const val OPEN_BOTTOMSHEET = "27182"
             const val CLICK_SEARCH_BAR = "27183"
@@ -354,12 +380,11 @@ object CatalogDetailAnalytics {
             const val CLICK_NEXT_CATALOG_PAGE = "28893"
             const val CLICK_DROP_UP_BUTTON = "35721"
             const val CLICK_DROP_DOWN_BUTTON = "35722"
-
         }
     }
 
-    private fun getCatalogTrackingUrl(catalogUrl : String?) : String {
-        if (!catalogUrl.isNullOrEmpty()){
+    private fun getCatalogTrackingUrl(catalogUrl: String?): String {
+        if (!catalogUrl.isNullOrEmpty()) {
             catalogUrl.split(CATALOG_URL_KEY).last().let {
                 return "${CATALOG_URL_KEY}$it"
             }

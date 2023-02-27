@@ -89,7 +89,10 @@ class CatalogLandingPageViewModel @Inject constructor(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 "Top 5 ${data.catalogGetList.categoryName.lowercase()} terlaris di toped",
-                getTopFiveVisitableList(data.catalogGetList.catalogsProduct),
+                getTopFiveVisitableList(
+                    data.catalogGetList.catalogsProduct,
+                    data.catalogGetList.categoryName
+                ),
                 marginForTitle = Margin(0, 16, 12, 16),
                 marginForRV = Margin(12, 0, 0, 16)
             )
@@ -98,7 +101,10 @@ class CatalogLandingPageViewModel @Inject constructor(
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getTopFiveVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
+    private fun getTopFiveVisitableList(
+        catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
+        categoryName: String
+    ): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         catalogsProduct.forEachIndexed { index, catalogTopFive ->
             catalogTopFive.rank = (index + 1)
@@ -106,7 +112,8 @@ class CatalogLandingPageViewModel @Inject constructor(
                 CatalogTopFiveDataModel(
                     CATALOG_TOP_FIVE,
                     CATALOG_TOP_FIVE,
-                    catalogTopFive
+                    catalogTopFive,
+                    categoryName
                 )
             )
         }

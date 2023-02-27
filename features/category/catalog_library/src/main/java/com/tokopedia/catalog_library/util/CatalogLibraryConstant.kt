@@ -36,4 +36,7 @@ object CatalogLibraryConstant {
     const val CATALOG_HOME_PRODUCT_TITLE = "Katalog lainnya buat inspirasimu"
     const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori spesial buatmu"
     const val CATALOG_HOME_HEADING_RELEVANT = "Cek katalognya produk incaranmu"
+
+    const val SOURCE_HOMEPAGE = "source homepage"
+    const val SOURCE_CATEGORY_LANDING_PAGE = "source category landing page"
 }

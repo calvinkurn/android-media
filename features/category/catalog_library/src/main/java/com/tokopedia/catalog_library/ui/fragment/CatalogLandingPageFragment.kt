@@ -18,6 +18,9 @@ import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
+import com.tokopedia.catalog_library.model.raw.CatalogListResponse
+import com.tokopedia.catalog_library.util.ActionKeys
+import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
@@ -29,6 +32,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_catalog_homepage.*
@@ -68,6 +72,10 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         CatalogLibraryUiUpdater(mutableMapOf()).also {
             it.setUpForLandingPage()
         }
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+    private val productsTrackingSet = HashSet<String>()
 
     companion object {
         const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
@@ -212,7 +220,13 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
 
     private fun addShimmer() {
         catalogLibraryUiUpdater.apply {
-            updateModel(CatalogShimmerDataModel(CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE, CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE, CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE))
+            updateModel(
+                CatalogShimmerDataModel(
+                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
+                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
+                    CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
+                )
+            )
             updateModel(
                 CatalogShimmerDataModel(
                     CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
@@ -249,10 +263,35 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         }
         updateUi()
     }
+
     override fun onShimmerAdded() {
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
         onError(throwable)
+    }
+
+    override fun catalogProductsCategoryLandingImpression(
+        catgoryName: String,
+        product: CatalogListResponse.CatalogGetList.CatalogsProduct,
+        position: Int,
+        userId: String
+    ) {
+        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_CATALOG_LIST_IN_CATEGORY}-$position"
+        if (!productsTrackingSet.contains(uniqueTrackingKey)) {
+            AnalyticsCategoryLandingPage.sendImpressionOnCatalogListEvent(
+                trackingQueue,
+                catgoryName,
+                product,
+                position,
+                userId
+            )
+            productsTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
     }
 }

@@ -39,12 +39,16 @@ interface EventKeys {
         const val KEY_EVENT_LABEL = "eventLabel"
         const val KEY_USER_ID = "userId"
 
+        const val KEY_ECOMMERCE = "ecommerce"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
 
         const val PROMO_VIEW = "promoView"
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_CLICK = "productClick"
+        const val CURRENCY_CODE = "currencyCode"
+        const val IDR = "IDR"
+        const val IMPRESSIONS = "impressions"
     }
 }
 

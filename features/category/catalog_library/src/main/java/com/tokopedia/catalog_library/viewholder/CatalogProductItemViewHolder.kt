@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductDataModel
+import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
 import com.tokopedia.catalog_library.util.AnalyticsHomePage
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -53,26 +55,47 @@ class CatalogProductItemViewHolder(
         productTitle.text = element?.catalogProduct?.name ?: ""
         productLayout.setOnClickListener {
             dataModel?.catalogProduct?.let { it1 ->
-                AnalyticsHomePage.sendClickCatalogOnCatalogListEvent(
-                    it1,
-                    layoutPosition - 2,
-                    UserSession(itemView.context).userId
-                )
+                when (dataModel?.source) {
+                    CatalogLibraryConstant.SOURCE_HOMEPAGE -> {
+                        AnalyticsHomePage.sendClickCatalogOnCatalogListEvent(
+                            it1,
+                            layoutPosition - 2,
+                            UserSession(itemView.context).userId
+                        )
+                    }
+                    CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE -> {
+                        AnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
+                            dataModel?.categoryName ?: "",
+                            it1,
+                            layoutPosition - 2,
+                            UserSession(itemView.context).userId
+                        )
+                    }
+                }
             }
-
             catalogLibraryListener.onProductCardClicked(dataModel?.catalogProduct?.applink)
         }
     }
 
     override fun onViewAttachedToWindow() {
-        if (dataModel?.impressHolder?.isInvoke != true) {
-            dataModel?.catalogProduct?.let {
-                AnalyticsHomePage.sendImpressionOnCatalogListEvent(
-                    it,
-                    layoutPosition - 2,
-                    UserSession(itemView.context).userId
-                )
-                dataModel?.impressHolder?.invoke()
+        dataModel?.catalogProduct?.let {
+            when (dataModel?.source) {
+                CatalogLibraryConstant.SOURCE_HOMEPAGE -> {
+                    catalogLibraryListener.catalogProductsHomePageImpression(
+                        dataModel?.categoryName ?: "",
+                        it,
+                        layoutPosition - 2,
+                        UserSession(itemView.context).userId
+                    )
+                }
+                CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE -> {
+                    catalogLibraryListener.catalogProductsCategoryLandingImpression(
+                        dataModel?.categoryName ?: "",
+                        it,
+                        layoutPosition - 2,
+                        UserSession(itemView.context).userId
+                    )
+                }
             }
         }
     }
