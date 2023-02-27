@@ -13,9 +13,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.common.LogisticSellerConst
-import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.di.DaggerReschedulePickupComponent
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -49,9 +46,9 @@ class ReschedulePickupActivity : AppCompatActivity() {
                 ReschedulePickupScreen(
                     viewModel.uiState.collectAsState(),
                     viewModel.input,
-                    onDayChosen = { onDayChosen(it) },
-                    onTimeChosen = { onTimeChosen(it) },
-                    onReasonChosen = { onReasonChosen(it) },
+                    onDayChosen = { viewModel.setDay(it) },
+                    onTimeChosen = { viewModel.setTime(it) },
+                    onReasonChosen = { viewModel.setReason(it) },
                     onSubtitleClicked = {
                         RouteManager.route(this, ApplinkConst.WEBVIEW.plus("?url=$it"))
                     },
@@ -97,17 +94,5 @@ class ReschedulePickupActivity : AppCompatActivity() {
 
     private fun getInitialData() {
         viewModel.getReschedulePickupDetail(orderId)
-    }
-
-    private fun onDayChosen(dayChosen: RescheduleDayOptionModel) {
-        viewModel.setDay(dayChosen)
-    }
-
-    private fun onReasonChosen(reasonChosen: RescheduleReasonOptionModel) {
-        viewModel.setReason(reasonChosen)
-    }
-
-    private fun onTimeChosen(timeChosen: RescheduleTimeOptionModel) {
-        viewModel.setTime(timeChosen)
     }
 }
