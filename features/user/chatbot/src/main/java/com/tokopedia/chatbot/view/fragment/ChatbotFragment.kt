@@ -1501,7 +1501,7 @@ class ChatbotFragment :
                     session.userId
                 )
                 val applinkWebview =
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
+                    String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
                 if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
                     RouteManager.route(activity, applinkWebview)
                 } else {
