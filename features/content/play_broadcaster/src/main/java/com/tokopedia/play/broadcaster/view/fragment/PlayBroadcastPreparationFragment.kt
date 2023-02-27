@@ -70,6 +70,7 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
+import com.tokopedia.play_common.util.extension.commit
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -438,9 +439,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     DynamicPreparationMenu.Menu.Product -> {
                         analytic.clickSetupProductMenu()
 
-                        childFragmentManager.beginTransaction()
-                            .add(ProductSetupFragment::class.java, null, null)
-                            .commit()
+                        childFragmentManager.commit {
+                            add(ProductSetupFragment::class.java, null, null)
+                        }
                     }
                     DynamicPreparationMenu.Menu.Schedule -> {
                         eventBus.emit(Event.ClickSetSchedule)
