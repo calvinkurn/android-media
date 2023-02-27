@@ -21,7 +21,6 @@ import com.tokopedia.play.databinding.ActivityPlayBinding
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
@@ -79,8 +78,6 @@ class PlayActivity :
     lateinit var router: Router
 
     private lateinit var binding: ActivityPlayBinding
-
-    private lateinit var orientationManager: PlaySensorOrientationManager
 
     private lateinit var viewModel: PlayParentViewModel
 
@@ -147,13 +144,11 @@ class PlayActivity :
         onExitFullscreen()
 
         setupViewModel()
-        setupPage()
         setupObserve()
     }
 
     override fun onResume() {
         super.onResume()
-        orientationManager.enable()
         volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         PlayCastNotificationAction.showRedirectButton(applicationContext, false)
@@ -161,7 +156,6 @@ class PlayActivity :
 
     override fun onPause() {
         super.onPause()
-        orientationManager.disable()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -247,14 +241,6 @@ class PlayActivity :
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, getViewModelFactory()).get(PlayParentViewModel::class.java)
-    }
-
-    private fun setupPage() {
-        setupOrientation()
-    }
-
-    private fun setupOrientation() {
-        orientationManager = PlaySensorOrientationManager(this, this)
     }
 
     private fun setupObserve() {
