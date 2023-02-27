@@ -92,9 +92,11 @@ private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: 
 }
 
 private fun mapShare(item: PlayPostContentItem): PlayWidgetShareUiModel {
-    val fullShareContent = try {
-        item.share.text.replace("${'$'}{url}", item.share.redirectUrl)
-    } catch (e: Throwable) {
+    val urlTemplate = "${'$'}{url}"
+    val fullShareContent = if(item.share.text.contains(urlTemplate)) {
+        item.share.text.replace(urlTemplate, item.share.redirectUrl)
+    }
+    else {
         "${item.share.text}/n${item.share.redirectUrl}"
     }
 
