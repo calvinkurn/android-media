@@ -19,11 +19,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
@@ -38,6 +34,7 @@ import com.tokopedia.play.channel.analytic.PlayChannelAnalyticManager
 import com.tokopedia.play.channel.ui.component.CommentIconUiComponent
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
+import com.tokopedia.play.channel.ui.component.TaggedProductLabelUiComponent
 import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
@@ -164,7 +161,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
-    private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
     private val likeBubbleView by viewComponent {
         LikeBubbleViewComponent(
@@ -617,6 +613,16 @@ class PlayUserInteractionFragment @Inject constructor(
             )
         }
 
+        val taggedProductLabel = binding.viewTaggedProductLabel
+        if (taggedProductLabel != null) {
+            components.add(
+                TaggedProductLabelUiComponent(
+                    binding = taggedProductLabel,
+                    bus = eventBus
+                )
+            )
+        }
+
         fun setupLandscapeView() {
             container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
             container.setOnClickListener {
@@ -888,7 +894,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner, state.channel)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderAddressWidget(state.address)
 
@@ -1046,6 +1052,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 when (event) {
                     is ProductCarouselUiComponent.Event -> onProductCarouselEvent(event)
                     is KebabIconUiComponent.Event -> onKebabIconEvent(event)
+                    is TaggedProductLabelUiComponent.Event -> onTaggedLabelEvent(event)
                 }
             }
         }
@@ -1689,16 +1696,17 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        partner: PlayPartnerInfo
+        partner: PlayPartnerInfo, //move to component
+        channel: PlayChannelDetailUiModel
     ) {
-        if (!bottomInsets.isAnyShown && !address.shouldShow) {
+        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
+            it.productList.size
+        }
+
+        if (!bottomInsets.isAnyShown && (!address.shouldShow || productListSize.isMoreThanZero()) && !channel.channelInfo.channelType.isLive) {
             productSeeMoreView?.show()
         } else {
             productSeeMoreView?.hide()
-        }
-
-        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
-            it.productList.size
         }
 
         productSeeMoreView?.setTotalProduct(productListSize)
@@ -2013,6 +2021,12 @@ class PlayUserInteractionFragment @Inject constructor(
             is EngagementUiModel.Game -> {
                 newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.game.id, channelId = playViewModel.channelId)
             }
+        }
+    }
+
+    private fun onTaggedLabelEvent(event: TaggedProductLabelUiComponent.Event) {
+        when(event){
+            TaggedProductLabelUiComponent.Event.OnClicked -> {}
         }
     }
 
