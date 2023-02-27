@@ -8,6 +8,6 @@ data class ImageGeneratorResponse(
 ) {
     data class Image(
         @SerializedName("image_url")
-        val imageUrl: String = ""
+        val imageUrl: String? = ""
     )
 }

@@ -42,7 +42,7 @@ class ImageGeneratorUseCase @Inject constructor(
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<ImageGeneratorResponse>()
-        return data.image.imageUrl
+        return data.image.imageUrl.orEmpty()
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {
