@@ -2,20 +2,18 @@ package com.tokopedia.profilecompletion.addemail
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.profilecompletion.domain.AddEmailUseCase
+import com.tokopedia.profilecompletion.domain.CheckEmailUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
@@ -32,13 +30,7 @@ class AddEmailViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val checkEmaillUseCase = mockk<GraphqlUseCase<CheckEmailPojo>>(relaxed = true)
-    val addEmaillUseCase = mockk<GraphqlUseCase<AddEmailPojo>>(relaxed = true)
-
     val context = mockk<Context>(relaxed = true)
-
-    private var checkEmailObserver = mockk<Observer<Result<String>>>(relaxed = true)
-    private var addEmailObserver = mockk<Observer<Result<AddEmailResult>>>(relaxed = true)
 
     lateinit var viewModel: AddEmailViewModel
 
@@ -49,34 +41,16 @@ class AddEmailViewModelTest {
     val mockAddEmailPojo = AddEmailPojo()
     val mockCheckEmailPojo = CheckEmailPojo()
 
+    private val checkEmailUseCase = mockk<CheckEmailUseCase>(relaxed = true)
+    private val addEmailUseCase = mockk<AddEmailUseCase>(relaxed = true)
+
     @Before
     fun setUp() {
         viewModel = AddEmailViewModel(
                 CoroutineTestDispatchersProvider,
-                checkEmaillUseCase,
-                addEmaillUseCase
+                checkEmailUseCase,
+                addEmailUseCase
         )
-        viewModel.mutateCheckEmailResponse.observeForever(checkEmailObserver)
-        viewModel.mutateAddEmailResponse.observeForever(addEmailObserver)
-    }
-
-    @Test
-    fun `on mutateAddEmail executed`() {
-        val mockParam = mapOf(
-                ProfileCompletionQueryConstant.PARAM_EMAIL to mockEmail,
-                ProfileCompletionQueryConstant.PARAM_OTP_CODE to mockOtp,
-                ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to mockValidateToken
-        )
-
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
-
-        /* Then */
-        verify {
-            addEmaillUseCase.setTypeClass(any())
-            addEmaillUseCase.setRequestParams(mockParam)
-            addEmaillUseCase.setGraphqlQuery(any<String>())
-            addEmaillUseCase.execute(any(), any())
-        }
     }
 
     @Test
@@ -86,28 +60,26 @@ class AddEmailViewModelTest {
 
         val addEmailResult = AddEmailResult(mockAddEmailPojo, mockEmail)
 
-        every { addEmaillUseCase.execute(any(), any()) } answers {
-            firstArg<(AddEmailPojo) -> Unit>().invoke(mockAddEmailPojo)
-        }
+        coEvery { addEmailUseCase(any()) } returns mockAddEmailPojo
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
+        viewModel.mutateAddEmail(mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
-        verify { addEmailObserver.onChanged(Success(addEmailResult)) }
+        val result = viewModel.mutateAddEmailResponse.getOrAwaitValue()
+        assertEquals(Success(addEmailResult), result)
     }
 
     @Test
     fun `on Generic Error Add Email`() {
         val mockThrowable = mockk<Throwable>(relaxed = true)
 
-        every { addEmaillUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { addEmailUseCase(any()) } throws mockThrowable
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
+        viewModel.mutateAddEmail(mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
-        verify { addEmailObserver.onChanged(Fail(mockThrowable)) }
+        val result = viewModel.mutateAddEmailResponse.getOrAwaitValue()
+        assertEquals(Fail(mockThrowable), result)
     }
 
     @Test
@@ -115,16 +87,14 @@ class AddEmailViewModelTest {
         mockAddEmailPojo.data.isSuccess = true
         mockAddEmailPojo.data.errorMessage = "Test Error"
 
-        every { addEmaillUseCase.execute(any(), any()) } answers {
-            firstArg<(AddEmailPojo) -> Unit>().invoke(mockAddEmailPojo)
-        }
+        coEvery { addEmailUseCase(any()) } returns mockAddEmailPojo
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
+        viewModel.mutateAddEmail(mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
-        assertThat(viewModel.mutateAddEmailResponse.value, instanceOf(Fail::class.java))
-        assertEquals(mockAddEmailPojo.data.errorMessage, (viewModel.mutateAddEmailResponse.value as Fail).throwable.message)
-        verify(atLeast = 1){ addEmailObserver.onChanged(any()) }
+        val result = viewModel.mutateAddEmailResponse.getOrAwaitValue()
+        assertThat(result, instanceOf(Fail::class.java))
+        assertEquals(mockAddEmailPojo.data.errorMessage, (result as Fail).throwable.message)
     }
 
     @Test
@@ -132,31 +102,14 @@ class AddEmailViewModelTest {
         mockAddEmailPojo.data.isSuccess = false
         mockAddEmailPojo.data.errorMessage = ""
 
-        every { addEmaillUseCase.execute(any(), any()) } answers {
-            firstArg<(AddEmailPojo) -> Unit>().invoke(mockAddEmailPojo)
-        }
+        coEvery { addEmailUseCase(any()) } returns mockAddEmailPojo
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
+        viewModel.mutateAddEmail(mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
-        assertThat(viewModel.mutateAddEmailResponse.value, instanceOf(Fail::class.java))
-        assertThat((viewModel.mutateAddEmailResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
-        verify(atLeast = 1){ addEmailObserver.onChanged(any()) }
-    }
-
-    @Test
-    fun `on checkEmail executed`() {
-        val mockParam = mapOf(ProfileCompletionQueryConstant.PARAM_EMAIL to mockEmail)
-
-        viewModel.checkEmail(context, mockEmail)
-
-        /* Then */
-        verify {
-            checkEmaillUseCase.setTypeClass(any())
-            checkEmaillUseCase.setRequestParams(mockParam)
-            checkEmaillUseCase.setGraphqlQuery(any<String>())
-            checkEmaillUseCase.execute(any(), any())
-        }
+        val result = viewModel.mutateAddEmailResponse.getOrAwaitValue()
+        assertThat(result, instanceOf(Fail::class.java))
+        assertThat((result as Fail).throwable, instanceOf(RuntimeException::class.java))
     }
 
     @Test
@@ -164,28 +117,26 @@ class AddEmailViewModelTest {
         mockCheckEmailPojo.data.isValid = true
         mockCheckEmailPojo.data.errorMessage = ""
 
-        every { checkEmaillUseCase.execute(any(), any()) } answers {
-            firstArg<(CheckEmailPojo) -> Unit>().invoke(mockCheckEmailPojo)
-        }
+        coEvery { checkEmailUseCase(any()) } returns mockCheckEmailPojo
 
-        viewModel.checkEmail(context, mockEmail)
+        viewModel.checkEmail(mockEmail)
 
         /* Then */
-        verify { checkEmailObserver.onChanged(Success(mockEmail)) }
+        val result = viewModel.mutateCheckEmailResponse.getOrAwaitValue()
+        assertEquals(Success(mockEmail), result)
     }
 
     @Test
     fun `on Generic Error Check Email`() {
         val mockThrowable = mockk<Throwable>(relaxed = true)
 
-        every { checkEmaillUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { checkEmailUseCase(any()) } throws mockThrowable
 
-        viewModel.checkEmail(context, mockEmail)
+        viewModel.checkEmail(mockEmail)
 
         /* Then */
-        verify { checkEmailObserver.onChanged(Fail(mockThrowable)) }
+        val result = viewModel.mutateCheckEmailResponse.getOrAwaitValue()
+        assertEquals(Fail(mockThrowable), result)
     }
 
     @Test
@@ -193,16 +144,14 @@ class AddEmailViewModelTest {
         mockCheckEmailPojo.data.isValid = false
         mockCheckEmailPojo.data.errorMessage = "Test Error"
 
-        every { checkEmaillUseCase.execute(any(), any()) } answers {
-            firstArg<(CheckEmailPojo) -> Unit>().invoke(mockCheckEmailPojo)
-        }
+        coEvery { checkEmailUseCase(any()) } returns mockCheckEmailPojo
 
-        viewModel.checkEmail(context, mockEmail)
+        viewModel.checkEmail(mockEmail)
 
         /* Then */
-        assertThat(viewModel.mutateCheckEmailResponse.value, instanceOf(Fail::class.java))
-        assertEquals(mockCheckEmailPojo.data.errorMessage, (viewModel.mutateCheckEmailResponse.value as Fail).throwable.message)
-        verify(atLeast = 1){ checkEmailObserver.onChanged(any()) }
+        val result = viewModel.mutateCheckEmailResponse.getOrAwaitValue()
+        assertThat(result, instanceOf(Fail::class.java))
+        assertEquals(mockCheckEmailPojo.data.errorMessage, (result as Fail).throwable.message)
     }
 
     @Test
@@ -210,16 +159,14 @@ class AddEmailViewModelTest {
         mockCheckEmailPojo.data.isValid = false
         mockCheckEmailPojo.data.errorMessage = ""
 
-        every { checkEmaillUseCase.execute(any(), any()) } answers {
-            firstArg<(CheckEmailPojo) -> Unit>().invoke(mockCheckEmailPojo)
-        }
+        coEvery { checkEmailUseCase(any()) } returns mockCheckEmailPojo
 
-        viewModel.checkEmail(context, mockEmail)
+        viewModel.checkEmail(mockEmail)
 
         /* Then */
-        assertThat(viewModel.mutateCheckEmailResponse.value, instanceOf(Fail::class.java))
-        assertThat((viewModel.mutateCheckEmailResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
-        verify(atLeast = 1){ checkEmailObserver.onChanged(any()) }
+        val result = viewModel.mutateCheckEmailResponse.getOrAwaitValue()
+        assertThat(result, instanceOf(Fail::class.java))
+        assertThat((result as Fail).throwable, instanceOf(RuntimeException::class.java))
     }
 
 }
