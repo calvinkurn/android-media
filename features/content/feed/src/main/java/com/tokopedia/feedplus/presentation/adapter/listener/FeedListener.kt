@@ -4,4 +4,7 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 
 interface FeedListener {
     fun onMenuClicked(model: FeedModel)
+
+    fun disableClearView()
+    fun inClearViewMode(): Boolean
 }

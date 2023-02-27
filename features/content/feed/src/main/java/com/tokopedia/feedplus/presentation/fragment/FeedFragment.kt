@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifycomponents.Toaster
@@ -48,6 +50,8 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
+    private var isInClearViewMode: Boolean = false
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,15 +59,16 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    private lateinit var feedMainViewModel: FeedMainViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
+
     private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.run {
-            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-            feedMainViewModel = viewModelProvider.get(FeedMainViewModel::class.java)
-        }
 
         arguments?.let {
             data = it.getParcelable(ARGUMENT_DATA)
@@ -89,7 +94,11 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        feedPostViewModel.fetchFeedPosts()
+
         initView()
+        observeClearViewData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -145,6 +154,44 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
+    override fun onMenuClicked(model: FeedModel) {
+        activity?.let {
+            feedMenuSheet = FeedThreeDotsMenuBottomSheet
+                .getFragment(it.supportFragmentManager, it.classLoader)
+            feedMenuSheet.setListener(this)
+            feedMenuSheet.setData(getMenuItemData(), model.id)
+            feedMenuSheet.show(it.supportFragmentManager)
+        }
+    }
+
+    override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
+        when (feedMenuItem.type) {
+            FeedMenuIdentifier.LAPORKAN -> {
+                if (!userSession.isLoggedIn) {
+                    onGoToLogin()
+                } else {
+                    feedMenuSheet.showReportLayoutWhenLaporkanClicked()
+                    Toast.makeText(context, "Laporkan - onMenuItemClick", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            FeedMenuIdentifier.MODE_NONTON -> {
+                feedMainViewModel.toggleClearView(true)
+                Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
+        feedMainViewModel.reportContent(feedReportRequestParamModel)
+    }
+
+    override fun disableClearView() {
+        feedMainViewModel.toggleClearView(false)
+    }
+
+    override fun inClearViewMode(): Boolean = isInClearViewMode
+
     private fun initView() {
         binding?.let {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -163,21 +210,14 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
                     FeedModel(text = "Post 5")
                 )
             )
-
-//            it.tvTest.text = data?.title ?: ""
         }
     }
 
-    companion object {
-        private const val ARGUMENT_DATA = "ARGUMENT_DATA"
-        const val REQUEST_REPORT_POST_LOGIN = 1201
-
-        fun createFeedFragment(data: FeedDataModel): FeedFragment =
-            FeedFragment().also {
-                it.arguments = Bundle().apply {
-                    putParcelable(ARGUMENT_DATA, data)
-                }
-            }
+    private fun observeClearViewData() {
+        feedMainViewModel.isInClearView.observe(viewLifecycleOwner) {
+            isInClearViewMode = it
+            adapter?.onToggleClearView()
+        }
     }
 
     private fun onGoToLogin() {
@@ -197,7 +237,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
-    private fun getMenuItemData(): List<FeedMenuItem> {
+    private fun getMenuItemData() : List<FeedMenuItem> {
         val items = arrayListOf<FeedMenuItem>()
 
         items.add(
@@ -224,8 +264,8 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         return items
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
-        when (feedMenuItem.type) {
+    override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
+        when(feedMenuItem.type){
             FeedMenuIdentifier.LAPORKAN -> {
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
@@ -236,13 +276,21 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
-                // TODO add code for clear mode
+                //TODO add code for clear mode
                 Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
-        feedMainViewModel.reportContent(feedReportRequestParamModel)
+    companion object {
+        private const val ARGUMENT_DATA = "ARGUMENT_DATA"
+        const val REQUEST_REPORT_POST_LOGIN = 1201
+
+        fun createFeedFragment(data: FeedDataModel): FeedFragment =
+            FeedFragment().also {
+                it.arguments = Bundle().apply {
+                    putParcelable(ARGUMENT_DATA, data)
+                }
+            }
     }
 }
