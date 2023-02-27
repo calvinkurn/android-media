@@ -9,11 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.di.DaggerReschedulePickupComponent
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleErrorAction
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -68,7 +70,24 @@ class ReschedulePickupActivity : AppCompatActivity() {
 
     private fun observeErrorState() {
         viewModel.errorState.observe(this) {
-            showToaster(it)
+            when (it.action) {
+                RescheduleErrorAction.SHOW_TOASTER_FAILED_SAVE_RESCHEDULE -> {
+                    showToaster(it.message) { viewModel.saveReschedule(orderId) }
+                }
+                RescheduleErrorAction.SHOW_EMPTY_STATE -> {
+                    this.window.decorView.findViewById<View>(android.R.id.content)
+                        ?.let { rootView ->
+                            NetworkErrorHelper.showEmptyState(
+                                this,
+                                rootView,
+                                this::getInitialData
+                            )
+                        }
+                }
+                RescheduleErrorAction.SHOW_TOASTER_FAILED_GET_RESCHEDULE -> {
+                    showToaster(it.message) { viewModel.getReschedulePickupDetail(orderId) }
+                }
+            }
         }
     }
 
@@ -80,7 +99,7 @@ class ReschedulePickupActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(message: String, onClick: () -> Unit) {
         val rootView: View? = this.window.decorView.findViewById(android.R.id.content)
         rootView?.let {
             Toaster.build(
@@ -88,7 +107,9 @@ class ReschedulePickupActivity : AppCompatActivity() {
                 message,
                 Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR
-            ).show()
+            ) {
+                onClick()
+            }.show()
         }
     }
 

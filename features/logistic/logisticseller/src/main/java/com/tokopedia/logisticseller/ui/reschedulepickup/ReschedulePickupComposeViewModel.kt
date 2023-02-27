@@ -14,6 +14,8 @@ import com.tokopedia.logisticseller.domain.mapper.ReschedulePickupMapper
 import com.tokopedia.logisticseller.domain.usecase.GetReschedulePickupUseCase
 import com.tokopedia.logisticseller.domain.usecase.SaveReschedulePickupUseCase
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleErrorAction
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupErrorState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -31,8 +33,8 @@ class ReschedulePickupComposeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ReschedulePickupState())
     val uiState: StateFlow<ReschedulePickupState> = _uiState.asStateFlow()
 
-    private val _errorState = SingleLiveEvent<String>()
-    val errorState: LiveData<String>
+    private val _errorState = SingleLiveEvent<ReschedulePickupErrorState>()
+    val errorState: LiveData<ReschedulePickupErrorState>
         get() = _errorState
 
     var input by mutableStateOf(ReschedulePickupInput())
@@ -47,10 +49,22 @@ class ReschedulePickupComposeViewModel @Inject constructor(
                     )
                 )
                 if (response.mpLogisticGetReschedulePickup.data.isNotEmpty()) {
-                    _uiState.value =
-                        ReschedulePickupMapper.mapToState(response.mpLogisticGetReschedulePickup)
+                    val errorMessage =
+                        response.mpLogisticGetReschedulePickup.data.first().orderData.firstOrNull()?.errorMessage
+                    if (errorMessage?.isNotEmpty() == true) {
+                        _errorState.value = ReschedulePickupErrorState(
+                            message = errorMessage,
+                            action = RescheduleErrorAction.SHOW_TOASTER_FAILED_GET_RESCHEDULE
+                        )
+                    } else {
+                        _uiState.value =
+                            ReschedulePickupMapper.mapToState(response.mpLogisticGetReschedulePickup)
+                    }
                 } else {
-                    _errorState.value = "Data Reschedule Pickup tidak ditemukan"
+                    _errorState.value = ReschedulePickupErrorState(
+                        message = "Data Reschedule Pickup tidak ditemukan",
+                        action = RescheduleErrorAction.SHOW_EMPTY_STATE
+                    )
                 }
             },
             onError = { _uiState.value = ReschedulePickupState(error = it.message.orEmpty()) }
@@ -154,7 +168,10 @@ class ReschedulePickupComposeViewModel @Inject constructor(
                 )
             },
             onError = {
-                _errorState.value = it.message.orEmpty()
+                _errorState.value = ReschedulePickupErrorState(
+                    message = it.message.orEmpty(),
+                    action = RescheduleErrorAction.SHOW_TOASTER_FAILED_SAVE_RESCHEDULE
+                )
             }
         )
     }

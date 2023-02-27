@@ -40,3 +40,12 @@ data class ReschedulePickupInfo(
     val applink: String = "",
     val summary: String = ""
 )
+
+data class ReschedulePickupErrorState(
+    val message: String = "",
+    val action: RescheduleErrorAction
+)
+
+enum class RescheduleErrorAction {
+    SHOW_TOASTER_FAILED_GET_RESCHEDULE, SHOW_TOASTER_FAILED_SAVE_RESCHEDULE, SHOW_EMPTY_STATE
+}
