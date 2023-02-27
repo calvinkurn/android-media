@@ -111,7 +111,7 @@ class BannerIndicator : LinearLayout {
 
         val maxAnimatorSet = AnimatorSet()
         maxAnimatorSet.play(maximizeAnimator)
-        maxAnimatorSet.interpolator = BannerRevampViewHolder.manualScrollInterpolator
+        maxAnimatorSet.interpolator = BannerRevampViewHolder.autoScrollInterpolator
         maxAnimatorSet.start()
     }
 
@@ -171,7 +171,7 @@ class BannerIndicator : LinearLayout {
         }
         val minAnimatorSet = AnimatorSet()
         minAnimatorSet.play(minimizeAnimator)
-        minAnimatorSet.interpolator = BannerRevampViewHolder.manualScrollInterpolator
+        minAnimatorSet.interpolator = BannerRevampViewHolder.autoScrollInterpolator
         minAnimatorSet.start()
     }
 

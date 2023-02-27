@@ -134,7 +134,12 @@ class BannerRevampViewHolder(
         if (position == Int.ZERO) {
             binding?.rvBannerRevamp?.smoothScrollToPosition(position)
         } else {
-            binding?.rvBannerRevamp?.smoothScrollBy(width - paddings, 0, null, FLING_DURATION)
+            binding?.rvBannerRevamp?.smoothScrollBy(
+                width - paddings,
+                Int.ZERO,
+                if (isFromDrag) manualScrollInterpolator else autoScrollInterpolator,
+                FLING_DURATION
+            )
         }
     }
 
@@ -144,7 +149,7 @@ class BannerRevampViewHolder(
     }
 
     private fun initBanner(list: List<BannerItemModel>) {
-        if (list.size > 1) {
+        if (list.size > Int.ONE) {
             val snapHelper: SnapHelper = CubicBezierSnapHelper(itemView.context)
             binding?.rvBannerRevamp?.let {
                 it.onFlingListener = null
@@ -208,10 +213,9 @@ class BannerRevampViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner_revamp
-        private const val INITIAL_PAGE_POSITION = 0
-        val manualScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
+        val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
+        val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
         const val FLING_DURATION = 600
-        private const val FLING_DURATION_OLD = 300
     }
 
     class CubicBezierSnapHelper(private val context: Context) : PagerSnapHelper() {

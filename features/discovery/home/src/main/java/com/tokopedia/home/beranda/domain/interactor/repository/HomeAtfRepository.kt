@@ -7,6 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -25,8 +27,8 @@ class HomeAtfRepository @Inject constructor(
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
         // TODO set with correct value after API deployed
-//        params.putString(EXPERIMENT, "")
-//        params.putString(VARIANT, "")
+//        params.putString(EXPERIMENT, RollenceKey.HOME_COMPONENT_ATF)
+//        params.putString(VARIANT, HomeRollenceController.rollenceAtfValue)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
