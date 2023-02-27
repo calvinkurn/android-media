@@ -30,16 +30,28 @@ object PromoRevampAnalytics {
     private const val CLICK_LANJUT_BAYAR_ON_BOTTOMSHEET_PROMO_ERROR = "click lanjut bayar on bottom sheet promo error"
     private const val CLICK_PILIH_PROMO_LAIN_ON_BOTTOMSHEET_PROMO_ERROR = "click pilih promo lain on bottom sheet promo error"
 
-
-    private fun sendEventCategoryAction(event: String, eventCategory: String,
-                                        eventAction: String) {
+    private fun sendEventCategoryAction(
+        event: String,
+        eventCategory: String,
+        eventAction: String
+    ) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
     }
 
-    private fun sendEventCategoryActionLabel(event: String, eventCategory: String,
-                                             eventAction: String, eventLabel: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                event, eventCategory, eventAction, eventLabel))
+    private fun sendEventCategoryActionLabel(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                event,
+                eventCategory,
+                eventAction,
+                eventLabel
+            )
+        )
     }
 
     private fun sendEvent(eventData: Map<String, Any>) {
@@ -57,8 +69,11 @@ object PromoRevampAnalytics {
 
     fun eventCartClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean, userId: String) {
         var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
-        eventAction += if (isApplied) " $APPLIED"
-        else " $NOT_APPLIED"
+        eventAction += if (isApplied) {
+            " $APPLIED"
+        } else {
+            " $NOT_APPLIED"
+        }
 
         var promo = ""
         listPromoCodes.forEach {
@@ -75,8 +90,11 @@ object PromoRevampAnalytics {
     // TODO : check after backend give new struct
     fun eventCartViewPromoAfterAdjustItem(isDecreased: Boolean) {
         var eventAction = VIEW_PROMO
-        eventAction += if (isDecreased) eventAction += " $DECREASED"
-        else eventAction += " $RELEASED"
+        eventAction += if (isDecreased) {
+            eventAction += " $DECREASED"
+        } else {
+            eventAction += " $RELEASED"
+        }
         eventAction += ""
         sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, AFTER_ADJUST_ITEM)
     }

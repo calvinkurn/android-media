@@ -4,10 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NULL_VALUE
 import com.tokopedia.shop.common.constant.*
 
 class ShopProductFilterParameter() : Parcelable {
-
     private var mapParameter: MutableMap<String, String> = mutableMapOf()
 
     constructor(parcel: Parcel) : this() {
@@ -72,6 +72,36 @@ class ShopProductFilterParameter() : Parcelable {
         return "$IS_FULFILLMENT_KEY=${getIsFulfillment()}".takeIf {
             getIsFulfillment().isNotEmpty()
         } ?: String.EMPTY
+    }
+
+    fun getListFilterForTracking(): String {
+        return mutableListOf<String>().apply {
+            add(getSortIdFilterTrackingValue())
+            add(getPriceRangeFilterTrackingValue())
+            add(getRatingTrackingValue())
+            add(getCategoryIdTrackingValue())
+            add(getLayananTokopediaTrackingValue())
+        }.joinToString(" - ")
+    }
+
+    private fun getSortIdFilterTrackingValue(): String {
+        return getSortId().takeIf { it.isNotEmpty() } ?: NULL_VALUE
+    }
+
+    private fun getPriceRangeFilterTrackingValue(): String {
+        return "${getPmin()}_${getPmax()}"
+    }
+
+    private fun getRatingTrackingValue(): String {
+        return getRating().takeIf { it.isNotEmpty() } ?: NULL_VALUE
+    }
+
+    private fun getCategoryIdTrackingValue(): String {
+        return getCategory().toString()
+    }
+
+    private fun getLayananTokopediaTrackingValue(): String {
+        return getIsFulfillment().takeIf { it.isNotEmpty() } ?: NULL_VALUE
     }
 
     companion object CREATOR : Parcelable.Creator<ShopProductFilterParameter> {
