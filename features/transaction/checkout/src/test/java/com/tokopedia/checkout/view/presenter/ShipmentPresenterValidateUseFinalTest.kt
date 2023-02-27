@@ -312,7 +312,7 @@ class ShipmentPresenterValidateUseFinalTest {
     @Test
     fun `WHEN validate use success with ticker data and current ticker not exist THEN should update promo button and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData = null
+//        presenter.tickerAnnouncementHolderData = null
         val tickerMessage = "ticker message"
         val tickerStatusCode = "1"
         val promoUiModel = PromoUiModel(

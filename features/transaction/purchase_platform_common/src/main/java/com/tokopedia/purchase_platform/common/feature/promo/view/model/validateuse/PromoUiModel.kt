@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class PromoUiModel(
     var codes: ArrayList<String> = arrayListOf(),
     var promoCodeId: Int = -1,
-    var voucherOrderUiModels: ArrayList<PromoCheckoutVoucherOrdersItemUiModel> = arrayListOf(),
+    var voucherOrderUiModels: List<PromoCheckoutVoucherOrdersItemUiModel> = arrayListOf(),
     var cashbackAdvocateReferralAmount: Int = -1,
     var clashingInfoDetailUiModel: ClashingInfoDetailUiModel = ClashingInfoDetailUiModel(),
     var cashbackWalletAmount: Int = -1,

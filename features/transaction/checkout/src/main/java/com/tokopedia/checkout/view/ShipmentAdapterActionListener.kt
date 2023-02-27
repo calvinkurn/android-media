@@ -18,7 +18,7 @@ import rx.subjects.PublishSubject
 
 interface ShipmentAdapterActionListener {
     fun onCancelVoucherLogisticClicked(
-        pslCode: String?,
+        pslCode: String,
         position: Int,
         shipmentCartItemModel: ShipmentCartItemModel?
     )
@@ -42,7 +42,7 @@ interface ShipmentAdapterActionListener {
         skipValidateUse: Boolean
     )
 
-    fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest?>?)
+    fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>?)
     fun onInsuranceChecked(position: Int)
     fun onPriorityChecked(position: Int)
     fun onNeedUpdateViewItem(position: Int)
@@ -76,7 +76,7 @@ interface ShipmentAdapterActionListener {
         itemPosition: Int,
         shipmentDetailData: ShipmentDetailData?,
         shipmentCartItemModel: ShipmentCartItemModel?,
-        shopShipmentList: List<ShopShipment?>?,
+        shopShipmentList: List<ShopShipment>?,
         isTradeInDropOff: Boolean
     )
 

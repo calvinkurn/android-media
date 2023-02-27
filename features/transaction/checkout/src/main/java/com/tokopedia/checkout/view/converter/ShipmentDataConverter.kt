@@ -354,8 +354,8 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String
-    ): List<CartItemModel> {
-        val cartItemModels: MutableList<CartItemModel> = ArrayList()
+    ): ArrayList<CartItemModel> {
+        val cartItemModels: ArrayList<CartItemModel> = ArrayList()
         for (product in products) {
             cartItemModels.add(convertFromProduct(product, groupShop, username, receiverName))
         }

@@ -1192,7 +1192,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Then
         assertEquals(
             listOf(ShipmentCrossSellModel(index = 0)),
-            presenter.listShipmentCrossSellModel
+            presenter.getListShipmentCrossSellModel()
         )
     }
 
@@ -1237,7 +1237,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         )
 
         // Then
-        assertTrue(presenter.listShipmentCrossSellModel.size == 0)
+        assertTrue(presenter.getListShipmentCrossSellModel().size == 0)
     }
 
     @Test
@@ -1314,8 +1314,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         presenter.shipmentButtonPaymentModel = null
 
         // Then
-        assertEquals(0, presenter.shipmentButtonPaymentModel.quantity)
-        assertEquals("-", presenter.shipmentButtonPaymentModel.totalPrice)
+        assertEquals(0, presenter.shipmentButtonPaymentModel!!.quantity)
+        assertEquals("-", presenter.shipmentButtonPaymentModel!!.totalPrice)
     }
 
     @Test
@@ -1327,17 +1327,17 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         )
 
         // Then
-        assertEquals(1, presenter.shipmentButtonPaymentModel.quantity)
-        assertEquals("Rp1.000", presenter.shipmentButtonPaymentModel.totalPrice)
+        assertEquals(1, presenter.shipmentButtonPaymentModel!!.quantity)
+        assertEquals("Rp1.000", presenter.shipmentButtonPaymentModel!!.totalPrice)
     }
 
     @Test
     fun `GIVEN null shipment cost data WHEN get shipment cost data THEN should return new shipment cost data`() {
         // Given
-        presenter.shipmentCostModel = null
+        presenter.setShipmentCostModel(null)
 
         // Then
-        assertEquals(ShipmentCostModel(), presenter.shipmentCostModel)
+        assertEquals(ShipmentCostModel(), presenter.getShipmentCostModel())
     }
 
     @Test
@@ -1346,10 +1346,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val shipmentCostModel = ShipmentCostModel(
             totalPrice = 1000.0
         )
-        presenter.shipmentCostModel = shipmentCostModel
+        presenter.setShipmentCostModel(shipmentCostModel)
 
         // Then
-        assertEquals(shipmentCostModel, presenter.shipmentCostModel)
+        assertEquals(shipmentCostModel, presenter.getShipmentCostModel())
     }
 
     @Test
@@ -1369,7 +1369,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @Test
     fun `GIVEN null campaign timer WHEN get campaign timer data THEN should return null`() {
         // Then
-        assertEquals(null, presenter.campaignTimer)
+        assertEquals(null, presenter.getCampaignTimer())
     }
 
     @Test
@@ -1411,7 +1411,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         )
 
         // Then
-        assertEquals(null, presenter.campaignTimer)
+        assertEquals(null, presenter.getCampaignTimer())
     }
 
     @Test
@@ -1453,7 +1453,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         )
 
         // Then
-        assertEquals(campaignTimerUi, presenter.campaignTimer)
+        assertEquals(campaignTimerUi, presenter.getCampaignTimer())
     }
 
     @Test
@@ -1599,8 +1599,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Then
         assert(presenter.shipmentTickerErrorModel.errorMessage == errorTicker)
         assert(presenter.shipmentTickerErrorModel.isError)
-        assert(!presenter.shipmentDonationModel.isEnabled)
-        assert(!presenter.egoldAttributeModel.isEnabled)
+        assert(!presenter.shipmentDonationModel!!.isEnabled)
+        assert(!presenter.egoldAttributeModel!!.isEnabled)
     }
 
     @Test

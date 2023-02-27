@@ -680,7 +680,7 @@ class ShipmentPresenterClearPromoTest {
         // Test negative branch
         presenter.shipmentCartItemModelList = listOf(
             // Test shipmentCartItemModel == null
-            null,
+//            null,
             // Test shipmentCartData == null
             ShipmentCartItemModel(
                 cartString = "111-111-111",

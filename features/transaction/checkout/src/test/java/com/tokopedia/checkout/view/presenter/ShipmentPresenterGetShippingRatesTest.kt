@@ -386,7 +386,7 @@ class ShipmentPresenterGetShippingRatesTest {
         val skipMvc = true
 
         every { view.renderCourierStateSuccess(any(), any(), any(), any()) } answers {
-            presenter.logisticDonePublisher.onCompleted()
+            presenter.logisticDonePublisher!!.onCompleted()
         }
 
         // When get first shipping

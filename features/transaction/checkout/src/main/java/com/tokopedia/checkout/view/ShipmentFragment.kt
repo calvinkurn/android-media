@@ -464,9 +464,9 @@ class ShipmentFragment :
             shipmentPresenter.tickerAnnouncementHolderData = savedTickerAnnouncementModel!!
             shipmentPresenter.shipmentCartItemModelList = savedShipmentCartItemModelList
             shipmentPresenter.recipientAddressModel = savedRecipientAddressModel
-            shipmentPresenter.shipmentCostModel = savedShipmentCostModel
+            shipmentPresenter.setShipmentCostModel(savedShipmentCostModel)
             shipmentPresenter.shipmentDonationModel = savedShipmentDonationModel
-            shipmentPresenter.listShipmentCrossSellModel = savedListShipmentCrossSellModel
+            shipmentPresenter.setListShipmentCrossSellModel(savedListShipmentCrossSellModel)
             shipmentPresenter.shipmentButtonPaymentModel = savedShipmentButtonPaymentModel
             shipmentPresenter.egoldAttributeModel = savedEgoldAttributeModel
             shipmentAdapter.lastChooseCourierItemPosition =
@@ -519,7 +519,7 @@ class ShipmentFragment :
             )
             saveInstanceCacheManager?.put(
                 ShipmentCostModel::class.java.simpleName,
-                shipmentPresenter.shipmentCostModel
+                shipmentPresenter.getShipmentCostModel()
             )
             saveInstanceCacheManager?.put(
                 ShipmentDonationModel::class.java.simpleName,
@@ -808,7 +808,7 @@ class ShipmentFragment :
 
     private fun sendEEStep2() {
         for (shipmentCartItemModel in shipmentAdapter.shipmentCartItemModelList!!) {
-            var dataCheckoutRequests: List<DataCheckoutRequest?>? = null
+            var dataCheckoutRequests: List<DataCheckoutRequest>? = null
             dataCheckoutRequests = if (shipmentCartItemModel.isSaveStateFlag) {
                 shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                     shipmentCartItemModel.cartString,
@@ -1021,9 +1021,9 @@ class ShipmentFragment :
             shipmentPresenter.shipmentNewUpsellModel,
             shipmentPresenter.shipmentCartItemModelList,
             shipmentPresenter.shipmentDonationModel,
-            shipmentPresenter.listShipmentCrossSellModel,
+            shipmentPresenter.getListShipmentCrossSellModel(),
             shipmentPresenter.lastApplyData,
-            shipmentPresenter.shipmentCostModel,
+            shipmentPresenter.getShipmentCostModel(),
             shipmentPresenter.egoldAttributeModel,
             shipmentPresenter.shipmentButtonPaymentModel,
             shipmentPresenter.uploadPrescriptionUiModel,
@@ -1054,9 +1054,9 @@ class ShipmentFragment :
             shipmentPresenter.shipmentNewUpsellModel,
             shipmentPresenter.shipmentCartItemModelList,
             shipmentPresenter.shipmentDonationModel,
-            shipmentPresenter.listShipmentCrossSellModel,
+            shipmentPresenter.getListShipmentCrossSellModel(),
             shipmentPresenter.lastApplyData,
-            shipmentPresenter.shipmentCostModel,
+            shipmentPresenter.getShipmentCostModel(),
             shipmentPresenter.egoldAttributeModel,
             shipmentPresenter.shipmentButtonPaymentModel,
             shipmentPresenter.uploadPrescriptionUiModel,
@@ -2026,13 +2026,13 @@ class ShipmentFragment :
         }
     }
 
-    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest?>?) {
+    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>?) {
         shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData)
     }
 
     // Project ARMY, clear from promo BBO ticker
     override fun onCancelVoucherLogisticClicked(
-        pslCode: String?,
+        pslCode: String,
         position: Int,
         shipmentCartItemModel: ShipmentCartItemModel?
     ) {
@@ -2825,7 +2825,7 @@ class ShipmentFragment :
                     cartPosition,
                     shipmentCartItemModel.selectedShipmentDetailData,
                     shipmentCartItemModel,
-                    shipmentCartItemModel.shopShipmentList,
+                    shipmentCartItemModel.shopShipmentList!!,
                     false,
                     getProductForRatesRequest(shipmentCartItemModel),
                     shipmentCartItemModel.cartString,
@@ -2868,7 +2868,7 @@ class ShipmentFragment :
         itemPosition: Int,
         shipmentDetailData: ShipmentDetailData?,
         shipmentCartItemModel: ShipmentCartItemModel?,
-        shopShipmentList: List<ShopShipment?>?,
+        shopShipmentList: List<ShopShipment>?,
         isTradeInDropOff: Boolean
     ) {
         if (shopShipmentList != null && shopShipmentList.isNotEmpty()) {
@@ -3322,7 +3322,7 @@ class ShipmentFragment :
         var eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION
         var eventAction = ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN
         var eventLabel = ConstantTransactionAnalytics.EventLabel.SUCCESS
-        val tradeInCustomDimension: MutableMap<String?, String?> = HashMap()
+        val tradeInCustomDimension: MutableMap<String, String> = HashMap()
         if (isTradeIn) {
             eventCategory =
                 CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN
@@ -3432,17 +3432,19 @@ class ShipmentFragment :
                 validateUsePromoRevampUiModel.promoUiModel.codes.clear()
             }
             val deletedVoucherOrder = ArrayList<PromoCheckoutVoucherOrdersItemUiModel>()
-            for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+            val voucherOrderUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.toMutableList()
+            for (voucherOrdersItemUiModel in voucherOrderUiModels) {
                 if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
                     deletedVoucherOrder.add(voucherOrdersItemUiModel)
                 }
             }
             if (deletedVoucherOrder.size > 0) {
                 for (voucherOrdersItemUiModel in deletedVoucherOrder) {
-                    validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.remove(
+                    voucherOrderUiModels.remove(
                         voucherOrdersItemUiModel
                     )
                 }
+                validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels = voucherOrderUiModels
             }
         }
         doCheckout()
@@ -3500,9 +3502,9 @@ class ShipmentFragment :
      * Later: consider serverTimeOffset, need more time
      * */
     private fun checkCampaignTimer() {
-        if (shipmentPresenter.campaignTimer != null && shipmentPresenter.campaignTimer!!.showTimer) {
-            val timer = shipmentPresenter.campaignTimer
-            val diff = timeSinceNow(timer!!.timerExpired)
+        val timer = shipmentPresenter.getCampaignTimer()
+        if (timer != null && timer.showTimer) {
+            val diff = timeSinceNow(timer.timerExpired)
             showCampaignTimerExpiredDialog(timer, diff, checkoutAnalyticsCourierSelection)
         }
     }
@@ -3522,7 +3524,7 @@ class ShipmentFragment :
     }
 
     private fun setCampaignTimer() {
-        val timer = shipmentPresenter.campaignTimer
+        val timer = shipmentPresenter.getCampaignTimer()
         if (timer != null && timer.showTimer) {
             val diff = timeBetweenRFC3339(timer.timerServer, timer.timerExpired)
             cdLayout?.visibility = View.VISIBLE
@@ -4178,8 +4180,8 @@ class ShipmentFragment :
                 KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA
             )
             uploadModel!!.isError = false
-            if (!isApi || prescriptions != null && !prescriptions.isEmpty()) {
-                shipmentPresenter.setPrescriptionIds(prescriptions)
+            if (!isApi || (prescriptions != null && prescriptions.isNotEmpty())) {
+                shipmentPresenter.setPrescriptionIds(prescriptions!!)
             }
             if (!isApi) {
                 showToastNormal(activity!!.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text))

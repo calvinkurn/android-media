@@ -320,7 +320,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        assertEquals(prescriptions.size, presenter.uploadPrescriptionUiModel.uploadedImageCount)
+        assertEquals(prescriptions.size, presenter.uploadPrescriptionUiModel!!.uploadedImageCount)
     }
 
     @Test
@@ -333,7 +333,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        assertEquals(0, presenter.uploadPrescriptionUiModel.uploadedImageCount)
+        assertEquals(0, presenter.uploadPrescriptionUiModel!!.uploadedImageCount)
     }
 
     @Test
@@ -379,10 +379,10 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[0].prescriptionIds)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[1].prescriptionIds)
-        assertEquals(prescriptions, presenter.shipmentCartItemModelList[2].prescriptionIds)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![0].prescriptionIds)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![1].prescriptionIds)
+        assertEquals(prescriptions, presenter.shipmentCartItemModelList!![2].prescriptionIds)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![3].prescriptionIds)
     }
 
     @Test
@@ -542,7 +542,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
         val errorWording = "error wording"
-        every { view.activityContext.getString(any(), any()) } returns errorWording
+        every { view.activityContext?.getString(any(), any()) } returns errorWording
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -663,17 +663,17 @@ class ShipmentPresenterPrescriptionIdsTest {
             presenter.uploadPrescriptionUiModel
         )
 
-        assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals(errorWording, presenter.shipmentCartItemModelList[0].errorTitle)
-        assertEquals(true, presenter.shipmentCartItemModelList[0].isCustomEpharmacyError)
+        assertEquals(true, presenter.shipmentCartItemModelList!![0].isError)
+        assertEquals(errorWording, presenter.shipmentCartItemModelList!![0].errorTitle)
+        assertEquals(true, presenter.shipmentCartItemModelList!![0].isCustomEpharmacyError)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
-        assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].isError)
+        assertEquals(true, presenter.shipmentCartItemModelList!![1].cartItemModels[0].isError)
         assertEquals(
             rejectedWording,
-            presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage
+            presenter.shipmentCartItemModelList!![1].cartItemModels[0].errorMessage
         )
-        assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].cartItemModels[1].isError)
     }
 
     @Test
@@ -764,8 +764,8 @@ class ShipmentPresenterPrescriptionIdsTest {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals(null, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(false, presenter.shipmentCartItemModelList!![0].isError)
+        assertEquals(null, presenter.shipmentCartItemModelList!![0].errorTitle)
     }
 
     @Test
@@ -895,20 +895,20 @@ class ShipmentPresenterPrescriptionIdsTest {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList[0].partnerConsultationId)
+        assertEquals(false, presenter.shipmentCartItemModelList!![0].isError)
+        assertEquals("qwerty", presenter.shipmentCartItemModelList!![0].consultationDataString)
+        assertEquals("123", presenter.shipmentCartItemModelList!![0].tokoConsultationId)
+        assertEquals("321", presenter.shipmentCartItemModelList!![0].partnerConsultationId)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[1].partnerConsultationId)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].partnerConsultationId)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
+        assertEquals(false, presenter.shipmentCartItemModelList!![2].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].partnerConsultationId)
     }
 
     @Test
@@ -1217,29 +1217,29 @@ class ShipmentPresenterPrescriptionIdsTest {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList[0].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[0].prescriptionIds)
+        assertEquals(false, presenter.shipmentCartItemModelList!![0].isError)
+        assertEquals("qwerty", presenter.shipmentCartItemModelList!![0].consultationDataString)
+        assertEquals("123", presenter.shipmentCartItemModelList!![0].tokoConsultationId)
+        assertEquals("321", presenter.shipmentCartItemModelList!![0].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![0].prescriptionIds)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[1].partnerConsultationId)
-        assertEquals(listOf("1", "2"), presenter.shipmentCartItemModelList[1].prescriptionIds)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].partnerConsultationId)
+        assertEquals(listOf("1", "2"), presenter.shipmentCartItemModelList!![1].prescriptionIds)
 
-        assertEquals(true, presenter.shipmentCartItemModelList[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[2].prescriptionIds)
+        assertEquals(true, presenter.shipmentCartItemModelList!![2].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![2].prescriptionIds)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[3].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[3].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[3].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[3].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
+        assertEquals(false, presenter.shipmentCartItemModelList!![3].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![3].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![3].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![3].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![3].prescriptionIds)
     }
 
     @Test
@@ -1591,20 +1591,20 @@ class ShipmentPresenterPrescriptionIdsTest {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList[0].partnerConsultationId)
+        assertEquals(false, presenter.shipmentCartItemModelList!![0].isError)
+        assertEquals("qwerty", presenter.shipmentCartItemModelList!![0].consultationDataString)
+        assertEquals("123", presenter.shipmentCartItemModelList!![0].tokoConsultationId)
+        assertEquals("321", presenter.shipmentCartItemModelList!![0].partnerConsultationId)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[1].partnerConsultationId)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].partnerConsultationId)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
+        assertEquals(false, presenter.shipmentCartItemModelList!![2].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].partnerConsultationId)
     }
 
     @Test
@@ -1612,7 +1612,7 @@ class ShipmentPresenterPrescriptionIdsTest {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
         val errorWording = "error wording"
-        every { view.activityContext.getString(any(), any()) } returns errorWording
+        every { view.activityContext?.getString(any(), any()) } returns errorWording
         val result = arrayListOf(
             EPharmacyMiniConsultationResult(
                 epharmacyGroupId = "123",
@@ -1718,19 +1718,19 @@ class ShipmentPresenterPrescriptionIdsTest {
             presenter.uploadPrescriptionUiModel
         )
 
-        assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals(errorWording, presenter.shipmentCartItemModelList[0].errorTitle)
-        assertEquals(true, presenter.shipmentCartItemModelList[0].isCustomEpharmacyError)
+        assertEquals(true, presenter.shipmentCartItemModelList!![0].isError)
+        assertEquals(errorWording, presenter.shipmentCartItemModelList!![0].errorTitle)
+        assertEquals(true, presenter.shipmentCartItemModelList!![0].isCustomEpharmacyError)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
-        assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].isError)
+        assertEquals(true, presenter.shipmentCartItemModelList!![1].cartItemModels[0].isError)
         assertEquals(
             rejectedWording,
-            presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage
+            presenter.shipmentCartItemModelList!![1].cartItemModels[0].errorMessage
         )
-        assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].cartItemModels[1].isError)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[2].isError)
+        assertEquals(false, presenter.shipmentCartItemModelList!![2].isError)
     }
 
     @Test
@@ -1967,29 +1967,29 @@ class ShipmentPresenterPrescriptionIdsTest {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList[0].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[0].prescriptionIds)
+        assertEquals(false, presenter.shipmentCartItemModelList!![0].isError)
+        assertEquals("qwerty", presenter.shipmentCartItemModelList!![0].consultationDataString)
+        assertEquals("123", presenter.shipmentCartItemModelList!![0].tokoConsultationId)
+        assertEquals("321", presenter.shipmentCartItemModelList!![0].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![0].prescriptionIds)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[1].partnerConsultationId)
-        assertEquals(listOf("1", "2"), presenter.shipmentCartItemModelList[1].prescriptionIds)
+        assertEquals(false, presenter.shipmentCartItemModelList!![1].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![1].partnerConsultationId)
+        assertEquals(listOf("1", "2"), presenter.shipmentCartItemModelList!![1].prescriptionIds)
 
-        assertEquals(true, presenter.shipmentCartItemModelList[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[2].prescriptionIds)
+        assertEquals(true, presenter.shipmentCartItemModelList!![2].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![2].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![2].prescriptionIds)
 
-        assertEquals(false, presenter.shipmentCartItemModelList[3].isError)
-        assertEquals("", presenter.shipmentCartItemModelList[3].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList[3].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList[3].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
+        assertEquals(false, presenter.shipmentCartItemModelList!![3].isError)
+        assertEquals("", presenter.shipmentCartItemModelList!![3].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList!![3].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList!![3].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList!![3].prescriptionIds)
     }
 
     @Test

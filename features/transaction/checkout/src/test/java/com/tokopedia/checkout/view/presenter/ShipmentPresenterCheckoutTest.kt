@@ -193,7 +193,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -229,7 +229,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(emptyList())
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -288,7 +288,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -324,7 +324,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -358,7 +358,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -394,7 +394,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -428,8 +428,8 @@ class ShipmentPresenterCheckoutTest {
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.promos?.isNotEmpty() == true)
-        assert(checkoutRequest.promoCodes?.isNotEmpty() == true)
+        assert(checkoutRequest?.promos?.isNotEmpty() == true)
+        assert(checkoutRequest?.promoCodes?.isNotEmpty() == true)
     }
 
     @Test
@@ -437,14 +437,14 @@ class ShipmentPresenterCheckoutTest {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
 
         // When
         val checkoutRequest =
             presenter.generateCheckoutRequest(null, 1, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.isDonation == 1)
+        assert(checkoutRequest?.isDonation == 1)
     }
 
     @Test
@@ -464,8 +464,8 @@ class ShipmentPresenterCheckoutTest {
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.egoldData?.isEgold == true)
-        assert(checkoutRequest.egoldData?.egoldAmount == egoldAmount)
+        assert(checkoutRequest?.egoldData?.isEgold == true)
+        assert(checkoutRequest?.egoldData?.egoldAmount == egoldAmount)
     }
 
     @Test
@@ -486,9 +486,9 @@ class ShipmentPresenterCheckoutTest {
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.cornerData?.isTokopediaCorner == true)
-        assert(checkoutRequest.cornerData?.cornerId == tmpCornerId.toLongOrZero())
-        assert(checkoutRequest.cornerData?.userCornerId == tmpUserCornerId)
+        assert(checkoutRequest?.cornerData?.isTokopediaCorner == true)
+        assert(checkoutRequest?.cornerData?.cornerId == tmpCornerId.toLongOrZero())
+        assert(checkoutRequest?.cornerData?.userCornerId == tmpUserCornerId)
     }
 
     @Test
@@ -620,7 +620,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -689,7 +689,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -722,7 +722,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -759,7 +759,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -796,7 +796,7 @@ class ShipmentPresenterCheckoutTest {
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.setPurchaseProtection(true)
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -833,7 +833,7 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
@@ -1011,11 +1011,13 @@ class ShipmentPresenterCheckoutTest {
             }
         )
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-        presenter.listShipmentCrossSellModel = arrayListOf(
-            ShipmentCrossSellModel().apply {
-                isChecked = true
-                crossSellModel = CrossSellModel()
-            }
+        presenter.setListShipmentCrossSellModel(
+            arrayListOf(
+                ShipmentCrossSellModel().apply {
+                    isChecked = true
+                    crossSellModel = CrossSellModel()
+                }
+            )
         )
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
@@ -1057,16 +1059,16 @@ class ShipmentPresenterCheckoutTest {
                 isChecked = true
             )
         )
-        presenter.listShipmentCrossSellModel = listCrossSellModel
+        presenter.setListShipmentCrossSellModel(listCrossSellModel)
 
         // When
         val checkoutRequest =
             presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "")
 
         // Then
-        assert(checkoutRequest.crossSell?.listItem?.isNotEmpty() == true)
-        assert(checkoutRequest.promos?.isNotEmpty() == true)
-        assert(checkoutRequest.promoCodes?.isNotEmpty() == true)
+        assert(checkoutRequest?.crossSell?.listItem?.isNotEmpty() == true)
+        assert(checkoutRequest?.promos?.isNotEmpty() == true)
+        assert(checkoutRequest?.promoCodes?.isNotEmpty() == true)
     }
 
     @Test
@@ -1124,14 +1126,14 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
 
         // When
         val checkoutRequest =
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.crossSell!!.listItem.isNotEmpty())
+        assert(checkoutRequest?.crossSell!!.listItem.isNotEmpty())
         assertEquals(
             CrossSellItemRequestModel(1, 100.0, "upsell", 2),
             checkoutRequest.crossSell!!.listItem[0]
@@ -1193,14 +1195,14 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
 
         // When
         val checkoutRequest =
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.crossSell!!.listItem.isEmpty())
+        assert(checkoutRequest?.crossSell!!.listItem.isEmpty())
     }
 
     @Test
@@ -1258,14 +1260,14 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
 
         // When
         val checkoutRequest =
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.crossSell!!.listItem.isEmpty())
+        assert(checkoutRequest?.crossSell!!.listItem.isEmpty())
     }
 
     @Test
@@ -1323,14 +1325,14 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        presenter.setListShipmentCrossSellModel(arrayListOf())
 
         // When
         val checkoutRequest =
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.crossSell!!.listItem.isEmpty())
+        assert(checkoutRequest?.crossSell!!.listItem.isEmpty())
     }
 
     @Test
@@ -1349,6 +1351,6 @@ class ShipmentPresenterCheckoutTest {
             presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
-        assert(checkoutRequest.featureType == FEATURE_TYPE_TOKONOW_PRODUCT)
+        assert(checkoutRequest?.featureType == FEATURE_TYPE_TOKONOW_PRODUCT)
     }
 }

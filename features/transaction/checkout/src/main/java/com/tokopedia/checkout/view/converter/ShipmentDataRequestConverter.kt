@@ -153,7 +153,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                     (selectedShipper.scheduleDate != "" && selectedShipper.timeslotId != 0L && shipmentCartItemModel.validationMetadata != "")
                 shopProductCheckout.validationMetadata = shipmentCartItemModel.validationMetadata
                 val promoCodes = ArrayList<String>()
-                val promoRequests: MutableList<PromoRequest> = ArrayList()
+                val promoRequests: ArrayList<PromoRequest> = ArrayList()
                 val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
                 if (voucherLogisticItemUiModel != null) {
                     promoCodes.add(voucherLogisticItemUiModel.code)

@@ -145,7 +145,7 @@ class ShipmentCartItemModel(
         @JvmStatic
         fun clone(
             shipmentCartItemModel: ShipmentCartItemModel,
-            cartItemModels: List<CartItemModel>
+            cartItemModels: ArrayList<CartItemModel>
         ): ShipmentCartItemModel {
             val newShipmentCartItemModel = ShipmentCartItemModel()
             newShipmentCartItemModel.selectedShipmentDetailData =

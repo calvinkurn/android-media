@@ -673,9 +673,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastValidateUseRequest.orders.size == 1)
-        assert(presenter.lastValidateUseRequest.orders[0].uniqueId == "111-111-111")
-        assert(presenter.lastValidateUseRequest.orders[0].codes.isEmpty())
+        assert(presenter.lastValidateUseRequest!!.orders.size == 1)
+        assert(presenter.lastValidateUseRequest!!.orders[0].uniqueId == "111-111-111")
+        assert(presenter.lastValidateUseRequest!!.orders[0].codes.isEmpty())
     }
 
     @Test
@@ -697,7 +697,7 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastApplyData.voucherOrders.isEmpty())
+        assert(presenter.lastApplyData!!.voucherOrders.isEmpty())
     }
 
     @Test
@@ -721,10 +721,10 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastValidateUseRequest.orders.size == 1)
-        assert(presenter.lastValidateUseRequest.orders[0].uniqueId == "111-111-111")
-        assert(presenter.lastValidateUseRequest.orders[0].codes.size == 1)
-        assert(presenter.lastValidateUseRequest.orders[0].codes.contains("TESTNONBO"))
+        assert(presenter.lastValidateUseRequest!!.orders.size == 1)
+        assert(presenter.lastValidateUseRequest!!.orders[0].uniqueId == "111-111-111")
+        assert(presenter.lastValidateUseRequest!!.orders[0].codes.size == 1)
+        assert(presenter.lastValidateUseRequest!!.orders[0].codes.contains("TESTNONBO"))
     }
 
     @Test
@@ -746,9 +746,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastApplyData.voucherOrders.size == 1)
-        assert(presenter.lastApplyData.voucherOrders[0].uniqueId == "111-111-111")
-        assert(presenter.lastApplyData.voucherOrders[0].code == "TESTNONBO")
+        assert(presenter.lastApplyData!!.voucherOrders.size == 1)
+        assert(presenter.lastApplyData!!.voucherOrders[0].uniqueId == "111-111-111")
+        assert(presenter.lastApplyData!!.voucherOrders[0].code == "TESTNONBO")
     }
 
     @Test
@@ -772,9 +772,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastValidateUseRequest.orders.size == 1)
-        assert(presenter.lastValidateUseRequest.orders[0].uniqueId == "222-222-222")
-        assert(presenter.lastValidateUseRequest.orders[0].codes[0] == "TESTNONBO")
+        assert(presenter.lastValidateUseRequest!!.orders.size == 1)
+        assert(presenter.lastValidateUseRequest!!.orders[0].uniqueId == "222-222-222")
+        assert(presenter.lastValidateUseRequest!!.orders[0].codes[0] == "TESTNONBO")
     }
 
     @Test
@@ -796,9 +796,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastApplyData.voucherOrders.size == 1)
-        assert(presenter.lastApplyData.voucherOrders[0].uniqueId == "222-222-222")
-        assert(presenter.lastApplyData.voucherOrders[0].code == "TESTNONBO")
+        assert(presenter.lastApplyData!!.voucherOrders.size == 1)
+        assert(presenter.lastApplyData!!.voucherOrders[0].uniqueId == "222-222-222")
+        assert(presenter.lastApplyData!!.voucherOrders[0].code == "TESTNONBO")
     }
 
     @Test
@@ -831,8 +831,8 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastValidateUseRequest.orders.isEmpty())
-        assert(presenter.lastApplyData.voucherOrders.isEmpty())
+        assert(presenter.lastValidateUseRequest!!.orders.isEmpty())
+        assert(presenter.lastApplyData!!.voucherOrders.isEmpty())
     }
 
     // Test ShipmentPresenter.validateBoPromo()
