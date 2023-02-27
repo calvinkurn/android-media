@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by brilliant.oka on 29/03/17.
  */
+//
 class ShopProductCampaign {
     @SerializedName("product_id")
     @Expose

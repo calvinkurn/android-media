@@ -23,15 +23,15 @@ import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
-import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
-import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
-import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
+//import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
+//import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
+//import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
 import com.tokopedia.shop.product.data.source.cloud.interceptor.ShopOfficialStoreAuthInterceptor
 import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier
 import com.tokopedia.shop.product.di.ShopProductQualifier
 import com.tokopedia.shop.product.di.scope.ShopProductScope
-import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase
-import com.tokopedia.shop.product.domain.repository.ShopProductRepository
+//import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase
+//import com.tokopedia.shop.product.domain.repository.ShopProductRepository
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -119,54 +119,54 @@ class ShopProductModule {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
-    // Product
-    @Provides
-    fun provideShopOfficialStoreAuthInterceptor(
-        @ShopPageContext context: Context,
-        networkRouter: NetworkRouter,
-        userSessionInterface: UserSessionInterface
-    ): ShopOfficialStoreAuthInterceptor {
-        return ShopOfficialStoreAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
+//    // Product
+//    @Provides
+//    fun provideShopOfficialStoreAuthInterceptor(
+//        @ShopPageContext context: Context,
+//        networkRouter: NetworkRouter,
+//        userSessionInterface: UserSessionInterface
+//    ): ShopOfficialStoreAuthInterceptor {
+//        return ShopOfficialStoreAuthInterceptor(context, networkRouter, userSessionInterface)
+//    }
 
-    @ShopProductQualifier
-    @Provides
-    fun provideOfficialStoreOkHttpClient(
-        shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor,
-        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-        errorResponseInterceptor: HeaderErrorResponseInterceptor
-    ): OkHttpClient {
-        return Builder()
-            .addInterceptor(shopOfficialStoreAuthInterceptor)
-            .addInterceptor(errorResponseInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-    }
+//    @ShopProductQualifier
+//    @Provides
+//    fun provideOfficialStoreOkHttpClient(
+//        shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor,
+//        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+//        errorResponseInterceptor: HeaderErrorResponseInterceptor
+//    ): OkHttpClient {
+//        return Builder()
+//            .addInterceptor(shopOfficialStoreAuthInterceptor)
+//            .addInterceptor(errorResponseInterceptor)
+//            .addInterceptor(httpLoggingInterceptor)
+//            .build()
+//    }
 
-    @ShopProductQualifier
-    @ShopProductScope
-    @Provides
-    fun provideOfficialStoreRetrofit(@ShopProductQualifier okHttpClient: OkHttpClient, retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(ShopUrl.BASE_OFFICIAL_STORE_URL).client(okHttpClient).build()
-    }
+//    @ShopProductQualifier
+//    @ShopProductScope
+//    @Provides
+//    fun provideOfficialStoreRetrofit(@ShopProductQualifier okHttpClient: OkHttpClient, retrofitBuilder: Retrofit.Builder): Retrofit {
+//        return retrofitBuilder.baseUrl(ShopUrl.BASE_OFFICIAL_STORE_URL).client(okHttpClient).build()
+//    }
 
-    @ShopProductScope
-    @Provides
-    fun provideShopOfficialStoreApi(@ShopProductQualifier retrofit: Retrofit): ShopOfficialStoreApi {
-        return retrofit.create(ShopOfficialStoreApi::class.java)
-    }
+//    @ShopProductScope
+//    @Provides
+//    fun provideShopOfficialStoreApi(@ShopProductQualifier retrofit: Retrofit): ShopOfficialStoreApi {
+//        return retrofit.create(ShopOfficialStoreApi::class.java)
+//    }
 
-    @ShopProductScope
-    @Provides
-    fun provideShopProductRepository(shopProductDataSource: ShopProductCloudDataSource): ShopProductRepository {
-        return ShopProductRepositoryImpl(shopProductDataSource)
-    }
+//    @ShopProductScope
+//    @Provides
+//    fun provideShopProductRepository(shopProductDataSource: ShopProductCloudDataSource): ShopProductRepository {
+//        return ShopProductRepositoryImpl(shopProductDataSource)
+//    }
 
-    @ShopProductScope
-    @Provides
-    fun provideGetProductCampaignsUseCase(wishListCommonRepository: ShopProductRepository): GetProductCampaignsUseCase {
-        return GetProductCampaignsUseCase(wishListCommonRepository)
-    }
+//    @ShopProductScope
+//    @Provides
+//    fun provideGetProductCampaignsUseCase(wishListCommonRepository: ShopProductRepository): GetProductCampaignsUseCase {
+//        return GetProductCampaignsUseCase(wishListCommonRepository)
+//    }
 
     @ShopProductScope
     @Provides
