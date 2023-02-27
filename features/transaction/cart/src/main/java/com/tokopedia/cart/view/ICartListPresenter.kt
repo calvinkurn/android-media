@@ -13,13 +13,13 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 
 interface ICartListPresenter {

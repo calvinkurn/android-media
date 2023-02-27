@@ -121,7 +121,6 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
