@@ -6,12 +6,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.changepin.data.ResetPinResponse
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import javax.inject.Inject
 
 class ResetPinUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, String>, ResetPinResponse>(dispatchers.io) {
+) : CoroutineUseCase<String, ResetPinResponse>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           mutation resetPin(${'$'}validate_token: String!){
@@ -24,7 +25,8 @@ class ResetPinUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, String>): ResetPinResponse {
-        return repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: String): ResetPinResponse {
+        val parameter = mapOf(ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to params)
+        return repository.request(graphqlQuery(), parameter)
     }
 }

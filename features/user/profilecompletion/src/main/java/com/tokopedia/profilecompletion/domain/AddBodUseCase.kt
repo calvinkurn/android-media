@@ -14,7 +14,7 @@ import javax.inject.Inject
 class AddBodUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, String>, UserProfileCompletionUpdateBodData>(dispatchers.io) {
+) : CoroutineUseCase<String, UserProfileCompletionUpdateBodData>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           mutation add_bod(${'$'}birthdate: String!) {
@@ -26,8 +26,9 @@ class AddBodUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, String>): UserProfileCompletionUpdateBodData {
-        return repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: String): UserProfileCompletionUpdateBodData {
+        val parameter = mapOf(ProfileCompletionQueryConstant.PARAM_BOD to params)
+        return repository.request(graphqlQuery(), parameter)
     }
 
 }

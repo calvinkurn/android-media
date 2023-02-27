@@ -22,10 +22,8 @@ class ChangeGenderViewModel @Inject constructor(
     val mutateChangeGenderResponse = MutableLiveData<Result<ChangeGenderResult>>()
 
     fun mutateChangeGender(gender: Int) {
-        val params = mapOf(PARAM_GENDER to gender)
-
         launchCatchError(block = {
-            val response = changeGenderUseCase(params)
+            val response = changeGenderUseCase(gender)
 
             val errorMessage = response.data.errorMessage
             val isSuccess = response.data.isSuccess

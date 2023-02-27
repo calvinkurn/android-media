@@ -6,12 +6,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.addpin.data.ChangePinPojo
+import com.tokopedia.profilecompletion.data.ChangePinParam
 import javax.inject.Inject
 
 class ChangePinUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, String>, ChangePinPojo>(dispatchers.io) {
+) : CoroutineUseCase<ChangePinParam, ChangePinPojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
           mutation updatePin(${'$'}pin: String!, ${'$'}pinConfirm: String!, ${'$'}pinOld: String!){
@@ -24,7 +25,7 @@ class ChangePinUseCase @Inject constructor(
           }
         """.trimIndent()
 
-    override suspend fun execute(params: Map<String, String>): ChangePinPojo {
+    override suspend fun execute(params: ChangePinParam): ChangePinPojo {
         return repository.request(graphqlQuery(), params)
     }
 
