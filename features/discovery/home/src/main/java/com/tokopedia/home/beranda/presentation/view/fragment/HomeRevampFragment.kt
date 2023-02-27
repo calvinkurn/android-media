@@ -618,9 +618,9 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-//        if (!HomeRollenceController.isUsingAtf2Variant()) {
-        stickyLoginView = view.findViewById(R.id.sticky_login_text)
-//        }
+        if (!HomeRollenceController.isUsingAtf2Variant()) {
+            stickyLoginView = view.findViewById(R.id.sticky_login_text)
+        }
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
@@ -900,15 +900,19 @@ open class HomeRevampFragment :
         }
     }
 
+    override fun goToLogin() {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+        }
+    }
+
     private fun initStickyLogin() {
         stickyLoginView?.page = StickyLoginConstant.Page.HOME
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                context?.let {
-                    val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                    startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
-                }
+                goToLogin()
             }
 
             override fun onDismiss() {
