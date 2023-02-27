@@ -24,9 +24,17 @@ class FeedMenuViewHolder(
             if (item.type == FeedMenuIdentifier.LAPORKAN){
                 tvName.setTextColor(
                     MethodChecker.getColor(
-                    itemView.context,
-                    R.color.Unify_RN500
-                ))
+                        itemView.context,
+                        R.color.Unify_RN500
+                    )
+                )
+            } else {
+                tvName.setTextColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        R.color.Unify_NN950
+                    )
+                )
             }
 
             root.setOnClickListener {
