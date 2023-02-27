@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.DimenRes
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.presentation.widget.DigitalPlusMoreInfoItemWidget
 import com.tokopedia.kotlin.extensions.view.ONE
-
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlin.math.min
 
-class DigitalPlusMoreInfoBottomSheet: BottomSheetUnify() {
+class DigitalPlusMoreInfoBottomSheet : BottomSheetUnify() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +28,7 @@ class DigitalPlusMoreInfoBottomSheet: BottomSheetUnify() {
         isFullpage = false
         isDragable = false
         showCloseIcon = true
+        clearContentPadding = true
 
         context?.let {
             val linearLayout = LinearLayout(it)
@@ -51,13 +51,12 @@ class DigitalPlusMoreInfoBottomSheet: BottomSheetUnify() {
                         Int.ZERO,
                         getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                         Int.ZERO,
-                        Int.ZERO,
+                        Int.ZERO
                     )
                 }
                 linearLayout.addView(moreInfoItemWidget)
             }
 
-            clearContentPadding = true
             setTitle(getString(R.string.subscription_plus_more_info_bottomsheet_title))
             setChild(linearLayout)
             setCloseClickListener { dismiss() }
