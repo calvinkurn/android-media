@@ -337,15 +337,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             /** TODO: handle this */
         }
 
-        lifecycleScope.launch {
-            delay(3000)
-            icFaceFilter.isShowDot = true
-
-            delay(1000)
-
-            icFaceFilter.isShowDot = false
-        }
-
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             quizForm.listen().collect {
                 trackQuizFormEvent(it)
