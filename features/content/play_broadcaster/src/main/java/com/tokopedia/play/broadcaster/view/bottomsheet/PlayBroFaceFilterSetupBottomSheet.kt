@@ -48,6 +48,7 @@ class PlayBroFaceFilterSetupBottomSheet : BottomSheetUnify() {
         _binding = BottomSheetPlayBroFaceFilterSetupBinding.inflate(LayoutInflater.from(requireContext()))
         setChild(binding.root)
 
+        clearContentPadding = true
         showCloseIcon = false
         showKnob = true
         isHideable = true
