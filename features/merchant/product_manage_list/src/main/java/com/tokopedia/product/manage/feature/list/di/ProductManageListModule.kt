@@ -3,8 +3,6 @@ package com.tokopedia.product.manage.feature.list.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
-import com.tokopedia.gm.common.data.source.GMCommonDataSource
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase

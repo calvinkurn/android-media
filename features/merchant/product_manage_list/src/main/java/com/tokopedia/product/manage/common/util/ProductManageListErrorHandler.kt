@@ -3,8 +3,6 @@ package com.tokopedia.product.manage.common.util
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.product.manage.BuildConfig
-import java.lang.RuntimeException
 
 object ProductManageListErrorHandler {
 
