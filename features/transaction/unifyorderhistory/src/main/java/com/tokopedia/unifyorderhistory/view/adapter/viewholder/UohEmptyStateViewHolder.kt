@@ -1,11 +1,11 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
-import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.databinding.UohEmptyStateBinding
+import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
 /**
  * Created by fwidjaja on 22/07/20.

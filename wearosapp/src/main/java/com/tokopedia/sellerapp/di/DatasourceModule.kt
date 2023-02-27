@@ -7,8 +7,11 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
+//import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.SummaryRoomDatasource
+import com.tokopedia.sellerapp.data.datasource.local.dao.NotificationDao
 import com.tokopedia.sellerapp.data.datasource.local.dao.OrderDao
 import com.tokopedia.sellerapp.data.datasource.local.dao.SummaryDao
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
@@ -25,6 +28,11 @@ class DatasourceModule {
     @Provides
     fun provideOrderRoomDatasource(orderDao: OrderDao): OrderRoomDatasource {
         return OrderRoomDatasource(orderDao)
+    }
+
+    @Provides
+    fun provideNotificationRoomDataSource(notificationDao: NotificationDao) : NotificationRoomDataSource {
+        return NotificationRoomDataSource(notificationDao)
     }
 
     @Provides
@@ -55,9 +63,10 @@ class DatasourceModule {
     @Provides
     fun provideWearCacheActionImpl(
         orderRoomDatasource: OrderRoomDatasource,
+        notificationRoomDataSource: NotificationRoomDataSource,
         summaryRoomDatasource: SummaryRoomDatasource,
         dispatchers: CoroutineDispatchers
-    ) = WearCacheActionImpl(dispatchers, orderRoomDatasource, summaryRoomDatasource)
+    ) = WearCacheActionImpl(dispatchers, orderRoomDatasource, notificationRoomDataSource, summaryRoomDatasource)
 
     @Provides
     fun provideClientMessageDatasource(

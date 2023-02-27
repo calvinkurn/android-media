@@ -289,14 +289,6 @@ class ShopCampaignFlashSaleViewHolder(
         return statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, true)
     }
 
-    private fun getBackGroundColor(color: String?, colorRes: Int): Int {
-        return try {
-            Color.parseColor(getStringColor(color, colorRes))
-        } catch (e: Exception) {
-            ContextCompat.getColor(itemView.context, colorRes)
-        }
-    }
-
     private fun getStringColor(color: String?, colorRes: Int): String {
         return if (color.isNullOrEmpty()) {
             String.format(FORMAT_STRING_COLOR, ContextCompat.getColor(itemView.context, colorRes) and FORMAT_HEX_COLOR)

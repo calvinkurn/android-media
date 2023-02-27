@@ -29,78 +29,82 @@ class InitializationTest {
 
     @Before
     fun setUp() {
-        viewModel = MiniCartGeneralViewModel(dispatchers, getMiniCartListSimplifiedUseCase,
-            getMiniCartListUseCase, miniCartChatListUiModelMapper)
+        viewModel = MiniCartGeneralViewModel(
+            dispatchers,
+            getMiniCartListSimplifiedUseCase,
+            getMiniCartListUseCase,
+            miniCartChatListUiModelMapper
+        )
     }
 
     @Test
     fun `WHEN initialize shop id THEN current shop id value should be updated accordingly`() {
-        //given
+        // given
         val shopId = listOf("123")
 
-        //when
+        // when
         viewModel.initializeShopIds(shopId)
 
-        //then
+        // then
         assert(viewModel.currentShopIds.value?.equals(shopId) == true)
     }
 
     @Test
     fun `WHEN initialize global state THEN global state should be on default state`() {
-        //given
+        // given
 
-        //when
+        // when
         viewModel.initializeGlobalState()
 
-        //then
+        // then
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
     @Test
     fun `WHEN initialize currentSource THEN currentSource should be updated accordingly`() {
-        //given
+        // given
         val source = MiniCartSource.MiniCartBottomSheet
 
-        //when
+        // when
         viewModel.currentSource = source
 
-        //then
+        // then
         assert(viewModel.currentSource == source)
     }
 
     @Test
     fun `WHEN initialize currentPage THEN currentPage should be updated accordingly`() {
-        //given
+        // given
         val page = MiniCartAnalytics.Page.HOME_PAGE
 
-        //when
+        // when
         viewModel.currentPage = MiniCartAnalytics.Page.HOME_PAGE
 
-        //then
+        // then
         assert(viewModel.currentPage == page)
     }
 
     @Test
     fun `WHEN initialize isShopDirectPurchase THEN isShopDirectPurchase should be updated accordingly`() {
-        //given
+        // given
         val isShopDirectPurchase = true
 
-        //when
+        // when
         viewModel.isShopDirectPurchase = isShopDirectPurchase
 
-        //then
+        // then
         assert(viewModel.isShopDirectPurchase == isShopDirectPurchase)
     }
 
     @Test
     fun `WHEN update mini cart simplified data THEN mini cart simplified data should not be null`() {
-        //given
+        // given
         val miniCartListUiModels = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
 
-        //when
+        // when
         viewModel.updateMiniCartSimplifiedData(miniCartListUiModels)
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value != null)
     }
 }

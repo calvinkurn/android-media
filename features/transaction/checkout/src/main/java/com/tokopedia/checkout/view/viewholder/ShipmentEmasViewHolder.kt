@@ -45,10 +45,11 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
             }
         }
         tvEmasDesc.text = MethodChecker.fromHtml(
-                String.format(llContainer.context.getString(R.string.emas_checkout_desc),
-                        egoldAttributeModel.subText,
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false).removeDecimalSuffix()
-                )
+            String.format(
+                llContainer.context.getString(R.string.emas_checkout_desc),
+                egoldAttributeModel.subText,
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false).removeDecimalSuffix()
+            )
         )
         buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             if (egoldAttributeModel.isEnabled) {
@@ -65,8 +66,7 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
                 )
             }
             tvEmasHyperlink.visible()
-        }
-        else {
+        } else {
             tvEmasHyperlink.gone()
         }
 
@@ -96,5 +96,4 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
         @JvmField
         val ITEM_VIEW_EMAS = R.layout.checkout_holder_item_emas
     }
-
 }

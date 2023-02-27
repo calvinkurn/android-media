@@ -61,8 +61,10 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         mTvOrderPrioritasFee.text = getPriceFormat(mTvOrderPrioritasLabel, mTvOrderPrioritasFee, shipmentCost.priorityFee)
         mTvPurchaseProtectionLabel.text = getTotalPurchaseProtectionItemLabel(mTvPurchaseProtectionLabel.context, shipmentCost.totalPurchaseProtectionItem)
         mTvPurchaseProtectionFee.text = getPriceFormat(mTvPurchaseProtectionLabel, mTvPurchaseProtectionFee, shipmentCost.purchaseProtectionFee)
-        mTvPromoDiscount.text = String.format(mTvPromoDiscount.context.getString(R.string.promo_format),
-                getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.promoPrice))
+        mTvPromoDiscount.text = String.format(
+            mTvPromoDiscount.context.getString(R.string.promo_format),
+            getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.promoPrice)
+        )
         mTvSellerCostAdditionFee.text = getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.additionalFee)
         mTvDonationPrice.text = getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.donation)
         if (shipmentCost.listCrossSell.isEmpty()) {
@@ -83,8 +85,10 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mLinearLayoutCrossSell.visibility = View.VISIBLE
         }
         mTvEmasPrice.text = getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.emasPrice)
-        mTvTradeInPrice.text = String.format(mTvTradeInPrice.context.getString(R.string.promo_format),
-                getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.tradeInPrice))
+        mTvTradeInPrice.text = String.format(
+            mTvTradeInPrice.context.getString(R.string.promo_format),
+            getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.tradeInPrice)
+        )
         if (shipmentCost.bookingFee > 0) {
             mTvBookingFeeLabel.visibility = View.VISIBLE
             mTvBookingFee.visibility = View.VISIBLE
@@ -182,5 +186,4 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         @JvmField
         val ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details
     }
-
 }

@@ -12,7 +12,6 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
@@ -20,10 +19,12 @@ import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPr
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.pagination.Pagination
-import com.tokopedia.search.result.product.performancemonitoring.*
+import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
@@ -45,7 +46,7 @@ class VisitableFactory @Inject constructor(
     private val bannerDelegate: BannerPresenterDelegate,
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
-    private val pagination: Pagination
+    private val pagination: Pagination,
 ) {
 
     private var isGlobalNavWidgetAvailable = false
@@ -461,25 +462,4 @@ class VisitableFactory @Inject constructor(
 
         return visitableList
     }
-
-    fun createViolationVisitableList(
-        productDataView: ProductDataView,
-        globalNavDataView: GlobalNavDataView?,
-    ) : List<Visitable<*>> {
-        val violation = productDataView.violation ?: return emptyList()
-        return mutableListOf<Visitable<*>>().apply {
-            globalNavDataView?.let { add(it) }
-
-            add(violation)
-        }
-    }
-
-    fun constructEmptyStateProductList(
-        globalNavDataView: GlobalNavDataView?,
-        emptyStateDataView: EmptyStateDataView,
-    ): List<Visitable<*>> =
-        mutableListOf<Visitable<*>>().apply {
-            globalNavDataView?.let { add(it) }
-            add(emptyStateDataView)
-        }
 }
