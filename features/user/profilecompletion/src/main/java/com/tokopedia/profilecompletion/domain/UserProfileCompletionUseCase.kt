@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileInfoData
-import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileRoleData
 import javax.inject.Inject
 
 class UserProfileCompletionUseCase @Inject constructor(

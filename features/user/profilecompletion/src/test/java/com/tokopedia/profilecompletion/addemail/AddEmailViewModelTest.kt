@@ -47,9 +47,9 @@ class AddEmailViewModelTest {
     @Before
     fun setUp() {
         viewModel = AddEmailViewModel(
-                CoroutineTestDispatchersProvider,
-                checkEmailUseCase,
-                addEmailUseCase
+            CoroutineTestDispatchersProvider,
+            checkEmailUseCase,
+            addEmailUseCase
         )
     }
 

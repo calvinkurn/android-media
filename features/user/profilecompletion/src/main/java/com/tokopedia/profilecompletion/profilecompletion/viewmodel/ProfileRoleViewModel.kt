@@ -24,7 +24,7 @@ class ProfileRoleViewModel @Inject constructor(
 
     private val mutableUserProfileRole = MutableLiveData<Result<ProfileRoleData>>()
     val userProfileRole: LiveData<Result<ProfileRoleData>>
-	get() = mutableUserProfileRole
+        get() = mutableUserProfileRole
 
     fun getUserProfileRole() {
         launchCatchError(block = {

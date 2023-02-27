@@ -40,7 +40,8 @@ class NewAddPhoneCassavaTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = createProfileCompletionComponent(applicationContext.applicationContext)
+        val fakeBaseComponent =
+            createProfileCompletionComponent(applicationContext.applicationContext)
 
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)
@@ -68,7 +69,8 @@ class NewAddPhoneCassavaTest {
     fun input_valid_phone_and_submit_then_success_update() {
         activityTestRule.launchActivity(Intent())
 
-        Intents.intending(IntentMatchers.hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
+        Intents.intending(IntentMatchers.hasData(ApplinkConstInternalUserPlatform.COTP))
+            .respondWithOk()
 
         inputValidUpdatePhoneThenSuccess()
 

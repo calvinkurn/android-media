@@ -8,7 +8,7 @@ import dagger.Component
 
 @ApplicationScope
 @Component(modules = [TestProfileCompletionSettingModule::class])
-interface TestProfileCompletionComponent: BaseAppComponent {
+interface TestProfileCompletionComponent : BaseAppComponent {
     @ApplicationContext
     fun repository(): GraphqlRepository
 }

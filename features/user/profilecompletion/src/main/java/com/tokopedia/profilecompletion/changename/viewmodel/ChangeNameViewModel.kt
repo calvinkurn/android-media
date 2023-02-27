@@ -4,17 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_NAME
 import com.tokopedia.profilecompletion.domain.ChangeNameUseCase
 import com.tokopedia.profilecompletion.domain.UserProfileRuleUseCase
 import com.tokopedia.profilecompletion.profilecompletion.data.ProfileRoleData
-import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileRoleData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,11 +27,11 @@ class ChangeNameViewModel @Inject constructor(
 
     private val mutableChangeNameResponse = MutableLiveData<Result<ChangeNameResult>>()
     val changeNameResponse: LiveData<Result<ChangeNameResult>>
-	get() = mutableChangeNameResponse
+        get() = mutableChangeNameResponse
 
     private val mutableUserProfileRole = MutableLiveData<Result<ProfileRoleData>>()
     val userProfileRole: LiveData<Result<ProfileRoleData>>
-	get() = mutableUserProfileRole
+        get() = mutableUserProfileRole
 
     fun changePublicName(publicName: String) {
         launchCatchError(block = {
@@ -44,7 +40,8 @@ class ChangeNameViewModel @Inject constructor(
             val errorMessage = response.data.errors
             val isSuccess = response.data.isSuccess
             if (errorMessage.size == 0 && isSuccess == 1) {
-                mutableChangeNameResponse.value = Success(ChangeNameResult(response.data, publicName))
+                mutableChangeNameResponse.value =
+                    Success(ChangeNameResult(response.data, publicName))
             } else if (errorMessage.isNotEmpty()) {
                 mutableChangeNameResponse.value = Fail(MessageErrorException(errorMessage[0]))
             }

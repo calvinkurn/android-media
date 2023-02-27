@@ -29,7 +29,8 @@ class ChangeGenderViewModel @Inject constructor(
             val isSuccess = response.data.isSuccess
 
             if (errorMessage.isBlank() && isSuccess) {
-                mutateChangeGenderResponse.value = Success(ChangeGenderResult(response.data, gender))
+                mutateChangeGenderResponse.value =
+                    Success(ChangeGenderResult(response.data, gender))
             } else if (errorMessage.isNotBlank()) {
                 mutateChangeGenderResponse.value = Fail(
                     MessageErrorException(

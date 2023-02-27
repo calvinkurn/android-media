@@ -39,8 +39,8 @@ class AddBodViewModelTest {
     @Before
     fun setUp() {
         viewModel = AddBodViewModel(
-                addBodUseCase,
-                CoroutineTestDispatchersProvider
+            addBodUseCase,
+            CoroutineTestDispatchersProvider
         )
     }
 

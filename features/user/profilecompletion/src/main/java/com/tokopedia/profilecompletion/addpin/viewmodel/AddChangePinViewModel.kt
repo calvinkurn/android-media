@@ -141,7 +141,8 @@ class AddChangePinViewModel @Inject constructor(
         pinPreference.clearTempPin()
         launchCatchError(block = {
             val keyData = getPublicKey()
-            val encryptedPin = RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
+            val encryptedPin =
+                RsaUtils.encryptWithSalt(pin, keyData.key, salt = OtpConstant.PIN_V2_SALT)
             hash = keyData.hash
             val checkPinParam = CheckPinV2Param(encryptedPin, keyData.hash)
             val checkPinResult = checkPinV2UseCase(checkPinParam).data

@@ -14,9 +14,6 @@ import com.tokopedia.profilecompletion.addphone.view.activity.NewAddPhoneActivit
 import com.tokopedia.profilecompletion.common.helper.checkResultCode
 import com.tokopedia.profilecompletion.common.helper.respondWithFailed
 import com.tokopedia.profilecompletion.common.helper.respondWithOk
-import com.tokopedia.profilecompletion.common.stub.GraphqlRepositoryStub
-import com.tokopedia.profilecompletion.common.stub.di.DaggerTestProfileCompletionComponent
-import com.tokopedia.profilecompletion.common.stub.di.TestProfileCompletionSettingModule
 import com.tokopedia.profilecompletion.common.stub.di.createProfileCompletionComponent
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.test.application.annotations.UiTest
@@ -39,7 +36,8 @@ class NewAddPhoneInstrumentationTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = createProfileCompletionComponent(applicationContext.applicationContext)
+        val fakeBaseComponent =
+            createProfileCompletionComponent(applicationContext.applicationContext)
 
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)

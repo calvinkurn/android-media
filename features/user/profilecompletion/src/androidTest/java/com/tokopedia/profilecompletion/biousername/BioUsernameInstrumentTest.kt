@@ -10,7 +10,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
-import com.tokopedia.profilecompletion.common.helper.*
+import com.tokopedia.profilecompletion.common.helper.checkMessageText
+import com.tokopedia.profilecompletion.common.helper.checkResultCode
+import com.tokopedia.profilecompletion.common.helper.checkTextOnEditText
+import com.tokopedia.profilecompletion.common.helper.clickSubmitButton
+import com.tokopedia.profilecompletion.common.helper.typingTextOn
 import com.tokopedia.profilecompletion.common.stub.di.createProfileCompletionComponent
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
@@ -25,7 +29,7 @@ open class BioUsernameInstrumentTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-            ChangeBioUsernameActivity::class.java, false, false
+        ChangeBioUsernameActivity::class.java, false, false
     )
 
     private val applicationContext: Context
@@ -34,7 +38,8 @@ open class BioUsernameInstrumentTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = createProfileCompletionComponent(applicationContext.applicationContext)
+        val fakeBaseComponent =
+            createProfileCompletionComponent(applicationContext.applicationContext)
 
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)
@@ -56,9 +61,13 @@ open class BioUsernameInstrumentTest {
     fun test_validate_username_valid() {
         runTest(true) {
             typingTextOn(R.id.et_username, USERNAME_VALID)
-            checkMessageText(R.id.et_username, activity.getString(R.string.description_textfield_username))
+            checkMessageText(
+                R.id.et_username,
+                activity.getString(R.string.description_textfield_username)
+            )
         }
     }
+
     @Test
     fun test_validate_username_already_exists() {
         runTest(true) {
@@ -79,7 +88,10 @@ open class BioUsernameInstrumentTest {
     fun test_success_create_username() {
         runTest(true) {
             typingTextOn(R.id.et_username, USERNAME_VALID)
-            checkMessageText(R.id.et_username, activity.getString(R.string.description_textfield_username))
+            checkMessageText(
+                R.id.et_username,
+                activity.getString(R.string.description_textfield_username)
+            )
             clickSubmitButton(R.id.btn_submit)
             checkResultCode(activityTestRule.activityResult, Activity.RESULT_OK)
         }
@@ -89,7 +101,10 @@ open class BioUsernameInstrumentTest {
     fun test_failed_create_username() {
         runTest(true) {
             typingTextOn(R.id.et_username, USERNAME_FAILED)
-            checkMessageText(R.id.et_username, activity.getString(R.string.description_textfield_username))
+            checkMessageText(
+                R.id.et_username,
+                activity.getString(R.string.description_textfield_username)
+            )
             clickSubmitButton(R.id.btn_submit)
             checkMessageText(R.id.et_username, ERROR_MESSAGE_USERNAME)
         }
@@ -97,7 +112,7 @@ open class BioUsernameInstrumentTest {
 
     @Test
     fun test_success_create_bio() {
-        runTest(false){
+        runTest(false) {
             typingTextOn(R.id.et_bio, BIO_VALID)
             clickSubmitButton(R.id.btn_submit)
             checkResultCode(activityTestRule.activityResult, Activity.RESULT_OK)
@@ -115,9 +130,17 @@ open class BioUsernameInstrumentTest {
 
     open fun runTest(isUsernamePage: Boolean, test: () -> Unit) {
         val intent = if (isUsernamePage) Intent().apply {
-            putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME) }
+            putExtra(
+                ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM,
+                ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME
+            )
+        }
         else Intent().apply {
-            putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO) }
+            putExtra(
+                ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM,
+                ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO
+            )
+        }
         activity = activityTestRule.launchActivity(intent)
         test.invoke()
     }

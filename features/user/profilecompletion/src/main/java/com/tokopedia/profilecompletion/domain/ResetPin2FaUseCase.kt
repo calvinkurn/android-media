@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.changepin.data.ResetPin2FaPojo
-import com.tokopedia.profilecompletion.changepin.data.ResetPinResponse
 import com.tokopedia.profilecompletion.data.ResetPin2FAParam
 import javax.inject.Inject
 

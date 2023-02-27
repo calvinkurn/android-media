@@ -86,7 +86,7 @@ class ChangeGenderViewModelTest {
         assertThat(result, instanceOf(Fail::class.java))
         assertThat((result as Fail).throwable, instanceOf(MessageErrorException::class.java))
         assertEquals(changeGenderPojo.data.errorMessage, (result as Fail).throwable.message)
-        coVerify (atLeast = 1){ changeGenderUseCase(any()) }
+        coVerify(atLeast = 1) { changeGenderUseCase(any()) }
     }
 
     @Test
@@ -101,7 +101,7 @@ class ChangeGenderViewModelTest {
         val result = viewModel.mutateChangeGenderResponse.getOrAwaitValue()
         assertThat(result, instanceOf(Fail::class.java))
         assertThat((result as Fail).throwable, instanceOf(RuntimeException::class.java))
-        coVerify(atLeast = 1){ changeGenderUseCase(any()) }
+        coVerify(atLeast = 1) { changeGenderUseCase(any()) }
     }
 
 }

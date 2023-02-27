@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addemail.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers

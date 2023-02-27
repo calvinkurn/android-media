@@ -17,7 +17,7 @@ class ValidateUsernameUseCase @Inject constructor(
     private val usernameParam = "username"
 
     override fun graphqlQuery(): String {
-	return """query feedXProfileValidateUsername(${'$'}username: String!) {
+        return """query feedXProfileValidateUsername(${'$'}username: String!) {
                     feedXProfileValidateUsername(username: ${'$'}username) {
                         isValid
                         notValidInformation
@@ -26,6 +26,6 @@ class ValidateUsernameUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: String): UsernameValidationResponse {
-	return repository.request(graphqlQuery(), mapOf(usernameParam to params))
+        return repository.request(graphqlQuery(), mapOf(usernameParam to params))
     }
 }

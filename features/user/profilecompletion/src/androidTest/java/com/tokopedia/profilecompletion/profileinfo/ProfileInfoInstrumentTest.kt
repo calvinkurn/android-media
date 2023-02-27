@@ -36,7 +36,7 @@ open class ProfileInfoInstrumentTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-            ProfileInfoActivity::class.java, false, false
+        ProfileInfoActivity::class.java, false, false
     )
 
     private val applicationContext: Context
@@ -45,7 +45,8 @@ open class ProfileInfoInstrumentTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = createProfileCompletionComponent(applicationContext.applicationContext)
+        val fakeBaseComponent =
+            createProfileCompletionComponent(applicationContext.applicationContext)
 
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)
@@ -92,7 +93,10 @@ open class ProfileInfoInstrumentTest {
     @Test
     fun click_user_id_copied() {
         runTest {
-            clickViewHolder(SECTION_USERID, clickChildWithViewId<IconUnify>(R.id.fragmentProfileItemIcon))
+            clickViewHolder(
+                SECTION_USERID,
+                clickChildWithViewId<IconUnify>(R.id.fragmentProfileItemIcon)
+            )
             checkToasterShowing(SUBSTRING_COPY_USER_ID)
         }
     }
