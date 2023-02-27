@@ -1539,7 +1539,7 @@ class CartFragment :
     }
 
     override fun impressionMultipleBundle(
-        selectedMultipleBundle: BundleDetailUiModel
+        selectedMultipleBundle: com.tokopedia.productbundlewidget.model.BundleDetailUiModel
     ) {
         cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
             userSession.userId,
@@ -4335,32 +4335,34 @@ class CartFragment :
     }
 
     override fun onCollapseAvailableItem(index: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
-        if (cartShopHolderData != null) {
-            cartShopHolderData.isCollapsed = true
-            cartAdapter.getData().removeAll(cartShopHolderData.productUiModelList.toSet())
+        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        if (cartShopBottomHolderData != null) {
+            cartShopBottomHolderData.shopData.isCollapsed = true
+            cartAdapter.getData().removeAll(cartShopBottomHolderData.shopData.productUiModelList.toSet())
             onNeedToUpdateViewItem(index)
-            onNeedToRemoveMultipleViewItem(index + 1, cartShopHolderData.productUiModelList.size)
+            onNeedToRemoveMultipleViewItem(index - cartShopBottomHolderData.shopData.productUiModelList.size, cartShopBottomHolderData.shopData.productUiModelList.size)
+            onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
             if (layoutManager != null) {
                 val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index, offset)
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size, offset)
             }
         }
     }
 
     override fun onExpandAvailableItem(index: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
-        if (cartShopHolderData != null) {
-            if (cartShopHolderData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
-                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopId)
+        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        if (cartShopBottomHolderData != null) {
+            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
             } else {
-                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopId)
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
             }
-            cartShopHolderData.isCollapsed = false
-            cartAdapter.addItems(index + 1, cartShopHolderData.productUiModelList)
-            onNeedToUpdateViewItem(index)
-            onNeedToInsertMultipleViewItem(index + 1, cartShopHolderData.productUiModelList.size)
+            cartShopBottomHolderData.shopData.isCollapsed = false
+            cartAdapter.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
+            onNeedToInsertMultipleViewItem(index, cartShopBottomHolderData.shopData.productUiModelList.size)
+            onNeedToUpdateViewItem(index - 1)
+            onNeedToUpdateViewItem(index + cartShopBottomHolderData.shopData.productUiModelList.size)
         }
     }
 
@@ -4375,6 +4377,7 @@ class CartFragment :
             cartAdapter.addItems(shopIndex + 1, cartShopHolderData.productUiModelList)
             onNeedToUpdateViewItem(shopIndex)
             onNeedToInsertMultipleViewItem(shopIndex + 1, cartShopHolderData.productUiModelList.size)
+            onNeedToUpdateViewItem(shopIndex + 1 + cartShopHolderData.productUiModelList.size)
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
             if (layoutManager != null) {
 //                val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)

@@ -115,6 +115,10 @@ data class CartShopHolderData(
     }
 }
 
+data class CartShopBottomHolderData(
+    var shopData: CartShopHolderData
+)
+
 data class CartShopGroupTickerData(
     var enableBoAffordability: Boolean = false,
     var enableCartAggregator: Boolean = false,
