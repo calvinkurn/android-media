@@ -135,13 +135,7 @@ class EditorFragment @Inject constructor(
             }
 
             if (memoryOverflow) {
-                delay({
-                    try {
-                        (activity as EditorActivity).showMemoryLimitDialog(true)
-                    } catch (e: Exception) {
-                    }
-                    loader?.dismiss()
-                }, DELAY_MEMORY_LIMIT_CALLBACK)
+                showMemoryLimitDialog()
                 return
             } else {
                 loadImageWithEmptyTarget(requireContext(),
@@ -158,7 +152,7 @@ class EditorFragment @Inject constructor(
                         },
                         onCleared = {},
                         onFailed = {
-                            iterateCrop(listData, currentProcess + 1)
+                            showMemoryLimitDialog()
                         }
                     ))
             }
@@ -436,6 +430,15 @@ class EditorFragment @Inject constructor(
                 visible()
             }
         }
+    }
+
+    private fun showMemoryLimitDialog() {
+        delay({
+            try {
+                (activity as EditorActivity).showMemoryLimitDialog(true)
+            } catch (e: Exception) {}
+            loader?.dismiss()
+        }, DELAY_MEMORY_LIMIT_CALLBACK)
     }
 
     companion object {
