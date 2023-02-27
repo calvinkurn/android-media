@@ -305,4 +305,6 @@
     <string name="play_broadcaster_face_filter_coachmark_title">Wow, kamu makin cakep aja nih 😍</string>
     <string name="play_broadcaster_face_filter_coachmark_description">Ayo pakai filternya biar penampilanmu makin cakep, keren &amp; lebih pede di depan penonton!</string>
     <string name="play_broadcaster_reset_filter">Reset Filter</string>
+    <string name="play_broadcaster_face_tab">Wajah</string>
+    <string name="play_broadcaster_makeup_tab">Makeup</string>
 </resources>
