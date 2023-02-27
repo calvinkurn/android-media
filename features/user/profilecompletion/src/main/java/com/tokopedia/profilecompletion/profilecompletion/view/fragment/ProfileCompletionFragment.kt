@@ -197,9 +197,9 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
 	    Pair(R.anim.profilecompletion_slide_in_right, R.anim.profilecompletion_slide_out_left)
 	retryAction = NetworkErrorHelper.RetryClickedListener {
 	    loading?.visibility = View.VISIBLE
-	    context?.let { userInfoViewModel.getUserProfileInfo(it) }
+	    userInfoViewModel.getUserProfileInfo()
 	}
-	context?.let { userInfoViewModel.getUserProfileInfo(it) }
+	userInfoViewModel.getUserProfileInfo()
     }
 
     override fun onErrorGetUserInfo(string: String?) {

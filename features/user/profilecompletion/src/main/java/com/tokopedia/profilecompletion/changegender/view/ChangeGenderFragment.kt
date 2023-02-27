@@ -80,7 +80,6 @@ class ChangeGenderFragment : BaseDaggerFragment() {
 		val selectedGender = rg_gender?.indexOfChild(selectedGenderView)
 		context?.let { ctx ->
 		    viewModel.mutateChangeGender(
-			ctx,
 			mapSelectedGender(selectedGender ?: 0)
 		    )
 		}

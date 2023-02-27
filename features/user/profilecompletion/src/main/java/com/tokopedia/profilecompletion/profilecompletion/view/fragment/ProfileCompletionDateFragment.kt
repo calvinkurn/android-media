@@ -119,7 +119,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
 	    }
 
 	    if (selectedDate.isNotEmpty()) {
-		context?.let { ctx -> viewModel.editBodUserProfile(ctx, selectedDate) }
+		context?.let { ctx -> viewModel.editBodUserProfile(selectedDate) }
 	    } else {
 		profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_date))
 	    }

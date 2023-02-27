@@ -27,7 +27,6 @@ import dagger.Component
     modules = [
 	ProfileCompletionSettingModule::class,
 	ProfileCompletionViewModelsModule::class,
-	ProfileCompletionQueryModule::class,
 	ImageUploadSettingProfileModule::class,
 	MediaUploaderModule::class
     ], dependencies = [BaseAppComponent::class]
