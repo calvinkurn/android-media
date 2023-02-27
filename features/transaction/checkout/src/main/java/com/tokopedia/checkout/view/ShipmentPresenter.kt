@@ -2432,6 +2432,7 @@ class ShipmentPresenter @Inject constructor(
             .isLeasing(isLeasing)
             .promoCode(pslCode)
             .cartData(cartDataForRates)
+            .warehouseId(shipmentCartItemModel.fulfillmentId.toString())
             .mvc("")
         if (!skipMvc) {
             ratesParamBuilder.mvc(mvc)
@@ -3301,6 +3302,7 @@ class ShipmentPresenter @Inject constructor(
             .isLeasing(isLeasing)
             .promoCode(pslCode)
             .cartData(cartDataForRates)
+            .warehouseId(shipmentCartItemModel.fulfillmentId.toString())
             .mvc(mvc)
         val param = ratesParamBuilder.build()
         val observable: Observable<ShippingRecommendationData>

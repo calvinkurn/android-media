@@ -2750,7 +2750,8 @@ class ShipmentFragment :
                         shipmentCartItemModel.cartString
                     )!!,
                     shipmentPresenter.cartDataForRates!!,
-                    false
+                    false,
+                    shipmentCartItemModel.fulfillmentId.toString()
                 )
             }
         }

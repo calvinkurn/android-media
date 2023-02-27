@@ -57,8 +57,6 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
-import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
-import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetScheduleDeliveryCourierRecommendationSubscriber;
@@ -185,7 +183,7 @@ import timber.log.Timber;
  * @author Irfan Khoirul on 24/04/18.
  */
 
-public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View>
+public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.View>
         implements ShipmentContract.Presenter {
 
     private static final long LAST_THREE_DIGIT_MODULUS = 1000;
@@ -253,7 +251,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Map<String, ShipmentScheduleDeliveryMapData> scheduleDeliveryMapData = null;
 
     @Inject
-    public ShipmentPresenter(CompositeSubscription compositeSubscription,
+    public ShipmentOldPresenter(CompositeSubscription compositeSubscription,
                              CheckoutGqlUseCase checkoutGqlUseCase,
                              GetShipmentAddressFormV3UseCase getShipmentAddressFormV3UseCase,
                              EditAddressUseCase editAddressUseCase,
@@ -908,7 +906,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         List<ShipmentCartItemModel> newShipmentCartItemModelList = new ArrayList<>();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             List<CartItemModel> cartItemModels = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
-            newShipmentCartItemModelList.add(ShipmentCartItemModel.clone(shipmentCartItemModel, cartItemModels));
+//            newShipmentCartItemModelList.add(ShipmentCartItemModel.clone(shipmentCartItemModel, cartItemModels));
         }
 
         boolean cartListHasError = false;
@@ -1000,8 +998,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
             );
         }
-        ShipmentPresenter.this.lastValidateUsePromoRequest = validateUsePromoRequest;
-        ShipmentPresenter.this.validateUsePromoRevampUiModel = null;
+        ShipmentOldPresenter.this.lastValidateUsePromoRequest = validateUsePromoRequest;
+        ShipmentOldPresenter.this.validateUsePromoRevampUiModel = null;
     }
 
     @Override
@@ -1042,7 +1040,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                        @Override
                                        public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
                                            if (getView() != null) {
-                                               ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
+                                               ShipmentOldPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                                setCouponStateChanged(true);
                                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                                validateBBO(validateUsePromoRevampUiModel);
@@ -1164,7 +1162,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(CheckoutData checkoutData) {
                 getView().setHasRunningApiCall(false);
-                ShipmentPresenter.this.checkoutData = checkoutData;
+                ShipmentOldPresenter.this.checkoutData = checkoutData;
                 if (!checkoutData.isError()) {
                     getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId(), deviceModel, devicePrice, diagnosticId);
                     if (isPurchaseProtectionPage) {
@@ -1383,7 +1381,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
                                     if (getView() != null) {
                                         getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
-                                        ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
+                                        ShipmentOldPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                         updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                         showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                         validateBBOWithSpecificOrder(validateUsePromoRevampUiModel, cartString, promoCode);
@@ -1519,7 +1517,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-                                ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
+                                ShipmentOldPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 setCouponStateChanged(true);
                                 if (getView() != null) {
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
@@ -1718,7 +1716,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     List<PromoRequest> promoRequests = new ArrayList<>();
                                     promoRequests.add(promoRequest);
 
-                                    shopProductCheckoutRequest.setPromos(promoRequests);
+//                                    shopProductCheckoutRequest.setPromos(promoRequests);
                                 }
                             }
                         }
@@ -2076,10 +2074,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (hasPromo) {
             clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(globalPromoCodes, clearOrders)));
-            compositeSubscription.add(
-                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                            .subscribe(new ClearNotEligiblePromoSubscriber(getView(), this, notEligiblePromoHolderdataArrayList))
-            );
+//            compositeSubscription.add(
+//                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+//                            .subscribe(new ClearNotEligiblePromoSubscriber(getView(), this, notEligiblePromoHolderdataArrayList))
+//            );
         }
     }
 
@@ -2129,11 +2127,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         getView().showLoading();
         getView().setHasRunningApiCall(true);
         clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(globalPromoCode, clearOrders)));
-        compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
-                        new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this)
-                )
-        );
+//        compositeSubscription.add(
+//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
+//                        new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this)
+//                )
+//        );
     }
 
     @Override
