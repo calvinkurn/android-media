@@ -17,6 +17,7 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDataModel
+import com.tokopedia.catalog_library.util.AnalyticsHomePage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogHomepageViewModel
@@ -26,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -170,6 +172,9 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     override fun onLihatSemuaTextClick(applink: String) {
         super.onLihatSemuaTextClick(applink)
+        AnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
+            UserSession(context).userId
+        )
         RouteManager.route(context, applink)
     }
 

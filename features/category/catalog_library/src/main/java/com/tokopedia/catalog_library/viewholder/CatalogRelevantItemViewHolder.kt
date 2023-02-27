@@ -6,12 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogRelevantDataModel
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.catalog_library.util.AnalyticsHomePage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
-class CatalogRelevantItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogRelevantDataModel>(view) {
+class CatalogRelevantItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : AbstractViewHolder<CatalogRelevantDataModel>(view) {
+
+    private var dataModel: CatalogRelevantDataModel? = null
 
     private val relevantImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.catalog_relevant_image)
@@ -30,12 +33,34 @@ class CatalogRelevantItemViewHolder(val view: View, private val catalogLibraryLi
     }
 
     override fun bind(element: CatalogRelevantDataModel?) {
-        element?.relevantDataList?.imageUrl?.let { iconUrl ->
+        dataModel = element
+        val relevantProduct = dataModel?.relevantDataList
+        relevantProduct?.imageUrl?.let { iconUrl ->
             relevantImage.loadImage(iconUrl)
         }
-        relevantTitle.text = element?.relevantDataList?.name ?: ""
+        relevantTitle.text = relevantProduct?.name ?: ""
         relevantLayout.setOnClickListener {
-            catalogLibraryListener.onProductCardClicked(element?.relevantDataList?.applink)
+            AnalyticsHomePage.sendClickCatalogOnRelevantCatalogsEvent(
+                relevantProduct?.name ?: "",
+                layoutPosition + 1,
+                relevantProduct?.id ?: "",
+                UserSession(itemView.context).userId
+            )
+            catalogLibraryListener.onProductCardClicked(relevantProduct?.applink)
+        }
+    }
+
+    override fun onViewAttachedToWindow() {
+        if (dataModel?.impressHolder?.isInvoke != true) {
+            dataModel?.relevantDataList?.let {
+                AnalyticsHomePage.sendImpressionOnRelevantCatalogsEvent(
+                    layoutPosition + 1,
+                    dataModel?.relevantDataList?.id.toString(),
+                    dataModel?.relevantDataList?.name ?: "",
+                    UserSession(itemView.context).userId
+                )
+                dataModel?.impressHolder?.invoke()
+            }
         }
     }
 }

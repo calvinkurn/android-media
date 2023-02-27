@@ -31,6 +31,7 @@ object CatalogLibraryConstant {
     const val TOTAL_ROWS_VIRAL = 1
     const val TOTAL_ROWS_CATALOG = 10
 
+    const val APP_LINK_HOME = "tokopedia://catalog-library"
     const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori"
     const val CATALOG_HOME_PRODUCT_TITLE = "Katalog lainnya buat inspirasimu"
     const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori spesial buatmu"

@@ -43,7 +43,9 @@ class CatalogMostViralItemViewHolder(
     }
 
     override fun bind(element: CatalogMostViralDataModel?) {
-        element?.catalogMostViralData?.imageUrl?.let { iconUrl ->
+        val mostViralProduct = element?.catalogMostViralData
+
+        mostViralProduct?.imageUrl?.let { iconUrl ->
             mostViralImage.loadImage(iconUrl)
         }
         mostViralLayout.background =
@@ -52,7 +54,7 @@ class CatalogMostViralItemViewHolder(
                 R.drawable.background,
                 view.context.theme
             )
-        mostViralTitle.text = element?.catalogMostViralData?.name
+        mostViralTitle.text = mostViralProduct?.name
         mostViralIcon.apply {
             setImage(
                 newLightEnable = MethodChecker.getColor(
@@ -62,7 +64,7 @@ class CatalogMostViralItemViewHolder(
             )
         }
         mostViralLayout.setOnClickListener {
-            catalogLibraryListener.onProductCardClicked(element?.catalogMostViralData?.applink)
+            catalogLibraryListener.onProductCardClicked(mostViralProduct?.applink)
         }
 
         mostViralSubtitle.text = String.format(

@@ -1,17 +1,18 @@
 package com.tokopedia.catalog_library.util
 
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import org.json.JSONArray
 
 object AnalyticsLihatSemuaPage {
 
+    private fun getIrisSessionId(): String {
+        return TrackApp.getInstance().gtm.irisSessionId
+    }
+
     fun sendImpressionOnCategoryListEvent(
         eventLabel: String,
-        businessUnit: String,
-        currentSite: String,
-        pagePath: String,
         promotions: JSONArray,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -20,11 +21,11 @@ object AnalyticsLihatSemuaPage {
             .setEventCategory(CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.IMPRESSION_ON_CATEGORY_LIST)
-            .setBusinessUnit(businessUnit)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_KATEGORI)
             .setCustomProperty(EventKeys.PROMOTIONS, promotions)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -32,10 +33,6 @@ object AnalyticsLihatSemuaPage {
 
     fun sendClickAscendingDescendingSortEvent(
         eventLabel: String,
-        businessUnit: String,
-        currentSite: String,
-        pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -44,10 +41,10 @@ object AnalyticsLihatSemuaPage {
             .setEventCategory(CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_ASCENDING_DESCENDING_SORT)
-            .setBusinessUnit(businessUnit)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_KATEGORI)
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -55,10 +52,6 @@ object AnalyticsLihatSemuaPage {
 
     fun sendClickGridListViewEvent(
         eventLabel: String,
-        businessUnit: String,
-        currentSite: String,
-        pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -67,10 +60,10 @@ object AnalyticsLihatSemuaPage {
             .setEventCategory(CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_GRID_LIST_VIEW)
-            .setBusinessUnit(businessUnit)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_KATEGORI)
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -78,11 +71,7 @@ object AnalyticsLihatSemuaPage {
 
     fun sendClickCategoryOnCategoryListEvent(
         eventLabel: String,
-        businessUnit: String,
         categoryId: String,
-        currentSite: String,
-        pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -91,11 +80,11 @@ object AnalyticsLihatSemuaPage {
             .setEventCategory(CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_CATEGORY_ON_CATEGORY_LIST)
-            .setBusinessUnit(businessUnit)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_KATEGORI)
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -103,10 +92,6 @@ object AnalyticsLihatSemuaPage {
 
     fun sendClickDropUpButtonEvent(
         eventLabel: String,
-        businessUnit: String,
-        currentSite: String,
-        pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -115,10 +100,10 @@ object AnalyticsLihatSemuaPage {
             .setEventCategory(CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_DROP_UP_BUTTON)
-            .setBusinessUnit(businessUnit)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_KATEGORI)
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()

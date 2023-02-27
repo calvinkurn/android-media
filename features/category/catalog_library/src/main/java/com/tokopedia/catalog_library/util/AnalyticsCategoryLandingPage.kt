@@ -1,18 +1,19 @@
 package com.tokopedia.catalog_library.util
 
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import org.json.JSONArray
 
 object AnalyticsCategoryLandingPage {
 
+    private fun getIrisSessionId(): String {
+        return TrackApp.getInstance().gtm.irisSessionId
+    }
+
     fun sendImpressionOnTopCatalogsInCategoryEvent(
         eventLabel: String,
-        businessUnit: String,
         categoryId: String,
-        currentSite: String,
-        pagePath: String,
         promotions: JSONArray,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -24,12 +25,15 @@ object AnalyticsCategoryLandingPage {
                 EventKeys.TRACKER_ID,
                 TrackerId.IMPRESSION_ON_TOP_5_CATALOGS_IN_CATEGORY
             )
-            .setBusinessUnit(businessUnit)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(
+                EventKeys.PAGE_PATH,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryId"
+            )
             .setCustomProperty(EventKeys.PROMOTIONS, promotions)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -37,12 +41,9 @@ object AnalyticsCategoryLandingPage {
 
     fun sendImpressionOnMostViralCatalogInCategoryEvent(
         eventLabel: String,
-        businessUnit: String,
         catalogId: String,
         categoryId: String,
-        currentSite: String,
         pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -54,12 +55,15 @@ object AnalyticsCategoryLandingPage {
                 EventKeys.TRACKER_ID,
                 TrackerId.IMPRESSION_ON_MOST_VIRAL_CATALOG_IN_CATEGORY
             )
-            .setBusinessUnit(businessUnit)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATALOG_ID, catalogId)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(
+                EventKeys.PAGE_PATH,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryId"
+            )
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -67,13 +71,10 @@ object AnalyticsCategoryLandingPage {
 
     fun sendImpressionOnCatalogListInCategoryEvent(
         eventLabel: String,
-        businessUnit: String,
         categoryId: String,
-        currentSite: String,
         itemList: String,
         items: JSONArray,
         pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -85,13 +86,16 @@ object AnalyticsCategoryLandingPage {
                 EventKeys.TRACKER_ID,
                 TrackerId.IMPRESSION_ON_CATALOG_LIST_IN_CATEGORY
             )
-            .setBusinessUnit(businessUnit)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(currentSite)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .setCustomProperty(EventKeys.ITEM_LIST, itemList)
             .setCustomProperty(EventKeys.ITEMS, items)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCustomProperty(
+                EventKeys.PAGE_PATH,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryId"
+            )
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -99,12 +103,9 @@ object AnalyticsCategoryLandingPage {
 
     fun sendClickCatalogOnTopCatalogsInCategoryEvent(
         eventLabel: String,
-        businessUnit: String,
         catalogId: String,
         categoryId: String,
-        currentSite: String,
         pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -116,12 +117,15 @@ object AnalyticsCategoryLandingPage {
                 EventKeys.TRACKER_ID,
                 TrackerId.CLICK_CATALOG_ON_TOP_5_CATALOGS_IN_CATEGORY
             )
-            .setBusinessUnit(businessUnit)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATALOG_ID, catalogId)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(
+                EventKeys.PAGE_PATH,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryId"
+            )
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -129,12 +133,9 @@ object AnalyticsCategoryLandingPage {
 
     fun sendClickOnMostViralCatalogInCategoryEvent(
         eventLabel: String,
-        businessUnit: String,
         catalogId: String,
         categoryId: String,
-        currentSite: String,
         pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -146,12 +147,15 @@ object AnalyticsCategoryLandingPage {
                 EventKeys.TRACKER_ID,
                 TrackerId.CLICK_CATALOG_ON_MOST_VIRAL_CATALOG_IN_CATEGORY
             )
-            .setBusinessUnit(businessUnit)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATALOG_ID, catalogId)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(
+                EventKeys.PAGE_PATH,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryId"
+            )
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
@@ -159,14 +163,11 @@ object AnalyticsCategoryLandingPage {
 
     fun sendClickOnCatalogListInCategoryEvent(
         eventLabel: String,
-        businessUnit: String,
         catalogId: String,
         categoryId: String,
-        currentSite: String,
         itemList: String,
         items: JSONArray,
         pagePath: String,
-        sessionIris: String,
         userId: String
     ) {
         Tracker.Builder()
@@ -175,14 +176,17 @@ object AnalyticsCategoryLandingPage {
             .setEventCategory(CategoryKeys.CATALOG_LIBRARY_CATEGORY_PAGE)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_ON_CATALOG_LIST_IN_CATEGORY)
-            .setBusinessUnit(businessUnit)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATALOG_ID, catalogId)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
-            .setCurrentSite(currentSite)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .setCustomProperty(EventKeys.ITEM_LIST, itemList)
             .setCustomProperty(EventKeys.ITEMS, items)
-            .setCustomProperty(EventKeys.PAGE_PATH, pagePath)
-            .setCustomProperty(EventKeys.SESSION_IRIS, sessionIris)
+            .setCustomProperty(
+                EventKeys.PAGE_PATH,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryId"
+            )
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
             .setUserId(userId)
             .build()
             .send()
