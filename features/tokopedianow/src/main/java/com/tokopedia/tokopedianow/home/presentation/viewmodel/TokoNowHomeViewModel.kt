@@ -423,11 +423,12 @@ class TokoNowHomeViewModel @Inject constructor(
                     giftEmail = String.EMPTY,
                     notes = String.EMPTY
                 )
+                val coupon = response.hachikoRedeem.coupons.firstOrNull()
                 _couponClaimed.postValue(
                     Success(
                         HomeClaimCouponDataModel(
-                            appLink = response.data.hachikoRedeem.coupons.firstOrNull()?.appLink.orEmpty(),
-                            code = response.data.hachikoRedeem.coupons.firstOrNull()?.code.orEmpty()
+                            appLink = coupon?.appLink.orEmpty(),
+                            code = coupon?.code.orEmpty()
                         )
                     )
                 )
