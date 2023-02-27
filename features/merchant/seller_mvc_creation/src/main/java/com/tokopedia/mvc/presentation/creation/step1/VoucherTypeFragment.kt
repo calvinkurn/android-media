@@ -9,8 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -18,7 +16,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherTypeBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
@@ -28,7 +25,6 @@ import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
-import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -51,7 +47,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
-                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
                         ArrayList(selectedProducts)
                     )
                 }
@@ -81,7 +78,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             ?: VoucherConfiguration()
     }
     private val selectedProducts by lazy {
-        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
+    }
 
     // tracker
     @Inject
@@ -119,20 +117,6 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         observeUiAction()
         viewModel.processEvent(VoucherCreationStepOneEvent.HandleCoachmark)
         presetValue()
-    }
-
-    override fun onFragmentBackPressed(): Boolean {
-        activity?.finish()
-        context?.let {
-            val source = SharedPreferencesUtil().getEditCouponSourcePage(it)
-            if (source == VoucherDetailActivity::class.java.toString()) {
-                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MVC_LIST)
-                VoucherDetailActivity.start(it, voucherConfiguration.duplicatedVoucherId)
-            } else {
-                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MVC_LIST)
-            }
-        }
-        return super.onFragmentBackPressed()
     }
 
     private fun observeUiState() {
@@ -202,8 +186,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                 getString(R.string.smvc_creation_step_one_out_of_three_sub_title_label)
             }
             setNavigationOnClickListener {
-                onFragmentBackPressed()
-                tracker.sendClickKembaliArrowEvent()
+                activity?.finish()
+                tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
     }
@@ -218,16 +202,11 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             enable()
             setOnClickListener {
                 viewModel.processEvent(VoucherCreationStepOneEvent.NavigateToNextStep)
-                tracker.sendClickLanjutEvent()
+                tracker.sendClickLanjutEvent(voucherConfiguration.voucherId)
             }
         }
     }
 
-    /*
-    * The proper ineligible state implementation
-    * is still waiting update from the product team
-    * this is just a dummy implementation
-    */
     private fun showIneligibleState(isVoucherProduct: Boolean) {
         if (isVoucherProduct) setVoucherProductSelected() else setVoucherShopSelected()
         binding?.btnContinue?.apply {
@@ -246,7 +225,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     isVoucherProduct
                 )
             )
-            tracker.sendClickKuponTypeEvent(isVoucherProduct)
+            tracker.sendClickKuponTypeEvent(isVoucherProduct, voucherConfiguration.voucherId)
         }
     }
 
@@ -285,7 +264,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     )
                 )
                 viewModel.processEvent(VoucherCreationStepOneEvent.resetFillState)
-                tracker.sendClickKuponTypeEvent(isVoucherProduct)
+                tracker.sendClickKuponTypeEvent(isVoucherProduct, voucherConfiguration.voucherId)
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
