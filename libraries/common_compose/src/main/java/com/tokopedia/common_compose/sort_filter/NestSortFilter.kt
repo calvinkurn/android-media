@@ -25,7 +25,7 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
 
-data class SortFilter(val title: String, val isSelected : Boolean, val onClick: () -> Unit)
+data class SortFilter(val title: String, val isSelected: Boolean, val onClick: () -> Unit)
 
 @Composable
 fun NestSortFilter(
@@ -34,7 +34,7 @@ fun NestSortFilter(
     onClearFilter: () -> Unit,
     showClearFilterIcon: Boolean
 ) {
-    //Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK only
+    // Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK only
     LazyRow(modifier = modifier) {
         if (showClearFilterIcon) item { ClearSortFilterItem(onClearFilter) }
         items(items) { NestSortFilterItem(it) }
@@ -43,8 +43,8 @@ fun NestSortFilter(
 
 @Composable
 private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
-    //Implementation are specifically to cater SELECTED and NORMAL type chips only
-    val backgroundColor= NestTheme.colors.NN._0
+    // Implementation are specifically to cater SELECTED and NORMAL type chips only
+    val backgroundColor = NestTheme.colors.NN._0
     val borderColor = NestTheme.colors.NN._200
     Surface(
         color = backgroundColor,
@@ -65,7 +65,6 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
     }
 }
 
-
 @Preview(name = "Sort Filter Item (Selected)")
 @Composable
 fun NestSortFilterItemSelectedPreview() {
@@ -78,10 +77,9 @@ fun NestSortFilterItemPreview() {
     NestSortFilterItem(SortFilter("Lokasi", false, {}))
 }
 
-
 @Composable
 private fun NestSortFilterItem(sortFilter: SortFilter) {
-    //Implementation are specifically to cater SELECTED and NORMAL type chips only
+    // Implementation are specifically to cater SELECTED and NORMAL type chips only
     val textColorSelected = NestTheme.colors.GN._500
     val textColorDefault = NestTheme.colors.NN._600
 
@@ -140,7 +138,6 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
     }
 }
 
-
 @Preview(name = "Sort Filter")
 @Composable
 fun NestSortFilterPreview() {
@@ -150,4 +147,3 @@ fun NestSortFilterPreview() {
     )
     NestSortFilter(modifier = Modifier, items = items, onClearFilter = {}, showClearFilterIcon = true)
 }
-

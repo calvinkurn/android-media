@@ -24,11 +24,11 @@ fun NestTicker(
     text: CharSequence,
     onDismissed: () -> Unit = {}
 ) {
-    //Implementation are specifically to cater ANNOUNCEMENT ticker type
+    // Implementation are specifically to cater ANNOUNCEMENT ticker type
     val backgroundColor = NestTheme.colors.BN._50
-    val strokeColor =  NestTheme.colors.BN._200
+    val strokeColor = NestTheme.colors.BN._200
     val iconColor = NestTheme.colors.BN._400
-    val closeIconColor =  NestTheme.colors.NN._900
+    val closeIconColor = NestTheme.colors.NN._900
 
     Surface(
         modifier = modifier,
@@ -53,7 +53,6 @@ fun NestTicker(
             )
         }
     }
-
 }
 
 @Preview(name = "Ticker")
@@ -62,6 +61,6 @@ fun NestTickerPreview() {
     NestTicker(
         Modifier,
         text = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-        onDismissed = {},
+        onDismissed = {}
     )
 }

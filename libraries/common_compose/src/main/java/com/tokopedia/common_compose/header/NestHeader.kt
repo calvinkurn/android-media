@@ -19,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.ui.NestTheme
 
-
 @Composable
 fun NestHeader(
     modifier: Modifier = Modifier,
@@ -32,7 +31,6 @@ fun NestHeader(
         elevation = 1.dp,
         modifier = modifier
     ) {
-
         Row(
             Modifier
                 .fillMaxWidth()
@@ -63,10 +61,8 @@ fun NestHeader(
                 )
             )
         }
-
     }
 }
-
 
 @Preview(name = "Header")
 @Composable
@@ -83,4 +79,3 @@ fun NestHeaderDarkPreview() {
         NestHeader(title = "Tokopedia")
     }
 }
-

@@ -21,7 +21,6 @@ fun NestButton(
     text: String,
     onClick: () -> Unit
 ) {
-
     val backgroundColor = ButtonDefaults.buttonColors(backgroundColor = NestTheme.colors.GN._500)
 
     Button(
@@ -36,7 +35,7 @@ fun NestButton(
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -50,4 +49,3 @@ fun NestButtonPreview() {
         onClick = {}
     )
 }
-
