@@ -6,7 +6,11 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.view.LayoutInflater
-import android.webkit.*
+import android.webkit.SslErrorHandler
+import android.webkit.URLUtil
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
