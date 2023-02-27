@@ -69,7 +69,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
-                        list = if (it.list.isEmpty()) result.list else it.list + result.list
+                        list = it.list + result.list
                     )
                 }
                 _query.update {
@@ -210,7 +210,7 @@ class ContentCommentViewModel @AssistedInject constructor(
 
     private fun deleteComment(isFromToaster: Boolean) {
         fun removeComment() {
-            _comments.getAndUpdate {
+            _comments.update {
                 it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })
             }
         }
@@ -223,7 +223,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 )
             }
         } else {
-            addComment()
+            undoComment()
         }
     }
 
@@ -255,7 +255,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         }
     }
 
-    private fun addComment() {
+    private fun undoComment() {
         _comments.getAndUpdate {
             val newList = it.list.toMutableList()
             newList.add(_selectedComment.value.second, _selectedComment.value.first)

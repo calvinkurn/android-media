@@ -34,13 +34,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -68,7 +67,7 @@ class ContentCommentBottomSheet @Inject constructor(
     private var mSource: EntrySource? = null
 
     private val viewModel: ContentCommentViewModel by viewModels {
-        factory.create(this, mSource?.getPageSource() ?: PageSource.Unknown)
+        factory.create(mSource?.getPageSource() ?: PageSource.Unknown)
     }
 
     private val commentAdapter by lazyThreadSafetyNone {
@@ -231,17 +230,10 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun showError(isShown: Boolean) {
-        if (isShown) {
-            binding.commentGlobalError.show()
-            binding.rvComment.hide()
-            binding.commentHeader.hide()
-            binding.viewCommentSend.hide()
-        } else {
-            binding.commentGlobalError.hide()
-            binding.rvComment.show()
-            binding.commentHeader.show()
-            binding.viewCommentSend.show()
-        }
+        binding.commentGlobalError.showWithCondition(isShown)
+        binding.rvComment.showWithCondition(!isShown)
+        binding.commentHeader.showWithCondition(!isShown)
+        binding.viewCommentSend.showWithCondition(!isShown)
     }
 
     fun setEntrySource(source: EntrySource?) {
@@ -251,7 +243,6 @@ class ContentCommentBottomSheet @Inject constructor(
     fun show(fragmentManager: FragmentManager) {
         if (isAdded) return
         showNow(fragmentManager, TAG)
-        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
@@ -304,15 +295,17 @@ class ContentCommentBottomSheet @Inject constructor(
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.root.layoutParams.height = newHeight
+        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         setEntrySource(null)
+        binding.rvComment.removeOnScrollListener(scrollListener)
         _binding = null
     }
 
-    private val getCommentShimmering: List<CommentUiModel.Shimmer> = List(6) {
+    private val getCommentShimmering: List<CommentUiModel.Shimmer> = List(SHIMMER_VALUE) {
         CommentUiModel.Shimmer
     }
 
@@ -378,6 +371,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val USER_TYPE_SELLER = "seller"
 
         private const val HEIGHT_PERCENT = 0.8
+        private const val SHIMMER_VALUE = 10
 
         fun getOrCreate(
             fragmentManager: FragmentManager,

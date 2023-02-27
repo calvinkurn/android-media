@@ -7,21 +7,21 @@ import com.google.gson.annotations.SerializedName
  */
 data class PostComment(
     @SerializedName("feedsCommentPostComment")
-    val parent: Parent,
+    val parent: Parent = Parent(),
 ) {
     data class Parent(
         @SerializedName("data")
-        val data: NewComment,
+        val data: NewComment = NewComment(),
 
         @SerializedName("error")
-        val error: String,
+        val error: String = "",
     ) {
         data class NewComment(
             @SerializedName("commentID")
-            val id: String,
+            val id: String = "",
 
             @SerializedName("commentParentID")
-            val parentId: String,
+            val parentId: String = "",
 
             @SerializedName("createTime")
             val createdTime: String = "",
