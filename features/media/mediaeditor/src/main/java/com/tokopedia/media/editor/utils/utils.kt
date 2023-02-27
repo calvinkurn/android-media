@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Handler
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.utils.file.FileUtil
@@ -199,5 +198,5 @@ fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     activityManager.getMemoryInfo(mi)
-    return mi.availMem > memoryUsage
+    return mi.availMem < memoryUsage
 }
