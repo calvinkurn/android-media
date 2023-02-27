@@ -14,6 +14,11 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.presentation.adapter.TopAdsViewAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.utils.TdnHelper
+import com.tokopedia.topads.sdk.widget.TdnBannerView
+import com.tokopedia.unifycomponents.toPx
+import kotlinx.android.synthetic.main.thanks_topads_view.view.*
 
 class TopAdsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -28,6 +33,7 @@ class TopAdsView @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(layout, this, true)
+        val tdnBannerView = findViewById<TdnBannerView>(R.id.tdnBannerView)
     }
 
     fun addData(
@@ -45,7 +51,18 @@ class TopAdsView @JvmOverloads constructor(
             else
                 findViewById<TextView>(R.id.tvFeatureDescription).text = topAdsParams.sectionDescription
 
-            addTORecyclerView(topAdsParams.topAdsUIModelList)
+            val topAdsImageViewModels = mutableListOf<TopAdsImageViewModel>()
+            topAdsParams.topAdsUIModelList?.forEach {
+                topAdsImageViewModels.add(it.topAdsImageViewModel)
+            }
+            val tdnBannerList = TdnHelper.categoriesTdnBanners(topAdsImageViewModels)
+            if (!tdnBannerList.isNullOrEmpty()) {
+                tdnBannerView?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
+                    if (it.isNotEmpty()) RouteManager.route(tdnBannerView.context, it)
+                })
+            }
+
+//            addTORecyclerView(topAdsParams.topAdsUIModelList)
         } else {
             gone()
         }
