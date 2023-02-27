@@ -1,26 +1,31 @@
 package com.tokopedia.topchat.stub.chattemplate.di
 
 import android.app.Activity
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import android.content.Context
 import com.tokopedia.topchat.chattemplate.di.ActivityComponentFactory
-import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
 import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent
-import com.tokopedia.topchat.chattemplate.di.TemplateChatModule
-import com.tokopedia.topchat.common.chat.api.ChatTemplateApi
-import com.tokopedia.topchat.stub.chattemplate.usecase.api.ChatTemplateApiStub
-import retrofit2.Retrofit
+import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
+import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 
 class FakeTemplateActivityComponentFactory: ActivityComponentFactory() {
 
-    var chatTemplateApiStub: ChatTemplateApiStub = ChatTemplateApiStub()
-
     override fun createActivityComponent(activity: Activity): TemplateChatComponent {
-        return DaggerTemplateChatComponent.builder()
-            .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
-            .templateChatModule(object : TemplateChatModule() {
-                override fun provideChatApiKt(retrofit: Retrofit): ChatTemplateApi {
-                    return chatTemplateApiStub
-                }
-            }).build()
+        if (templateChatComponent == null) {
+            createTemplateChatComponent(activity.applicationContext)
+        }
+        return templateChatComponent!!
+    }
+
+    fun createTemplateChatComponent(context: Context) {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+            .fakeAppModule(FakeAppModule(context))
+            .build()
+        templateChatComponent = DaggerTemplateChatComponentStub.builder()
+            .fakeBaseAppComponent(baseComponent)
+            .build()
+    }
+
+    companion object {
+        var templateChatComponent: TemplateChatComponentStub? = null
     }
 }

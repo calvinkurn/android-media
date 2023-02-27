@@ -588,7 +588,12 @@ object DynamicProductDetailMapper {
             addressID = localData.address_id.checkIfNumber("address_id"),
             postalCode = localData.postal_code.checkIfNumber("postal_code"),
             latlon = latlong,
-            cityId = localData.city_id.checkIfNumber("city_id")
+            cityId = localData.city_id.checkIfNumber("city_id"),
+            /**
+             * Address Name use to determine we should show "Dikirim ke" when tokonow or no
+             * This validation should be came from backend
+             */
+            addressName = localData.label
         )
     }
 

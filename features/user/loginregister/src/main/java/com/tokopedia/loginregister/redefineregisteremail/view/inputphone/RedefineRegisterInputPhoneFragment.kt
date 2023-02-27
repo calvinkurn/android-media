@@ -17,7 +17,6 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.globalerror.GlobalError
@@ -429,7 +428,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         activity?.let {
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(it, true)
-            AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
             initTokoChatConnection()
         }
