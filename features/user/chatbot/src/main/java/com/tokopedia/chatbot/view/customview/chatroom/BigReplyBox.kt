@@ -40,13 +40,6 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding){
-        videoUploadOnBoarding.showVideoBubbleOnBoarding(
-            addAttachmentMenu,
-            context
-        )
-    }
-
     private fun bindClickListeners() {
         addAttachmentMenu?.setOnClickListener {
             replyBoxClickListener?.onAttachmentMenuClicked()

@@ -286,7 +286,7 @@ class ChatbotFragment :
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
-    var isReplayCoachMarkShowing = false
+    var isReplyCoachMarkShowing = false
 
     @Inject
     lateinit var videoUploadOnBoarding: VideoUploadOnBoarding
@@ -672,7 +672,7 @@ class ChatbotFragment :
         if(!hasBeenShownReplyBubbleOnBoarding) {
             val ratioY = calculateRatiosForGuideline()
             setUpPositionReplyBubbleGuideline(ratioY)
-            isReplayCoachMarkShowing = true
+            isReplyCoachMarkShowing = true
             showReplayCoachMark()
         } else if(!hasBeenShownReplyBubbleOnBoarding) {
             checkVideoUploadOnboardingStatus()
@@ -2433,8 +2433,6 @@ class ChatbotFragment :
         }
         if (smallReplyBox?.isVisible.orFalse()) {
             getBindingView().smallReplyBox.showCoachMark(videoUploadOnBoarding)
-        } else {
-            getBindingView().bigReplyBox.showCoachMark(videoUploadOnBoarding)
         }
     }
 
@@ -2472,7 +2470,7 @@ class ChatbotFragment :
     private fun setReplayBubbleCoachMarkListener(){
         replyBubbleOnBoarding.onboardingDismissListener = object : OnboardingReplayDismissListener {
             override fun dismissReplyBubbleOnBoarding() {
-                isReplayCoachMarkShowing = false
+                isReplyCoachMarkShowing = false
                 checkVideoUploadOnboardingStatus()
             }
         }
@@ -2497,7 +2495,7 @@ class ChatbotFragment :
     }
 
     override fun onBackPressed(): Boolean {
-        return if(isReplayCoachMarkShowing){
+        return if(isReplyCoachMarkShowing){
             replyBubbleOnBoarding.dismiss()
             true
         } else if(isVideoCoachMarkShowing) {
