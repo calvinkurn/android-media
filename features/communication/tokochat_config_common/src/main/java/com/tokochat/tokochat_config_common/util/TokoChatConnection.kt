@@ -1,7 +1,6 @@
 package com.tokochat.tokochat_config_common.util
 
 import android.content.Context
-import android.util.Log
 import com.gojek.conversations.ConversationsRepository
 import com.gojek.courier.AppEvent.AppLogout
 import com.gojek.courier.CourierConnection
@@ -9,6 +8,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
+import com.tokochat.tokochat_config_common.repository.courier.TokoChatBabbleCourierImpl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -23,7 +23,10 @@ import timber.log.Timber
 
 object TokoChatConnection {
 
+    @Volatile
     var tokoChatConfigComponent: TokoChatConfigComponent? = null
+
+    @Volatile
     var courierConnection: CourierConnection? = null
 
     @Volatile
@@ -35,8 +38,6 @@ object TokoChatConnection {
         AndroidThreeTen.init(context.applicationContext)
 
         injectTokoChatConfigComponent(context)
-
-        Log.d("TOKOCHAT-INIT", "after inject")
 
         /**
          * If from login, fetch the AB test first
@@ -54,28 +55,24 @@ object TokoChatConnection {
         // If user does not login or
         // If rollence turned off or seller app or
         // has been initialized, return
-        Log.d("TOKOCHAT-INIT", "Initialize before IF")
-        Log.d("TOKOCHAT-INIT", "is login : ${UserSession(context).isLoggedIn}")
-        Log.d("TOKOCHAT-INIT", "is active : ${isTokoChatActive()}")
-        Log.d("TOKOCHAT-INIT", "has init : $hasBeenInitialized")
         if (!UserSession(context).isLoggedIn || !isTokoChatActive() || hasBeenInitialized) return
 
-        Log.d("TOKOCHAT-INIT", "Initialize after IF")
         // Initialize Courier Connection
         courierConnection = tokoChatConfigComponent?.getCourierConnection()
 
-        Log.d("TOKOCHAT-INIT", "courier connection: $courierConnection")
         if (courierConnection != null) {
-            Log.d("TOKOCHAT-INIT", "Init convo repo: ${tokoChatConfigComponent?.getTokoChatRepository()}")
             try {
+                // Init courier connection
+                if (shouldInitCourier()) {
+                    courierConnection?.init(TokoChatBabbleCourierImpl.SOURCE_APP_INIT)
+                }
+
+                // Init conversation repository
                 tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
             } catch (throwable: Throwable) {
-                Log.d("TOKOCHAT-INIT", "error: $throwable")
-                throwable.printStackTrace()
-            } finally {
-                Log.d("TOKOCHAT-INIT", "init conversation finally")
+                Timber.d(throwable)
+                logToServer(throwable)
             }
-            Log.d("TOKOCHAT-INIT", "after init conversation")
         }
 
         // Set initialization status to success
@@ -95,7 +92,6 @@ object TokoChatConnection {
             override fun onComplete(remoteConfig: RemoteConfig?) {
                 GlobalScope.launch {
                     withContext(Dispatchers.Main) {
-                        Log.d("TOKOCHAT-INIT", "FETCH AB")
                         initializeCourierConnection(context)
                     }
                 }
@@ -123,6 +119,7 @@ object TokoChatConnection {
             hasBeenInitialized = false
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            logToServer(throwable)
         }
     }
 
@@ -135,5 +132,15 @@ object TokoChatConnection {
         } catch (e: Throwable) {
             false
         }
+    }
+
+    private fun shouldInitCourier(): Boolean {
+        return tokoChatConfigComponent?.getRemoteConfig()?.getBoolean(
+            TokoChatBabbleCourierImpl.COURIER_CONVERSATION_INIT
+        ) ?: false
+    }
+
+    private fun logToServer(throwable: Throwable) {
+        CourierEventLogger.logCourierErrorToServerLogger(throwable)
     }
 }
