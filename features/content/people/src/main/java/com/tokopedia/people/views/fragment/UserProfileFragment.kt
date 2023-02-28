@@ -28,11 +28,11 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -97,6 +97,7 @@ import java.net.SocketTimeoutException
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.abs
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 class UserProfileFragment @Inject constructor(
@@ -185,6 +186,13 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
+                if (abs(verticalOffset) > mainBinding.appBarUserProfile.totalScrollRange / 1.5) {
+                    mainBinding.headerProfile.headerView?.showWithCondition(mainBinding.headerProfile.title.isNotEmpty())
+                    mainBinding.headerProfile.subheaderView?.showWithCondition(mainBinding.headerProfile.subtitle.isNotEmpty())
+                } else {
+                    mainBinding.headerProfile.headerView?.gone()
+                    mainBinding.headerProfile.subheaderView?.gone()
+                }
             }
         )
 
@@ -559,6 +567,10 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
 
+        mainBinding.headerProfile.title = curr.name
+        mainBinding.headerProfile.subtitle = curr.username
+        mainBinding.headerProfile.alpha = 1F
+
         binding.viewFlipper.displayedChild = PAGE_CONTENT
 
         userProfileTracker.openUserProfile(
@@ -599,8 +611,6 @@ class UserProfileFragment @Inject constructor(
                 textSeeMore.hide()
             }
         }
-        binding.headerProfile.title = curr.name
-        binding.headerProfile.alpha = 1F
     }
 
     private fun renderButtonAction(
@@ -880,7 +890,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun setHeader() {
-        binding.headerProfile.apply {
+        mainBinding.headerProfile.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
                 userProfileTracker.clickBack(userSession.userId, self = viewModel.isSelfProfile)
