@@ -51,7 +51,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
             productId: String,
             cartId: String,
             layoutId: String,
-            pageSource: String,
+            pageSource: String
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
@@ -103,7 +103,11 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         return super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setupBottomSheet(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -137,7 +141,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         /**
          * Init Loading
          */
-        adapter.addComponent(LoadingUiModel())
+        adapter.replaceComponents(listOf(LoadingUiModel()))
 
         viewModel.fetchLayout(
             productId.orEmpty(),
@@ -149,41 +153,38 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
         result.doSuccessOrFail(success = {
-            binding?.postAtcRv?.post {
-                adapter.replaceComponents(it.data)
-            }
+            adapter.replaceComponents(it.data)
         }, fail = {
-            showError(it)
-        })
+                showError(it)
+            })
         commonTracker?.let {
             PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
         }
     }
 
-    private val recommendationsObserver = Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
-        val uiModelId = result.first
-        result.second.doSuccessOrFail(success = {
-            val data = it.data
-            binding?.postAtcRv?.post {
+    private val recommendationsObserver =
+        Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
+            val uiModelId = result.first
+            result.second.doSuccessOrFail(success = {
+                val data = it.data
                 adapter.updateComponent<RecommendationUiModel>(uiModelId) {
                     widget = data
                 }
-            }
-        }, fail = {
-            adapter.removeComponent(uiModelId)
-        })
-    }
+            }, fail = {
+                    adapter.removeComponent(uiModelId)
+                })
+        }
 
     private fun showError(it: Throwable) {
-        val errorType = if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
+        val errorType = if (it is SocketTimeoutException ||
+            it is UnknownHostException || it is ConnectException
+        ) {
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
         }
 
-        adapter.clearAllItems()
-        adapter.addItem(ErrorUiModel(errorType = errorType))
-        adapter.notifyItemInserted(adapter.lastIndex)
+        adapter.replaceComponents(listOf(ErrorUiModel(errorType = errorType)))
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -221,7 +222,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     override fun refreshPage() {
-        adapter.clearAllItems()
         initData()
     }
 
@@ -248,12 +248,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         }
 
         goToCart(cartId)
-    }
-
-    override fun removeComponent(position: Int) {
-        binding?.postAtcRv?.post {
-            adapter.removeComponent(position)
-        }
     }
 
     /**
