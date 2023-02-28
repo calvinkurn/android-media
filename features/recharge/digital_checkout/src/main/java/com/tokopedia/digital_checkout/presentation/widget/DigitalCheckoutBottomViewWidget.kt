@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.ui.ConsentType
 import org.jetbrains.annotations.NotNull
 import com.tokopedia.promocheckout.common.R as PromoCommonRes
 import com.tokopedia.unifyprinciples.R as UnifyPrinciplesRes
@@ -117,6 +118,14 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
             }
             setOnFailedGetCollectionListener {
                 isCheckoutButtonEnabled = false
+            }
+            setOnDetailConsentListener { _, consentType ->
+                isCheckoutButtonEnabled = when (consentType) {
+                    is ConsentType.SingleInfo -> true
+                    is ConsentType.SingleChecklist -> false
+                    is ConsentType.MultipleChecklist -> false
+                    else -> false
+                }
             }
             isConsentAvailable = consentCollectionParam.collectionId.isNotEmpty()
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)

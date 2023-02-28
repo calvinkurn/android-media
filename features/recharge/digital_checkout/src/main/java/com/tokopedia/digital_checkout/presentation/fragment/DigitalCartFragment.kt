@@ -698,12 +698,12 @@ class DigitalCartFragment :
 
         binding?.run {
             if (isChecked) {
+                checkoutBottomViewWidget.isCheckoutButtonEnabled = false
                 renderConsentWidget(fintechProduct)
                 checkoutBottomViewWidget.showCrossSellConsentIfAvailable()
-                checkoutBottomViewWidget.isCheckoutButtonEnabled = !checkoutBottomViewWidget.isNeedConsent()
             } else {
-                checkoutBottomViewWidget.hideCrossSellConsentIfAvailable()
                 checkoutBottomViewWidget.isCheckoutButtonEnabled = true
+                checkoutBottomViewWidget.hideCrossSellConsentIfAvailable()
             }
 
             viewModel.onSubscriptionChecked(fintechProduct, isChecked)
