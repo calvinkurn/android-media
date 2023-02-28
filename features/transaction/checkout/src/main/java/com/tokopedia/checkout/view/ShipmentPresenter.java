@@ -2288,6 +2288,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
+        String warehouseId = String.valueOf(shipmentCartItemModel.getFulfillmentId());
 
         String mvc = generateRatesMvcParam(cartString);
 
@@ -2297,6 +2298,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .cartData(cartData)
+                .warehouseId(warehouseId)
                 .mvc("");
 
         if (!skipMvc) {
@@ -3106,6 +3108,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         String pslCode = voucherOrdersItemUiModel.getCode();
         boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
+        String warehouseId = String.valueOf(shipmentCartItemModel.getFulfillmentId());
 
         String mvc = generateRatesMvcParam(cartString);
 
@@ -3116,6 +3119,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .cartData(cartData)
+                .warehouseId(warehouseId)
                 .mvc(mvc);
 
         RatesParam param = ratesParamBuilder.build();

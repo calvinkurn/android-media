@@ -7,7 +7,7 @@ interface PromoCheckoutActionListener {
     fun onClickApplyRecommendedPromo()
 
     fun onClickPromoManualInputTextField()
-    
+
     fun onClickApplyManualInputPromo(promoCode: String, isFromSuggestion: Boolean)
 
     fun onCLickClearManualInputPromo()

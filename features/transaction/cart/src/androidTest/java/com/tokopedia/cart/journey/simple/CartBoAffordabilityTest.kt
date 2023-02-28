@@ -19,20 +19,35 @@ import org.junit.Test
 class CartBoAffordabilityTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            InstrumentationAuthHelper.loginInstrumentationTestUser1()
+    var activityRule =
+        object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
+            override fun beforeActivityLaunched() {
+                super.beforeActivityLaunched()
+                InstrumentationAuthHelper.loginInstrumentationTestUser1()
+            }
         }
-    }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bo_affordability_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(ONGKIR_GET_FREE_SHIPPING_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ongkir_get_free_shipping_success_afford_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                GET_CART_LIST_KEY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.cart_bo_affordability_response
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                CART_SHOP_GROUP_TICKER_AGGREGATOR_KEY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.cart_shop_group_ticker_aggregator_bo_afford_success_response
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
     }
 
@@ -47,15 +62,15 @@ class CartBoAffordabilityTest {
 
             assertCartShopViewHolderOnPosition(3) {
                 // given checked shop & enable bo affordability, then should show ticker
-                assertShowBoAffordabilityTicker()
+                assertShowCartShopGroupTicker()
             }
             assertCartShopViewHolderOnPosition(4) {
                 // given unchecked shop & enable bo affordability, then should not show ticker
-                assertNotShowBoAffordabilityTicker()
+                assertNotShowCartShopGroupTicker()
             }
             assertCartShopViewHolderOnPosition(5) {
                 // given checked shop & disable bo affordability, then should not show ticker
-                assertNotShowBoAffordabilityTicker()
+                assertNotShowCartShopGroupTicker()
             }
 
             // Prevent glide crash
@@ -70,6 +85,6 @@ class CartBoAffordabilityTest {
 
     companion object {
         const val GET_CART_LIST_KEY = "cart_revamp"
-        const val ONGKIR_GET_FREE_SHIPPING_KEY = "ongkirGetFreeShipping"
+        const val CART_SHOP_GROUP_TICKER_AGGREGATOR_KEY = "cartShopGroupTickerAggregator"
     }
 }
