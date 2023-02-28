@@ -354,7 +354,7 @@ class ChatbotPresenter @Inject constructor(
             pojo.attachment?.attributes,
             DynamicAttachment::class.java
         )
-        val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+        val contentCode = dynamicAttachment?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
         return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
     }
 
