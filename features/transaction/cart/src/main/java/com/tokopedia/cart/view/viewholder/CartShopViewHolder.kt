@@ -226,34 +226,34 @@ class CartShopViewHolder(
     }
 
     private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
-        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsible) {
-            val showMoreWording = itemView.context.getString(R.string.label_tokonow_show_more)
-            val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
-            if (cartShopHolderData.isCollapsed) {
-                binding.imageChevron.rotation = CHEVRON_ROTATION_0
-                binding.textAccordion.text = showMoreWording
-            } else {
-                binding.imageChevron.rotation = CHEVRON_ROTATION_180
-                binding.textAccordion.text = showLessWording
-            }
-
-            binding.layoutAccordion.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    if (cartShopHolderData.isCollapsed) {
-                        actionListener.onExpandAvailableItem(position)
-                    } else {
-                        actionListener.onCollapseAvailableItem(position)
-                    }
-                }
-            }
-
-            binding.layoutAccordion.show()
-            binding.separatorAccordion.show()
-        } else {
+//        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsible) {
+//            val showMoreWording = itemView.context.getString(R.string.label_tokonow_show_more)
+//            val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
+//            if (cartShopHolderData.isCollapsed) {
+//                binding.imageChevron.rotation = CHEVRON_ROTATION_0
+//                binding.textAccordion.text = showMoreWording
+//            } else {
+//                binding.imageChevron.rotation = CHEVRON_ROTATION_180
+//                binding.textAccordion.text = showLessWording
+//            }
+//
+//            binding.layoutAccordion.setOnClickListener {
+//                val position = adapterPosition
+//                if (position != RecyclerView.NO_POSITION) {
+//                    if (cartShopHolderData.isCollapsed) {
+//                        actionListener.onExpandAvailableItem(position)
+//                    } else {
+//                        actionListener.onCollapseAvailableItem(position)
+//                    }
+//                }
+//            }
+//
+//            binding.layoutAccordion.show()
+//            binding.separatorAccordion.show()
+//        } else {
             binding.layoutAccordion.gone()
             binding.separatorAccordion.gone()
-        }
+//        }
     }
 
     private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {

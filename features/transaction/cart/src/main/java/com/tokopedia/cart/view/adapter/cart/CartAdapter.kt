@@ -13,6 +13,7 @@ import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.databinding.ItemCartSectionHeaderBinding
+import com.tokopedia.cart.databinding.ItemCartShopBottomBinding
 import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
 import com.tokopedia.cart.databinding.ItemCartWishlistBinding
 import com.tokopedia.cart.databinding.ItemEmptyCartBinding
@@ -30,6 +31,7 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
@@ -44,6 +46,7 @@ import com.tokopedia.cart.view.viewholder.CartRecentViewViewHolder
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cart.view.viewholder.CartSectionHeaderViewHolder
 import com.tokopedia.cart.view.viewholder.CartSelectAllViewHolder
+import com.tokopedia.cart.view.viewholder.CartShopBottomViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cart.view.viewholder.CartTopAdsHeadlineViewHolder
@@ -332,6 +335,7 @@ class CartAdapter @Inject constructor(
             is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
             is CartChooseAddressHolderData -> CartChooseAddressViewHolder.LAYOUT
             is CartShopHolderData -> CartShopViewHolder.LAYOUT
+            is CartShopBottomHolderData -> CartShopBottomViewHolder.LAYOUT
             is CartItemHolderData -> CartItemViewHolder.TYPE_VIEW_ITEM_CART
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
@@ -368,6 +372,10 @@ class CartAdapter @Inject constructor(
             CartItemViewHolder.TYPE_VIEW_ITEM_CART -> {
                 val binding = ItemCartProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return CartItemViewHolder(binding, cartItemActionListener)
+            }
+            CartShopBottomViewHolder.LAYOUT -> {
+                val binding = ItemCartShopBottomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartShopBottomViewHolder(binding, actionListener)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val binding = HolderItemCartTickerErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -457,6 +465,10 @@ class CartAdapter @Inject constructor(
             CartItemViewHolder.TYPE_VIEW_ITEM_CART -> {
                 val data = cartDataList[position] as CartItemHolderData
                 (holder as CartItemViewHolder).bindData(data, this, 1)
+            }
+            CartShopBottomViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartShopBottomHolderData
+                (holder as CartShopBottomViewHolder).bindData(data)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
@@ -895,6 +907,15 @@ class CartAdapter @Inject constructor(
     fun getCartShopHolderDataByIndex(index: Int): CartShopHolderData? {
         return if (cartDataList[index] is CartShopHolderData) {
             cartDataList[index] as CartShopHolderData
+        } else {
+            null
+        }
+    }
+
+    fun getCartShopBottomHolderDataFromIndex(shopBottomIndex: Int): CartShopBottomHolderData? {
+        val bottomItem = cartDataList[shopBottomIndex]
+        return if (bottomItem is CartShopBottomHolderData) {
+            bottomItem
         } else {
             null
         }

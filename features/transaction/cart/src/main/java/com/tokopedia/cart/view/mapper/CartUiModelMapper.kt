@@ -25,8 +25,9 @@ import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
-import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
+import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
@@ -219,6 +220,7 @@ object CartUiModelMapper {
             if (!shopUiModel.isCollapsed) {
                 cartShopHolderDataList.addAll(productUiModelList)
             }
+            cartShopHolderDataList.add(CartShopBottomHolderData(shopUiModel))
         }
 
         return cartShopHolderDataList

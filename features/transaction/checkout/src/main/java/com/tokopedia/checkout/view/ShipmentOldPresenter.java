@@ -2325,6 +2325,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
                 ratesPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPublisher
+                                .onBackpressureBuffer()
                                 .concatMap(shipmentGetCourierHolderData -> {
                                     logisticDonePublisher = PublishSubject.create();
                                     if (shipmentCartItemModel.getRatesValidationFlow()) {
@@ -3144,6 +3145,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
                 ratesPromoPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPromoPublisher
+                                .onBackpressureBuffer()
                                 .concatMap(shipmentGetCourierHolderData -> {
                                     logisticPromoDonePublisher = PublishSubject.create();
                                     ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
