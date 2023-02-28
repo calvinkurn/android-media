@@ -27,7 +27,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
@@ -186,7 +185,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 "",
                 "",
                 checkoutId = CHECKOUT_ID,
-                arrayListOf())
+                arrayListOf()
+            )
         )
 
         // When
@@ -277,7 +277,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                 "",
                 "",
                 checkoutId = CHECKOUT_ID,
-                arrayListOf())
+                arrayListOf()
+            )
         )
 
         // When
