@@ -15,7 +15,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 object InspirationCarouselTracking {
 
     private const val IMPRESSION_CAROUSEL_PRODUCT = "impression - carousel product"
-    private const val CAROUSEL_UNIFICATION_LIST_NAME = " /search - carousel %s - component:%s"
+    private const val CAROUSEL_UNIFICATION_LIST_NAME = "/search - carousel %s - component:%s"
     private const val IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner"
     private const val CLICK_INSPIRATION_CAROUSEL_GRID_BANNER = "click lihat sekarang - carousel banner"
 

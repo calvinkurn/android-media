@@ -198,7 +198,6 @@ class BaseTokoFoodOrderTrackingFragment :
         tracking.clickChatIcon(
             orderStatus = viewModel.getOrderStatus(),
             orderId = viewModel.getOrderId(),
-            channelId = viewModel.channelId,
             source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
             role = TokoFoodAnalyticsConstants.BUYER,
             unReadChatCounter = unReadChatCounter

@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.model
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
 data class OrderPreference(
-        val ticker: TickerData? = null,
-        val onboarding: OccOnboarding = OccOnboarding(),
-        val hasValidProfile: Boolean = false
+    val ticker: TickerData? = null,
+    val onboarding: OccOnboarding = OccOnboarding(),
+    val hasValidProfile: Boolean = false
 )
