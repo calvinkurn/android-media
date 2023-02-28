@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemShopBinding
 import com.tokopedia.cart.view.ActionListener
@@ -15,12 +14,9 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -31,10 +27,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
-import com.tokopedia.utils.resources.isDarkMode
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
@@ -251,8 +245,8 @@ class CartShopViewHolder(
 //            binding.layoutAccordion.show()
 //            binding.separatorAccordion.show()
 //        } else {
-            binding.layoutAccordion.gone()
-            binding.separatorAccordion.gone()
+        binding.layoutAccordion.gone()
+        binding.separatorAccordion.gone()
 //        }
     }
 
@@ -499,87 +493,87 @@ class CartShopViewHolder(
     }
 
     private fun renderCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError &&
-            cartShopHolderData.cartShopGroupTicker.enableCartAggregator &&
-            !cartShopHolderData.isOverweight
-        ) {
-            binding.apply {
-                val cartShopGroupTicker = cartShopHolderData.cartShopGroupTicker
-                when (cartShopGroupTicker.state) {
-                    CartShopGroupTickerState.FIRST_LOAD, CartShopGroupTickerState.LOADING -> {
-                        cartShopTickerText.gone()
-                        cartShopTickerLeftIcon.gone()
-                        cartShopTickerRightIcon.gone()
-                        cartShopTickerLargeLoader.type = LoaderUnify.TYPE_LINE
-                        cartShopTickerLargeLoader.show()
-                        cartShopTickerSmallLoader.type = LoaderUnify.TYPE_LINE
-                        cartShopTickerSmallLoader.show()
-                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
-                        layoutCartShopTicker.setOnClickListener(null)
-                        layoutCartShopTicker.show()
-                    }
-                    CartShopGroupTickerState.SUCCESS_AFFORD, CartShopGroupTickerState.SUCCESS_NOT_AFFORD -> {
-                        cartShopTickerLargeLoader.gone()
-                        cartShopTickerSmallLoader.gone()
-                        cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.tickerText)
-                        cartShopTickerText.show()
-                        if (cartShopGroupTicker.leftIcon.isNotBlank() && cartShopGroupTicker.leftIconDark.isNotBlank()) {
-                            if (root.context.isDarkMode()) {
-                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIconDark)
-                            } else {
-                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIcon)
-                            }
-                            cartShopTickerLeftIcon.show()
-                        } else {
-                            cartShopTickerLeftIcon.gone()
-                        }
-                        if (cartShopGroupTicker.rightIcon.isNotBlank() && cartShopGroupTicker.rightIconDark.isNotBlank()) {
-                            if (root.context.isDarkMode()) {
-                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
-                            } else {
-                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
-                            }
-                            cartShopTickerRightIcon.show()
-                        } else {
-                            cartShopTickerRightIcon.gone()
-                        }
-                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
-                        layoutCartShopTicker.setOnClickListener {
-                            actionListener.onCartShopGroupTickerClicked(cartShopHolderData)
-                        }
-                        if (!cartShopHolderData.cartShopGroupTicker.hasSeenTicker) {
-                            actionListener.onViewCartShopGroupTicker(cartShopHolderData)
-                            cartShopHolderData.cartShopGroupTicker.hasSeenTicker = true
-                        }
-                        layoutCartShopTicker.show()
-                    }
-                    CartShopGroupTickerState.FAILED -> {
-                        cartShopTickerLargeLoader.gone()
-                        cartShopTickerSmallLoader.gone()
-                        cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.errorText)
-                        cartShopTickerText.show()
-                        cartShopTickerLeftIcon.gone()
-                        val iconColor = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
-                        val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
-                        cartShopTickerRightIcon.setImageDrawable(reloadIcon)
-                        cartShopTickerRightIcon.show()
-                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
-                        layoutCartShopTicker.setOnClickListener {
-                            actionListener.onCartShopGroupTickerRefreshClicked(adapterPosition, cartShopHolderData)
-                        }
-                        layoutCartShopTicker.show()
-                    }
-                    CartShopGroupTickerState.EMPTY -> {
-                        layoutCartShopTicker.gone()
-                    }
-                }
-                if (cartShopGroupTicker.state == CartShopGroupTickerState.FIRST_LOAD) {
-                    actionListener.checkCartShopGroupTicker(cartShopHolderData)
-                }
-            }
-        } else {
-            binding.layoutCartShopTicker.gone()
-        }
+//        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError &&
+//            cartShopHolderData.cartShopGroupTicker.enableCartAggregator &&
+//            !cartShopHolderData.isOverweight
+//        ) {
+//            binding.apply {
+//                val cartShopGroupTicker = cartShopHolderData.cartShopGroupTicker
+//                when (cartShopGroupTicker.state) {
+//                    CartShopGroupTickerState.FIRST_LOAD, CartShopGroupTickerState.LOADING -> {
+//                        cartShopTickerText.gone()
+//                        cartShopTickerLeftIcon.gone()
+//                        cartShopTickerRightIcon.gone()
+//                        cartShopTickerLargeLoader.type = LoaderUnify.TYPE_LINE
+//                        cartShopTickerLargeLoader.show()
+//                        cartShopTickerSmallLoader.type = LoaderUnify.TYPE_LINE
+//                        cartShopTickerSmallLoader.show()
+//                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+//                        layoutCartShopTicker.setOnClickListener(null)
+//                        layoutCartShopTicker.show()
+//                    }
+//                    CartShopGroupTickerState.SUCCESS_AFFORD, CartShopGroupTickerState.SUCCESS_NOT_AFFORD -> {
+//                        cartShopTickerLargeLoader.gone()
+//                        cartShopTickerSmallLoader.gone()
+//                        cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.tickerText)
+//                        cartShopTickerText.show()
+//                        if (cartShopGroupTicker.leftIcon.isNotBlank() && cartShopGroupTicker.leftIconDark.isNotBlank()) {
+//                            if (root.context.isDarkMode()) {
+//                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIconDark)
+//                            } else {
+//                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIcon)
+//                            }
+//                            cartShopTickerLeftIcon.show()
+//                        } else {
+//                            cartShopTickerLeftIcon.gone()
+//                        }
+//                        if (cartShopGroupTicker.rightIcon.isNotBlank() && cartShopGroupTicker.rightIconDark.isNotBlank()) {
+//                            if (root.context.isDarkMode()) {
+//                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
+//                            } else {
+//                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
+//                            }
+//                            cartShopTickerRightIcon.show()
+//                        } else {
+//                            cartShopTickerRightIcon.gone()
+//                        }
+//                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+//                        layoutCartShopTicker.setOnClickListener {
+//                            actionListener.onCartShopGroupTickerClicked(cartShopHolderData)
+//                        }
+//                        if (!cartShopHolderData.cartShopGroupTicker.hasSeenTicker) {
+//                            actionListener.onViewCartShopGroupTicker(cartShopHolderData)
+//                            cartShopHolderData.cartShopGroupTicker.hasSeenTicker = true
+//                        }
+//                        layoutCartShopTicker.show()
+//                    }
+//                    CartShopGroupTickerState.FAILED -> {
+//                        cartShopTickerLargeLoader.gone()
+//                        cartShopTickerSmallLoader.gone()
+//                        cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.errorText)
+//                        cartShopTickerText.show()
+//                        cartShopTickerLeftIcon.gone()
+//                        val iconColor = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+//                        val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
+//                        cartShopTickerRightIcon.setImageDrawable(reloadIcon)
+//                        cartShopTickerRightIcon.show()
+//                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
+//                        layoutCartShopTicker.setOnClickListener {
+//                            actionListener.onCartShopGroupTickerRefreshClicked(adapterPosition, cartShopHolderData)
+//                        }
+//                        layoutCartShopTicker.show()
+//                    }
+//                    CartShopGroupTickerState.EMPTY -> {
+//                        layoutCartShopTicker.gone()
+//                    }
+//                }
+//                if (cartShopGroupTicker.state == CartShopGroupTickerState.FIRST_LOAD) {
+//                    actionListener.checkCartShopGroupTicker(cartShopHolderData)
+//                }
+//            }
+//        } else {
+        binding.layoutCartShopTicker.gone()
+//        }
     }
 
     companion object {

@@ -2392,19 +2392,34 @@ class CartFragment :
     }
 
     override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
-        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
-        if (data != null) {
-            checkCartShopGroupTicker(data)
-            onNeedToUpdateViewItem(index)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        if (index >= 0) {
+            val shopHeaderData = groupData.first()
+            if (shopHeaderData is CartShopHolderData) {
+                onNeedToUpdateViewItem(index)
+            }
+            val shopBottomData = groupData.last()
+            if (shopBottomData is CartShopBottomHolderData) {
+                checkCartShopGroupTicker(shopBottomData.shopData)
+                onNeedToUpdateViewItem(index + groupData.lastIndex)
+            }
         }
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
-        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
-        if (data != null) {
-            data.isNeedToRefreshWeight = true
-            checkCartShopGroupTicker(data)
-            onNeedToUpdateViewItem(index)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        if (index >= 0) {
+            val shopHeaderData = groupData.first()
+            if (shopHeaderData is CartShopHolderData) {
+                shopHeaderData.isNeedToRefreshWeight = true
+                onNeedToUpdateViewItem(index)
+            }
+            val shopBottomData = groupData.last()
+            if (shopBottomData is CartShopBottomHolderData) {
+                shopBottomData.shopData.isNeedToRefreshWeight = true
+                checkCartShopGroupTicker(shopBottomData.shopData)
+                onNeedToUpdateViewItem(index + groupData.lastIndex)
+            }
         }
     }
 
@@ -3833,27 +3848,37 @@ class CartFragment :
         val allShopGroupDataList = cartAdapter.allShopGroupDataList
 
         // Check if cart list has more than 1 shop, and it's a toko now
-        if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow == true) {
+        if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 it.isCollapsible = false
                 it.isCollapsed = false
                 it.isShowPin = false
-                val index = cartAdapter.getCartShopHolderIndexByCartString(it.cartString)
+                val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString)
                 if (index != RecyclerView.NO_POSITION) {
                     onNeedToUpdateViewItem(index)
+                    if (groupData.last() is CartShopBottomHolderData) {
+                        val bottomIndex = index + groupData.lastIndex
+                        cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
+                        onNeedToUpdateViewItem(bottomIndex)
+                    }
                 }
             }
         }
 
         // Check if cart list has more than 1 shop, and first shop is toko now
-        if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].isTokoNow == true) {
+        if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 if (it.productUiModelList.size == 1) {
                     it.isCollapsible = false
                     it.isCollapsed = false
-                    val index = cartAdapter.getCartShopHolderIndexByCartString(it.cartString)
+                    val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString)
                     if (index != RecyclerView.NO_POSITION) {
                         onNeedToUpdateViewItem(index)
+                        if (groupData.last() is CartShopBottomHolderData) {
+                            val bottomIndex = index + groupData.lastIndex
+                            cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
+                            onNeedToUpdateViewItem(bottomIndex)
+                        }
                     }
                 }
             }
@@ -4367,21 +4392,32 @@ class CartFragment :
     }
 
     override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
-        val (cartShopHolderData, shopIndex) = cartAdapter.getCartShopHolderDataAndIndexByCartString(
+        val (shopIndex, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
             cartItemHolderData.cartString
         )
-        if (cartShopHolderData != null) {
-            cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
-            cartShopHolderData.isCollapsed = false
-            cartShopHolderData.clickedCollapsedProductIndex = index
-            cartAdapter.addItems(shopIndex + 1, cartShopHolderData.productUiModelList)
-            onNeedToUpdateViewItem(shopIndex)
-            onNeedToInsertMultipleViewItem(shopIndex + 1, cartShopHolderData.productUiModelList.size)
-            onNeedToUpdateViewItem(shopIndex + 1 + cartShopHolderData.productUiModelList.size)
-            val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
-            if (layoutManager != null) {
-//                val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(shopIndex + 1 + index, 60.dpToPx(resources.displayMetrics))
+        if (shopIndex >= 0) {
+            val cartShopHolderData = groupData.first()
+            val cartShopBottomHolderData = groupData.last()
+            if (cartShopHolderData is CartShopHolderData && cartShopBottomHolderData is CartShopBottomHolderData) {
+                cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
+                cartShopHolderData.isCollapsed = false
+                cartShopHolderData.clickedCollapsedProductIndex = index
+                cartAdapter.addItems(shopIndex + 1, cartShopHolderData.productUiModelList)
+                onNeedToUpdateViewItem(shopIndex)
+                onNeedToInsertMultipleViewItem(
+                    shopIndex + 1,
+                    cartShopHolderData.productUiModelList.size
+                )
+                val bottomIndex = shopIndex + 1 + cartShopHolderData.productUiModelList.size
+                cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(cartShopHolderData)
+                onNeedToUpdateViewItem(bottomIndex)
+                val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
+                if (layoutManager is LinearLayoutManager) {
+                    layoutManager.scrollToPositionWithOffset(
+                        shopIndex + 1 + index,
+                        60.dpToPx(resources.displayMetrics)
+                    )
+                }
             }
         }
     }
@@ -4389,8 +4425,8 @@ class CartFragment :
     override fun scrollToClickedExpandedProduct(index: Int, offset: Int) {
         binding?.rvCart?.post {
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
-            if (layoutManager != null) {
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index, offset)
+            if (layoutManager is LinearLayoutManager) {
+                layoutManager.scrollToPositionWithOffset(index, offset)
             }
         }
     }
@@ -4489,10 +4525,14 @@ class CartFragment :
     }
 
     override fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
-        if (data != null) {
-            data.isNeedToRefreshWeight = true
-            onNeedToUpdateViewItem(index)
+//        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
+//        if (data != null) {
+//            data.isNeedToRefreshWeight = true
+//            onNeedToUpdateViewItem(index)
+//        }
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartShopHolderData.cartString)
+        if (index >= 0) {
+            onNeedToUpdateViewItem(index + groupData.lastIndex)
         }
     }
 
