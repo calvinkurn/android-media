@@ -60,7 +60,9 @@ class PlayBroFaceFilterSetupBottomSheet : BottomSheetUnify() {
             /** TODO: handle this */
         }
 
+        binding.viewPager.isUserInputEnabled = false
         binding.viewPager.adapter = pagerAdapter
+
         TabsUnifyMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position) {
                 0 -> tab.setCustomText(getString(R.string.play_broadcaster_face_tab))
