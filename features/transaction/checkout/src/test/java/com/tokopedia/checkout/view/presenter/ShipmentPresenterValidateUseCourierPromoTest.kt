@@ -163,9 +163,12 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             promoUiModel = PromoUiModel(
                 globalSuccess = true,
                 voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green")
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    )
                 )
-            ))
+            )
         )
         val position = 0
         val noToast = true
@@ -193,9 +196,13 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             promoUiModel = PromoUiModel(
                 globalSuccess = true,
                 voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage)
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        type = "logistic",
+                        uniqueId = cartString,
+                        messageUiModel = MessageUiModel(state = "red", text = errorMessage)
+                    )
                 )
-            ))
+            )
         )
         val position = 0
         val noToast = true
