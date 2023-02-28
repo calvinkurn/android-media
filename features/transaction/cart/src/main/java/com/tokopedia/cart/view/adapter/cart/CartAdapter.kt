@@ -941,6 +941,23 @@ class CartAdapter @Inject constructor(
         return Pair(null, RecyclerView.NO_POSITION)
     }
 
+    fun getCartGroupHolderDataAndIndexByCartString(cartString: String): Pair<Int, List<Any>> {
+        val cartGroupList = arrayListOf<Any>()
+        var startingIndex = RecyclerView.NO_POSITION
+        for ((index, data) in cartDataList.withIndex()) {
+            if (data is CartShopHolderData && data.cartString == cartString) {
+                startingIndex = index
+                cartGroupList.add(data)
+            } else if (data is CartItemHolderData && data.cartString == cartString) {
+                cartGroupList.add(data)
+            } else if (data is CartShopBottomHolderData && data.shopData.cartString == cartString) {
+                cartGroupList.add(data)
+                break
+            }
+        }
+        return Pair(startingIndex, cartGroupList)
+    }
+
     fun getCartShopHolderIndexByCartId(cartId: String): Int {
         loop@ for ((index, any) in cartDataList.withIndex()) {
             if (any is CartShopHolderData) {

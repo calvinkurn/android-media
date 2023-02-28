@@ -4489,10 +4489,14 @@ class CartFragment :
     }
 
     override fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
-        if (data != null) {
-            data.isNeedToRefreshWeight = true
-            onNeedToUpdateViewItem(index)
+//        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
+//        if (data != null) {
+//            data.isNeedToRefreshWeight = true
+//            onNeedToUpdateViewItem(index)
+//        }
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartShopHolderData.cartString)
+        if (index >= 0) {
+            onNeedToUpdateViewItem(index + groupData.lastIndex)
         }
     }
 
