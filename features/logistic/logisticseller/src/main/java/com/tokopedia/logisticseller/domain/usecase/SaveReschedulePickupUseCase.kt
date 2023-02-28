@@ -1,9 +1,9 @@
 package com.tokopedia.logisticseller.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticseller.data.param.SaveReschedulePickupParam
@@ -24,8 +24,7 @@ class SaveReschedulePickupUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: SaveReschedulePickupParam): SaveReschedulePickupResponse.Data {
-//        return repository.request(SaveReschedulePickupMutation(), params)
-        return Gson().fromJson(DUMMY, SaveReschedulePickupResponse.Data::class.java)
+        return repository.request(SaveReschedulePickupMutation(), params)
     }
 
     companion object {
@@ -39,12 +38,5 @@ class SaveReschedulePickupUseCase @Inject constructor(
                 }
             }
         """
-        const val DUMMY = """{
-    "mpLogisticInsertReschedulePickup": {
-      "status": 200,
-      "message": "Berhasil",
-      "errors": []
-    }
-}"""
     }
 }
