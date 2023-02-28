@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.filter.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.*
 
@@ -11,6 +12,6 @@ class FilterAdapter(
     fun updateData(filterUiModels: List<FilterUiModel>) {
         visitables.clear()
         visitables.addAll(filterUiModels)
-        notifyItemRangeChanged(0,visitables.size)
+        notifyItemRangeChanged(Int.ZERO, visitables.size)
     }
 }
