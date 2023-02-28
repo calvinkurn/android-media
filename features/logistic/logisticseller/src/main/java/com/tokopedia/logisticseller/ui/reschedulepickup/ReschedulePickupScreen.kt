@@ -395,7 +395,8 @@ private fun ReschedulePickupSummary(summary: String) {
     NestTicker(
         text = summary,
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        closeButtonVisibility = false
     )
 }
 
