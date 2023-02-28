@@ -1,0 +1,186 @@
+[
+  {
+    "data": {
+      "get_wishlist_collections": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "ticker": {
+            "title": "",
+            "description": ""
+          },
+          "is_empty_state": false,
+          "show_delete_progress": false,
+          "empty_wishlist_image_url": "https://images.tokopedia.net/img/wishlist/collection/empty-wishlist.png",
+          "empty_state": {
+            "messages": [
+              {
+                "image_url": "https://images.tokopedia.net/img/wishlist/empty-collection-state/1-emptystate.png",
+                "description": "Mau simpan barang untuk beli nanti?\nBandingkan harga dan spesifikasinya?\nDi sini tempatnya!"
+              },
+              {
+                "image_url": "https://images.tokopedia.net/img/wishlist/empty-collection-state/2-emptystate.png",
+                "description": "Lagi lihat-lihat, ada barang yang kamu suka?\nKlik ikon hati buat simpan di Wishlist."
+              },
+              {
+                "image_url": "https://images.tokopedia.net/img/wishlist/empty-collection-state/3-emptystate.png",
+                "description": "Pakai fitur Koleksi buat mengelompokkan barang-barang di Wishlist sesukamu. "
+              }
+            ],
+            "buttons": [
+              {
+                "text": "Cari Barang",
+                "url": "",
+                "action": "SHOW_SEARCH_BAR",
+                "color": "primary_green"
+              },
+              {
+                "text": "Buat Koleksi",
+                "url": "",
+                "action": "CREATE_COLLECTION",
+                "color": "secondary_green"
+              }
+            ]
+          },
+          "collections": [
+            {
+              "id": "0",
+              "name": "Semua Wishlist",
+              "total_item": 2323,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/10/28/ddad56f8-a7b3-4dd0-849e-592ee08d9e6f.jpg",
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2023/2/2/6eea825d-86a0-4d07-8445-75834511b46f.jpg",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/8/24/0710dcad-abbf-4de3-a254-d0224d59a963.jpg",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/1/24/8c0291c8-5a5f-4b02-9e1e-a1a9369837a3.jpg"
+              ],
+              "actions": [],
+              "indicator": {
+                "title": ""
+              }
+            },
+            {
+              "id": "1332220",
+              "name": "Interior Design",
+              "total_item": 28,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/2/3/41869143-b06c-4232-b5f8-316c83e0d5b2.jpg",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/10/21/5eb450b4-30eb-48f7-b60f-d7b14d581111.png",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/4/17/50ff514a-89a4-4a85-990b-f956ed47937b.jpg",
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2023/2/2/6eea825d-86a0-4d07-8445-75834511b46f.jpg"
+              ],
+              "actions": [
+                {
+                  "text": "Ubah Koleksi",
+                  "action": "UPDATE_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Bagikan Koleksi",
+                  "action": "SHARE_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus Koleksi",
+                  "action": "DELETE_COLLECTION",
+                  "url": ""
+                }
+              ],
+              "indicator": {
+                "title": "Publik"
+              }
+            },
+            {
+              "id": "1131159",
+              "name": "Kursi Kantor",
+              "total_item": 1,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/product-1/2019/1/27/3385174/3385174_d010a2ce-7a50-4b03-a548-5c9dcbc8715b.jpg"
+              ],
+              "actions": [
+                {
+                  "text": "Ubah Koleksi",
+                  "action": "UPDATE_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Bagikan Koleksi",
+                  "action": "SHARE_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus Koleksi",
+                  "action": "DELETE_COLLECTION",
+                  "url": ""
+                }
+              ],
+              "indicator": {
+                "title": "Publik"
+              }
+            }
+          ],
+          "placeholder": {
+            "text": "Koleksi Baru",
+            "image_url": "",
+            "action": "CREATE_COLLECTION"
+          },
+          "onboarding_bottomsheet": {
+            "image_url": "https://images.tokopedia.net/img/wishlist/collection/onboard.png",
+            "title": "Wishlist hadir dengan tampilan baru!",
+            "description": "Makin mudah dan seru untuk mengatur barang yang kamu simpan.",
+            "buttons": [
+              {
+                "text": "Yuk, Kenalan!",
+                "url": "",
+                "action": "SHOW_COACHMARK",
+                "color": "primary_green"
+              },
+              {
+                "text": "Lewati",
+                "url": "",
+                "action": "SKIP_COACHMARK",
+                "color": ""
+              }
+            ]
+          },
+          "onboarding_coachmark": {
+            "skip_button_text": "skip",
+            "details": [
+              {
+                "step": 1,
+                "title": "",
+                "message": "Lihat semua barang di Wishlist-mu di sini. Ada juga fitur buat cek barang termurah, lagi diskon, dll.",
+                "buttons": [
+                  {
+                    "text": "Lanjut",
+                    "action": "NEXT_COACHMARK"
+                  }
+                ]
+              },
+              {
+                "step": 2,
+                "title": "",
+                "message": "Baru! Pakai fitur “Koleksi”, buat mengelompokkan barang di Wishlist sesuai keinginanmu.",
+                "buttons": [
+                  {
+                    "text": "Balik",
+                    "action": "PREVIOUS_COACHMARK"
+                  },
+                  {
+                    "text": "Mengerti",
+                    "action": ""
+                  }
+                ]
+              }
+            ]
+          },
+          "total_collection": 13,
+          "max_limit_collection": 50,
+          "wording_max_limit_collection": "Jumlah Koleksimu sudah mencapai batas maks. 50 Koleksi."
+        }
+      }
+    }
+  }
+]
