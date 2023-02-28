@@ -134,6 +134,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
@@ -302,6 +303,7 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import kotlinx.android.synthetic.main.topads_pdp_bottom_sheet_single_ad.*
 import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -3634,20 +3636,27 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showAddToCartDoneBottomSheet(cartId: String) {
-        val isNewPostATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (isNewPostATC) {
-            val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-            val context = context ?: return
-            PostAtcHelper.start(
-                context,
-                productInfo.basic.productID,
-                cartId = cartId,
-                pageSource = PostAtcHelper.Source.PDP,
-                layoutId = productInfo.basic.postAtcLayout.layoutId
-            )
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val basicInfo = productInfo.basic
+        val postATCLayoutId = basicInfo.postAtcLayout.layoutId
+
+        val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
+        if (postATCLayoutId.isNotEmpty() && remoteNewATC) {
+            showGlobalPostATC(cartId, basicInfo)
         } else {
             showOldPostATC(cartId)
         }
+    }
+
+    private fun showGlobalPostATC(cartId: String, basicInfo: BasicInfo) {
+        val context = context ?: return
+        PostAtcHelper.start(
+            context,
+            basicInfo.productID,
+            cartId = cartId,
+            pageSource = PostAtcHelper.Source.PDP,
+            layoutId = basicInfo.postAtcLayout.layoutId
+        )
     }
 
     private fun showOldPostATC(cartId: String) {
