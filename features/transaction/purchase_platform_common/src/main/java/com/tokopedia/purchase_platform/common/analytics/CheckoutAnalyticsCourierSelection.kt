@@ -610,7 +610,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         sendEnhancedEcommerce(data)
     }
 
-    fun sendCrossSellClickPilihPembayaran(eventLabel: String, userId: String, listProducts: List<Any?>?) {
+    fun sendCrossSellClickPilihPembayaran(eventLabel: String, userId: String, listProducts: List<Any>?) {
         val data = getGtmData(
             ConstantTransactionAnalytics.EventName.CHECKOUT,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
@@ -622,7 +622,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         data[ExtraKey.USER_ID] = userId
         data[ConstantTransactionAnalytics.Key.E_COMMERCE] = mapOf(
             ConstantTransactionAnalytics.EventName.CHECKOUT to mapOf(
-                ConstantTransactionAnalytics.EventCategory.ACTION_FIELD to mapOf<String, Any?>(
+                ConstantTransactionAnalytics.EventCategory.ACTION_FIELD to mapOf<String, Any>(
                     ConstantTransactionAnalytics.EventCategory.OPTION to ConstantTransactionAnalytics.EventAction.CLICK_PAYMENT_OPTION_BUTTON,
                     ConstantTransactionAnalytics.EventCategory.STEP to "4"
                 ),

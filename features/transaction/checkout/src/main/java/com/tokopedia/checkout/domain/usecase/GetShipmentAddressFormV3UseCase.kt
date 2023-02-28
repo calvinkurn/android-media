@@ -22,7 +22,7 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) : UseCase<CartShipmentAddressFormData>() {
 
-    private var params: Map<String, Any?>? = null
+    private var params: Map<String, Any>? = null
 
     fun setParams(
         isOneClickShipment: Boolean,
@@ -33,7 +33,7 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(
         leasingId: String?,
         isPlusSelected: Boolean
     ) {
-        val params: MutableMap<String, Any?> = HashMap()
+        val params: MutableMap<String, Any> = HashMap()
         params[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] =
             chosenAddressRequestHelper.getChosenAddress()
         params[PARAM_KEY_LANG] = "id"

@@ -1814,8 +1814,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
         shipmentStateRequestData.setShopProductDataList(shipmentStateShopProductDataList);
         shipmentStateRequestDataList.add(shipmentStateRequestData);
 
-        SaveShipmentStateRequest saveShipmentStateRequest = new SaveShipmentStateRequest();
-        saveShipmentStateRequest.setRequestDataList(shipmentStateRequestDataList);
+        SaveShipmentStateRequest saveShipmentStateRequest = new SaveShipmentStateRequest(shipmentStateRequestDataList);
 
         return saveShipmentStateRequest;
     }

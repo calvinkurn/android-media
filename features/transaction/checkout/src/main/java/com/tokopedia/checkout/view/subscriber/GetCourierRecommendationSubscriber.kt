@@ -26,7 +26,7 @@ class GetCourierRecommendationSubscriber(
     private val isForceReloadRates: Boolean,
     private val isBoUnstackEnabled: Boolean,
     private val logisticDonePublisher: PublishSubject<Boolean>?
-) : Subscriber<ShippingRecommendationData?>() {
+) : Subscriber<ShippingRecommendationData>() {
 
     override fun onCompleted() {
         // no op
@@ -44,7 +44,7 @@ class GetCourierRecommendationSubscriber(
         logisticDonePublisher?.onCompleted()
     }
 
-    override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+    override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
         val boPromoCode = getBoPromoCode()
         var errorReason = "rates invalid data"
         if (isInitialLoad || isForceReloadRates) {
@@ -52,7 +52,7 @@ class GetCourierRecommendationSubscriber(
                 shipmentCartItemModel.shouldResetCourier = false
                 error("racing condition against epharmacy validation")
             }
-            if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
+            if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
                     val logisticPromo =
                         shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentCartItemModel.boCode && !it.disabled }

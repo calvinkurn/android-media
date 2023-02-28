@@ -91,7 +91,7 @@ class ShipmentAdapter @Inject constructor(
     private var shipmentInsuranceTncModel: ShipmentInsuranceTncModel? = null
     private var shipmentSellerCashbackModel: ShipmentSellerCashbackModel? = null
     private var shipmentDonationModel: ShipmentDonationModel? = null
-    private var shipmentCrossSellModelList: List<ShipmentCrossSellModel?>? = null
+    private var shipmentCrossSellModelList: List<ShipmentCrossSellModel>? = null
     private var egoldAttributeModel: EgoldAttributeModel? = null
     private var shippingCompletionTickerModel: ShippingCompletionTickerModel? = null
     private var shipmentButtonPaymentModel: ShipmentButtonPaymentModel? = null
@@ -1317,8 +1317,7 @@ class ShipmentAdapter @Inject constructor(
         shipmentCartItemModelList: List<ShipmentCartItemModel>?,
         isAnalyticsPurpose: Boolean
     ): RequestData {
-        val addressModel: RecipientAddressModel?
-        addressModel = recipientAddressModel ?: addressShipmentData
+        val addressModel: RecipientAddressModel? = recipientAddressModel ?: addressShipmentData
         if (shipmentCartItemModelList != null) {
             this.shipmentCartItemModelList = shipmentCartItemModelList
         }

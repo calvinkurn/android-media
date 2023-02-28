@@ -25,7 +25,7 @@ class GetBoPromoCourierRecommendationSubscriber(
     private val isTradeInDropOff: Boolean,
     private val isForceReloadRates: Boolean,
     private val logisticPromoDonePublisher: PublishSubject<Boolean>?
-) : Subscriber<ShippingRecommendationData?>() {
+) : Subscriber<ShippingRecommendationData>() {
 
     override fun onCompleted() {}
     override fun onError(e: Throwable) {
@@ -38,9 +38,9 @@ class GetBoPromoCourierRecommendationSubscriber(
         logisticPromoDonePublisher?.onCompleted()
     }
 
-    override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+    override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
         var errorReason = "rates invalid data"
-        if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.listLogisticPromo.isNotEmpty()) {
+        if (shippingRecommendationData.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.listLogisticPromo.isNotEmpty()) {
             val logisticPromo =
                 shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == promoCode && !it.disabled }
             if (logisticPromo != null) {

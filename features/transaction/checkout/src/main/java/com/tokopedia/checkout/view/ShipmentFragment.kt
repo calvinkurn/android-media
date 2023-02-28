@@ -720,7 +720,7 @@ class ShipmentFragment :
             .delay(1000, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Subscriber<UploadPrescriptionUiModel?>() {
+            .subscribe(object : Subscriber<UploadPrescriptionUiModel>() {
                 override fun onCompleted() {}
                 override fun onError(e: Throwable) {
                     Timber.d(e)
@@ -770,7 +770,7 @@ class ShipmentFragment :
         }
     }
 
-    private fun getCrossSellChildCategoryId(shipmentCartItemModelList: List<ShipmentCartItemModel?>?): ArrayList<Long> {
+    private fun getCrossSellChildCategoryId(shipmentCartItemModelList: List<ShipmentCartItemModel>?): ArrayList<Long> {
         val childCategoryIds = ArrayList<Long>()
         for (i in shipmentCartItemModelList!!.indices) {
             for (cartItemModel in shipmentCartItemModelList[i]!!.cartItemModels) {
@@ -1413,7 +1413,7 @@ class ShipmentFragment :
     override fun sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(
         eventLabel: String?,
         userId: String?,
-        listProducts: List<*>?
+        listProducts: List<Any>?
     ) {
         checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(
             eventLabel!!,
@@ -1518,11 +1518,11 @@ class ShipmentFragment :
 
     // Re-fetch rates to get promo mvc icon for all order, except already reloaded unique ids
     private fun reloadCourierForMvc(
-        appliedMvcCartStrings: ArrayList<String?>?,
-        reloadedUniqueIds: ArrayList<String?>?
+        appliedMvcCartStrings: ArrayList<String>?,
+        reloadedUniqueIds: ArrayList<String>?
     ) {
         val obj = shipmentAdapter.getShipmentDataList()
-        if (obj != null && obj.isNotEmpty()) {
+        if (obj.isNotEmpty()) {
             for (i in obj.indices) {
                 if (obj[i] is ShipmentCartItemModel) {
                     val shipmentCartItemModel = obj[i] as ShipmentCartItemModel
@@ -1590,7 +1590,7 @@ class ShipmentFragment :
                     data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
                         ARGS_VALIDATE_USE_DATA_RESULT
                     )
-                var reloadedUniqueIds = ArrayList<String?>()
+                var reloadedUniqueIds = ArrayList<String>()
                 if (validateUsePromoRevampUiModel != null) {
                     val messageInfo =
                         validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
@@ -2381,7 +2381,7 @@ class ShipmentFragment :
         }
     }
 
-    override fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?) {
+    override fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel) {
         shipmentPresenter.processSaveShipmentState(shipmentCartItemModel)
     }
 
@@ -2900,7 +2900,7 @@ class ShipmentFragment :
         }
     }
 
-    private fun checkHasCourierPromo(shippingCourierUiModels: List<ShippingCourierUiModel?>) {
+    private fun checkHasCourierPromo(shippingCourierUiModels: List<ShippingCourierUiModel>) {
         var hasCourierPromo = false
         for (shippingCourierUiModel in shippingCourierUiModels) {
             if (!TextUtils.isEmpty(shippingCourierUiModel!!.productData.promoCode)) {
@@ -4193,7 +4193,7 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId!!)
     }
 
-    override fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel?>?) {
+    override fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>?) {
         val listCartString = ArrayList<String>()
         for (cartItemModel in cartItemModelList!!) {
             listCartString.add(cartItemModel!!.cartString)
@@ -4261,7 +4261,7 @@ class ShipmentFragment :
             if (data == null) {
                 return
             }
-            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult?>(
+            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult>(
                 EPHARMACY_CONSULTATION_RESULT_EXTRA
             )
             if (results != null) {
@@ -4606,7 +4606,7 @@ class ShipmentFragment :
         }
     }
 
-    override fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String?>?) {
+    override fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String>?) {
         if (activity != null) {
             val shipmentDataList = shipmentAdapter.getShipmentDataList()
             var firstFoundPosition = 0

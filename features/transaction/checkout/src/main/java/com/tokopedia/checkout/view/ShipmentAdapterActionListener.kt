@@ -24,7 +24,7 @@ interface ShipmentAdapterActionListener {
     )
 
     fun onDataEnableToCheckout()
-    fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?)
+    fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel)
     fun onDataDisableToCheckout(message: String?)
     fun onCheckoutValidationResult(
         result: Boolean,
@@ -114,7 +114,7 @@ interface ShipmentAdapterActionListener {
     )
 
     fun addOnProductLevelImpression(productId: String?)
-    fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel?>?)
+    fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>?)
     fun onViewUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?)
     fun onClickUpsellCard(shipmentUpsellModel: ShipmentUpsellModel?)
     fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?)

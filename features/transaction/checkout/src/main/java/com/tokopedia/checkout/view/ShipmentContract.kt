@@ -182,7 +182,7 @@ interface ShipmentContract {
             cartId: Long?
         )
         fun onNeedUpdateViewItem(position: Int)
-        fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String?>?)
+        fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String>?)
         fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int
         fun getShipmentCartItemModel(position: Int): ShipmentCartItemModel?
         fun getShipmentDetailData(
@@ -211,7 +211,7 @@ interface ShipmentContract {
         fun sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(
             eventLabel: String?,
             userId: String?,
-            listProducts: List<Any?>?
+            listProducts: List<Any>?
         )
 
         fun sendAnalyticsOnClickChooseOtherAddressShipment()
@@ -309,7 +309,7 @@ interface ShipmentContract {
             noToast: Boolean
         )
 
-        fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel?)
+        fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel)
         fun processSaveShipmentState()
         fun processGetCourierRecommendation(
             shipperId: Int,
@@ -418,7 +418,7 @@ interface ShipmentContract {
         fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
         val shipmentUpsellModel: ShipmentUpsellModel
         val shipmentNewUpsellModel: ShipmentNewUpsellModel
-        fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String?>, ArrayList<String?>>
+        fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String>, ArrayList<String>>
         fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
         fun validateClearAllBoPromo()
         fun doUnapplyBo(uniqueId: String?, promoCode: String)

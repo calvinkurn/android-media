@@ -28,7 +28,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
     private val isForceReloadRates: Boolean,
     private val isBoUnstackEnabled: Boolean,
     private val logisticDonePublisher: PublishSubject<Boolean>?
-) : Subscriber<ShippingRecommendationData?>() {
+) : Subscriber<ShippingRecommendationData>() {
 
     override fun onCompleted() {
         // no op
@@ -46,11 +46,11 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
         logisticDonePublisher?.onCompleted()
     }
 
-    override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+    override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
         val boPromoCode = getBoPromoCode()
         var errorReason = "rates invalid data"
         if (isInitialLoad || isForceReloadRates) {
-            if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
+            if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
                     val logisticPromo =
                         shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentCartItemModel.boCode && !it.disabled }

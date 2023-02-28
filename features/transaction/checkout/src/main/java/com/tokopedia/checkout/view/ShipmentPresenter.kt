@@ -224,7 +224,7 @@ class ShipmentPresenter @Inject constructor(
     private var dataCheckoutRequestList: List<DataCheckoutRequest>? = null
     private var checkoutData: CheckoutData? = null
     override var couponStateChanged = false
-    private var shippingCourierViewModelsState: MutableMap<Int, List<ShippingCourierUiModel>?>? =
+    private var shippingCourierViewModelsState: MutableMap<Int, List<ShippingCourierUiModel>>? =
         null
     private var isPurchaseProtectionPage = false
     override var isShowOnboarding = false
@@ -1193,7 +1193,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private fun triggerCrossSellClickPilihPembayaran() {
-        val shipmentCrossSellModelList: List<ShipmentCrossSellModel?> =
+        val shipmentCrossSellModelList: List<ShipmentCrossSellModel> =
             getListShipmentCrossSellModel()
         var eventLabel = ""
         var digitalProductName = ""
@@ -1205,7 +1205,7 @@ class ShipmentPresenter @Inject constructor(
                 digitalProductName = crossSellModel.info.title
             }
         }
-        val productList: MutableList<Any?> = ArrayList()
+        val productList: MutableList<Any> = ArrayList()
         for (j in shipmentCartItemModelList!!.indices) {
             for (cartItemModel in shipmentCartItemModelList!![j].cartItemModels) {
                 productList.add(
@@ -1763,7 +1763,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    private fun setCheckoutRequestPromoData(dataCheckoutRequestList: List<DataCheckoutRequest?>) {
+    private fun setCheckoutRequestPromoData(dataCheckoutRequestList: List<DataCheckoutRequest>) {
         // Clear data first
         for (dataCheckoutRequest in dataCheckoutRequestList) {
             if (dataCheckoutRequest!!.shopProducts != null && dataCheckoutRequest.shopProducts!!.isNotEmpty()) {
@@ -1829,8 +1829,8 @@ class ShipmentPresenter @Inject constructor(
         return false
     }
 
-    override fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel?) {
-        val shipmentCartItemModels: MutableList<ShipmentCartItemModel?> = ArrayList()
+    override fun processSaveShipmentState(shipmentCartItemModel: ShipmentCartItemModel) {
+        val shipmentCartItemModels: MutableList<ShipmentCartItemModel> = ArrayList()
         shipmentCartItemModels.add(shipmentCartItemModel)
         val param: MutableMap<String, Any> = HashMap()
         val saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels)
@@ -1851,8 +1851,8 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun processSaveShipmentState() {
-        val param: MutableMap<String, Any?> = HashMap()
-        val saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList)
+        val param: MutableMap<String, Any> = HashMap()
+        val saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList!!)
         param[SaveShipmentStateGqlUseCase.PARAM_CARTS] = saveShipmentDataArray
         val requestParams = RequestParams.create()
         requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param)
@@ -1862,25 +1862,23 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    private fun getShipmentItemSaveStateData(shipmentCartItemModels: List<ShipmentCartItemModel?>?): List<ShipmentStateRequestData>? {
+    private fun getShipmentItemSaveStateData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<ShipmentStateRequestData> {
         val request = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels)
         return request.requestDataList
     }
 
-    private fun generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels: List<ShipmentCartItemModel?>?): SaveShipmentStateRequest {
+    private fun generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels: List<ShipmentCartItemModel>): SaveShipmentStateRequest {
         val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> =
             ArrayList()
         val shipmentStateRequestDataList: MutableList<ShipmentStateRequestData> = ArrayList()
-        for (shipmentCartItemModel in shipmentCartItemModels!!) {
+        for (shipmentCartItemModel in shipmentCartItemModels) {
             setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList)
         }
         val shipmentStateRequestData = ShipmentStateRequestData()
         shipmentStateRequestData.addressId = recipientAddressModel!!.id
         shipmentStateRequestData.shopProductDataList = shipmentStateShopProductDataList
         shipmentStateRequestDataList.add(shipmentStateRequestData)
-        val saveShipmentStateRequest = SaveShipmentStateRequest()
-        saveShipmentStateRequest.requestDataList = shipmentStateRequestDataList
-        return saveShipmentStateRequest
+        return SaveShipmentStateRequest(shipmentStateRequestDataList)
     }
 
     private fun setSaveShipmentStateData(
@@ -3201,10 +3199,10 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String?>, ArrayList<String?>> {
-        val unappliedBoPromoUniqueIds = ArrayList<String?>()
-        val reloadedUniqueIds = ArrayList<String?>()
-        val unprocessedUniqueIds = ArrayList<String?>()
+    override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String>, ArrayList<String>> {
+        val unappliedBoPromoUniqueIds = ArrayList<String>()
+        val reloadedUniqueIds = ArrayList<String>()
+        val unprocessedUniqueIds = ArrayList<String>()
         for (shipmentCartItemModel in shipmentCartItemModelList!!) {
             unprocessedUniqueIds.add(shipmentCartItemModel.cartString)
         }
