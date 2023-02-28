@@ -11,6 +11,7 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
@@ -20,14 +21,17 @@ import com.tokopedia.unifycomponents.dpToPx
 
 class ShopHomeFlashSaleProductCardBigGridViewHolder(
     itemView: View,
-    private val listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener,
+    private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        // 12 + 12 + 4 + 8 + 4 + 12 + 12
-        private const val PADDING_AND_MARGIN = 64
+        // leftMargin + rightMargin + middleMargin
+        // 12 + 12 + 2
+        private const val PADDING_AND_MARGIN = 26
         private const val TWO = 2
         private val paddingOffset = 6f.dpToPx()
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
     private var uiModel: ShopHomeProductUiModel? = null
@@ -35,9 +39,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     private var productCardBigGrid: ProductCardGridView? = itemView.findViewById(R.id.fs_product_card_big_grid)
 
     init {
-        adjustProductCardWidth(false)
-        setupClickListener(listener)
-        setupImpressionListener(listener)
+        adjustProductCardWidth()
     }
 
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
@@ -46,7 +48,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                 it,
                 object : ViewHintListener {
                     override fun onViewHint() {
-                        listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+                        listener.onFlashSaleProductImpression(it, fsUiModel, ShopUtil.getActualPositionFromIndex(adapterPosition), parentPosition)
                     }
                 }
             )
@@ -82,14 +84,26 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
         this.fsUiModel = fsUiModel
+        setupClickListener(listener)
+        setupImpressionListener(listener)
         productCardBigGrid?.applyCarousel()
         productCardBigGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+        val stockBarLabel = uiModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+        ).copy(
+            stockBarLabelColor = stockBarLabelColor
         )
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
@@ -139,16 +153,16 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                     listener.onFlashSaleProductClicked(
                         model = productModel,
                         widgetModel = widgetModel,
-                        position = adapterPosition
+                        position = ShopUtil.getActualPositionFromIndex(adapterPosition),
+                        parentPosition = parentPosition
                     )
                 }
             }
         }
     }
 
-    @Suppress("SameParameterValue")
-    private fun adjustProductCardWidth(isTablet: Boolean) {
-        val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN) / TWO
-        if (!isTablet) { productCardBigGrid?.layoutParams = ViewGroup.LayoutParams(productCardWidth, ViewGroup.LayoutParams.WRAP_CONTENT) }
+    private fun adjustProductCardWidth() {
+        val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO
+        productCardBigGrid?.layoutParams = ViewGroup.LayoutParams(productCardWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 }

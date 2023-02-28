@@ -19,7 +19,11 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -35,6 +39,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
@@ -52,11 +57,13 @@ import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundl
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.product_bundle.tracking.SingleProductBundleTracking
 import com.tokopedia.product_service_widget.R
+import com.tokopedia.product_service_widget.databinding.FragmentSingleProductBundleBinding
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SingleProductBundleFragment(
@@ -70,10 +77,12 @@ class SingleProductBundleFragment(
 
     @Inject
     lateinit var viewModel: SingleProductBundleViewModel
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var tvBundlePreorder: Typography? = null
+    private var binding by autoClearedNullable<FragmentSingleProductBundleBinding>()
+
     private var bundleListLayout: ConstraintLayout? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
@@ -86,17 +95,19 @@ class SingleProductBundleFragment(
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
+        binding = FragmentSingleProductBundleBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.setBackgroundToWhite()
 
-        setupTotalPO(view)
+        setupTotalPO()
         setupRecyclerViewItems(view)
         setupTotalAmount(view)
         setupGlobalError(view)
@@ -115,8 +126,10 @@ class SingleProductBundleFragment(
         super.onActivityResult(requestCode, resultCode, data)
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
             val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
-            adapter.setSelectedVariant(selectedProductId,
-                viewModel.getVariantText(selectedProductVariant, selectedProductId))
+            adapter.setSelectedVariant(
+                selectedProductId,
+                viewModel.getVariantText(selectedProductVariant, selectedProductId)
+            )
             totalAmount?.bottomContentView?.apply {
                 Toaster.build(
                     this.rootView,
@@ -143,9 +156,9 @@ class SingleProductBundleFragment(
 
     override fun initInjector() {
         DaggerSingleProductBundleComponent.builder()
-                .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
-                .build()
-                .inject(this)
+            .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
+            .build()
+            .inject(this)
     }
 
     override fun onVariantSpinnerClicked(
@@ -190,6 +203,8 @@ class SingleProductBundleFragment(
             // update PO and Total amount price if there is selected bundle
             val selectedItem = it.getSelectedSingleProductBundleItem()
             if (selectedItem != null) {
+                viewModel.getShopInfo()?.run { renderShopInfo(binding, this) }
+                renderTotalSoldInfo(binding, viewModel.getBundleTotalSold())
                 updateTotalAmount(selectedItem)
                 updateTotalPO(selectedItem)
             }
@@ -209,28 +224,32 @@ class SingleProductBundleFragment(
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
             val productDetails = ProductBundleAtcTrackerMapper.mapSingleBundlingDataToProductTracker(
-                    bundleInfo, selectedBundleId, it.responseResult.data[0].cartId
+                bundleInfo,
+                selectedBundleId,
+                it.responseResult.data[0].cartId
             )
 
             if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
                 sendSingleBundleAtcTrackerClickEvent(
-                        selectedProductIds = parentProductID,
-                        shopId = it.requestParams.shopId,
-                        productDetails = productDetails
+                    selectedProductIds = parentProductID,
+                    shopId = it.requestParams.shopId,
+                    productDetails = productDetails
                 )
 
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
                 intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
-                intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
-                    it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
+                intent.putExtra(
+                    ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
+                    it.responseResult.data.isNotEmpty()
+                ) // will empty if there is no GQL hit
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             } else {
                 sendSingleBundleAtcTrackerClickEvent(
-                        selectedProductIds = parentProductID,
-                        shopId = it.requestParams.shopId,
-                        productDetails = productDetails
+                    selectedProductIds = parentProductID,
+                    shopId = it.requestParams.shopId,
+                    productDetails = productDetails
                 )
                 RouteManager.route(context, ApplinkConst.CART)
             }
@@ -238,33 +257,33 @@ class SingleProductBundleFragment(
     }
 
     private fun sendTrackerBundleAtcClickEvent(
-            selectedProductIds: String,
-            shopId: String,
-            productDetails: List<ProductDetailBundleTracker>
+        selectedProductIds: String,
+        shopId: String,
+        productDetails: List<ProductDetailBundleTracker>
     ) {
         val _userId = viewModel.getUserId()
         SingleProductBundleTracking.trackSingleBuyClick(
-                userId = _userId,
-                source = pageSource,
-                parentProductId = selectedProductIds,
-                bundleId = adapter.getSelectedBundleId(),
-                selectedProductId = adapter.getSelectedProductId(),
-                shopId = shopId,
-                productIds = selectedProductIds,
-                productDetails = productDetails
+            userId = _userId,
+            source = pageSource,
+            parentProductId = selectedProductIds,
+            bundleId = adapter.getSelectedBundleId(),
+            selectedProductId = adapter.getSelectedProductId(),
+            shopId = shopId,
+            productIds = selectedProductIds,
+            productDetails = productDetails
         )
     }
 
     private fun sendSingleBundleAtcTrackerClickEvent(
-            selectedProductIds: String,
-            shopId: String,
-            productDetails: List<ProductDetailBundleTracker>
+        selectedProductIds: String,
+        shopId: String,
+        productDetails: List<ProductDetailBundleTracker>
     ) {
-        if (productDetails.isNotEmpty() && productDetails[0].productId != "0") {    // Check if the data is valid
+        if (productDetails.isNotEmpty() && productDetails[0].productId != "0") { // Check if the data is valid
             sendTrackerBundleAtcClickEvent(
-                    selectedProductIds = selectedProductIds,
-                    shopId = shopId,
-                    productDetails = productDetails
+                selectedProductIds = selectedProductIds,
+                shopId = shopId,
+                productDetails = productDetails
             )
         }
     }
@@ -282,8 +301,13 @@ class SingleProductBundleFragment(
             }
             hideLoadingDialog()
             totalAmount?.bottomContentView?.apply {
-                Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.action_oke)).setAnchorView(this).show()
+                Toaster.build(
+                    this.rootView,
+                    errorMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.action_oke)
+                ).setAnchorView(this).show()
             }
         })
     }
@@ -339,8 +363,7 @@ class SingleProductBundleFragment(
         })
     }
 
-    private fun setupTotalPO(view: View) {
-        tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
+    private fun setupTotalPO() {
         updateTotalPO(null, true) // set null to hide
     }
 
@@ -395,10 +418,48 @@ class SingleProductBundleFragment(
         }
     }
 
+    private fun renderShopInfo(
+        binding: FragmentSingleProductBundleBinding?,
+        shopInformation: ShopInformation
+    ) {
+        binding?.shopInfoHeaderLayout?.tpgShopName?.text = shopInformation.shopName
+        if (shopInformation.shopBadge.isNotBlank()) {
+            binding?.shopInfoHeaderLayout?.iuShopBadge?.show()
+            binding?.shopInfoHeaderLayout?.iuShopBadge?.setImageUrl(shopInformation.shopBadge)
+        }
+    }
+    private fun renderTotalSoldInfo(binding: FragmentSingleProductBundleBinding?, totalSold: Int) {
+        if (totalSold.isMoreThanZero()) {
+            context?.run {
+                binding?.shopInfoHeaderLayout?.shopInfoDetailLayout?.show()
+                Typography.isFontTypeOpenSauceOne = true
+                val totalSoldTxt = this.getString(
+                    R.string.product_bundle_total_sold,
+                    totalSold.thousandFormatted()
+                )
+                binding?.shopInfoHeaderLayout?.tpgTotalSold?.show()
+                binding?.shopInfoHeaderLayout?.tpgTotalSold?.text = totalSoldTxt
+            }
+        }
+    }
+
     // only visible when totalPOWording not null or empty
     private fun updateTotalPO(totalPOWording: String?, isFirstSetup: Boolean = false) {
-        tvBundlePreorder?.isVisible = !totalPOWording.isNullOrEmpty()
-        tvBundlePreorder?.text = getString(R.string.preorder_prefix, totalPOWording)
+        binding?.shopInfoHeaderLayout?.run {
+            if (!totalPOWording.isNullOrEmpty()) {
+                this.labelPreorder.text = getString(R.string.preorder_prefix, totalPOWording)
+                this.shopInfoDetailLayout.show()
+                this.iuPoDivider.show()
+                this.labelPreorder.show()
+                // hide divider if there is only one shop info
+                if (!this.tpgTotalSold.isVisible) {
+                    this.iuPoDivider.hide()
+                }
+            } else {
+                this.iuPoDivider.hide()
+                this.labelPreorder.hide()
+            }
+        }
         updateTotalAmountAtcButtonText(totalPOWording, isFirstSetup)
     }
 
@@ -501,8 +562,17 @@ class SingleProductBundleFragment(
     }
 
     private fun initBundleData() {
-        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
-            emptyVariantProductIds)
+        viewModel.setBundleInfo(
+            requireContext(),
+            bundleInfo,
+            selectedBundleId,
+            selectedProductId,
+            emptyVariantProductIds
+        )
+        bundleInfo.firstOrNull()?.run {
+            viewModel.setShopInfo(this.shopInformation)
+        }
+        viewModel.setBundleTotalSold(bundleInfo)
     }
 
     private fun refreshPage() {
@@ -528,7 +598,13 @@ class SingleProductBundleFragment(
             emptyVariantProductIds: List<String> = emptyList(),
             pageSource: String = ""
         ) =
-            SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId,
-                selectedProductId, emptyVariantProductIds, pageSource)
+            SingleProductBundleFragment(
+                parentProductID,
+                bundleInfo,
+                selectedBundleId,
+                selectedProductId,
+                emptyVariantProductIds,
+                pageSource
+            )
     }
 }

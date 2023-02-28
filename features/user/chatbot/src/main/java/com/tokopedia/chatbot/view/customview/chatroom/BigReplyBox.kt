@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
+import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.unifycomponents.CardUnify
 
