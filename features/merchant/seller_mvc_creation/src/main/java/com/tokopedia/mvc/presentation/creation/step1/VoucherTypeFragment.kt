@@ -140,7 +140,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     private fun handleAction(action: VoucherCreationStepOneAction) {
         when (action) {
             is VoucherCreationStepOneAction.ShowIneligibleState -> {
-                showIneligibleState(action.isVoucherProduct)
+                showIneligibleState(action.isVoucherProduct, action.message)
             }
             is VoucherCreationStepOneAction.NavigateToNextStep -> {
                 navigateToNextStep(action.pageMode, action.voucherConfiguration)
@@ -207,10 +207,10 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showIneligibleState(isVoucherProduct: Boolean) {
+    private fun showIneligibleState(isVoucherProduct: Boolean, message: String) {
         if (isVoucherProduct) setVoucherProductSelected() else setVoucherShopSelected()
         binding?.btnContinue?.apply {
-            showToasterError(getString(R.string.smvc_ineligible_voucher_creation_error_text))
+            showToasterError(message)
             disable()
         }
     }
