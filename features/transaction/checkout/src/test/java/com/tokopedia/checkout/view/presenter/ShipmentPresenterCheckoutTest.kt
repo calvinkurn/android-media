@@ -14,11 +14,7 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
@@ -43,6 +39,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
@@ -140,6 +137,9 @@ class ShipmentPresenterCheckoutTest {
     @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
@@ -179,7 +179,8 @@ class ShipmentPresenterCheckoutTest {
             gson,
             TestSchedulers,
             eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }
@@ -502,7 +503,14 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutParams =
-            presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
+            presenter.generateCheckoutParams(
+                true,
+                true,
+                false,
+                deviceId,
+                checkoutRequest,
+                ""
+            )
 
         // Then
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] == true)
@@ -521,7 +529,14 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutParams =
-            presenter.generateCheckoutParams(true, true, true, deviceId, checkoutRequest)
+            presenter.generateCheckoutParams(
+                true,
+                true,
+                true,
+                deviceId,
+                checkoutRequest,
+                ""
+            )
 
         // Then
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] == true)
@@ -562,7 +577,14 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutParams =
-            presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
+            presenter.generateCheckoutParams(
+                true,
+                true,
+                false,
+                deviceId,
+                checkoutRequest,
+                ""
+            )
 
         // Then
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY] == fingerprintString)
@@ -589,7 +611,14 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutParams =
-            presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
+            presenter.generateCheckoutParams(
+                true,
+                true,
+                false,
+                deviceId,
+                checkoutRequest,
+                ""
+            )
 
         // Then
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] == "false")

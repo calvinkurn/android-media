@@ -4,6 +4,12 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
 import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_STATUS_APPROVED;
 import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_STATUS_REJECTED;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
@@ -39,10 +45,12 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
@@ -50,6 +58,8 @@ import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest;
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase;
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
@@ -205,6 +215,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
     private final EPharmacyPrepareProductsGroupUseCase epharmacyUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
+    private final UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
@@ -250,6 +261,10 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
 
     private Map<String, ShipmentScheduleDeliveryMapData> scheduleDeliveryMapData = null;
 
+    public boolean isUsingDdp = false;
+    public DynamicDataPassingParamRequest dynamicDataParam;
+    public String dynamicData = "";
+
     @Inject
     public ShipmentOldPresenter(CompositeSubscription compositeSubscription,
                              CheckoutGqlUseCase checkoutGqlUseCase,
@@ -274,7 +289,8 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
                              EligibleForAddressUseCase eligibleForAddressUseCase,
-                             GetRatesWithScheduleUseCase ratesWithScheduleUseCase) {
+                             GetRatesWithScheduleUseCase ratesWithScheduleUseCase,
+                             UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -299,6 +315,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
         this.eligibleForAddressUseCase = eligibleForAddressUseCase;
+        this.updateDynamicDataPassingUseCase = updateDynamicDataPassingUseCase;
     }
 
     @Override
@@ -321,10 +338,14 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
         if (epharmacyUseCase != null) {
             epharmacyUseCase.cancelJobs();
         }
+        if (updateDynamicDataPassingUseCase != null) {
+            updateDynamicDataPassingUseCase.cancelJobs();
+        }
         ratesPublisher = null;
         logisticDonePublisher = null;
         ratesPromoPublisher = null;
         logisticPromoDonePublisher = null;
+        dynamicDataParam = null;
     }
 
     @Override
@@ -695,6 +716,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
             } else {
                 getView().updateLocalCacheAddressData(userAddress);
                 initializePresenterData(cartShipmentAddressFormData);
+                setCurrentDynamicDataParamFromSAF(cartShipmentAddressFormData, isOneClickShipment);
                 getView().renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHigher, isOneClickShipment);
                 if (cartShipmentAddressFormData.getPopUpMessage().length() > 0) {
                     getView().showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
@@ -708,6 +730,8 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
             }
 
         }
+        isUsingDdp = cartShipmentAddressFormData.isUsingDdp();
+        dynamicData = cartShipmentAddressFormData.getDynamicData();
     }
 
     private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -852,7 +876,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
                 }
             }
 
-            Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest);
+            Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest, dynamicData);
             RequestParams requestParams = RequestParams.create();
             requestParams.putAll(params);
             compositeSubscription.add(
@@ -874,10 +898,12 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
                                                       boolean isTradeIn,
                                                       boolean isTradeInDropOff,
                                                       String deviceId,
-                                                      CheckoutRequest checkoutRequest) {
+                                                      CheckoutRequest checkoutRequest,
+                                                      String dynamicData) {
         Map<String, Object> params = new HashMap<>();
         params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestMapper.INSTANCE.map(checkoutRequest));
         params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
+        params.put(CheckoutGqlUseCase.PARAM_DYNAMIC_DATA, dynamicData);
         if (isTradeIn) {
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
@@ -2907,7 +2933,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
                     String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
                     if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
                         AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
-                        setAddOnsData(addOnsDataModel, addOnResult, 0);
+                        setAddOnsData(addOnsDataModel, addOnResult, 0, cartItemModel.getCartString(), cartItemModel.getCartId());
                     }
                 }
             }
@@ -2920,14 +2946,14 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if ((shipmentCartItemModel.getCartString() + "-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
                     AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
-                    setAddOnsData(addOnsDataModel, addOnResult, 1);
+                    setAddOnsData(addOnsDataModel, addOnResult, 1, shipmentCartItemModel.getCartString(), 0L);
                 }
             }
         }
     }
 
     // identifier : 0 = product level, 1  = order level
-    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier) {
+    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString, long cartId) {
         addOnsDataModel.setStatus(addOnResult.getStatus());
 
         AddOnButtonResult addOnButtonResult = addOnResult.getAddOnButton();
@@ -2979,6 +3005,9 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
         getView().updateAddOnsData(addOnsDataModel, identifier);
+        if (isUsingDynamicDataPassing()) {
+            getView().updateAddOnsDynamicDataPassing(addOnsDataModel, addOnResult, identifier, cartString, cartId);
+        }
     }
 
     @Override
@@ -3259,6 +3288,100 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentContract.V
             }
         }
         return true;
+    }
+
+    public void setCurrentDynamicDataParamFromSAF(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isOneClickShipment) {
+        DynamicDataPassingParamRequest ddpParam = new DynamicDataPassingParamRequest();
+        ArrayList<DynamicDataPassingParamRequest.DynamicDataParam> listDataParam = new ArrayList<>();
+        // donation
+        if (cartShipmentAddressFormData.getDonation() != null && cartShipmentAddressFormData.getDonation().isChecked()) {
+            DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+            dynamicDataParam.setLevel(DynamicDataPassingMapper.PAYMENT_LEVEL);
+            dynamicDataParam.setUniqueId("");
+            dynamicDataParam.setAttribute(ATTRIBUTE_DONATION);
+            dynamicDataParam.setDonation(cartShipmentAddressFormData.getDonation().isChecked());
+            listDataParam.add(dynamicDataParam);
+        }
+
+        // addons
+        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                // order level
+                if (groupShop.getAddOns().getStatus() == 1) {
+                    DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+                    dynamicDataParam.setLevel(ORDER_LEVEL);
+                    dynamicDataParam.setUniqueId(groupShop.getCartString());
+                    dynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
+                    dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOnFromSAF(groupShop.getAddOns(), isOneClickShipment));
+                    listDataParam.add(dynamicDataParam);
+                }
+
+                for (com.tokopedia.checkout.domain.model.cartshipmentform.Product product : groupShop.getProducts()) {
+                    // product level
+                    if (product.getAddOnProduct().getStatus() == 1) {
+                        DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+                        dynamicDataParam.setLevel(PRODUCT_LEVEL);
+                        dynamicDataParam.setParentUniqueId(groupShop.getCartString());
+                        dynamicDataParam.setUniqueId(String.valueOf(product.getCartId()));
+                        dynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
+                        dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOnFromSAF(product.getAddOnProduct(), isOneClickShipment));
+                        listDataParam.add(dynamicDataParam);
+                    }
+                }
+            }
+        }
+
+        ddpParam.setData(listDataParam);
+        String source = SOURCE_NORMAL;
+        if (isOneClickShipment) source = SOURCE_OCS;
+        ddpParam.setSource(source);
+        setDynamicDataParam(ddpParam);
+    }
+
+    @Override
+    public void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget) {
+        updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest, isFireAndForget);
+        updateDynamicDataPassingUseCase.execute(
+                dynamicDataPassingUiModel -> {
+                    this.dynamicData = dynamicDataPassingUiModel.getDynamicData();
+                    if (getView() != null && !isFireAndForget) {
+                        getView().doCheckout();
+                    }
+                    return Unit.INSTANCE;
+                }, throwable -> {
+                    Timber.d(throwable);
+                    if (getView() != null) {
+                        getView().setHasRunningApiCall(false);
+                        getView().hideLoading();
+                        String errorMessage = throwable.getMessage();
+                        if (!(throwable instanceof CartResponseErrorException) && !(throwable instanceof AkamaiErrorException)) {
+                            errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
+                        }
+                        getView().showToastError(errorMessage);
+                    }
+                    return Unit.INSTANCE;
+                }
+        );
+    }
+
+    @Override
+    public void setDynamicDataParam(DynamicDataPassingParamRequest dynamicDataPassingParam) {
+        this.dynamicDataParam = dynamicDataPassingParam;
+    }
+
+    @Override
+    public DynamicDataPassingParamRequest getDynamicDataParam() {
+        return this.dynamicDataParam;
+    }
+
+    @Override
+    public void validateDynamicData() {
+        updateDynamicData(getDynamicDataParam(), false);
+    }
+
+    @Override
+    public boolean isUsingDynamicDataPassing() {
+        return isUsingDdp;
     }
 
     @Override
