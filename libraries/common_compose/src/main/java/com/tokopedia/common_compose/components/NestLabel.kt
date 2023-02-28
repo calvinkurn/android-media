@@ -45,7 +45,6 @@ fun NestLabel(
             fontWeight = FontWeight.Bold
         )
     }
-
 }
 
 enum class NestLabelType {
@@ -64,7 +63,6 @@ fun NestLabelPreview() {
         nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN
     )
 }
-
 
 @Preview(name = "Label (Red)")
 @Composable

@@ -9,7 +9,7 @@ import coil.compose.rememberImagePainter
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun NestImage(modifier: Modifier = Modifier, imageUrl : String) {
+fun NestImage(modifier: Modifier = Modifier, imageUrl: String) {
     val painter = rememberImagePainter(data = imageUrl)
     Image(
         painter = painter,

@@ -23,7 +23,7 @@ fun NestTextField(
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
-    onValueChanged: (String) -> Unit = {},
+    onValueChanged: (String) -> Unit = {}
 ) {
     Column {
         OutlinedTextField(
@@ -64,6 +64,6 @@ fun NestTextFieldPreview() {
         enabled = false,
         placeholder = {
             NestTypography(text = "placeholder")
-        },
+        }
     )
 }
