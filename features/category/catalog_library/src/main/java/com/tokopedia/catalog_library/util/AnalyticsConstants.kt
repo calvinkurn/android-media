@@ -29,9 +29,11 @@ interface EventKeys {
 
         const val CREATIVE_SLOT = "creative_slot"
         const val CREATIVE_NAME = "creative_name"
+        const val DIMENSION61 = "dimension61"
 
         const val CREATIVE_NAME_SPECIAL_VALUE = "kategori spesial buatmu"
         const val CREATIVE_NAME_RELEVANT_VALUE = "cek katalognya produk incaranmu"
+        const val CREATIVE_NAME_CATEGORY_LIST_VALUE = ""
 
         const val KEY_EVENT = "event"
         const val KEY_EVENT_CATEGORY = "eventCategory"

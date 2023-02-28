@@ -49,4 +49,16 @@ interface CatalogLibraryListener {
         userId: String
     ) {
     }
+
+    fun categoryListImpression(
+        parentCategoryName: String,
+        parentCategoryId: String,
+        categoryName: String,
+        categoryId: String,
+        isGrid: Boolean,
+        isAsc: Boolean,
+        position: Int,
+        userId: String
+    ) {
+    }
 }

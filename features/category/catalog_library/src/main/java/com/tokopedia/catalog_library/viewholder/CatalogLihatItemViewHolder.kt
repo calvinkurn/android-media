@@ -8,6 +8,7 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import kotlin.LazyThreadSafetyMode.NONE
 
 class CatalogLihatItemViewHolder(
@@ -15,6 +16,7 @@ class CatalogLihatItemViewHolder(
     private val catalogLibraryListener:
         CatalogLibraryListener
 ) : AbstractViewHolder<CatalogLihatItemDataModel>(view) {
+    var dataModel: CatalogLihatItemDataModel? = null
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
         itemView.findViewById(R.id.lihat_item_icon)
@@ -33,6 +35,7 @@ class CatalogLihatItemViewHolder(
     }
 
     override fun bind(element: CatalogLihatItemDataModel?) {
+        dataModel = element
         val childDataItem = element?.catalogLibraryChildDataListItem
         childDataItem?.categoryIconUrl?.let {
             lihatItemIcon?.loadImage(it)
@@ -49,6 +52,21 @@ class CatalogLihatItemViewHolder(
         lihatExpandedItemLayout?.setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(
                 childDataItem?.categoryId ?: ""
+            )
+        }
+    }
+
+    override fun onViewAttachedToWindow() {
+        dataModel?.let {
+            catalogLibraryListener.categoryListImpression(
+                it.rootCategoryName,
+                it.rootCategoryId,
+                it.catalogLibraryChildDataListItem.categoryName ?: "",
+                it.catalogLibraryChildDataListItem.categoryId ?: "",
+                it.isGrid,
+                it.isAsc,
+                layoutPosition + 1,
+                UserSession(itemView.context).userId
             )
         }
     }
