@@ -466,7 +466,7 @@ class ChatbotPresenter @Inject constructor(
                     convertToMediaButtonToggleData(dynamicAttachmentAttributes.dynamicContent)
                 }
                 else -> {
-                    // TODO need to show fallback message
+                    // To show Fallback if no implementation is provided for this content code
                     mapToVisitable(pojo)
                 }
             }

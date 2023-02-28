@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.util.Log
 import android.view.View
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -18,7 +17,6 @@ class ChatbotFallbackAttachmentViewHolder(itemView: View,
 
     override fun bind(uiModel: FallbackAttachmentUiModel) {
         super.bind(uiModel)
-        Log.d("FATAL", "bid: Fallback Attachment in Chabot")
         ChatbotMessageViewHolderBinder.bindChatMessage(uiModel.message, customChatLayout, movementMethod)
     }
 

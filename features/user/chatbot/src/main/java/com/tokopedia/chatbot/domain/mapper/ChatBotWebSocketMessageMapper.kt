@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.domain.mapper
 
 import android.text.TextUtils
-import android.util.Log
 import androidx.annotation.NonNull
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -66,7 +65,10 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         return when (pojo.attachment?.type) {
             TYPE_QUICK_REPLY -> convertToQuickReplyModel(pojo, jsonAttributes)
             TYPE_INVOICES_SELECTION -> convertToInvoiceSelection(pojo, jsonAttributes)
-            TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(pojo, jsonAttributes)
+            TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(
+                pojo,
+                jsonAttributes
+            )
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
@@ -81,28 +83,12 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToDynamicAttachment(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-
-            val currentPojo = GsonBuilder().create().fromJson(
-                pojo.attachment?.attributes,
-                DynamicAttachment::class.java
-            )
-
-
-//        var fallbackMessage = ""
-//        currentPojo.attachment.fallback.let {
-//            fallbackMessage = it.message
-//        }
-//        return FallbackAttachmentUiModel.Builder()
-//            .withResponseFromGQL(chatItemPojoByDateByTime)
-//            .withMsg(fallbackMessage)
-//            .withAttachment(chatItemPojoByDateByTime.attachment)
-//            .build()
-  //      return FallbackAttachmentUiModel.Builder().withResponseFromWs(pojo).withMsg("Tatakaeeeeee").build()
-
-
-        Log.d("FATAL", "convertToFallBackModel: $currentPojo")
+        val dynamicAttachment = GsonBuilder().create().fromJson(
+            pojo.attachment?.attributes,
+            DynamicAttachment::class.java
+        )
         var fallbackMessage = ""
-        currentPojo.dynamicAttachmentAttribute?.dynamicAttachmentFallback?.message?.let {
+        dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentFallback?.message?.let {
             fallbackMessage = it
         }
         return FallbackAttachmentUiModel.Builder()
@@ -238,7 +224,10 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         val invoiceListKey = "invoice_list"
         val jsonObject = jsonAttribute.getAsJsonObject(invoiceListKey)
 
-        val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(jsonObject, InvoicesSelectionPojo::class.java)
+        val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(
+            jsonObject,
+            InvoicesSelectionPojo::class.java
+        )
         val invoiceList = invoicesSelectionPojo.invoices
 
         val list = ArrayList<AttachInvoiceSingleUiModel>()
@@ -277,8 +266,14 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         )
     }
 
-    private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): ChatActionSelectionBubbleUiModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes::class.java)
+    private fun convertToChatActionSelectionBubbleModel(
+        pojo: ChatSocketPojo,
+        jsonAttribute: JsonObject
+    ): ChatActionSelectionBubbleUiModel {
+        val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(
+            jsonAttribute,
+            ChatActionBalloonSelectionAttachmentAttributes::class.java
+        )
         val quickReplyPojo = GsonBuilder().create()
             .fromJson<QuickReplyAttachmentAttributes>(
                 jsonAttribute,
@@ -303,7 +298,15 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     ): List<ChatActionBubbleUiModel> {
         val result = ArrayList<ChatActionBubbleUiModel>()
         for (item in pojo.chatActions) {
-            result.add(ChatActionBubbleUiModel(item.text, item.value, item.action, hexColor = item.hexColor, iconUrl = item.iconUrl))
+            result.add(
+                ChatActionBubbleUiModel(
+                    item.text,
+                    item.value,
+                    item.action,
+                    hexColor = item.hexColor,
+                    iconUrl = item.iconUrl
+                )
+            )
         }
         return result
     }
@@ -351,5 +354,4 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             .withParentReply(pojoAttribute.parentReply)
             .build()
     }
-    
 }

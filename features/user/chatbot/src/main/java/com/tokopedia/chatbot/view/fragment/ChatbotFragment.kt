@@ -1601,11 +1601,11 @@ class ChatbotFragment :
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         var list = mutableListOf<AttachmentMenu>()
-        if (isConnectedToAgent && isEligibleForVideoUplaod && showUploadVideoButton) {
-            attachmentMenuRecyclerView?.addVideoAttachmentMenu()
-        }
         if (showUploadImageButton) {
             attachmentMenuRecyclerView?.addChatbotImageAttachmentMenu()
+        }
+        if (isConnectedToAgent && isEligibleForVideoUplaod && showUploadVideoButton) {
+            attachmentMenuRecyclerView?.addVideoAttachmentMenu()
         }
         return list
     }
