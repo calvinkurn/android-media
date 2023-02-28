@@ -56,6 +56,7 @@ import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.ALLOWED_DYNAMIC_ATTACHMENT_TYPE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.MEDIA_BUTTON_TOGGLE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
@@ -334,7 +335,8 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 val attachmentType = chatResponse?.attachment?.type
                 if (attachmentType == SESSION_CHANGE ||
-                    attachmentType == UPDATE_TOOLBAR
+                    attachmentType == UPDATE_TOOLBAR ||
+                    checkForDynamicAttachment(pojo, attachmentType)
                 ) {
                     return
                 }
@@ -345,6 +347,15 @@ class ChatbotPresenter @Inject constructor(
                 sendReadEventWebSocket(messageId)
             }
         }
+    }
+
+    private fun checkForDynamicAttachment(pojo: ChatSocketPojo, attachmentType: String?): Boolean {
+        val dynamicAttachment = GsonBuilder().create().fromJson(
+            pojo.attachment?.attributes,
+            DynamicAttachment::class.java
+        )
+        val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -485,8 +496,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun convertToMediaButtonToggleData(dynamicContent: String?) {
-        if (dynamicContent == null)
+        if (dynamicContent == null) {
             return
+        }
 
         val mediaButtonToggleContent = Gson().fromJson(
             dynamicContent,
@@ -495,7 +507,6 @@ class ChatbotPresenter @Inject constructor(
 
         handleMediaButtonWS(mediaButtonToggleContent)
     }
-
 
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
         if (bigReplyBoxContent.isActive) {
@@ -514,19 +525,28 @@ class ChatbotPresenter @Inject constructor(
     private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
         if (mediaButtonToggleContent.isMediaButtonEnabled) {
             view.handleAddAttachmentButtonViewState(true)
-            view.handleImageUploadButtonViewState(mediaButtonToggleContent.buttons?.isUploadImageEnabled ?: false)
-            view.handleVideoUploadButtonViewState(mediaButtonToggleContent.buttons?.isUploadVideoEnabled ?: false)
+            view.handleImageUploadButtonViewState(
+                mediaButtonToggleContent.buttons?.isUploadImageEnabled ?: false
+            )
+            view.handleVideoUploadButtonViewState(
+                mediaButtonToggleContent.buttons?.isUploadVideoEnabled ?: false
+            )
         } else {
             view.handleAddAttachmentButtonViewState(false)
         }
     }
 
-    fun validateHistoryForAttachment34(dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?): Boolean {
+    fun validateHistoryForAttachment34(
+        dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?
+    ): Boolean {
         if (dynamicAttachmentBodyAttributes == null) {
             return false
         }
 
-        if (CheckDynamicAttachmentValidity.checkValidity(dynamicAttachmentBodyAttributes.contentCode)) {
+        if (CheckDynamicAttachmentValidity.checkValidity(
+                dynamicAttachmentBodyAttributes.contentCode
+            )
+        ) {
             when (dynamicAttachmentBodyAttributes.contentCode) {
                 TYPE_BIG_REPLY_BOX -> {
                     convertToBigReplyBoxData(dynamicAttachmentBodyAttributes.dynamicContent)
@@ -870,7 +890,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     fun onSuccessSubmitCsatRating(submitCsatGqlResponse: SubmitCsatGqlResponse) {
-        view.onSuccessSubmitCsatRating(submitCsatGqlResponse.submitRatingCSAT?.data?.message.toString())
+        view.onSuccessSubmitCsatRating(
+            submitCsatGqlResponse.submitRatingCSAT?.data?.message.toString()
+        )
     }
 
     private fun onErrorSubmitCsatRating(throwable: Throwable, messageId: String) {
@@ -883,7 +905,11 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    override fun hitGqlforOptionList(messageId: String, selectedValue: Int, model: HelpFullQuestionsUiModel?) {
+    override fun hitGqlforOptionList(
+        messageId: String,
+        selectedValue: Int,
+        model: HelpFullQuestionsUiModel?
+    ) {
         val input = generateInput(selectedValue, model)
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
@@ -930,7 +956,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onSuccessSubmitChatCsat(chipSubmitChatCsatResponse: ChipSubmitChatCsatResponse) {
-        view.onSuccessSubmitChatCsat(chipSubmitChatCsatResponse.chipSubmitChatCSAT?.csatSubmitData?.toasterMessage ?: "")
+        view.onSuccessSubmitChatCsat(
+            chipSubmitChatCsatResponse.chipSubmitChatCSAT?.csatSubmitData?.toasterMessage ?: ""
+        )
     }
 
     private fun onFailureSubmitChatCsat(throwable: Throwable, messageId: String) {
@@ -1182,7 +1210,11 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    override fun cancelVideoUpload(file: String, sourceId: String, onErrorVideoUpload: (Throwable) -> Unit) {
+    override fun cancelVideoUpload(
+        file: String,
+        sourceId: String,
+        onErrorVideoUpload: (Throwable) -> Unit
+    ) {
         launchCatchError(
             block = {
                 uploaderUseCase.abortUpload(
@@ -1207,7 +1239,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onSuccessVideoUploadEligibility(response: ChatbotUploadVideoEligibilityResponse) {
-        view.videoUploadEligibilityHandler(response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible)
+        view.videoUploadEligibilityHandler(
+            response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible
+        )
     }
 
     private fun onFailureVideoUploadEligibility(throwable: Throwable) {
@@ -1239,7 +1273,12 @@ class ChatbotPresenter @Inject constructor(
                         getChatRatingList(
                             inputList,
                             messageId,
-                            onChatRatingListSuccess(mappedResponse, onSuccessGetChat, chatReplies, onGetChatRatingListMessageError)
+                            onChatRatingListSuccess(
+                                mappedResponse,
+                                onSuccessGetChat,
+                                chatReplies,
+                                onGetChatRatingListMessageError
+                            )
                         )
                     } else {
                         onSuccessGetChat(mappedResponse, chatReplies)
@@ -1289,8 +1328,12 @@ class ChatbotPresenter @Inject constructor(
         val input = inputList
         launchCatchError(
             block = {
-                val gqlResponse = chipGetChatRatingListUseCase.getChatRatingList(chipGetChatRatingListUseCase.generateParam(input))
-                val response = gqlResponse.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
+                val gqlResponse = chipGetChatRatingListUseCase.getChatRatingList(
+                    chipGetChatRatingListUseCase.generateParam(input)
+                )
+                val response = gqlResponse.getData<ChipGetChatRatingListResponse>(
+                    ChipGetChatRatingListResponse::class.java
+                )
 
                 onSuccessGetRatingList(response.chipGetChatRatingList)
             },
@@ -1366,7 +1409,12 @@ class ChatbotPresenter @Inject constructor(
                     getChatRatingList(
                         inputList,
                         messageId,
-                        onChatRatingListSuccess(mappedResponse, onSuccessGetChat, chatReplies, onGetChatRatingListMessageError)
+                        onChatRatingListSuccess(
+                            mappedResponse,
+                            onSuccessGetChat,
+                            chatReplies,
+                            onGetChatRatingListMessageError
+                        )
                     )
                 } else {
                     onSuccessGetChat(mappedResponse, chatReplies)
@@ -1402,7 +1450,12 @@ class ChatbotPresenter @Inject constructor(
                     getChatRatingList(
                         inputList,
                         messageId,
-                        onChatRatingListSuccess(mappedResponse, onSuccessGetChat, chatReplies, onGetChatRatingListMessageError)
+                        onChatRatingListSuccess(
+                            mappedResponse,
+                            onSuccessGetChat,
+                            chatReplies,
+                            onGetChatRatingListMessageError
+                        )
                     )
                 } else {
                     onSuccessGetChat(mappedResponse, chatReplies)
