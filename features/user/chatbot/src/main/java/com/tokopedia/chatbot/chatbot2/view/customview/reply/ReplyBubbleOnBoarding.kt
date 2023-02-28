@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.chatbot2.view.customview.reply
 import android.content.Context
 import android.view.View
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.chatbot2.view.listener.OnboardingDismissListener
+import com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2.Companion.POSITION_TOP
 import com.tokopedia.coachmark.CoachMark2Item
@@ -16,7 +16,7 @@ class ReplyBubbleOnBoarding @Inject constructor(
     private var context: Context? = null
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
-    var onboardingDismissListener: OnboardingDismissListener? = null
+    var onboardingDismissListener: OnboardingReplayDismissListener? = null
 
     fun showReplyBubbleOnBoarding(
         anchor: View?,

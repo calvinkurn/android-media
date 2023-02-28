@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -102,7 +103,6 @@ import com.tokopedia.chatbot.chatbot2.domain.video.VideoUploadData
 import com.tokopedia.chatbot.chatbot2.util.convertMessageIdToLong
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatBotProvideRatingActivity
-import com.tokopedia.chatbot.chatbot2.view.activity.ChatbotOnboardingActivity
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotTypeFactoryImpl
@@ -122,7 +122,6 @@ import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.customview.floatinginvoice.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.chatbot2.view.customview.reply.ReplyBubbleOnBoarding
-import com.tokopedia.chatbot.chatbot2.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotContract
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotViewStateImpl
@@ -177,11 +176,16 @@ import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_U
 import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
+import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -294,9 +298,11 @@ class ChatbotFragment2 :
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
+    var isReplyCoachMarkShowing = false
 
     @Inject
     lateinit var videoUploadOnBoarding: VideoUploadOnBoarding
+    var isVideoCoachMarkShowing = false
     private var recyclerView: RecyclerView? = null
     private var isArticleDataSent: Boolean = false
     private var csatRemoteConfig: Boolean = false
@@ -309,7 +315,6 @@ class ChatbotFragment2 :
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
         private const val DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 0
         private const val Y_COORDINATE = "y-coordinate"
-        private const val ZERO_POSITION = 0
         private const val BUBBLE_NOT_FOUND = -2
         private const val DELAY_TO_SHOW_COACHMARK = 1000L
         private const val ACTION_CSAT_SMILEY_BUTTON_CLICKED = "click csat smiley button"
@@ -333,6 +338,8 @@ class ChatbotFragment2 :
         private const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
         private const val TICKER_TYPE_WARNING = "warning"
         private const val COPY_TO_CLIPBOARD_LABEL = "Tokopedia-Chatbot"
+        private const val ZERO_RATIO = 0F
+        private const val ZERO_POSITION = 0
     }
 
     override fun initInjector() {
@@ -944,17 +951,22 @@ class ChatbotFragment2 :
         if (isNewSession) startNewSession() else loadChatHistory()
     }
 
-    private fun goToOnboardingActivity() {
+    private fun showOnBoardCoachMark() {
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
-        val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
+        val hasBeenShownReplyBubbleOnBoarding = replyBubbleOnBoarding.hasBeenShown()
 
-        if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
+        if(hasBeenShownReplyBubbleOnBoarding && hasBeenShownVideoUploadOnBoarding)  {
             return
         }
 
-        val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
-        intent.putExtra(Y_COORDINATE, yForReplyBubbleOnboarding)
-        startActivityForResult(intent, REQUEST_CODE_CHATBOT_ONBOARDING)
+        if(!hasBeenShownReplyBubbleOnBoarding) {
+            val ratioY = calculateRatiosForGuideline()
+            setUpPositionReplyBubbleGuideline(ratioY)
+            isReplyCoachMarkShowing = true
+            showReplayCoachMark()
+        } else if(!hasBeenShownReplyBubbleOnBoarding) {
+            checkVideoUploadOnboardingStatus()
+        }
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -2116,10 +2128,11 @@ class ChatbotFragment2 :
         imm.hideSoftInputFromWindow(getBindingView().smallReplyBox.commentEditText?.windowToken, 0)
     }
 
-    private fun checkReplyBubbleOnboardingStatus() {
+    private fun checkCoachMarkStatus() {
         hideKeyboard()
+        val isHasBeenShownCoachMark = replyBubbleOnBoarding.hasBeenShown()
         coachmarkHandler.postDelayed({
-            if (!replyBubbleOnBoarding.hasBeenShown()) {
+            if (!isHasBeenShownCoachMark) {
                 val position = getPositionToAnchorReplyBubbleCoachmark()
                 if (position == BUBBLE_NOT_FOUND) {
                     return@postDelayed
@@ -2127,7 +2140,7 @@ class ChatbotFragment2 :
                     smoothScrollToPosition(position)
                 }
             } else {
-                goToOnboardingActivity()
+                showOnBoardCoachMark()
             }
         }, DELAY_TO_SHOW_COACHMARK)
     }
@@ -2183,14 +2196,14 @@ class ChatbotFragment2 :
                     return
                 }
 
-                getPositionToShowCoachmark()
+                getPositionToShowCoachMark()
             }
         }.also {
             recyclerView?.addOnScrollListener(it)
         }
     }
 
-    private fun getPositionToShowCoachmark() {
+    private fun getPositionToShowCoachMark() {
         val position = getPositionToAnchorReplyBubbleCoachmark()
 
         val firstPosition =
@@ -2199,9 +2212,8 @@ class ChatbotFragment2 :
         recyclerView?.getChildAt(position - firstPosition)
             ?.getLocationOnScreen(location)
 
-        xForReplyBubbleOnboarding = location[0]
         yForReplyBubbleOnboarding = location[1]
-        goToOnboardingActivity()
+        showOnBoardCoachMark()
     }
 
     private fun onErrorGetBottomChat() {
@@ -2412,7 +2424,7 @@ class ChatbotFragment2 :
         isConnectedToAgent = state
         replyBubbleEnabled = state
         if (state) {
-            checkReplyBubbleOnboardingStatus()
+            checkCoachMarkStatus()
             createAttachmentMenus()
         }
     }
@@ -2486,5 +2498,105 @@ class ChatbotFragment2 :
 
     private fun remoteConfigForCsatExperiment() {
         csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) } ?: false
+    }
+
+    private fun checkVideoUploadOnboardingStatus() {
+        setHandlingViewHelperVideoCoachMark()
+        showCoachMarkOfVideoReplay()
+    }
+
+    private fun setHandlingViewHelperVideoCoachMark(){
+        getBindingView().coachMarkVideoHelper.apply {
+            bringToFront()
+            show()
+            isClickable = true
+            setOnClickListener {
+                videoUploadOnBoarding.dismiss()
+            }
+        }
+    }
+
+    private fun showCoachMarkOfVideoReplay() {
+        isVideoCoachMarkShowing = true
+        videoUploadOnBoarding.onboardingDismissListener = object : OnboardingVideoDismissListener {
+            override fun dismissVideoUploadOnBoarding() {
+                isVideoCoachMarkShowing = false
+                getBindingView().coachMarkVideoHelper.gone()
+                smoothScrollToPosition(ZERO_POSITION)
+            }
+        }
+        if (smallReplyBox?.isVisible.orFalse()) {
+            getBindingView().smallReplyBox.showCoachMark(videoUploadOnBoarding)
+        }
+    }
+
+    /**
+     * Getting the x and y coordinates from ChatbotFragment , calculate the ratioY and align the
+     * guideline accordingly. The guideline will change the position of the reply_bubble_holder view
+     * which is used to show the pointer on the coachmark
+     * */
+    private fun calculateRatiosForGuideline(): Float {
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val givenY = yForReplyBubbleOnboarding
+        return (givenY.toFloat() / height.toFloat())
+    }
+
+    private fun setUpPositionReplyBubbleGuideline(ratioY: Float) {
+        if (ratioY == ZERO_RATIO)
+            return
+        val params =
+            getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
+        params.guidePercent = ratioY
+        getBindingView().guidelineReplyBubble.layoutParams = params
+    }
+
+    private fun showReplayCoachMark() {
+        setHandlingViewHelperReplayCoachMark()
+        setReplayBubbleCoachMarkListener()
+        replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+            getBindingView().replyBubbleHolder,
+            context
+        )
+    }
+
+    private fun setReplayBubbleCoachMarkListener(){
+        replyBubbleOnBoarding.onboardingDismissListener = object :  com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener{
+            override fun dismissReplyBubbleOnBoarding() {
+                isReplyCoachMarkShowing = false
+                checkVideoUploadOnboardingStatus()
+            }
+        }
+    }
+
+    private fun setHandlingViewHelperReplayCoachMark() {
+        val coachMarkLineHelper = getBindingView().coachMarkReplayHelper
+        val coachMarkHelper = getBindingView().frameCoachMarkReplay
+        coachMarkLineHelper.apply {
+            show()
+        }
+        coachMarkHelper.apply {
+            bringToFront()
+            show()
+            isClickable = true
+            setOnClickListener {
+                coachMarkLineHelper.gone()
+                gone()
+                replyBubbleOnBoarding.dismiss()
+            }
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return if(isReplyCoachMarkShowing){
+            replyBubbleOnBoarding.dismiss()
+            true
+        } else if(isVideoCoachMarkShowing) {
+            videoUploadOnBoarding.dismiss()
+            true
+        } else {
+            super.onBackPressed()
+        }
     }
 }

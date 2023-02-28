@@ -10,6 +10,8 @@ import com.tokopedia.chatbot.chatbot2.websocket.ChatbotDefaultWebSocketStateHand
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketImpl
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketStateHandler
+import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
+import com.tokopedia.chatbot.data.cache.ChatbotCacheManagerImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -114,4 +116,10 @@ class ChatbotModule {
         return ChatbotDefaultWebSocketStateHandler()
     }
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+
+    @Provides
+    internal fun provideChatbotCacheManager2(@ApplicationContext context: Context): ChatbotCacheManager {
+        val chatbotCacheManager = context.getSharedPreferences("chatbotCache", Context.MODE_PRIVATE)
+        return ChatbotCacheManagerImpl(chatbotCacheManager)
+    }
 }
