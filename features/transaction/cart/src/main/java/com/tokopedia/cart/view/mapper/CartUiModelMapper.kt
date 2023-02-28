@@ -25,7 +25,7 @@ import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
@@ -183,8 +183,9 @@ object CartUiModelMapper {
                 longitude = availableGroup.shop.longitude
                 latitude = availableGroup.shop.latitude
                 boMetadata = availableGroup.boMetadata
-                boAffordability = CartShopBoAffordabilityData(
-                    enable = availableGroup.shipmentInformation.enableBoAffordability,
+                cartShopGroupTicker = CartShopGroupTickerData(
+                    enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
+                    enableCartAggregator = availableGroup.shipmentInformation.enableShopGroupTickerCartAggregator,
                     errorText = cartData.messages.errorBoAffordability
                 )
                 mapAddOnData(availableGroup.giftingAddOn, availableGroup.epharmacyConsultationInfo)
@@ -555,6 +556,7 @@ object CartUiModelMapper {
             freeShippingName = product.freeShippingGeneral.boName
             campaignId = product.campaignId
             warehouseId = product.warehouseId
+            bundleIds = product.bundleIds
         }
     }
 

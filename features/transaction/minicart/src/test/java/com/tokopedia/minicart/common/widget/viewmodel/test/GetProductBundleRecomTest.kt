@@ -100,7 +100,7 @@ class GetProductBundleRecomTest {
             miniCartListUiModelMapper.mapToProductBundleUiModel(any())
         } returns mockProductBundleUiModel
 
-        //observe value from postValue
+        // observe value from postValue
         val observer = mockk<Observer<MiniCartListUiModel>>(relaxed = true)
         viewModel.miniCartListBottomSheetUiModel.observeForever(observer)
 
@@ -115,7 +115,7 @@ class GetProductBundleRecomTest {
         // check availability of product bundle recom value
         Assert.assertTrue(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.firstOrNull { it is MiniCartProductBundleRecomUiModel } is MiniCartProductBundleRecomUiModel)
 
-        //remove observer
+        // remove observer
         viewModel.miniCartListBottomSheetUiModel.removeObserver(observer)
     }
 
@@ -150,7 +150,7 @@ class GetProductBundleRecomTest {
             miniCartListUiModelMapper.mapToProductBundleUiModel(any())
         } returns mockProductBundleUiModel
 
-        //observe value from postValue
+        // observe value from postValue
         val observer = mockk<Observer<MiniCartListUiModel>>(relaxed = true)
         viewModel.miniCartListBottomSheetUiModel.observeForever(observer)
 
@@ -165,7 +165,7 @@ class GetProductBundleRecomTest {
         // check availability of product bundle recom value
         Assert.assertEquals(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.firstOrNull { it is MiniCartProductBundleRecomUiModel }, null)
 
-        //remove observer
+        // remove observer
         viewModel.miniCartListBottomSheetUiModel.removeObserver(observer)
     }
 
@@ -213,5 +213,4 @@ class GetProductBundleRecomTest {
 
         viewModel.productBundleRecomTracker.verifyValueEquals(productBundleRecom)
     }
-
 }
