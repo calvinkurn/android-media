@@ -443,7 +443,6 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
-        private const val DELAY_MEMORY_LIMIT_CALLBACK = 2000L
     }
 
 }
