@@ -413,6 +413,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductBundlingViewHolder
      */
+    fun removeComponent(componentName:String)
+
     fun onImpressionProductBundling(
         bundleId: String,
         bundleType: String,

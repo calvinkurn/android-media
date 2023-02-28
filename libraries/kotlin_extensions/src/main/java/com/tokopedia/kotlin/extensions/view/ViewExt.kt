@@ -15,6 +15,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.SystemClock
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -39,6 +40,11 @@ fun View.show() {
     if (this.visibility != View.VISIBLE) {
         this.visibility = View.VISIBLE
     }
+}
+
+fun View.hideKeyboard() {
+    val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
 fun View.hide() {

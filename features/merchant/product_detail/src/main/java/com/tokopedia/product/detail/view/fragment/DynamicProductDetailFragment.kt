@@ -2905,6 +2905,14 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    override fun removeComponent(componentName: String) {
+        if (componentName == ProductDetailConstant.GLOBAL_BUNDLING) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.GLOBAL_BUNDLING)
+        }
+
+        updateUi()
+    }
+
     override fun showArCoachMark(view: ConstraintLayout?) {
         pdpCoachmarkHelper?.showCoachMarkAr(view)
     }
