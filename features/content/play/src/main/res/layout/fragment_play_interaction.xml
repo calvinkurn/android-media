@@ -48,7 +48,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_send_chat_height"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/view_size"
         app:layout_constraintEnd_toStartOf="@id/gl_like_bubble_start"
@@ -177,7 +176,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         tools:visibility="visible" />
@@ -285,9 +283,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_product_see_more"
+        app:layout_constraintBottom_toTopOf="@id/gl_quick_reply"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="gone"
@@ -402,5 +399,12 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_quick_reply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>

@@ -36,8 +36,10 @@ class TaggedProductLabelUiComponent(
             state.value.tagItems.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
                 .sumOf { it.productList.size }
 
-        view.show(!state.value.bottomInsets.isAnyShown &&
-            (!state.value.address.shouldShow || productListSize.isMoreThanZero()) && state.value.channel.channelInfo.channelType.isLive)
+        view.show(
+            !state.value.bottomInsets.isAnyShown &&
+                !state.value.address.shouldShow && productListSize.isMoreThanZero() && state.value.channel.channelInfo.channelType.isLive
+        )
         view.setProductSize(productListSize)
     }
 

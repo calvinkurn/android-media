@@ -180,6 +180,8 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this, viewLifecycleOwner.lifecycleScope) }
 
+    private val glQuick by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.gl_quick_reply) }
+
     private val activityResultHelper by lifecycleBound({
         ActivityResultHelper(this)
     })
@@ -1812,14 +1814,14 @@ class PlayUserInteractionFragment @Inject constructor(
          * and I don't know why arghhh
          */
         val quickReplyViewId = quickReplyView?.id ?: return
-        val productSeeMoreView = this.productSeeMoreView ?: return
+        val glScreen = this.glQuick ?: return
         view?.changeConstraint {
             if (isShown) {
                 sendChatView?.let {
                     connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
                 }
             } else {
-                connect(quickReplyViewId, ConstraintSet.BOTTOM, productSeeMoreView.id, ConstraintSet.TOP)
+                connect(quickReplyViewId, ConstraintSet.BOTTOM, glScreen.id, ConstraintSet.TOP)
             }
         }
     }
@@ -2026,7 +2028,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun onTaggedLabelEvent(event: TaggedProductLabelUiComponent.Event) {
         when(event){
-            TaggedProductLabelUiComponent.Event.OnClicked -> {}
+            TaggedProductLabelUiComponent.Event.OnClicked -> {
+                openProductSheet()
+            }
         }
     }
 
