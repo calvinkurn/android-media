@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDri
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.EpharmacyInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
@@ -24,6 +25,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeade
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDashedDividerViewHolder
@@ -31,6 +33,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDivide
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -54,6 +57,7 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationData: DigitalRecommendationData,
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
+    private val productListToggleListener: ProductListToggleViewHolder.Listener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
@@ -100,6 +104,8 @@ open class BuyerOrderDetailTypeFactory(
             OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator, orderResolutionListener)
             PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
             OrderInsuranceViewHolder.LAYOUT -> OrderInsuranceViewHolder(parent, navigator)
+            EpharmacyInfoViewHolder.LAYOUT -> EpharmacyInfoViewHolder(parent)
+            ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -192,5 +198,13 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(orderInsuranceUiModel: OrderInsuranceUiModel): Int {
         return OrderInsuranceViewHolder.LAYOUT
+    }
+
+    fun type(ePharmarcyUiModel: EpharmacyInfoUiModel): Int {
+        return EpharmacyInfoViewHolder.LAYOUT
+    }
+
+    fun type(productListCollapseUiModel: ProductListUiModel.ProductListToggleUiModel): Int {
+        return ProductListToggleViewHolder.LAYOUT
     }
 }

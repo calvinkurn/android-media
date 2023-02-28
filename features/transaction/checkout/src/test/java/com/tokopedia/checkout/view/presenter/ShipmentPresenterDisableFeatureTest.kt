@@ -10,9 +10,11 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -72,6 +74,9 @@ class ShipmentPresenterDisableFeatureTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -111,6 +116,9 @@ class ShipmentPresenterDisableFeatureTest {
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
+    @MockK
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -125,14 +133,31 @@ class ShipmentPresenterDisableFeatureTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers,
-            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }
@@ -140,132 +165,312 @@ class ShipmentPresenterDisableFeatureTest {
     @Test
     fun disable_dropshipper() {
         // Given
-        val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DROPSHIPPER), ShipmentAddressFormDataResponse::class.java)
+        val dataResponse = gson.fromJson(
+            unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DROPSHIPPER),
+            ShipmentAddressFormDataResponse::class.java
+        )
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(true, isProtectionAvailable) } }
+        presenter.shipmentCartItemModelList.each {
+            cartItemModels.each {
+                assertEquals(
+                    true,
+                    isProtectionAvailable
+                )
+            }
+        }
         assertNotNull(presenter.shipmentDonationModel)
     }
 
     @Test
     fun disable_order_prioritas() {
         // Given
-        val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS), ShipmentAddressFormDataResponse::class.java)
+        val dataResponse = gson.fromJson(
+            unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS),
+            ShipmentAddressFormDataResponse::class.java
+        )
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { assertEquals(true, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(true, isProtectionAvailable) } }
+        presenter.shipmentCartItemModelList.each {
+            cartItemModels.each {
+                assertEquals(
+                    true,
+                    isProtectionAvailable
+                )
+            }
+        }
         assertNotNull(presenter.shipmentDonationModel)
     }
 
     @Test
     fun disable_egold() {
         // Given
-        val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_EGOLD), ShipmentAddressFormDataResponse::class.java)
+        val dataResponse = gson.fromJson(
+            unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_EGOLD),
+            ShipmentAddressFormDataResponse::class.java
+        )
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(true, isProtectionAvailable) } }
+        presenter.shipmentCartItemModelList.each {
+            cartItemModels.each {
+                assertEquals(
+                    true,
+                    isProtectionAvailable
+                )
+            }
+        }
         assertNotNull(presenter.shipmentDonationModel)
     }
 
     @Test
     fun disable_ppp() {
         // Given
-        val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_PPP), ShipmentAddressFormDataResponse::class.java)
+        val dataResponse = gson.fromJson(
+            unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_PPP),
+            ShipmentAddressFormDataResponse::class.java
+        )
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(false, isProtectionAvailable) } }
+        presenter.shipmentCartItemModelList.each {
+            cartItemModels.each {
+                assertEquals(
+                    false,
+                    isProtectionAvailable
+                )
+            }
+        }
         assertNotNull(presenter.shipmentDonationModel)
     }
 
     @Test
     fun disable_donation() {
         // Given
-        val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DONATION), ShipmentAddressFormDataResponse::class.java)
+        val dataResponse = gson.fromJson(
+            unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DONATION),
+            ShipmentAddressFormDataResponse::class.java
+        )
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
         assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(true, isProtectionAvailable) } }
+        presenter.shipmentCartItemModelList.each {
+            cartItemModels.each {
+                assertEquals(
+                    true,
+                    isProtectionAvailable
+                )
+            }
+        }
         assertNull(presenter.shipmentDonationModel)
     }
 
     @Test
     fun disable_all() {
         // Given
-        val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ALL), ShipmentAddressFormDataResponse::class.java)
+        val dataResponse = gson.fromJson(
+            unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ALL),
+            ShipmentAddressFormDataResponse::class.java
+        )
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }
         presenter.shipmentCartItemModelList.each { assertEquals(true, isOrderPrioritasDisable) }
         assertNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(false, isProtectionAvailable) } }
+        presenter.shipmentCartItemModelList.each {
+            cartItemModels.each {
+                assertEquals(
+                    false,
+                    isProtectionAvailable
+                )
+            }
+        }
         assertNull(presenter.shipmentDonationModel)
     }
 }

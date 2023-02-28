@@ -9,9 +9,11 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -69,6 +71,9 @@ class ShipmentPresenterUpsellTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -105,6 +110,9 @@ class ShipmentPresenterUpsellTest {
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
+    @MockK
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -117,14 +125,31 @@ class ShipmentPresenterUpsellTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers,
-            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }

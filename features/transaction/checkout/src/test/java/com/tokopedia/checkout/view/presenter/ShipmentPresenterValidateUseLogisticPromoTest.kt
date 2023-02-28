@@ -7,8 +7,11 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -35,12 +38,15 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockkObject
+import io.mockk.spyk
 import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
+import rx.observers.TestSubscriber
+import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 
 class ShipmentPresenterValidateUseLogisticPromoTest {
@@ -68,6 +74,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
     @MockK
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
+
+    @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
 
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
@@ -106,6 +115,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK(relaxed = true)
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
+    @MockK(relaxed = true)
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -118,16 +130,34 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers,
-            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
+        presenter = spyk(presenter)
     }
 
     @Test
@@ -136,7 +166,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         val promoUiModel = PromoUiModel(
             globalSuccess = true,
             voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
+            )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
@@ -149,7 +182,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -168,8 +201,18 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         val promoUiModel = PromoUiModel(
             globalSuccess = true,
             voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString + "2", code = promoCode, messageUiModel = MessageUiModel(state = "green", text = errorMessage)),
-                PromoCheckoutVoucherOrdersItemUiModel(type = "merchant", uniqueId = cartString, code = promoCode + "m", messageUiModel = MessageUiModel(state = "green", text = errorMessage))
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    uniqueId = cartString + "2",
+                    code = promoCode,
+                    messageUiModel = MessageUiModel(state = "green", text = errorMessage)
+                ),
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "merchant",
+                    uniqueId = cartString,
+                    code = promoCode + "m",
+                    messageUiModel = MessageUiModel(state = "green", text = errorMessage)
+                )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
@@ -190,13 +233,20 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
+        presenter.doValidateUseLogisticPromo(
+            cartPosition,
+            cartString,
+            ValidateUsePromoRequest(),
+            promoCode,
+            true
+        )
 
         // Then
         verifySequence {
             view.setStateLoadingCourierStateAtIndex(cartPosition, true)
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == "voucher order not found" }, shipmentCartItemModel, promoCode)
             view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
@@ -210,7 +260,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         val promoUiModel = PromoUiModel(
             globalSuccess = true,
             voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, code = promoCode, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    uniqueId = cartString,
+                    code = promoCode,
+                    messageUiModel = MessageUiModel(state = "red", text = errorMessage)
+            )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
@@ -228,7 +283,13 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
+        presenter.doValidateUseLogisticPromo(
+            cartPosition,
+            cartString,
+            ValidateUsePromoRequest(),
+            promoCode,
+            true
+        )
 
         // Then
         verifySequence {
@@ -236,6 +297,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == errorMessage }, shipmentCartItemModel, promoCode)
             view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
@@ -248,8 +310,16 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         val promoUiModel = PromoUiModel(
             globalSuccess = true,
             voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "green")),
-                PromoCheckoutVoucherOrdersItemUiModel(type = "global", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    uniqueId = cartString,
+                    messageUiModel = MessageUiModel(state = "green")
+                ),
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "global",
+                    uniqueId = cartString,
+                    messageUiModel = MessageUiModel(state = "red", text = errorMessage)
+            )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
@@ -275,7 +345,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             )
         )
         presenter.setLatValidateUseRequest(validateUsePromoRequest)
-        presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest, "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest, "", true)
 
         // Then
         verifySequence {
@@ -290,11 +360,14 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseError_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -303,6 +376,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
     }
 
@@ -310,11 +384,14 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(errorMessage))
+        val akamaiErrorException = AkamaiErrorException(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            akamaiErrorException
+        )
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -325,6 +402,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.resetAllCourier()
             view.cancelAllCourierPromo()
             view.doResetButtonPromoCheckout()
+            view.logOnErrorApplyBo(akamaiErrorException, cartPosition, "")
         }
     }
 
@@ -344,7 +422,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -370,7 +448,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verifySequence {
@@ -382,13 +460,163 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     }
 
     @Test
+    fun validateUseSuccessFromScheduleDelivery_ShouldCompletePublisher() {
+        // Given
+        val promoUiModel = PromoUiModel(
+            globalSuccess = true,
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+            )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+        )
+        val cartString = "123"
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = false,
+            shouldStopInValidateUsePromo = true
+        )
+        presenter.setScheduleDeliveryMapData(cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), "", true)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.updateButtonPromoCheckout(promoUiModel, true)
+        }
+        testSubscriber.assertCompleted()
+    }
+
+    @Test
+    fun validateUseErrorFromScheduleDelivery_ShouldCompletePublisher() {
+        // Given
+        val errorMessage = "error"
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
+        val cartString = "123"
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = false,
+            shouldStopInValidateUsePromo = true
+        )
+        presenter.setScheduleDeliveryMapData(cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), "", true)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(any())
+            view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
+        }
+        testSubscriber.assertCompleted()
+    }
+
+    @Test
+    fun validateUseSuccessFromGetShippingRates_ShouldCompletePublisher() {
+        // Given
+        val promoUiModel = PromoUiModel(
+            globalSuccess = true,
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+            )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+        )
+        val cartString = "123"
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val logisticDonePublisher = PublishSubject.create<Boolean>()
+        presenter.logisticDonePublisher = logisticDonePublisher
+        logisticDonePublisher.subscribe(testSubscriber)
+
+        val promoTestSubscriber = TestSubscriber.create<Boolean>()
+        val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
+        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        logisticPromoDonePublisher.subscribe(promoTestSubscriber)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), "", true)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.updateButtonPromoCheckout(promoUiModel, true)
+        }
+        testSubscriber.assertCompleted()
+        promoTestSubscriber.assertCompleted()
+    }
+
+    @Test
+    fun validateUseErrorFromGetShippingRates_ShouldCompletePublisher() {
+        // Given
+        val errorMessage = "error"
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
+        val cartString = "123"
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val logisticDonePublisher = PublishSubject.create<Boolean>()
+        presenter.logisticDonePublisher = logisticDonePublisher
+        logisticDonePublisher.subscribe(testSubscriber)
+
+        val promoTestSubscriber = TestSubscriber.create<Boolean>()
+        val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
+        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        logisticPromoDonePublisher.subscribe(promoTestSubscriber)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), "", true)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(any())
+            view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
+        }
+        testSubscriber.assertCompleted()
+        promoTestSubscriber.assertCompleted()
+    }
+
+    @Test
     fun `WHEN validate use with detached view THEN should do nothing`() {
         // Given
         val cartPosition = 1
         presenter.detachView()
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "", true)
 
         // Then
         verify(inverse = true) {

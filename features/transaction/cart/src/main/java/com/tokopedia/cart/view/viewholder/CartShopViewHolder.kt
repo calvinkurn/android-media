@@ -15,33 +15,38 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
+import com.tokopedia.utils.resources.isDarkMode
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.min
 
-class CartShopViewHolder(private val binding: ItemShopBinding,
-                         private val actionListener: ActionListener,
-                         private val cartItemAdapterListener: CartItemAdapter.ActionListener,
-                         private val compositeSubscription: CompositeSubscription,
-                         private var plusCoachmark: CoachMark2?,
+class CartShopViewHolder(
+    private val binding: ItemShopBinding,
+    private val actionListener: ActionListener,
+    private val cartItemAdapterListener: CartItemAdapter.ActionListener,
+    private val compositeSubscription: CompositeSubscription,
+    private var plusCoachmark: CoachMark2?,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
@@ -62,13 +67,14 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         }
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
-        renderBoAfford(cartShopHolderData)
+        renderCartShopGroupTicker(cartShopHolderData)
     }
 
     fun bindData(cartShopHolderData: CartShopHolderData) {
         renderShopName(cartShopHolderData)
         renderShopBadge(cartShopHolderData)
         renderIconPin(cartShopHolderData)
+        renderShopEnabler(cartShopHolderData)
         renderCartItems(cartShopHolderData)
         renderAccordion(cartShopHolderData)
         renderCheckBox(cartShopHolderData)
@@ -78,8 +84,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderFreeShipping(cartShopHolderData)
         renderEstimatedTimeArrival(cartShopHolderData)
         renderMaximumWeight(cartShopHolderData)
-        renderBoAfford(cartShopHolderData)
-        renderGiftingAddOn(cartShopHolderData)
+        renderCartShopGroupTicker(cartShopHolderData)
+        renderAddOnInfo(cartShopHolderData)
         cartString = cartShopHolderData.cartString
     }
 
@@ -116,6 +122,15 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         }
     }
 
+    private fun renderShopEnabler(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.enablerLabel.isNotBlank()) {
+            binding.labelEpharmacy.text = cartShopHolderData.enablerLabel
+            binding.labelEpharmacy.visible()
+        } else {
+            binding.labelEpharmacy.gone()
+        }
+    }
+
     private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
         if (!cartShopHolderData.isError && cartShopHolderData.isCollapsed) {
             renderCollapsedCartItems(cartShopHolderData)
@@ -133,9 +148,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         binding.tvShopName.text = Utils.getHtmlFormat(shopName)
         binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
-                    cartShopHolderData.shopId,
-                    cartShopHolderData.shopName,
-                    cartShopHolderData.isTokoNow)
+                cartShopHolderData.shopId,
+                cartShopHolderData.shopName,
+                cartShopHolderData.isTokoNow
+            )
         }
     }
 
@@ -259,17 +275,17 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {
         binding.cbSelectShop.let {
             compositeSubscription.add(
-                    rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(isChecked: Boolean) {
-                            cbSelectShopClickListener(cartShopHolderData)
-                        }
+                rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
+                    override fun onNext(isChecked: Boolean) {
+                        cbSelectShopClickListener(cartShopHolderData)
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
+                    override fun onError(e: Throwable?) {
+                    }
+                })
             )
         }
     }
@@ -358,7 +374,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         with(binding) {
             if (cartShopHolderData.freeShippingBadgeUrl.isNotBlank()) {
                 ImageHandler.loadImageWithoutPlaceholderAndError(
-                        imgFreeShipping, cartShopHolderData.freeShippingBadgeUrl
+                    imgFreeShipping,
+                    cartShopHolderData.freeShippingBadgeUrl
                 )
                 val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingPlus) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
@@ -407,8 +424,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     tickerWarning.closeButtonVisibility = View.GONE
                     tickerWarning.show()
                     tickerWarning.post {
-                        binding.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.tickerWarning.measure(
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        )
                         binding.tickerWarning.requestLayout()
                     }
                 }
@@ -424,17 +443,28 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         }
     }
 
-    private fun renderGiftingAddOn(cartShopHolderData: CartShopHolderData) {
+    private fun renderAddOnInfo(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.addOnText.isNotEmpty()) {
-            binding.giftingWidgetLayout.root.visible()
-            binding.giftingWidgetLayout.descGifting.text = cartShopHolderData.addOnText
-            ImageHandler.loadImageWithoutPlaceholder(binding.giftingWidgetLayout.ivAddonLeft, cartShopHolderData.addOnImgUrl)
-            binding.giftingWidgetLayout.root.setOnClickListener {
-                actionListener.onClickAddOnCart(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "", cartShopHolderData.addOnId)
+            binding.addonInfoWidgetLayout.root.visible()
+            binding.addonInfoWidgetLayout.descAddonInfo.text = cartShopHolderData.addOnText
+            binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartShopHolderData.addOnImgUrl)
+            binding.addonInfoWidgetLayout.root.setOnClickListener {
+                if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+                    actionListener.onClickAddOnCart(
+                        cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "",
+                        cartShopHolderData.addOnId
+                    )
+                } else if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_EPHARMACY) {
+                    actionListener.onClickEpharmacyInfoCart(cartShopHolderData.enablerLabel, cartShopHolderData.shopId, cartShopHolderData.productUiModelList)
+                }
             }
-            actionListener.addOnImpression(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "")
+            if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+                actionListener.addOnImpression(
+                    cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: ""
+                )
+            }
         } else {
-            binding.giftingWidgetLayout.root.gone()
+            binding.addonInfoWidgetLayout.root.gone()
         }
     }
 
@@ -445,7 +475,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 if (binding.tickerWarning.isVisible) {
                     binding.tickerWarning.post {
                         val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
-                                ?: 0
+                            ?: 0
                         val tickerHeight = binding.tickerWarning.height
                         val totalOffset = calculateScrollOffset(productIndex, tickerHeight + paddingOffset)
                         actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
@@ -466,75 +496,87 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         return offset + paddingOffset + tickerHeight
     }
 
-    private fun renderBoAfford(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError
-                && cartShopHolderData.boAffordability.enable && !cartShopHolderData.isOverweight) {
+    private fun renderCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError &&
+            cartShopHolderData.cartShopGroupTicker.enableCartAggregator &&
+            !cartShopHolderData.isOverweight
+        ) {
             binding.apply {
-                val boAffordability = cartShopHolderData.boAffordability
-                when (boAffordability.state) {
-                    CartShopBoAffordabilityState.FIRST_LOAD, CartShopBoAffordabilityState.LOADING -> {
-                        textBoAffordability.gone()
-                        arrowBoAffordability.gone()
-                        largeLoaderBoAffordability.show()
-                        smallLoaderBoAffordability.show()
-                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
-                        layoutBoAffordability.setOnClickListener(null)
-                        layoutBoAffordability.show()
+                val cartShopGroupTicker = cartShopHolderData.cartShopGroupTicker
+                when (cartShopGroupTicker.state) {
+                    CartShopGroupTickerState.FIRST_LOAD, CartShopGroupTickerState.LOADING -> {
+                        cartShopTickerText.gone()
+                        cartShopTickerLeftIcon.gone()
+                        cartShopTickerRightIcon.gone()
+                        cartShopTickerLargeLoader.type = LoaderUnify.TYPE_LINE
+                        cartShopTickerLargeLoader.show()
+                        cartShopTickerSmallLoader.type = LoaderUnify.TYPE_LINE
+                        cartShopTickerSmallLoader.show()
+                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+                        layoutCartShopTicker.setOnClickListener(null)
+                        layoutCartShopTicker.show()
                     }
-                    CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD -> {
-                        largeLoaderBoAffordability.gone()
-                        smallLoaderBoAffordability.gone()
-                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.tickerText)
-                        textBoAffordability.show()
-                        arrowBoAffordability.setImage(IconUnify.CHEVRON_RIGHT)
-                        arrowBoAffordability.show()
-                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
-                        layoutBoAffordability.setOnClickListener {
-                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData)
+                    CartShopGroupTickerState.SUCCESS_AFFORD, CartShopGroupTickerState.SUCCESS_NOT_AFFORD -> {
+                        cartShopTickerLargeLoader.gone()
+                        cartShopTickerSmallLoader.gone()
+                        cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.tickerText)
+                        cartShopTickerText.show()
+                        if (cartShopGroupTicker.leftIcon.isNotBlank() && cartShopGroupTicker.leftIconDark.isNotBlank()) {
+                            if (root.context.isDarkMode()) {
+                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIconDark)
+                            } else {
+                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIcon)
+                            }
+                            cartShopTickerLeftIcon.show()
+                        } else {
+                            cartShopTickerLeftIcon.gone()
                         }
-                        if (!cartShopHolderData.boAffordability.hasSeenTicker) {
-                            actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
-                            cartShopHolderData.boAffordability.hasSeenTicker = true
+                        if (cartShopGroupTicker.rightIcon.isNotBlank() && cartShopGroupTicker.rightIconDark.isNotBlank()) {
+                            if (root.context.isDarkMode()) {
+                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
+                            } else {
+                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
+                            }
+                            cartShopTickerRightIcon.show()
+                        } else {
+                            cartShopTickerRightIcon.gone()
                         }
-                        layoutBoAffordability.show()
+                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+                        layoutCartShopTicker.setOnClickListener {
+                            actionListener.onCartShopGroupTickerClicked(cartShopHolderData)
+                        }
+                        if (!cartShopHolderData.cartShopGroupTicker.hasSeenTicker) {
+                            actionListener.onViewCartShopGroupTicker(cartShopHolderData)
+                            cartShopHolderData.cartShopGroupTicker.hasSeenTicker = true
+                        }
+                        layoutCartShopTicker.show()
                     }
-                    CartShopBoAffordabilityState.SUCCESS_AFFORD -> {
-                        largeLoaderBoAffordability.gone()
-                        smallLoaderBoAffordability.gone()
-                        arrowBoAffordability.gone()
-                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.tickerText)
-                        textBoAffordability.show()
-                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
-                        layoutBoAffordability.setOnClickListener(null)
-                        if (!cartShopHolderData.boAffordability.hasSeenTicker) {
-                            actionListener.onViewCartBoAffordabilityTicker(cartShopHolderData)
-                            cartShopHolderData.boAffordability.hasSeenTicker = true
+                    CartShopGroupTickerState.FAILED -> {
+                        cartShopTickerLargeLoader.gone()
+                        cartShopTickerSmallLoader.gone()
+                        cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.errorText)
+                        cartShopTickerText.show()
+                        cartShopTickerLeftIcon.gone()
+                        val iconColor = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                        val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
+                        cartShopTickerRightIcon.setImageDrawable(reloadIcon)
+                        cartShopTickerRightIcon.show()
+                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
+                        layoutCartShopTicker.setOnClickListener {
+                            actionListener.onCartShopGroupTickerRefreshClicked(adapterPosition, cartShopHolderData)
                         }
-                        layoutBoAffordability.show()
+                        layoutCartShopTicker.show()
                     }
-                    CartShopBoAffordabilityState.FAILED -> {
-                        largeLoaderBoAffordability.gone()
-                        smallLoaderBoAffordability.gone()
-                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.errorText)
-                        textBoAffordability.show()
-                        arrowBoAffordability.setImage(IconUnify.RELOAD)
-                        arrowBoAffordability.show()
-                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
-                        layoutBoAffordability.setOnClickListener {
-                            actionListener.onCartBoAffordabilityRefreshClicked(adapterPosition, cartShopHolderData)
-                        }
-                        layoutBoAffordability.show()
-                    }
-                    CartShopBoAffordabilityState.EMPTY -> {
-                        layoutBoAffordability.gone()
+                    CartShopGroupTickerState.EMPTY -> {
+                        layoutCartShopTicker.gone()
                     }
                 }
-                if (boAffordability.state == CartShopBoAffordabilityState.FIRST_LOAD) {
-                    actionListener.checkBoAffordability(cartShopHolderData)
+                if (cartShopGroupTicker.state == CartShopGroupTickerState.FIRST_LOAD) {
+                    actionListener.checkCartShopGroupTicker(cartShopHolderData)
                 }
             }
         } else {
-            binding.layoutBoAffordability.gone()
+            binding.layoutCartShopTicker.gone()
         }
     }
 
@@ -554,5 +596,4 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         private const val CHEVRON_ROTATION_0 = 0f
         private const val CHEVRON_ROTATION_180 = 180f
     }
-
 }

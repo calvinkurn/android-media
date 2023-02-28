@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "cart_shop_group_ticker_aggregator": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "min_transaction": 0,
+          "ticker": {
+            "text": "Beli Paket Bundling, lebih hemat s.d. Rp31.250!",
+            "icon": {
+              "left_icon": "https://images.tokopedia.net/img/bundling/icons/product_bundling.png",
+              "left_icon_dark": "https://images.tokopedia.net/img/bundling/icons/product_bundling_dark.png",
+              "right_icon": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png",
+              "right_icon_dark": "https://images.tokopedia.net/img/cartapp/icons/chevron_right.png"
+            },
+            "applink": "",
+            "action": "open_bottomsheet_bundling"
+          },
+          "bundle_bottomsheet": {
+            "title": "Pilih Paket Bundling",
+            "description": "Dengan beli paketan, lebih hemat hingga Rp\u003cb\u003e31.250\u003c/b\u003e!",
+            "bottom_ticker": ""
+          }
+        }
+      }
+    }
+  }
+]

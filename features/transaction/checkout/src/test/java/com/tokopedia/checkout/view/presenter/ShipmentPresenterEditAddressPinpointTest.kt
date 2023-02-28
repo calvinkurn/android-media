@@ -2,14 +2,20 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -58,6 +64,9 @@ class ShipmentPresenterEditAddressPinpointTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -94,6 +103,9 @@ class ShipmentPresenterEditAddressPinpointTest {
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
+    @MockK
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -106,14 +118,31 @@ class ShipmentPresenterEditAddressPinpointTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers,
-            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }
@@ -236,7 +265,9 @@ class ShipmentPresenterEditAddressPinpointTest {
             """.trimIndent()
         )
 
-        every { view.activityContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) } returns errorMessage
+        every {
+            view.activityContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+        } returns errorMessage
 
         // When
         presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)

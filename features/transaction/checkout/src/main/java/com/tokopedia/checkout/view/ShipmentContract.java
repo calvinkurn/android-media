@@ -14,6 +14,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
@@ -22,6 +23,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -175,7 +177,11 @@ public interface ShipmentContract {
 
         void logOnErrorLoadCheckoutPage(Throwable throwable);
 
-        void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
+        void logOnErrorLoadCourier(Throwable throwable, int itemPosition, String boPromoCode);
+
+        void logOnErrorApplyBo(Throwable throwable, int itemPosition, String boPromoCode);
+
+        void logOnErrorApplyBo(Throwable throwable, ShipmentCartItemModel shipmentCartItemModel, String boPromoCode);
 
         void logOnErrorCheckout(Throwable throwable, String request);
 
@@ -186,8 +192,6 @@ public interface ShipmentContract {
         void doCheckout();
 
         void updateAddOnsDynamicDataPassing(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString, Long cartId);
-
-        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
 
         void onNeedUpdateViewItem(int position);
 
@@ -200,6 +204,12 @@ public interface ShipmentContract {
 
         ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
                                                  RecipientAddressModel recipientAddressModel);
+
+        void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
     }
 
     interface AnalyticsActionListener {
@@ -271,6 +281,8 @@ public interface ShipmentContract {
 
         PublishSubject<Boolean> getLogisticDonePublisher();
 
+        void setScheduleDeliveryMapData(String cartString, ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData);
+
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             boolean isReloadAfterPriceChangeHinger,
@@ -282,7 +294,7 @@ public interface ShipmentContract {
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
-        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode);
+        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode, boolean showLoading);
 
         void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
@@ -380,11 +392,15 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId, ArrayList<String> prescriptionIds);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
         void releaseBooking();
 
-        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
+        void fetchEpharmacyData();
+
+        void setPrescriptionIds(ArrayList<String> prescriptionIds);
+
+        void setMiniConsultationResult(ArrayList<EPharmacyMiniConsultationResult> results);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -438,6 +454,8 @@ public interface ShipmentContract {
                           String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
 
         void clearAllBoOnTemporaryUpsell();
+
+        boolean validatePrescriptionOnBackPressed();
 
         void setDynamicDataParam(DynamicDataPassingParamRequest dynamicDataPassingParam);
 

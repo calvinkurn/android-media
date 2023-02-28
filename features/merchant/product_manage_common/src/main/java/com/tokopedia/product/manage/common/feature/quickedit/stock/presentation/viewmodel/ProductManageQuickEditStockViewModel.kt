@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.common.feature.quickedit.stock.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*

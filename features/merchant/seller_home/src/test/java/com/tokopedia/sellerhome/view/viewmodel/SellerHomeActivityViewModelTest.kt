@@ -16,15 +16,19 @@ import com.tokopedia.device.info.DeviceInfo.await
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopStateUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -69,6 +73,9 @@ class SellerHomeActivityViewModelTest {
     lateinit var authorizeOrderAccessUseCase: AuthorizeAccessUseCase
 
     @RelaxedMockK
+    lateinit var getShopStateUseCase: GetShopStateUseCase
+
+    @RelaxedMockK
     lateinit var capabilityClient: CapabilityClient
 
     @RelaxedMockK
@@ -99,6 +106,7 @@ class SellerHomeActivityViewModelTest {
             sellerAdminUseCase,
             authorizeChatAccessUseCase,
             authorizeOrderAccessUseCase,
+            getShopStateUseCase,
             capabilityClient,
             nodeClient,
             remoteActivityHelper,
@@ -107,9 +115,11 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `get notifications then returns success result`() {
-
-        val notifications = NotificationUiModel(0, 0,
-            NotificationSellerOrderStatusUiModel())
+        val notifications = NotificationUiModel(
+            0,
+            0,
+            NotificationSellerOrderStatusUiModel()
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -130,7 +140,6 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `get notifications then returns failed result`() = runBlocking {
-
         val throwable = MessageErrorException()
 
         coEvery {
@@ -151,8 +160,11 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -176,8 +188,11 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -196,15 +211,18 @@ class SellerHomeActivityViewModelTest {
         verifyCheckAdminOrderPermissionIsCalled()
 
         val expectedNotification = notifications.copy(
-                chat = 0
+            chat = 0
         )
         assertNotificationDataEquals(Success(expectedNotification), viewModel)
     }
 
     @Test
     fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -227,8 +245,11 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `get notifications success but check role is fail, should still make the notifications result success`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
         val throwable = MessageErrorException()
 
         coEvery {
@@ -483,13 +504,13 @@ class SellerHomeActivityViewModelTest {
     fun `when admin info is shop admin, get admin info will return isEligible true result`() = coroutineTestRule.runBlockingTest {
         val isShopAdmin = true
         val adminData = AdminDataResponse(
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = AdminRoleType(
-                                        isShopAdmin = isShopAdmin
-                                )
-                        )
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isShopAdmin = isShopAdmin
+                    )
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -507,14 +528,14 @@ class SellerHomeActivityViewModelTest {
         val isShopAdmin = false
         val isLocationAdmin = true
         val adminData = AdminDataResponse(
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = AdminRoleType(
-                                        isShopAdmin = isShopAdmin,
-                                        isLocationAdmin = isLocationAdmin
-                                )
-                        )
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isShopAdmin = isShopAdmin,
+                        isLocationAdmin = isLocationAdmin
+                    )
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -532,14 +553,14 @@ class SellerHomeActivityViewModelTest {
         val isShopAdmin = false
         val isLocationAdmin = false
         val adminData = AdminDataResponse(
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = AdminRoleType(
-                                        isShopAdmin = isShopAdmin,
-                                        isLocationAdmin = isLocationAdmin
-                                )
-                        )
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isShopAdmin = isShopAdmin,
+                        isLocationAdmin = isLocationAdmin
+                    )
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -560,12 +581,12 @@ class SellerHomeActivityViewModelTest {
         val roleType = AdminRoleType(isShopAdmin, isLocationAdmin, isShopOwner)
         val isMultiLocationShop = true
         val adminData = AdminDataResponse(
-                isMultiLocationShop = isMultiLocationShop,
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = roleType
-                        )
+            isMultiLocationShop = isMultiLocationShop,
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = roleType
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -832,10 +853,10 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when calling launchMarket throw exception, then remoteActivityHelper should call startRemoteActivity`()= runBlocking  {
+    fun `when calling launchMarket throw exception, then remoteActivityHelper should call startRemoteActivity`() = runBlocking {
         every {
             remoteActivityHelper.startRemoteActivity(any())
-        }throws Exception()
+        } throws Exception()
         val mockIntent = mockk<Intent>()
         mViewModel.launchMarket(mockIntent)
         verify {
@@ -844,14 +865,70 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when calling launchMarket throw CancellationException, then remoteActivityHelper should call startRemoteActivity`()= runBlocking {
+    fun `when calling launchMarket throw CancellationException, then remoteActivityHelper should call startRemoteActivity`() = runBlocking {
         every {
             remoteActivityHelper.startRemoteActivity(any())
-        }throws CancellationException()
+        } throws CancellationException()
         val mockIntent = mockk<Intent>()
         mViewModel.launchMarket(mockIntent)
         verify {
             remoteActivityHelper.startRemoteActivity(any())
+        }
+    }
+
+    @Test
+    fun `when get shop state info should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "123"
+            val dataKeys = "shopStateChanged"
+            val pageSource = "seller-home"
+
+            val response = ShopStateInfoUiModel()
+
+            coEvery {
+                userSession.shopId
+            } returns shopId
+
+            coEvery {
+                getShopStateUseCase.executeInBackground(any(), any(), any())
+            } returns response
+
+            mViewModel.getShopStateInfo()
+
+            coVerify {
+                getShopStateUseCase.executeInBackground(shopId, dataKeys, pageSource)
+            }
+
+            val expected = Success(response)
+            mViewModel.shopStateInfo.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when get shop state info should return error result`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "123"
+            val dataKeys = "shopStateChanged"
+            val pageSource = "seller-home"
+
+            val throwable = RuntimeException()
+
+            coEvery {
+                userSession.shopId
+            } returns shopId
+
+            coEvery {
+                getShopStateUseCase.executeInBackground(any(), any(), any())
+            } throws throwable
+
+            mViewModel.getShopStateInfo()
+
+            coVerify {
+                getShopStateUseCase.executeInBackground(shopId, dataKeys, pageSource)
+            }
+
+            val expected = Fail(throwable)
+            mViewModel.shopStateInfo.verifyErrorEquals(expected)
         }
     }
 
@@ -864,14 +941,14 @@ class SellerHomeActivityViewModelTest {
         fun noCustomContext() = executeCall(_mockLiveData, onError = {
             _mockLiveData.value = Fail(it)
         }, block = {
-            getResult()
-        })
+                getResult()
+            })
 
         fun withCustomContext() = executeCall(_mockLiveData, job, onError = {
             _mockLiveData.value = Fail(it)
         }, block = {
-            getResult()
-        })
+                getResult()
+            })
 
         private fun getResult(): Any {
             throw RuntimeException()

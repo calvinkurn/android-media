@@ -15,8 +15,8 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
-import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.common.PurposeDataModel
 import com.tokopedia.usercomponents.userconsent.fakes.GET_COLLECTION_JSON
 import com.tokopedia.usercomponents.userconsent.fakes.UserConsentRepositoryStub
 import com.tokopedia.usercomponents.userconsent.fakes.UserConsentUiTestType.*
@@ -263,7 +263,7 @@ class UserConsentUiTest {
         }
     }
 
-    private fun getFakeResponsePurposesData(): MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel> {
+    private fun getFakeResponsePurposesData(): MutableList<PurposeDataModel> {
         return Gson()
             .fromJson(GET_COLLECTION_JSON, ConsentCollectionResponse::class.java)
             .data.collectionPoints.first().purposes

@@ -143,7 +143,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         }
     }
 
-    override fun onItemClicked(media: MediaUiModel) {
+    override fun onDrawerItemClicked(media: MediaUiModel) {
         val previousIndex = drawerIndexSelected
         drawerIndexSelected = pickerPager.moveToOf(media)
 
@@ -152,7 +152,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         previewAnalytics.clickDrawerThumbnail()
     }
 
-    override fun onDataSetChanged(action: DrawerActionType) {
+    override fun onDrawerDataSetChanged(action: DrawerActionType) {
         when (action) {
             is DrawerActionType.Remove -> {
                 val removedIndex = pickerPager.removeData(action.mediaToRemove)

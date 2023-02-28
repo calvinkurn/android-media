@@ -42,17 +42,13 @@ data class CartShipmentAddressFormData(
     var isEligibleNewShippingExperience: Boolean = false,
     var popUpMessage: String = "",
     var errorTicker: String = "",
-    var prescriptionShowImageUpload: Boolean = false,
-    var prescriptionUploadText: String = "",
-    var prescriptionLeftIconUrl: String = "",
-    var prescriptionCheckoutId: String = "",
-    var prescriptionFrontEndValidation: Boolean = false,
+    var epharmacyData: EpharmacyData = EpharmacyData(),
     var upsell: UpsellData = UpsellData(),
     var newUpsell: NewUpsellData = NewUpsellData(),
     var cartData: String = "",
     var isUsingDdp: Boolean = false,
     var dynamicData: String = "",
-    var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData(),
+    var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData()
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

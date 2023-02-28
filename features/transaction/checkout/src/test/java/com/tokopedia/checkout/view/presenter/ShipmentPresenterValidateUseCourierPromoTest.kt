@@ -9,8 +9,10 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -69,6 +71,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -105,6 +110,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
+    @MockK
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -117,14 +125,31 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers,
-            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }
@@ -138,13 +163,15 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             promoUiModel = PromoUiModel(
                 globalSuccess = true,
                 voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+                    PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green")
                 )
-            )
+            ))
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -166,9 +193,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             promoUiModel = PromoUiModel(
                 globalSuccess = true,
                 voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                    PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage)
                 )
-            )
+            ))
         )
         val position = 0
         val noToast = true
@@ -177,7 +204,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             this.cartString = cartString
         }
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
         every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
@@ -188,6 +217,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             view.generateValidateUsePromoRequest()
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == errorMessage }, shipmentCartItemModel, "")
             view.renderPromoCheckoutFromCourierSuccess(validateUseModel, position, noToast)
         }
     }
@@ -202,7 +232,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -222,7 +254,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -245,7 +279,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         mockkObject(ErrorHandler.Companion)
         every { view.activityContext } returns mockContext
         every { ErrorHandler.Companion.getErrorMessage(any(), any(), any()) } returns errorMessage
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            exception
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -264,7 +300,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         val noToast = true
 
         val exception = AkamaiErrorException(errorMessage)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            exception
+        )
         every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
