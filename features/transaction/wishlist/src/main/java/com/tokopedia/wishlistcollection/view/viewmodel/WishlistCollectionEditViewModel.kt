@@ -54,8 +54,8 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _collectionNames.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionNames.value = Fail(it)
-        })
+                _collectionNames.value = Fail(it)
+            })
     }
 
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
@@ -67,8 +67,8 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _updateWishlistCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _updateWishlistCollectionResult.value = Fail(it)
-        })
+                _updateWishlistCollectionResult.value = Fail(it)
+            })
     }
 
     fun getWishlistCollectionById(collectonId: String) {
@@ -80,8 +80,8 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _getWishlistCollectionByIdResult.value = Fail(Throwable())
             }
         }, onError = {
-            _getWishlistCollectionByIdResult.value = Fail(it)
-        })
+                _getWishlistCollectionByIdResult.value = Fail(it)
+            })
     }
 
     fun deleteWishlistCollection(collectionId: String) {
@@ -93,7 +93,7 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _deleteCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionResult.value = Fail(it)
-        })
+                _deleteCollectionResult.value = Fail(it)
+            })
     }
 }

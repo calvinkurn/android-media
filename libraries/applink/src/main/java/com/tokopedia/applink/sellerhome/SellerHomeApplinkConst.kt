@@ -6,4 +6,6 @@ object SellerHomeApplinkConst {
     const val TYPE_VOUCHER_CASHBACK = "cashback"
     const val TYPE_VOUCHER_PRODUCT = "product"
     const val TYPE_TOKOPEDIA_PLAY = "play"
+    const val TOASTER_MESSAGE = "toast_msg"
+    const val TOASTER_CTA = "toast_cta"
 }

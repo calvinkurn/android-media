@@ -63,4 +63,6 @@ object WishlistV2Consts {
     const val ACTION_RESET_FILTER = "RESET_FILTER"
     const val ACTION_OPEN_MY_WISHLIST = "OPEN_MY_WISHLIST"
     const val ACTION_BACK_TO_HOME = "BACK_TO_HOME"
+
+    const val INDICATOR_PROGRESS_BAR_PERCENTAGE = 100
 }
