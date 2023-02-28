@@ -76,6 +76,7 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
     @Inject
     lateinit var trackingQueue: TrackingQueue
     private val productsTrackingSet = HashSet<String>()
+    private val topCatalogsTrackingSet = HashSet<String>()
 
     companion object {
         const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
@@ -287,6 +288,29 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
                 userId
             )
             productsTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun topFiveImpressionCategoryLandingImpression(
+        categoryName: String,
+        categoryId: String,
+        catalogName: String,
+        catalogId: String,
+        position: Int,
+        userId: String
+    ) {
+        val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_TOP_5_CATALOGS_IN_CATEGORY}-$position"
+        if (!topCatalogsTrackingSet.contains(uniqueTrackingKey)) {
+            AnalyticsCategoryLandingPage.sendImpressionOnTopCatalogsInCategoryEvent(
+                trackingQueue,
+                categoryName,
+                categoryId,
+                catalogName,
+                catalogId,
+                position,
+                userId
+            )
+            topCatalogsTrackingSet.add(uniqueTrackingKey)
         }
     }
 

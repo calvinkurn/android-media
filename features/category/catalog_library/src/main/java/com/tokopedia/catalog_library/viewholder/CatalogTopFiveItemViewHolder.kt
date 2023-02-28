@@ -63,4 +63,17 @@ class CatalogTopFiveItemViewHolder(
             catalogLibraryListener.onProductCardClicked(catalogTopFiveList?.applink)
         }
     }
+
+    override fun onViewAttachedToWindow() {
+        dataModel?.catalogTopFiveList?.let {
+            catalogLibraryListener.topFiveImpressionCategoryLandingImpression(
+                dataModel?.categoryName ?: "",
+                dataModel?.catalogTopFiveList?.categoryID ?: "",
+                dataModel?.catalogTopFiveList?.name ?: "",
+                dataModel?.catalogTopFiveList?.id ?: "",
+                layoutPosition + 1,
+                UserSession(itemView.context).userId
+            )
+        }
+    }
 }

@@ -39,4 +39,14 @@ interface CatalogLibraryListener {
         userId: String
     ) {
     }
+
+    fun topFiveImpressionCategoryLandingImpression(
+        categoryName: String,
+        categoryId: String,
+        catalogName: String,
+        catalogId: String,
+        position: Int,
+        userId: String
+    ) {
+    }
 }
