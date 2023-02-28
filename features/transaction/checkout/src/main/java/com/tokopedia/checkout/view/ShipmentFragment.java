@@ -2032,10 +2032,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
+                    sendAnalyticsEpharmacyClickPembayaran();
                     if (shipmentPresenter.isUsingDynamicDataPassing()) {
                         shipmentPresenter.validateDynamicData();
                     } else {
-                        sendAnalyticsEpharmacyClickPembayaran();
                         doCheckout();
                     }
                 }
