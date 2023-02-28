@@ -134,10 +134,13 @@ object TokoChatConnection {
         }
     }
 
+    /**
+     * Should init courier here or inside conversation repository
+     */
     private fun shouldInitCourier(): Boolean {
         return tokoChatConfigComponent?.getRemoteConfig()?.getBoolean(
             TokoChatBabbleCourierImpl.COURIER_CONVERSATION_INIT
-        ) ?: false
+        ) == false
     }
 
     private fun logToServer(throwable: Throwable) {
