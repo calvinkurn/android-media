@@ -47,8 +47,10 @@ import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailab
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
@@ -277,7 +279,7 @@ open class TokoChatFragment :
                 clearReplyBoxMessage()
             } else {
                 tokoChatAnalytics.clickSendMessage(
-                    viewModel.channelId,
+                    viewModel.tkpdOrderId,
                     TokoChatAnalyticsConstants.BUYER,
                     viewModel.source
                 )
@@ -624,7 +626,10 @@ open class TokoChatFragment :
                 findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
 
             userTitle.text = headerUiModel.title
-            subTitle.text = headerUiModel.subTitle
+            subTitle.text = TokoChatViewUtil.censorPlatNumber(
+                platNumber = headerUiModel.subTitle,
+                percentageCensor = DEFAULT_CENSOR_PERCENTAGE
+            )
             imageUrl.setImageUrl(headerUiModel.imageUrl)
             imageUrl.show()
 
@@ -653,7 +658,6 @@ open class TokoChatFragment :
                             tokoChatAnalytics.clickCallButtonFromChatRoom(
                                 getOrderState(),
                                 viewModel.tkpdOrderId,
-                                viewModel.channelId,
                                 viewModel.source,
                                 TokoChatAnalyticsConstants.BUYER
                             )
@@ -703,7 +707,7 @@ open class TokoChatFragment :
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
             tokoChatAnalytics.impressOnClosedChatroomTicker(
-                viewModel.channelId,
+                viewModel.tkpdOrderId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
             )
@@ -769,7 +773,6 @@ open class TokoChatFragment :
     private fun trackFromPushNotif() {
         if (viewModel.pushNotifTemplateKey.isNotBlank()) {
             tokoChatAnalytics.clickChatFromPushNotif(
-                viewModel.channelId,
                 viewModel.tkpdOrderId,
                 viewModel.pushNotifTemplateKey,
                 TokoChatAnalyticsConstants.BUYER,
@@ -838,7 +841,7 @@ open class TokoChatFragment :
 
     override fun trackSeenTicker(element: TokoChatReminderTickerUiModel) {
         tokoChatAnalytics.impressOnTicker(
-            viewModel.channelId,
+            viewModel.tkpdOrderId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
         )
@@ -862,7 +865,7 @@ open class TokoChatFragment :
 
     override fun onTransactionWidgetClosed() {
         tokoChatAnalytics.clickCloseOrderWidget(
-            viewModel.channelId,
+            viewModel.tkpdOrderId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
         )
@@ -920,7 +923,6 @@ open class TokoChatFragment :
         tokoChatAnalytics.clickCloseBottomSheetCallDriver(
             state,
             viewModel.tkpdOrderId,
-            viewModel.channelId,
             viewModel.source,
             TokoChatAnalyticsConstants.BUYER
         )
@@ -931,7 +933,6 @@ open class TokoChatFragment :
         tokoChatAnalytics.clickConfirmCallOnBottomSheetCallDriver(
             state,
             viewModel.tkpdOrderId,
-            viewModel.channelId,
             viewModel.source,
             TokoChatAnalyticsConstants.BUYER
         )
@@ -990,7 +991,6 @@ open class TokoChatFragment :
                 element.imageId,
                 getOrderState(),
                 viewModel.tkpdOrderId,
-                viewModel.channelId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
             )
@@ -1002,7 +1002,6 @@ open class TokoChatFragment :
             element.imageId,
             getOrderState(),
             viewModel.tkpdOrderId,
-            viewModel.channelId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
         )
@@ -1016,7 +1015,6 @@ open class TokoChatFragment :
                 element.imageId,
                 getOrderState(),
                 viewModel.tkpdOrderId,
-                viewModel.channelId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
             )
@@ -1067,7 +1065,7 @@ open class TokoChatFragment :
             trackOnClickComposeArea = {
                 if (viewModel.channelId.isNotBlank()) {
                     tokoChatAnalytics.clickTextField(
-                        viewModel.channelId,
+                        viewModel.tkpdOrderId,
                         TokoChatAnalyticsConstants.BUYER,
                         viewModel.source
                     )

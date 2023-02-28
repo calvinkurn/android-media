@@ -41,6 +41,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     
     implementation rootProject.ext.playServicesDependencies.core

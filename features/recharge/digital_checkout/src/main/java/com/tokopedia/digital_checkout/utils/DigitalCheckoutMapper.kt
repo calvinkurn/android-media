@@ -58,8 +58,7 @@ object DigitalCheckoutMapper {
     fun mapGetCartToCartDigitalInfoData(
         responseRechargeGetCart: RechargeGetCart.Response,
         isSpecialProduct: Boolean
-    )
-            : CartDigitalInfoData {
+    ): CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
 
@@ -73,10 +72,12 @@ object DigitalCheckoutMapper {
 
             responseRechargeGetCart.response.additionalInfo.let { additionalInfos ->
                 cartDigitalInfoData.additionalInfos = additionalInfos.map {
-                    CartItemDigitalWithTitle(it.title,
+                    CartItemDigitalWithTitle(
+                        it.title,
                         it.detail.map { detail ->
                             CartItemDigital(detail.label, detail.value)
-                        })
+                        }
+                    )
                 }
             }
 
@@ -92,8 +93,12 @@ object DigitalCheckoutMapper {
                 attributesDigital.price = attributes.priceText
                 attributesDigital.pricePlain = attributes.price
                 attributesDigital.isEnableVoucher = attributes.enableVoucher
-                if (attributes.isCouponActive) attributesDigital.isCouponActive =
-                    1 else attributesDigital.isCouponActive = 0
+                if (attributes.isCouponActive) {
+                    attributesDigital.isCouponActive =
+                        1
+                } else {
+                    attributesDigital.isCouponActive = 0
+                }
                 attributesDigital.voucherAutoCode = attributes.voucher
                 attributesDigital.adminFee = attributes.adminFee
                 attributesDigital.isAdminFeeIncluded = attributes.isAdminFeeIncluded
@@ -159,7 +164,6 @@ object DigitalCheckoutMapper {
                 responseRechargeGetCart.response.collectionPointId
 
             return cartDigitalInfoData
-
         } catch (e: Exception) {
             throw Throwable(e.message, e)
         }
@@ -190,10 +194,11 @@ object DigitalCheckoutMapper {
     }
 
     fun buildCheckoutData(
-        cartDigitalInfoData: CartDigitalInfoData, accessToken: String?,
+        cartDigitalInfoData: CartDigitalInfoData,
+        accessToken: String?,
         requestCheckoutDataParameter: DigitalCheckoutDataParameter
     ): DigitalCheckoutDataParameter {
-        //not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
+        // not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
         requestCheckoutDataParameter.cartId = cartDigitalInfoData.id
         requestCheckoutDataParameter.accessToken = accessToken ?: ""
         requestCheckoutDataParameter.walletRefreshToken = ""
@@ -255,11 +260,11 @@ object DigitalCheckoutMapper {
         requestBodyCheckout.relationships = CheckoutRelationships(
             CheckoutRelationships.Cart(
                 CheckoutRelationships.Cart.Data(
-                    checkoutData.relationType, checkoutData.relationId
+                    checkoutData.relationType,
+                    checkoutData.relationId
                 )
             )
         )
         return requestBodyCheckout
     }
-
 }

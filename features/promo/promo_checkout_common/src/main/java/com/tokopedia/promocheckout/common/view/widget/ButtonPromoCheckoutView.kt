@@ -8,6 +8,7 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.LoaderUnify
 import kotlinx.android.synthetic.main.layout_item_promo_checkout.view.*
 
 /**
@@ -97,6 +98,7 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
     private fun setViewLoading() {
         tv_promo_checkout_title?.visibility = View.GONE
         tv_promo_checkout_desc?.visibility = View.GONE
+        promo_checkout_loading_state?.type = LoaderUnify.TYPE_LINE
         promo_checkout_loading_state?.visibility = View.VISIBLE
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage)
         iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_chevron_right)

@@ -368,8 +368,12 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onPause() {
+        try {
+            outOfStockCoachMark?.dismissCoachMark()
+        } catch (e: Exception) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
+        }
         super.onPause()
-        outOfStockCoachMark?.dismissCoachMark()
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {

@@ -1362,6 +1362,62 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun updateTotalPriceWithSubscriptionProduct_checked_shouldNotUpdate() {
+        // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.onSubscriptionChecked(fintechProduct, true)
+
+        // then
+        // if fintech product checked, update total price
+        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
+            ?: 0.0
+        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + getDummyGetCartResponse().adminFee)
+    }
+
+    @Test
+    fun updateTotalPriceWithSubscriptionProduct_unChecked_shouldNotUpdate() {
+        // given
+        val fintechProduct = FintechProduct(tierId = "5", fintechAmount = 2000.0)
+
+        // when
+        updateTotalPriceWithFintechProduct_checked()
+        digitalCartViewModel.onSubscriptionChecked(fintechProduct, false)
+
+        // then
+        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
+            ?: 0.0
+        val fintechPrice =
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
+                ?: 0.0
+        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.isNotEmpty())
+        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice + getDummyGetCartResponse().adminFee)
+    }
+
+    @Test
+    fun updateTotalPriceWithSubscriptionAndFintechProduct_checked() {
+        // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
+        val subscriptionProduct = FintechProduct(tierId = "5", fintechAmount = 2000.0)
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.onSubscriptionChecked(fintechProduct, true)
+        digitalCartViewModel.onFintechProductChecked(subscriptionProduct, true, null)
+
+        // then
+        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
+            ?: 0.0
+        val fintechPrice =
+            digitalCartViewModel.requestCheckoutParam.crossSellProducts["3"]?.product?.fintechAmount
+                ?: 0.0
+        assert(digitalCartViewModel.requestCheckoutParam.crossSellProducts.isNotEmpty())
+        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice + getDummyGetCartResponse().adminFee)
+    }
+
+    @Test
     fun updateTotalPriceWithFintechProductAndInputPrice_checked() {
         // given
         val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
@@ -1388,7 +1444,6 @@ class DigitalCartViewModelTest {
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         digitalCartViewModel.onFintechProductChecked(fintechProduct, false, userInputPrice)
-        digitalCartViewModel.onSubscriptionChecked(fintechProduct, true)
 
         // then
         // if fintech product checked, update total price
@@ -1631,6 +1686,14 @@ class DigitalCartViewModelTest {
                     )
                 ),
                 isSubscription = false
+            ),
+            "Third" to DigitalCrossSellData(
+                product = FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = ""
+                    )
+                ),
+                isSubscription = true
             )
         )
     }

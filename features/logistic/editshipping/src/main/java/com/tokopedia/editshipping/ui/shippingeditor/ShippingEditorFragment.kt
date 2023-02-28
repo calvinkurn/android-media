@@ -257,7 +257,7 @@ class ShippingEditorFragment :
                     is ShippingEditorState.Success -> {
                         updateData(it.data.shippers)
                         renderTicker(it.data.ticker)
-                        showOnBoarding()
+                        checkWhitelabelCoachmarkState()
                     }
 
                     is ShippingEditorState.Fail -> {
@@ -900,28 +900,35 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun showOnBoarding() {
+    private fun checkWhitelabelCoachmarkState() {
         context?.let {
             val sharedPref = WhitelabelInstanCoachMarkSharePref(it)
             if (sharedPref.getCoachMarkState() == true) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    val whitelabelView = getWhitelabelView()
-                    if (whitelabelView != null) {
-                        val normalServiceView = getNormalServiceView()
-                        val coachMarkItems = generateOnBoardingCoachMark(normalServiceView, whitelabelView)
-
-                        CoachMark2(it).apply {
-                            setOnBoardingListener(coachMarkItems)
-                            setStateAfterOnBoardingShown(coachMarkItems, sharedPref)
-                            manualScroll(coachMarkItems)
-                        }
-                    }
+                    showOnBoardingCoachmark(sharedPref)
                 }, COACHMARK_ON_BOARDING_DELAY)
             }
         }
     }
 
+    private fun showOnBoardingCoachmark(sharedPref: WhitelabelInstanCoachMarkSharePref) {
+        context?.let {
+            val whitelabelView = getWhitelabelView()
+            if (whitelabelView != null) {
+                val normalServiceView = getNormalServiceView()
+                val coachMarkItems = generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+
+                CoachMark2(it).apply {
+                    setOnBoardingListener(coachMarkItems)
+                    setStateAfterOnBoardingShown(coachMarkItems, sharedPref)
+                    manualScroll(coachMarkItems)
+                }
+            }
+        }
+    }
+
     private fun generateOnBoardingCoachMark(
+        context: Context,
         normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
@@ -930,8 +937,8 @@ class ShippingEditorFragment :
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_onboarding_title_coachmark),
-                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
@@ -941,8 +948,8 @@ class ShippingEditorFragment :
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_instan_title_coachmark),
-                    getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_instan_title_coachmark),
+                    context.getString(R.string.whitelabel_instan_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
