@@ -46,6 +46,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
@@ -241,6 +242,7 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel?>.mapHomeCatalogCouponList(
         response: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList? = null,
+        slugs: List<String>? = null,
         @TokoNowLayoutState state: Int
     ) {
         firstOrNull { it?.layout is HomeClaimCouponWidgetUiModel }?.let {
@@ -248,9 +250,9 @@ object HomeLayoutMapper {
             val couponList = response.mapToClaimCouponWidgetUiModelList(item)
 
             val layout = it.layout.copy(
-                id = item.id,
                 claimCouponList = couponList,
-                state = state
+                state = state,
+                slugs = if (!slugs.isNullOrEmpty()) slugs else item.slugs
             )
             val newItem = HomeLayoutItemUiModel(
                 layout = layout,
@@ -264,7 +266,7 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.mapHomeClaimCouponList(
-        id: Int,
+        id: String,
         ctaText: String
     ) {
         firstOrNull { it?.layout is HomeClaimCouponWidgetUiModel }?.let {
@@ -742,8 +744,7 @@ object HomeLayoutMapper {
 
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
-//            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
-            CATEGORY -> mapToClaimCouponWidgetUiModel(response, notLoadedState)
+            CATEGORY -> mapToCategoryLayout(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)

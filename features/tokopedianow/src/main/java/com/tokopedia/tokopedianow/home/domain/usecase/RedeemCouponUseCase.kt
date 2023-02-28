@@ -2,6 +2,9 @@ package com.tokopedia.tokopedianow.home.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.home.domain.model.RedeemCouponResponse
 import com.tokopedia.tokopedianow.home.domain.query.HachikoRedeem
 import com.tokopedia.usecase.RequestParams
@@ -25,14 +28,14 @@ class RedeemCouponUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        catalogId: Int,
-        isGift: Int,
-        giftUserId: Int,
-        giftEmail: String,
-        notes: String
+        catalogId: String,
+        isGift: Int = Int.ZERO,
+        giftUserId: Int = Int.ZERO,
+        giftEmail: String = String.EMPTY,
+        notes: String = String.EMPTY
     ): RedeemCouponResponse {
         setRequestParams(RequestParams.create().apply {
-            putInt(CATALOG_ID, catalogId)
+            putInt(CATALOG_ID, catalogId.toIntSafely())
             putInt(IS_GIFT, isGift)
             putInt(GIFT_USER_ID, giftUserId)
             putString(GIFT_EMAIL, giftEmail)

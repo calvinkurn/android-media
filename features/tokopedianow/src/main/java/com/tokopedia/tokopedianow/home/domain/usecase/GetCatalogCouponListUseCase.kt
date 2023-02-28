@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.query.TokopointsCatalogWithCouponList
@@ -24,7 +25,7 @@ class GetCatalogCouponListUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        categorySlug: String,
+        categorySlug: String = String.EMPTY,
         catalogSlugs: List<String>
     ): GetCatalogCouponListResponse.TokopointsCatalogWithCouponList {
         setRequestParams(RequestParams.create().apply {

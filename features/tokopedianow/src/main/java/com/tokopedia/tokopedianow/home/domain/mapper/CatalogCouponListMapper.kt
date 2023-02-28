@@ -4,6 +4,8 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.domain.model.RedeemCouponResponse
+import com.tokopedia.tokopedianow.home.presentation.model.HomeClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
@@ -11,7 +13,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClai
 internal object CatalogCouponListMapper {
     private const val RESPONSE_TYPE = "double"
     fun mapToClaimCouponWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        val slugs = response.widgetParam.split("\\s*;\\s*")
+        val slugs = response.widgetParam.split(";")
 
         val categoryMenuUiModel = HomeClaimCouponWidgetUiModel(
             id = response.id,
@@ -37,5 +39,13 @@ internal object CatalogCouponListMapper {
                 appLink = coupon.appLink
             )
         }
+    }
+
+    fun RedeemCouponResponse.mapToClaimCouponDataModel(): HomeClaimCouponDataModel {
+        val coupon = hachikoRedeem?.coupons?.firstOrNull()
+        return HomeClaimCouponDataModel(
+            appLink = coupon?.appLink.orEmpty(),
+            code = coupon?.code.orEmpty()
+        )
     }
 }

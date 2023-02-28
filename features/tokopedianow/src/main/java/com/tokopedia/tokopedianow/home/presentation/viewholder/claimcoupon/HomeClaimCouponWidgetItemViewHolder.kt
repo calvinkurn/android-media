@@ -72,7 +72,7 @@ class HomeClaimCouponWidgetItemViewHolder(
     }
 
     interface HomeClaimCouponWidgetItemListener {
-        fun onClaimButtonClicked(catalogId: Int)
+        fun onClaimButtonClicked(catalogId: String)
         fun onCouponWidgetClicked(appLink: String)
     }
 

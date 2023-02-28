@@ -8,15 +8,15 @@ data class RedeemCouponResponse(
 ) {
     data class HachikoRedeem(
         @SerializedName("coupons")
-        val coupons: List<Coupon>,
+        val coupons: List<Coupon> = listOf(),
         @SerializedName("redeemMessage")
-        val redeemMessage: String
+        val redeemMessage: String = ""
     ) {
         data class Coupon(
             @SerializedName("appLink")
-            val appLink: String,
+            val appLink: String = "",
             @SerializedName("code")
-            val code: String
+            val code: String = ""
         )
     }
 }
