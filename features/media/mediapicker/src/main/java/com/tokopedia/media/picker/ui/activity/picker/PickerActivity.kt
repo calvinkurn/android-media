@@ -70,6 +70,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     private val startTimeInMillis = System.currentTimeMillis()
     private var loaderDialog: LoaderDialogWidget? = null
+    private var isOnVideoRecording = false
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -111,6 +112,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         initObservable()
         setupParam()
+    }
+
+    override fun onBackPressed() {
+        if (isOnVideoRecording) return
+        super.onBackPressed()
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -317,6 +323,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             Handler(Looper.getMainLooper()).postDelayed({
                 finish()
             }, TOAST_DELAYED)
+        }
+
+        viewModel.isOnVideoRecording.observe(this) { isRecord ->
+            navToolbar.setVisibility(isRecord.not())
+            isOnVideoRecording = isRecord
         }
     }
 
