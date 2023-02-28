@@ -63,6 +63,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
@@ -85,7 +86,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail

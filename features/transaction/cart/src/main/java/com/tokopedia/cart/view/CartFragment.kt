@@ -121,6 +121,7 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -163,7 +164,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
