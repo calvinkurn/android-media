@@ -26,6 +26,12 @@ class PickerFragmentStateAdapter constructor(
         return fragments[position].hashCode().toLong()
     }
 
+    override fun containsItem(itemId: Long): Boolean {
+        return fragments.any {
+            it.hashCode().toLong() == itemId
+        }
+    }
+
     fun addSingleFragment(fragment: Fragment) {
         fragments.clear()
         addFragment(fragment)

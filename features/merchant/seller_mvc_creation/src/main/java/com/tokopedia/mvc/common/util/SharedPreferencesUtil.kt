@@ -9,6 +9,7 @@ class SharedPreferencesUtil @Inject constructor () {
         private const val SA_MVC_CREATION_SHARED_PRED = "mvc_creation_shared_pred"
         private const val SA_MVC_UPLOAD_RESULT = "mvc_upload_result"
         private const val SA_MVC_STEP_PAGE_NAME = "mvc_step_page_name"
+        private const val SA_MVC_EDIT_COUPON_SOURCE_PAGE = "mvc_edit_source"
     }
 
     private fun initiateSharedPref(context: Context): SharedPreferences {
@@ -44,6 +45,23 @@ class SharedPreferencesUtil @Inject constructor () {
         with(sharedPref.edit()) {
             putString(SA_MVC_STEP_PAGE_NAME, value)
             apply()
+        }
+    }
+
+    fun getEditCouponSourcePage(context: Context): String {
+        val sharedPref = initiateSharedPref(context)
+        val pageName = sharedPref.getString(SA_MVC_EDIT_COUPON_SOURCE_PAGE, "").orEmpty()
+        setStepPageName(context, "")
+        return pageName
+    }
+
+    fun setEditCouponSourcePage(context: Context?, value: String) {
+        context?.run {
+            val sharedPref = initiateSharedPref(this)
+            with(sharedPref.edit()) {
+                putString(SA_MVC_EDIT_COUPON_SOURCE_PAGE, value)
+                apply()
+            }
         }
     }
 }
