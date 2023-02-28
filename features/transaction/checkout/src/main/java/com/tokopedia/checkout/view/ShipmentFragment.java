@@ -64,7 +64,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -276,8 +275,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean isShipmentTraceStopped;
     private String cornerId;
     private PromoNotEligibleBottomSheet promoNotEligibleBottomsheet;
-    private Gson gson;
-
     @Inject
     ShipmentAdapter shipmentAdapter;
     @Inject
