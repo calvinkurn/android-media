@@ -33,6 +33,7 @@ import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.delay
 import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.media.editor.utils.getRunnable
+import com.tokopedia.media.editor.utils.showMemoryLimitToast
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
@@ -129,18 +130,26 @@ class EditorFragment @Inject constructor(
             val filePath = data.getOriginalUrl()
             var memoryOverflow: Boolean
 
-            getImageSize(filePath).apply {
+            val imageSize = getImageSize(filePath).apply {
                 val usageEstimation = first * second * 4
                 memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
             }
 
             if (memoryOverflow) {
-                showMemoryLimitDialog()
+                activity?.showMemoryLimitToast(imageSize)
                 return
             } else {
                 loadImageWithEmptyTarget(requireContext(),
                     filePath,
-                    properties = {},
+                    properties = {
+                        listener(
+                            onError = {
+                                it?.let { exception ->
+                                    activity?.showMemoryLimitToast(imageSize, exception.message)
+                                }
+                            }
+                        )
+                    },
                     mediaTarget = MediaBitmapEmptyTarget(
                         onReady = { bitmap ->
                             imageCrop(bitmap, data.getOriginalUrl())
@@ -150,10 +159,7 @@ class EditorFragment @Inject constructor(
                             )
                             iterateCrop(listData, currentProcess + 1)
                         },
-                        onCleared = {},
-                        onFailed = {
-                            showMemoryLimitDialog()
-                        }
+                        onCleared = {}
                     ))
             }
         } else {
@@ -431,16 +437,6 @@ class EditorFragment @Inject constructor(
             }
         }
     }
-
-    private fun showMemoryLimitDialog() {
-        delay({
-            try {
-                (activity as EditorActivity).showMemoryLimitDialog(true)
-            } catch (e: Exception) {}
-            loader?.dismiss()
-        }, DELAY_MEMORY_LIMIT_CALLBACK)
-    }
-
     companion object {
         private const val SCREEN_NAME = "Main Editor"
         private const val TOAST_UNDO = 0

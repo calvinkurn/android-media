@@ -4,11 +4,15 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
@@ -45,22 +49,6 @@ class EditorActivity : BaseEditorActivity() {
             this,
             viewModelFactory
         ).get(EditorViewModel::class.java)
-    }
-
-    fun showMemoryLimitDialog(isFinishActivity: Boolean = false) {
-        DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(editorR.string.editor_activity_memory_dialog_title))
-            setDescription(getString(editorR.string.editor_activity_memory_dialog_desc))
-
-            dialogPrimaryCTA.apply {
-                text = getString(editorR.string.editor_activity_memory_dialog_primary_button_text)
-            }.setOnClickListener {
-                this.dismiss()
-                if (isFinishActivity) finish()
-            }
-
-            show()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,16 +96,11 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            DetailEditorActivity.EDITOR_RESULT_CODE -> {
-                val editorDetailResultData =
-                    data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
-                editorDetailResultData?.let {
-                    viewModel.addEditState(it.originalUrl, it)
-                }
-            }
-            DetailEditorActivity.EDITOR_ERROR_CODE -> {
-                showMemoryLimitDialog()
+        if (resultCode == DetailEditorActivity.EDITOR_RESULT_CODE) {
+            val editorDetailResultData =
+                data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
+            editorDetailResultData?.let {
+                viewModel.addEditState(it.originalUrl, it)
             }
         }
     }

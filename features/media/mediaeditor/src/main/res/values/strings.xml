@@ -65,7 +65,5 @@
     <string name="add_logo_tips_understand_text">Oke Mengerti</string>
 
     <!-- Dialog memory limit -->
-    <string name="editor_activity_memory_dialog_title">Memori tidak muat</string>
     <string name="editor_activity_memory_dialog_desc">Yah, memori HP-mu penuh. Tutup dulu aplikasi lain yang lagi kamu buka buat lanjut edit fotonya.</string>
-    <string name="editor_activity_memory_dialog_primary_button_text">oke</string>
 </resources>

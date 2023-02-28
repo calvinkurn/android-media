@@ -9,8 +9,14 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Handler
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.activity.main.EditorActivity
+import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.utils.file.FileUtil
@@ -194,9 +200,36 @@ fun validateImageSize(source: Bitmap): Bitmap {
     }
 }
 
-fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
+fun Activity.getFreeMemory(): Long {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     activityManager.getMemoryInfo(mi)
-    return mi.availMem < memoryUsage
+    return mi.availMem
+}
+
+fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
+    return getFreeMemory() < memoryUsage
+}
+
+fun Activity.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null) {
+    ServerLogger.log(
+        Priority.P2,
+        "MEDIA_EDITOR_MEMORY_LIMIT",
+        mapOf(
+            "image" to "${imageSize.first} || ${imageSize.second}",
+            "memory" to "${getFreeMemory()}",
+            "err" to (msg ?: "")
+        )
+    )
+
+    val toastDelayTime = 1500L
+    Handler().postDelayed({
+        if (!this.isDestroyed) {
+            Toast.makeText(this,
+                R.string.editor_activity_memory_dialog_desc,
+                Toast.LENGTH_LONG
+            ).show()
+            finish()
+        }
+    }, toastDelayTime)
 }

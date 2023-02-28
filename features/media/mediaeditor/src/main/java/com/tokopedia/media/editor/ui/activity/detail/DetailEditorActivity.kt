@@ -155,7 +155,6 @@ class DetailEditorActivity : BaseEditorActivity() {
 
         const val EDITOR_RESULT_PARAM = "intent_data.editor_result"
         const val EDITOR_RESULT_CODE = 798
-        const val EDITOR_ERROR_CODE = 159
     }
 
 }

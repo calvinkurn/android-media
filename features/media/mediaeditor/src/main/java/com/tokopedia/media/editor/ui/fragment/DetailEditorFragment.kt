@@ -51,6 +51,7 @@ import com.tokopedia.media.editor.utils.getRunnable
 import com.tokopedia.media.editor.utils.checkMemoryOverflow
 import com.tokopedia.media.editor.utils.delay
 import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.showMemoryLimitToast
 import com.tokopedia.media.editor.utils.validateImageSize
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
@@ -913,17 +914,13 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun finishPage(isMemoryLimit: Boolean = false) {
+    private fun finishPage() {
         val intent = Intent()
 
-        if (isMemoryLimit) {
-            activity?.setResult(DetailEditorActivity.EDITOR_ERROR_CODE, intent)
-        } else {
-            if (data.isToolRemoveBackground()) data.clearValue()
+        if (data.isToolRemoveBackground()) data.clearValue()
 
-            intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
-            activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
-        }
+        intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
+        activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
 
         activity?.finish()
     }
@@ -949,19 +946,25 @@ class DetailEditorFragment @Inject constructor(
 
         var memoryOverflow: Boolean
 
-        getImageSize(url).apply {
+        val imageSize = getImageSize(url).apply {
             val usageEstimation = first * second * PIXEL_BYTE_SIZE
             memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
         }
 
         if (memoryOverflow) {
-            delay({
-                finishPage(true)
-            }, DELAY_MEMORY_LIMIT_CALLBACK)
+            activity?.showMemoryLimitToast(imageSize)
         } else {
             loadImageWithEmptyTarget(requireContext(),
                 url,
-                properties = {},
+                properties = {
+                    listener(
+                        onError = {
+                            it?.let { exception ->
+                                activity?.showMemoryLimitToast(imageSize, exception.message)
+                            }
+                        }
+                    )
+                },
                 mediaTarget = MediaBitmapEmptyTarget(
                     onReady = { bitmap ->
                         originalImageWidth = bitmap.width
@@ -1241,7 +1244,5 @@ class DetailEditorFragment @Inject constructor(
         private const val ADD_LOGO_IMAGE_RES_MAX = 1000
 
         private const val PIXEL_BYTE_SIZE = 4
-
-        private const val DELAY_MEMORY_LIMIT_CALLBACK = 1000L
     }
 }
