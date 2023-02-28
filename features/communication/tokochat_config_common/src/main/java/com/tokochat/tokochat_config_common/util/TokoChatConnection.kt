@@ -20,7 +20,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.lang.Exception
 
 object TokoChatConnection {
 
@@ -68,7 +67,14 @@ object TokoChatConnection {
         Log.d("TOKOCHAT-INIT", "courier connection: $courierConnection")
         if (courierConnection != null) {
             Log.d("TOKOCHAT-INIT", "Init convo repo: ${tokoChatConfigComponent?.getTokoChatRepository()}")
-            tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
+            try {
+                tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
+            } catch (throwable: Throwable) {
+                Log.d("TOKOCHAT-INIT", "error: $throwable")
+                throwable.printStackTrace()
+            } finally {
+                Log.d("TOKOCHAT-INIT", "init conversation finally")
+            }
             Log.d("TOKOCHAT-INIT", "after init conversation")
         }
 
