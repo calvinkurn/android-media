@@ -207,16 +207,16 @@ class UserConsentWidget : FrameLayout,
         return if (collection?.attributes?.collectionPointPurposeRequirement == MANDATORY) {
             when (collection?.attributes?.collectionPointStatementOnlyFlag) {
                 NO_CHECKLIST -> {
-                    ConsentType.Info()
+                    ConsentType.SingleInfo()
                 }
                 CHECKLIST -> {
-                    ConsentType.SingleConsent()
+                    ConsentType.SingleChecklist()
                 }
                 else -> null
             }
         } else if (collection?.attributes?.collectionPointPurposeRequirement == OPTIONAL &&
             collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
-            ConsentType.MultiConsent()
+            ConsentType.MultipleChecklist()
         } else null
     }
 
@@ -257,13 +257,13 @@ class UserConsentWidget : FrameLayout,
 
     private fun renderView(consentType: ConsentType) {
         when(consentType) {
-            is ConsentType.Info -> {
+            is ConsentType.SingleInfo -> {
                 renderSinglePurposeInfo()
             }
-            is ConsentType.SingleConsent -> {
+            is ConsentType.SingleChecklist -> {
                 renderSinglePurposeChecklist()
             }
-            is ConsentType.MultiConsent -> {
+            is ConsentType.MultipleChecklist -> {
                 renderMultiplePurpose()
             }
         }
