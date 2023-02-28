@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.MultiEditViewHolder
 
 class ProductMultiEditAdapter(
@@ -13,7 +14,7 @@ class ProductMultiEditAdapter(
     var menuList: List<Int> = emptyList()
         set(value) {
             field = value
-            notifyItemRangeChanged(0,value.size)
+            notifyItemRangeChanged(Int.ZERO, value.size)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiEditViewHolder {

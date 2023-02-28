@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
@@ -223,8 +224,8 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
                     } else {
                         it.copy(isAllStockEmpty = true)
                     }
-                    notifyItemChanged(index)
                 }
+                notifyItemRangeChanged(Int.ZERO,data.size)
             }
         }
     }
