@@ -230,6 +230,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _cover = getCurrentSetupDataStore().getSelectedCoverAsFlow()
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
+    private val _faceFilter = MutableStateFlow<List<FaceFilterUiModel>>(emptyList())
 
     var warningInfoType: WarningType = WarningType.UNKNOWN
     val tncList = mutableListOf<TermsAndConditionUiModel>()
@@ -375,6 +376,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _menuListUiState,
         _title,
         _cover,
+        _faceFilter,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -391,7 +393,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         accountStateInfo,
         menuListUiState,
         title,
-        cover, ->
+        cover,
+        faceFilter, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -410,6 +413,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             menuList = menuListUiState,
             title = title,
             cover = cover,
+            faceFilter = faceFilter,
         )
     }.stateIn(
         viewModelScope,
@@ -450,6 +454,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
 
         setupPreparationMenu()
+
+        /** TODO: for mocking purpose, will delete this later */
+        _faceFilter.update {
+            listOf(
+                FaceFilterUiModel(name = "Tidak ada", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Halus", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tirus", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Cerah", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 2", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 3", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 4", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 5", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+            )
+        }
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {

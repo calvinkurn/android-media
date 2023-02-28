@@ -25,8 +25,8 @@ class FaceFilterOptionViewHolder(
             icChecked.showWithCondition(item.isChecked)
 
             clIcon.setBackgroundResource(
-                if(item.isSelected) R.drawable.bg_face_filter_option
-                else R.drawable.bg_face_filter_option_selected
+                if(item.isSelected) R.drawable.bg_face_filter_option_selected
+                else R.drawable.bg_face_filter_option
             )
 
             setAssetStatus(item.assetStatus)

@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomS
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
+import com.tokopedia.play.broadcaster.view.fragment.facefilter.PlayBroMakeupTabFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastPostVideoFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastReportFragment
@@ -110,4 +111,12 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(ProductPickerUGCBottomSheet::class)
     abstract fun getPlayPlaceholderBottomSheet(bottomSheet: ProductPickerUGCBottomSheet) : Fragment
+
+    /**
+     * Face Filter
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroMakeupTabFragment::class)
+    abstract fun getPlayBroMakeupTabFragment(bottomSheet: PlayBroMakeupTabFragment) : Fragment
 }
