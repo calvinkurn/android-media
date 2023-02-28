@@ -133,7 +133,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val viewBinding = FragmentManageLocationLayoutBinding.inflate(inflater)
         binding = viewBinding
         return viewBinding.root
@@ -403,11 +403,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { cacheModel ->
+            context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                        this,
-                        it
+                    it,
+                    cacheModel
                 )
             }
         }

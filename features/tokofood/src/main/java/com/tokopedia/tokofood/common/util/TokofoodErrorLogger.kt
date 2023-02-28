@@ -30,7 +30,6 @@ object TokofoodErrorLogger {
 
     object ErrorDescription {
         internal const val RENDER_PAGE_ERROR = "error render page"
-        internal const val ADD_TO_CART_ERROR = "error add to cart"
         internal const val REMOVE_FROM_CART_ERROR = "error remove from cart"
         internal const val UPDATE_CART_ERROR = "error update cart"
         internal const val PAYMENT_ERROR = "error go to payment"
@@ -54,7 +53,6 @@ object TokofoodErrorLogger {
 
     object ErrorType {
         internal const val ERROR_PAGE = "error_page"
-        internal const val ERROR_ADD_TO_CART = "error_atc"
         internal const val ERROR_REMOVE_FROM_CART = "error_remove"
         internal const val ERROR_UPDATE_CART = "error_update"
         internal const val ERROR_PAYMENT = "error_payment"

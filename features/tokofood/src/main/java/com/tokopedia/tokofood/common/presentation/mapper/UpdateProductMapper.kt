@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.common.presentation.mapper
 
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddress
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.ATCTokofoodParam

@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -77,8 +76,6 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener,
     private var onScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
         mutableListOf()
     private var cuisineScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
-        mutableListOf()
-    private var recentSearchScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
         mutableListOf()
 
     override fun onCreateView(

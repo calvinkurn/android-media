@@ -734,7 +734,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private suspend fun collectCartDataFlow() {
         activityViewModel?.cartDataFlow?.collect { cartData ->
             viewModel.selectedProducts = cartData?.data?.getTokofoodBusinessData()?.getAvailableSectionProducts().orEmpty()
-            if (!viewModel.selectedProducts.isNullOrEmpty() && !hasAppliedProductRendered) {
+            if (viewModel.selectedProducts.isNotEmpty() && !hasAppliedProductRendered) {
                 applySelectedProducts(true)
             }
         }
@@ -1588,15 +1588,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun isNoAddress(localCacheModel: LocalCacheModel): Boolean {
-        return (localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id == EMPTY_ADDRESS_ID)
+        return (localCacheModel.address_id.isEmpty() || localCacheModel.address_id == EMPTY_ADDRESS_ID)
     }
 
     private fun isNoPinPoin(localCacheModel: LocalCacheModel): Boolean {
-        return (!localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
-                && (localCacheModel.lat.isNullOrEmpty() || localCacheModel.long.isNullOrEmpty() ||
-                localCacheModel.lat.equals(EMPTY_COORDINATE) || localCacheModel.long.equals(
-            EMPTY_COORDINATE
-        ))
+        return (!localCacheModel.address_id.isEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
+                && (localCacheModel.lat.isEmpty() || localCacheModel.long.isEmpty() ||
+            localCacheModel.lat == EMPTY_COORDINATE || localCacheModel.long == EMPTY_COORDINATE)
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {

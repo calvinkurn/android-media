@@ -173,12 +173,12 @@ class TokoFoodPurchaseFragment :
         return null
     }
 
-    override fun getFragmentTitle(): String? {
-        return ""
+    override fun getFragmentTitle(): String {
+        return String.EMPTY
     }
 
     override fun getScreenName(): String {
-        return ""
+        return String.EMPTY
     }
 
     override fun getLaunchMode(): BaseMultiFragmentLaunchMode {

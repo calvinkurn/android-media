@@ -37,9 +37,9 @@ import java.util.*
 
 object TokofoodExt {
 
-    const val NOT_FOUND_ERROR = "Not Found"
-    const val INTERNAL_SERVER_ERROR = "Internal Server Error"
-    const val ICON_BOUND_SIZE = 24
+    private const val NOT_FOUND_ERROR = "Not Found"
+    private const val INTERNAL_SERVER_ERROR = "Internal Server Error"
+    private const val ICON_BOUND_SIZE = 24
 
     const val MAXIMUM_QUANTITY = 999999
     const val MAXIMUM_QUANTITY_LENGTH = 7
@@ -151,10 +151,10 @@ object TokofoodExt {
         val offset = 100
         val location = IntArray(2)
         view.getLocationOnScreen(location)
-        val X = location[0] + offset
-        val Y = location[1] + offset
-        return screen.top <= Y && screen.bottom >= Y &&
-            screen.left <= X && screen.right >= X
+        val x = location[0] + offset
+        val y = location[1] + offset
+        return screen.top <= y && screen.bottom >= y &&
+            screen.left <= x && screen.right >= x
     }
 
     fun QuantityEditorUnify.setupEditText() {

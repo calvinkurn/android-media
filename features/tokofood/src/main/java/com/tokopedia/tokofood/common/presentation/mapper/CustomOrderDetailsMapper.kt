@@ -6,7 +6,6 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartSelectionRule
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartVariant
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantSelectionRules
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
@@ -73,7 +72,7 @@ object CustomOrderDetailsMapper {
 
     private fun mapSelectionRulesToSelectionControlType(selectionRules: CartListCartGroupCartSelectionRule): SelectionControlType {
         return when {
-            selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
+            selectionRules.type == CartListCartGroupCartSelectionRule.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
             selectionRules.minQty == Int.ZERO && selectionRules.maxQty == Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
             else -> SelectionControlType.SINGLE_SELECTION
         }

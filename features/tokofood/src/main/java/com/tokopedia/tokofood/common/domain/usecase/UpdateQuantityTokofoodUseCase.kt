@@ -10,7 +10,7 @@ import com.tokopedia.tokofood.common.domain.response.UpdateQuantityTokofoodRespo
 import javax.inject.Inject
 
 private const val QUERY = """
-        mutation UpdateQuantityTokofood(${'$'}params: CartGeneralUpdateCartQuantityParams!) {
+        mutation UpdateQuantityTokofood(${'$'}params: CartGeneralUpdateCartQuantityParams) {
           cart_general_update_cart_quantity(params: ${'$'}params) {
             data {
               success

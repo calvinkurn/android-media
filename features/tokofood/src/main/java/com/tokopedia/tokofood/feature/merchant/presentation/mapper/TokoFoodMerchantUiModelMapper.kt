@@ -125,7 +125,7 @@ object TokoFoodMerchantUiModelMapper {
             selectedCustomListItem?.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
         }
         // set order note
-        val customOrderWidgetUiModel = selectedCustomListItems.firstOrNull() { it.addOnUiModel == null }
+        val customOrderWidgetUiModel = selectedCustomListItems.firstOrNull { it.addOnUiModel == null }
         customOrderWidgetUiModel?.orderNote = orderNote
         return selectedCustomListItems.toList()
     }

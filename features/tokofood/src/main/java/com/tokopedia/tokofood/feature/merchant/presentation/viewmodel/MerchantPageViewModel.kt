@@ -293,7 +293,7 @@ class MerchantPageViewModel @Inject constructor(
         val selectedProductMap = selectedProducts.groupBy { it.productId }
         selectedProductMap.forEach { entry ->
             if (entry.value.first().customResponse.variants.isNotEmpty()) {
-                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+                val selectedProductListItem = mutableProductListItems.firstOrNull { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
                 if (selectedProductListItem != null) {
@@ -305,7 +305,7 @@ class MerchantPageViewModel @Inject constructor(
             } else {
                 // NON-VARIANT PRODUCT ORDER
                 val selectedProduct = entry.value.first()
-                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+                val selectedProductListItem = mutableProductListItems.firstOrNull { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
                 if (selectedProductListItem != null) {

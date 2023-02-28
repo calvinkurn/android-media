@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.common.domain.param.TokoFoodLocationParamMapper.ma
 
 object TokoFoodHomeDynamicChannelQuery: GqlQueryInterface {
 
-    const val PARAM_LOCATION = "location"
+    private const val PARAM_LOCATION = "location"
 
     private const val OPERATION_NAME = "getDynamicHomeChannel"
     private val QUERY = """

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 

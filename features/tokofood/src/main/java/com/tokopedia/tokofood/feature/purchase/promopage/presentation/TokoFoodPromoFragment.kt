@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,9 +36,9 @@ import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListT
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodErrorPage
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar.TokoFoodPromoToolbar
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -146,8 +147,8 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
         return null
     }
 
-    override fun getFragmentTitle(): String? {
-        return ""
+    override fun getFragmentTitle(): String {
+        return String.EMPTY
     }
 
     override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
@@ -155,7 +156,7 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return String.EMPTY
     }
 
     override fun initInjector() {

@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar
+package com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar
 
 import android.content.Context
 import android.util.AttributeSet

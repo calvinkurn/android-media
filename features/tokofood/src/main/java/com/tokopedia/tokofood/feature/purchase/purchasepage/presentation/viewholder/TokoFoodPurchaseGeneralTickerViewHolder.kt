@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewho
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseGeneralTickerBinding
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 

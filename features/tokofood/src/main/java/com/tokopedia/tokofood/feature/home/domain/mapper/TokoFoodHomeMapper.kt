@@ -16,8 +16,6 @@ import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokofood.common.domain.response.Merchant
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
-import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.CATEGORY_WIDGET
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.ICON_TOKOFOOD
@@ -31,6 +29,8 @@ import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLa
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.ERROR_STATE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.TICKER_WIDGET_ID
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TickerItem
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
@@ -38,14 +38,14 @@ import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerRespons
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeUSPResponse
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -58,7 +58,7 @@ object TokoFoodHomeMapper {
     private const val BE_TICKER_WARNING = 2
     private const val BE_TICKER_ERROR = 3
 
-    val SUPPORTED_LAYOUT_TYPE = listOf(
+    private val SUPPORTED_LAYOUT_TYPE = listOf(
         BANNER_CAROUSEL,
         LEGO_6_IMAGE,
         CATEGORY_WIDGET,
@@ -81,7 +81,7 @@ object TokoFoodHomeMapper {
         add(TokoFoodItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_ADDRESS), TokoFoodLayoutItemState.LOADED))
     }
 
-    fun MutableList<TokoFoodItemUiModel>.addOutOfCoverageState() {
+    private fun MutableList<TokoFoodItemUiModel>.addOutOfCoverageState() {
         addChooseAddressWidget()
         add(TokoFoodItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_OUT_OF_COVERAGE), TokoFoodLayoutItemState.LOADED))
     }
@@ -178,13 +178,13 @@ object TokoFoodHomeMapper {
         }
     }
 
-    fun MutableList<TokoFoodItemUiModel>.addChooseAddressWidget() {
+    private fun MutableList<TokoFoodItemUiModel>.addChooseAddressWidget() {
         val chooseAddressUiModel =
             TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(TokoFoodItemUiModel(chooseAddressUiModel, TokoFoodLayoutItemState.LOADED))
     }
 
-    fun MutableList<TokoFoodItemUiModel>.addTickerWidget() {
+    private fun MutableList<TokoFoodItemUiModel>.addTickerWidget() {
         val ticker = TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
         add(TokoFoodItemUiModel(ticker, TokoFoodLayoutItemState.NOT_LOADED))
     }
@@ -201,7 +201,7 @@ object TokoFoodHomeMapper {
         getItemIndex(id)?.let { removeAt(it) }
     }
 
-    fun mapToChannelModel(response: HomeLayoutResponse, verticalPosition: Int): ChannelModel {
+    private fun mapToChannelModel(response: HomeLayoutResponse, verticalPosition: Int): ChannelModel {
         return ChannelModel(
             id = response.id,
             groupId = response.groupId,
@@ -307,7 +307,7 @@ object TokoFoodHomeMapper {
         )
     }
 
-    fun MutableList<TokoFoodItemUiModel>.updateItemById(id: String?, block: () -> TokoFoodItemUiModel?) {
+    private fun MutableList<TokoFoodItemUiModel>.updateItemById(id: String?, block: () -> TokoFoodItemUiModel?) {
         getItemIndex(id)?.let { index ->
             block.invoke()?.let { item ->
                 removeAt(index)
@@ -316,7 +316,7 @@ object TokoFoodHomeMapper {
         }
     }
 
-    fun MutableList<TokoFoodItemUiModel>.getItemIndex(visitableId: String?): Int? {
+    private fun MutableList<TokoFoodItemUiModel>.getItemIndex(visitableId: String?): Int? {
         return firstOrNull { it.layout?.getVisitableId() == visitableId }?.let { indexOf(it) }
     }
 
@@ -391,7 +391,7 @@ object TokoFoodHomeMapper {
     }
 
     private fun isOutOfCoverage(responses: List<HomeLayoutResponse>): Boolean {
-        return responses.isNullOrEmpty()
+        return responses.isEmpty()
     }
 
     private fun mapTickerData(tickerList: List<TickerItem>): List<TickerData> {

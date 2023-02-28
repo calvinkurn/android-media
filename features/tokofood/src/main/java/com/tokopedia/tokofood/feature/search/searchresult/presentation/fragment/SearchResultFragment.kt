@@ -560,11 +560,11 @@ class SearchResultFragment :
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { cacheModel ->
+            context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                    this,
-                    it
+                    it,
+                    cacheModel
                 )
             }
         }

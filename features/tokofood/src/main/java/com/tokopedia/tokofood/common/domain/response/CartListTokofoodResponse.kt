@@ -546,7 +546,16 @@ data class CartListCartGroupCartSelectionRule(
     val minQty: Int = Int.ZERO,
     @SerializedName("required")
     val isRequired: Boolean = false
-)
+) {
+    companion object {
+        // Unspecified.
+        const val TYPE_UNSPECIFIED = 0
+        // Allows only one option to be selected.
+        const val SELECT_ONE = 1
+        // Allows multiple options to be selected.
+        const val SELECT_MANY = 2
+    }
+}
 
 data class CartListCartGroupCartOption(
     @SerializedName("option_id")

@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimode
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.common.domain.response.CartListAddOnsCustomResponseInfo
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailInfo
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(

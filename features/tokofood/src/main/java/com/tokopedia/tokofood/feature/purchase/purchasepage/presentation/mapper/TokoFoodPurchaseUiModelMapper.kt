@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
@@ -20,7 +19,6 @@ import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartOption
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartSelectionRule
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartVariant
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantSelectionRules
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
@@ -33,7 +31,20 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDet
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUiModelIndex
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.PartialTokoFoodUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAddressTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseDividerTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseFragmentUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchasePromoTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseShippingTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 object TokoFoodPurchaseUiModelMapper {
@@ -627,8 +638,8 @@ object TokoFoodPurchaseUiModelMapper {
                     price = optionDetail.price,
                     priceFmt = optionDetail.priceFmt,
                     selectionControlType = when {
-                        selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
-                        selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_ONE -> SelectionControlType.SINGLE_SELECTION
+                        selectionRules.type == CartListCartGroupCartSelectionRule.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
+                        selectionRules.type == CartListCartGroupCartSelectionRule.SELECT_ONE -> SelectionControlType.SINGLE_SELECTION
                         selectionRules.maxQty > Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
                         else -> SelectionControlType.SINGLE_SELECTION
                     }

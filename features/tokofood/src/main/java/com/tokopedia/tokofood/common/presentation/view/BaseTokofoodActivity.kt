@@ -5,16 +5,10 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.common.di.DaggerTokoFoodComponent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -78,7 +72,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     }
 
     private fun initPerformanceMonitoring() {
-        if (intent.data != null && intent.data.toString().equals(ApplinkConstInternalTokoFood.HOME)){
+        if (intent.data != null && intent.data.toString() == ApplinkConstInternalTokoFood.HOME){
             pageLoadTimeMonitoring = TokoFoodHomePageLoadTimeMonitoring()
             pageLoadTimeMonitoring?.initPerformanceMonitoring()
         }
