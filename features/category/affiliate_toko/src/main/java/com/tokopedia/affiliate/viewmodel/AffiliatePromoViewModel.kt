@@ -2,9 +2,6 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
-import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
-import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
 import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
@@ -15,7 +12,6 @@ import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -24,23 +20,19 @@ class AffiliatePromoViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateSearchUseCase: AffiliateSearchUseCase,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
-    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
-    private var remoteConfig: RemoteConfig
+    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
     private var affiliateSearchData = MutableLiveData<AffiliateSearchData>()
     private var errorMessage = MutableLiveData<String>()
     private var validateUserState = MutableLiveData<String>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
+
     fun isAffiliateSSAShopEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_SSA_SHOP,
             ""
         ) == AFFILIATE_SSA_SHOP
-
-    fun isAffiliateGamificationEnabled() = remoteConfig.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false)
-
-    fun affiliateRedirection() = remoteConfig.getString(AFFILIATE_GAMIFICATION_REDIRECTION, AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK)
 
     fun getSearch(productLink: String) {
         progressBar.value = true
