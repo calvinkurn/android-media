@@ -66,6 +66,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.initFlow()
         homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         // On refresh
         homeViewModel.refreshWithThreeMinsRules(true)
@@ -92,6 +93,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.initFlow()
         homeViewModel.getBalanceWidgetData()
         // On refresh
         homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
@@ -118,6 +120,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase,
             homeSearchUseCase = getHomeSearchUseCase
         )
+        homeViewModel.initFlow()
         homeViewModel.getBalanceWidgetData()
         // On refresh
         homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
@@ -168,6 +171,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.initFlow()
         // On refresh
         homeViewModel.onRefreshMembership(1, "Rewards")
 
@@ -191,6 +195,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.initFlow()
         // On refresh
         homeViewModel.onRefreshMembership(1, "Rewards")
 
@@ -215,6 +220,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.initFlow()
         // On refresh
         homeViewModel.onRefreshWalletApp(0, "Gopay")
 
@@ -238,6 +244,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.initFlow()
         // On refresh
         homeViewModel.onRefreshWalletApp(0, "Gopay")
 
@@ -260,6 +267,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.initFlow()
         homeViewModel.getBalanceWidgetData()
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertEquals(homeBalanceModel, mockInitialHomeHeaderDataModel.headerDataModel?.homeBalanceModel)
@@ -290,6 +298,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase,
             homeSearchUseCase = getHomeSearchUseCase
         )
+        homeViewModel.initFlow()
         homeViewModel.getBalanceWidgetData()
         // On refresh
         homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)

@@ -138,8 +138,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    fun getHomeDataFlow(atfStyle: String): Flow<HomeDynamicChannelModel?> {
-        Log.d("dhabalog", "getHomeDataFlow $atfStyle")
+    fun getHomeDataFlow(atfStyle: String = ""): Flow<HomeDynamicChannelModel?> {
         this.atfStyle = atfStyle
         var isCache = true
         var isCacheDc = true

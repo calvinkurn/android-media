@@ -20,15 +20,16 @@ class HomeViewModelQuestWidgetTest {
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
-    fun `test when quest widget delete then quest widget not in the list of visitables`(){
+    fun `test when quest widget delete then quest widget not in the list of visitables`() {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 isCache = false,
-                list = listOf(QuestWidgetModel(channelModel = ChannelModel(id = "1",groupId = "1"), questData = QuestData()))
+                list = listOf(QuestWidgetModel(channelModel = ChannelModel(id = "1", groupId = "1"), questData = QuestData()))
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.initFlow()
         homeViewModel.deleteQuestWidget()
-        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.any { it is QuestWidgetModel } == false )
+        assert(homeViewModel.homeLiveDynamicChannel.value?.list?.any { it is QuestWidgetModel } == false)
     }
 }
