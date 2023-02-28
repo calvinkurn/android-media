@@ -11,9 +11,6 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
-import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
-import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CART_RESULT_CODE;
-import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
@@ -21,6 +18,9 @@ import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYM
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CART_RESULT_CODE;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LATITUDE;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_DROPOFF_LONGITUDE;
@@ -86,6 +86,7 @@ import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -99,7 +100,6 @@ import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
@@ -157,6 +157,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiMode
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
@@ -234,8 +235,8 @@ import timber.log.Timber;
  * Originaly authored by Aghny, Angga, Kris
  */
 
-public class ShipmentOldFragment extends BaseCheckoutFragment implements ShipmentContract.View,
-        ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
+public class ShipmentOldFragment extends BaseCheckoutFragment implements ShipmentOldContract.View,
+        ShipmentOldContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         PromoNotEligibleActionListener, SellerCashbackListener,
         ExpireTimeDialogListener, UploadPrescriptionListener {
@@ -278,7 +279,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     @Inject
     ShipmentAdapter shipmentAdapter;
     @Inject
-    ShipmentContract.Presenter shipmentPresenter;
+    ShipmentOldContract.Presenter shipmentPresenter;
     @Inject
     RatesDataConverter ratesDataConverter;
     @Inject
@@ -1342,40 +1343,25 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
         return getActivity();
     }
 
-
     @Override
-    public void sendEnhancedEcommerceAnalyticsCheckout(@NonNull Map<String, ?> stringObjectMap, @Nullable Map<String, String> tradeInCustomDimension, @Nullable String transactionId, @NonNull String userId, boolean promoFlag, @NonNull String eventCategory, @NonNull String eventAction, @NonNull String eventLabel) {
+    public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
+                                                       Map<String, String> tradeInCustomDimension,
+                                                       String transactionId,
+                                                       String userId,
+                                                       boolean promoFlag,
+                                                       String eventCategory,
+                                                       String eventAction,
+                                                       String eventLabel) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
                 stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
 
-//    @Override
-//    public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
-//                                                       Map<String, String> tradeInCustomDimension,
-//                                                       String transactionId,
-//                                                       String userId,
-//                                                       boolean promoFlag,
-//                                                       String eventCategory,
-//                                                       String eventAction,
-//                                                       String eventLabel) {
-//        checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-//                stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
-//        );
-//        checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
-//    }
-
-
     @Override
-    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(@Nullable String eventLabel, @Nullable String userId, @Nullable List<?> listProducts) {
+    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel, String userId, List<Object> listProducts) {
         checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(eventLabel, userId, listProducts);
     }
-
-//    @Override
-//    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel, String userId, List<Object> listProducts) {
-//        checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(eventLabel, userId, listProducts);
-//    }
 
     @Override
     public void sendAnalyticsOnClickChooseOtherAddressShipment() {

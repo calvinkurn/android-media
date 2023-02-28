@@ -37,7 +37,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult;
@@ -64,7 +63,7 @@ import rx.subjects.PublishSubject;
  * @author Irfan Khoirul on 24/04/18.
  */
 
-public interface ShipmentContract {
+public interface ShipmentOldContract {
 
     interface View extends CustomerView {
         void showInitialLoading();

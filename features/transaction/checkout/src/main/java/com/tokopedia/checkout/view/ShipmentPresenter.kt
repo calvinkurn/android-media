@@ -27,6 +27,14 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.getAddOnFromSAF
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
@@ -109,6 +117,10 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
@@ -178,7 +190,8 @@ class ShipmentPresenter @Inject constructor(
     private val gson: Gson,
     private val executorSchedulers: ExecutorSchedulers,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
-    private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase
+    private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
+    private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 ) : BaseDaggerPresenter<ShipmentContract.View?>(), ShipmentContract.Presenter {
 
     override var shipmentUpsellModel = ShipmentUpsellModel()
@@ -231,6 +244,9 @@ class ShipmentPresenter @Inject constructor(
     override var logisticDonePublisher: PublishSubject<Boolean>? = null
     private var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
     private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData>? = null
+    private var isUsingDdp = false
+    private var dynamicDataParam: DynamicDataPassingParamRequest? = null
+    private var dynamicData = ""
 
     override fun detachView() {
         super.detachView()
@@ -238,10 +254,12 @@ class ShipmentPresenter @Inject constructor(
         getShipmentAddressFormV3UseCase.cancelJobs()
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
+        updateDynamicDataPassingUseCase.cancelJobs()
         ratesPublisher = null
         logisticDonePublisher = null
         ratesPromoPublisher = null
         logisticPromoDonePublisher = null
+        dynamicDataParam = null
     }
 
     override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>?) {
@@ -581,6 +599,7 @@ class ShipmentPresenter @Inject constructor(
             } else {
                 view?.updateLocalCacheAddressData(userAddress)
                 initializePresenterData(cartShipmentAddressFormData)
+                setCurrentDynamicDataParamFromSAF(cartShipmentAddressFormData, isOneClickShipment)
                 view?.renderCheckoutPage(
                     !isReloadData,
                     isReloadAfterPriceChangeHigher,
@@ -597,6 +616,8 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
         }
+        isUsingDdp = cartShipmentAddressFormData.isUsingDdp
+        dynamicData = cartShipmentAddressFormData.dynamicData
     }
 
     private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -750,7 +771,8 @@ class ShipmentPresenter @Inject constructor(
                 isTradeIn,
                 isTradeInDropOff,
                 deviceId,
-                checkoutRequest
+                checkoutRequest,
+                dynamicData
             )
             val requestParams = RequestParams.create()
             requestParams.putAll(params)
@@ -783,11 +805,13 @@ class ShipmentPresenter @Inject constructor(
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
         deviceId: String?,
-        checkoutRequest: CheckoutRequest?
+        checkoutRequest: CheckoutRequest?,
+        dynamicData: String
     ): Map<String, Any?> {
         val params: MutableMap<String, Any?> = HashMap()
         params[CheckoutGqlUseCase.PARAM_CARTS] = map(checkoutRequest!!)
         params[CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment.toString()
+        params[CheckoutGqlUseCase.PARAM_DYNAMIC_DATA] = dynamicData
         if (isTradeIn) {
             params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] = true
             params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF] = isTradeInDropOff
@@ -1144,7 +1168,8 @@ class ShipmentPresenter @Inject constructor(
                         )
                     } else {
                         val defaultErrorMessage =
-                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) ?: ""
+                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                ?: ""
                         view?.renderCheckoutCartError(defaultErrorMessage)
                         view?.logOnErrorCheckout(
                             MessageErrorException(defaultErrorMessage),
@@ -1995,7 +2020,8 @@ class ShipmentPresenter @Inject constructor(
                                 } else {
                                     if (isNullOrEmpty(messageError)) {
                                         messageError =
-                                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) ?: ""
+                                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                                ?: ""
                                     }
                                     view?.navigateToSetPinpoint(messageError, locationPass)
                                 }
@@ -3077,7 +3103,14 @@ class ShipmentPresenter @Inject constructor(
                     val cartItemModel = cartItemModelList[i]
                     val keyProductLevel = "${cartItemModel.cartString}-${cartItemModel.cartId}"
                     if (keyProductLevel.equals(addOnResult.addOnKey, ignoreCase = true)) {
-                        setAddOnsData(cartItemModel.addOnProductLevelModel, addOnResult, 0)
+                        val addOnsDataModel = cartItemModel.addOnProductLevelModel
+                        setAddOnsData(
+                            addOnsDataModel,
+                            addOnResult,
+                            0,
+                            cartItemModel.cartString,
+                            cartItemModel.cartId
+                        )
                     }
                 }
             }
@@ -3093,7 +3126,13 @@ class ShipmentPresenter @Inject constructor(
                     ) && shipmentCartItemModel.addOnsOrderLevelModel != null
                 ) {
                     val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
-                    setAddOnsData(addOnsDataModel, addOnResult, 1)
+                    setAddOnsData(
+                        addOnsDataModel!!,
+                        addOnResult,
+                        1,
+                        shipmentCartItemModel.cartString,
+                        0L
+                    )
                 }
             }
         }
@@ -3101,11 +3140,13 @@ class ShipmentPresenter @Inject constructor(
 
     // identifier : 0 = product level, 1  = order level
     private fun setAddOnsData(
-        addOnsDataModel: AddOnsDataModel?,
+        addOnsDataModel: AddOnsDataModel,
         addOnResult: AddOnResult,
-        identifier: Int
+        identifier: Int,
+        cartString: String,
+        cartId: Long
     ) {
-        addOnsDataModel!!.status = addOnResult.status
+        addOnsDataModel.status = addOnResult.status
         val (action, description, leftIconUrl, rightIconUrl, title) = addOnResult.addOnButton
         val addOnButtonModel = AddOnButtonModel()
         addOnButtonModel.action = action
@@ -3121,16 +3162,16 @@ class ShipmentPresenter @Inject constructor(
         val addOnTickerModel = AddOnTickerModel()
         addOnTickerModel.text = ticker.text
         addOnBottomSheetModel.ticker = addOnTickerModel
-        val listProductAddOn = ArrayList<AddOnProductItemModel>()
-        for ((productImageUrl, productName) in products) {
+        val listProductAddOn = java.util.ArrayList<AddOnProductItemModel>()
+        for (product in products) {
             val addOnProductItemModel = AddOnProductItemModel()
-            addOnProductItemModel.productName = productName
-            addOnProductItemModel.productImageUrl = productImageUrl
+            addOnProductItemModel.productName = product.productName
+            addOnProductItemModel.productImageUrl = product.productImageUrl
             listProductAddOn.add(addOnProductItemModel)
         }
         addOnBottomSheetModel.products = listProductAddOn
         addOnsDataModel.addOnsBottomSheetModel = addOnBottomSheetModel
-        val listAddOnDataItem = ArrayList<AddOnDataItemModel>()
+        val listAddOnDataItem = java.util.ArrayList<AddOnDataItemModel>()
         for (addOnData in addOnResult.addOnData) {
             val addOnDataItemModel = AddOnDataItemModel()
             addOnDataItemModel.addOnId = addOnData.addOnId
@@ -3149,6 +3190,15 @@ class ShipmentPresenter @Inject constructor(
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
         view?.updateAddOnsData(addOnsDataModel, identifier)
+        if (isUsingDynamicDataPassing()) {
+            view?.updateAddOnsDynamicDataPassing(
+                addOnsDataModel,
+                addOnResult,
+                identifier,
+                cartString,
+                cartId
+            )
+        }
     }
 
     override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String?>, ArrayList<String?>> {
@@ -3488,6 +3538,103 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         return true
+    }
+
+    fun setCurrentDynamicDataParamFromSAF(
+        cartShipmentAddressFormData: CartShipmentAddressFormData,
+        isOneClickShipment: Boolean
+    ) {
+        val ddpParam = DynamicDataPassingParamRequest()
+        val listDataParam = ArrayList<DynamicDataParam>()
+        // donation
+        if (cartShipmentAddressFormData.donation != null && cartShipmentAddressFormData.donation!!.isChecked) {
+            val dynamicDataParam = DynamicDataParam()
+            dynamicDataParam.level = DynamicDataPassingMapper.PAYMENT_LEVEL
+            dynamicDataParam.uniqueId = ""
+            dynamicDataParam.attribute = ATTRIBUTE_DONATION
+            dynamicDataParam.donation = cartShipmentAddressFormData.donation!!.isChecked
+            listDataParam.add(dynamicDataParam)
+        }
+
+        // addons
+        for (groupAddress in cartShipmentAddressFormData.groupAddress) {
+            for (groupShop in groupAddress.groupShop) {
+                // order level
+                if (groupShop.addOns.status == 1) {
+                    val dynamicDataParam = DynamicDataParam()
+                    dynamicDataParam.level = ORDER_LEVEL
+                    dynamicDataParam.uniqueId = groupShop.cartString
+                    dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
+                    dynamicDataParam.addOn = getAddOnFromSAF(groupShop.addOns, isOneClickShipment)
+                    listDataParam.add(dynamicDataParam)
+                }
+                for (product in groupShop.products) {
+                    // product level
+                    if (product.addOnProduct.status == 1) {
+                        val dynamicDataParam = DynamicDataParam()
+                        dynamicDataParam.level = PRODUCT_LEVEL
+                        dynamicDataParam.parentUniqueId = groupShop.cartString
+                        dynamicDataParam.uniqueId = product.cartId.toString()
+                        dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
+                        dynamicDataParam.addOn =
+                            getAddOnFromSAF(product.addOnProduct, isOneClickShipment)
+                        listDataParam.add(dynamicDataParam)
+                    }
+                }
+            }
+        }
+        ddpParam.data = listDataParam
+        var source: String? = SOURCE_NORMAL
+        if (isOneClickShipment) source = SOURCE_OCS
+        ddpParam.source = source!!
+        setDynamicDataParam(ddpParam)
+    }
+
+    override fun updateDynamicData(
+        dynamicDataPassingParamRequest: DynamicDataPassingParamRequest?,
+        isFireAndForget: Boolean
+    ) {
+        updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest!!, isFireAndForget)
+        updateDynamicDataPassingUseCase.execute(
+            { (dynamicData): UpdateDynamicDataPassingUiModel ->
+                this.dynamicData = dynamicData
+                if (view != null && !isFireAndForget) {
+                    view?.doCheckout()
+                }
+                Unit
+            }
+        ) { throwable: Throwable ->
+            Timber.d(throwable)
+            if (view != null) {
+                view?.setHasRunningApiCall(false)
+                view?.hideLoading()
+                var errorMessage = throwable.message
+                if (throwable !is CartResponseErrorException && throwable !is AkamaiErrorException) {
+                    errorMessage = getErrorMessage(
+                        view?.activityContext,
+                        throwable
+                    )
+                }
+                view?.showToastError(errorMessage)
+            }
+            Unit
+        }
+    }
+
+    override fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest?) {
+        this.dynamicDataParam = dynamicDataPassingParam
+    }
+
+    override fun getDynamicDataParam(): DynamicDataPassingParamRequest? {
+        return this.dynamicDataParam
+    }
+
+    override fun validateDynamicData() {
+        updateDynamicData(getDynamicDataParam(), false)
+    }
+
+    override fun isUsingDynamicDataPassing(): Boolean {
+        return isUsingDdp
     }
 
     fun setLogisticPromoDonePublisher(logisticPromoDonePublisher: PublishSubject<Boolean>?) {

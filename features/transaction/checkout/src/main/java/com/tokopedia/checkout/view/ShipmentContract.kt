@@ -33,8 +33,10 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -171,6 +173,14 @@ interface ShipmentContract {
         fun logOnErrorCheckout(throwable: Throwable, request: String)
         fun showPopUp(popUpData: PopUpData)
         fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int)
+        fun doCheckout()
+        fun updateAddOnsDynamicDataPassing(
+            addOnsDataModel: AddOnsDataModel?,
+            addOnResult: AddOnResult?,
+            identifier: Int,
+            cartString: String?,
+            cartId: Long?
+        )
         fun onNeedUpdateViewItem(position: Int)
         fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String?>?)
         fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int
@@ -435,5 +445,18 @@ interface ShipmentContract {
 
         fun clearAllBoOnTemporaryUpsell()
         fun validatePrescriptionOnBackPressed(): Boolean
+
+        fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest?)
+
+        fun getDynamicDataParam(): DynamicDataPassingParamRequest?
+
+        fun validateDynamicData()
+
+        fun isUsingDynamicDataPassing(): Boolean
+
+        fun updateDynamicData(
+            dynamicDataPassingParamRequest: DynamicDataPassingParamRequest?,
+            isFireAndForget: Boolean
+        )
     }
 }

@@ -38,6 +38,14 @@ import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYMENT_LEVEL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.getAddOn
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapAddOnBottomSheetParam
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapAvailableBottomSheetOrderLevelData
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapAvailableBottomSheetProductLevelData
@@ -161,11 +169,13 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_C
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -2120,7 +2130,11 @@ class ShipmentFragment :
                     shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList)
                 } else {
                     hasClearPromoBeforeCheckout = false
-                    doCheckout()
+                    if (shipmentPresenter.isUsingDynamicDataPassing()) {
+                        shipmentPresenter.validateDynamicData()
+                    } else {
+                        doCheckout()
+                    }
                 }
             } else {
                 var hasRedStatePromo = false
@@ -2152,8 +2166,12 @@ class ShipmentFragment :
                     showToastError(errorMessage)
                     sendAnalyticsPromoRedState()
                 } else {
-                    sendAnalyticsEpharmacyClickPembayaran()
-                    doCheckout()
+                    if (shipmentPresenter.isUsingDynamicDataPassing()) {
+                        shipmentPresenter.validateDynamicData()
+                    } else {
+                        sendAnalyticsEpharmacyClickPembayaran()
+                        doCheckout()
+                    }
                 }
             }
         } else if (shipmentData != null && !result) {
@@ -2182,7 +2200,7 @@ class ShipmentFragment :
         }
     }
 
-    private fun doCheckout() {
+    override fun doCheckout() {
         shipmentPresenter.processSaveShipmentState()
         shipmentPresenter.processCheckout(
             isOneClickShipment,
@@ -2193,6 +2211,43 @@ class ShipmentFragment :
             checkoutLeasingId,
             isPlusSelected()
         )
+    }
+
+    private fun updateCheckboxDynamicData(newParam: DynamicDataParam, isChecked: Boolean) {
+        val existingDdpParam = shipmentPresenter.getDynamicDataParam()
+        var isAdded = false
+        if (newParam.attribute.equals(ATTRIBUTE_DONATION, ignoreCase = true)) {
+            for (existingParam in shipmentPresenter.getDynamicDataParam()!!.data) {
+                if (existingParam.attribute.equals(ATTRIBUTE_DONATION, ignoreCase = true)) {
+                    isAdded = true
+                    existingParam.donation = isChecked
+                }
+            }
+        } else if (newParam.attribute.equals(ATTRIBUTE_ADDON_DETAILS, ignoreCase = true)) {
+            if (isChecked) {
+                for (existingParam in shipmentPresenter.getDynamicDataParam()!!.data) {
+                    if (existingParam.uniqueId.equals(newParam.uniqueId, ignoreCase = true)) {
+                        isAdded = true
+                        existingParam.addOn = newParam.addOn
+                    }
+                }
+            } else {
+                for (i in existingDdpParam!!.data.indices) {
+                    val (_, _, uniqueId) = shipmentPresenter.getDynamicDataParam()!!.data[i]
+                    if (uniqueId.equals(newParam.uniqueId, ignoreCase = true)) {
+                        existingDdpParam.data = existingDdpParam.data.toMutableList().apply { removeAt(i) }
+                    }
+                }
+            }
+        }
+        if (!isAdded && isChecked) {
+            existingDdpParam!!.data = existingDdpParam.data.toMutableList().apply { add(newParam) }
+        }
+        var source: String? = SOURCE_NORMAL
+        if (isOneClickShipment) source = SOURCE_OCS
+        existingDdpParam!!.source = source!!
+        shipmentPresenter.setDynamicDataParam(existingDdpParam)
+        shipmentPresenter.updateDynamicData(existingDdpParam, true)
     }
 
     override fun onPriorityChecked(position: Int) {
@@ -2282,6 +2337,14 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
         if (isTradeIn) {
             checkoutTradeInAnalytics.eventTradeInClickDonationOption(isTradeInByDropOff, checked)
+        }
+        if (shipmentPresenter.isUsingDynamicDataPassing()) {
+            val dynamicDataParam = DynamicDataParam()
+            dynamicDataParam.level = PAYMENT_LEVEL
+            dynamicDataParam.uniqueId = ""
+            dynamicDataParam.attribute = ATTRIBUTE_DONATION
+            dynamicDataParam.donation = checked
+            updateCheckboxDynamicData(dynamicDataParam, checked)
         }
     }
 
@@ -3446,7 +3509,11 @@ class ShipmentFragment :
                 validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels = voucherOrderUiModels
             }
         }
-        doCheckout()
+        if (shipmentPresenter.isUsingDynamicDataPassing()) {
+            shipmentPresenter.validateDynamicData()
+        } else {
+            doCheckout()
+        }
     }
 
     override fun updateTickerAnnouncementMessage() {
@@ -4498,6 +4565,45 @@ class ShipmentFragment :
         }
         shipmentAdapter.updateShipmentCostModel()
         onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+    }
+
+    override fun updateAddOnsDynamicDataPassing(
+        addOnsDataModel: AddOnsDataModel?,
+        addOnResult: AddOnResult?,
+        identifier: Int,
+        cartString: String?,
+        cartId: Long?
+    ) {
+        // identifier : 0 = product level, 1  = order level
+        if (addOnResult!!.addOnData.isEmpty()) {
+            // unchecked
+            val uncheckedDynamicDataParam = DynamicDataParam()
+            uncheckedDynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
+            if (identifier == 1) {
+                uncheckedDynamicDataParam.level = ORDER_LEVEL
+                uncheckedDynamicDataParam.uniqueId = cartString!!
+            } else if (identifier == 0) {
+                uncheckedDynamicDataParam.level = PRODUCT_LEVEL
+                uncheckedDynamicDataParam.parentUniqueId = cartString!!
+                uncheckedDynamicDataParam.uniqueId = cartId.toString()
+            }
+            updateCheckboxDynamicData(uncheckedDynamicDataParam, false)
+        } else {
+            val dynamicDataParam = DynamicDataParam()
+            dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
+            dynamicDataParam.addOn = getAddOn(addOnResult, isOneClickShipment)
+            if (identifier == 1) {
+                // order level
+                dynamicDataParam.level = ORDER_LEVEL
+                dynamicDataParam.uniqueId = cartString!!
+            } else if (identifier == 0) {
+                // product level
+                dynamicDataParam.level = PRODUCT_LEVEL
+                dynamicDataParam.parentUniqueId = cartString!!
+                dynamicDataParam.uniqueId = cartId.toString()
+            }
+            updateCheckboxDynamicData(dynamicDataParam, true)
+        }
     }
 
     override fun renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds: List<String?>?) {
