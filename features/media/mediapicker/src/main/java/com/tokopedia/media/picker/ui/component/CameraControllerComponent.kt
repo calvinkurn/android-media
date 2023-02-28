@@ -147,7 +147,9 @@ class CameraControllerComponent(
             controllerListener.onThumbnailLoaded()
         }
         imgThumbnail.setOnClickListener {
-            controllerListener.onCameraThumbnailClicked()
+            if (controllerListener.isCameraOnRecording().not()) {
+                controllerListener.onCameraThumbnailClicked()
+            }
         }
     }
 
@@ -301,6 +303,7 @@ class CameraControllerComponent(
     interface Listener {
         fun onCameraModeChanged(mode: CameraMode)
         fun isFrontCamera(): Boolean
+        fun isCameraOnRecording(): Boolean
 
         fun onCameraThumbnailClicked()
         fun onTakeMediaClicked()

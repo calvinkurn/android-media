@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 
 class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
@@ -66,6 +67,13 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
             sendButton = findViewById(R.id.send_but)
             guideline = findViewById(R.id.guideline_reply_bubble)
         }
+    }
+
+    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding){
+        videoUploadOnBoarding.showVideoBubbleOnBoarding(
+            addAttachmentMenu,
+            context
+        )
     }
 
     fun clearChatText() {
