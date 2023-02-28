@@ -51,7 +51,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
-                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
                         ArrayList(selectedProducts)
                     )
                 }
@@ -81,7 +82,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             ?: VoucherConfiguration()
     }
     private val selectedProducts by lazy {
-        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
+    }
 
     // tracker
     @Inject
@@ -203,7 +205,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 onFragmentBackPressed()
-                tracker.sendClickKembaliArrowEvent()
+                tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
     }
@@ -218,7 +220,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             enable()
             setOnClickListener {
                 viewModel.processEvent(VoucherCreationStepOneEvent.NavigateToNextStep)
-                tracker.sendClickLanjutEvent()
+                tracker.sendClickLanjutEvent(voucherConfiguration.voucherId)
             }
         }
     }
@@ -246,7 +248,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     isVoucherProduct
                 )
             )
-            tracker.sendClickKuponTypeEvent(isVoucherProduct)
+            tracker.sendClickKuponTypeEvent(isVoucherProduct, voucherConfiguration.voucherId)
         }
     }
 
@@ -285,7 +287,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     )
                 )
                 viewModel.processEvent(VoucherCreationStepOneEvent.resetFillState)
-                tracker.sendClickKuponTypeEvent(isVoucherProduct)
+                tracker.sendClickKuponTypeEvent(isVoucherProduct, voucherConfiguration.voucherId)
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
