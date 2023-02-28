@@ -23,6 +23,11 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_PRODUCTS = 3
     const val CATALOG_SHIMMER_LIHAT_SEMUA = 4
 
+    const val GRID_VIEW_STR = "grid view"
+    const val LIST_VIEW_STR = "list view"
+    const val ASCENDING_ORDER_STR = "ascending order"
+    const val DESCENDING_ORDER_STR = "descending order"
+
     const val SORT_TYPE_CATALOG = 0
     const val SORT_TYPE_VIRAL = 5
     const val SORT_TYPE_TOP_FIVE = 6

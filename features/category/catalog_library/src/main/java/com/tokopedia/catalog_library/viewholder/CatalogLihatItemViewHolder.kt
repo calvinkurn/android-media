@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
+import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -50,6 +51,14 @@ class CatalogLihatItemViewHolder(
         }
         lihatExpandedItemLayout?.background = view.context.getDrawable(R.drawable.squircle)
         lihatExpandedItemLayout?.setOnClickListener {
+            AnalyticsLihatSemuaPage.sendClickCategoryOnCategoryListEvent(
+                element?.rootCategoryName ?: "",
+                element?.rootCategoryId ?: "",
+                element?.catalogLibraryChildDataListItem?.categoryName ?: "",
+                element?.catalogLibraryChildDataListItem?.categoryId ?: "",
+                element?.isAsc ?: true,
+                UserSession(itemView.context).userId
+            )
             catalogLibraryListener.onCategoryItemClicked(
                 childDataItem?.categoryId ?: ""
             )

@@ -101,14 +101,22 @@ object AnalyticsLihatSemuaPage {
     }
 
     fun sendClickCategoryOnCategoryListEvent(
-        eventLabel: String,
+        parentCategoryName: String,
+        parentCategoryId: String,
+        categoryName: String,
         categoryId: String,
+        isAsc: Boolean,
         userId: String
     ) {
+        val order =
+            if (isAsc) CatalogLibraryConstant.ASCENDING_ORDER_STR else CatalogLibraryConstant.DESCENDING_ORDER_STR
         Tracker.Builder().setEvent(EventKeys.CLICK_CONTENT)
             .setEventAction(ActionKeys.CLICK_CATEGORY_ON_CATEGORY_LIST)
             .setEventCategory(CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA)
-            .setEventLabel(eventLabel)
+            .setEventLabel(
+                "L1 name: $parentCategoryName - L1 ID: $parentCategoryId - category name: $categoryName - category id: $categoryId" +
+                    " - sort & filter: ${CatalogLibraryConstant.GRID_VIEW_STR} - $order"
+            )
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_CATEGORY_ON_CATEGORY_LIST)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
