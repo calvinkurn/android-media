@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -154,13 +155,16 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
-import com.tokopedia.chatbot.view.util.*
+import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
+import com.tokopedia.chatbot.view.util.OnboardingReplayDismissListener
+import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
+import com.tokopedia.chatbot.view.util.showToaster
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -168,6 +172,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -569,12 +574,14 @@ class ChatbotFragment :
     }
 
     private fun setChatBackground() {
-        activity?.window?.setBackgroundDrawable(context?.let {
-            ContextCompat.getDrawable(
-                it,
-                R.drawable.layered_chatbot_background
-            )
-        })
+        activity?.window?.setBackgroundDrawable(
+            context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.layered_chatbot_background
+                )
+            }
+        )
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -670,16 +677,16 @@ class ChatbotFragment :
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnBoarding = replyBubbleOnBoarding.hasBeenShown()
 
-        if(hasBeenShownReplyBubbleOnBoarding && hasBeenShownVideoUploadOnBoarding)  {
+        if (hasBeenShownReplyBubbleOnBoarding && hasBeenShownVideoUploadOnBoarding) {
             return
         }
 
-        if(!hasBeenShownReplyBubbleOnBoarding) {
+        if (!hasBeenShownReplyBubbleOnBoarding) {
             val ratioY = calculateRatiosForGuideline()
             setUpPositionReplyBubbleGuideline(ratioY)
             isReplyCoachMarkShowing = true
             showReplayCoachMark()
-        } else if(!hasBeenShownReplyBubbleOnBoarding) {
+        } else if (!hasBeenShownReplyBubbleOnBoarding) {
             checkVideoUploadOnboardingStatus()
         }
     }
@@ -1288,6 +1295,31 @@ class ChatbotFragment :
         getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
             showAddAttachmentMenu
         )
+        if(showAddAttachmentMenu) {
+            getBindingView().smallReplyBox.getMessageView()?.apply {
+                if (!isConnectedToAgent) {
+                    setImageUploadDataInReplyBox()
+                } else {
+                    setDefaultDataInReplyBox()
+                }
+            }
+        }
+    }
+
+    private fun EditText.setImageUploadDataInReplyBox() {
+        this.apply {
+            hint = context?.resources?.getString(R.string.chatbot_edit_text_hint)
+                .toBlankOrString()
+            isEnabled = false
+        }
+    }
+
+    private fun EditText.setDefaultDataInReplyBox() {
+        this.apply {
+            hint =
+                context?.resources?.getString(R.string.cb_bot_reply_text).toBlankOrString()
+            isEnabled = true
+        }
     }
 
     override fun handleImageUploadButtonViewState(toShow: Boolean) {
@@ -1344,6 +1376,9 @@ class ChatbotFragment :
                     context
                 )
             }
+        }
+        getBindingView().smallReplyBox.getMessageView()?.apply {
+            setDefaultDataInReplyBox()
         }
     }
 
@@ -1527,7 +1562,12 @@ class ChatbotFragment :
                     session.userId
                 )
                 val applinkWebview =
-                    String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
+                    String.format(
+                        Locale.getDefault(),
+                        "%s?url=%s",
+                        ApplinkConst.WEBVIEW,
+                        urlWithSession
+                    )
                 if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
                     RouteManager.route(activity, applinkWebview)
                 } else {
@@ -1640,7 +1680,8 @@ class ChatbotFragment :
                 it.message.toString(),
                 Snackbar.LENGTH_LONG,
                 SNACK_BAR_TEXT_OK,
-                View.OnClickListener { })
+                View.OnClickListener { }
+            )
         }
     }
 
@@ -2453,7 +2494,7 @@ class ChatbotFragment :
         showCoachMarkOfVideoReplay()
     }
 
-    private fun setHandlingViewHelperVideoCoachMark(){
+    private fun setHandlingViewHelperVideoCoachMark() {
         getBindingView().coachMarkVideoHelper.apply {
             bringToFront()
             visible()
@@ -2492,8 +2533,9 @@ class ChatbotFragment :
     }
 
     private fun setUpPositionReplyBubbleGuideline(ratioY: Float) {
-        if (ratioY == ZERO_RATIO)
+        if (ratioY == ZERO_RATIO) {
             return
+        }
         val params =
             getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
         params.guidePercent = ratioY
@@ -2509,7 +2551,7 @@ class ChatbotFragment :
         )
     }
 
-    private fun setReplayBubbleCoachMarkListener(){
+    private fun setReplayBubbleCoachMarkListener() {
         replyBubbleOnBoarding.onboardingDismissListener = object : OnboardingReplayDismissListener {
             override fun dismissReplyBubbleOnBoarding() {
                 isReplyCoachMarkShowing = false
@@ -2537,10 +2579,10 @@ class ChatbotFragment :
     }
 
     override fun onBackPressed(): Boolean {
-        return if(isReplyCoachMarkShowing){
+        return if (isReplyCoachMarkShowing) {
             replyBubbleOnBoarding.dismiss()
             true
-        } else if(isVideoCoachMarkShowing) {
+        } else if (isVideoCoachMarkShowing) {
             videoUploadOnBoarding.dismiss()
             true
         } else {
