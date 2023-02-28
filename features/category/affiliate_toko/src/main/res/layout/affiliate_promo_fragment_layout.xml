@@ -172,7 +172,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
-                            android:text="@string/mau_bonus_hingga_jutaan"
+                            android:text="@string/affiliate_mau_bonus_hingga_jutaan"
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
 
@@ -182,7 +182,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="4dp"
-                            android:text="@string/ikutan_main_misi_komisi_aja_yuk"
+                            android:text="@string/affiliate_ikutan_main_misi_komisi_aja_yuk"
                             app:typographyType="display_3"
                             app:typographyWeight="reguler" />
 
@@ -221,7 +221,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="12dp"
-                            android:text="@string/otw_jadi_sultan_komisi"
+                            android:text="@string/affiliate_otw_jadi_sultan_komisi"
                             app:layout_constraintTop_toBottomOf="@id/gamification_container"
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
@@ -232,7 +232,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="4dp"
-                            android:text="@string/dengan_promosiin_toko_komisi_ekstra"
+                            android:text="@string/affiliate_dengan_promosiin_toko_komisi_ekstra"
                             app:typographyType="display_3"
                             app:typographyWeight="reguler" />
 
