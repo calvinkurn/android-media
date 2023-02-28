@@ -9,10 +9,8 @@ import com.tokopedia.tokofood.common.domain.response.CartGeneralRemoveCartData
 import com.tokopedia.tokofood.common.domain.response.RemoveCartTokofoodResponseNew
 import javax.inject.Inject
 
-// TODO: Remove New
-
 private const val QUERY = """
-        mutation RemoveCartTokofood(${'$'}params: RemoveCartTokofoodParam!) {
+        mutation RemoveCartTokofood(${'$'}params: CartGeneralRemoveCartParams) {
           cart_general_remove_cart(params: ${'$'}params) {
             data {
               success

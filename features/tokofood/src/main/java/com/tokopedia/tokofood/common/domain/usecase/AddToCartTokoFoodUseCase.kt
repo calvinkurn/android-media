@@ -13,90 +13,35 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import javax.inject.Inject
 
 private const val QUERY = """
-          mutation AddToCartTokofood(${'$'}params: ATCGeneralParams!) {
+          mutation AddToCartTokofood(${'$'}params: CartGeneralAddToCartParams) {
             cart_general_add_to_cart(params: ${'$'}params) {
-              message
-              status
               data {
                 success
                 message
-                business_data {
-                  business_id
-                  success
-                  message
-                  additional_grouping {
-                    detail {
-                      additional_group_id
-                      cart_ids
-                      message
-                    }
-                  }
-                  custom_response {
-                    bottomsheet {
-                      is_show_bottomsheet
-                      title
-                      description
-                      image_url
-                      buttons{
-                          text
-                          color
-                          action
-                          link
-                      }
-                    }
-                    shop {
-                      shop_id
-                      name
-                      distance
-                    }
-                  }
-                  cart_groups {
-                    cart_group_id
+                data {
+                  business_data {
+                    business_id
                     success
-                    carts {
-                      cart_id
-                      success
-                      product_id
-                      shop_id
-                      quantity
-                      metadata {
-                        notes
-                        variants {
-                          variant_id
-                          option_id
-                        }
+                    message
+                    additional_grouping {
+                      details {
+                        additional_group_id
+                        cart_ids
+                        message
                       }
-                      custom_response {
-                        category_id
-                        notes
-                        name
-                        description
-                        image_url
-                        original_price
-                        original_price_fmt
-                        discount_percentage
-                        variants {
-                          variant_id
-                          name
-                          rules {
-                            selection_rule {
-                              type
-                              max_quantity
-                              min_quantity
-                              required
-                            }
-                          }
-                          options {
-                            is_selected
-                            option_id
-                            name
-                            price
-                            price_fmt
-                            status
-                          }
-                        }
-                        price
-                        price_fmt
+                    }
+                    custom_response
+                    cart_groups {
+                      cart_group_id
+                      success
+                      carts {
+                        cart_id
+                        success
+                        product_id
+                        shop_id
+                        quantity
+                        metadata
+                        custom_response
                       }
                     }
                   }

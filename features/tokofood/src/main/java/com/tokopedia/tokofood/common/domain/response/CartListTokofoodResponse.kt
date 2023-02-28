@@ -33,7 +33,14 @@ data class CartGeneralCartListData(
     val data: CartListData = CartListData()
 ) {
 
-    fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS_INT
+    fun isSuccess(): Boolean = data.getTokofoodBusinessData().success == TokoFoodCartUtil.SUCCESS_STATUS_INT
+
+    fun getErrorMessage(): String =
+        if (success != TokoFoodCartUtil.SUCCESS_STATUS_INT) {
+            message
+        } else {
+            data.getTokofoodBusinessData().message
+        }
 
     /**
      * Get whether the components in the checkout page can be interactable
@@ -61,7 +68,6 @@ data class CartGeneralCartListData(
     }
 
     fun getRemoveUnavailableCartParam(): RemoveCartTokofoodParam {
-        // TODO: Add businessId
         val unavailableCartGroup =
             data.getTokofoodBusinessData().additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.UNAVAILABLE_SECTION }
         val isMultipleCartGroup = unavailableCartGroup?.additionalGroupChildIds?.isNotEmpty() == true
@@ -81,7 +87,7 @@ data class CartGeneralCartListData(
         return RemoveCartTokofoodParam(
             businessData = listOf(
                 RemoveCartTokofoodBusinessData(
-                    businessId = "",
+                    businessId = TokoFoodCartUtil.getBusinessId(),
                     cartGroups = listOf(
                         RemoveCartTokofoodCartGroup(
                             cartIds = cartIds
@@ -93,11 +99,10 @@ data class CartGeneralCartListData(
     }
 
     fun getRemoveAllCartParam(): RemoveCartTokofoodParam {
-        // TODO: Add businessId
         return RemoveCartTokofoodParam(
             businessData = listOf(
                 RemoveCartTokofoodBusinessData(
-                    businessId = "",
+                    businessId = TokoFoodCartUtil.getBusinessId(),
                     cartGroups = listOf(
                         RemoveCartTokofoodCartGroup(
                             cartIds = getProductListFromCart().map { it.cartId }
@@ -127,9 +132,8 @@ data class CartListData(
     @SerializedName("business_data")
     val businessData: List<CartListBusinessData> = listOf()
 ) {
-    // TODO: Check for businessId
     fun getTokofoodBusinessData(): CartListBusinessData {
-        return businessData.firstOrNull { it.businessId == String.EMPTY } ?: CartListBusinessData()
+        return businessData.firstOrNull { it.businessId == TokoFoodCartUtil.getBusinessId() } ?: CartListBusinessData()
     }
 }
 
@@ -137,9 +141,8 @@ data class CartListShoppingSummary(
     @SerializedName("business_breakdown")
     val businessBreakdowns: List<CartListBusinessBreakdown> = listOf(),
 ) {
-    // TODO: Check for businessId
     fun getTokofoodBusinessBreakdown(): CartListBusinessBreakdown {
-        return businessBreakdowns.firstOrNull { it.businessId == String.EMPTY } ?: CartListBusinessBreakdown()
+        return businessBreakdowns.firstOrNull { it.businessId == TokoFoodCartUtil.getBusinessId() } ?: CartListBusinessBreakdown()
     }
 }
 
@@ -264,7 +267,7 @@ data class CartListBusinessDataErrorTicker(
 )
 
 data class CartListBusinessDataAdditionalGrouping(
-    @SerializedName("detail")
+    @SerializedName("details")
     val details: List<CartListBusinessDataAdditionalGroupingDetail> = listOf()
 )
 

@@ -546,7 +546,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         launchCatchError(block = {
             checkoutTokoFoodResponse.value?.let { checkoutResponse ->
                 withContext(dispatcher.io) {
-                    // TODO: Change checkout general
                     checkoutGeneralTokoFoodUseCase.get().execute(checkoutResponse)
                 }.let { response ->
                     if (response.checkoutGeneralTokoFood.data.isSuccess()) {

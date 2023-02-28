@@ -33,10 +33,8 @@ data class CartGeneralPromoListDataData(
     @SerializedName("business_data")
     val businessData: List<CartGeneralPromoListBusinessData> = listOf()
 ) {
-
-    // TODO: Add businessId
     fun getTokofoodBusinessData(): CartGeneralPromoListBusinessData {
-        return businessData.firstOrNull { it.businessId == String.EMPTY } ?: CartGeneralPromoListBusinessData()
+        return businessData.firstOrNull { it.businessId == TokoFoodCartUtil.getBusinessId() } ?: CartGeneralPromoListBusinessData()
     }
 }
 

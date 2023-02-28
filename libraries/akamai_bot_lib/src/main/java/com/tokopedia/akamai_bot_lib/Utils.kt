@@ -62,7 +62,12 @@ val registeredGqlFunctions = mapOf(
     "playInteractiveAnswerQuiz" to "piaq",
     "checkout_general_v2" to "cogn",
     "checkout_general_v2_instant" to "cogn",
-    "PostATCLayout" to "PostATCLayout"
+    "PostATCLayout" to "PostATCLayout",
+    "cart_general_add_to_cart" to "cagn",
+    "cart_general_update_cart_quantity" to "cagn",
+    "cart_general_cart_list" to "cagn",
+    "cart_general_remove_cart" to "cagn",
+    "checkout_cart_general" to "cogn"
     )
 
 fun getAkamaiQuery(query: String): String? {

@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.common.domain.param
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class RemoveCartTokofoodParam (
     @SerializedName("business_data")
@@ -18,8 +19,7 @@ data class RemoveCartTokofoodParam (
             return RemoveCartTokofoodParam(
                 businessData = listOf(
                     RemoveCartTokofoodBusinessData(
-                        // TODO: Add BusinessId
-                        businessId = "",
+                        businessId = TokoFoodCartUtil.getBusinessId(),
                         cartGroups = listOf(
                             RemoveCartTokofoodCartGroup(
                                 cartGroupId = String.EMPTY,

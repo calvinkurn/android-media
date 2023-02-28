@@ -9,10 +9,8 @@ import com.tokopedia.tokofood.common.domain.response.CartGeneralUpdateCartQuanti
 import com.tokopedia.tokofood.common.domain.response.UpdateQuantityTokofoodResponse
 import javax.inject.Inject
 
-// TODO: Remove New
-
 private const val QUERY = """
-        mutation UpdateQuantityTokofood(${'$'}params: UpdateQuantityTokofoodParam!) {
+        mutation UpdateQuantityTokofood(${'$'}params: CartGeneralUpdateCartQuantityParams!) {
           cart_general_update_cart_quantity(params: ${'$'}params) {
             data {
               success

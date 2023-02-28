@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokofoodParamBusinessCheckoutState
@@ -66,8 +67,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
                             CheckoutGeneralTokofoodParamBusinessData(
                                 checkoutBusinessType = checkoutAdditionalData.checkoutBusinessId,
                                 checkoutDataType = checkoutAdditionalData.dataType,
-                                // TODO: Add businessId
-                                businessId = String.EMPTY,
+                                businessId = TokoFoodCartUtil.getBusinessId(),
                                 businessCheckoutState = CheckoutGeneralTokofoodParamBusinessCheckoutState(
                                     userAddress = tokofoodBusinessData.customResponse.userAddress,
                                     shop = tokofoodBusinessData.customResponse.shop,

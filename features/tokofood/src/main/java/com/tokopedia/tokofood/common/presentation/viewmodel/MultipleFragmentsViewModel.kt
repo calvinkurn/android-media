@@ -153,7 +153,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                                   source: String) {
         launchCatchError(block = {
             val removeCartParam = getRemoveAllProductParamByIdList()
-            if (removeCartParam.getIsCartIdsEmpty()) {
+            if (!removeCartParam.getIsCartIdsEmpty()) {
                 cartDataValidationState.emit(
                     UiEvent(state = UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART)
                 )

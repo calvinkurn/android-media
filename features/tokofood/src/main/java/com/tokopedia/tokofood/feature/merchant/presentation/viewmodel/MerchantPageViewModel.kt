@@ -12,6 +12,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
@@ -373,11 +374,10 @@ class MerchantPageViewModel @Inject constructor(
 
     private fun getCurrentQuantityUpdateParams(): List<UpdateQuantityTokofoodParam> {
         return _currentProductsWithUpdatedQuantity.entries.map {
-            // TODO: Add businessId
             UpdateQuantityTokofoodParam(
                 source = SOURCE,
                 businessData = UpdateQuantityTokofoodBusinessData(
-                    businessId = String.EMPTY,
+                    businessId = TokoFoodCartUtil.getBusinessId(),
                     carts = listOf(
                         UpdateQuantityTokofoodCart(
                             cartId = it.key,

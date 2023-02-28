@@ -410,11 +410,10 @@ object TokoFoodPurchaseUiModelMapper {
     }
 
     fun mapUiModelToUpdateQuantityParam(uiModels: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): UpdateQuantityTokofoodParam {
-        // TODO: Add businessId
         return UpdateQuantityTokofoodParam(
             source = SOURCE,
             businessData = UpdateQuantityTokofoodBusinessData(
-                businessId = String.EMPTY,
+                businessId = TokoFoodCartUtil.getBusinessId(),
                 carts = uiModels.map {
                     UpdateQuantityTokofoodCart(
                         cartId = it.cartId,

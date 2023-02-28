@@ -2,16 +2,10 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mapper
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
-import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
-import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
-import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
-import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartListCartMetadataVariant
-import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam

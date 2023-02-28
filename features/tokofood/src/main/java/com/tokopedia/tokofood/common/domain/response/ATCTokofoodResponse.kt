@@ -35,9 +35,8 @@ data class CartGeneralAddToCartDataData(
         return getTokofoodBusinessData().customResponse.bottomSheet.isShowBottomSheet
     }
 
-    // TODO: Check for businessId
     fun getTokofoodBusinessData(): CartListBusinessData {
-        return businessData.firstOrNull { it.businessId == String.EMPTY }
+        return businessData.firstOrNull { it.businessId == TokoFoodCartUtil.getBusinessId() }
             ?: CartListBusinessData()
     }
 

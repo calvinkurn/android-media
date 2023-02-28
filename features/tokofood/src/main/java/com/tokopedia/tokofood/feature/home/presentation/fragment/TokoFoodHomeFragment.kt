@@ -712,7 +712,7 @@ class TokoFoodHomeFragment :
         onOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
-        activityViewModel?.loadCartList(SOURCE)
+        activityViewModel?.loadCartList(MINI_CART_SOURCE)
         stopRenderPerformanceMonitoring()
     }
 

@@ -180,6 +180,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     private var merchantId: String = ""
     private var productId: String = ""
     private var currentPromoName: String? = null
+    private var hasAppliedProductRendered = false
+    private var isAbleToUpdateQuantity = false
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -292,11 +294,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onResume() {
+        isAbleToUpdateQuantity = false
         super.onResume()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
         )
+        hasAppliedProductRendered = false
         applySelectedProducts()
     }
 
@@ -487,11 +491,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun applySelectedProducts() {
+    private fun applySelectedProducts(applyOnLoadCartFirstTime: Boolean = false) {
         activityViewModel?.hasCartUpdatedIntoLatestState?.value?.let { hasCartUpdated ->
-            if (hasCartUpdated) {
+            if (hasCartUpdated || applyOnLoadCartFirstTime) {
                 viewModel.getAppliedProductSelection()?.let { appliedProductList ->
                     renderProductList(appliedProductList)
+                    hasAppliedProductRendered = true
                 }
             }
         }
@@ -657,6 +662,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             isShopClosed,
                             foodCategories
                         )
+                        viewModel.productListItems = productListItems.toMutableList()
                         // set default category filter selection
                         viewModel.filterNameSelected =
                             productListItems.firstOrNull()?.productCategory?.title.orEmpty()
@@ -728,6 +734,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private suspend fun collectCartDataFlow() {
         activityViewModel?.cartDataFlow?.collect { cartData ->
             viewModel.selectedProducts = cartData?.data?.getTokofoodBusinessData()?.getAvailableSectionProducts().orEmpty()
+            if (!viewModel.selectedProducts.isNullOrEmpty() && !hasAppliedProductRendered) {
+                applySelectedProducts(true)
+            }
         }
     }
 
@@ -891,7 +900,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private suspend fun collectUpdateQuantity() {
         viewModel.updateQuantityParam.collect { updateParam ->
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+            if (isAbleToUpdateQuantity) {
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1292,6 +1303,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
+            isAbleToUpdateQuantity = true
             viewModel.updateQuantity(cartId, quantity)
         }
     }
@@ -1306,6 +1318,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
+            isAbleToUpdateQuantity = true
             viewModel.updateQuantity(cartId, quantity)
         }
     }
@@ -1335,6 +1348,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
+            isAbleToUpdateQuantity = true
             viewModel.updateQuantity(cartId, quantity)
         }
     }
@@ -1410,6 +1424,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         customOrderDetail: CustomOrderDetail
     ) {
         customOrderDetail.qty = quantity
+        isAbleToUpdateQuantity = true
         viewModel.updateQuantity(customOrderDetail.cartId, customOrderDetail.qty)
     }
 

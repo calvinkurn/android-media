@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.unifycomponents.QuantityEditorUnify
