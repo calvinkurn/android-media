@@ -84,23 +84,24 @@ class VideoViewComponent(
             val lParams = flVideoWrapper.layoutParams as ConstraintLayout.LayoutParams
 
             lParams.height = if (videoOrientation is VideoOrientation.Horizontal && !screenOrientation.isLandscape) {
-                Log.d("Video Params", "Horizontal")
                 val heightRatioDouble = videoOrientation.heightRatio.toDouble()
                 (heightRatioDouble/videoOrientation.widthRatio * getScreenWidth()).toInt()
             } else {
-                Log.d("Video Params", "Vertical")
                 ConstraintLayout.LayoutParams.MATCH_PARENT
             }
             flVideoWrapper.layoutParams = lParams
         }
 
         fun configureBackground() {
-            rootView.setBackgroundColor(MethodChecker.getColor(rootView.context,
+            rootView.setBackgroundColor(
+                MethodChecker.getColor(
+                    rootView.context,
                     if (videoOrientation.isHorizontal) {
                         if (!screenOrientation.isLandscape) R.color.play_dms_video_background
                         else R.color.play_dms_background
                     } else R.color.transparent
-            ))
+                )
+            )
         }
 
         configureVideo()
