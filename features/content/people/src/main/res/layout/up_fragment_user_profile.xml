@@ -6,31 +6,24 @@
     android:background="@color/Unify_Background"
     android:measureAllChildren="false">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/root_container"
+    <ViewFlipper
+        android:id="@+id/view_flipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ViewFlipper
-            android:id="@+id/view_flipper"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <include
+            android:id="@+id/main_layout"
+            layout="@layout/up_layout_user_profile_header" />
 
-            <include
-                android:id="@+id/main_layout"
-                layout="@layout/up_layout_user_profile_header" />
+        <include layout="@layout/up_shimmer_user_profile_header" />
 
-            <include layout="@layout/up_shimmer_user_profile_header" />
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/user_profile_error_margin" />
 
-            <com.tokopedia.globalerror.GlobalError
-                android:id="@+id/global_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/user_profile_error_margin" />
-
-        </ViewFlipper>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ViewFlipper>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

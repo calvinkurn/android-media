@@ -569,7 +569,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.headerProfile.title = curr.name
         mainBinding.headerProfile.subtitle = curr.username
-        mainBinding.headerProfile.alpha = 1F
+        mainBinding.headerProfile.visible()
 
         binding.viewFlipper.displayedChild = PAGE_CONTENT
 
