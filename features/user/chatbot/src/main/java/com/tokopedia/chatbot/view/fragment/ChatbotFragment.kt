@@ -1266,6 +1266,7 @@ class ChatbotFragment :
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
         handleReplyBox(false)
         bigReplyBox?.setText(text)
+        bigReplyBox?.shouldShowAddAttachmentButton(showAddAttachmentMenu)
         replyBoxBottomSheetPlaceHolder = placeholder
         replyBoxBottomSheetTitle = text
     }
@@ -1621,13 +1622,15 @@ class ChatbotFragment :
     }
 
     override fun showErrorToast(it: Throwable) {
-        view?.let { mView -> Toaster.showErrorWithAction(
-            mView,
-            it.message.toString(),
-            Snackbar.LENGTH_LONG,
-            SNACK_BAR_TEXT_OK,
-            View.OnClickListener { }
-        ) }
+        view?.let { mView ->
+            Toaster.showErrorWithAction(
+                mView,
+                it.message.toString(),
+                Snackbar.LENGTH_LONG,
+                SNACK_BAR_TEXT_OK,
+                View.OnClickListener { }
+            )
+        }
     }
 
     override fun onReceiveChatSepratorEvent(
@@ -2375,7 +2378,12 @@ class ChatbotFragment :
     override fun goToBigReplyBoxBottomSheet() {
         activity?.let {
             val bottomSheetUnify = BigReplyBoxBottomSheet
-                .newInstance(it, replyBoxBottomSheetPlaceHolder, replyBoxBottomSheetTitle)
+                .newInstance(
+                    it,
+                    replyBoxBottomSheetPlaceHolder,
+                    replyBoxBottomSheetTitle,
+                    showAddAttachmentMenu
+                )
             BigReplyBoxBottomSheet.replyBoxClickListener = this
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")

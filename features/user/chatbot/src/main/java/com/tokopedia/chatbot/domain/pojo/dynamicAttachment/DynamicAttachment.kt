@@ -8,6 +8,17 @@ data class DynamicAttachment(
 ) {
     data class DynamicAttachmentAttribute(
         @SerializedName("attribute")
-        val dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?
-    )
+        val dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?,
+        @SerializedName("fallback")
+        val dynamicAttachmentFallback: DynamicAttachmentFallback?,
+        @SerializedName("is_log_history")
+        val isLogHistory: Boolean?
+    ) {
+        data class DynamicAttachmentFallback(
+            @SerializedName("html")
+            val html: String?,
+            @SerializedName("message")
+            val message: String?
+        )
+    }
 }

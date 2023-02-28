@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.domain.mapper
 
 import android.text.TextUtils
+import android.util.Log
 import androidx.annotation.NonNull
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -11,6 +12,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
@@ -21,6 +23,7 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -39,6 +42,7 @@ import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -71,8 +75,40 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_REPLY_BUBBLE -> convertToReplyBubble(pojo, jsonAttributes)
             AttachmentType.Companion.TYPE_INVOICE_SEND -> convertToSendInvoice(pojo, jsonAttributes)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(pojo, jsonAttributes)
+            DYNAMIC_ATTACHMENT -> convertToDynamicAttachment(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
+    }
+
+    private fun convertToDynamicAttachment(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
+
+            val currentPojo = GsonBuilder().create().fromJson(
+                pojo.attachment?.attributes,
+                DynamicAttachment::class.java
+            )
+
+
+//        var fallbackMessage = ""
+//        currentPojo.attachment.fallback.let {
+//            fallbackMessage = it.message
+//        }
+//        return FallbackAttachmentUiModel.Builder()
+//            .withResponseFromGQL(chatItemPojoByDateByTime)
+//            .withMsg(fallbackMessage)
+//            .withAttachment(chatItemPojoByDateByTime.attachment)
+//            .build()
+  //      return FallbackAttachmentUiModel.Builder().withResponseFromWs(pojo).withMsg("Tatakaeeeeee").build()
+
+
+        Log.d("FATAL", "convertToFallBackModel: $currentPojo")
+        var fallbackMessage = ""
+        currentPojo.dynamicAttachmentAttribute?.dynamicAttachmentFallback?.message?.let {
+            fallbackMessage = it
+        }
+        return FallbackAttachmentUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withMsg(fallbackMessage)
+            .build()
     }
 
     private fun convertToSendInvoice(pojo: ChatSocketPojo, jsonAttributes: JsonObject): AttachInvoiceSentUiModel {
@@ -315,4 +351,5 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             .withParentReply(pojoAttribute.parentReply)
             .build()
     }
+    
 }

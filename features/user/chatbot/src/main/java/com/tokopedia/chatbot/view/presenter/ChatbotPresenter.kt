@@ -334,8 +334,7 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 val attachmentType = chatResponse?.attachment?.type
                 if (attachmentType == SESSION_CHANGE ||
-                    attachmentType == UPDATE_TOOLBAR ||
-                    attachmentType == DYNAMIC_ATTACHMENT
+                    attachmentType == UPDATE_TOOLBAR
                 ) {
                     return
                 }
