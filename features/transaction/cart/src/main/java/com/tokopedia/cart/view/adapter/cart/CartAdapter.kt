@@ -567,6 +567,7 @@ class CartAdapter @Inject constructor(
             if (item is CartEmptyHolderData ||
                 item is CartShopHolderData ||
                 item is CartItemHolderData ||
+                item is CartShopBottomHolderData ||
                 item is ShipmentSellerCashbackModel ||
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
@@ -593,6 +594,7 @@ class CartAdapter @Inject constructor(
             if (item is CartEmptyHolderData ||
                 item is CartShopHolderData ||
                 item is CartItemHolderData ||
+                item is CartShopBottomHolderData ||
                 item is ShipmentSellerCashbackModel ||
                 item is CartWishlistHolderData ||
                 item is DisabledItemHeaderHolderData ||
@@ -618,6 +620,7 @@ class CartAdapter @Inject constructor(
                 if (item is CartEmptyHolderData ||
                     item is CartShopHolderData ||
                     item is CartItemHolderData ||
+                    item is CartShopBottomHolderData ||
                     item is ShipmentSellerCashbackModel ||
                     item is DisabledItemHeaderHolderData ||
                     item is DisabledReasonHolderData ||
@@ -652,6 +655,7 @@ class CartAdapter @Inject constructor(
             if (item is CartEmptyHolderData ||
                 item is CartShopHolderData ||
                 item is CartItemHolderData ||
+                item is CartShopBottomHolderData ||
                 item is ShipmentSellerCashbackModel ||
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
@@ -713,7 +717,9 @@ class CartAdapter @Inject constructor(
 
     fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData) {
 //        val cartShopHolderData = getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
-        loop@ for ((id, data) in cartDataList.withIndex()) {
+        var updatedShopData: CartShopHolderData? = null
+        var shopBottomIndex: Int? = null
+        for ((id, data) in cartDataList.withIndex()) {
             if (data is CartShopHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
                 data.productUiModelList.forEachIndexed { index, item ->
                     if ((id + 1 + index) == position) {
@@ -738,7 +744,14 @@ class CartAdapter @Inject constructor(
                     data.isAllSelected = true
                     data.isPartialSelected = false
                 }
+                updatedShopData = data
+            } else if (data is CartShopBottomHolderData && data.shopData.cartString == cartItemHolderData.cartString && updatedShopData != null) {
+                shopBottomIndex = id
+                break
             }
+        }
+        if (shopBottomIndex != null && updatedShopData != null) {
+            cartDataList[shopBottomIndex] = CartShopBottomHolderData(updatedShopData)
         }
     }
 
@@ -976,7 +989,7 @@ class CartAdapter @Inject constructor(
 
     fun getCartShopHolderIndexByCartString(cartString: String): Int {
         loop@ for ((index, any) in cartDataList.withIndex()) {
-            if (any is CartShopHolderData && any.cartString.equals(cartString)) {
+            if (any is CartShopHolderData && any.cartString == cartString) {
                 return index
             }
         }
@@ -1437,7 +1450,7 @@ class CartAdapter @Inject constructor(
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
                         indices.add(index)
-                        actionListener.checkCartShopGroupTicker(data)
+//                        actionListener.checkCartShopGroupTicker(data)
                     }
                 }
                 is CartItemHolderData -> {
@@ -1448,6 +1461,14 @@ class CartAdapter @Inject constructor(
                         }
                     } else {
                         return@forEachIndexed
+                    }
+                }
+                is CartShopBottomHolderData -> {
+                    if (data.shopData.isAllSelected != cheked) {
+                        data.shopData.isAllSelected = cheked
+                        data.shopData.isPartialSelected = false
+                        indices.add(index)
+                        actionListener.checkCartShopGroupTicker(data.shopData)
                     }
                 }
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {

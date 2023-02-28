@@ -116,7 +116,7 @@ data class CartShopHolderData(
 }
 
 data class CartShopBottomHolderData(
-    var shopData: CartShopHolderData
+    val shopData: CartShopHolderData
 )
 
 data class CartShopGroupTickerData(
@@ -148,7 +148,7 @@ data class CartShopGroupTickerData(
 class CartShopCoachmarkPlusData(
     val isShown: Boolean = false,
     val title: String = "",
-    val content: String = "",
+    val content: String = ""
 )
 
 enum class CartShopGroupTickerState {
