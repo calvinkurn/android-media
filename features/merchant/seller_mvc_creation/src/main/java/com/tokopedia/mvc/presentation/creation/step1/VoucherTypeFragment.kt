@@ -158,7 +158,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     private fun handleAction(action: VoucherCreationStepOneAction) {
         when (action) {
             is VoucherCreationStepOneAction.ShowIneligibleState -> {
-                showIneligibleState(action.isVoucherProduct)
+                showIneligibleState(action.isVoucherProduct, action.message)
             }
             is VoucherCreationStepOneAction.NavigateToNextStep -> {
                 navigateToNextStep(action.pageMode, action.voucherConfiguration)
