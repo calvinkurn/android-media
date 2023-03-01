@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +22,10 @@ import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsM
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
+import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -28,9 +33,6 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedModel
-import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
-import com.tokopedia.feedplus.presentation.model.FeedMenuItem
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -46,7 +48,7 @@ import com.tokopedia.feedplus.R as feedR
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
-class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBottomSheet.Listener {
+class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBottomSheet.Listener, ProductItemInfoBottomSheet.Listener {
 
     private var binding: FragmentFeedImmersiveBinding? = null
 
@@ -62,8 +64,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
@@ -72,6 +72,10 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        activity?.run {
+//            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
+//            feedMainViewModel = viewModelProvider[FeedMainViewModel::class.java]
+//        }
 
         arguments?.let {
             data = it.getParcelable(ARGUMENT_DATA)
@@ -158,17 +162,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
-    override fun onMenuClicked(model: FeedCardModel) {
-        activity?.let {
-            feedMenuSheet =
-                FeedThreeDotsMenuBottomSheet.getFragment(it.supportFragmentManager, it.classLoader)
-            feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(), model.id)
-            feedMenuSheet.show(it.supportFragmentManager)
-        }
-    }
-
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
+    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
             FeedMenuIdentifier.LAPORKAN -> {
                 if (!userSession.isLoggedIn) {
@@ -243,7 +237,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
-    override fun onMenuClicked(model: FeedModel) {
+    override fun onMenuClicked(model: FeedCardModel) {
         activity?.let {
             feedMenuSheet = ContentThreeDotsMenuBottomSheet
                 .getFragment(it.supportFragmentManager, it.classLoader)
@@ -280,24 +274,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         return items
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
-        when(feedMenuItem.type){
-            FeedMenuIdentifier.LAPORKAN -> {
-                if (!userSession.isLoggedIn) {
-                    onGoToLogin()
-                } else {
-                    feedMenuSheet.showReportLayoutWhenLaporkanClicked()
-                    Toast.makeText(context, "Laporkan - onMenuItemClick", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            FeedMenuIdentifier.MODE_NONTON -> {
-                //TODO add code for clear mode
-                Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         const val REQUEST_REPORT_POST_LOGIN = 1201
@@ -309,5 +285,69 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
                 putParcelable(ARGUMENT_DATA, data)
             }
         }
+    }
+
+    override fun onProductTagClicked(model: FeedCardModel) {
+        val productTagBS = ProductItemInfoBottomSheet()
+        productTagBS.show(
+            childFragmentManager,
+            this,
+            ProductBottomSheetData(
+//                products = feedXGetActivityProductsResponse.products
+                postId = model.id,
+                shopId = model.author.id,
+//                postType = feedXCard.typename,
+//                isFollowed = feedXCard.followers.isFollowed,
+//                positionInFeed = postPosition,
+//                playChannelId = feedXCard.playChannelID,
+//                shopName = feedXCard.author.name,
+//                mediaType = media?.type ?: "",
+//                saleStatus = feedXCard.campaign.status,
+//                saleType = feedXCard.campaign.name,
+//                hasVoucher = feedXCard.hasVoucher,
+//                authorType = feedXCard.author.type.toString()
+            ),
+            viewModelFactory = viewModelFactory
+        )
+
+    }
+
+    override fun onBottomSheetThreeDotsClicked(
+        item: ProductPostTagModelNew,
+        context: Context,
+        shopId: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTaggedProductCardImpressed(
+        activityId: String,
+        postTagItemList: List<FeedXProduct>,
+        type: String,
+        shopId: String,
+        isFollowed: Boolean,
+        mediaType: String,
+        hasVoucher: Boolean,
+        authorType: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTaggedProductCardClicked(
+        positionInFeed: Int,
+        redirectUrl: String,
+        postTagItem: FeedXProduct,
+        itemPosition: Int,
+        mediaType: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
+        TODO("Not yet implemented")
     }
 }
