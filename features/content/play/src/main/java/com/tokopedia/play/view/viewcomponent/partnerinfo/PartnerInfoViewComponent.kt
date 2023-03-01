@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewcomponent.partnerinfo
 
+import android.util.Log
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +27,8 @@ class PartnerInfoViewComponent(
         btnFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
         }
+        val rootWidth = rootView.measuredWidth
+        Log.d("sukses width", "${rootView.measuredWidth} -- ${rootView.width}")
     }
 
     fun setInfo(info: PlayPartnerInfo) {
