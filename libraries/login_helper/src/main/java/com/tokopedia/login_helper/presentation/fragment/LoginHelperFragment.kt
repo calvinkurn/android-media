@@ -1,6 +1,8 @@
 package com.tokopedia.login_helper.presentation.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
-import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.login_helper.presentation.adapter.LoginHelperRecyclerAdapter
 import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginHelperClickListener
@@ -69,6 +70,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
         binding?.apply {
             setUpView()
             handleChipClick()
+            bindSearch()
         }
         observeUiState()
         observeUiAction()
@@ -103,7 +105,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
 
     private fun handleUiState(state: LoginHelperUiState) {
         setEnvTypeChip(state.envType)
-        handleLoginUserDataList(state.loginDataList)
+        handleLoginUserDataList(state)
         handleLoginToken(state.loginToken)
         handleProfileResponse(state.profilePojo)
     }
@@ -154,6 +156,10 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
         )
     }
 
+    private fun FragmentLoginHelperBinding.bindSearch() {
+        searchBar.searchBarTextField.addTextChangedListener(getTextListener())
+    }
+
     private fun HeaderUnify.setUpHeader() {
         title =
             context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_header_title)
@@ -169,13 +175,24 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
         }
     }
 
-    private fun handleLoginUserDataList(loginDataList: Result<LoginDataUiModel>?) {
-        when(loginDataList) {
-            is Success -> {
-                handleLoginUserDataListSuccess(loginDataList.data.users)
+    private fun handleLoginUserDataList(state: LoginHelperUiState) {
+        if (state.searchText.isEmpty()) {
+            when (val loginDataList = state.loginDataList) {
+                is Success -> {
+                    handleLoginUserDataListSuccess(loginDataList.data.users)
+                }
+                is Fail -> {
+                    handleLoginUserDataListFailure(loginDataList.throwable)
+                }
             }
-            is Fail -> {
-                handleLoginUserDataListFailure(loginDataList.throwable)
+        } else {
+            when (val loginDataList = state.filteredUserList) {
+                is Success -> {
+                    handleLoginUserDataListSuccess(loginDataList.data.users)
+                }
+                is Fail -> {
+                    handleLoginUserDataListFailure(loginDataList.throwable)
+                }
             }
         }
     }
@@ -273,5 +290,23 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
 
     override fun onClickUserData(data: UserDataUiModel?) {
         Toast.makeText(context,"Tatakae ${data?.email}", Toast.LENGTH_SHORT).show()
+    }
+
+    fun getMessage(): String {
+        return binding?.searchBar?.searchBarTextField?.text?.toString().toBlankOrString()
+    }
+
+    private fun getTextListener(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.processEvent(LoginHelperEvent.QueryEmail(getMessage()))
+            }
+        }
     }
 }

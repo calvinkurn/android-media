@@ -9,5 +9,7 @@ data class LoginHelperUiState(
     val envType: LoginHelperEnvType = LoginHelperEnvType.STAGING,
     val loginDataList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null,
     val loginToken: com.tokopedia.usecase.coroutines.Result<LoginToken>? = null,
-    val profilePojo: com.tokopedia.usecase.coroutines.Result<ProfilePojo>? = null
+    val profilePojo: com.tokopedia.usecase.coroutines.Result<ProfilePojo>? = null,
+    val searchText: String = "",
+    val filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null
 )

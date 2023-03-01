@@ -72,6 +72,9 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.LoginUser -> {
                 loginUser(event.email, event.password)
             }
+            is LoginHelperEvent.QueryEmail -> {
+                queryForGivenEmail(event.email)
+            }
         }
     }
 
@@ -100,7 +103,8 @@ class LoginHelperViewModel @Inject constructor(
                 UserDataUiModel("pbs-abc.yui@tokopedia.com", "asd" , "iuasdjhas"),
                 UserDataUiModel("sourav.saikia+01@tokopedia.com", "asd" , "asedas"),
                 UserDataUiModel("eren.yeager+01@tokopedia.com", "asd" , "qwert"),
-                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "asd" , "as"),
+                UserDataUiModel("pbs-bagas.priyadi+03@tokopedia.com", "asd" , "as"),
+                UserDataUiModel("sourav.pbs-saikia+01@tokopedia.com", "asd" , "asedas"),
             )
         )
     }
@@ -170,7 +174,7 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
-    private fun updateProfileResponse(profilePojo: com.tokopedia.usecase.coroutines.Result<ProfilePojo>) {
+    private fun updateProfileResponse(profilePojo: Result<ProfilePojo>) {
         _uiState.update {
             it.copy(
                 profilePojo = profilePojo
@@ -178,7 +182,7 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
-    private fun updateUserDataList(userDataList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>) {
+    private fun updateUserDataList(userDataList: Result<LoginDataUiModel>) {
         _uiState.update {
             it.copy(
                 loginDataList = userDataList
@@ -198,6 +202,40 @@ class LoginHelperViewModel @Inject constructor(
     private fun handleBackButtonTap() {
         _uiAction.tryEmit(LoginHelperAction.TapBackAction)
     }
-}
 
-class LoginHelperException(): Exception()
+    private fun queryForGivenEmail(email: String) {
+        _uiState.update {
+            it.copy(
+                searchText = email
+            )
+        }
+        searchForFilteredUser()
+    }
+
+    private fun searchForFilteredUser() {
+        val searchEmail =  _uiState.value.searchText
+        var list: List<UserDataUiModel>? = emptyList()
+        var filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null
+        _uiState.value.loginDataList.apply {
+            when(this) {
+                is Success -> {
+                    list = this.data.users?.filter { userDataUiModel ->
+                        userDataUiModel.email?.contains(searchEmail) == true
+                    }
+
+                    filteredUserList = Success(LoginDataUiModel(list?.size, list))
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+
+        _uiState.update {
+            it.copy(
+                filteredUserList = filteredUserList
+            )
+        }
+
+    }
+}

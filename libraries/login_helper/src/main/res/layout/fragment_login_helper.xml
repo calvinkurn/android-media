@@ -42,12 +42,24 @@
         app:layout_constraintStart_toEndOf="@+id/login_helper_chip_staging"
         app:layout_constraintTop_toBottomOf="@id/header" />
 
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/search_bar"
+        app:search_bar_placeholder="@string/login_helper_enter_email"
+        app:search_bar_clearable="true"
+        app:search_bar_show_icon="false"
+        app:layout_constraintTop_toBottomOf="@id/login_helper_chip_staging"/>
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="4dp"
         android:id="@+id/divider"
-        app:layout_constraintTop_toBottomOf="@id/login_helper_chip_staging"
-        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        android:layout_marginTop="4dp"
         />
 
     <com.tokopedia.unifycomponents.LoaderUnify
