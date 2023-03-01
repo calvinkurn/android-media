@@ -47,7 +47,8 @@ fun NestTypography(
     textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    textAlign: TextAlign? = null
 ) {
     Text(
         text = text,
@@ -55,7 +56,8 @@ fun NestTypography(
         style = textStyle,
         maxLines = maxLines,
         overflow = overflow,
-        onTextLayout = onTextLayout
+        onTextLayout = onTextLayout,
+        textAlign = textAlign
     )
 }
 
@@ -66,7 +68,8 @@ fun NestTypography(
     textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    textAlign: TextAlign? = null
 ) {
     if (text is AnnotatedString) {
         Text(
@@ -75,7 +78,8 @@ fun NestTypography(
             style = textStyle,
             maxLines = maxLines,
             overflow = overflow,
-            onTextLayout = onTextLayout
+            onTextLayout = onTextLayout,
+            textAlign = textAlign
         )
     } else {
         Text(
@@ -84,7 +88,8 @@ fun NestTypography(
             style = textStyle,
             maxLines = maxLines,
             overflow = overflow,
-            onTextLayout = onTextLayout
+            onTextLayout = onTextLayout,
+            textAlign = textAlign
         )
     }
 }

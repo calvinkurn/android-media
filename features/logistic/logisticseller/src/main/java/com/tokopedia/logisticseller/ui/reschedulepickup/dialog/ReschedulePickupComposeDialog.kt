@@ -4,11 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -17,8 +19,10 @@ import androidx.compose.ui.window.Dialog
 import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.common_compose.utils.toAnnotatedString
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.data.model.SaveRescheduleModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 @Composable
 fun RescheduleResultDialog(
@@ -54,26 +58,34 @@ private fun ResultDialog(
     Dialog(
         onDismissRequest = onDismiss
     ) {
-        Card(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 16.dp)) {
+        Card(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
             Column(
                 modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painterResource(id = imageId),
+                    modifier = Modifier.size(80.dp).padding(vertical = 8.dp),
                     contentDescription = "result reschedule pickup"
                 )
                 NestTypography(
+                    modifier = Modifier.padding(vertical = 8.dp),
                     text = title,
                     textStyle = NestTheme.typography.heading2.copy(NestTheme.colors.NN._950),
                     textAlign = TextAlign.Center
                 )
-                NestTypography(
-                    text = subtitle,
-                    textStyle = NestTheme.typography.body2.copy(NestTheme.colors.NN._950),
-                    textAlign = TextAlign.Center
-                )
-                NestButton(text = buttonText) {
+                HtmlLinkHelper(
+                    LocalContext.current,
+                    subtitle
+                ).spannedString?.toAnnotatedString()?.run {
+                    NestTypography(
+                        text = this,
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        textStyle = NestTheme.typography.body2.copy(NestTheme.colors.NN._950),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                NestButton(text = buttonText, modifier = Modifier.padding(top = 16.dp)) {
                     onDialogButtonClicked()
                 }
             }
