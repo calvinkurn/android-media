@@ -12,10 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.principles.NestButton
+import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
-
 
 @SuppressLint("UnsupportedDarkModeColor")
 @Composable
@@ -48,7 +47,7 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(horizontal = 72.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),

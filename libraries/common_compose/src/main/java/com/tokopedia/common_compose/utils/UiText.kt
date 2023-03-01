@@ -49,6 +49,9 @@ fun UiText.getString(): String? {
     return this.getString(LocalContext.current)
 }
 
+/**
+ * A helper function to convert html tags to [AnnotatedString].
+ */
 @Composable
 fun CharSequence.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
@@ -66,6 +69,9 @@ fun CharSequence.toAnnotatedString(
     }
 }
 
+/**
+ * A helper function to convert html tags to [AnnotatedString].
+ */
 @Composable
 fun Spanned.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
@@ -98,7 +104,8 @@ fun Spanned.toAnnotatedString(
                         )
                     }
                 ),
-                start, end
+                start,
+                end
             )
         }
         styleSpans.forEach { styleSpan ->
