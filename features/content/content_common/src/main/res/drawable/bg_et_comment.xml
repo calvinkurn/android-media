@@ -3,7 +3,6 @@
     android:shape="rectangle">
     <corners android:radius="20dp" />
     <padding
-        android:bottom="6dp"
         android:left="@dimen/unify_space_16"
         android:right="@dimen/unify_space_8"
         android:top="@dimen/unify_space_8" />

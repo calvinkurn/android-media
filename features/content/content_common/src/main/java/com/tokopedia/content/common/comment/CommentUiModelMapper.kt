@@ -51,6 +51,7 @@ class CommentUiModelMapper @Inject constructor() {
             childCount = comment.repliesCountFmt,
             isOwner = comment.isCommentOwner,
             isReportAllowed = comment.allowReport,
+            userId = comment.userId,
         )
     }
 
@@ -67,6 +68,7 @@ class CommentUiModelMapper @Inject constructor() {
             childCount = "0",
             isOwner = false,
             isReportAllowed = false,
+            userId = comment.userInfo.userId,
         )
     }
 

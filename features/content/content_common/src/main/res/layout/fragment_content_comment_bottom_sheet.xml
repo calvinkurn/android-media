@@ -47,14 +47,22 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/new_comment"
-            android:hint="@string/content_comment_edit_text_hint"
-            android:background="@drawable/bg_et_comment"
             android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl4"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/content_common_space_8"
             android:layout_weight="1"
-            android:inputType="textMultiLine" />
+            android:background="@drawable/bg_et_comment"
+            android:hint="@string/content_comment_edit_text_hint"
+            android:inputType="textMultiLine"
+            android:paddingStart="@dimen/unify_space_16"
+            android:paddingTop="6dp"
+            android:paddingEnd="@dimen/content_common_space_12"
+            android:paddingBottom="6dp"
+            android:scrollbars="vertical"
+            android:tag=""
+            android:textSize="@dimen/unify_font_14"
+            android:textStyle="normal" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_comment_send"

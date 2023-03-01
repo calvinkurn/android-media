@@ -19,4 +19,5 @@ sealed class CommentEvent {
     object OpenReportEvent : CommentEvent()
 
     object ReportSuccess : CommentEvent()
+    object ReplySuccess: CommentEvent()
 }

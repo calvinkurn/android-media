@@ -87,13 +87,6 @@ class CommentViewHolder {
             fun onProfileClicked(appLink: String)
             fun onUserNameClicked(appLink: String)
         }
-
-        companion object {
-            private const val ID = "id"
-            private const val USER_TYPE = "userType"
-            private const val USERNAME = "userName"
-            private const val OWNER_APP_LINK = "appLink"
-        }
     }
 
     internal class Empty(

@@ -290,8 +290,10 @@ class ContentCommentViewModel @AssistedInject constructor(
                     val newList = it.list.toMutableList().apply {
                         add(0, result)
                     }
-                    it.copy(list = newList)
+                    it.copy(list = newList) //scroll to top
                 }
+                _event.emit(CommentEvent.ReplySuccess)
+
             }){
                 _event.emit(
                     CommentEvent.ShowErrorToaster(

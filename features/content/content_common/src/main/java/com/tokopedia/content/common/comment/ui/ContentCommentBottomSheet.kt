@@ -102,6 +102,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
             override fun afterTextChanged(p0: Editable?) {
                 binding.viewCommentSend.isEnabled = p0?.isNotBlank().orFalse()
+
+//
             }
         }
     }
@@ -154,9 +156,10 @@ class ContentCommentBottomSheet @Inject constructor(
             viewModel.submitAction(CommentAction.EditTextCLicked)
         }
         binding.ivCommentSend.setOnClickListener {
-            viewModel.submitAction(CommentAction.ReplyComment(binding.newComment.text.toString(), CommentType.Parent))// adjust origin
+            viewModel.submitAction(CommentAction.ReplyComment(binding.newComment.text.toString(), TagMentionBuilder.isChildOrParent(binding.newComment.text.toString(), binding.newComment.tag.toString())))
         }
         Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.unify_space_48)
+        binding.newComment.addTextChangedListener(textWatcher)
     }
 
     private fun observeData() {
@@ -221,6 +224,10 @@ class ContentCommentBottomSheet @Inject constructor(
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
                     CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
+                    CommentEvent.ReportSuccess -> {
+                        binding.newComment.text = null
+                        binding.rvComment.scrollToPosition(0)
+                    }
                 }
             }
         }
@@ -260,7 +267,10 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
-        viewModel.submitAction(CommentAction.EditTextCLicked)
+        binding.newComment.setText("")
+        val mention = TagMentionBuilder.createNewMentionTag(item)
+        binding.newComment.tag = item.id
+        binding.newComment.setText(mention)
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {

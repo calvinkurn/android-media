@@ -8,6 +8,7 @@ import android.text.style.ClickableSpan
 import android.view.View
 import androidx.annotation.ColorInt
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.feedcomponent.util.buildSpannedString
 
@@ -60,6 +61,30 @@ class MentionedSpanned(
 
 object TagMentionBuilder {
     private const val MENTION_CHAR = "@"
+    private val regex = """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
+
+    fun createNewMentionTag(item: CommentUiModel.Item): String {
+        val userType = if (item.isOwner) "seller" else "user"
+        return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR$userType$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR}"
+    }
+
+    fun isChildOrParent(text: String, commentId: String): CommentType {
+        val find = regex.findAll(text)
+        return if (find.count() == 3) {
+            CommentType.Child(commentId)
+        } else {
+            CommentType.Parent
+        }
+    }
+
+    fun spanText(text: String): String {
+        val find = regex.findAll(text)
+        val length = find.sumOf { it.value.length } + 5 // for escape char
+        return find.elementAtOrNull(2)?.value?.removeSuffix(MENTION_CHAR) + text.substring(
+            length,
+            text.length
+        )
+    }
 
     fun getMentionTag(
         item: CommentUiModel.Item,
@@ -76,8 +101,6 @@ object TagMentionBuilder {
             listener = parentListener
         )
         return try {
-            val regex =
-                """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
             var (id, type, name) = Triple("", "", "")
             val find = regex.findAll(item.content)
             if (find.count() > 0) {
