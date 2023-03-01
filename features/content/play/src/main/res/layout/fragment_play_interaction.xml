@@ -136,7 +136,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/view_share_experience"
-        app:layout_constraintBottom_toTopOf="@id/view_tagged_product_label"
+        app:layout_constraintBottom_toTopOf="@id/view_play_widget_address"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintWidth_default="wrap"
@@ -387,21 +387,6 @@
         app:layout_constraintEnd_toEndOf="@id/view_share_experience"
         app:layout_constraintStart_toStartOf="@+id/view_share_experience"
         app:layout_goneMarginEnd="@dimen/spacing_lvl3" />
-
-    <include
-        android:id="@+id/view_tagged_product_label"
-        layout="@layout/view_tagged_product_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_8"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
-        app:layout_constraintEnd_toStartOf="@id/gl_like_bubble_start"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible" />
 
     <View
         android:id="@+id/gl_quick_reply"
