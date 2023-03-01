@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.viewholder
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -17,6 +18,7 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
 
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
+    lateinit var uiWidgetComponent: UIWidgetComponent
 
     fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel, parentViewHolder: AbstractViewHolder?) {
         this.parentAbstractViewHolder = parentViewHolder

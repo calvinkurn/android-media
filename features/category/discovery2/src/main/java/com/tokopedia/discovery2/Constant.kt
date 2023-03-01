@@ -99,6 +99,12 @@ object Constant {
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"
+    const val DISCO_PAGE_SOURCE = "discovery_page_source"
+    const val DISCOVERY_APPLINK = "discovery_applink"
+
+    object DiscoveryPageSource{
+        const val HOME = "home"
+    }
 
     object TopAdsSdk{
         const val TOP_ADS_GSLP_TDN = "topads gslp"

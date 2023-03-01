@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryExtensibleFragment
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import com.tokopedia.usercomponents.explicit.di.ExplicitViewModule
@@ -33,6 +34,7 @@ import dagger.Component
     ExplicitViewModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
+    fun inject(discoveryExtensibleFragment: DiscoveryExtensibleFragment)
     fun inject(discoveryFragment: DiscoveryFragment)
     fun inject(mutliViewModel: MultiBannerViewModel)
     fun inject(tokopointsViewModel: TokopointsViewModel)

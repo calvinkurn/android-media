@@ -19,7 +19,9 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -72,6 +74,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.*
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -414,6 +417,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
+        if (!bundle?.getString(DISCOVERY_APPLINK).isNullOrEmpty()) {
+            try {
+                val uri = Uri.parse(bundle?.getString(DISCOVERY_APPLINK))
+                return HashMap<String, String?>().apply {
+                    putAll(getMapOfQueryParameter(uri))
+                    put(CATEGORY_ID, getCategoryId(get(CATEGORY_ID)))
+                }
+            } catch (E: Exception) {
+
+            }
+        }
         return mutableMapOf(
                 SOURCE to bundle?.getString(SOURCE, ""),
                 COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
@@ -421,7 +435,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
-                CATEGORY_ID to getCategoryId(bundle),
+                CATEGORY_ID to getCategoryId(bundle?.getString(CATEGORY_ID, "")),
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, ""),
                 RECOM_PRODUCT_ID to bundle?.getString(RECOM_PRODUCT_ID,""),
                 DYNAMIC_SUBTITLE to bundle?.getString(DYNAMIC_SUBTITLE,""),
@@ -433,15 +447,15 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         )
     }
 
-    private fun getCategoryId(bundle: Bundle?): String? {
+    private fun getCategoryId(categoryID: String?): String? {
         discoComponentQuery?.let {
             return if (it[CATEGORY_ID].isNullOrEmpty()) {
-                bundle?.getString(CATEGORY_ID, "") ?: ""
+                categoryID ?: ""
             } else {
                 it[CATEGORY_ID]
             }
         }
-        return bundle?.getString(CATEGORY_ID, "") ?: ""
+        return categoryID ?: ""
     }
 
     private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {
@@ -546,5 +560,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 it
             }
         )
+    }
+
+    override fun doOnStop() {
+        super.doOnStop()
+        preSelectedTab = -1
     }
 }

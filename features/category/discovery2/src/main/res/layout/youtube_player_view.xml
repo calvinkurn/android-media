@@ -16,8 +16,7 @@
     android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N700"
-    tools:context=".viewcontrollers.activity.DiscoveryActivity">
+    android:background="@color/Unify_N700">
 
     <com.tokopedia.discovery2.viewcontrollers.customview.YoutubeWebView
         android:id="@+id/youtube_webview"

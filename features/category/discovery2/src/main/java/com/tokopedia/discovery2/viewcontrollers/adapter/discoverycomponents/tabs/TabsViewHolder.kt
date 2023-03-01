@@ -15,7 +15,6 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
 import com.tokopedia.discovery2.di.getSubComponent
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -57,7 +56,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             isParentUnifyTab = false
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
-            if((fragment.activity as DiscoveryActivity).isFromCategory())
+            if(tabsViewModel.isFromCategory())
                 tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
             var selectedPosition = 0
@@ -74,7 +73,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         fragment.activity?.let { activity ->
-                            if (selectedPosition >= 0 && (activity as DiscoveryActivity).isFromCategory()) {
+                            if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
                                 tabsHolder.gone()
                                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
                                 Handler().postDelayed({
@@ -113,7 +112,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private fun openCategoryBottomSheet() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeDropDownClick(tabsViewModel.isUserLoggedIn())
         selectedTab?.position?.let { it ->
-            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+            if (tabsViewModel.isFromCategory()) {
                 CategoryNavBottomSheet.getInstance(
                     tabsViewModel.components.data?.get(it)?.id ?: tabsViewModel.components.pageEndPoint,
                     this,
@@ -152,13 +151,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onTabSelected(tab: TabLayout.Tab) {
         selectedTab = tab
         if (tabsViewModel.setSelectedState(tab.position, true)) {
-            (fragment.activity as DiscoveryActivity).let {
-                if (it.isFromCategory()) {
-                    tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
-                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
-                        it.getViewModel().pageIdentifier =
-                            this?.data?.firstOrNull()?.id ?: ""
-                    }
+            if (tabsViewModel.isFromCategory()) {
+                tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
+                    (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                        .setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
+                    fragment.discoveryViewModel.pageIdentifier =
+                        this?.data?.firstOrNull()?.id ?: ""
                 }
             }
             tabsViewModel.onTabClick()
@@ -214,8 +212,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.reInitTabTargetComponents()
         tabsViewModel.reInitTabComponentData()
         tabsViewModel.fetchDynamicTabData()
-        (fragment.activity as DiscoveryActivity).let {
-            if (it.isFromCategory()) {
+        (fragment.activity )?.let {
+            if (tabsViewModel.isFromCategory()) {
                 RouteManager.route(itemView.context, appLink)
                 it.finish()
             }

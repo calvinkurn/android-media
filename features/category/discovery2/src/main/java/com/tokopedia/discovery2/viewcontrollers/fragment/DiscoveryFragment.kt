@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -43,6 +44,7 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
@@ -51,6 +53,7 @@ import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
+import com.tokopedia.discovery2.di.DiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
@@ -119,6 +122,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -146,7 +150,7 @@ private const val DEFAULT_SCROLL_POSITION = 0
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
 
-class DiscoveryFragment :
+open class DiscoveryFragment :
     BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
     View.OnClickListener,
@@ -162,7 +166,8 @@ class DiscoveryFragment :
     private var navScrollListener: NavRecyclerViewScrollListener? = null
     private var autoScrollSectionID: String? = null
     private var anchorViewHolder: AnchorTabsViewHolder? = null
-    private lateinit var discoveryViewModel: DiscoveryViewModel
+    lateinit var discoveryViewModel: DiscoveryViewModel
+    lateinit var discoveryComponent: DiscoveryComponent
     private lateinit var mDiscoveryFab: CustomTopChatView
     private lateinit var mAnchorHeaderView: FrameLayout
     private lateinit var recyclerView: StickyHeadRecyclerView
@@ -188,12 +193,27 @@ class DiscoveryFragment :
     private var userPressed: Boolean = false
     private var isTabPresentToDoubleScroll: Boolean = false
 
+    private val isFromCategory: Boolean by lazy {
+        provideCategorySource()
+    }
+    open fun provideCategorySource(): Boolean {
+        return (context as DiscoveryActivity).isFromCategory()
+    }
+
     private val analytics: BaseDiscoveryAnalytics by lazy {
-        (context as DiscoveryActivity).getAnalytics()
+        provideAnalytics()
     }
-    private val trackingQueue: TrackingQueue by lazy {
-        (context as DiscoveryActivity).trackingQueue
+    open fun provideAnalytics(): BaseDiscoveryAnalytics {
+        return (context as DiscoveryActivity).getAnalytics()
     }
+
+    val trackingQueue: TrackingQueue by lazy {
+        provideTrackingQueue()
+    }
+    open fun provideTrackingQueue(): TrackingQueue {
+        return (context as DiscoveryActivity).trackingQueue
+    }
+
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
@@ -266,6 +286,7 @@ class DiscoveryFragment :
             if (this is DiscoveryActivity) {
                 this.discoveryComponent
                     .inject(this@DiscoveryFragment)
+                this@DiscoveryFragment.discoveryComponent = this.discoveryComponent
             }
         }
     }
@@ -315,7 +336,17 @@ class DiscoveryFragment :
             oldToolbar.visibility = View.GONE
             navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
-
+        if(arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME){
+            navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+            navToolbar.setIcon(
+//                Todo:// Add handling for Message or notification tracker??
+                IconBuilder()
+                    .addIcon(IconList.ID_MESSAGE){}
+                    .addIcon(IconList.ID_NOTIFICATION){}
+                    .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                    .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+            )
+        }
         bottomNav = view.findViewById(R.id.bottomNav)
         bottomNav?.tabLayout?.addOnTabSelectedListener(this)
     }
@@ -460,6 +491,11 @@ class DiscoveryFragment :
                 }
             }
         )
+        if(arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME){
+            activity?.let {
+                    navToolbar.setupToolbarWithStatusBar(it)
+            }
+        }
 
     }
 
@@ -541,7 +577,7 @@ class DiscoveryFragment :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        injectDiscoveryViewModel()
         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
@@ -551,6 +587,10 @@ class DiscoveryFragment :
         checkForSamePageOpened()
         fetchDiscoveryPageData()
         setUpObserver()
+    }
+
+    open fun injectDiscoveryViewModel() {
+        discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
     }
 
     private fun checkForSamePageOpened() {
@@ -1014,6 +1054,10 @@ class DiscoveryFragment :
     }
 
     private fun handleShare(data: PageInfo?) {
+        if(arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME){
+            navToolbar.updateNotification()
+            return
+        }
         if (data?.share?.enabled == true) {
             if (showOldToolbar) {
                 ivShare.show()
@@ -1367,7 +1411,7 @@ class DiscoveryFragment :
     }
 
     private fun checkTabPositionBeforeRefresh() {
-        if ((activity as? DiscoveryActivity)?.isFromCategory() != true && currentTabPosition != null) {
+        if (!isFromCategory && currentTabPosition != null) {
             this.arguments?.putString(ACTIVE_TAB, (currentTabPosition).toString())
         }
     }
@@ -1520,12 +1564,12 @@ class DiscoveryFragment :
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
-        (activity as? DiscoveryActivity)?.let { activity ->
+        activity?.let { activity ->
             if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
                 if (productCardOptionsModel.wishlistResult.isAddWishlist) {
                     trackAddToWishlist(productCardOptionsModel)
                     if (productCardOptionsModel.wishlistResult.isSuccess) {
-                        if (activity.isFromCategory()) {
+                        if (isFromCategory) {
                             NetworkErrorHelper.showSnackbar(
                                 activity,
                                 getString(R.string.discovery_msg_success_add_wishlist)
@@ -1753,7 +1797,7 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return if ((context as DiscoveryActivity).isFromCategory()) {
+        return if (isFromCategory) {
             Constant.ChooseAddressGTMSSource.CATEGORY_HOST_SOURCE
         } else {
             Constant.ChooseAddressGTMSSource.HOST_SOURCE
@@ -1761,7 +1805,7 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return if ((context as DiscoveryActivity).isFromCategory()) {
+        return if (isFromCategory) {
             Constant.ChooseAddressGTMSSource.CATEGORY_HOST_TRACKING_SOURCE
         } else {
             Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
@@ -1775,7 +1819,7 @@ class DiscoveryFragment :
     }
 
     override fun getEventLabelHostPage(): String {
-        return if ((context as DiscoveryActivity).isFromCategory()) {
+        return if (isFromCategory) {
             (context as DiscoveryActivity).getPageIdentifier()
         } else {
             EMPTY_STRING
@@ -2023,12 +2067,39 @@ class DiscoveryFragment :
 
     private fun requestStatusBarDark() {
         isLightThemeStatusBar = false
-        (activity as? DiscoveryActivity)?.requestStatusBarDark()
+        activity?.let {
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                requestStatusBarLight()
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    it.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    StatusBarUtil.setWindowFlag(
+                        it,
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                        false
+                    )
+                    it.window.statusBarColor = Color.TRANSPARENT
+                }
+            }
+        }
     }
 
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
-        (activity as? DiscoveryActivity)?.requestStatusBarLight()
+        activity?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                it.window.decorView.systemUiVisibility =
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                StatusBarUtil.setWindowFlag(
+                    it,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    false
+                )
+                it.window.statusBarColor = Color.TRANSPARENT
+            }
+        }
     }
 
     private fun getLightIconColor(context: Context): Int {
