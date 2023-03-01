@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UpdateCartGqlResponse(
-        @SerializedName("update_cart_v2")
-        val updateCartDataResponse: UpdateCartDataResponse = UpdateCartDataResponse()
+    @SerializedName("update_cart_v2")
+    val updateCartDataResponse: UpdateCartDataResponse = UpdateCartDataResponse()
 )

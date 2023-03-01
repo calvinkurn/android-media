@@ -26,7 +26,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -72,7 +76,20 @@ import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
@@ -112,9 +129,17 @@ import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
-import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
@@ -503,6 +528,7 @@ class CartFragment :
                     data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
                 showToastMessageRed(message ?: "")
             }
+
             else -> {
                 refreshCartWithProgressDialog(GET_CART_STATE_DEFAULT)
             }
@@ -987,6 +1013,7 @@ class CartFragment :
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                         statusBarBackground?.visibility = View.INVISIBLE
                     }
+
                     else -> {
                         statusBarBackground?.show()
                     }
@@ -1050,6 +1077,7 @@ class CartFragment :
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                         statusBarBackground?.visibility = View.INVISIBLE
                     }
+
                     else -> {
                         statusBarBackground?.show()
                     }
@@ -1204,7 +1232,10 @@ class CartFragment :
                                         shopId = availableGroup.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0"
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                            0
+                                        )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
+                                            ?: "0"
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1244,7 +1275,10 @@ class CartFragment :
                                         shopId = availableGroup.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0"
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                            0
+                                        )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
+                                            ?: "0"
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1287,7 +1321,10 @@ class CartFragment :
                                         shopId = availableGroup.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0"
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                            0
+                                        )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
+                                            ?: "0"
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1481,7 +1518,9 @@ class CartFragment :
         activity?.let {
             RouteManager.route(
                 it,
-                "tokopedia://epharmacy/edu/${enablerLabel.lowercase(Locale.ROOT).encodeToUtf8()}/obat_keras_tnc"
+                "tokopedia://epharmacy/edu/${
+                enablerLabel.lowercase(Locale.ROOT).encodeToUtf8()
+                }/obat_keras_tnc"
             )
             epharmacyAnalytics.get()
                 .clickInfoChatDokter(
@@ -2199,12 +2238,14 @@ class CartFragment :
                     routeToApplinkWithResult(cartShopHolderData.cartShopGroupTicker.applink)
                 }
             }
+
             CartShopGroupTickerData.ACTION_OPEN_BOTTOM_SHEET_BUNDLING -> {
                 showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData)
                 cartPageAnalytics.eventClickCartShopGroupTickerForBundleCrossSell(
                     cartShopHolderData.cartShopGroupTicker.tickerText
                 )
             }
+
             else -> {
                 // no-op
             }
@@ -2703,6 +2744,7 @@ class CartFragment :
                                 ID_START_SHOPPING, ID_HOMEPAGE -> {
                                     goToHome()
                                 }
+
                                 ID_RETRY -> {
                                     refreshErrorPage()
                                 }
@@ -2838,9 +2880,11 @@ class CartFragment :
                 lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
                     lastApplyData.additionalInfo.messageInfo.message
                 }
+
                 lastApplyData.defaultEmptyPromoMessage.isNotBlank() -> {
                     lastApplyData.defaultEmptyPromoMessage
                 }
+
                 else -> {
                     getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
                 }
@@ -2976,6 +3020,7 @@ class CartFragment :
                     null
                 )
             }
+
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel =
                     dPresenter.getValidateUseLastResponse()?.promoUiModel ?: PromoUiModel()
@@ -2985,6 +3030,7 @@ class CartFragment :
                     dPresenter.getLastValidateUseRequest()
                 )
             }
+
             else -> {
                 PromoRequestMapper.generateValidateUseRequestParams(
                     null,
@@ -3005,6 +3051,7 @@ class CartFragment :
                     cartAdapter.allAvailableShopGroupDataList
                 )
             }
+
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel =
                     dPresenter.getValidateUseLastResponse()?.promoUiModel ?: PromoUiModel()
@@ -3013,6 +3060,7 @@ class CartFragment :
                     cartAdapter.allAvailableShopGroupDataList
                 )
             }
+
             else -> {
                 PromoRequestMapper.generateCouponListRequestParams(
                     null,
@@ -3032,6 +3080,7 @@ class CartFragment :
                     cartAdapter.allAvailableShopGroupDataList
                 )
             }
+
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel =
                     dPresenter.getValidateUseLastResponse()?.promoUiModel ?: PromoUiModel()
@@ -3040,6 +3089,7 @@ class CartFragment :
                     cartAdapter.allAvailableShopGroupDataList
                 )
             }
+
             else -> null
         }
     }
@@ -3209,24 +3259,28 @@ class CartFragment :
                 userSession.userId,
                 dPresenter.getPromoFlag()
             )
+
             CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(
                 eeCheckoutData,
                 checkoutProductEligibleForCashOnDelivery,
                 userSession.userId,
                 dPresenter.getPromoFlag()
             )
+
             CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(
                 eeCheckoutData,
                 checkoutProductEligibleForCashOnDelivery,
                 userSession.userId,
                 dPresenter.getPromoFlag()
             )
+
             CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(
                 eeCheckoutData,
                 checkoutProductEligibleForCashOnDelivery,
                 userSession.userId,
                 dPresenter.getPromoFlag()
             )
+
             CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(
                 eeCheckoutData,
                 checkoutProductEligibleForCashOnDelivery,
@@ -3366,11 +3420,13 @@ class CartFragment :
                         cartAdapter.notifyItemInserted(result.second)
                     }
                 }
+
                 CartAdapter.SELLER_CASHBACK_ACTION_UPDATE -> {
                     if (result.second != RecyclerView.NO_POSITION) {
                         onNeedToUpdateViewItem(result.second)
                     }
                 }
+
                 CartAdapter.SELLER_CASHBACK_ACTION_DELETE -> {
                     if (result.second != RecyclerView.NO_POSITION) {
                         cartAdapter.notifyItemRemoved(result.second)
@@ -3540,9 +3596,11 @@ class CartFragment :
             removeAllItems -> {
                 refreshCartWithSwipeToRefresh()
             }
+
             isFromEditBundle -> {
                 refreshCartWithProgressDialog(GET_CART_STATE_DEFAULT)
             }
+
             else -> {
                 setLastItemAlwaysSelected()
             }
@@ -3602,6 +3660,7 @@ class CartFragment :
             WISHLIST_SOURCE_AVAILABLE_ITEM -> {
                 cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
             }
+
             WISHLIST_SOURCE_UNAVAILABLE_ITEM -> {
                 cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
             }
@@ -3637,6 +3696,7 @@ class CartFragment :
                         productId
                     )
                 }
+
                 WISHLIST_SOURCE_UNAVAILABLE_ITEM -> {
                     cartPageAnalytics.eventAddWishlistUnavailableSection(
                         FLAG_IS_CART_EMPTY,
@@ -4102,6 +4162,7 @@ class CartFragment :
                     FLAG_IS_CART_EMPTY
                 )
             }
+
             is CartRecentViewItemHolderData -> {
                 eventCategory = ConstantTransactionAnalytics.EventCategory.CART
                 eventAction =
@@ -4113,6 +4174,7 @@ class CartFragment :
                     FLAG_IS_CART_EMPTY
                 )
             }
+
             is CartRecommendationItemHolderData -> {
                 eventCategory = ConstantTransactionAnalytics.EventCategory.CART
                 eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART
