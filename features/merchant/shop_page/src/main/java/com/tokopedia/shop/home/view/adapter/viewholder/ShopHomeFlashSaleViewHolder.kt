@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
@@ -68,6 +69,9 @@ class ShopHomeFlashSaleViewHolder(
         private const val DELAY_IN_THREE_SECONDS = 3000L
         private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
         private const val BOTTOM_MARGIN = 8f
+        private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 16f
+        private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 12f
+
     }
 
     init {
@@ -139,6 +143,18 @@ class ShopHomeFlashSaleViewHolder(
             rvLayoutParams.bottomMargin
         )
         productCarouselView?.layoutParams = rvLayoutParams
+        setContainerMarginFestivity()
+    }
+
+    private fun setContainerMarginFestivity() {
+        val containerLayoutParams = flashSaleContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        containerLayoutParams?.setMargins(
+            containerLayoutParams.leftMargin,
+            containerLayoutParams.topMargin,
+            containerLayoutParams.rightMargin,
+            CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        flashSaleContainer?.layoutParams = containerLayoutParams
     }
 
     private fun configMarginNonFestivity(){
@@ -150,6 +166,18 @@ class ShopHomeFlashSaleViewHolder(
             rvLayoutParams.bottomMargin
         )
         productCarouselView?.layoutParams = rvLayoutParams
+        setContainerMarginDefault()
+    }
+
+    private fun setContainerMarginDefault() {
+        val containerLayoutParams = flashSaleContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        containerLayoutParams?.setMargins(
+            containerLayoutParams.leftMargin,
+            containerLayoutParams.topMargin,
+            containerLayoutParams.rightMargin,
+            CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        flashSaleContainer?.layoutParams = containerLayoutParams
     }
 
     private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel?) {
