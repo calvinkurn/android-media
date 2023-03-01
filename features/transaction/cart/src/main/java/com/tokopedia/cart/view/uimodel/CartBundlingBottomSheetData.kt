@@ -8,5 +8,5 @@ data class CartBundlingBottomSheetData(
     val title: String = "",
     val description: String = "",
     val bottomTicker: String = "",
-    val bundleIds: List<String> = emptyList(),
+    val bundleIds: List<String> = emptyList()
 ) : Parcelable

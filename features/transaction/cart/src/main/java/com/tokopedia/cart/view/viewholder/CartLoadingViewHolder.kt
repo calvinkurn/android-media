@@ -8,7 +8,7 @@ import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
  * Created by Irfan Khoirul on 2019-06-26.
  */
 
-class CartLoadingViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class CartLoadingViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val LAYOUT = com.tokopedia.baselist.R.layout.loading_layout
@@ -17,5 +17,4 @@ class CartLoadingViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     fun bind(element: CartLoadingHolderData) {
         // no op
     }
-
 }
