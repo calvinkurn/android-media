@@ -6,9 +6,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.date.toDate
-import java.util.concurrent.TimeUnit
+import java.time.*
 import javax.inject.Inject
 
 /**
@@ -73,25 +71,30 @@ class CommentUiModelMapper @Inject constructor() {
     }
 
     private fun convertTime(date: String): String {
-        val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
-        val diff = DateUtil.getCurrentCalendar().time.time - convert.time
-        val minute = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS)
-        val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
-        val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+        return try {
+            val now = ZonedDateTime.now()
+            val convert = ZonedDateTime.parse(date)
+            val diff =Duration.between(convert, now)
+            val minute = diff.toMinutes()
+            val hour = diff.toHours()
+            val day = diff.toDays()
 
-        return if (minute < 1) {
-            LESS_THAN_1MIN
-        } else if (hour < 1) {
-            LESS_THAN_1HOUR
-        } else if (hour < 24) {
-            LESS_THAN_1DAY
-        } else if (day in 1..5) {
-            LESS_THAN_1DAY_5DAY
-        } else if (day in 6..89) {
-            MORE_THAN_5DAY
-        } else if (day > 90) {
-            MORE_THAN_90DAY
-        } else {
+            return if (minute < 1) {
+                LESS_THAN_1MIN
+            } else if (hour < 1) {
+                LESS_THAN_1HOUR
+            } else if (hour < 24) {
+                LESS_THAN_1DAY
+            } else if (day in 1..5) {
+                LESS_THAN_1DAY_5DAY
+            } else if (day in 6..89) {
+                MORE_THAN_5DAY
+            } else if (day > 90) {
+                MORE_THAN_90DAY
+            } else {
+                LESS_THAN_1MIN
+            }
+        } catch (e: Exception) {
             LESS_THAN_1MIN
         }
     }
