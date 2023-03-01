@@ -24,14 +24,15 @@ class FeedXCard(
     val typename: String = "",
     @SerializedName("id")
     val id: String = "",
-    @SerializedName("publishedAt")
-    val publishedAt: String = "",
-    @SerializedName("items")
-    val items: List<FeedXCardItem> = emptyList(),
     @SerializedName("mods")
     val mods: List<String> = emptyList(),
     @SerializedName("type")
     val type: String = "",
+
+    @SerializedName("items")
+    val items: List<FeedXCardItem> = emptyList(),
+    @SerializedName("publishedAt")
+    val publishedAt: String = "",
 
     // FeedXCard Common (used by FeedXCardPost, FeedXCardPlay, FeedXCardTopAds, FeedXCardProductsHighlight)
     @SerializedName("author")
@@ -174,7 +175,21 @@ class FeedXProduct(
     @SerializedName("bebasOngkirStatus")
     val bebasOngkirStatus: String = "",
     @SerializedName("bebasOngkirURL")
-    val bebasOngkirUrl: String = ""
+    val bebasOngkirUrl: String = "",
+    @SerializedName("priceMasked")
+    val priceMasked: Double = 0.0,
+    @SerializedName("priceMaskedFmt")
+    val priceMaskedFmt: String = "",
+    @SerializedName("stockWording")
+    val stockWording: String = "",
+    @SerializedName("stockSoldPercentage")
+    val stockSoldPercentage: String = "",
+    @SerializedName("cartable")
+    val cartable: Boolean = false,
+    @SerializedName("isCashback")
+    val isCashback: Boolean = false,
+    @SerializedName("cashbackFmt")
+    val cashbackFmt: String = ""
 )
 
 class FeedXMedia(

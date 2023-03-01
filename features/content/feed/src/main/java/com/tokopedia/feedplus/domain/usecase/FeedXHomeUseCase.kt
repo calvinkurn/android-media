@@ -130,6 +130,26 @@ class FeedXHomeUseCase @Inject constructor(
                 label
                 value
               }
+              media {
+                type
+                id
+                coverURL
+                mediaURL
+                appLink
+                webLink
+                tagging {
+                  tagIndex
+                  posX
+                  posY
+                }
+              }
+              mediaRatio {
+                width
+                height
+              }
+              tags {
+                ...FeedXProduct
+              }
             }
             
             fragment FeedXCardPlay on FeedXCardPlay {
@@ -185,6 +205,26 @@ class FeedXHomeUseCase @Inject constructor(
               detailScore {
                 label
                 value
+              }
+              media {
+                type
+                id
+                coverURL
+                mediaURL
+                appLink
+                webLink
+                tagging {
+                  tagIndex
+                  posX
+                  posY
+                }
+              }
+              mediaRatio {
+                width
+                height
+              }
+              tags {
+                ...FeedXProduct
               }
             }
             
@@ -296,6 +336,19 @@ class FeedXHomeUseCase @Inject constructor(
                 cartable
                 isCashback
                 cashbackFmt
+              }
+              media {
+                type
+                id
+                coverURL
+                mediaURL
+                appLink
+                webLink
+                tagging {
+                  tagIndex
+                  posX
+                  posY
+                }
               }
             }
             
