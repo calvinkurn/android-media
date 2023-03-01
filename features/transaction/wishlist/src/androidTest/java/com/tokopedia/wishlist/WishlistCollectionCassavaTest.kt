@@ -2,7 +2,6 @@ package com.tokopedia.wishlist
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
@@ -10,33 +9,21 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.test.application.util.setupTopAdsDetector
-import com.tokopedia.trackingoptimizer.repository.TrackRepository
-import com.tokopedia.trackingoptimizer.sendTrack
+import com.tokopedia.wishlist.test.R
 import com.tokopedia.wishlist.util.WishlistIdlingResource
+import com.tokopedia.wishlist.util.disableWishlistCoachmark
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.runBlocking
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionCreateItemViewHolder
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import com.tokopedia.wishlist.test.R
-import com.tokopedia.wishlist.util.adapter
-import com.tokopedia.wishlist.util.disableWishlistCoachmark
-import com.tokopedia.wishlist.util.setupRemoteConfig
-import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
-import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionCreateItemViewHolder
-import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
 
 @CassavaTest
 class WishlistCollectionCassavaTest {
@@ -46,49 +33,28 @@ class WishlistCollectionCassavaTest {
     }
 
     @get:Rule
-    var activityRule =
-            object :
-                    ActivityTestRule<WishlistCollectionActivity>(WishlistCollectionActivity::class.java) {
-                override fun beforeActivityLaunched() {
-                    super.beforeActivityLaunched()
-                    setupGraphqlMockResponse {
-                        addMockResponse(
-                                KEY_WISHLIST_COLLECTION,
-                                InstrumentationMockHelper.getRawString(
-                                        context,
-                                        R.raw.response_wishlist_collection
-                                ),
-                                MockModelConfig.FIND_BY_CONTAINS
-                        )
-                    }
-                    InstrumentationAuthHelper.loginInstrumentationTestUser1()
-                    disableWishlistCoachmark(context)
-                }
-            }
+    var activityRule = IntentsTestRule(WishlistCollectionActivity::class.java, false, false)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    /*@Before
+    @Before
     fun setup() {
         setupGraphqlMockResponse {
             addMockResponse(
-                    KEY_WISHLIST_COLLECTION,
-                    InstrumentationMockHelper.getRawString(
-                            context,
-                            R.raw.response_wishlist_collection
-                    ),
-                    MockModelConfig.FIND_BY_CONTAINS
+                KEY_WISHLIST_COLLECTION,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.response_wishlist_collection
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
             )
         }
-    }*/
-
-   /* @Before
-    fun setup() {
-        IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
-    }*/
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        disableWishlistCoachmark(context)
+    }
 
     @After
     fun cleanup() {
@@ -98,7 +64,6 @@ class WishlistCollectionCassavaTest {
 
     @Test
     fun test_wishlist_summary() {
-        // dari sini sampe onIdle() ga ada
         IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
         activityRule.launchActivity(null)
         Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
@@ -106,7 +71,7 @@ class WishlistCollectionCassavaTest {
 
         runWishlistCollectionBot {
             val wishlistCollectionRecyclerView =
-                    activityRule.activity.findViewById<RecyclerView>(com.tokopedia.wishlist.R.id.rv_wishlist_collection)
+                activityRule.activity.findViewById<RecyclerView>(com.tokopedia.wishlist.R.id.rv_wishlist_collection)
             createNewCollection()
 
             /*val itemCount = wishlistCollectionRecyclerView.adapter?.itemCount ?: 0

@@ -1,0 +1,16 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "purchase platform",
+      "eventCategory": "all wishlist page",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickPP",
+      "eventAction": "create new collection on wishlist page",
+      "sessionIris" : ".*",
+      "eventLabel": ".*"
+    }
+  ],
+  "readme": "Wishlist Collection Summary"
+}
