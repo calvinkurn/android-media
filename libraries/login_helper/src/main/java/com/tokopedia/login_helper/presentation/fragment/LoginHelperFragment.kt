@@ -30,11 +30,11 @@ import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperUiState
 import com.tokopedia.login_helper.util.showToaster
 import com.tokopedia.login_helper.util.showToasterError
-import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,7 +42,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
+class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private var binding by autoClearedNullable<FragmentLoginHelperBinding>()
 
@@ -215,7 +215,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
     }
 
     private fun handleLoginUserDataListFailure(throwable: Throwable) {
-        binding?.globalError?.run{
+        binding?.globalError?.run {
             setActionClickListener {
                 viewModel.processEvent(LoginHelperEvent.GetLoginData)
             }
@@ -224,12 +224,12 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
     }
 
     private fun handleLoginToken(loginToken: Result<LoginToken>?) {
-        when(loginToken) {
-           is Success -> {
-               handleLoginTokenSuccess()
-           }
+        when (loginToken) {
+            is Success -> {
+                handleLoginTokenSuccess()
+            }
             is Fail -> {
-               handleFailure(loginToken.throwable)
+                handleFailure(loginToken.throwable)
             }
         }
     }
@@ -239,9 +239,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
     }
 
     private fun handleProfileResponse(profilePojo: Result<ProfilePojo>?) {
-        when(profilePojo) {
+        when (profilePojo) {
             is Success -> {
-                handleProfileResponseSuccess()
+                handleProfileResponseSuccess(profilePojo)
             }
             is Fail -> {
                 handleFailure(profilePojo.throwable)
@@ -249,10 +249,12 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
         }
     }
 
-    private fun handleProfileResponseSuccess() = Unit
+    private fun handleProfileResponseSuccess(profilePojo: Success<ProfilePojo>) {
+        binding?.footer?.showToaster(profilePojo.data.profileInfo.email)
+    }
 
     private fun handleFailure(throwable: Throwable) {
-        binding?.footer?.showToasterError(throwable.message.toString(),"Go to Login") {
+        binding?.footer?.showToasterError(throwable.message.toString(), "Go to Login") {
             RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGIN)
         }
     }
@@ -277,7 +279,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
 
     private fun setEnvValue() {
         val currentEnv = getInstance().TYPE
-        if(Env.STAGING == currentEnv) {
+        if (Env.STAGING == currentEnv) {
             viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
         } else {
             viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
@@ -289,7 +291,13 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
     }
 
     override fun onClickUserData(data: UserDataUiModel?) {
-        Toast.makeText(context,"Tatakae ${data?.email}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Logging in with ${data?.email}", Toast.LENGTH_SHORT).show()
+        viewModel.processEvent(
+            LoginHelperEvent.LoginUser(
+                data?.email.toBlankOrString(),
+                data?.password.toBlankOrString()
+            )
+        )
     }
 
     fun getMessage(): String {

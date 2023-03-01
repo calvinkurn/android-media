@@ -4,7 +4,6 @@ import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -22,6 +21,7 @@ import com.tokopedia.login_helper.util.exception.GoToSecurityQuestionException
 import com.tokopedia.login_helper.util.exception.LocationAdminRedirectionException
 import com.tokopedia.login_helper.util.exception.ShowLocationAdminPopupException
 import com.tokopedia.login_helper.util.exception.ShowPopupErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
@@ -49,7 +49,7 @@ class LoginHelperViewModel @Inject constructor(
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val userSession: UserSessionInterface,
     private val getProfileUseCase: GetProfileUseCase,
-    private val getAdminTypeUseCase: GetAdminTypeUseCase,
+    private val getAdminTypeUseCase: GetAdminTypeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(LoginHelperUiState())
@@ -83,9 +83,9 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-         //       val response =  getUserDetailsRestUseCase.executeOnBackground()
-          //      Log.d("FATAL", "callTheAPi: ${response}")
-       //         updateUserDataList(convertToUserListUiModel(response))
+                //       val response =  getUserDetailsRestUseCase.executeOnBackground()
+                //      Log.d("FATAL", "callTheAPi: ${response}")
+                //         updateUserDataList(convertToUserListUiModel(response))
                 updateUserDataList(Success(listOfUsers()))
             },
             onError = {
@@ -99,12 +99,12 @@ class LoginHelperViewModel @Inject constructor(
         return LoginDataUiModel(
             count = 5,
             users = listOf<UserDataUiModel>(
-                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "asd" , "iujhas"),
-                UserDataUiModel("pbs-abc.yui@tokopedia.com", "asd" , "iuasdjhas"),
-                UserDataUiModel("sourav.saikia+01@tokopedia.com", "asd" , "asedas"),
-                UserDataUiModel("eren.yeager+01@tokopedia.com", "asd" , "qwert"),
-                UserDataUiModel("pbs-bagas.priyadi+03@tokopedia.com", "asd" , "as"),
-                UserDataUiModel("sourav.pbs-saikia+01@tokopedia.com", "asd" , "asedas"),
+                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped1234", "Cex"),
+                UserDataUiModel("pbs-abc.yui@tokopedia.com", "asd", "iuasdjhas"),
+                UserDataUiModel("sourav.saikia+01@tokopedia.com", "asd", "asedas"),
+                UserDataUiModel("eren.yeager+01@tokopedia.com", "asd", "qwert"),
+                UserDataUiModel("pbs-bagas.priyadi+03@tokopedia.com", "asd", "as"),
+                UserDataUiModel("sourav.pbs-saikia+01@tokopedia.com", "asd", "asedas")
             )
         )
     }
@@ -120,7 +120,8 @@ class LoginHelperViewModel @Inject constructor(
                 var finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
-                LoginV2Mapper(userSession).map(tokenResult.loginToken,
+                LoginV2Mapper(userSession).map(
+                    tokenResult.loginToken,
                     onSuccessLoginToken = {
                         updateLoginToken(Success(it))
                     },
@@ -146,27 +147,30 @@ class LoginHelperViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        getProfileUseCase.execute(GetProfileSubscriber(userSession,
-            {
-                updateProfileResponse(Success(it))
-            },
-            {
-                updateProfileResponse(Fail(it))
-            },
-            getAdminTypeUseCase = getAdminTypeUseCase,
-            showLocationAdminPopUp = {
-                updateProfileResponse(Fail(ShowLocationAdminPopupException()))
-            },
-            onLocationAdminRedirection = {
-                updateProfileResponse(Fail(LocationAdminRedirectionException()))
-            },
-            showErrorGetAdminType = {
-                updateProfileResponse(Fail(ErrorGetAdminTypeException()))
-            }
-        ))
+        getProfileUseCase.execute(
+            GetProfileSubscriber(
+                userSession,
+                {
+                    updateProfileResponse(Success(it))
+                },
+                {
+                    updateProfileResponse(Fail(it))
+                },
+                getAdminTypeUseCase = getAdminTypeUseCase,
+                showLocationAdminPopUp = {
+                    updateProfileResponse(Fail(ShowLocationAdminPopupException()))
+                },
+                onLocationAdminRedirection = {
+                    updateProfileResponse(Fail(LocationAdminRedirectionException()))
+                },
+                showErrorGetAdminType = {
+                    updateProfileResponse(Fail(ErrorGetAdminTypeException()))
+                }
+            )
+        )
     }
 
-    private fun updateLoginToken(loginToken: com.tokopedia.usecase.coroutines.Result<LoginToken>) {
+    private fun updateLoginToken(loginToken: Result<LoginToken>) {
         _uiState.update {
             it.copy(
                 loginToken = loginToken
@@ -213,11 +217,11 @@ class LoginHelperViewModel @Inject constructor(
     }
 
     private fun searchForFilteredUser() {
-        val searchEmail =  _uiState.value.searchText
-        var list: List<UserDataUiModel>? = emptyList()
-        var filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null
+        val searchEmail = _uiState.value.searchText
+        var list: List<UserDataUiModel>?
+        var filteredUserList: Result<LoginDataUiModel>? = null
         _uiState.value.loginDataList.apply {
-            when(this) {
+            when (this) {
                 is Success -> {
                     list = this.data.users?.filter { userDataUiModel ->
                         userDataUiModel.email?.contains(searchEmail) == true
@@ -226,7 +230,7 @@ class LoginHelperViewModel @Inject constructor(
                     filteredUserList = Success(LoginDataUiModel(list?.size, list))
                 }
                 is Fail -> {
-
+                    Fail(Exception("Failed to get data"))
                 }
             }
         }
@@ -236,6 +240,5 @@ class LoginHelperViewModel @Inject constructor(
                 filteredUserList = filteredUserList
             )
         }
-
     }
 }
