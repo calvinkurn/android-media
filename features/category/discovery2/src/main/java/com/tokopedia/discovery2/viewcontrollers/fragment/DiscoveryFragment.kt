@@ -958,7 +958,9 @@ open class DiscoveryFragment :
     private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
         if (anchorViewHolder == null) {
             val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
-            anchorViewHolder = AnchorTabsViewHolder(view, this)
+            anchorViewHolder = AnchorTabsViewHolder(view, this).apply {
+                uiWidgetComponent = this@DiscoveryFragment.discoveryComponent.provideSubComponent()
+            }
             val viewModel =
                 AnchorTabsViewModel(context?.applicationContext as Application, it.data, 0)
             anchorViewHolder?.bindView(viewModel)
