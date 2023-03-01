@@ -251,6 +251,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private fun handleProfileResponseSuccess(profilePojo: Success<ProfilePojo>) {
         binding?.footer?.showToaster(profilePojo.data.profileInfo.email)
+        backToPreviousScreen()
     }
 
     private fun handleFailure(throwable: Throwable) {
