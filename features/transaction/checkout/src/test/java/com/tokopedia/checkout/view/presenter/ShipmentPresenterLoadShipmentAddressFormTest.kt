@@ -11,7 +11,11 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -178,7 +182,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val data = DataProvider.provideShipmentAddressFormResponse()
         val cartShipmentAddressFormData =
             shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
-        presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel()
+        presenter.setShipmentButtonPaymentModel(ShipmentButtonPaymentModel())
 
         coEvery {
             getShipmentAddressFormV3UseCase.setParams(
@@ -1312,24 +1316,26 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @Test
     fun `GIVEN null shipment button data WHEN get shipment button data THEN should return new shipment button data`() {
         // Given
-        presenter.shipmentButtonPaymentModel = null
+        presenter.setShipmentButtonPaymentModel(null)
 
         // Then
-        assertEquals(0, presenter.shipmentButtonPaymentModel!!.quantity)
-        assertEquals("-", presenter.shipmentButtonPaymentModel!!.totalPrice)
+        assertEquals(0, presenter.getShipmentButtonPaymentModel().quantity)
+        assertEquals("-", presenter.getShipmentButtonPaymentModel().totalPrice)
     }
 
     @Test
     fun `GIVEN not null shipment button data WHEN get shipment button data THEN should return shipment button data`() {
         // Given
-        presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel(
-            totalPrice = "Rp1.000",
-            quantity = 1
+        presenter.setShipmentButtonPaymentModel(
+            ShipmentButtonPaymentModel(
+                totalPrice = "Rp1.000",
+                quantity = 1
+            )
         )
 
         // Then
-        assertEquals(1, presenter.shipmentButtonPaymentModel!!.quantity)
-        assertEquals("Rp1.000", presenter.shipmentButtonPaymentModel!!.totalPrice)
+        assertEquals(1, presenter.getShipmentButtonPaymentModel().quantity)
+        assertEquals("Rp1.000", presenter.getShipmentButtonPaymentModel().totalPrice)
     }
 
     @Test

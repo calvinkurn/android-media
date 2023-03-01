@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -323,58 +322,58 @@ class ShipmentFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (context != null) {
-            saveInstanceCacheManager = SaveInstanceCacheManager(context!!, savedInstanceState)
-        }
-        if (savedInstanceState != null) {
-            savedShipmentCartItemModelList =
-                saveInstanceCacheManager?.get<List<ShipmentCartItemModel>>(
-                    ShipmentCartItemModel::class.java.simpleName,
-                    object : TypeToken<ArrayList<ShipmentCartItemModel>>() {}.type
-                )
-            if (savedShipmentCartItemModelList != null) {
-                savedTickerAnnouncementModel =
-                    saveInstanceCacheManager?.get<TickerAnnouncementHolderData>(
-                        TickerAnnouncementHolderData::class.java.simpleName,
-                        TickerAnnouncementHolderData::class.java
-                    )
-                savedRecipientAddressModel = saveInstanceCacheManager?.get<RecipientAddressModel>(
-                    RecipientAddressModel::class.java.simpleName,
-                    RecipientAddressModel::class.java
-                )
-                savedShipmentCostModel = saveInstanceCacheManager?.get<ShipmentCostModel>(
-                    ShipmentCostModel::class.java.simpleName,
-                    ShipmentCostModel::class.java
-                )
-                savedEgoldAttributeModel = saveInstanceCacheManager?.get<EgoldAttributeModel>(
-                    EgoldAttributeModel::class.java.simpleName,
-                    EgoldAttributeModel::class.java
-                )
-                savedShipmentDonationModel = saveInstanceCacheManager?.get<ShipmentDonationModel>(
-                    ShipmentDonationModel::class.java.simpleName,
-                    ShipmentDonationModel::class.java
-                )
-                savedListShipmentCrossSellModel =
-                    saveInstanceCacheManager?.get<ArrayList<ShipmentCrossSellModel>>(
-                        ShipmentCrossSellModel::class.java.simpleName,
-                        object : TypeToken<ArrayList<ShipmentCrossSellModel>>() {}.type
-                    )
-                savedShipmentButtonPaymentModel =
-                    saveInstanceCacheManager?.get<ShipmentButtonPaymentModel>(
-                        ShipmentButtonPaymentModel::class.java.simpleName,
-                        ShipmentButtonPaymentModel::class.java
-                    )
-                savedLastApplyData = saveInstanceCacheManager?.get<LastApplyUiModel>(
-                    LastApplyUiModel::class.java.simpleName,
-                    LastApplyUiModel::class.java
-                )
-                savedUploadPrescriptionUiModel =
-                    saveInstanceCacheManager?.get<UploadPrescriptionUiModel>(
-                        UploadPrescriptionUiModel::class.java.simpleName,
-                        UploadPrescriptionUiModel::class.java
-                    )
-            }
-        }
+//        if (context != null) {
+//            saveInstanceCacheManager = SaveInstanceCacheManager(context!!, savedInstanceState)
+//        }
+//        if (savedInstanceState != null) {
+//            savedShipmentCartItemModelList =
+//                saveInstanceCacheManager?.get<List<ShipmentCartItemModel>>(
+//                    ShipmentCartItemModel::class.java.simpleName,
+//                    object : TypeToken<ArrayList<ShipmentCartItemModel>>() {}.type
+//                )
+//            if (savedShipmentCartItemModelList != null) {
+//                savedTickerAnnouncementModel =
+//                    saveInstanceCacheManager?.get<TickerAnnouncementHolderData>(
+//                        TickerAnnouncementHolderData::class.java.simpleName,
+//                        TickerAnnouncementHolderData::class.java
+//                    )
+//                savedRecipientAddressModel = saveInstanceCacheManager?.get<RecipientAddressModel>(
+//                    RecipientAddressModel::class.java.simpleName,
+//                    RecipientAddressModel::class.java
+//                )
+//                savedShipmentCostModel = saveInstanceCacheManager?.get<ShipmentCostModel>(
+//                    ShipmentCostModel::class.java.simpleName,
+//                    ShipmentCostModel::class.java
+//                )
+//                savedEgoldAttributeModel = saveInstanceCacheManager?.get<EgoldAttributeModel>(
+//                    EgoldAttributeModel::class.java.simpleName,
+//                    EgoldAttributeModel::class.java
+//                )
+//                savedShipmentDonationModel = saveInstanceCacheManager?.get<ShipmentDonationModel>(
+//                    ShipmentDonationModel::class.java.simpleName,
+//                    ShipmentDonationModel::class.java
+//                )
+//                savedListShipmentCrossSellModel =
+//                    saveInstanceCacheManager?.get<ArrayList<ShipmentCrossSellModel>>(
+//                        ShipmentCrossSellModel::class.java.simpleName,
+//                        object : TypeToken<ArrayList<ShipmentCrossSellModel>>() {}.type
+//                    )
+//                savedShipmentButtonPaymentModel =
+//                    saveInstanceCacheManager?.get<ShipmentButtonPaymentModel>(
+//                        ShipmentButtonPaymentModel::class.java.simpleName,
+//                        ShipmentButtonPaymentModel::class.java
+//                    )
+//                savedLastApplyData = saveInstanceCacheManager?.get<LastApplyUiModel>(
+//                    LastApplyUiModel::class.java.simpleName,
+//                    LastApplyUiModel::class.java
+//                )
+//                savedUploadPrescriptionUiModel =
+//                    saveInstanceCacheManager?.get<UploadPrescriptionUiModel>(
+//                        UploadPrescriptionUiModel::class.java.simpleName,
+//                        UploadPrescriptionUiModel::class.java
+//                    )
+//            }
+//        }
         shipmentPresenter.attachView(this)
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE)
     }
@@ -470,7 +469,7 @@ class ShipmentFragment :
                 false, null, deviceId, checkoutLeasingId,
                 isPlusSelected()
             )
-        } else {
+        } /* else {
             shipmentPresenter.tickerAnnouncementHolderData = savedTickerAnnouncementModel!!
             shipmentPresenter.shipmentCartItemModelList = savedShipmentCartItemModelList
             shipmentPresenter.recipientAddressModel = savedRecipientAddressModel
@@ -487,7 +486,7 @@ class ShipmentFragment :
             shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel)
             renderCheckoutPage(true, false, isOneClickShipment)
             swipeToRefresh?.isEnabled = false
-        }
+        }*/
     }
 
     private fun setBackground() {
@@ -537,7 +536,7 @@ class ShipmentFragment :
             )
             saveInstanceCacheManager?.put(
                 ShipmentButtonPaymentModel::class.java.simpleName,
-                shipmentPresenter.shipmentButtonPaymentModel
+                shipmentPresenter.getShipmentButtonPaymentModel()
             )
             outState.putInt(
                 DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION,
@@ -773,7 +772,7 @@ class ShipmentFragment :
     private fun getCrossSellChildCategoryId(shipmentCartItemModelList: List<ShipmentCartItemModel>?): ArrayList<Long> {
         val childCategoryIds = ArrayList<Long>()
         for (i in shipmentCartItemModelList!!.indices) {
-            for (cartItemModel in shipmentCartItemModelList[i]!!.cartItemModels) {
+            for (cartItemModel in shipmentCartItemModelList[i].cartItemModels) {
                 childCategoryIds.add(cartItemModel.productCatId)
             }
         }
@@ -945,7 +944,7 @@ class ShipmentFragment :
                 msg =
                     activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
             }
-            if (shipmentAdapter == null || shipmentAdapter.itemCount == 0) {
+            if (shipmentAdapter.itemCount == 0) {
                 renderErrorPage(msg)
             } else {
                 val listener = View.OnClickListener { }
@@ -1035,7 +1034,7 @@ class ShipmentFragment :
             shipmentPresenter.lastApplyData,
             shipmentPresenter.getShipmentCostModel(),
             shipmentPresenter.egoldAttributeModel,
-            shipmentPresenter.shipmentButtonPaymentModel,
+            shipmentPresenter.getShipmentButtonPaymentModel(),
             shipmentPresenter.uploadPrescriptionUiModel,
             isInitialRender,
             isReloadAfterPriceChangeHigher,
@@ -1068,7 +1067,7 @@ class ShipmentFragment :
             shipmentPresenter.lastApplyData,
             shipmentPresenter.getShipmentCostModel(),
             shipmentPresenter.egoldAttributeModel,
-            shipmentPresenter.shipmentButtonPaymentModel,
+            shipmentPresenter.getShipmentButtonPaymentModel(),
             shipmentPresenter.uploadPrescriptionUiModel,
             false,
             false,
@@ -1929,9 +1928,9 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg!!)
     }
 
-    override fun onTotalPaymentChange(totalPayment: String?, enable: Boolean) {
-        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPaymentModel
-        shipmentButtonPaymentModel!!.totalPrice = totalPayment!!
+    override fun onTotalPaymentChange(totalPayment: String, enable: Boolean) {
+        val shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel()
+        shipmentButtonPaymentModel.totalPrice = totalPayment
         shipmentButtonPaymentModel.enable = enable
         onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
@@ -2217,7 +2216,7 @@ class ShipmentFragment :
         val existingDdpParam = shipmentPresenter.getDynamicDataParam()
         var isAdded = false
         if (newParam.attribute.equals(ATTRIBUTE_DONATION, ignoreCase = true)) {
-            for (existingParam in shipmentPresenter.getDynamicDataParam()!!.data) {
+            for (existingParam in shipmentPresenter.getDynamicDataParam().data) {
                 if (existingParam.attribute.equals(ATTRIBUTE_DONATION, ignoreCase = true)) {
                     isAdded = true
                     existingParam.donation = isChecked
@@ -2225,27 +2224,27 @@ class ShipmentFragment :
             }
         } else if (newParam.attribute.equals(ATTRIBUTE_ADDON_DETAILS, ignoreCase = true)) {
             if (isChecked) {
-                for (existingParam in shipmentPresenter.getDynamicDataParam()!!.data) {
+                for (existingParam in shipmentPresenter.getDynamicDataParam().data) {
                     if (existingParam.uniqueId.equals(newParam.uniqueId, ignoreCase = true)) {
                         isAdded = true
                         existingParam.addOn = newParam.addOn
                     }
                 }
             } else {
-                for (i in existingDdpParam!!.data.indices) {
-                    val (_, _, uniqueId) = shipmentPresenter.getDynamicDataParam()!!.data[i]
-                    if (uniqueId.equals(newParam.uniqueId, ignoreCase = true)) {
+                for (i in existingDdpParam.data.indices) {
+                    val param = shipmentPresenter.getDynamicDataParam().data[i]
+                    if (param.uniqueId.equals(newParam.uniqueId, ignoreCase = true)) {
                         existingDdpParam.data = existingDdpParam.data.toMutableList().apply { removeAt(i) }
                     }
                 }
             }
         }
         if (!isAdded && isChecked) {
-            existingDdpParam!!.data = existingDdpParam.data.toMutableList().apply { add(newParam) }
+            existingDdpParam.data = existingDdpParam.data.toMutableList().apply { add(newParam) }
         }
-        var source: String? = SOURCE_NORMAL
+        var source: String = SOURCE_NORMAL
         if (isOneClickShipment) source = SOURCE_OCS
-        existingDdpParam!!.source = source!!
+        existingDdpParam.source = source
         shipmentPresenter.setDynamicDataParam(existingDdpParam)
         shipmentPresenter.updateDynamicData(existingDdpParam, true)
     }
@@ -2438,7 +2437,7 @@ class ShipmentFragment :
             val shipmentCartItemModel =
                 shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition)!!
             val validateUsePromoRequest = generateValidateUsePromoRequest()
-            if (promoCode != null && promoCode.isNotEmpty()) {
+            if (promoCode.isNotEmpty()) {
                 for (order in validateUsePromoRequest.orders) {
                     if (order.uniqueId == shipmentCartItemModel.cartString && !order.codes.contains(promoCode)) {
                         if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
@@ -2603,13 +2602,13 @@ class ShipmentFragment :
                         if (validateUsePromoRequest != null) {
                             if (shipmentCartItemModel.isFreeShippingPlus) {
                                 for (ordersItem in validateUsePromoRequest.orders) {
-                                    if (ordersItem != null && ordersItem.uniqueId == shipmentCartItemModel.cartString && ordersItem.codes.size > 0) {
+                                    if (ordersItem.uniqueId == shipmentCartItemModel.cartString && ordersItem.codes.size > 0) {
                                         ordersItem.codes.remove(promoLogisticCode)
                                     }
                                 }
                             } else {
                                 for (ordersItem in validateUsePromoRequest.orders) {
-                                    if (ordersItem != null && ordersItem.codes.size > 0) {
+                                    if (ordersItem.codes.size > 0) {
                                         ordersItem.codes.remove(promoLogisticCode)
                                     }
                                 }
@@ -2785,7 +2784,7 @@ class ShipmentFragment :
                 codHistory = shipmentPresenter.codData!!.counterCod
             }
             val activity: Activity? = activity
-            if (shipmentDetailData != null && activity != null) {
+            if (activity != null) {
                 val pslCode = getLogisticPromoCode(shipmentCartItemModel)
                 val products = getProductForRatesRequest(shipmentCartItemModel)
                 val shippingDurationBottomsheet = ShippingDurationBottomsheet()
@@ -2903,7 +2902,7 @@ class ShipmentFragment :
     private fun checkHasCourierPromo(shippingCourierUiModels: List<ShippingCourierUiModel>) {
         var hasCourierPromo = false
         for (shippingCourierUiModel in shippingCourierUiModels) {
-            if (!TextUtils.isEmpty(shippingCourierUiModel!!.productData.promoCode)) {
+            if (!TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)) {
                 hasCourierPromo = true
                 break
             }
@@ -2911,7 +2910,7 @@ class ShipmentFragment :
         if (hasCourierPromo) {
             for (shippingCourierUiModel in shippingCourierUiModels) {
                 sendAnalyticsOnDisplayLogisticThatContainPromo(
-                    !TextUtils.isEmpty(shippingCourierUiModel!!.productData.promoCode),
+                    !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode),
                     shippingCourierUiModel.productData.shipperProductId
                 )
             }
@@ -4196,7 +4195,7 @@ class ShipmentFragment :
     override fun addOnOrderLevelImpression(cartItemModelList: List<CartItemModel>?) {
         val listCartString = ArrayList<String>()
         for (cartItemModel in cartItemModelList!!) {
-            listCartString.add(cartItemModel!!.cartString)
+            listCartString.add(cartItemModel.cartString)
         }
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString())
     }

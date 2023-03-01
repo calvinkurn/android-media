@@ -194,58 +194,83 @@ class ShipmentPresenter @Inject constructor(
 ) : ShipmentContract.Presenter {
 
     private var view: ShipmentContract.View? = null
+
     override var shipmentUpsellModel = ShipmentUpsellModel()
         private set
+
     override var shipmentNewUpsellModel = ShipmentNewUpsellModel()
         private set
+
     override var shipmentCartItemModelList: List<ShipmentCartItemModel>? = null
+
     override var shipmentTickerErrorModel = ShipmentTickerErrorModel()
         private set
+
     override var tickerAnnouncementHolderData: TickerAnnouncementHolderData =
         TickerAnnouncementHolderData()
+
     override var recipientAddressModel: RecipientAddressModel? = null
-    private var shipmentCostModel: ShipmentCostModel? = null
+
+    private var shipmentCostModel: ShipmentCostModel = ShipmentCostModel()
+
     override var egoldAttributeModel: EgoldAttributeModel? = null
+
     override var shipmentDonationModel: ShipmentDonationModel? = null
-    private var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>? = null
-    override var shipmentButtonPaymentModel: ShipmentButtonPaymentModel? = null
-        get() {
-            if (field == null) {
-                field = ShipmentButtonPaymentModel()
-            }
-            return field
-        }
+
+    private var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel> = ArrayList()
+
+    private var shipmentButtonPaymentModel: ShipmentButtonPaymentModel = ShipmentButtonPaymentModel()
+
     override var codData: CodModel? = null
         private set
+
     private var campaignTimer: CampaignTimerUi? = null
+
     override var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
+
     override var lastValidateUseRequest: ValidateUsePromoRequest? = null
         private set
+
     private var dataCheckoutRequestList: List<DataCheckoutRequest>? = null
+
     private var checkoutData: CheckoutData? = null
+
     override var couponStateChanged = false
-    private var shippingCourierViewModelsState: MutableMap<Int, List<ShippingCourierUiModel>>? =
-        null
+
+    private var shippingCourierViewModelsState: MutableMap<Int, List<ShippingCourierUiModel>> = HashMap()
+
     private var isPurchaseProtectionPage = false
+
     override var isShowOnboarding = false
         private set
+
     override var isIneligiblePromoDialogEnabled = false
         private set
+
     private var isBoUnstackEnabled = false
+
     override var cartDataForRates = ""
         private set
-    private val statusOK = "OK"
-    private val statusCode200 = "200"
+
     override var lastApplyData: LastApplyUiModel? = null
+
     override var uploadPrescriptionUiModel: UploadPrescriptionUiModel? = null
         private set
+
     private var ratesPublisher: PublishSubject<ShipmentGetCourierHolderData>? = null
+
     private var ratesPromoPublisher: PublishSubject<ShipmentGetCourierHolderData>? = null
+
     override var logisticDonePublisher: PublishSubject<Boolean>? = null
+
     private var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
+
     private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData>? = null
+
     private var isUsingDdp = false
+
     private var dynamicDataParam: DynamicDataPassingParamRequest = DynamicDataPassingParamRequest()
+
     var dynamicData = ""
 
     override fun attachView(view: ShipmentContract.View) {
@@ -270,21 +295,21 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun getShipmentCostModel(): ShipmentCostModel {
-        if (shipmentCostModel == null) {
-            shipmentCostModel = ShipmentCostModel()
-        }
-        return shipmentCostModel!!
+//        if (shipmentCostModel == null) {
+//            shipmentCostModel = ShipmentCostModel()
+//        }
+        return shipmentCostModel
     }
 
     override fun setShipmentCostModel(shipmentCostModel: ShipmentCostModel?) {
-        this.shipmentCostModel = shipmentCostModel
+        this.shipmentCostModel = shipmentCostModel ?: ShipmentCostModel()
         if (egoldAttributeModel?.isEligible == true) {
             updateEgoldBuyValue()
         }
     }
 
     fun updateEgoldBuyValue() {
-        val totalPrice = shipmentCostModel!!.totalPrice.toLong()
+        val totalPrice = shipmentCostModel.totalPrice.toLong()
         var valueTOCheck = 0
         var buyEgoldValue = 0
         if (egoldAttributeModel!!.isTiering) {
@@ -335,14 +360,22 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun getListShipmentCrossSellModel(): ArrayList<ShipmentCrossSellModel> {
-        if (listShipmentCrossSellModel == null) {
-            listShipmentCrossSellModel = ArrayList()
-        }
-        return listShipmentCrossSellModel!!
+//        if (listShipmentCrossSellModel == null) {
+//            listShipmentCrossSellModel = ArrayList()
+//        }
+        return listShipmentCrossSellModel
     }
 
     override fun setListShipmentCrossSellModel(listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?) {
-        this.listShipmentCrossSellModel = listShipmentCrossSellModel
+        this.listShipmentCrossSellModel = listShipmentCrossSellModel ?: ArrayList()
+    }
+
+    override fun getShipmentButtonPaymentModel(): ShipmentButtonPaymentModel {
+        return this.shipmentButtonPaymentModel
+    }
+
+    override fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?) {
+        this.shipmentButtonPaymentModel = shipmentButtonPaymentModel ?: ShipmentButtonPaymentModel()
     }
 
     private fun getPromoFlag(step: String): Boolean {
@@ -1074,19 +1107,11 @@ class ShipmentPresenter @Inject constructor(
 
     private fun updateTickerAnnouncementData(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         if (!isNullOrEmpty(validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message)) {
-            if (tickerAnnouncementHolderData == null) {
-                tickerAnnouncementHolderData = TickerAnnouncementHolderData(
-                    validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.statusCode.toString(),
-                    "",
-                    validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message
-                )
-            } else {
-                tickerAnnouncementHolderData.id =
-                    validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.statusCode.toString()
-                tickerAnnouncementHolderData.title = ""
-                tickerAnnouncementHolderData.message =
-                    validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message
-            }
+            tickerAnnouncementHolderData.id =
+                validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.statusCode.toString()
+            tickerAnnouncementHolderData.title = ""
+            tickerAnnouncementHolderData.message =
+                validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message
             view?.updateTickerAnnouncementMessage()
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 tickerAnnouncementHolderData.id
@@ -1149,7 +1174,7 @@ class ShipmentPresenter @Inject constructor(
                         )
                     }
                     var isCrossSellChecked = false
-                    for (shipmentCrossSellModel in listShipmentCrossSellModel!!) {
+                    for (shipmentCrossSellModel in listShipmentCrossSellModel) {
                         if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
                     }
                     if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
@@ -1202,7 +1227,7 @@ class ShipmentPresenter @Inject constructor(
         var digitalProductName = ""
         if (shipmentCrossSellModelList.isNotEmpty()) {
             for (i in shipmentCrossSellModelList.indices) {
-                val crossSellModel = shipmentCrossSellModelList[i]!!.crossSellModel
+                val crossSellModel = shipmentCrossSellModelList[i].crossSellModel
                 val digitalCategoryName = crossSellModel.orderSummary.title
                 eventLabel = "$digitalCategoryName - ${crossSellModel.id}"
                 digitalProductName = crossSellModel.info.title
@@ -1769,7 +1794,7 @@ class ShipmentPresenter @Inject constructor(
     private fun setCheckoutRequestPromoData(dataCheckoutRequestList: List<DataCheckoutRequest>) {
         // Clear data first
         for (dataCheckoutRequest in dataCheckoutRequestList) {
-            if (dataCheckoutRequest!!.shopProducts != null && dataCheckoutRequest.shopProducts!!.isNotEmpty()) {
+            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts!!.isNotEmpty()) {
                 for (shopProduct in dataCheckoutRequest.shopProducts!!) {
                     if (shopProduct.promoCodes != null) {
                         shopProduct.promoCodes?.clear()
@@ -1781,7 +1806,7 @@ class ShipmentPresenter @Inject constructor(
 
         // Then set the data promo merchant & logistic
         for (dataCheckoutRequest in dataCheckoutRequestList) {
-            if (dataCheckoutRequest!!.shopProducts != null && dataCheckoutRequest.shopProducts!!.isNotEmpty()) {
+            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts!!.isNotEmpty()) {
                 for (shopProductCheckoutRequest in dataCheckoutRequest.shopProducts!!) {
                     for (voucherOrder in validateUsePromoRevampUiModel!!.promoUiModel.voucherOrderUiModels) {
                         if (shopProductCheckoutRequest.cartString == voucherOrder.uniqueId) {
@@ -1838,7 +1863,7 @@ class ShipmentPresenter @Inject constructor(
         val param: MutableMap<String, Any> = HashMap()
         val saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels)
         val tmpSaveShipmentDataArray: MutableList<ShipmentStateRequestData> = ArrayList()
-        for (requestData in saveShipmentDataArray!!) {
+        for (requestData in saveShipmentDataArray) {
             if (requestData.shopProductDataList != null && requestData.shopProductDataList!!.isNotEmpty()) {
                 tmpSaveShipmentDataArray.add(requestData)
             }
@@ -2644,21 +2669,21 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun getShippingCourierViewModelsState(orderNumber: Int): List<ShippingCourierUiModel>? {
-        return if (shippingCourierViewModelsState != null) {
-            shippingCourierViewModelsState!![orderNumber]
-        } else {
-            null
-        }
+//        return if (shippingCourierViewModelsState != null) {
+        return shippingCourierViewModelsState[orderNumber]
+//        } else {
+//            null
+//        }
     }
 
     override fun setShippingCourierViewModelsState(
         shippingCourierUiModelsState: List<ShippingCourierUiModel>,
         orderNumber: Int
     ) {
-        if (shippingCourierViewModelsState == null) {
-            shippingCourierViewModelsState = HashMap()
-        }
-        shippingCourierViewModelsState!![orderNumber] = shippingCourierUiModelsState
+//        if (shippingCourierViewModelsState == null) {
+//            shippingCourierViewModelsState = HashMap()
+//        }
+        shippingCourierViewModelsState[orderNumber] = shippingCourierUiModelsState
     }
 
     override fun getCampaignTimer(): CampaignTimerUi? {
@@ -3333,8 +3358,7 @@ class ShipmentPresenter @Inject constructor(
         val selectedShipmentDetailData =
             view?.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
         val products = getProductForRatesRequest(shipmentCartItemModel)
-        val cartString =
-            if (shipmentCartItemModel!!.cartString != null) shipmentCartItemModel.cartString else ""
+        val cartString = shipmentCartItemModel!!.cartString
         val isTradeInDropOff = view?.isTradeInByDropOff ?: false
         val shippingParam = getShippingParam(
             selectedShipmentDetailData,
@@ -3675,5 +3699,9 @@ class ShipmentPresenter @Inject constructor(
 
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
+
+        private const val statusOK = "OK"
+
+        private const val statusCode200 = "200"
     }
 }

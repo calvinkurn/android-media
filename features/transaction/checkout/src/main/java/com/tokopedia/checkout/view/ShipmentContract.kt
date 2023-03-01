@@ -366,7 +366,8 @@ interface ShipmentContract {
         fun getListShipmentCrossSellModel(): ArrayList<ShipmentCrossSellModel>
 
         fun setListShipmentCrossSellModel(listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?)
-        var shipmentButtonPaymentModel: ShipmentButtonPaymentModel?
+        fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?)
+        fun getShipmentButtonPaymentModel(): ShipmentButtonPaymentModel
         fun setShippingCourierViewModelsState(
             shippingCourierUiModelsState: List<ShippingCourierUiModel>,
             orderNumber: Int
