@@ -19,7 +19,7 @@ class FilterPageTestHelper(
     private val baseViewModel: BaseSearchCategoryViewModel,
     private val getFilterUseCase: UseCase<DynamicFilterModel>,
     private val getProductCountUseCase: UseCase<String>,
-    private val callback: Callback
+    private val callback: Callback,
 ) {
     private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
     private val mockApplyFilterMapParam = mutableMapOf<String, String>()
@@ -68,7 +68,7 @@ class FilterPageTestHelper(
 
     private fun `Then assert filter request params`(
         expectedQueryParamMap: Map<String, String>,
-        filterRequestParams: RequestParams
+        filterRequestParams: RequestParams,
     ) {
         val actualRequestParams = filterRequestParams.parameters
         expectedQueryParamMap.forEach { (key, value) ->
@@ -167,11 +167,11 @@ class FilterPageTestHelper(
         mockApplyFilterMapParam.putAll(selectedFilterMap)
 
         applySortFilterModel = ApplySortFilterModel(
-            mapParameter = mockApplyFilterMapParam,
-            selectedFilterMapParameter = selectedFilterMap,
-            selectedSortMapParameter = mapOf(),
-            selectedSortName = "",
-            sortAutoFilterMapParameter = mapOf()
+                mapParameter = mockApplyFilterMapParam,
+                selectedFilterMapParameter = selectedFilterMap,
+                selectedSortMapParameter = mapOf(),
+                selectedSortName = "",
+                sortAutoFilterMapParameter = mapOf()
         )
     }
 

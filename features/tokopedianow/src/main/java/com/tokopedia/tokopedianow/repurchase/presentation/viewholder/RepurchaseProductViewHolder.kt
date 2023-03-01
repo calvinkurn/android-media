@@ -10,13 +10,13 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RepurchaseProductViewHolder(
     itemView: View,
     private val listener: RepurchaseProductCardListener? = null,
-    private val similarProductListener: SimilarProductListener? = null
+    private val similarProductTrackerListener: TokoNowSimilarProductTrackerListener? = null
 ): AbstractViewHolder<RepurchaseProductUiModel>(itemView), TokoNowWishlistButtonView.TokoNowWishlistButtonListener {
 
     companion object {
@@ -47,7 +47,7 @@ class RepurchaseProductViewHolder(
             addOnImpressionListener(item) {
                 listener?.onProductImpressed(item)
             }
-            setListeners(similarProductListener)
+            setSimilarProductTrackerListener(similarProductTrackerListener)
         }
     }
 

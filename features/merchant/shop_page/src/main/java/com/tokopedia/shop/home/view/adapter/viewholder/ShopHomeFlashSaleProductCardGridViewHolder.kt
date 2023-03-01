@@ -10,6 +10,7 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
@@ -19,18 +20,18 @@ import com.tokopedia.unifycomponents.dpToPx
 
 class ShopHomeFlashSaleProductCardGridViewHolder(
     itemView: View,
-    private val listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener,
+    private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
+
+    companion object{
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
+    }
 
     private var uiModel: ShopHomeProductUiModel? = null
     private var fsUiModel: ShopHomeFlashSaleUiModel? = null
     private var productCardGrid: ProductCardGridView? = itemView.findViewById(R.id.fs_product_card_grid)
     private val paddingOffset = 6f.dpToPx()
-
-    init {
-        setupClickListener(listener)
-        setupImpressionListener(listener)
-    }
 
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
         uiModel?.let {
@@ -38,7 +39,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                 it,
                 object : ViewHintListener {
                     override fun onViewHint() {
-                        listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+                        listener.onFlashSaleProductImpression(it, fsUiModel, ShopUtil.getActualPositionFromIndex(adapterPosition), parentPosition)
                     }
                 }
             )
@@ -48,14 +49,26 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
         this.fsUiModel = fsUiModel
+        setupClickListener(listener)
+        setupImpressionListener(listener)
         productCardGrid?.applyCarousel()
         productCardGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+        val stockBarLabel = uiModel.stockLabel
+        var stockBarLabelColor = ""
+        if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+            stockBarLabelColor = ShopUtil.getColorHexString(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+            )
+        }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+        ).copy(
+            stockBarLabelColor = stockBarLabelColor
         )
         productCardGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
@@ -131,7 +144,8 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                     listener.onFlashSaleProductClicked(
                         model = productModel,
                         widgetModel = widgetModel,
-                        position = adapterPosition
+                        position = ShopUtil.getActualPositionFromIndex(adapterPosition),
+                        parentPosition = parentPosition
                     )
                 }
             }

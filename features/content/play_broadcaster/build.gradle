@@ -90,7 +90,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation (rootProject.ext.tkpdLibDependencies.ucrop){
         exclude group: 'com.android.support'
     }
 

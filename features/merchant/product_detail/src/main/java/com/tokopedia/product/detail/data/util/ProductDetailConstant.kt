@@ -65,6 +65,7 @@ object ProductDetailConstant {
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val MINI_VARIANT_OPTIONS = "mini_variant_options"
+    const val THUMB_MINI_VARIANT_OPTIONS = "thumbnail"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"

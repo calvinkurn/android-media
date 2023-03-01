@@ -4,6 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class VideoAttachmentDomain(
-    @SerializedName("attachmentId") @Expose val attachmentId: String = "",
+    @SerializedName("attachmentID") @Expose val attachmentId: String = "",
     @SerializedName("videoUrl") @Expose val videoUrl: String = ""
 )

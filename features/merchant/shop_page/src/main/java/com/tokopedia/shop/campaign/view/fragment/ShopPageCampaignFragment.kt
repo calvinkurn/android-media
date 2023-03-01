@@ -99,9 +99,6 @@ class ShopPageCampaignFragment :
     private var topView: View? = null
     private var centerView: View? = null
     private var bottomView: View? = null
-    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
-        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-    }
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
@@ -372,7 +369,7 @@ class ShopPageCampaignFragment :
         )
     }
 
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int) {
         shopCampaignTabTracker.clickCampaignTabProduct(
             model.id.orEmpty(),
             model.name.orEmpty(),
@@ -389,7 +386,8 @@ class ShopPageCampaignFragment :
     override fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int
+        position: Int,
+        parentPosition: Int
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             shopHomeProductUiModel.id.orEmpty(),
@@ -415,7 +413,9 @@ class ShopPageCampaignFragment :
             ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
             shopHomeNewProductLaunchCampaignUiModel.name,
             shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition)
+            ShopUtil.getActualPositionFromIndex(parentPosition),
+            shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
+            shopHomeNewProductLaunchCampaignUiModel.isFestivity
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             shopCampaignTabTracker.clickCampaignTabProduct(
@@ -469,7 +469,8 @@ class ShopPageCampaignFragment :
 
     override fun onClickCampaignBannerAreaNplWidget(
         model: ShopHomeNewProductLaunchCampaignUiModel,
-        widgetPosition: Int
+        widgetPosition: Int,
+        position: Int
     ) {
         shopCampaignTabTracker.clickShopBannerWidget(
             shopId,
@@ -505,19 +506,17 @@ class ShopPageCampaignFragment :
         override fun onProductCardThematicWidgetImpressListener(
             products: List<ProductCardUiModel>,
             position: Int,
-            campaignId: String,
-            campaignName: String,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?
         ) {
             products.firstOrNull()?.let {
                 shopCampaignTabTracker.impressionCampaignTabProduct(
                     it.id.orEmpty(),
                     it.name.orEmpty(),
                     it.displayedPrice.toLongOrZero(),
-                    campaignName,
+                    thematicWidgetUiModel?.name.orEmpty(),
                     shopId,
                     userId,
-                    campaignTitle,
+                    thematicWidgetUiModel?.header?.title.orEmpty(),
                     ShopUtil.getActualPositionFromIndex(position)
                 )
             }
@@ -525,19 +524,17 @@ class ShopPageCampaignFragment :
 
         override fun onProductCardThematicWidgetClickListener(
             product: ProductCardUiModel,
-            campaignId: String,
-            campaignName: String,
-            position: Int,
-            campaignTitle: String
+            thematicWidgetUiModel: ThematicWidgetUiModel?,
+            position: Int
         ) {
             shopCampaignTabTracker.clickCampaignTabProduct(
                 product.id.orEmpty(),
                 product.name.orEmpty(),
                 product.displayedPrice.toLongOrZero(),
-                campaignName,
+                thematicWidgetUiModel?.name.orEmpty(),
                 shopId,
                 userId,
-                campaignTitle,
+                thematicWidgetUiModel?.header?.title.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(position)
             )
             RouteManager.route(context, product.productUrl)

@@ -143,7 +143,7 @@ object DynamicProductDetailMapper {
                     }
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
+                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
@@ -156,7 +156,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-                        listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
+                        listOfComponent.add(
+                            ProductSingleVariantDataModel(
+                                type = component.type,
+                                name = component.componentName,
+                                thumbnailType = component.componentData.firstOrNull()
+                                    ?.componentType.orEmpty()
+                            )
+                        )
                     } else {
                         listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                     }
@@ -581,7 +588,12 @@ object DynamicProductDetailMapper {
             addressID = localData.address_id.checkIfNumber("address_id"),
             postalCode = localData.postal_code.checkIfNumber("postal_code"),
             latlon = latlong,
-            cityId = localData.city_id.checkIfNumber("city_id")
+            cityId = localData.city_id.checkIfNumber("city_id"),
+            /**
+             * Address Name use to determine we should show "Dikirim ke" when tokonow or no
+             * This validation should be came from backend
+             */
+            addressName = localData.label
         )
     }
 

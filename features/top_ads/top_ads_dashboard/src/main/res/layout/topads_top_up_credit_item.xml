@@ -1,0 +1,51 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/creditOptionChipItem"
+    android:layout_width="match_parent"
+    android:layout_height="68dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/top_ads_credit_item_bg">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/creditItemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="Rp25.000"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@+id/creditItemBonus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/creditItemBonus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Bonus Rp3.250"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/creditItemText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/creditItemText"
+        app:layout_constraintTop_toBottomOf="@+id/creditItemText"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/nominalShimmer"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"
+        tools:visibility="gone" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

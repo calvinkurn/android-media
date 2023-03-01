@@ -17,8 +17,8 @@ import com.tokopedia.media.picker.ui.fragment.camera.CameraMode
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.adapter.CameraSliderAdapter
-import com.tokopedia.media.picker.ui.adapter.managers.SliderLayoutManager
-import com.tokopedia.media.picker.ui.uimodel.CameraSelectionUiModel
+import com.tokopedia.media.picker.ui.adapter.utils.SliderLayoutManager
+import com.tokopedia.media.picker.ui.fragment.camera.CameraSelectorUiModel
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
@@ -36,7 +36,7 @@ class CameraControllerComponent(
 ) : UiComponent(parent, R.id.uc_camera_controller), ViewTreeObserver.OnScrollChangedListener,
     CameraSliderAdapter.Listener {
 
-    private val adapterData = CameraSelectionUiModel.create()
+    private val adapterData = CameraSelectorUiModel.create()
 
     private val adapter by lazy {
         CameraSliderAdapter(adapterData, this)
@@ -133,6 +133,10 @@ class CameraControllerComponent(
         }
     }
 
+    fun setThumbnailVisibility(isVisible: Boolean) {
+        imgThumbnail.showWithCondition(isVisible)
+    }
+
     fun scrollToPhotoMode() {
         lstCameraMode.smoothScrollToPosition(CameraMode.Photo.value)
     }
@@ -226,8 +230,7 @@ class CameraControllerComponent(
         try {
             videoDurationTimer?.cancel()
             videoDurationTimer = null
-        } catch (t: Throwable) {
-        }
+        } catch (ignored: Throwable) { }
     }
 
     private fun onTakeCamera() {
@@ -245,6 +248,8 @@ class CameraControllerComponent(
     }
 
     private fun setupCameraSlider() {
+        if (lstCameraMode.adapter != null) return
+
         lstCameraMode.show()
         lstCameraMode.viewTreeObserver.addOnScrollChangedListener(this)
 
@@ -299,6 +304,7 @@ class CameraControllerComponent(
     interface Listener {
         fun onCameraModeChanged(mode: CameraMode)
         fun isFrontCamera(): Boolean
+        fun isCameraOnRecording(): Boolean
 
         fun onCameraThumbnailClicked()
         fun onTakeMediaClicked()

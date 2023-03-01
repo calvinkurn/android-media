@@ -144,6 +144,8 @@ interface ICartListView : CustomerView {
 
     fun onSuccessClearRedPromosThenGoToCheckout()
 
+    fun onSuccessClearRedPromosThenGoToPromo()
+
     fun navigateToPromoRecommendation()
 
     fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean
@@ -160,5 +162,5 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
-    fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData)
+    fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 }

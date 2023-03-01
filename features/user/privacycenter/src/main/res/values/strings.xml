@@ -101,13 +101,13 @@
     <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
     <string name="privacy_center_search_history_latest_search">Terakhir dicari</string>
     <string name="privacy_center_search_history_delete_all">Hapus Semua</string>
-    <string name="privacy_center_search_history_empty_list">Tidak ada riwayat pencarian terakhir</string>
+    <string name="privacy_center_search_history_empty_list">Kamu nggak punya riwayat pencarian terakhir</string>
     <string name="privacy_center_search_history_local_load_title">Konten gagal ditampilkan</string>
     <string name="privacy_center_search_history_local_load_subtitle">Klik ikon di samping buat coba lagi.</string>
-    <string name="privacy_center_search_history_dialog_title">Yakin hapus semua riwayat terakhir dicari?</string>
-    <string name="privacy_center_search_history_dialog_subtitle">Riwayat yang akan dihapus tidak dapat dikembalikan</string>
+    <string name="privacy_center_search_history_dialog_title">Yakin hapus semua pencarian terakhirmu?</string>
+    <string name="privacy_center_search_history_dialog_subtitle">Pencarian yang dihapus tidak dapat dikembalikan.</string>
     <string name="privacy_center_search_history_dialog_primary">Hapus Semua</string>
-    <string name="privacy_center_search_history_dialog_secondary">Kembali</string>
+    <string name="privacy_center_search_history_dialog_secondary">Batal</string>
     <string name="privacy_center_search_history_message_failed_delete_all">Gagal menghapus semua riwayat pencarian </string>
     <string name="privacy_center_search_history_message_failed_delete_one">Gagal menghapus riwayat pencarian </string>
     <string name="dsar_success_description">E-mail akan digunakan untuk kirim link download datamu.</string>
@@ -135,14 +135,16 @@
 
     <!-- SHARING WISHLIST -->
     <string name="sharing_wishlist_page_title">Bagikan Wishlist</string>
-    <string name="sharing_wishlist_empty_page_title">Belum ada koleksi wishlist yang bersifat %s</string>
-    <string name="sharing_wishlist_empty_page_description">Jika ada koleksi wishlist yang bersifat %s, kamu bisa lihat dan atur dari sini </string>
+    <string name="sharing_wishlist_empty_page_title_public">Belum ada Koleksi yang dibagikan ke publik</string>
+    <string name="sharing_wishlist_empty_page_title_private">Belum ada Koleksi pribadi</string>
+    <string name="sharing_wishlist_empty_page_description_public">Nanti kamu bisa lihat dan atur semua Koleksi yang dibagikan ke publik di sini.</string>
+    <string name="sharing_wishlist_empty_page_description_private">Nanti kamu bisa lihat dan atur semua Koleksi yang cuma bisa diakses oleh kamu di sini.</string>
     <string name="sharing_wishlist_collection_atur_button">Atur</string>
     <string name="sharing_wishlist_bottom_sheet_title">Siapa yang boleh lihat Koleksi “%s” ini?</string>
     <string name="sharing_wishlist_private_option">Hanya saya</string>
     <string name="sharing_wishlist_public_option">Semua orang</string>
     <string name="sharing_wishlist_save_button">Simpan</string>
-    <string name="sharing_wishlist_another_setup">Ubah Pengaturan Lainnya</string>
+    <string name="sharing_wishlist_another_setup">Ubah Detail Koleksi</string>
     <string name="sharing_wishlist_failed_title">Konten gagal ditampilkan</string>
     <string name="sharing_wishlist_label_private">Pribadi</string>
     <string name="sharing_wishlist_label_public">Publik</string>

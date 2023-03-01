@@ -24,7 +24,6 @@ interface ProductListSectionContract {
     interface View : CustomerView {
         fun addProductList(list: List<Visitable<*>>)
         fun setProductList(list: List<Visitable<*>>)
-        fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(throwable: Throwable?)
         val queryKey: String
         fun backToTop()
@@ -62,6 +61,8 @@ interface ProductListSectionContract {
         fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
         fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String)
         fun initFilterController(quickFilterList: List<Filter>)
+        fun setAutoFilterToggle(autoFilterParameter: String)
+        fun setSortFilterIndicatorCounter()
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)

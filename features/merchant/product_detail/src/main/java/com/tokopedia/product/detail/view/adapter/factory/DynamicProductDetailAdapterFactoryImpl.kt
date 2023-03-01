@@ -84,6 +84,7 @@ import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
+import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 
 class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,
@@ -176,7 +177,11 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductSingleVariantDataModel): Int {
-        return ProductSingleVariantViewHolder.LAYOUT
+        return if (data.isThumbnailType) {
+            ProductThumbnailVariantViewHolder.LAYOUT
+        } else {
+            ProductSingleVariantViewHolder.LAYOUT
+        }
     }
 
     override fun type(data: ProductMiniShopWidgetDataModel): Int {
@@ -299,6 +304,11 @@ class DynamicProductDetailAdapterFactoryImpl(
                 variantListener,
                 listener
             )
+            ProductThumbnailVariantViewHolder.LAYOUT -> ProductThumbnailVariantViewHolder(
+                view,
+                variantListener,
+                listener
+            )
             OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(
@@ -311,13 +321,16 @@ class DynamicProductDetailAdapterFactoryImpl(
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {
                     ContentWidgetViewHolder(
-                        view, PlayWidgetViewHolder(
+                        view,
+                        PlayWidgetViewHolder(
                             itemView = playWidgetView,
                             coordinator = playWidgetCoordinator
                         ),
                         listener
                     )
-                } else super.createViewHolder(view, type)
+                } else {
+                    super.createViewHolder(view, type)
+                }
             }
             ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(
                 view,
@@ -339,5 +352,4 @@ class DynamicProductDetailAdapterFactoryImpl(
             else -> super.createViewHolder(view, type)
         }
     }
-
 }

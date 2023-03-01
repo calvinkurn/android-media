@@ -39,6 +39,7 @@ class PlayBroadcastTnCTest {
 
     @Before
     fun setUp() {
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
         coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
     }
 

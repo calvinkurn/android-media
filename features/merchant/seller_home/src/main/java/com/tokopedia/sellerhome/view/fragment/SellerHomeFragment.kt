@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -80,15 +81,18 @@ import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
+import com.tokopedia.sellerhome.view.bottomsheet.SellerPersonaBottomSheet
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhome.view.dialog.NewSellerDialog
 import com.tokopedia.sellerhome.view.helper.NewSellerJourneyHelper
+import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
@@ -181,16 +185,24 @@ import kotlin.coroutines.CoroutineContext
  * Created By @ilhamsuaib on 2020-01-14
  */
 
+@Suppress("DEPRECATION")
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
     WidgetListener, CoroutineScope, SellerHomeFragmentListener {
 
     companion object {
         @JvmStatic
-        fun newInstance() = SellerHomeFragment()
+        fun newInstance(data: SellerHomeDataUiModel? = null) = SellerHomeFragment().apply {
+            data?.let {
+                arguments = Bundle().apply {
+                    putParcelable(KEY_SELLER_HOME_DATA, it)
+                }
+            }
+        }
 
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         val SEARCH_MENU_ID = R.id.menu_sah_search
 
+        private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
@@ -208,6 +220,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val FEEDBACK_OPTION_4 = 3
         private const val ANNOUNCEMENT_DISMISSAL_KEY = "widget.announcement.%s"
         private const val POST_LIST_DISMISSAL_KEY = "widget.post.%s"
+        private const val STATUS_PERSONA_INACTIVE = 0
+        private const val STATUS_PERSONA_ACTIVE = 1
+        private const val STATUS_PERSONA_SHOW_POPUP = 2
+        private const val STATUS_PERSONA_NOT_ROLLED_OUT = 3
     }
 
     @Inject
@@ -230,6 +246,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Inject
     lateinit var newSellerJourneyHelper: NewSellerJourneyHelper
+
+    @Inject
+    lateinit var sharedPref: SellerHomeSharedPref
 
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
@@ -336,6 +355,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareTracker()
         observeWidgetDismissalStatus()
         observeShopStateInfo()
+        showSellerHomeToaster()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
@@ -1122,7 +1142,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
-        setViewBackground()
+
+        isNewSellerState = (activity as? SellerHomeActivity)?.isNewSeller == true
+        setViewBackground(isNewSellerState)
     }
 
     private fun setupEmptyState() {
@@ -1307,7 +1329,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(context,
+        ImageHandler.loadImageWithTarget(
+            context,
             shopShareData?.shopSnippetURL.orEmpty(),
             object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(
@@ -1345,7 +1368,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
                 activity?.let {
-                    shopShareHelper.onShareOptionClicked(it,
+                    shopShareHelper.onShareOptionClicked(
+                        it,
                         view,
                         shareDataModel,
                         callback = { shareModel, _ ->
@@ -1430,6 +1454,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnSuccessGetLayout(result.data.widgetList)
                     startWidgetSse()
                     setupShopState(result.data.shopState)
+                    handlePersonaStatus(result.data.personaStatus)
                 }
                 is Fail -> {
                     stopCustomMetric(
@@ -1441,6 +1466,66 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(true)
+    }
+
+    private fun handlePersonaStatus(personaStatus: Int) {
+        when (personaStatus) {
+            STATUS_PERSONA_NOT_ROLLED_OUT -> {
+                sharedPref.setPersonaEntryPointVisibility(
+                    userSession.userId,
+                    shouldVisible = false
+                )
+            }
+            STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
+                showPersonaBottomSheet(personaStatus)
+                sharedPref.setPersonaEntryPointVisibility(
+                    userSession.userId, shouldVisible = true
+                )
+            }
+            STATUS_PERSONA_SHOW_POPUP -> {
+                sharedPref.setPersonaEntryPointVisibility(
+                    userSession.userId,
+                    shouldVisible = true
+                )
+            }
+        }
+    }
+
+    private fun showPersonaBottomSheet(personaStatus: Int) {
+        activity?.let {
+            val btmSheet = SellerPersonaBottomSheet.getInstance(childFragmentManager)
+            val shouldShowBottomSheet =
+                !it.isFinishing && !btmSheet.isVisible && sharedPref.shouldShowPersonaHomePopup(
+                    userSession.userId
+                )
+            if (shouldShowBottomSheet) {
+                runCatching {
+                    btmSheet.setOnDismissListener {
+                        sharedPref.markPersonaHomePopupShown(userSession.userId)
+                        if (personaStatus == STATUS_PERSONA_INACTIVE) {
+                            showPersonaToaster()
+                        }
+                    }
+                    btmSheet.show(childFragmentManager)
+                }
+            }
+        }
+    }
+
+    private fun showPersonaToaster() {
+        view?.run {
+            post {
+                val message = context.getString(R.string.sah_activate_persona_entry_point_info)
+                val cta = context.getString(R.string.saldo_btn_oke)
+                Toaster.build(
+                    rootView,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    cta
+                ).show()
+            }
+        }
     }
 
     private fun stopLayoutCustomMetric(widgets: List<BaseWidgetUiModel<*>>) {
@@ -1873,7 +1958,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 imgSahNewSellerLeft.gone()
                 imgSahNewSellerRight.gone()
-                setViewBackground()
+                setViewBackground(isNewSellerState)
             }
             setSectionWidgetTextColor()
         }
@@ -1905,29 +1990,69 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() = binding?.run {
+    private fun setViewBackground(isNewSeller: Boolean) = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
+                if (isNewSeller) {
+                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_official_store)
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
+                }
             }
             isPowerMerchant -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
+                if (isNewSeller) {
+                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_power_merchant)
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
+                }
             }
             else -> {
-                viewBgShopStatus.gone()
+                if (isNewSeller) {
+                    viewBgShopStatus.gone()
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
+                }
             }
         }
     }
 
-    private fun showRegularHomeBackground(backgroundResource: Int) {
+    private fun showRegularHomeBackground(imageUrl: String) {
         binding?.run {
-            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-            viewBgShopStatus.layoutParams.height = height
-            viewBgShopStatus.visible()
-            viewBgShopStatus.setImageResource(backgroundResource)
+            try {
+                val height =
+                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+                viewBgShopStatus.layoutParams.height = height
+                viewBgShopStatus.loadImage(imageUrl) {
+                    listener(onSuccess = { _, _ ->
+                        viewBgShopStatus.visible()
+                        setHomeBackgroundRatio()
+                    })
+                }
+            } catch (e: Exception) {
+                viewBgShopStatus.hide()
+            }
+        }
+    }
+
+    private fun setHomeBackgroundRatio() {
+        binding?.run {
+            viewBgShopStatus.layoutParams.height = (viewBgShopStatus.measuredWidth * SellerHomeConst.HOME_BACKGROUND_RATIO).toInt()
             viewBgShopStatus.requestLayout()
+        }
+    }
+
+    private fun showRegularHomeBackgroundNewSeller(imageResourceId: Int) {
+        binding?.run {
+            try {
+                val height =
+                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+                viewBgShopStatus.layoutParams.height = height
+                viewBgShopStatus.setImageResource(imageResourceId)
+            } catch (e: Exception) {
+                viewBgShopStatus.hide()
+            }
         }
     }
 
@@ -2781,6 +2906,31 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         val message = it.getString(R.string.sah_toaster_download_message)
                         Toaster.build(this, message).show()
                     }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    private fun showSellerHomeToaster() {
+        binding?.run {
+            recyclerView.post {
+                val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    arguments?.getParcelable(
+                        KEY_SELLER_HOME_DATA, SellerHomeDataUiModel::class.java
+                    )
+                } else {
+                    arguments?.getParcelable(KEY_SELLER_HOME_DATA)
+                }
+                val message = data?.toasterMessage
+                if (!message.isNullOrBlank()) {
+                    Toaster.build(
+                        this.root,
+                        message,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        data.toasterCta
+                    ).show()
                 }
             }
         }

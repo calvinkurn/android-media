@@ -316,7 +316,7 @@ class GetOccCartMapper @Inject constructor() {
                 bid = payment.bid,
                 specificGatewayCampaignOnlyType = payment.specificGatewayCampaignOnlyType,
                 walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl),
-                paymentFees = mapPaymentFee(payment.paymentFeeDetail)
+                originalPaymentFees = mapPaymentFee(payment.paymentFeeDetail)
         )
     }
 

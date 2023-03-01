@@ -14,6 +14,7 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.runWishlistCollectionDetailBot
 import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.adapter
+import com.tokopedia.wishlist.util.setupRemoteConfig
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2RecommendationCarouselViewHolder
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
@@ -43,6 +44,7 @@ class WishlistCollectionDetailTopAdsVerificationTest {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
                 InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+                setupRemoteConfig()
                 setupTopAdsDetector()
             }
         }

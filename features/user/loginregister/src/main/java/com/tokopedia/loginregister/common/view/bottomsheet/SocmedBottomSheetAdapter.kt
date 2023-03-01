@@ -9,7 +9,7 @@ import com.tokopedia.media.loader.loadImage
 
 class SocmedBottomSheetAdapter constructor(
     private val providers: MutableList<ProviderData>,
-    private val listener: SocmedBottomSheetListener
+    private val listener: SocmedBottomSheetListener?
 ) : RecyclerView.Adapter<SocmedBottomSheetAdapter.ViewHolder>(){
 
     inner class ViewHolder(
@@ -24,7 +24,7 @@ class SocmedBottomSheetAdapter constructor(
                 }
 
                 root.setOnClickListener {
-                    listener.onItemClick(providerData)
+                    listener?.onItemClick(providerData)
                 }
             }
         }
