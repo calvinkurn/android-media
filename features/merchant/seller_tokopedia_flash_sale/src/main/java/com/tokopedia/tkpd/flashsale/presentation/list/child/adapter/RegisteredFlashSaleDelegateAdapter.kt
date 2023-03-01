@@ -18,7 +18,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.RegisteredFlashSaleItem
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import java.util.*
+import java.util.Date
 
 class RegisteredFlashSaleDelegateAdapter(
     private val onCardClicked: (Int) -> Unit,

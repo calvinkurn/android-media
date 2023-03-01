@@ -21,7 +21,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.Upcomin
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import java.util.*
+import java.util.Date
 
 class UpcomingFlashSaleDelegateAdapter(
     private val onCardClicked: (Int) -> Unit,
