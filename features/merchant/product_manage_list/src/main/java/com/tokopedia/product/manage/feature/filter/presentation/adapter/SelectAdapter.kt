@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil.ChecklistDiffUtil
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil.SelectDiffUtil
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
@@ -13,9 +14,11 @@ class SelectAdapter(
 ) : BaseAdapter<SelectAdapterTypeFactory>(adapterTypeFactory) {
 
     fun updateSelectData(selectUiModels: List<SelectUiModel>) {
+        val diffUtilCallback = SelectDiffUtil(visitables.filterIsInstance(SelectUiModel::class.java), selectUiModels)
+        val result = DiffUtil.calculateDiff(diffUtilCallback)
         visitables.clear()
         visitables.addAll(selectUiModels)
-        notifyItemRangeChanged(Int.ZERO, visitables.size)
+        result.dispatchUpdatesTo(this)
     }
 
     fun updateChecklistData(checklistUiModels: List<ChecklistUiModel>) {
