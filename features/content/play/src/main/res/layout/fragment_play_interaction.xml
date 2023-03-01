@@ -48,9 +48,10 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_send_chat_height"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/view_size"
-        app:layout_constraintEnd_toStartOf="@id/gl_like_bubble_start"
+        app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_goneMarginEnd="@dimen/spacing_lvl4"
         tools:visibility="visible"
@@ -167,6 +168,7 @@
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
         app:layout_constraintEnd_toStartOf="@id/gl_like_bubble_start"
         app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         tools:visibility="visible"
         />
 
