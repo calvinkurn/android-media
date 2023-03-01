@@ -46,7 +46,7 @@ class CartShopViewHolder(
     private val actionListener: ActionListener,
     private val cartItemAdapterListener: CartItemAdapter.ActionListener,
     private val compositeSubscription: CompositeSubscription,
-    private var plusCoachmark: CoachMark2?,
+    private var plusCoachmark: CoachMark2?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
