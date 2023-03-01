@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShop.Shop.Product.LabelGroup
 import com.tokopedia.search.result.mps.shopwidget.MPSProductLabelGroupDataView
@@ -14,17 +15,16 @@ import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.mockk
+import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Test
 
-internal class MultiProductSearchTest {
+internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures() {
 
-    private val mpsUseCase: UseCase<MPSModel> = mockk()
-
-    private val mpsViewModel = MPSViewModel(
-        mpsState = MPSState(
+    private val mpsViewModel = mpsViewModel(
+        MPSState(
             mapOf(
                 SearchApiConst.ACTIVE_TAB to SearchConstant.ActiveTab.MPS,
                 SearchApiConst.Q1 to "samsung",
@@ -32,23 +32,18 @@ internal class MultiProductSearchTest {
                 SearchApiConst.Q3 to "iphone",
             )
         ),
-        mpsUseCase = mpsUseCase,
     )
 
     @Test
     fun `multi product search success`() {
-        val mpsModel = "mps/mps.json".jsonToObject<MPSModel>()
+        val mpsModel = MPSSuccessJSON.jsonToObject<MPSModel>()
         `Given MPS Use Case success`(mpsModel)
 
         `When view created`()
 
-        val mpsState = mpsViewModel.stateFlow.value
+        val mpsState = mpsViewModel.stateValue
         `Then assert state is success`(mpsState)
         `Then assert visitable list`(mpsState.result.data!!, mpsModel)
-    }
-
-    private fun `Given MPS Use Case success`(mpsModel: MPSModel) {
-        mpsUseCase.stubExecute() returns mpsModel
     }
 
     private fun `When view created`() {
@@ -63,14 +58,7 @@ internal class MultiProductSearchTest {
         mpsVisitableList: List<Visitable<*>>,
         mpsModel: MPSModel,
     ) {
-
         assertMPSShopWidget(mpsVisitableList, mpsModel)
-    }
-
-    private fun assertMPSChooseAddress(
-        mpsVisitableList: List<Visitable<*>>,
-    ) {
-
     }
 
     private fun assertMPSShopWidget(
@@ -150,7 +138,7 @@ internal class MultiProductSearchTest {
 
         `When view created`()
 
-        val mpsState = mpsViewModel.stateFlow.value
+        val mpsState = mpsViewModel.stateValue
         `Then assert state is error`(mpsState)
     }
 

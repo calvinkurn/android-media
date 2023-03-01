@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +19,8 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
+import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.search.utils.mvvm.fragmentViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -25,7 +28,11 @@ import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class MPSFragment: TkpdBaseV4Fragment(), SearchView {
+class MPSFragment:
+    TkpdBaseV4Fragment(),
+    SearchView,
+    ChooseAddressListener,
+    FragmentProvider {
 
     var viewModelFactory: ViewModelProvider.Factory? = null
         @Inject set
@@ -38,7 +45,11 @@ class MPSFragment: TkpdBaseV4Fragment(), SearchView {
 
     private var binding by autoClearedNullable<SearchMpsFragmentLayoutBinding>()
 
-    private val mpsListAdapter = MPSListAdapter(MPSTypeFactoryImpl())
+    private val mpsTypeFactory = MPSTypeFactoryImpl(
+        fragmentProvider = this,
+        chooseAddressListener = this,
+    )
+    private val mpsListAdapter = MPSListAdapter(mpsTypeFactory)
 
     override fun getScreenName(): String = ""
 
@@ -74,6 +85,12 @@ class MPSFragment: TkpdBaseV4Fragment(), SearchView {
 
     fun backToTop() {
         binding?.mpsRecyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun getFragment(): Fragment = this
+
+    override fun onLocalizingAddressSelected() {
+        viewModel?.onLocalizingAddressSelected()
     }
 
     companion object {
