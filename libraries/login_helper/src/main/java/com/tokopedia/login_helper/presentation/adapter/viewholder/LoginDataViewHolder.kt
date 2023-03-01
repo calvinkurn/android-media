@@ -9,10 +9,10 @@ import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class LoginDataViewHolder(itemView: View?): AbstractViewHolder<UserDataUiModel>(itemView) {
+class LoginDataViewHolder(itemView: View?, private val listener: LoginHelperClickListener) :
+    AbstractViewHolder<UserDataUiModel>(itemView) {
 
     private var binding: ItemLoginDataBinding? by viewBinding()
-
     override fun bind(element: UserDataUiModel?) {
         binding?.apply {
             if (element?.email != null) {
@@ -20,6 +20,9 @@ class LoginDataViewHolder(itemView: View?): AbstractViewHolder<UserDataUiModel>(
             }
             if (element?.tribe != null && element.tribe.isNotEmpty()){
                 tribeChip.chipText = element.tribe
+            }
+            root.setOnClickListener {
+                listener.onClickUserData(element)
             }
         }
     }
@@ -29,4 +32,8 @@ class LoginDataViewHolder(itemView: View?): AbstractViewHolder<UserDataUiModel>(
         val RES_LAYOUT = com.tokopedia.login_helper.R.layout.item_login_data
     }
 
+}
+
+interface LoginHelperClickListener {
+    fun onClickUserData(data: UserDataUiModel?)
 }

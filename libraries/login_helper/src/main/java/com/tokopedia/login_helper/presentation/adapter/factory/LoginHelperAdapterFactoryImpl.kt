@@ -9,8 +9,9 @@ import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginDataViewHolder
 import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginHeaderViewHolder
+import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginHelperClickListener
 
-class LoginHelperAdapterFactoryImpl : BaseAdapterTypeFactory(), LoginHelperAdapterFactory {
+class LoginHelperAdapterFactoryImpl(private val listener: LoginHelperClickListener) : BaseAdapterTypeFactory(), LoginHelperAdapterFactory {
     override fun type(model: UserDataUiModel): Int {
         return LoginDataViewHolder.RES_LAYOUT
     }
@@ -21,7 +22,7 @@ class LoginHelperAdapterFactoryImpl : BaseAdapterTypeFactory(), LoginHelperAdapt
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            LoginDataViewHolder.RES_LAYOUT -> LoginDataViewHolder(parent)
+            LoginDataViewHolder.RES_LAYOUT -> LoginDataViewHolder(parent, listener)
             LoginHeaderViewHolder.RES_LAYOUT -> LoginHeaderViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

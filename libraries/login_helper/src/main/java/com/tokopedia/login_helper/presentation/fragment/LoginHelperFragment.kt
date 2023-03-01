@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -18,11 +20,14 @@ import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
 import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
-import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperException
+import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
+import com.tokopedia.login_helper.presentation.adapter.LoginHelperRecyclerAdapter
+import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginHelperClickListener
 import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperViewModel
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.login_helper.util.showToaster
 import com.tokopedia.login_helper.util.showToasterError
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -36,12 +41,14 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class LoginHelperFragment : BaseDaggerFragment() {
+class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener{
 
     private var binding by autoClearedNullable<FragmentLoginHelperBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var loginHelperAdapter: LoginHelperRecyclerAdapter? = null
 
     private val viewModel: LoginHelperViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory).get(LoginHelperViewModel::class.java)
@@ -67,12 +74,12 @@ class LoginHelperFragment : BaseDaggerFragment() {
         observeUiAction()
         setEnvValue()
         binding?.apply {
-            loginBtn.setOnClickListener {
-                viewModel.processEvent(LoginHelperEvent.LoginUser(
-                    "sourav.saikia+03@tokopedia.com",
-                    "password"
-                ))
-            }
+//            loginBtn.setOnClickListener {
+//                viewModel.processEvent(LoginHelperEvent.LoginUser(
+//                    "sourav.saikia+03@tokopedia.com",
+//                    "password"
+//                ))
+//            }
         }
     }
 
@@ -141,7 +148,7 @@ class LoginHelperFragment : BaseDaggerFragment() {
     }
 
     private fun FragmentLoginHelperBinding.showChipToasterError() {
-        footer.showToasterError(
+        footer.showToaster(
             context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_warning_chip_click)
                 .toBlankOrString()
         )
@@ -165,11 +172,28 @@ class LoginHelperFragment : BaseDaggerFragment() {
     private fun handleLoginUserDataList(loginDataList: Result<LoginDataUiModel>?) {
         when(loginDataList) {
             is Success -> {
-
+                handleLoginUserDataListSuccess(loginDataList.data.users)
             }
             is Fail -> {
                 handleLoginUserDataListFailure(loginDataList.throwable)
             }
+        }
+    }
+
+    private fun handleLoginUserDataListSuccess(users: List<UserDataUiModel>?) {
+        loginHelperAdapter = LoginHelperRecyclerAdapter(this@LoginHelperFragment)
+
+        val layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        binding?.userList?.layoutManager = layoutManager
+        loginHelperAdapter?.clearAllElements()
+        loginHelperAdapter?.addElement(users)
+
+        binding?.userList?.apply {
+            adapter = loginHelperAdapter
         }
     }
 
@@ -245,5 +269,9 @@ class LoginHelperFragment : BaseDaggerFragment() {
 
     companion object {
         fun newInstance() = LoginHelperFragment()
+    }
+
+    override fun onClickUserData(data: UserDataUiModel?) {
+        Toast.makeText(context,"Tatakae ${data?.email}", Toast.LENGTH_SHORT).show()
     }
 }

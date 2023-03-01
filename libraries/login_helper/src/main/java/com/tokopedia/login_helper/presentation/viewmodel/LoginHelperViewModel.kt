@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.login_helper.data.response.LoginDataResponse
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
 import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
+import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.login_helper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
@@ -30,6 +31,7 @@ import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -78,14 +80,28 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val response =  getUserDetailsRestUseCase.executeOnBackground()
-                Log.d("FATAL", "callTheAPi: ${response}")
+         //       val response =  getUserDetailsRestUseCase.executeOnBackground()
+          //      Log.d("FATAL", "callTheAPi: ${response}")
        //         updateUserDataList(convertToUserListUiModel(response))
+                updateUserDataList(Success(listOfUsers()))
             },
             onError = {
                 updateUserDataList(Fail(it))
                 Log.d("FATAL", "callTheAPi: ${it.message}")
             }
+        )
+    }
+
+    private fun listOfUsers(): LoginDataUiModel {
+        return LoginDataUiModel(
+            count = 5,
+            users = listOf<UserDataUiModel>(
+                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "asd" , "iujhas"),
+                UserDataUiModel("pbs-abc.yui@tokopedia.com", "asd" , "iuasdjhas"),
+                UserDataUiModel("sourav.saikia+01@tokopedia.com", "asd" , "asedas"),
+                UserDataUiModel("eren.yeager+01@tokopedia.com", "asd" , "qwert"),
+                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "asd" , "as"),
+            )
         )
     }
 

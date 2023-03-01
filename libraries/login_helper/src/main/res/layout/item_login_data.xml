@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tribe_chip"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:gravity="center"
+        android:gravity="start"
         tools:text="Text Email Address for user"
         app:typographyType="display_2"
         android:layout_marginEnd="16dp"
