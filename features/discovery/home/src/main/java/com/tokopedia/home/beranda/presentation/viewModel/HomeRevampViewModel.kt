@@ -34,6 +34,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -76,7 +77,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
     private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
-    private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>
+    private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>,
+    private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -743,6 +745,20 @@ open class HomeRevampViewModel @Inject constructor(
             }) {
                 deleteWidget(homePayLaterWidgetDataModel, index)
             }
+        }
+    }
+
+    fun dismissTodoWidget(position: Int, dataSource: String, param: String) {
+        launch {
+            homeDismissTodoWidgetUseCase.get().getTodoWidgetDismissData(
+                position,
+                dataSource,
+                param,
+                onSuccess = {
+                },
+                onError = {
+                }
+            )
         }
     }
 }

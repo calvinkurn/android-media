@@ -32,7 +32,7 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
-import com.tokopedia.home_component.usecase.todowidget.GetTodoWidget
+import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -262,8 +262,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         bundleParam = {
                             Bundle().apply {
                                 putString(
-                                    GetTodoWidget.LOCATION_PARAM,
+                                    GetTodoWidgetUseCase.LOCATION_PARAM,
                                     homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                )
+                                putString(
+                                    GetTodoWidgetUseCase.PARAM,
+                                    it.channelModel.widgetParam
                                 )
                             }
                         },

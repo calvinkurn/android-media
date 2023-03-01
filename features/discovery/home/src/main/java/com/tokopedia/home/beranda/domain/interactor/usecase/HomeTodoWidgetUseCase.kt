@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.helper.ExternalDynamicChannelHelper
-import com.tokopedia.home_component.usecase.todowidget.GetTodoWidget
+import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import javax.inject.Inject
@@ -22,8 +22,12 @@ class HomeTodoWidgetUseCase @Inject constructor(
             val results = todoWidgetRepository.getRemoteData(
                 Bundle().apply {
                     putString(
-                        GetTodoWidget.LOCATION_PARAM,
+                        GetTodoWidgetUseCase.LOCATION_PARAM,
                         homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                    )
+                    putString(
+                        GetTodoWidgetUseCase.PARAM,
+                        currentTodoWidgetListDataModel.channelModel.widgetParam
                     )
                 }
             )

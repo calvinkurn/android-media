@@ -53,6 +53,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
@@ -68,6 +69,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.play.widget.data.PlayWidget
@@ -114,7 +116,9 @@ fun createHomeViewModel(
     deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
     deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
     getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
-    homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true)
+    homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true),
+    homeTodoWidgetUseCase: HomeTodoWidgetUseCase = mockk(relaxed = true),
+    homeDismissTodoWidgetUseCase: DismissTodoWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
@@ -136,7 +140,9 @@ fun createHomeViewModel(
         deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase },
         deletePayLaterWidgetUseCase = Lazy { deletePayLaterWidgetUseCase },
         getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
-        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase }
+        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase },
+        homeTodoWidgetUseCase = Lazy { homeTodoWidgetUseCase },
+        homeDismissTodoWidgetUseCase = Lazy { homeDismissTodoWidgetUseCase }
     )
 }
 

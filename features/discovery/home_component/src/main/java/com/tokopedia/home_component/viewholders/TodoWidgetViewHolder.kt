@@ -15,7 +15,6 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTo
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.TodoWidgetUtil
-import com.tokopedia.home_component.util.TodoWidgetUtil.parseCloseParam
 import com.tokopedia.home_component.viewholders.adapter.TodoWidgetAdapter
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -114,7 +113,7 @@ class TodoWidgetViewHolder(
                     channel = element.channelModel,
                     verticalPosition = adapterPosition,
                     isCarousel = element.todoWidgetList.size > 1,
-                    todoWidgetDismissListener = this,
+                    todoWidgetDismissListener = this
                 )
             )
         }
@@ -185,12 +184,12 @@ class TodoWidgetViewHolder(
         todoWidgetComponentListener.onTodoCloseClicked(element, position)
     }
 
-    fun removeDismissingItem(param: String) {
-        dismissingItems.removeFirst { (it.second as? CarouselTodoWidgetDataModel)?.feParam?.parseCloseParam() == param }
+    fun removeDismissingItem(position: Int) {
+        dismissingItems.removeFirst { it.first == position }
     }
 
-    fun rollbackDismissingItem(param: String) {
-        val todoItem = dismissingItems.firstOrNull { (it.second as? CarouselTodoWidgetDataModel)?.feParam?.parseCloseParam() == param }
+    fun rollbackDismissingItem(position: Int) {
+        val todoItem = dismissingItems.firstOrNull { it.first == position }
         todoItem?.let {
             visitables.add(it.first, it.second)
         }
