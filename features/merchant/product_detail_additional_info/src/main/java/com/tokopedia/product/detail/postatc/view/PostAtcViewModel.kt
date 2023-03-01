@@ -22,7 +22,7 @@ class PostAtcViewModel @Inject constructor(
     private val getPostAtcLayoutUseCase: GetPostAtcLayoutUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _layouts = MutableLiveData<Result<List<PostAtcUiModel>>>()
     val layouts: LiveData<Result<List<PostAtcUiModel>>> = _layouts

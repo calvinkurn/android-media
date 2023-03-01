@@ -8,10 +8,14 @@ import com.tokopedia.product.detail.postatc.component.error.ErrorDelegate
 import com.tokopedia.product.detail.postatc.component.loading.LoadingDelegate
 import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoDelegate
 import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationDelegate
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 class PostAtcAdapter(
-    listener: PostAtcListener
-) : ListAdapter<PostAtcUiModel, PostAtcViewHolder<*>>(PostAtcDiffItemCallback) {
+    listener: PostAtcListener,
+    override val coroutineContext: CoroutineContext = Dispatchers.IO
+) : ListAdapter<PostAtcUiModel, PostAtcViewHolder<*>>(PostAtcDiffItemCallback), CoroutineScope {
 
     private val delegatesManager = AdapterDelegatesManager<PostAtcUiModel>()
 
@@ -43,11 +47,11 @@ class PostAtcAdapter(
         uiModelId: Int,
         updater: T.() -> Unit
     ) {
-        val item = mapUiModels[uiModelId] as? T
+        val item = mapUiModels[uiModelId]?.newInstance() as? T
         if (item != null) {
             updater.invoke(item)
-            val position = currentList.indexOf(item)
-            if (position > -1) notifyItemChanged(position)
+            mapUiModels[uiModelId] = item
+            updateUi()
         }
     }
 

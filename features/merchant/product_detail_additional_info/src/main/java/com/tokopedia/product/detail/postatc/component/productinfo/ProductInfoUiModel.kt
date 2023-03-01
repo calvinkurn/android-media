@@ -22,4 +22,5 @@ data class ProductInfoUiModel(
             buttonText == newItem.buttonText &&
             cartId == newItem.cartId
     }
+    override fun newInstance(): PostAtcUiModel = copy()
 }

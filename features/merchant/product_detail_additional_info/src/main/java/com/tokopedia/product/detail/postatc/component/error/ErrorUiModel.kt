@@ -11,4 +11,5 @@ data class ErrorUiModel(
 ) : PostAtcUiModel {
     override val id = hashCode()
     override fun equalsWith(newItem: PostAtcUiModel) = id == newItem.id
+    override fun newInstance(): PostAtcUiModel = copy()
 }

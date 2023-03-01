@@ -15,4 +15,5 @@ data class RecommendationUiModel(
         return newItem is RecommendationUiModel &&
             widget == newItem.widget
     }
+    override fun newInstance(): PostAtcUiModel = copy()
 }
