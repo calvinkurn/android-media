@@ -13,6 +13,7 @@ data class PromoCreationListUiModel(
 
 @Parcelize
 data class PromoCreationUiModel(
+    val pageId: String,
     val icon: String,
     val title: String,
     val description: String,
@@ -26,6 +27,9 @@ data class PromoCreationUiModel(
     val headerText: String,
     val bottomText: String,
 ) : Parcelable, BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
+    companion object {
+        const val PAGE_ID_SHOP_COUPON = "65"
+    }
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {

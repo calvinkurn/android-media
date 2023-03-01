@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.SharedPreferencesUtil
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
@@ -37,6 +38,7 @@ class SummaryActivity: BaseSimpleActivity() {
             context: Context?,
             voucherId: Long
         ): Intent {
+            SharedPreferencesUtil().setEditCouponSourcePage(context, context?.javaClass.toString())
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.EDIT)
                 putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
@@ -50,6 +52,7 @@ class SummaryActivity: BaseSimpleActivity() {
             context: Context?,
             voucherId: Long
         ): Intent {
+            SharedPreferencesUtil().setEditCouponSourcePage(context, context?.javaClass.toString())
             val bundle = Bundle().apply {
                 putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.EDIT)
                 putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)

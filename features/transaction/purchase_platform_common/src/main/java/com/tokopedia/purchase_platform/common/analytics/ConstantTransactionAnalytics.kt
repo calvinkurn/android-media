@@ -24,6 +24,11 @@ object ConstantTransactionAnalytics {
         const val SHOP_NAME = "shop_name"
         const val SHOP_TYPE = "shop_type"
         const val VARIANT = "variant"
+        const val CREATIVE_NAME = "creative_name"
+        const val CREATIVE_SLOT = "creative_slot"
+        const val DIMENSION40 = "dimension40"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
     }
 
     object EventName {
@@ -68,6 +73,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_PP = "clickPP"
         const val VIEW_PP_IRIS = "viewPPIris"
         const val CLICK_CX = "clickCX"
+        const val SELECT_CONTENT = "select_content"
     }
 
     object EventCategory {
@@ -372,6 +378,9 @@ object ConstantTransactionAnalytics {
         // Cart Bundling
         const val CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package"
         const val CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card"
+        const val CLICK_BUNDLING_WIDGET = "click bundling widget"
+        const val IMPRESSION_BUNDLING_COMPONENT = "impression - bundling component"
+        const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
 
         // Cart Bo Affordability
         const val CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE = "click arrow in BO Ticker to reach shop page"
@@ -437,9 +446,18 @@ object ConstantTransactionAnalytics {
         // Gifting
         const val ADD_ON_CHECKED = "add on checked"
         const val ADD_ON_NOT_CHECKED = "add on not checked"
+
+        // Cart Bundling
+        const val BUNDLE_TYPE_SINGLE = "single"
+        const val BUNDLE_TYPE_MULTIPLE = "multiple"
+        const val CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME = "/cart - bundling"
     }
 
     object ExtraKey {
+        const val EVENT = "event"
+        const val EVENT_ACTION = "eventAction"
+        const val EVENT_CATEGORY = "eventCategory"
+        const val EVENT_LABEL = "eventLabel"
         const val USER_ID = "userId"
         const val CART_ID = "cartId"
         const val PROMO_CODE = "promoCode"
@@ -450,6 +468,7 @@ object ConstantTransactionAnalytics {
         const val PAGE_PATH = "pagePath"
         const val PROMO_FLAG = "promoFlag"
         const val TRACKER_ID = "trackerId"
+        const val PROMOTIONS = "promotions"
     }
 
     object ScreenName {
@@ -488,5 +507,12 @@ object ConstantTransactionAnalytics {
 
         const val CLICK_BAYAR_OCC = "15570"
         const val CLICK_INSURANCE_INFO_TOOLTIP = "36048"
+
+        // Cart Bundling Bottom Sheet
+        const val IMPRESSION_CART_BUNDLING_BOTTOM_SHEET_BUNDLE = "41253"
+        const val CLICK_CART_BUNDLING_BOTTOM_SHEET_BUNDLE_WIDGET_ACTION = "41254"
+
+        // Cart Shop Group Ticker
+        const val CLICK_CART_SHOP_GROUP_TICKER_BUNDLE_CROSS_SELL = "41252"
     }
 }
