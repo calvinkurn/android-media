@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view
 import android.app.Activity
 import android.util.Pair
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
@@ -260,7 +259,11 @@ interface ShipmentContract {
         fun sendAnalyticsViewPromoAfterAdjustItem(msg: String?)
     }
 
-    interface Presenter : CustomerPresenter<View?> {
+    interface Presenter {
+        fun attachView(view: View)
+
+        fun detachView()
+
         val logisticDonePublisher: PublishSubject<Boolean>?
         fun setScheduleDeliveryMapData(
             cartString: String,

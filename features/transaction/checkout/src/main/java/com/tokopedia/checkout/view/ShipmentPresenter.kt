@@ -4,7 +4,6 @@ import android.util.Pair
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.checkout.R
@@ -192,8 +191,9 @@ class ShipmentPresenter @Inject constructor(
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-) : BaseDaggerPresenter<ShipmentContract.View?>(), ShipmentContract.Presenter {
+) : ShipmentContract.Presenter {
 
+    private var view: ShipmentContract.View? = null
     override var shipmentUpsellModel = ShipmentUpsellModel()
         private set
     override var shipmentNewUpsellModel = ShipmentNewUpsellModel()
@@ -248,8 +248,11 @@ class ShipmentPresenter @Inject constructor(
     private var dynamicDataParam: DynamicDataPassingParamRequest = DynamicDataPassingParamRequest()
     var dynamicData = ""
 
+    override fun attachView(view: ShipmentContract.View) {
+        this.view = view
+    }
+
     override fun detachView() {
-        super.detachView()
         compositeSubscription.unsubscribe()
         getShipmentAddressFormV3UseCase.cancelJobs()
         eligibleForAddressUseCase.cancelJobs()
@@ -259,6 +262,7 @@ class ShipmentPresenter @Inject constructor(
         logisticDonePublisher = null
         ratesPromoPublisher = null
         logisticPromoDonePublisher = null
+        view = null
     }
 
     override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>?) {
