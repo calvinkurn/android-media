@@ -84,11 +84,9 @@ class PinCompleteActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFlag(false)
-            window.statusBarColor =
-                MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
-        }
+        setWindowFlag(false)
+        window.statusBarColor =
+            MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val decor = window.decorView

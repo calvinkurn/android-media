@@ -285,9 +285,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             viewModel.addPhoneResponse.removeObservers(this)
             viewModel.userValidateResponse.removeObservers(this)
             viewModel.flush()
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
+        } catch (_: Throwable) { }
     }
 
     companion object {

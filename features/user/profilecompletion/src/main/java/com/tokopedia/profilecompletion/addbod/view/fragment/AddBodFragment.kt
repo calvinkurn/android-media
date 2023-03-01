@@ -179,7 +179,7 @@ class AddBodFragment : BaseDaggerFragment() {
     }
 
     private fun formatDateParam(dayOfMonth: Int, month: Int, year: Int): String {
-        return String.format("%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
+        return String.format(Locale.getDefault(), "%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
     }
 
     private fun initObserver() {

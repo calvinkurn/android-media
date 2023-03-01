@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.addname
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -29,9 +30,7 @@ class AddNameRegisterPhoneAnalytics @Inject constructor() {
                 userId,
                 "Phone Number"
             )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (_: Exception) { }
     }
 
     fun trackClickFinishAddNameButton() {
@@ -51,7 +50,7 @@ class AddNameRegisterPhoneAnalytics @Inject constructor() {
                 "clickRegister",
                 "register with phone number page",
                 "click on button selesai",
-                String.format("failed - %s", errorMessage)
+                String.format(Locale.getDefault(), "failed - %s", errorMessage)
             )
         )
     }

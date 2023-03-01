@@ -47,6 +47,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -219,7 +220,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         animationProfileCompletion?.duration = 500
         progressBarTop?.startAnimation(animationProfileCompletion)
         progressBarTop?.progress = currentData?.completion ?: 0
-        txtPercent?.text = String.format("%s%%", progressBarTop?.progress.toString())
+        txtPercent?.text = String.format(Locale.getDefault(), "%s%%", progressBarTop?.progress.toString())
 
         val colors = content?.resources?.getIntArray(R.array.green_indicator)
         var indexColor = (newValue - 50) / 10
@@ -228,7 +229,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         }
         val shape = activity?.let {
             ContextCompat.getDrawable(it, R.drawable.profilecompletion_horizontal_progressbar)
-        } as LayerDrawable?
+        } as? LayerDrawable
 
         val runningBar =
             (shape?.findDrawableByLayerId(R.id.progress_col) as ScaleDrawable).drawable as GradientDrawable
@@ -276,7 +277,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
             )?.commit()
 
         } else if (profileCompletionDataView.completion == 100) {
-            (activity as ProfileCompletionActivity?)?.onFinishedForm()
+            (activity as? ProfileCompletionActivity)?.onFinishedForm()
 
         } else {
             loading?.visibility = View.VISIBLE

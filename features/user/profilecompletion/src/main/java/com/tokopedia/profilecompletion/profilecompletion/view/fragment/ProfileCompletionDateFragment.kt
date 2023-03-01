@@ -115,7 +115,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
             val yearString = actxtYear?.text.toString()
 
             if (dateString.isNotEmpty() && yearString.isNotEmpty()) {
-                selectedDate = formatDateParam(yearString.toIntOrZero(), position, dateString.toInt())
+                selectedDate = formatDateParam(yearString.toIntOrZero(), position, dateString.toIntOrZero())
             }
 
             if (selectedDate.isNotEmpty()) {
@@ -222,7 +222,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
     }
 
     private fun formatDateParam(year: Int, month: Int, dayOfMonth: Int): String {
-        return String.format("%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
+        return String.format(Locale.getDefault(), "%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
     }
 
     companion object {
