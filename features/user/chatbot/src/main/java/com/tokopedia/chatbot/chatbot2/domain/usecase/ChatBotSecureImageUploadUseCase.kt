@@ -21,6 +21,7 @@ private const val MEDIA_TYPE_IMAGE = "image/*"
 private const val ENCODING_UTF_8 = "UTF-8"
 private const val MSG_ID = "msg_id"
 
+@Suppress("LateinitUsage")
 class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase() {
 
     private lateinit var imageFilePath: String
@@ -47,7 +48,6 @@ class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase
                 ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
                 e
             )
-            e.printStackTrace()
         }
 
         requestBodyMap[MSG_ID] = messageId.toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())

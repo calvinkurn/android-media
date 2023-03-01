@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatactionbubblelist
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +44,7 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setListOnButtonCLick() {
         if (data.last().text == MORE_DETAILS_TEXT) {
             data.clear()
@@ -70,6 +72,7 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
         notifyItemRangeRemoved(0, size)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setDataList(elements: List<ChatActionBubbleUiModel>) {
         data.clear()
         dataPool.clear()

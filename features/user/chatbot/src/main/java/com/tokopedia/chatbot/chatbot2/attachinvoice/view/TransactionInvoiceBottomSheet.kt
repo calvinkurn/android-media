@@ -28,12 +28,12 @@ private const val TITLE_SALES = "Penjualan"
 private const val TITLE_WITHDRAWING_FUNDS = "Penarikan Dana"
 
 class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceListFragmentListener {
-    private lateinit var tabsUnify: TabsUnify
-    private lateinit var touchViewPager: TouchViewPager
-    private lateinit var transactionNotFoundButton: UnifyButton
-    private lateinit var context: FragmentActivity
+    private var tabsUnify: TabsUnify? = null
+    private var touchViewPager: TouchViewPager? = null
+    private var transactionNotFoundButton: UnifyButton? = null
+    private var context: FragmentActivity? = null
     private var messageId: Long = 0
-    private lateinit var listener: TransactionInvoiceBottomSheetListener
+    private var listener: TransactionInvoiceBottomSheetListener? = null
     private var _viewBinding: BottomsheetChatbotTransactionInvoiceBinding? = null
     private fun getBindingView() = _viewBinding!!
 
@@ -82,20 +82,20 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         super.onViewCreated(view, savedInstanceState)
         setTitle(getString(R.string.string_attach_invoice_activity_title))
         renderTabAndViewPager()
-        transactionNotFoundButton.setOnClickListener {
-            listener.transactionNotFoundClick()
+        transactionNotFoundButton?.setOnClickListener {
+            listener?.transactionNotFoundClick()
             dismissAllowingStateLoss()
         }
     }
 
     private fun renderTabAndViewPager() {
-        touchViewPager.adapter = getViewPagerAdapter()
-        touchViewPager.offscreenPageLimit = 3
-        tabsUnify.addNewTab(TITLE_PURCHASE)
-        tabsUnify.addNewTab(TITLE_SALES)
-        tabsUnify.addNewTab(TITLE_WITHDRAWING_FUNDS)
-        tabsUnify.setupWithViewPager(touchViewPager)
-        tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+        touchViewPager?.adapter = getViewPagerAdapter()
+        touchViewPager?.offscreenPageLimit = 3
+        tabsUnify?.addNewTab(TITLE_PURCHASE)
+        tabsUnify?.addNewTab(TITLE_SALES)
+        tabsUnify?.addNewTab(TITLE_WITHDRAWING_FUNDS)
+        touchViewPager?.let { tabsUnify?.setupWithViewPager(it) }
+        tabsUnify?.customTabMode = TabLayout.MODE_SCROLLABLE
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
@@ -112,12 +112,12 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         }
     }
 
-    override fun getButtonView(): UnifyButton {
+    override fun getButtonView(): UnifyButton? {
         return transactionNotFoundButton
     }
 
     override fun setResult(data: Intent) {
-        listener.onBottomSheetDismissListener(data)
+        listener?.onBottomSheetDismissListener(data)
         dismissAllowingStateLoss()
     }
 }

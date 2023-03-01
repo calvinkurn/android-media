@@ -160,7 +160,7 @@ class ChatbotImageUploadViewHolder(
                     .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .into(imageview)
             }
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             if (imageview.context != null) {
                 imageview.setImageDrawable(
                     ContextCompat.getDrawable(

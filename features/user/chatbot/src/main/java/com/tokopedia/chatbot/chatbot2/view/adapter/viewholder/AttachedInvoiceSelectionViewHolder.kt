@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -86,6 +87,7 @@ class AttachedInvoiceSelectionViewHolder(
             return list
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         fun setList(list: List<AttachInvoiceSingleUiModel>?) {
             this.list = list
             notifyDataSetChanged()

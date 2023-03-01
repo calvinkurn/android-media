@@ -47,6 +47,7 @@ import com.tokopedia.user.session.UserSessionInterface
 private const val ACTION_IMRESSION_ACTION_BUTTON = "impression action button"
 private const val ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN = "impression thumbs up and thumbs down"
 
+@Suppress("LateinitUsage")
 class ChatbotViewStateImpl(
     @NonNull override val view: View,
     @NonNull private val userSession: UserSessionInterface,
@@ -59,8 +60,8 @@ class ChatbotViewStateImpl(
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
-    private lateinit var rvQuickReply: RecyclerView
-    private lateinit var chatMenuBtn: ImageView
+    private var rvQuickReply: RecyclerView? = null
+    private var chatMenuBtn: ImageView? = null
 
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
@@ -77,12 +78,12 @@ class ChatbotViewStateImpl(
             sendAnalytics(impressionType)
         })
 
-        rvQuickReply.layoutManager = LinearLayoutManager(
-            rvQuickReply.context,
+        rvQuickReply?.layoutManager = LinearLayoutManager(
+            rvQuickReply?.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        rvQuickReply.adapter = quickReplyAdapter
+        rvQuickReply?.adapter = quickReplyAdapter
 
         super.initView()
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
@@ -276,8 +277,8 @@ class ChatbotViewStateImpl(
 
     private fun showQuickReply(list: List<QuickReplyUiModel>) {
         if (::quickReplyAdapter.isInitialized && list.isNotEmpty()) {
-            quickReplyAdapter.setList(list)
-            rvQuickReply.visibility = View.VISIBLE
+            quickReplyAdapter?.setList(list)
+            rvQuickReply?.visibility = View.VISIBLE
         }
     }
 
@@ -286,8 +287,8 @@ class ChatbotViewStateImpl(
     }
 
     private fun hideQuickReply() {
-        quickReplyAdapter.clearData()
-        rvQuickReply.visibility = View.GONE
+        quickReplyAdapter?.clearData()
+        rvQuickReply?.visibility = View.GONE
     }
 
     /**

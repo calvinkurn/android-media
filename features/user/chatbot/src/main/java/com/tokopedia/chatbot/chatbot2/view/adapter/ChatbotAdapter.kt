@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.google.gson.GsonBuilder
@@ -162,6 +163,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
         diffResult.dispatchUpdatesTo(this)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun reset() {
         visitables.clear()
         notifyDataSetChanged()

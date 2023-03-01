@@ -37,13 +37,12 @@ abstract class CustomChatbotMessageViewHolder(
         setHeaderDate(message)
     }
 
-    protected fun verifyReplyTime(chat: MessageUiModel) {
+    private fun verifyReplyTime(chat: MessageUiModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (@Suppress("SwallowedException") e: Exception) {
         }
     }
 

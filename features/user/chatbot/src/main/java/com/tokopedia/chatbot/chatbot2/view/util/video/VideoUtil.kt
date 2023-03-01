@@ -22,7 +22,7 @@ object VideoUtil {
 
                 durationData.toLongOrZero()
             }
-        } catch (e: Throwable) {
+        } catch (@Suppress("SwallowedException") e: Throwable) {
             0
         }
     }
@@ -30,7 +30,7 @@ object VideoUtil {
     fun findVideoSize(videoFile: File): String {
         return try {
             videoFile.length() / SIZE_KB
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             0
         }.toString()
     }
@@ -38,7 +38,7 @@ object VideoUtil {
     fun findVideoExtension(videoFile: File): String {
         return try {
             videoFile.extension
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             ""
         }
     }

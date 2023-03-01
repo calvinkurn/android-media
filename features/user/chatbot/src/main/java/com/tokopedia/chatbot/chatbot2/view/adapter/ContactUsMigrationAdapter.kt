@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,7 @@ class ContactUsMigrationAdapter :
         return list.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: List<Pair<Int, String>>) {
         this.list.clear()
         this.list.addAll(list)

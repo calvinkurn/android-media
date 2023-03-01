@@ -247,8 +247,8 @@ class ChatbotFragment2 :
     private var _viewBinding: FragmentChatbot2Binding? = null
     private fun getBindingView() = _viewBinding!!
 
-    lateinit var mCsatResponse: WebSocketCsatResponse
-    lateinit var attribute: Attributes
+    var mCsatResponse: WebSocketCsatResponse? = null
+    var attribute: Attributes? = null
     private var ticker: Ticker? = null
     private var csatOptionsUiModel: CsatOptionsUiModel? = null
     private var invoiceRefNum = ""
@@ -274,7 +274,7 @@ class ChatbotFragment2 :
     private var rvScrollListener: RecyclerViewScrollListener? = null
     private var rvLayoutManager: LinearLayoutManager? = null
     private var messageCreateTime: String = ""
-    private lateinit var chatbotAdapter: ChatbotAdapter
+    private var chatbotAdapter: ChatbotAdapter? = null
     private var isEligibleForVideoUpload: Boolean = false
     private var guideline: Guideline? = null
     var xForReplyBubbleOnboarding: Int = 0
@@ -397,7 +397,7 @@ class ChatbotFragment2 :
 
     private fun openCsatOldFlow(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
-        if (::mCsatResponse.isInitialized) {
+        mCsatResponse.let {
             getBindingView().listQuickReply.hide()
             showCsatRatingViewOldFlow()
         }
@@ -405,14 +405,14 @@ class ChatbotFragment2 :
 
     private fun openCsatNewFlow(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
-        if (::mCsatResponse.isInitialized) {
+        mCsatResponse.let {
             showCsatRatingViewNewFlow()
         }
     }
 
     private fun showCsatRatingViewOldFlow() {
         getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
-            mCsatResponse.attachment?.attributes?.title
+            mCsatResponse?.attachment?.attributes?.title
         getBindingView().chatbotViewHelpRate.layoutOfRate.show()
         chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
         hideKeyboard()
@@ -432,8 +432,10 @@ class ChatbotFragment2 :
     private fun onClickEmoji(number: Int) {
         startActivityForResult(
             context?.let {
-                ChatBotProvideRatingActivity
-                    .getInstance(it, number, mCsatResponse)
+                mCsatResponse?.let { it1 ->
+                    ChatBotProvideRatingActivity
+                        .getInstance(it, number, it1)
+                }
             },
             REQUEST_SUBMIT_FEEDBACK
         )
@@ -955,16 +957,16 @@ class ChatbotFragment2 :
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnBoarding = replyBubbleOnBoarding.hasBeenShown()
 
-        if(hasBeenShownReplyBubbleOnBoarding && hasBeenShownVideoUploadOnBoarding)  {
+        if (hasBeenShownReplyBubbleOnBoarding && hasBeenShownVideoUploadOnBoarding) {
             return
         }
 
-        if(!hasBeenShownReplyBubbleOnBoarding) {
+        if (!hasBeenShownReplyBubbleOnBoarding) {
             val ratioY = calculateRatiosForGuideline()
             setUpPositionReplyBubbleGuideline(ratioY)
             isReplyCoachMarkShowing = true
             showReplayCoachMark()
-        } else if(!hasBeenShownReplyBubbleOnBoarding) {
+        } else if (!hasBeenShownReplyBubbleOnBoarding) {
             checkVideoUploadOnboardingStatus()
         }
     }
@@ -1196,7 +1198,7 @@ class ChatbotFragment2 :
                     if (state) {
                         return
                     }
-                } catch (e: JsonSyntaxException) {
+                } catch (@Suppress("SwallowedException") e: JsonSyntaxException) {
                     return@forEach
                 }
             }
@@ -1236,7 +1238,7 @@ class ChatbotFragment2 :
                     if (state) {
                         return
                     }
-                } catch (e: JsonSyntaxException) {
+                } catch (@Suppress("SwallowedException") e: JsonSyntaxException) {
                     return
                 }
             }
@@ -1276,7 +1278,6 @@ class ChatbotFragment2 :
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        Log.d("FATAL", "onReceiveMessageEvent: In Fragment")
         sendEventForWelcomeMessage(visitable)
         manageActionBubble(visitable)
         managePreviousStateOfBubble(visitable)
@@ -1428,11 +1429,10 @@ class ChatbotFragment2 :
         val csatAttributes: Attributes?
 
         getViewState()?.scrollToBottom()
-
-        if (!(::mCsatResponse.isInitialized)) {
-            csatAttributes = attribute
+        csatAttributes = if (mCsatResponse == null) {
+            attribute
         } else {
-            csatAttributes = mCsatResponse.attachment?.attributes
+            mCsatResponse?.attachment?.attributes
         }
 
         val reasonList = csatAttributes?.reasons
@@ -1462,7 +1462,7 @@ class ChatbotFragment2 :
                 return filters.substring(0, filters.length - 1)
             }
             return ""
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             return ""
         }
     }
@@ -1812,8 +1812,8 @@ class ChatbotFragment2 :
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (::mCsatResponse.isInitialized) {
-            outState.putParcelable(CSAT_ATTRIBUTES, mCsatResponse.attachment?.attributes)
+        mCsatResponse?.let {
+            outState.putParcelable(CSAT_ATTRIBUTES, mCsatResponse?.attachment?.attributes)
         }
     }
 
@@ -2087,11 +2087,13 @@ class ChatbotFragment2 :
     }
 
     override fun goToBubble(parentReply: ParentReply) {
-        val bubblePosition = chatbotAdapter.getBubblePosition(
+        val bubblePosition = chatbotAdapter?.getBubblePosition(
             parentReply.replyTime
         )
         if (bubblePosition != RecyclerView.NO_POSITION) {
-            smoothScrollToPosition(bubblePosition)
+            if (bubblePosition != null) {
+                smoothScrollToPosition(bubblePosition)
+            }
         } else {
             resetData()
             setupBeforeReplyTime(((parentReply.replyTimeMillisOffset).toLongOrZero() + ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE).toString())
@@ -2146,7 +2148,7 @@ class ChatbotFragment2 :
     }
 
     private fun getPositionToAnchorReplyBubbleCoachmark(): Int {
-        return chatbotAdapter.getMostRecentTokopediaCareMessage()
+        return chatbotAdapter?.getMostRecentTokopediaCareMessage() ?: BUBBLE_NOT_FOUND
     }
 
     override fun visibilityReplyBubble(state: Boolean) {
@@ -2217,7 +2219,7 @@ class ChatbotFragment2 :
     }
 
     private fun onErrorGetBottomChat() {
-        chatbotAdapter.hideBottomLoading()
+        chatbotAdapter?.hideBottomLoading()
         rvScrollListener?.finishBottomLoadingState()
     }
 
@@ -2265,7 +2267,7 @@ class ChatbotFragment2 :
                 if (!CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode)) {
                     return false
                 }
-            } catch (e: JsonSyntaxException) {
+            } catch (@Suppress("SwallowedException") e: JsonSyntaxException) {
                 return true
             }
         }
@@ -2284,11 +2286,13 @@ class ChatbotFragment2 :
             filteredList?.let { renderList ->
                 renderTopList(renderList)
                 if (isGetChatFromOnClick) {
-                    val bubblePosition = chatbotAdapter.getBubblePosition(
+                    val bubblePosition = chatbotAdapter?.getBubblePosition(
                         replyTime
                     )
                     if (bubblePosition != RecyclerView.NO_POSITION) {
-                        smoothScrollToPosition(bubblePosition)
+                        if (bubblePosition != null) {
+                            smoothScrollToPosition(bubblePosition)
+                        }
                     }
                 }
             }
@@ -2320,7 +2324,7 @@ class ChatbotFragment2 :
             if (rvScrollListener?.hasNextAfterPage == true) {
                 viewModel.getBottomChat(messageId)
             } else {
-                chatbotAdapter.hideBottomLoading()
+                chatbotAdapter?.hideBottomLoading()
                 rvScrollListener?.finishBottomLoadingState()
             }
         }
@@ -2334,11 +2338,11 @@ class ChatbotFragment2 :
     }
 
     private fun showTopLoading() {
-        chatbotAdapter.showTopLoading()
+        chatbotAdapter?.showTopLoading()
     }
 
     private fun showBottomLoading() {
-        chatbotAdapter.showBottomLoading()
+        chatbotAdapter?.showBottomLoading()
     }
 
     private fun setupBeforeReplyTime(replyTimeMillis: String) {
@@ -2369,23 +2373,23 @@ class ChatbotFragment2 :
     }
 
     private fun renderBottomList(listChat: List<Visitable<*>>) {
-        chatbotAdapter.hideBottomLoading()
+        chatbotAdapter?.hideBottomLoading()
         if (listChat.isNotEmpty()) {
-            chatbotAdapter.addBottomData(listChat)
+            chatbotAdapter?.addBottomData(listChat)
         }
     }
 
     private fun renderTopList(listChat: List<Visitable<*>>) {
-        chatbotAdapter.hideTopLoading()
+        chatbotAdapter?.hideTopLoading()
         if (listChat.isNotEmpty()) {
-            chatbotAdapter.addTopData(listChat)
+            chatbotAdapter?.addTopData(listChat)
         }
     }
 
     private fun resetData() {
         rvScrollListener?.reset()
         viewModel.clearGetChatUseCase()
-        chatbotAdapter.reset()
+        chatbotAdapter?.reset()
         showTopLoading()
     }
 
@@ -2505,7 +2509,7 @@ class ChatbotFragment2 :
         showCoachMarkOfVideoReplay()
     }
 
-    private fun setHandlingViewHelperVideoCoachMark(){
+    private fun setHandlingViewHelperVideoCoachMark() {
         getBindingView().coachMarkVideoHelper.apply {
             bringToFront()
             show()
@@ -2544,8 +2548,9 @@ class ChatbotFragment2 :
     }
 
     private fun setUpPositionReplyBubbleGuideline(ratioY: Float) {
-        if (ratioY == ZERO_RATIO)
+        if (ratioY == ZERO_RATIO) {
             return
+        }
         val params =
             getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
         params.guidePercent = ratioY
@@ -2561,8 +2566,8 @@ class ChatbotFragment2 :
         )
     }
 
-    private fun setReplayBubbleCoachMarkListener(){
-        replyBubbleOnBoarding.onboardingDismissListener = object :  com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener{
+    private fun setReplayBubbleCoachMarkListener() {
+        replyBubbleOnBoarding.onboardingDismissListener = object : com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener {
             override fun dismissReplyBubbleOnBoarding() {
                 isReplyCoachMarkShowing = false
                 checkVideoUploadOnboardingStatus()
@@ -2589,10 +2594,10 @@ class ChatbotFragment2 :
     }
 
     override fun onBackPressed(): Boolean {
-        return if(isReplyCoachMarkShowing){
+        return if (isReplyCoachMarkShowing) {
             replyBubbleOnBoarding.dismiss()
             true
-        } else if(isVideoCoachMarkShowing) {
+        } else if (isVideoCoachMarkShowing) {
             videoUploadOnBoarding.dismiss()
             true
         } else {

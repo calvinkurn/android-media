@@ -190,6 +190,6 @@ class TransactionInvoiceListFragment :
 }
 
 interface TransactionInvoiceListFragmentListener {
-    fun getButtonView(): UnifyButton
+    fun getButtonView(): UnifyButton?
     fun setResult(data: Intent)
 }

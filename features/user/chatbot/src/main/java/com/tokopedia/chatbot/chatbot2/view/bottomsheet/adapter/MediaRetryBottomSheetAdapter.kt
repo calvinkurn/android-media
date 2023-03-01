@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,7 @@ class MediaRetryBottomSheetAdapter(private val onBottomSheetItemClicked: (positi
         holder.bind(list[position], position)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: List<String>) {
         this.list.clear()
         this.list.addAll(list)

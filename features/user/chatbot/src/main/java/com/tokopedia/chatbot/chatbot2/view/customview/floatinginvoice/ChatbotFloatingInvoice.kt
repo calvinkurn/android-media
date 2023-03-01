@@ -15,11 +15,11 @@ import com.tokopedia.unifyprinciples.Typography
 class ChatbotFloatingInvoice(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
-    private lateinit var invoiceImage: ImageUnify
-    private lateinit var invoiceName: Typography
-    private lateinit var cancelInvoice: ImageUnify
-    private lateinit var invoiceLabel: Label
-    private lateinit var invoice: ConstraintLayout
+    private var invoiceImage: ImageUnify? = null
+    private var invoiceName: Typography? = null
+    private var cancelInvoice: ImageUnify? = null
+    private var invoiceLabel: Label? = null
+    private var invoice: ConstraintLayout? = null
 
     var sendButtonListener: ChatbotSendButtonListener? = null
     var invoiceListener: InvoiceListener? = null
@@ -30,10 +30,10 @@ class ChatbotFloatingInvoice(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun bindClickListeners() {
-        cancelInvoice.setOnClickListener {
+        cancelInvoice?.setOnClickListener {
             sendButtonListener?.enableSendButton()
             invoiceListener?.isInvoiceRemoved(true)
-            invoice.hide()
+            invoice?.hide()
         }
     }
 
@@ -50,10 +50,10 @@ class ChatbotFloatingInvoice(context: Context, attributeSet: AttributeSet) :
 
     fun setUpInvoiceData(invoiceTitle: String?, invoiceIconURL: String?, labelType: Int, labelText: String?) {
         if (invoiceTitle != null) {
-            invoiceName.text = invoiceTitle
+            invoiceName?.text = invoiceTitle
         }
-        invoiceLabel.text = labelText
-        invoiceLabel.setLabelType(labelType)
+        invoiceLabel?.text = labelText
+        invoiceLabel?.setLabelType(labelType)
         if (invoiceIconURL != null) {
             ImageHandler.loadImage(
                 context,

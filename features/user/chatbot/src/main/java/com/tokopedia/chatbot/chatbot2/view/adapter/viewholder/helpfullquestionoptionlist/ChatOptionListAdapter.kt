@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.helpfullquestionoptionlist
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,7 @@ class ChatOptionListAdapter(private val onOptionListSelected: (ChatOptionListUiM
         notifyItemRangeRemoved(0, size)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setDataList(elements: List<ChatOptionListUiModel>) {
         data.clear()
         data.addAll(elements)

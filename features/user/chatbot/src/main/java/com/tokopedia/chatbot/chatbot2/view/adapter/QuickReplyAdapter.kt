@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -36,11 +37,13 @@ class QuickReplyAdapter(
         return quickReplyList.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         quickReplyList = ArrayList()
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(quickReplylist: List<QuickReplyUiModel>) {
         this.quickReplyList = quickReplylist
         notifyDataSetChanged()

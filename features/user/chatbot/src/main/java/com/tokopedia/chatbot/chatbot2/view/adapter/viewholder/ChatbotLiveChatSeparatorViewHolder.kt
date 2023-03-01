@@ -8,8 +8,11 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatBotTimeConverter
 import com.tokopedia.chatbot.databinding.ItemChatbotLiveChatSeparatorBinding
+import java.util.*
 
-class ChatbotLiveChatSeparatorViewHolder(itemView: View) : AbstractViewHolder<ChatSepratorUiModel>(itemView) {
+class ChatbotLiveChatSeparatorViewHolder(itemView: View) : AbstractViewHolder<ChatSepratorUiModel>(
+    itemView
+) {
     private val view = ItemChatbotLiveChatSeparatorBinding.bind(itemView)
     private val liveChatSeprator: TextView = view.chatbotLivechatSeprator
 
@@ -20,6 +23,11 @@ class ChatbotLiveChatSeparatorViewHolder(itemView: View) : AbstractViewHolder<Ch
     }
 
     override fun bind(element: ChatSepratorUiModel) {
-        liveChatSeprator.text = String.format("%s. %s", element.sepratorMessage, ChatBotTimeConverter.getHourTime(element.dividerTiemstamp))
+        liveChatSeprator.text = String.format(
+            Locale.getDefault(),
+            "%s. %s",
+            element.sepratorMessage,
+            ChatBotTimeConverter.getHourTime(element.dividerTiemstamp)
+        )
     }
 }

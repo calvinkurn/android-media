@@ -8,6 +8,7 @@ import android.text.style.UnderlineSpan
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
+import java.util.*
 
 object EllipsizeMaker {
 
@@ -17,7 +18,9 @@ object EllipsizeMaker {
         return if (message.layout != null) {
             val lineEndIndex = message.layout.getLineEnd(MESSAGE_LINE_COUNT - 1)
             String.format(
-                "%s%s", message.text.subSequence(0, lineEndIndex - 3),
+                Locale.getDefault(),
+                "%s%s",
+                message.text.subSequence(0, lineEndIndex - 3),
                 message.context.getString(
                     R.string.cb_bot_three_dots
                 )
@@ -47,7 +50,9 @@ object EllipsizeMaker {
                         tp.isUnderlineText = false
                     }
                 },
-                spannable.getSpanStart(u), spannable.getSpanEnd(u), 0
+                spannable.getSpanStart(u),
+                spannable.getSpanEnd(u),
+                0
             )
         }
         return spannable
