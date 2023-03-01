@@ -95,6 +95,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
 
         initView()
         observeClearViewData()
+        observePostData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
