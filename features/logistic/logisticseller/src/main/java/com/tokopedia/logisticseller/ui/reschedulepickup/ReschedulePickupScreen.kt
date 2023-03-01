@@ -382,17 +382,8 @@ private fun InputCustomReason(
         },
         onValueChanged = { onOtherReasonChanged(it) },
         isError = !error.isNullOrEmpty(),
-        supportingText = {
-            error?.let {
-                NestTypography(
-                    text = it,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.RN._500)
-                )
-            }
-        }
+        counter = 160,
+        error = error
     )
 }
 
