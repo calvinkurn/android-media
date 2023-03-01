@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
+import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerRequest
 import com.tokopedia.logisticCommon.domain.response.GetTargetedTickerResponse
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class GetTargetedTickerUseCase @Inject constructor(
         QUERY_GET_TARGETED_TICKER
     )
     override suspend fun execute(params: GetTargetedTickerParam): GetTargetedTickerResponse {
-        return repository.request(GetTargetedTicker(), params)
+        return repository.request(GetTargetedTicker(), GetTargetedTickerRequest(params))
     }
 
     override fun graphqlQuery(): String {

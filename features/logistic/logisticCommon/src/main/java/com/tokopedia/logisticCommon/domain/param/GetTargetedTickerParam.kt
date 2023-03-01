@@ -3,6 +3,10 @@ package com.tokopedia.logisticCommon.domain.param
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
 
+data class GetTargetedTickerRequest(
+    @SerializedName("input")
+    val input: GetTargetedTickerParam = GetTargetedTickerParam()
+) : GqlParam
 data class GetTargetedTickerParam(
     @SerializedName("Page")
     val page: String = "",
