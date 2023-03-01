@@ -111,6 +111,7 @@ import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -641,7 +642,9 @@ class PlayUserInteractionFragment @Inject constructor(
                 if (insets != null) {
                     layoutParams?.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
                 } else error("Insets not supported")
-            } catch (e: Throwable) {  }
+            } catch (e: Throwable) {
+                Timber.e(e)
+            }
         }
 
         viewSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
