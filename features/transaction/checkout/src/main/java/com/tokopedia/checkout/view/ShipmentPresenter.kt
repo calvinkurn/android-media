@@ -245,8 +245,8 @@ class ShipmentPresenter @Inject constructor(
     private var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
     private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData>? = null
     private var isUsingDdp = false
-    private var dynamicDataParam: DynamicDataPassingParamRequest? = null
-    private var dynamicData = ""
+    private var dynamicDataParam: DynamicDataPassingParamRequest = DynamicDataPassingParamRequest()
+    var dynamicData = ""
 
     override fun detachView() {
         super.detachView()
@@ -259,7 +259,6 @@ class ShipmentPresenter @Inject constructor(
         logisticDonePublisher = null
         ratesPromoPublisher = null
         logisticPromoDonePublisher = null
-        dynamicDataParam = null
     }
 
     override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>?) {
@@ -3619,11 +3618,11 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest?) {
+    override fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest) {
         this.dynamicDataParam = dynamicDataPassingParam
     }
 
-    override fun getDynamicDataParam(): DynamicDataPassingParamRequest? {
+    override fun getDynamicDataParam(): DynamicDataPassingParamRequest {
         return this.dynamicDataParam
     }
 

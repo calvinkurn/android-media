@@ -446,9 +446,9 @@ interface ShipmentContract {
         fun clearAllBoOnTemporaryUpsell()
         fun validatePrescriptionOnBackPressed(): Boolean
 
-        fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest?)
+        fun setDynamicDataParam(dynamicDataPassingParam: DynamicDataPassingParamRequest)
 
-        fun getDynamicDataParam(): DynamicDataPassingParamRequest?
+        fun getDynamicDataParam(): DynamicDataPassingParamRequest
 
         fun validateDynamicData()
 

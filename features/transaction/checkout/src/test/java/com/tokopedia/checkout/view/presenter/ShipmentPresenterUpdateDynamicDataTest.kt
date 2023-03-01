@@ -2,8 +2,16 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.model.cartshipmentform.*
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -24,7 +32,14 @@ import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.mo
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
@@ -33,8 +48,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldCl
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -312,7 +331,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
         // Then
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
         verify {
             view.updateAddOnsData(AddOnsDataModel(), 0)
             view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
@@ -449,7 +468,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.getDynamicDataParam().data.isNotEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
     }
 
     @Test
@@ -556,7 +575,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.getDynamicDataParam().data.isNotEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
     }
 
     @Test
@@ -682,7 +701,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.getDynamicDataParam().data.isNotEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
     }
 
     @Test
@@ -749,8 +768,8 @@ class ShipmentPresenterUpdateDynamicDataTest {
         )
 
         // Then
-        assert(presenter.dynamicDataParam.data.isEmpty())
         assert(presenter.getDynamicDataParam().data.isEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
+        assert(presenter.getDynamicDataParam().data.isEmpty())
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
     }
 }
