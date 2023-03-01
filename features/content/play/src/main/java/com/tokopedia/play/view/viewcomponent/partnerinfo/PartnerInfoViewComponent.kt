@@ -28,7 +28,7 @@ class PartnerInfoViewComponent(
             listener.onFollowButtonClicked(this)
         }
         val rootWidth = rootView.measuredWidth
-        Log.d("sukses width", "${rootView.measuredWidth} -- ${rootView.width}")
+        Log.d("sukses width", "${rootView.measuredWidth} -- ${rootView.width }")
     }
 
     fun setInfo(info: PlayPartnerInfo) {
