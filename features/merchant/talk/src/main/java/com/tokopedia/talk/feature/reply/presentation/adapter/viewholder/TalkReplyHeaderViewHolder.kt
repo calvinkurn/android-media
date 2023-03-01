@@ -24,13 +24,12 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class TalkReplyHeaderViewHolder(
-    view: View,
-    private val onKebabClickedListener: OnKebabClickedListener,
-    private val talkReplyHeaderListener: TalkReplyHeaderListener,
-    private val threadListener: ThreadListener
+class TalkReplyHeaderViewHolder(view: View,
+                                private val onKebabClickedListener: OnKebabClickedListener,
+                                private val talkReplyHeaderListener: TalkReplyHeaderListener,
+                                private val threadListener: ThreadListener
 ) :
-    AbstractViewHolder<TalkReplyHeaderModel>(view), TalkReplyUnmaskCardListener {
+        AbstractViewHolder<TalkReplyHeaderModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply_header
@@ -43,7 +42,7 @@ class TalkReplyHeaderViewHolder(
             showQuestionWithCondition(isMasked, question, maskedContent, allowUnmask, isSeller)
             showKebabWithConditions(
                 allowReport = allowReport,
-                allowDelete = allowDelete || isSeller,
+                allowDelete = allowDelete,
                 allowBlock = allowReport && isSeller,
                 onKebabClickedListener = onKebabClickedListener
             )
@@ -113,7 +112,7 @@ class TalkReplyHeaderViewHolder(
                         return linkAction.invoke(link.first().url.toString())
                     }
                 }
-                return super.onTouchEvent(widget, buffer, event)
+                return super.onTouchEvent(widget, buffer, event);
             }
         }
     }
