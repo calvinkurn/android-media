@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
+import com.tokopedia.home_component.viewholders.TodoWidgetDismissListener
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
@@ -29,7 +30,8 @@ class CarouselTodoWidgetDataModel(
     val channel: ChannelModel,
     val verticalPosition: Int = 0,
     val cardInteraction: Boolean = false,
-    val isCarousel: Boolean = false
+    val isCarousel: Boolean = false,
+    val todoWidgetDismissListener: TodoWidgetDismissListener,
 ) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)

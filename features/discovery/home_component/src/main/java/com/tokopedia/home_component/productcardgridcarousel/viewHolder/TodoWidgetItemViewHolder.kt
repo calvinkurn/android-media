@@ -4,10 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetItemBinding
+import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -20,7 +22,7 @@ class TodoWidgetItemViewHolder(
     private var binding: HomeComponentTodoWidgetItemBinding? by viewBinding()
 
     companion object {
-        val LAYOUT = R.layout.home_banner_item_mission_widget
+        val LAYOUT = R.layout.home_component_todo_widget_item
     }
 
     override fun bind(element: CarouselTodoWidgetDataModel) {
@@ -55,6 +57,50 @@ class TodoWidgetItemViewHolder(
                 priceTodoWidget.text = element.price
             } else {
                 priceTodoWidget.gone()
+            }
+
+            icCloseTodoWidget.setOnClickListener {
+                element.todoWidgetDismissListener.dismiss(element, absoluteAdapterPosition)
+            }
+
+            mappingCtaButton(element)
+        }
+    }
+
+    private fun mappingCtaButton(element: CarouselTodoWidgetDataModel) {
+        binding?.ctaTodoWidget?.run {
+            isInverse = false
+
+            visibility = if (element.ctaText.isEmpty()) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+            var mode = HomeComponentCta.CTA_MODE_MAIN
+            var type = HomeComponentCta.CTA_TYPE_FILLED
+
+            if (element.ctaMode.isNotEmpty()) mode = element.ctaMode
+
+            if (element.ctaType.isNotEmpty()) type = element.ctaType
+
+            when (type) {
+                HomeComponentCta.CTA_TYPE_FILLED -> buttonVariant = UnifyButton.Variant.FILLED
+                HomeComponentCta.CTA_TYPE_GHOST -> buttonVariant = UnifyButton.Variant.GHOST
+                HomeComponentCta.CTA_TYPE_TEXT -> buttonVariant = UnifyButton.Variant.TEXT_ONLY
+            }
+
+            when (mode) {
+                HomeComponentCta.CTA_MODE_MAIN -> buttonType = UnifyButton.Type.MAIN
+                HomeComponentCta.CTA_MODE_TRANSACTION -> buttonType = UnifyButton.Type.TRANSACTION
+                HomeComponentCta.CTA_MODE_ALTERNATE -> buttonType = UnifyButton.Type.ALTERNATE
+                HomeComponentCta.CTA_MODE_DISABLED -> isEnabled = false
+                HomeComponentCta.CTA_MODE_INVERTED -> isInverse = true
+            }
+
+            text = element.ctaText
+
+            setOnClickListener {
+                element.todoWidgetComponentListener.onTodoCTAClicked(element, absoluteAdapterPosition)
             }
         }
     }
