@@ -34,7 +34,6 @@ import com.tokopedia.play.channel.analytic.PlayChannelAnalyticManager
 import com.tokopedia.play.channel.ui.component.CommentIconUiComponent
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
-import com.tokopedia.play.channel.ui.component.TaggedProductLabelUiComponent
 import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
@@ -615,16 +614,6 @@ class PlayUserInteractionFragment @Inject constructor(
             )
         }
 
-        val taggedProductLabel = binding.viewTaggedProductLabel
-        if (taggedProductLabel != null) {
-            components.add(
-                TaggedProductLabelUiComponent(
-                    binding = taggedProductLabel,
-                    bus = eventBus
-                )
-            )
-        }
-
         fun setupLandscapeView() {
             container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
             container.setOnClickListener {
@@ -896,7 +885,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.channel)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderAddressWidget(state.address)
 
@@ -1054,7 +1043,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 when (event) {
                     is ProductCarouselUiComponent.Event -> onProductCarouselEvent(event)
                     is KebabIconUiComponent.Event -> onKebabIconEvent(event)
-                    is TaggedProductLabelUiComponent.Event -> onTaggedLabelEvent(event)
                 }
             }
         }
@@ -1698,13 +1686,12 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        channel: PlayChannelDetailUiModel
     ) {
         val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
             it.productList.size
         }
 
-        if (!bottomInsets.isAnyShown && !address.shouldShow && productListSize.isMoreThanZero() && !channel.channelInfo.channelType.isLive) {
+        if (!bottomInsets.isAnyShown && !address.shouldShow && productListSize.isMoreThanZero()) {
             productSeeMoreView?.show()
         } else {
             productSeeMoreView?.hide()
@@ -2021,14 +2008,6 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             is EngagementUiModel.Game -> {
                 newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.game.id, channelId = playViewModel.channelId)
-            }
-        }
-    }
-
-    private fun onTaggedLabelEvent(event: TaggedProductLabelUiComponent.Event) {
-        when(event){
-            TaggedProductLabelUiComponent.Event.OnClicked -> {
-                openProductSheet()
             }
         }
     }
