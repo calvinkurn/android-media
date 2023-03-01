@@ -260,5 +260,5 @@ produk eksklusif ini.</string>
 
     <!-- Product Sharing Experience -->
     <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
-    <string name="content_comment_tagged_product_label">Lihat %d produk</string>
+    <string name="content_comment_tagged_product_label">Cek %d Produk</string>
 </resources>
