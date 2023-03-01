@@ -26,16 +26,18 @@ class CommentUiModelMapper @Inject constructor() {
         list = buildList {
             comments.parent.comments.forEach {
                 add(mapComment(it, comments.parent.parentId))
-                if (it.hasReplies) add(
-                    CommentUiModel.Expandable(
-                        repliesCount = it.repliesCount,
-                        commentType = it.id.convertToCommentType
+                if (it.hasReplies) {
+                    add(
+                        CommentUiModel.Expandable(
+                            repliesCount = it.repliesCount,
+                            commentType = it.id.convertToCommentType
+                        )
                     )
-                )
+                }
             }
         },
         commentType = comments.parent.parentId.convertToCommentType,
-        state = ResultState.Success,
+        state = ResultState.Success
     )
 
     fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {
@@ -45,7 +47,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.photo,
             appLink = comment.id,
-            content = comment.comment,
+            content = comment.comment.replace("\n", ""),
             createdTime = convertTime(comment.createdTime),
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
@@ -77,14 +79,21 @@ class CommentUiModelMapper @Inject constructor() {
         val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
         val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
 
-        return if (minute < 1) LESS_THAN_1MIN
-        else if (hour < 1) {
+        return if (minute < 1) {
+            LESS_THAN_1MIN
+        } else if (hour < 1) {
             LESS_THAN_1HOUR
-        } else if (hour < 24) LESS_THAN_1DAY
-        else if (day in 1..5) LESS_THAN_1DAY_5DAY
-        else if (day in 6..89) MORE_THAN_5DAY
-        else if (day > 90) MORE_THAN_90DAY
-        else LESS_THAN_1MIN
+        } else if (hour < 24) {
+            LESS_THAN_1DAY
+        } else if (day in 1..5) {
+            LESS_THAN_1DAY_5DAY
+        } else if (day in 6..89) {
+            MORE_THAN_5DAY
+        } else if (day > 90) {
+            MORE_THAN_90DAY
+        } else {
+            LESS_THAN_1MIN
+        }
     }
 
     companion object {

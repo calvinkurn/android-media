@@ -82,6 +82,11 @@ class ContentCommentViewModel @AssistedInject constructor(
                 _comments.update {
                     it.copy(state = ResultState.Fail(error))
                 }
+                _query.update {
+                    it.copy(
+                        needToRefresh = false,
+                    )
+                }
             }
         }
 
@@ -126,6 +131,11 @@ class ContentCommentViewModel @AssistedInject constructor(
             }) { error ->
                 _comments.update {
                     it.copy(state = ResultState.Fail(error))
+                }
+                _query.update {
+                    it.copy(
+                        needToRefresh = false,
+                    )
                 }
             }
         }
@@ -256,7 +266,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun undoComment() {
-        _comments.getAndUpdate {
+        _comments.update {
             val newList = it.list.toMutableList()
             newList.add(_selectedComment.value.second, _selectedComment.value.first)
             it.copy(list = newList)
