@@ -13,14 +13,16 @@ import java.util.*
 object EllipsizeMaker {
 
     const val MESSAGE_LINE_COUNT = 10
+    const val SUBSEQUENCE_TEXT_LENGTH = 3
+    const val LINE_END_INDEX = 1
 
     fun getTruncatedMsg(message: TextView): CharSequence? {
         return if (message.layout != null) {
-            val lineEndIndex = message.layout.getLineEnd(MESSAGE_LINE_COUNT - 1)
+            val lineEndIndex = message.layout.getLineEnd(MESSAGE_LINE_COUNT - LINE_END_INDEX)
             String.format(
                 Locale.getDefault(),
                 "%s%s",
-                message.text.subSequence(0, lineEndIndex - 3),
+                message.text.subSequence(0, lineEndIndex - SUBSEQUENCE_TEXT_LENGTH),
                 message.context.getString(
                     R.string.cb_bot_three_dots
                 )
@@ -32,10 +34,10 @@ object EllipsizeMaker {
 
     fun setTruncatedMsg(message: TextView, msg: String) {
         if (message.layout != null) {
-            val lineEndIndex = message.layout.getLineEnd(MESSAGE_LINE_COUNT - 1)
+            val lineEndIndex = message.layout.getLineEnd(MESSAGE_LINE_COUNT - LINE_END_INDEX)
             val text = removeUnderlineFromLink(msg)
             if (text.length < lineEndIndex) return
-            val spannable = text.subSequence(0, lineEndIndex - 3)
+            val spannable = text.subSequence(0, lineEndIndex - SUBSEQUENCE_TEXT_LENGTH)
             val fText = (spannable as SpannableStringBuilder).append(message.context.getString(R.string.cb_bot_three_dots))
             message.text = fText
         }
