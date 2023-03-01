@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet.Compan
 import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -195,12 +196,28 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
             commissionData?.data?.createdAt?.let {
                 DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it)
             }
-        view?.findViewById<Typography>(R.id.promotion_link)?.text =
-           when(commissionData?.data?.pageType?.uppercase()){
-               PAGE_PDP -> "Produk"
-               PAGE_SHOP -> "Toko"
-               else -> "None"
-           }
+        view?.findViewById<Typography>(R.id.promotion_link)?.text = getPageType(commissionData)
+
+        view?.findViewById<Typography>(R.id.redirection_link)?.apply {
+            text = buildString {
+                append("Lihat ")
+                append(getPageType(commissionData))
+            }
+            this.setOnClickListener {
+                commissionData?.data?.cardDetail?.hyperlink?.androidURL?.let { url ->
+                    RouteManager.route(context, url)
+                }
+            }
+        }
+    }
+
+    private fun getPageType(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?): String {
+        return when(commissionData?.data?.pageType?.uppercase()){
+            PAGE_PDP -> "Produk"
+            PAGE_SHOP -> "Toko"
+            PAGE_EVENT -> "Event"
+            else -> "None"
+        }
     }
 
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(affiliateInfoClickInterfaces = this))
@@ -246,6 +263,7 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
         private const val PARAM_TRANSACTION = "PARAM_TRANSACTION"
         private const val PAGE_PDP = "PDP"
         private const val PAGE_SHOP = "SHOP"
+        private const val PAGE_EVENT = "CAMPAIGN"
         fun newInstance(transactionId: String?): Fragment{
             return AffiliateTransactionDetailFragment().apply {
                 arguments = Bundle().apply {

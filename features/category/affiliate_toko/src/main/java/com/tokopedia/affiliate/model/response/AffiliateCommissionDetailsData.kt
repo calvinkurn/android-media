@@ -62,11 +62,24 @@ data class AffiliateCommissionDetailsData(
                 @SerializedName("ShopBadge")
                 var shopBadge: String?,
                 @SerializedName("ShopName")
-                var shopName: String?
+                var shopName: String?,
+                @SerializedName("Hyperlink")
+                var hyperlink: Hyperlink?
             ) {
 
 
                 data class Image(
+                    @SerializedName("AndroidURL")
+                    var androidURL: String?,
+                    @SerializedName("DesktopURL")
+                    var desktopURL: String?,
+                    @SerializedName("IosURL")
+                    var iosURL: String?,
+                    @SerializedName("MobileURL")
+                    var mobileURL: String?
+                )
+
+                data class Hyperlink(
                     @SerializedName("AndroidURL")
                     var androidURL: String?,
                     @SerializedName("DesktopURL")
