@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.chatbot2.view.util.video
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.io.File
 
@@ -22,7 +23,8 @@ object VideoUtil {
 
                 durationData.toLongOrZero()
             }
-        } catch (@Suppress("SwallowedException") e: Throwable) {
+        } catch (e: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             0
         }
     }
@@ -30,7 +32,8 @@ object VideoUtil {
     fun findVideoSize(videoFile: File): String {
         return try {
             videoFile.length() / SIZE_KB
-        } catch (@Suppress("SwallowedException") e: Exception) {
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             0
         }.toString()
     }
@@ -38,7 +41,8 @@ object VideoUtil {
     fun findVideoExtension(videoFile: File): String {
         return try {
             videoFile.extension
-        } catch (@Suppress("SwallowedException") e: Exception) {
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             ""
         }
     }

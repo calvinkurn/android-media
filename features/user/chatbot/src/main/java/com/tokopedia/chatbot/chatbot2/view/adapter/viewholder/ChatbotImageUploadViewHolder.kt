@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -160,7 +161,7 @@ class ChatbotImageUploadViewHolder(
                     .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .into(imageview)
             }
-        } catch (@Suppress("SwallowedException") e: Exception) {
+        } catch (e: Exception) {
             if (imageview.context != null) {
                 imageview.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -169,6 +170,7 @@ class ChatbotImageUploadViewHolder(
                     )
                 )
             }
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 

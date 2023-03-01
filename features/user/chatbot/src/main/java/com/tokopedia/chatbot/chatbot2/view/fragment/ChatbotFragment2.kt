@@ -11,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -889,7 +889,6 @@ class ChatbotFragment2 :
                 is ChatbotSocketReceiveEvent.EndTypingEvent -> { onReceiveStopTypingEvent() }
                 is ChatbotSocketReceiveEvent.ReadEvent -> { onReceiveReadEvent() }
                 is ChatbotSocketReceiveEvent.ReplyMessageEvent -> {
-                    Log.d("FATAL", "startObservingViewModels: in the Reply Message Event")
                     onReceiveMessageEvent(it.visitable)
                 }
             }
@@ -1198,7 +1197,8 @@ class ChatbotFragment2 :
                     if (state) {
                         return
                     }
-                } catch (@Suppress("SwallowedException") e: JsonSyntaxException) {
+                } catch (e: JsonSyntaxException) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
                     return@forEach
                 }
             }
@@ -1238,7 +1238,8 @@ class ChatbotFragment2 :
                     if (state) {
                         return
                     }
-                } catch (@Suppress("SwallowedException") e: JsonSyntaxException) {
+                } catch (e: JsonSyntaxException) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
                     return
                 }
             }
@@ -1462,7 +1463,8 @@ class ChatbotFragment2 :
                 return filters.substring(0, filters.length - 1)
             }
             return ""
-        } catch (@Suppress("SwallowedException") e: Exception) {
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             return ""
         }
     }
@@ -2267,7 +2269,8 @@ class ChatbotFragment2 :
                 if (!CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode)) {
                     return false
                 }
-            } catch (@Suppress("SwallowedException") e: JsonSyntaxException) {
+            } catch (e: JsonSyntaxException) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 return true
             }
         }

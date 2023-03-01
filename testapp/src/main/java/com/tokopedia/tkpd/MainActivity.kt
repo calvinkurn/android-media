@@ -130,3 +130,15 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 }
+//       for gaung.utama
+//      val appLink = "tokopedia://chatbot/3181924"
+//      for sourav staging
+//          val appLink = "tokopedia://chatbot/4058088"
+//           val appLink = "tokopedia://chatbot/3181924"
+//       for dwi.widodo
+//            val appLink = "tokopedia://chatbot/3185892"
+//     for hanifah staging
+//                        val appLink = "tokopedia://chatbot/4053167"
+//       val appLink =  ApplinkConstInternalGlobal.LOGIN_HELPER
+//      val appLink = "tokopedia://topchat"
+//      val appLink = "tokopedia://customercare"

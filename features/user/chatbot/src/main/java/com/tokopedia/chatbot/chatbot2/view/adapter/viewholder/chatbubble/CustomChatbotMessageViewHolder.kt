@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble
 import android.text.TextUtils
 import android.view.View
 import androidx.cardview.widget.CardView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -42,7 +43,8 @@ abstract class CustomChatbotMessageViewHolder(
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
             }
-        } catch (@Suppress("SwallowedException") e: Exception) {
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
