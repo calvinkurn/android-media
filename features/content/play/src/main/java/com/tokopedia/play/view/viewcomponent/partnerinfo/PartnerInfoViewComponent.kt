@@ -7,7 +7,6 @@ import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
-import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -26,13 +25,6 @@ class PartnerInfoViewComponent(
     init {
         btnFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
-        }
-        btnFollow.ellipsize = null
-        btnFollow.updateLayoutParams {
-            width = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-        rootView.updateLayoutParams {
-            width = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
 
