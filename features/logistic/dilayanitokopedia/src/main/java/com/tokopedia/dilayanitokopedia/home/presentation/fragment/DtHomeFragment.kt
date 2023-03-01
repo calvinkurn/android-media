@@ -443,7 +443,7 @@ class DtHomeFragment :
     private fun showEmptyState() {
         NetworkErrorHelper.showEmptyState(
             activity,
-            binding?.root,
+                        binding?.dtConstraintParent,
             this::loadLayout
         )
     }
