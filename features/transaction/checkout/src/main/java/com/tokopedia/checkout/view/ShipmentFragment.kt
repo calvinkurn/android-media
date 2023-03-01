@@ -470,14 +470,14 @@ class ShipmentFragment :
                 false, null, deviceId, checkoutLeasingId,
                 isPlusSelected()
             )
-        } /* else {
+        } else {
             shipmentPresenter.tickerAnnouncementHolderData = savedTickerAnnouncementModel!!
             shipmentPresenter.shipmentCartItemModelList = savedShipmentCartItemModelList
             shipmentPresenter.recipientAddressModel = savedRecipientAddressModel
             shipmentPresenter.setShipmentCostModel(savedShipmentCostModel)
             shipmentPresenter.shipmentDonationModel = savedShipmentDonationModel
             shipmentPresenter.setListShipmentCrossSellModel(savedListShipmentCrossSellModel)
-            shipmentPresenter.shipmentButtonPaymentModel = savedShipmentButtonPaymentModel
+            shipmentPresenter.setShipmentButtonPaymentModel(savedShipmentButtonPaymentModel)
             shipmentPresenter.egoldAttributeModel = savedEgoldAttributeModel
             shipmentAdapter.lastChooseCourierItemPosition =
                 savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION)
@@ -487,7 +487,7 @@ class ShipmentFragment :
             shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel)
             renderCheckoutPage(true, false, isOneClickShipment)
             swipeToRefresh?.isEnabled = false
-        }*/
+        }
     }
 
     private fun setBackground() {
