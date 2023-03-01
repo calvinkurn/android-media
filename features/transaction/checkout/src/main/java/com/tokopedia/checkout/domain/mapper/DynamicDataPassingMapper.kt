@@ -24,22 +24,20 @@ object DynamicDataPassingMapper {
         isOcs: Boolean
     ): DynamicDataPassingParamRequest.AddOn {
         val listAddOnData = arrayListOf<DynamicDataPassingParamRequest.AddOn.AddOnDataParam>()
-        if (addOnResult.addOnData.isNotEmpty()) {
-            addOnResult.addOnData.forEach { data ->
-                val addOnData = DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
-                    addOnId = data.addOnId.toLongOrZero(),
-                    addOnQty = data.addOnQty,
-                    addOnMetadata = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam(
-                        addOnNote = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam.AddOnNoteParam(
-                            from = data.addOnMetadata.addOnNote.from,
-                            isCustomNote = data.addOnMetadata.addOnNote.isCustomNote,
-                            notes = data.addOnMetadata.addOnNote.notes,
-                            to = data.addOnMetadata.addOnNote.to
-                        )
+        addOnResult.addOnData.map { data ->
+            val addOnData = DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
+                addOnId = data.addOnId.toLongOrZero(),
+                addOnQty = data.addOnQty,
+                addOnMetadata = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam(
+                    addOnNote = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam.AddOnNoteParam(
+                        from = data.addOnMetadata.addOnNote.from,
+                        isCustomNote = data.addOnMetadata.addOnNote.isCustomNote,
+                        notes = data.addOnMetadata.addOnNote.notes,
+                        to = data.addOnMetadata.addOnNote.to
                     )
                 )
-                listAddOnData.add(addOnData)
-            }
+            )
+            listAddOnData.add(addOnData)
         }
 
         return DynamicDataPassingParamRequest.AddOn(
