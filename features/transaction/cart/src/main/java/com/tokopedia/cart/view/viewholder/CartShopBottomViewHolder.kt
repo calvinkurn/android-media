@@ -16,7 +16,7 @@ import com.tokopedia.utils.resources.isDarkMode
 
 class CartShopBottomViewHolder(
     private val binding: ItemCartShopBottomBinding,
-    private val actionListener: ActionListener,
+    private val actionListener: ActionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
