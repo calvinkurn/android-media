@@ -131,7 +131,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -164,7 +164,7 @@ class ChatbotPresenter @Inject constructor(
     var getExistingChatUseCase: GetExistingChatUseCase,
     override var userSession: UserSessionInterface,
     private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
-    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+    private val tkpdAuthInterceptor: TkpdOldAuthInterceptor,
     private val fingerprintInterceptor: FingerprintInterceptor,
     private val sendChatRatingUseCase: SendChatRatingUseCase,
     private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,

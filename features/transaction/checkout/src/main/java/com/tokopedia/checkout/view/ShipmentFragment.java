@@ -2502,7 +2502,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
                         isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
                         shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()),
-                        shipmentPresenter.getCartDataForRates(), false);
+                        shipmentPresenter.getCartDataForRates(), false, String.valueOf(shipmentCartItemModel.getFulfillmentId()));
             }
         }
     }
@@ -4008,11 +4008,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void logOnErrorLoadCourier(Throwable throwable, int itemPosition) {
+    public void logOnErrorLoadCourier(Throwable throwable, int itemPosition, String boPromoCode) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
         if (shipmentCartItemModel != null) {
-            CheckoutLogger.INSTANCE.logOnErrorLoadCourier(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
+            CheckoutLogger.INSTANCE.logOnErrorLoadCourier(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
         }
+    }
+
+    @Override
+    public void logOnErrorApplyBo(Throwable throwable, int itemPosition, String boPromoCode) {
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+        if (shipmentCartItemModel != null) {
+            CheckoutLogger.INSTANCE.logOnErrorApplyBo(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
+        }
+    }
+
+    @Override
+    public void logOnErrorApplyBo(Throwable throwable, ShipmentCartItemModel shipmentCartItemModel, String boPromoCode) {
+        CheckoutLogger.INSTANCE.logOnErrorApplyBo(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
     }
 
     @Override

@@ -6,5 +6,5 @@ data class SimplifiedShoppingSummary(
     @SerializedName("text")
     val text: String = "",
     @SerializedName("sections")
-    val sections: List<Section> = emptyList(),
+    val sections: List<Section> = emptyList()
 )

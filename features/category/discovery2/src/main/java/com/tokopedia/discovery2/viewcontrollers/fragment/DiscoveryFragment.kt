@@ -47,6 +47,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -56,8 +57,10 @@ import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.di.DiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CHANNEL
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -96,6 +99,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -126,13 +130,14 @@ import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -230,6 +235,8 @@ open class DiscoveryFragment :
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
     var currentTabPosition: Int? = null
+    var isAffiliateInitialized = false
+        private set
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -265,6 +272,8 @@ open class DiscoveryFragment :
                 bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
                 bundle.putString(SHOP_ID, queryParameterMap[SHOP_ID])
                 bundle.putString(QUERY_PARENT, queryParameterMap[QUERY_PARENT])
+                bundle.putString(AFFILIATE_UNIQUE_ID, queryParameterMap[AFFILIATE_UNIQUE_ID])
+                bundle.putString(CHANNEL, queryParameterMap[CHANNEL])
             }
         }
     }
@@ -732,6 +741,7 @@ open class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                     setupBackgroundForHeader(it.data)
                     addMiniCartToPageFirstTime()
+                    setupAffiliate()
                 }
                 is Fail -> {
                     discoveryAdapter.addDataList(ArrayList())
@@ -938,6 +948,13 @@ open class DiscoveryFragment :
         }
     }
 
+    private fun setupAffiliate() {
+        if (pageInfoHolder?.isAffiliate == true && !discoveryViewModel.isAffiliateInitialized) {
+            isAffiliateInitialized = true
+            discoveryViewModel.initAffiliateSDK()
+        }
+    }
+
     private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
         if (anchorViewHolder == null) {
             val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
@@ -1123,9 +1140,15 @@ open class DiscoveryFragment :
         }
     }
 
-    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
+    private fun linkerDataMapper(data: PageInfo?, isAffiliate: Boolean = false): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = data?.id?.toString() ?: ""
+        if (isAffiliate) {
+            linkerData.id = data?.name ?: ""
+            linkerData.linkAffiliateType = AffiliateLinkType.CAMPAIGN.value
+            linkerData.isAffiliate = true
+        } else {
+            linkerData.id = data?.id?.toString() ?: ""
+        }
         linkerData.name = data?.name ?: ""
         linkerData.uri = Utils.getShareUrlQueryParamAppended(
             data?.share?.url
@@ -1161,7 +1184,24 @@ open class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector) {
+                if (this@DiscoveryFragment.isAffiliateInitialized) {
+                    val inputShare = AffiliatePDPInput().apply {
+                        pageDetail = PageDetail(
+                            pageId = "0",
+                            pageType = "campaign",
+                            siteId = "1",
+                            verticalId = "1",
+                            pageName = pageEndPoint
+                        )
+                        pageType = PageType.CAMPAIGN.value
+                        product = Product()
+                        shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
+                    }
+                    universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
+                    universalShareBottomSheet?.affiliateRequestDataReceived(true)
+                }
+            }
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
@@ -1172,7 +1212,7 @@ open class DiscoveryFragment :
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = linkerDataMapper(pageInfoHolder)
+        val linkerShareData = linkerDataMapper(pageInfoHolder, shareModel.isAffiliate)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
@@ -1697,7 +1737,10 @@ open class DiscoveryFragment :
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
-                        sendOpenScreenAnalytics(it.data.identifier, it.data.additionalInfo)
+                        sendOpenScreenAnalytics(
+                            it.data.identifier,
+                            it.data.additionalInfo,
+                            it.data.isAffiliate)
                     }
                     else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
@@ -1712,14 +1755,30 @@ open class DiscoveryFragment :
         addMiniCartToPage()
     }
 
-    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null, isAffiliate: Boolean = false) {
         val campaignId = arguments?.getString(CAMPAIGN_ID, "") ?: ""
         val variantId = arguments?.getString(VARIANT_ID, "") ?: ""
         val shopId = arguments?.getString(SHOP_ID, "") ?: ""
+        val affiliateUID = arguments?.getString(AFFILIATE_UNIQUE_ID, "")?.toDecodedString() ?: ""
+        val affiliateChannelID = if (isAffiliate && affiliateUID.isNotEmpty()) {
+            val trackerID = discoveryViewModel.getTrackerIDForAffiliate()
+            "$affiliateUID - $trackerID - $AFFILIATE"
+        } else
+            ""
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(), campaignId, variantId, shopId)
+            getDiscoveryAnalytics().trackOpenScreen(
+                discoveryViewModel.pageIdentifier,
+                additionalInfo,
+                isUserLoggedIn(),
+                ParamsForOpenScreen(campaignId, variantId, shopId, affiliateChannelID)
+            )
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(), campaignId, variantId, shopId)
+            getDiscoveryAnalytics().trackOpenScreen(
+                identifier,
+                additionalInfo,
+                isUserLoggedIn(),
+                ParamsForOpenScreen(campaignId, variantId, shopId, affiliateChannelID)
+            )
         }
         openScreenStatus = true
     }
@@ -2125,6 +2184,10 @@ open class DiscoveryFragment :
                 com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
             )
         }
+    }
+
+    fun createAffiliateLink(applink: String): String {
+        return discoveryViewModel.createAffiliateLink(applink)
     }
 
 }
