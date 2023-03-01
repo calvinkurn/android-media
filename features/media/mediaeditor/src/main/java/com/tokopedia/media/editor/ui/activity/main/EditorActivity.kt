@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.system.ErrnoException
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -16,10 +18,12 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.isGranted
+import com.tokopedia.media.editor.utils.relicLogFileNotFound
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import com.tokopedia.picker.common.cache.EditorCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
+import java.io.FileNotFoundException
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -145,19 +149,42 @@ class EditorActivity : BaseEditorActivity() {
         val listImageEditState = viewModel.editStateList.values.toList()
         viewModel.saveToGallery(
             listImageEditState
-        ) { imageResultList ->
-            val result = EditorResult(
-                originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                editedImages = imageResultList
-            )
+        ) { imageResultList, exception ->
+            imageResultList?.let {
+                val result = EditorResult(
+                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
+                    editedImages = imageResultList
+                )
 
-            editorHomeAnalytics.clickUpload()
+                editorHomeAnalytics.clickUpload()
 
-            viewModel.cleanImageCache()
+                viewModel.cleanImageCache()
 
-            val intent = Intent()
-            intent.putExtra(RESULT_INTENT_EDITOR, result)
-            setResult(Activity.RESULT_OK, intent)
+                val intent = Intent()
+                intent.putExtra(RESULT_INTENT_EDITOR, result)
+                setResult(Activity.RESULT_OK, intent)
+            }
+
+            exception?.let {
+                when (it) {
+                    is FileNotFoundException -> {
+                        Toast.makeText(this, "Saved file not found", Toast.LENGTH_LONG).show()
+                    }
+                    is ErrnoException -> {
+                        Toast.makeText(this, "Storage not enough", Toast.LENGTH_LONG).show()
+                    }
+                    else -> {
+                        Toast.makeText(this, "Terjadi kesalahan", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                relicLogFileNotFound(
+                    mapOf(
+                        "err" to "${it.message}"
+                    )
+                )
+            }
+
             finish()
         }
     }
