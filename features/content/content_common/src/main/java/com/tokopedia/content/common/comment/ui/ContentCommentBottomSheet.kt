@@ -3,9 +3,9 @@ package com.tokopedia.content.common.comment.ui
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -16,7 +16,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
@@ -36,11 +35,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
@@ -271,12 +270,7 @@ class ContentCommentBottomSheet @Inject constructor(
         sheetMenu.show(childFragmentManager)
     }
 
-    override fun onMentionClicked(userType: String, userId: String) {
-        val appLink = when (userType) {
-            USER_TYPE_KOL -> ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
-            USER_TYPE_SELLER -> ApplinkConst.SHOP.replace("{shop_id}", userId)
-            else -> ""
-        }
+    override fun onMentionClicked(appLink: String) {
         viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
     }
 
@@ -381,9 +375,6 @@ class ContentCommentBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "ContentCommentBottomSheet"
-
-        private const val USER_TYPE_KOL = "user"
-        private const val USER_TYPE_SELLER = "seller"
 
         private const val HEIGHT_PERCENT = 0.8
         private const val SHIMMER_VALUE = 10

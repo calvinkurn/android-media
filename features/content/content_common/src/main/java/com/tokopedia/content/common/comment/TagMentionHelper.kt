@@ -7,6 +7,7 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 import androidx.annotation.ColorInt
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.feedcomponent.util.buildSpannedString
 
@@ -17,13 +18,27 @@ import com.tokopedia.feedcomponent.util.buildSpannedString
 class MentionedSpanned(
     @ColorInt val color: Int,
     private val userType: String = "",
+    private val appLink: String = "",
     val userName: String,
     val id: String,
     val listener: Listener,
 ) : ClickableSpan() {
 
+    private val newAppLink: String
+        get() {
+            return appLink.ifBlank {
+                when (userType) {
+                    USER_TYPE_KOL -> ApplinkConst.PROFILE.replace(
+                        ApplinkConst.Profile.PARAM_USER_ID, id
+                    )
+                    USER_TYPE_SELLER -> ApplinkConst.SHOP.replace("{shop_id}", id)
+                    else -> ""
+                }
+            }
+        }
+
     override fun onClick(p0: View) {
-        listener.onClicked(id, userType)
+        listener.onClicked(newAppLink)
     }
 
     override fun updateDrawState(ds: TextPaint) {
@@ -34,7 +49,12 @@ class MentionedSpanned(
     }
 
     interface Listener {
-        fun onClicked(id: String, userType: String) //appLink
+        fun onClicked(appLink: String)
+    }
+
+    companion object {
+        private const val USER_TYPE_KOL = "user"
+        private const val USER_TYPE_SELLER = "seller"
     }
 }
 
@@ -52,6 +72,7 @@ object TagMentionBuilder {
             color = parentColor,
             id = item.id,
             userName = item.username,
+            appLink = item.appLink,
             listener = parentListener
         )
         return try {
@@ -60,8 +81,8 @@ object TagMentionBuilder {
             var (id, type, name) = Triple("", "", "")
             val find = regex.findAll(item.content)
             if (find.count() > 0) {
-                id = find.elementAt(0).value.replace(MENTION_CHAR,"")
-                type = find.elementAt(1).value.replace(MENTION_CHAR,"")
+                id = find.elementAt(0).value.replace(MENTION_CHAR, "")
+                type = find.elementAt(1).value.replace(MENTION_CHAR, "")
                 name = find.elementAt(2).value.removeSuffix(MENTION_CHAR)
                 val length = find.sumOf { it.value.length } + 10 //total escape character [{}|@]
 
@@ -72,6 +93,8 @@ object TagMentionBuilder {
                     userType = type,
                     listener = mentionListener
                 )
+
+                val content = item.content.substring(length, item.content.length)
 
                 buildSpannedString {
                     append(
@@ -86,7 +109,7 @@ object TagMentionBuilder {
                         Spanned.SPAN_COMPOSING
                     )
                     append(' ')
-                    append(item.content.removeRange(0, length))
+                    append(content)
                 }
             } else throw Exception()
         } catch (e: java.lang.Exception) {

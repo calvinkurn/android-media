@@ -28,16 +28,16 @@ class CommentViewHolder {
 
         private val parentListener by lazyThreadSafetyNone {
             object : MentionedSpanned.Listener {
-                override fun onClicked(id: String, userType: String) {
-                    listener.onProfileClicked(id)
+                override fun onClicked(appLink: String) {
+                    listener.onUserNameClicked(appLink)
                 }
             }
         }
 
         private val mentionListener by lazyThreadSafetyNone {
             object : MentionedSpanned.Listener {
-                override fun onClicked(id: String, userType: String) {
-                    listener.onMentionClicked(userType, id)
+                override fun onClicked(appLink: String) {
+                    listener.onMentionClicked(appLink)
                 }
             }
         }
@@ -83,7 +83,7 @@ class CommentViewHolder {
         interface Listener {
             fun onReplyClicked(item: CommentUiModel.Item)
             fun onLongClicked(item: CommentUiModel.Item)
-            fun onMentionClicked(userType: String, userId: String)
+            fun onMentionClicked(appLink: String)
             fun onProfileClicked(appLink: String)
             fun onUserNameClicked(appLink: String)
         }
