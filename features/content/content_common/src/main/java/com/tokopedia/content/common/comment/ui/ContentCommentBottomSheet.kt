@@ -1,7 +1,9 @@
 package com.tokopedia.content.common.comment.ui
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -29,11 +31,13 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -142,13 +146,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         commentAdapter.setItemsAndAnimateChanges(getCommentShimmering)
                     }
                     is ResultState.Fail -> {
-                        binding.commentGlobalError.setType(
-                            if (it.state.error is UnknownHostException) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
-                        )
-                        binding.commentGlobalError.setActionClickListener {
-                            viewModel.submitAction(CommentAction.RefreshComment)
-                        }
-                        showError(true)
+                        showError(true, throwable = it.state.error)
                     }
                 }
             }
@@ -195,11 +193,28 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    private fun showError(isShown: Boolean) {
+    private fun showError(isShown: Boolean, throwable: Throwable? = null) {
         binding.commentGlobalError.showWithCondition(isShown)
         binding.rvComment.showWithCondition(!isShown)
         binding.commentHeader.showWithCondition(!isShown)
         binding.viewCommentSend.showWithCondition(!isShown)
+
+        if (throwable is UnknownHostException) {
+            binding.commentGlobalError.setType(GlobalError.NO_CONNECTION)
+            binding.commentGlobalError.errorSecondaryAction.show()
+            binding.commentGlobalError.errorSecondaryAction.text = getString(R.string.content_comment_error_secondary)
+            binding.commentGlobalError.setSecondaryActionClickListener {
+                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                router.route(requireActivity(), intent)
+            }
+        } else {
+            binding.commentGlobalError.errorSecondaryAction.hide()
+            binding.commentGlobalError.setType(GlobalError.SERVER_ERROR)
+        }
+
+        binding.commentGlobalError.setActionClickListener {
+            viewModel.submitAction(CommentAction.RefreshComment)
+        }
     }
 
     fun setEntrySource(source: EntrySource?) {

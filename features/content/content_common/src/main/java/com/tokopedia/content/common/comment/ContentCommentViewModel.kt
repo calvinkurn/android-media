@@ -79,6 +79,11 @@ class ContentCommentViewModel @AssistedInject constructor(
                 _comments.update {
                     it.copy(state = ResultState.Fail(error))
                 }
+                _query.update {
+                    it.copy(
+                        needToRefresh = false,
+                    )
+                }
             }
         }
 
@@ -123,6 +128,11 @@ class ContentCommentViewModel @AssistedInject constructor(
             }) { error ->
                 _comments.update {
                     it.copy(state = ResultState.Fail(error))
+                }
+                _query.update {
+                    it.copy(
+                        needToRefresh = false,
+                    )
                 }
             }
         }
