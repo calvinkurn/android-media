@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flashsale.util.constant
 
 object FlashSaleStatusConstant {
-    const val FLASH_SALE_STATUS_ID_DEFAULT = 0
     const val FLASH_SALE_STATUS_ID_UPCOMING = 1
     const val FLASH_SALE_STATUS_ID_NO_REGISTERED_PRODUCT = 2
     const val FLASH_SALE_STATUS_ID_WAITING_FOR_SELECTION = 3

@@ -39,38 +39,6 @@ class CommonBottomSheetInitializer @Inject constructor(@ApplicationContext priva
         return ArrayList(output)
     }
 
-    private fun getResourceListMultiple(
-        @ArrayRes resId: Int,
-        @ArrayRes contentResId: Int
-    ): ArrayList<MultipleSelectionItem> {
-        val output = getResourceList(resId, contentResId).map {
-            MultipleSelectionItem(it.first, it.second)
-        }
-        return ArrayList(output)
-    }
-
-    fun initSortBottomSheet(selectedItemId: String): SingleSelectionBottomSheet{
-        val items = getResourceListSingle(R.array.sort_items_id, R.array.sort_items)
-        val title = context.getString(R.string.commonbs_sort_title)
-        val actionText = context.getString(R.string.action_apply)
-        val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedItemId, items)
-        return bottomSheet.apply {
-            setBottomSheetTitle(title)
-            setBottomSheetButtonTitle(actionText)
-        }
-    }
-
-    fun initFilterStatusBottomSheet(selectedItemIds: ArrayList<String>): MultipleSelectionBottomSheet{
-        val multipleSelectionItems = getResourceListMultiple(R.array.status_filter_items_id, R.array.status_filter_items)
-        val title = context.getString(R.string.commonbs_status_filter_title)
-        val actionText = context.getString(R.string.action_apply)
-        val bottomSheet = MultipleSelectionBottomSheet.newInstance(selectedItemIds, multipleSelectionItems)
-        return bottomSheet.apply {
-            setBottomSheetTitle(title)
-            setBottomSheetButtonTitle(actionText)
-        }
-    }
-
     fun initFilterCategoryBottomSheet(
         selectedItemIds: List<String>,
         categoryItems: List<Category>
