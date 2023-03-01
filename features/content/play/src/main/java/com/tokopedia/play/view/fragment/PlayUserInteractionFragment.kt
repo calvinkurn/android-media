@@ -1046,7 +1046,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ProductCarouselUiComponent.Event -> onProductCarouselEvent(event)
                     is KebabIconUiComponent.Event -> onKebabIconEvent(event)
                     is CommentIconUiComponent.Event -> onCommentIconEvent(event)
-                    is TaggedProductLabelUiComponent.Event -> onTaggedLabelEvent(event)
+                }
             }
         }
     }
