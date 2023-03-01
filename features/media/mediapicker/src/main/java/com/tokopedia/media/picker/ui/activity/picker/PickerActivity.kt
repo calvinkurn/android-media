@@ -114,6 +114,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         setupParam()
     }
 
+    override fun onResume() {
+        super.onResume()
+        resetVideoRecordingState()
+    }
+
     override fun onBackPressed() {
         if (isOnVideoRecording) return
         super.onBackPressed()
@@ -173,6 +178,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             LAST_MEDIA_SELECTION,
             medias
         )
+    }
+
+    private fun resetVideoRecordingState() {
+        isOnVideoRecording = false
+        viewModel.isOnVideoRecording(isOnVideoRecording)
     }
 
     private fun setupParam() {
