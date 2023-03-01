@@ -12,6 +12,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -25,8 +26,10 @@ import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapp
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.NO_ORDER_QUANTITY
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updateProductCardCarouselItemQuantity
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -41,6 +44,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
+    private val affiliateService: NowAffiliateService,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
@@ -88,14 +92,15 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
 
     private fun updateItemCart(
         miniCartItem: MiniCartItem.MiniCartItemProduct,
-        quantity: Int
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
     ) {
-        miniCartItem.quantity = quantity
         val productId = miniCartItem.productId
         val cartId = miniCartItem.cartId
         val updateCartRequest = UpdateCartRequest(
             cartId = cartId,
-            quantity = miniCartItem.quantity,
+            quantity = quantity,
             notes = miniCartItem.notes
         )
         updateCartUseCase.setParams(
@@ -103,10 +108,12 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
+            checkAtcAffiliateCookie(productId, quantity, stock, isVariant)
             productModels.updateProductCardCarouselItemQuantity(
                 productId = productId,
                 quantity = quantity
             )
+            updateMiniCartItemQuantity(miniCartItem, quantity)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -218,15 +225,19 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         quantity: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
+        val productId = product.productCardModel.productId
+        val stock = product.productCardModel.availableStock
+        val isVariant = product.productCardModel.isVariant
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = product.productCardModel.productId,
+            productId = productId,
             shopId = shopId,
             quantity = quantity
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            checkAtcAffiliateCookie(productId, quantity, stock, isVariant)
             productModels.updateProductCardCarouselItemQuantity(
-                productId = product.productCardModel.productId,
+                productId = productId,
                 quantity = quantity
             )
             _atcDataTracker.postValue(
@@ -246,16 +257,24 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     fun addProductToCart(
         position: Int,
         quantity: Int,
-        shopId: String
+        shopId: String,
+        isVariant: Boolean
     ) {
         if (productModels.size > position && productModels[position] is TokoNowProductCardCarouselItemUiModel) {
             val product = productModels[position] as TokoNowProductCardCarouselItemUiModel
             val miniCartItem = getMiniCartItem(product.productCardModel.productId)
+            val stock = product.productCardModel.availableStock
+
             when {
-                miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
-                miniCartItem == null -> addItemToCart(position, shopId, quantity, product)
-                quantity.isZero() -> removeItemCart(miniCartItem)
-                else -> updateItemCart(miniCartItem, quantity)
+                miniCartItem == null && quantity.isMoreThanZero() -> {
+                    addItemToCart(position, shopId, quantity, product)
+                }
+                miniCartItem != null && !quantity.isZero() -> {
+                    updateItemCart(miniCartItem, quantity, stock, isVariant)
+                }
+                miniCartItem != null && quantity.isZero() -> {
+                    removeItemCart(miniCartItem)
+                }
             }
         }
     }
@@ -279,6 +298,30 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     fun updateProductRecommendation(requestParam: GetRecommendationRequestParam) {
         if (job != null && requestParam.pageName in productRecommendationPageNames) {
             getRecommendationCarousel(requestParam)
+        }
+    }
+
+    private fun updateMiniCartItemQuantity(
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
+        quantity: Int
+    ) {
+        miniCartItem.quantity = quantity
+    }
+
+    private fun checkAtcAffiliateCookie(
+        productId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
+        val miniCartItem = getMiniCartItem(productId)
+        val currentQuantity = miniCartItem?.quantity.orZero()
+        val data = NowAffiliateAtcData(productId, stock, isVariant, quantity, currentQuantity)
+
+        launchCatchError(block = {
+            affiliateService.checkAtcAffiliateCookie(data)
+        }) {
+
         }
     }
 }

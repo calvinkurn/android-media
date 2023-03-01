@@ -29,6 +29,8 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
@@ -106,6 +108,10 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var playWidgetTools: PlayWidgetTools
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
+    @RelaxedMockK
+    lateinit var affiliateService: NowAffiliateService
+    @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -137,6 +143,8 @@ abstract class TokoNowHomeViewModelTestFixture {
                 referralEvaluateJoinUseCase,
                 playWidgetTools,
                 userSession,
+                affiliateService,
+                addressData,
                 CoroutineTestDispatchersProvider
         )
     }
@@ -147,12 +155,12 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyMiniCartResponseSuccess(expectedResponse: MiniCartSimplifiedData) {
-        val actualResponse = viewModel.miniCart.value
+        val actualResponse = viewModel.getMiniCart.value
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
     protected fun verifyMiniCartNullResponse() {
-        val actualResponse = viewModel.miniCart.value
+        val actualResponse = viewModel.getMiniCart.value
         Assert.assertNull(actualResponse)
     }
 
@@ -195,7 +203,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyMiniCartFail() {
-        val actualResponse = viewModel.miniCart.value
+        val actualResponse = viewModel.getMiniCart.value
         Assert.assertTrue(actualResponse is Fail)
     }
 

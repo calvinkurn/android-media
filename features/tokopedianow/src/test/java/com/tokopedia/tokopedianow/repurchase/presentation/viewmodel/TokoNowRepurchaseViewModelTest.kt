@@ -485,7 +485,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         verifyGetMiniCartUseCaseCalled()
 
-        viewModel.miniCart
+        viewModel.getMiniCart
             .verifySuccessEquals(Success(response))
     }
 
@@ -501,7 +501,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         verifyGetMiniCartUseCaseCalled()
 
-        viewModel.miniCart
+        viewModel.getMiniCart
             .verifySuccessEquals(Success(response))
     }
 
@@ -516,7 +516,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         verifyGetMiniCartUseCaseCalled()
 
-        viewModel.miniCart
+        viewModel.getMiniCart
             .verifyErrorEquals(Fail(error))
     }
 
@@ -531,7 +531,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         verifyGetMiniCartUseCaseCalled()
 
-        viewModel.miniCart
+        viewModel.getMiniCart
             .verifyErrorEquals(Fail(error))
     }
 
@@ -640,7 +640,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
 
         verifyAddToCartUseCaseCalled()
 
@@ -676,7 +676,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartError)
 
         viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
 
         verifyAddToCartUseCaseCalled()
 
@@ -714,7 +714,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId2, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId2, quantity, type, shopId, 0, false)
 
         verifyAddToCartUseCaseCalled()
 
@@ -771,7 +771,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId3, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId3, quantity, type, shopId, 0, false)
 
         verifyAddToCartUseCaseCalled()
 
@@ -811,7 +811,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.getLayoutData()
         viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
 
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
@@ -855,7 +855,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.getLayoutData()
         viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
 
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
@@ -896,7 +896,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.getLayoutData()
         viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
 
         verifyGetMiniCartUseCaseCalled()
         verifyUpdateCartUseCaseCalled()
@@ -940,7 +940,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.getLayoutData()
         viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
 
         verifyGetMiniCartUseCaseCalled()
         verifyUpdateCartUseCaseCalled()
@@ -981,7 +981,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.getLayoutData()
         viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
 
         verifyGetMiniCartUseCaseCalled()
 

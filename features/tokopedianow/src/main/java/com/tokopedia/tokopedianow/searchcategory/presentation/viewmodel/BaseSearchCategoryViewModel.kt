@@ -33,6 +33,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -56,12 +57,14 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -123,6 +126,7 @@ abstract class BaseSearchCategoryViewModel(
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
+    private val affiliateService: NowAffiliateService,
     protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
     companion object {
@@ -277,6 +281,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun isABTestNavigationRevamp() = true
 
     open fun onViewCreated(source: MiniCartSource? = null) {
+        initAffiliateCookie()
         processLoadDataPage(source)
     }
 
@@ -1128,17 +1133,21 @@ abstract class BaseSearchCategoryViewModel(
         val productId = productItem.productCardModel.productId
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
+        val stock = productItem.productCardModel.availableStock
+        val isVariant = productItem.productCardModel.isVariant
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
             quantity = quantity,
             onSuccessAddToCart = {
+                checkAtcAffiliateCookie(productId, quantity, stock, isVariant)
                 addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 sendAddToCartTracking(quantity, it.data.cartId, productItem)
                 onAddToCartSuccess(productItem, it.data.quantity)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = {
+                checkAtcAffiliateCookie(productId, quantity, stock, isVariant)
                 sendTrackingUpdateQuantity(quantity, productItem)
                 onAddToCartSuccess(productItem, quantity)
                 updateToolbarNotification()
@@ -1408,4 +1417,32 @@ abstract class BaseSearchCategoryViewModel(
             val aceSearchProductData: SearchProductData = SearchProductData(),
             val repurchaseWidget: RepurchaseData = RepurchaseData()
     )
+
+    private fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
+        launchCatchError(block = {
+            affiliateService.initAffiliateCookie(
+                affiliateUuid,
+                affiliateChannel
+            )
+        }) {
+
+        }
+    }
+
+    private fun checkAtcAffiliateCookie(
+        productId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
+        val miniCartItem = cartService.getMiniCartItem(productId)
+        val currentQuantity = miniCartItem?.quantity.orZero()
+        val data = NowAffiliateAtcData(productId, stock, isVariant, quantity, currentQuantity)
+
+        launchCatchError(block = {
+            affiliateService.checkAtcAffiliateCookie(data)
+        }) {
+
+        }
+    }
 }

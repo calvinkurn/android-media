@@ -16,6 +16,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -45,6 +46,9 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
+
+    @RelaxedMockK
+    lateinit var affiliateService: NowAffiliateService
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -217,6 +221,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
+            affiliateService = affiliateService,
             userSession = userSession,
             dispatchers = CoroutineTestDispatchers
         )

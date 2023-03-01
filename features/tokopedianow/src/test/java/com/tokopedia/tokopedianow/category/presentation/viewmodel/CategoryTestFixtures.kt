@@ -13,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
@@ -51,6 +52,7 @@ open class CategoryTestFixtures {
     protected val getCategoryListUseCase = mockk<GetCategoryListUseCase>(relaxed = true)
     protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
+    protected val affiliateService = mockk<NowAffiliateService>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }
@@ -98,6 +100,7 @@ open class CategoryTestFixtures {
             getCategoryListUseCase,
             setUserPreferenceUseCase,
             chooseAddressWrapper,
+            affiliateService,
             userSession,
         )
     }

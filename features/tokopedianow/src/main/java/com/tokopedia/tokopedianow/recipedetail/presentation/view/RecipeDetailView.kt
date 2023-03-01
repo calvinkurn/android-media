@@ -8,8 +8,20 @@ interface RecipeDetailView {
 
     fun showChooseAddressBottomSheet()
     fun deleteCartItem(productId: String)
-    fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
-    fun addItemToCart(productId: String, shopId: String, quantity: Int)
+    fun onQuantityChanged(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    )
+    fun addItemToCart(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    )
     fun getFragmentActivity(): FragmentActivity?
     fun getProductTracker(): RecipeProductAnalytics
     fun getTracker(): RecipeDetailAnalytics

@@ -96,7 +96,9 @@ class RecipeProductViewHolder(
                     listener?.addItemToCart(
                         productId = product.id,
                         shopId = product.shopId,
-                        quantity = product.minOrder
+                        quantity = product.minOrder,
+                        isVariant = product.isVariant,
+                        stock = product.stock
                     )
                     analytics?.trackClickAddToCart(product)
                 }
@@ -210,7 +212,13 @@ class RecipeProductViewHolder(
 
     private fun onQuantityChanged(product: RecipeProductUiModel) {
         val input = binding?.quantityEditor?.getValue().orZero()
-        listener?.onQuantityChanged(product.id, product.shopId, input)
+        listener?.onQuantityChanged(
+            product.id,
+            product.shopId,
+            input,
+            product.stock,
+            product.isVariant
+        )
     }
 
     private fun onEditorAction(product: RecipeProductUiModel) {
@@ -229,7 +237,19 @@ class RecipeProductViewHolder(
 
     interface RecipeProductListener {
         fun deleteCartItem(productId: String)
-        fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
-        fun addItemToCart(productId: String, shopId: String, quantity: Int)
+        fun onQuantityChanged(
+            productId: String,
+            shopId: String,
+            quantity: Int,
+            stock: Int,
+            isVariant: Boolean
+        )
+        fun addItemToCart(
+            productId: String,
+            shopId: String,
+            quantity: Int,
+            stock: Int,
+            isVariant: Boolean
+        )
     }
 }

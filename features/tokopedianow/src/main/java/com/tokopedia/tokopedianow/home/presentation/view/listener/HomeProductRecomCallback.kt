@@ -84,6 +84,8 @@ class HomeProductRecomCallback(
                 productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {

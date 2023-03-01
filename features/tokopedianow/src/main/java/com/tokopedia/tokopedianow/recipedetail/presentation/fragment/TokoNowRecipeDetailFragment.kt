@@ -121,9 +121,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         setRecipeData()
         setupToolbarHeader()
         setupRecyclerView()
-        updateAddressData()
         observeLiveData()
-        checkAddressData()
+        onViewCreated()
     }
 
     override fun onAttach(context: Context) {
@@ -152,17 +151,29 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         viewModel.getMiniCart()
     }
 
-    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun onQuantityChanged(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         if(userSession.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }
     }
 
-    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+    override fun addItemToCart(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         if(userSession.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity)
+            viewModel.addItemToCart(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }
@@ -554,8 +565,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         analytics.trackClickSeeAddToCartToaster()
     }
 
-    private fun checkAddressData() {
-        viewModel.checkAddressData()
+    private fun onViewCreated() {
+        viewModel.onViewCreated()
     }
 
     private fun showLoading() {

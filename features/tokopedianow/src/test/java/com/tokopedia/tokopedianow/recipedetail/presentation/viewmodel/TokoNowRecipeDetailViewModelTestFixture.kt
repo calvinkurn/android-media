@@ -7,6 +7,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
@@ -48,6 +49,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
+    private lateinit var affiliateService: NowAffiliateService
 
     protected lateinit var viewModel: TokoNowRecipeDetailViewModel
 
@@ -63,6 +65,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
         updateCartUseCase = mockk(relaxed = true)
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
+        affiliateService = mockk(relaxed = true)
 
         viewModel = TokoNowRecipeDetailViewModel(
             getRecipeUseCase,
@@ -75,6 +78,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
+            affiliateService,
             coroutineTestRule.dispatchers
         )
     }

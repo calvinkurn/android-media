@@ -198,6 +198,8 @@ class TokoNowHomeFragment : Fragment(),
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val WHILE_SCROLLING_VERTICALLY = 1
+        private const val PARAM_AFFILIATE_UUID = "aff_unique_id"
+        private const val PARAM_AFFILIATE_CHANNEL = "channel"
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -337,6 +339,7 @@ class TokoNowHomeFragment : Fragment(),
         switchServiceOrLoadLayout()
         initScreenShotDetector()
         getDialogReceiverReferral()
+        initAffiliateCookie()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -444,11 +447,13 @@ class TokoNowHomeFragment : Fragment(),
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(
-                data.channelId,
-                data.productId,
-                quantity,
-                data.shopId,
-                data.type
+                channelId = data.channelId,
+                productId = data.productId,
+                quantity = quantity,
+                shopId = data.shopId,
+                stock = data.stock,
+                isVariant = data.isVariant(),
+                type = data.type
             )
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -960,7 +965,7 @@ class TokoNowHomeFragment : Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.miniCart) {
+        observe(viewModelTokoNow.getMiniCart) {
             if (it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
@@ -1909,6 +1914,13 @@ class TokoNowHomeFragment : Fragment(),
         if (!(referralCode.isNullOrEmpty())) {
             viewModelTokoNow.getReceiverHomeDialog(referralCode)
         }
+    }
+
+    private fun initAffiliateCookie() {
+        val uri = activity?.intent?.data
+        val affiliateUuid = uri?.getQueryParameter(PARAM_AFFILIATE_UUID).orEmpty()
+        val affiliateChannel = uri?.getQueryParameter(PARAM_AFFILIATE_CHANNEL).orEmpty()
+        viewModelTokoNow.initAffiliateCookie(affiliateUuid, affiliateChannel)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

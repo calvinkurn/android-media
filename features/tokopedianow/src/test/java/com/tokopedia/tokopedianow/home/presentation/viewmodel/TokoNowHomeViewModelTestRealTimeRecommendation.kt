@@ -79,7 +79,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
 
         val productList = listOf(
             TokoNowProductCardCarouselItemUiModel(
@@ -236,8 +236,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, "2", 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
-        viewModel.addProductToCart(channelId, "5", 2, "1", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, "2", 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, "5", 2, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
 
         val productList = listOf(
             TokoNowProductCardCarouselItemUiModel(
@@ -407,7 +407,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
 
         onGetRecommendation_thenReturn(emptyRtrWidgetListResponse)
 
@@ -559,7 +559,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, productId, 1, "5", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
 
         val productList = listOf(
             TokoNowProductCardCarouselItemUiModel(
@@ -672,7 +672,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, productId, 1, "1", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
 
         verifyGetRealTimeRecommendationCalled(
             pageName = rtrPageName,
@@ -731,7 +731,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart(channelId, productId, 1, "5", TokoNowLayoutType.PRODUCT_RECOM)
+        viewModel.addProductToCart(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
         viewModel.removeRealTimeRecommendation(channelId, TokoNowLayoutType.PRODUCT_RECOM)
 
         val productList = listOf(
@@ -833,9 +833,12 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
     @Test
     fun `given empty channelId when addProductToCart should NOT call get recommendation use case`() {
         viewModel.addProductToCart(
+            channelId = "",
             productId = "2",
             quantity = 1,
             shopId = "5",
+            stock =  0,
+            isVariant = false,
             type = TokoNowLayoutType.PRODUCT_RECOM
         )
 

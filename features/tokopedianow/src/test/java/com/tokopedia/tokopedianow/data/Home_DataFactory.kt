@@ -459,13 +459,14 @@ fun createHomeProductCardUiModel(
     productId: String = "",
     shopId: String = "",
     quantity: Int = 0,
+    stock: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
     @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
     position: Int = 0,
     headerName: String = ""
 ): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, parentId, product, type, position, headerName)
+    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, stock, parentId, product, type, position, headerName)
 }
 
 fun createLocalCacheModel(

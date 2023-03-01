@@ -39,7 +39,14 @@ class RepurchaseProductCardListener(
 
     override fun onAddToCartNonVariant(item: RepurchaseProductUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
-            viewModel.onClickAddToCart(item.productCardModel.productId, quantity, PRODUCT_REPURCHASE, item.shopId)
+            viewModel.onClickAddToCart(
+                item.productCardModel.productId,
+                quantity,
+                PRODUCT_REPURCHASE,
+                item.shopId,
+                item.productCardModel.availableStock,
+                item.productCardModel.isVariant
+            )
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }

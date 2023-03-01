@@ -51,6 +51,8 @@ class HomeLeftCarouselAtcCallback(
                 productId = product.id.orEmpty(),
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
             )
         } else {

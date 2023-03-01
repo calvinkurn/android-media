@@ -94,17 +94,29 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         viewModel.deleteCartItem(productId, cartId)
     }
 
-    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun onQuantityChanged(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         if(viewModel.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }
     }
 
-    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+    override fun addItemToCart(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         if(viewModel.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity)
+            viewModel.addItemToCart(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }

@@ -45,11 +45,13 @@ object HomeRepurchaseMapper {
         miniCartData: MiniCartSimplifiedData? = null
     ): List<TokoNowProductCardUiModel> {
         return response.products.mapIndexed { index, repurchaseProduct ->
+            repurchaseProduct.stock
             TokoNowProductCardUiModel(
                 channelId,
                 repurchaseProduct.id,
                 repurchaseProduct.shop.id,
                 repurchaseProduct.maxOrder,
+                repurchaseProduct.stock,
                 repurchaseProduct.parentProductId,
                 createProductCardModel(repurchaseProduct, miniCartData),
                 TokoNowLayoutType.REPURCHASE_PRODUCT,

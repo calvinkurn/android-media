@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
@@ -31,6 +32,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    affiliateService: NowAffiliateService,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
@@ -38,6 +40,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
     addressData,
     userSession,
     dispatchers
@@ -62,6 +65,12 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
         super.setMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
+    }
+
+    fun onViewCreated(productList: List<SimilarProductUiModel>) {
+        initAffiliateCookie()
+        addVisitableItems(productList)
+        setMiniCartData()
     }
 
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
@@ -95,22 +104,23 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         return tokonowQueryParam
     }
 
-    fun onViewCreated(productList: List<SimilarProductUiModel>) {
-        layoutItemList.addAll(productList)
-
-        miniCartData?.let {
-            setMiniCartData(it)
-        }
-
-        _visitableItems.postValue(layoutItemList)
-    }
-
     fun getSimilarProductList(productIds: String){
         launchCatchError( block = {
             val response = getSimilarProductUseCase.execute(userId.toIntOrZero(), productIds, appendChooseAddressParams())
             _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation.orEmpty())
         }, onError = {
-        })
 
+        })
+    }
+
+    private fun addVisitableItems(productList: List<SimilarProductUiModel>) {
+        layoutItemList.addAll(productList)
+        _visitableItems.postValue(layoutItemList)
+    }
+
+    private fun setMiniCartData() {
+        miniCartData?.let {
+            setMiniCartData(it)
+        }
     }
 }

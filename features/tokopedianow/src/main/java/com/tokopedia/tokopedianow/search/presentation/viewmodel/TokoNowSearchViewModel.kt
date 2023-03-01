@@ -11,6 +11,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addSuggestionDataView
@@ -30,7 +31,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.usecase.coroutines.UseCase
@@ -42,11 +42,11 @@ import javax.inject.Named
 class TokoNowSearchViewModel @Inject constructor (
     baseDispatcher: CoroutineDispatchers,
     @Named(SEARCH_QUERY_PARAM_MAP)
-        queryParamMap: Map<String, String>,
+    queryParamMap: Map<String, String>,
     @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
-        private val getSearchFirstPageUseCase: UseCase<SearchModel>,
+    private val getSearchFirstPageUseCase: UseCase<SearchModel>,
     @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
-        private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
+    private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
     getFilterUseCase: UseCase<DynamicFilterModel>,
     getProductCountUseCase: UseCase<String>,
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
@@ -54,7 +54,7 @@ class TokoNowSearchViewModel @Inject constructor (
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
-    abTestPlatformWrapper: ABTestPlatformWrapper,
+    affiliateService: NowAffiliateService,
     userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
     baseDispatcher,
@@ -66,6 +66,7 @@ class TokoNowSearchViewModel @Inject constructor (
     getWarehouseUseCase,
     setUserPreferenceUseCase,
     chooseAddressWrapper,
+    affiliateService,
     userSession,
 ) {
     companion object {

@@ -10,6 +10,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
@@ -23,7 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,8 +44,9 @@ class TokoNowSimilarProductViewModelTest {
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
     private lateinit var chooseAddressWrapper: ChooseAddressWrapper
     private lateinit var chooseAddressData: LocalCacheModel
+    private lateinit var affiliateService: NowAffiliateService
 
-    protected lateinit var viewModel: TokoNowSimilarProductViewModel
+    private lateinit var viewModel: TokoNowSimilarProductViewModel
 
     @Before
     fun setUp() {
@@ -57,6 +59,7 @@ class TokoNowSimilarProductViewModelTest {
         getSimilarProductUseCase = mockk(relaxed = true)
         chooseAddressWrapper = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
+        affiliateService = mockk(relaxed = true)
 
         viewModel = TokoNowSimilarProductViewModel(
             getSimilarProductUseCase,
@@ -66,6 +69,7 @@ class TokoNowSimilarProductViewModelTest {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
+            affiliateService,
             addressData,
             CoroutineTestDispatchers
         )
@@ -82,6 +86,7 @@ class TokoNowSimilarProductViewModelTest {
     @Test
     fun `get similar products list success`(){
         val recommendationItem = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem(
+            "",
             "",
             "",
             ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", 0),
@@ -221,6 +226,7 @@ class TokoNowSimilarProductViewModelTest {
             name = "kaos testing 112",
             quantity = quantity,
             stock = 7,
+            isVariant = false,
             minOrder = 1,
             maxOrder = 7,
             priceFmt = "Rp150",

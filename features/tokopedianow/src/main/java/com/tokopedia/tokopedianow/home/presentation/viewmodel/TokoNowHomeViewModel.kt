@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -13,6 +12,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -21,12 +21,12 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -43,6 +43,8 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
@@ -133,8 +135,19 @@ class TokoNowHomeViewModel @Inject constructor(
     private val referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val userSession: UserSessionInterface,
+    affiliateService: NowAffiliateService,
+    addressData: TokoNowLocalAddress,
     private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+) : BaseTokoNowViewModel(
+    addToCartUseCase,
+    updateCartUseCase,
+    deleteCartUseCase,
+    getMiniCartUseCase,
+    affiliateService,
+    addressData,
+    userSession,
+    dispatchers
+) {
 
     companion object {
         private const val DEFAULT_INDEX = 1
@@ -146,7 +159,7 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _homeLayoutList
     val keywordSearch: LiveData<SearchPlaceholder>
         get() = _keywordSearch
-    val miniCart: LiveData<Result<MiniCartSimplifiedData>>
+    val getMiniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
@@ -196,7 +209,6 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
-    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
     private var headerYCoordinate = 0f
@@ -259,7 +271,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutResponse,
                 hasTickerBeenRemoved,
                 removeAbleWidgets,
-                miniCartSimplifiedData,
+                miniCartData,
                 localCacheModel,
                 userSession.isLoggedIn
             )
@@ -303,7 +315,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
                     removeAbleWidgets,
-                    miniCartSimplifiedData,
+                    miniCartData,
                     localCacheModel
                 )
 
@@ -379,20 +391,23 @@ class TokoNowHomeViewModel @Inject constructor(
         productId: String,
         quantity: Int,
         shopId: String,
+        stock: Int,
+        isVariant: Boolean,
         @TokoNowLayoutType type: String
     ) {
         val miniCartItem = getMiniCartItem(productId)
-        when {
-            miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
-            miniCartItem == null -> addItemToCart(channelId, productId, shopId, quantity, type)
-            quantity.isZero() -> removeItemCart(miniCartItem, type)
-            else -> updateItemCart(miniCartItem, quantity, type)
-        }
-    }
 
-    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
-        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
-        return items.getMiniCartItemProduct(productId)
+        when {
+            miniCartItem == null && quantity.isMoreThanZero() -> {
+                addItemToCart(channelId, productId, quantity, shopId, stock, isVariant, type)
+            }
+            miniCartItem != null && !quantity.isZero() -> {
+                updateItemCart(miniCartItem, quantity, stock, isVariant, type)
+            }
+            miniCartItem != null && quantity.isZero() -> {
+                removeItemCart(miniCartItem, type)
+            }
+        }
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
@@ -662,7 +677,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val response = getRepurchaseWidgetUseCase.execute(warehouseId)
             if (response.products.isNotEmpty()) {
-                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartSimplifiedData)
+                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartData)
             } else {
                 homeLayoutItemList.removeItem(item.id)
             }
@@ -792,8 +807,10 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun addItemToCart(
         channelId: String,
         productId: String,
-        shopId: String,
         quantity: Int,
+        shopId: String,
+        stock: Int,
+        isVariant: Boolean,
         @TokoNowLayoutType type: String
     ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
@@ -803,6 +820,7 @@ class TokoNowHomeViewModel @Inject constructor(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
             trackProductAddToCart(productId, quantity, type, it.data.cartId)
             updateAddToCartQuantity(productId, quantity, type)
             checkRealTimeRecommendation(channelId, productId, type)
@@ -888,7 +906,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.mapRealTimeRecommendation(
                     channelId,
                     recommendationWidgets.first(),
-                    miniCartSimplifiedData,
+                    miniCartData,
                     type
                 )
             } else {
@@ -953,15 +971,16 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun updateItemCart(
         miniCartItem: MiniCartItem.MiniCartItemProduct,
         quantity: Int,
+        stock: Int,
+        isVariant: Boolean,
         @TokoNowLayoutType type: String
     ) {
-        miniCartItem.quantity = quantity
         val cartId = miniCartItem.cartId
         val productId = miniCartItem.productId
 
         val updateCartRequest = UpdateCartRequest(
             cartId = cartId,
-            quantity = miniCartItem.quantity,
+            quantity = quantity,
             notes = miniCartItem.notes
         )
         updateCartUseCase.setParams(
@@ -969,8 +988,10 @@ class TokoNowHomeViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
+            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
             trackProductUpdateCart(productId, quantity, type, cartId)
             updateAddToCartQuantity(productId, quantity, type)
+            updateMiniCartItemQuantity(miniCartItem, quantity)
             updateToolbarNotification()
             _miniCartUpdate.value = Success(it)
         }, {
@@ -997,7 +1018,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
-        setMiniCartSimplifiedData(miniCart)
+        setMiniCartData(miniCart)
         updateProductQuantity(miniCart)
     }
 
@@ -1005,10 +1026,6 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.updateRepurchaseProductQuantity(miniCart)
         homeLayoutItemList.updateProductRecomQuantity(miniCart)
         homeLayoutItemList.updateLeftCarouselProductQuantity(miniCart)
-    }
-
-    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
-        miniCartSimplifiedData = miniCart
     }
 
     private fun trackProductAddToCart(

@@ -199,6 +199,7 @@ class TokoNowRepurchaseFragment:
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
+        initAffiliateCookie()
 
         viewModel.showLoading()
     }
@@ -519,7 +520,7 @@ class TokoNowRepurchaseFragment:
             addScrollListeners()
         }
 
-        observe(viewModel.miniCart) {
+        observe(viewModel.getMiniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
@@ -860,6 +861,10 @@ class TokoNowRepurchaseFragment:
                 }
             }
         }
+    }
+
+    private fun initAffiliateCookie() {
+        viewModel.initAffiliateCookie()
     }
 
     private fun submitList(data: RepurchaseLayoutUiModel) {

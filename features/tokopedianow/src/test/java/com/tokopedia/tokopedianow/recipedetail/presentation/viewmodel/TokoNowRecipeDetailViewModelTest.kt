@@ -170,6 +170,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
                 name = "kaos testing 112",
                 quantity = 5,
                 stock = 7,
+                isVariant = false,
                 minOrder = 1,
                 maxOrder = 7,
                 priceFmt = "Rp150",

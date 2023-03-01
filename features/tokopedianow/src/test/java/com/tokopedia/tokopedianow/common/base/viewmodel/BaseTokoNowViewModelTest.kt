@@ -8,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,11 +28,12 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
+            val stock = 0
             val addToCartResponse = AddToCartDataModel()
 
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -47,11 +49,12 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
+            val stock = 0
             val addToCartError = NullPointerException()
 
             onAddToCart_thenReturn(addToCartError)
 
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -67,6 +70,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             val productId = "1"
             val quantity = 0
             val shopId = "5"
+            val stock = 0
             val warehouseId = 5L
 
             val miniCartItems = mapOf(
@@ -85,7 +89,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -102,6 +106,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             val productId = "1"
             val quantity = 0
             val shopId = "5"
+            val stock = 0
             val warehouseId = 7L
 
             val removeItemCartError = NullPointerException()
@@ -121,7 +126,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -138,6 +143,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
+            val stock = 0
             val warehouseId = 1L
 
             val updateCartResponse = UpdateCartV2Data()
@@ -157,7 +163,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -174,6 +180,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
+            val stock = 0
             val warehouseId = 5L
 
             val updateCartError = NullPointerException()
@@ -193,7 +200,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -208,8 +215,9 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
     fun `given product not found in miniCartItems when onQuantityChanged should add product to cart`() {
         coroutineTestRule.runBlockingTest {
             val productId = "1"
-            val quantity = 0
+            val quantity = 1
             val shopId = "5"
+            val stock = 0
             val warehouseId = 9L
 
             val addToCartResponse = AddToCartDataModel()
@@ -229,7 +237,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -241,11 +249,49 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
     }
 
     @Test
-    fun `given onQuantityChanged called twice when add to cart should call use case once`() {
+    fun `given quantity 0 when add to cart should not call add to cart use case`() {
         coroutineTestRule.runBlockingTest {
             val productId = "1"
             val quantity = 0
             val shopId = "5"
+            val stock = 0
+            val warehouseId = 9L
+
+            val addToCartResponse = AddToCartDataModel()
+            val miniCartItems = mapOf(
+                MiniCartItemKey("5") to MiniCartItem.MiniCartItemProduct(
+                    productId = "5",
+                    quantity = 1
+                )
+            )
+            val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+            onGetShopId_thenReturn(shopId.toLong())
+            onGetWarehouseId_thenReturn(warehouseId)
+            onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+
+            onAddToCart_thenReturn(addToCartResponse)
+            onGetMiniCart_thenReturn(miniCartResponse)
+
+            viewModel.getMiniCart()
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
+
+            verifyGetMiniCartUseCaseCalled()
+            verifyGetMiniCartUseCaseNotCalled()
+
+            viewModel.addItemToCart
+                .verifyValueEquals(null)
+        }
+    }
+
+    @Test
+    fun `given onQuantityChanged called twice when add to cart should call use case once`() {
+        coroutineTestRule.runBlockingTest {
+            val productId = "1"
+            val quantity = 1
+            val shopId = "5"
+            val stock = 0
             val warehouseId = 3L
 
             val addToCartResponse = AddToCartDataModel()
@@ -265,8 +311,8 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity)
-            viewModel.onQuantityChanged(productId, shopId, quantity)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
+            viewModel.onQuantityChanged(productId, shopId, quantity, stock, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()

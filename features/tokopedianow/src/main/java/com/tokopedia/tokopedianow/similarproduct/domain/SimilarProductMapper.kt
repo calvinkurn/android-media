@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.similarproduct.domain
 
 import com.tokopedia.tokopedianow.common.util.NumberFormatter
+import com.tokopedia.tokopedianow.common.util.VariantUtil.isVariant
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
@@ -12,12 +13,15 @@ object SimilarProductMapper {
             product.price?.let { price ->
                 product.imageUrl?.let { imageUrl ->
                     product.categoryBreadcrumbs?.let { categoryName ->
+                        val parentID = product.parentID
+
                         SimilarProductUiModel(
                             id = product.id.toString(),
                             shopId = product.shop?.id.toString(),
                             shopName = product.shop?.name.toString(),
                             name = product.name.toString(),
                             stock = stock,
+                            isVariant = isVariant(parentID),
                             minOrder = product.minOrder,
                             maxOrder = product.maxOrder,
                             priceFmt = price,
