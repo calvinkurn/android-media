@@ -141,7 +141,7 @@ class AddressListBottomSheet(
     private fun initAddressTicker(context: Context) {
         launch {
             try {
-                val param = GetTargetedTickerParam(page = "todo", target = listOf())
+                val param = GetTargetedTickerParam(page = GetTargetedTickerParam.ADDRESS_LIST_OCC, target = listOf())
                 val response = getTargetedTicker(param)
                 val model = response.getTargetedTickerData.toUiModel()
                 binding?.tickerOccAddressList?.renderTargetedTickerView(
