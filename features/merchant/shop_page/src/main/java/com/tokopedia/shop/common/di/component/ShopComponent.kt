@@ -12,7 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.data.source.cloud.api.ShopApi
+// import com.tokopedia.shop.common.data.source.cloud.api.ShopApi
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseTopContentQualifier
@@ -36,7 +36,8 @@ import javax.inject.Named
 interface ShopComponent {
     @get:ApplicationContext
     val context: Context
-    val shopApi: ShopApi
+
+//    val shopApi: ShopApi
     val abstractionRouter: AbstractionRouter
     fun retrofitBuilder(): Retrofit.Builder
     fun gson(): Gson
