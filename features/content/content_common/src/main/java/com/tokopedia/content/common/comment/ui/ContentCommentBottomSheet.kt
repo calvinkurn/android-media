@@ -10,37 +10,37 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.content.common.comment.ContentCommentFactory
-import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlin.math.roundToInt
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.CommentAction
+import com.tokopedia.content.common.comment.ContentCommentFactory
 import com.tokopedia.content.common.comment.ContentCommentViewModel
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 09/02/23
  */
 class ContentCommentBottomSheet @Inject constructor(
     factory: ContentCommentFactory.Creator,
-    private val router: Router,
+    private val router: Router
 ) : BottomSheetUnify(), CommentViewHolder.Item.Listener, CommentViewHolder.Expandable.Listener {
 
     private var _binding: FragmentContentCommentBottomSheetBinding? = null
@@ -115,7 +115,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         commentAdapter.setItemsAndAnimateChanges(getCommentShimmering)
                     }
                     is ResultState.Fail -> {
-                        showError(true)
+                        showError(true, throwable = it.state.error)
                     }
                 }
             }
@@ -156,11 +156,11 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel) {
-        //TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     override fun onLongClicked(item: CommentUiModel) {
-        //TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
@@ -208,7 +208,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): ContentCommentBottomSheet {
             return fragmentManager.findFragmentByTag(TAG) as? ContentCommentBottomSheet
                 ?: fragmentManager.fragmentFactory.instantiate(
