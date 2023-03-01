@@ -232,6 +232,7 @@ public interface CMConstant {
     interface CustomValuesKeys {
         String COUPON_CODE = "coupon_code";
         String GRATIFICATION_ID = "gratificationId";
+        String TOKOCHAT_PN_ID = "tokochat_pn_id";
     }
 
     interface TimberTags {

@@ -48,6 +48,8 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
+import com.tokopedia.media.editor.utils.getRunnable
+import com.tokopedia.media.editor.utils.checkBitmapSizeOverflow
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -261,7 +263,7 @@ class DetailEditorFragment @Inject constructor(
                             if (removeBackgroundRetryLimit == 0) {
                                 removeBgClosePage()
                             } else {
-                                Handler().postDelayed({
+                                Handler().postDelayed(getRunnable {
                                     onRemoveBackgroundClicked(removeBackgroundType)
                                 }, DELAY_REMOVE_BG_TOASTER)
                             }
@@ -341,21 +343,21 @@ class DetailEditorFragment @Inject constructor(
             }
 
             // waiting for crop & rotate state implementation process for AddLogo overlay size
-            it.postDelayed({
+            it.postDelayed(getRunnable {
                 setOverlaySize(
                     Pair(
                         it.overlayView.cropViewRect.width(),
                         it.overlayView.cropViewRect.height()
                     )
                 )
-            },DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE)
+            }, DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE)
         }
     }
 
     override fun onLogoChosen(bitmap: Bitmap) {
         viewBinding?.imgPreviewOverlay?.apply {
             show()
-            setImageBitmap(bitmap)
+            setImageBitmap(validateImageSize(bitmap))
             isEdited = true
         }
     }
@@ -403,7 +405,7 @@ class DetailEditorFragment @Inject constructor(
         viewModel.brightnessFilter.observe(viewLifecycleOwner) { colorFilter ->
             getImageView()?.let {
                 val bitmap = implementedBaseBitmap ?: it.drawable.toBitmap()
-                val fastBitmapDrawable = FastBitmapDrawable(bitmap)
+                val fastBitmapDrawable = FastBitmapDrawable(validateImageSize(bitmap))
                 fastBitmapDrawable.colorFilter = colorFilter
 
                 val tempCanvas = Canvas(fastBitmapDrawable.bitmap)
@@ -609,7 +611,7 @@ class DetailEditorFragment @Inject constructor(
 
             // if crop state is not produce from auto crop on beginning of landing page
             if (!cropRotateData.isAutoCrop) {
-                cropView.postDelayed({
+                cropView.postDelayed(getRunnable {
                     val cropImageMatrix = cropView.imageMatrix.values()
                     val deltaX = (cropImageMatrix[2] * -1) + cropRotateData.translateX
                     val deltaY = (cropImageMatrix[5] * -1) + cropRotateData.translateY
@@ -652,7 +654,7 @@ class DetailEditorFragment @Inject constructor(
 
             cropView.setImageToWrapCropBounds(false)
 
-            cropView.postDelayed({
+            cropView.postDelayed(getRunnable {
                 implementPreviousStateCrop(cropRotateData)
             }, DELAY_EXECUTION_PREVIOUS_ROTATE)
         }
@@ -946,7 +948,7 @@ class DetailEditorFragment @Inject constructor(
                     originalImageWidth = bitmap.width
                     originalImageHeight = bitmap.height
 
-                    viewBinding?.imgViewPreview?.setImageBitmap(bitmap)
+                    viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
 
                     if (readPreviousValue) {
                         readPreviousState()
@@ -961,7 +963,12 @@ class DetailEditorFragment @Inject constructor(
                     } else {
                         implementedBaseBitmap = bitmap
                         viewBinding?.imgViewPreview?.post {
-                            setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, bitmap))
+                            setOverlaySize(
+                                getDisplayedImageSize(
+                                    viewBinding?.imgViewPreview,
+                                    bitmap
+                                )
+                            )
                         }
                     }
 
@@ -1186,6 +1193,29 @@ class DetailEditorFragment @Inject constructor(
         isEdited = true
     }
 
+    // validate image pixel not greater than 25 million, used for image that will be draw only
+    private fun validateImageSize(source: Bitmap): Bitmap {
+        return if (checkBitmapSizeOverflow(source.width.toFloat(), source.height.toFloat())) {
+            var newImageHeight = 0f
+            var newImageWidth = source.width.toFloat()
+            val sourceWidth = source.width
+            val sourceHeight = source.height
+            do {
+                newImageWidth *= SCALED_DOWN_VALUE
+                newImageHeight = (newImageWidth / sourceWidth) * sourceHeight
+            } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
+
+            return Bitmap.createScaledBitmap(
+                source,
+                newImageWidth.toInt(),
+                newImageHeight.toInt(),
+                true
+            )
+        } else {
+            source
+        }
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -1212,5 +1242,7 @@ class DetailEditorFragment @Inject constructor(
 
         private const val ADD_LOGO_IMAGE_RES_MIN = 500
         private const val ADD_LOGO_IMAGE_RES_MAX = 1000
+
+        private const val SCALED_DOWN_VALUE = 0.9f
     }
 }

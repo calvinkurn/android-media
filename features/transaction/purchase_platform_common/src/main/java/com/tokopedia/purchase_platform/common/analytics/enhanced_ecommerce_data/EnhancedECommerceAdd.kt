@@ -16,7 +16,6 @@ class EnhancedECommerceAdd {
         const val KEY_ACTION_FIELD = "actionField"
     }
 
-
     private val checkoutMap = HashMap<String, Any>()
     private val listProducts = ArrayList<Any>()
 
@@ -32,5 +31,4 @@ class EnhancedECommerceAdd {
         checkoutMap[KEY_PRODUCT] = listProducts
         return checkoutMap
     }
-
 }
