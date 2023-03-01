@@ -15,19 +15,22 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
-import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.createpost.common.R as createPostCommonR
 
 class PostProgressUpdateView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var postIcon: ImageUnify? = null
@@ -50,13 +53,15 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setFirstIcon(productImage: String?) {
-        if (productImage != null)
+        if (productImage != null) {
             postIcon?.setImageUrl(productImage)
+        }
     }
 
     fun setIconVisibility(isEditPost: Boolean) {
-        if (isEditPost)
-            postIcon?.setImageDrawable(context.getDrawable((R.drawable.cp_common_rect_white_round)))
+        if (isEditPost) {
+            postIcon?.setImageDrawable(context.getDrawable((createPostCommonR.drawable.cp_common_rect_white_round)))
+        }
     }
 
     fun setIcon(iconUrl: String) {
@@ -66,9 +71,11 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun setProgress(progress: Int) {
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
-            MethodChecker.getColor(context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
+        )
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
 
@@ -76,10 +83,11 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
-        if (maxCount != 0)
+        if (maxCount != 0) {
             progressBar?.setValue(progress * MAX_PROGRESS_VALUE / maxCount, true)
-        else
+        } else {
             progressBar?.setValue(progress, true)
+        }
     }
 
     fun setPostUpdateListener(postUpdateSwipe: PostUpdateSwipe) {
@@ -114,7 +122,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         }
     }
 
-    private fun retryPostingOnFeed(draftId: String){
+    private fun retryPostingOnFeed(draftId: String) {
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
             MethodChecker.getColor(
@@ -131,17 +139,17 @@ class PostProgressUpdateView @JvmOverloads constructor(
         setCreatePostData(viewModel)
         cacheManager.put(
             CreatePostViewModel.TAG,
-            viewModel, TimeUnit.DAYS.toMillis(7)
+            viewModel,
+            TimeUnit.DAYS.toMillis(7)
         )
         cacheManager.id?.let { draftId -> SubmitPostService.startService(this.context, draftId) }
         retryText?.gone()
-
     }
 
     private fun retryPostShorts(
         uploadData: PlayShortsUploadModel,
         uploader: PlayShortsUploader
-    ){
+    ) {
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
             MethodChecker.getColor(
@@ -163,12 +171,12 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 if (context == null || intent == null) {
                     return
                 }
-                if (intent.action == BROADCAST_SUBMIT_POST_NEW
-                    && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == true
+                if (intent.action == BROADCAST_SUBMIT_POST_NEW &&
+                    intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == true
                 ) {
                     mPostUpdateSwipe?.swipeOnPostUpdate()
-                } else if (intent.action == BROADCAST_SUBMIT_POST_NEW
-                    && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == false
+                } else if (intent.action == BROADCAST_SUBMIT_POST_NEW &&
+                    intent.extras?.getBoolean(SUBMIT_POST_SUCCESS_NEW) == false
                 ) {
                     intent.extras?.getString(DRAFT_ID, "")?.let { handleFailedState(it) }
                 }
@@ -182,22 +190,23 @@ class PostProgressUpdateView @JvmOverloads constructor(
                 if (context == null || intent == null) {
                     return
                 }
-                if (intent.action == UPLOAD_POST_NEW
-                    && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == true
+                if (intent.action == UPLOAD_POST_NEW &&
+                    intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == true
                 ) {
                     val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, 0)
                     val maxCount = intent.getIntExtra(MAX_FILE_UPLOAD, 0)
                     val firstIcon = intent.getStringExtra(UPLOAD_FIRST_IMAGE)
                     val isEditPost = intent.getBooleanExtra(IS_EDIT_POST, false)
                     progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
-                    if (firstIcon != null)
+                    if (firstIcon != null) {
                         setFirstIcon(firstIcon)
+                    }
                     setIconVisibility(isEditPost)
                     setProgressUpdate(progress, maxCount)
-                } else if (intent.action == UPLOAD_POST_NEW
-                    && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == false
+                } else if (intent.action == UPLOAD_POST_NEW &&
+                    intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == false
                 ) {
-                    intent.extras?.getString(DRAFT_ID,"")?.let { handleFailedState(it) }
+                    intent.extras?.getString(DRAFT_ID, "")?.let { handleFailedState(it) }
                 }
             }
         }
@@ -260,8 +269,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         fun onRetryCLicked()
     }
 
-    companion object{
+    companion object {
         private const val MAX_PROGRESS_VALUE = 100
     }
 }
-
