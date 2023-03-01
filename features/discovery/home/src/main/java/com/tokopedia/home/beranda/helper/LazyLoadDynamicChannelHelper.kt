@@ -8,7 +8,7 @@ import com.tokopedia.home_component.visitable.TodoWidgetDataModel
 /**
  * Created by dhaba
  */
-object ExternalDynamicChannelHelper {
+object LazyLoadDynamicChannelHelper {
     fun convertMissionWidgetDataList(missionWidgetList: List<HomeMissionWidgetData.Mission>): MutableList<MissionWidgetDataModel> {
         val dataList: MutableList<MissionWidgetDataModel> = mutableListOf()
         for (pojo in missionWidgetList) {

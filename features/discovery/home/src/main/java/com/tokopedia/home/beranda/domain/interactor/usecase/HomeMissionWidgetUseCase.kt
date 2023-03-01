@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
-import com.tokopedia.home.beranda.helper.ExternalDynamicChannelHelper
+import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
 import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
@@ -28,7 +28,7 @@ class HomeMissionWidgetUseCase @Inject constructor(
                 }
             )
             val resultList =
-                ExternalDynamicChannelHelper.convertMissionWidgetDataList(results.getHomeMissionWidget.missions)
+                LazyLoadDynamicChannelHelper.convertMissionWidgetDataList(results.getHomeMissionWidget.missions)
             currentMissionWidgetListDataModel.copy(
                 missionWidgetList = resultList,
                 status = MissionWidgetListDataModel.STATUS_SUCCESS

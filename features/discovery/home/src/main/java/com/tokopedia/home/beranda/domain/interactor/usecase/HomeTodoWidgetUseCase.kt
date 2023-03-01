@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
-import com.tokopedia.home.beranda.helper.ExternalDynamicChannelHelper
+import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
 import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
@@ -32,7 +32,7 @@ class HomeTodoWidgetUseCase @Inject constructor(
                 }
             )
 
-            val resultList = ExternalDynamicChannelHelper.convertTodoWidgetDataList(results.getHomeTodoWidget.todos)
+            val resultList = LazyLoadDynamicChannelHelper.convertTodoWidgetDataList(results.getHomeTodoWidget.todos)
 
             currentTodoWidgetListDataModel.copy(
                 todoWidgetList = resultList,

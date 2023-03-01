@@ -20,7 +20,7 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
-import com.tokopedia.home.beranda.helper.ExternalDynamicChannelHelper
+import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -247,7 +247,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
                             val resultList =
-                                ExternalDynamicChannelHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                                LazyLoadDynamicChannelHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
                             visitableFound.copy(
                                 missionWidgetList = resultList,
                                 status = MissionWidgetListDataModel.STATUS_SUCCESS
@@ -276,7 +276,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
                             val resultList =
-                                ExternalDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
+                                LazyLoadDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
                             visitableFound.copy(
                                 todoWidgetList = resultList,
                                 status = TodoWidgetListDataModel.STATUS_SUCCESS
