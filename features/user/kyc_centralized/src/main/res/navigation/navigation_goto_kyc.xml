@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_routerFragment_to_dobChallengeFragment"
             app:destination="@id/dobChallengeFragment" />
+        <action
+            android:id="@+id/action_routerFragment_to_gotoKycOnboardBenefitFragment"
+            app:destination="@id/onboardBenefitFragment" />
     </fragment>
 
     <fragment
@@ -44,5 +47,13 @@
         android:id="@+id/dobChallengeFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeFragment"
         android:label="DobChallengeFragment" />
+    <fragment
+        android:id="@+id/onboardBenefitFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.OnboardBenefitFragment"
+        android:label="OnboardBenefitFragment" >
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.OnboardBenefitParam"/>
+    </fragment>
 
 </navigation>

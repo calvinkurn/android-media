@@ -50,6 +50,11 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun gotoOnboardBenefitGotoKyc(parameter: OnboardBenefitParam) {
+        val toOnboardBenefitPage = GotoKycRouterFragmentDirections.actionRouterFragmentToGotoKycOnboardBenefitFragment(parameter)
+        view?.findNavController()?.navigate(toOnboardBenefitPage)
+    }
+
     private fun gotoStatusSubmission(parameter: StatusSubmissionParam) {
         val toSubmissionStatusPage = GotoKycRouterFragmentDirections.actionRouterFragmentToStatusSubmissionFragment(parameter)
         view?.findNavController()?.navigate(toSubmissionStatusPage)

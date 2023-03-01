@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.transparent
+package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
 import android.graphics.Color
 import android.os.Bundle
@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class OnboardProgressiveBottomSheet(private val source: String): BottomSheetUnify() {
+class OnboardProgressiveBottomSheet(private val source: String, val encryptedName: String): BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
 
@@ -42,6 +42,7 @@ class OnboardProgressiveBottomSheet(private val source: String): BottomSheetUnif
     private fun initView() {
         setTokopediaCareView()
         binding?.apply {
+            layoutDataKtp.tvNameKtp.text = encryptedName
             layoutDataKtp.imgItem.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_gopay)
             )
