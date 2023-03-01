@@ -11,6 +11,7 @@ import com.tokopedia.home_component.util.toDpInt
 class TodoWidgetItemDecoration : RecyclerView.ItemDecoration() {
     companion object {
         private const val FIRST_POSITION = 0
+        private const val SINGLE_ITEM = 1
         private var OUTSIDE_MARGIN = 14f.toDpInt()
         private var INNER_MARGIN = 2f.toDpInt()
     }
@@ -24,7 +25,11 @@ class TodoWidgetItemDecoration : RecyclerView.ItemDecoration() {
         when (parent.getChildAdapterPosition(view)) {
             FIRST_POSITION -> {
                 outRect.left = OUTSIDE_MARGIN
-                outRect.right = INNER_MARGIN
+                if(state.itemCount > SINGLE_ITEM) {
+                    outRect.right = INNER_MARGIN
+                } else {
+                    outRect.right = OUTSIDE_MARGIN
+                }
             }
             //last position of card
             state.itemCount - 1 -> {

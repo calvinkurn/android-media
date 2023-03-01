@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify2
-    android:id="@+id/card_container_mission_widget"
+    android:id="@+id/card_container_todo_widget"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true"
@@ -9,6 +9,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_layout"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/home_todo_widget_height">
 
@@ -54,11 +55,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/content_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintWidth_default="wrap"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintStart_toEndOf="@id/image_todo_widget"
+            app:layout_constraintEnd_toStartOf="@id/cta_todo_widget"
             app:layout_constraintTop_toTopOf="@id/image_todo_widget"
             app:layout_constraintBottom_toBottomOf="@id/image_todo_widget">
 
@@ -78,10 +81,12 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/desc_todo_widget"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:layout_constraintWidth_default="wrap"
                 tools:text="Contextual description maximum 2 lines"
                 android:maxLines="2"
+                android:ellipsize="end"
                 app:typographyType="small"
                 android:textColor="@color/Unify_NN950"
                 android:layout_marginTop="2dp"
@@ -113,8 +118,6 @@
             android:layout_height="@dimen/home_todo_widget_cta_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/content_layout"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="18dp"
             app:unifyButtonSize="small"

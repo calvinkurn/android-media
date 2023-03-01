@@ -1,11 +1,14 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.view.View
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetItemBinding
 import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
+import com.tokopedia.home_component.util.TodoWidgetUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify2
@@ -31,12 +34,26 @@ class TodoWidgetItemViewHolder(
 
     private fun setLayout(element: CarouselTodoWidgetDataModel) {
         binding?.run {
-            cardContainerMissionWidget.animateOnPress = if (element.cardInteraction) {
+            cardContainerTodoWidget.animateOnPress = if (element.cardInteraction) {
                 CardUnify2.ANIMATE_OVERLAY_BOUNCE
             } else {
                 CardUnify2.ANIMATE_OVERLAY
             }
+
+            icCloseTodoWidget.setOnClickListener {
+                element.todoWidgetDismissListener.dismiss(element, absoluteAdapterPosition)
+            }
+
+            setLayoutWidth(element)
+            setTextContent(element)
+            mappingCtaButton(element)
+        }
+    }
+
+    private fun setTextContent(element: CarouselTodoWidgetDataModel) {
+        binding?.run {
             titleTodoWidget.text = element.title
+            imageTodoWidget.setImageUrl(element.imageUrl)
 
             if (element.dueDate.isNotEmpty()) {
                 dueDateTodoWidget.visible()
@@ -58,12 +75,21 @@ class TodoWidgetItemViewHolder(
             } else {
                 priceTodoWidget.gone()
             }
+        }
+    }
 
-            icCloseTodoWidget.setOnClickListener {
-                element.todoWidgetDismissListener.dismiss(element, absoluteAdapterPosition)
+    private fun setLayoutWidth(element: CarouselTodoWidgetDataModel) {
+        binding?.run {
+            val layoutParams = cardContainerTodoWidget?.layoutParams
+            if (element.isCarousel) {
+                layoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            } else {
+                layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
             }
+            cardContainerTodoWidget?.layoutParams = layoutParams
 
-            mappingCtaButton(element)
+            cardLayout.maxWidth = TodoWidgetUtil.measureTodoWidgetCardMaxWidth(itemView.context)
+            (descTodoWidget.layoutParams as? ConstraintLayout.LayoutParams)?.matchConstraintMaxWidth = TodoWidgetUtil.measureTodoWidgetContentMaxWidth(itemView.context)
         }
     }
 

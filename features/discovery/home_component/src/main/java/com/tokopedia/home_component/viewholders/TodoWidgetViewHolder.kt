@@ -18,7 +18,6 @@ import com.tokopedia.home_component.util.TodoWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.TodoWidgetAdapter
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -86,10 +85,6 @@ class TodoWidgetViewHolder(
 
     private fun convertDataToTodoWidgetData(element: TodoWidgetListDataModel): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = mutableListOf()
-        val maxCardHeight = TodoWidgetUtil.findMaxTodoWidgetHeight(
-            element.todoWidgetList,
-            itemView.context
-        )
 
         element.todoWidgetList.forEachIndexed { index, todoWidget ->
             list.add(
@@ -181,14 +176,10 @@ class TodoWidgetViewHolder(
         visitables.removeAt(position)
         adapter?.notifyItemRemoved(position)
         dismissingItems.add(Pair(position, element))
-        todoWidgetComponentListener.onTodoCloseClicked(element, position)
+        todoWidgetComponentListener.onTodoCloseClicked(element, position, visitables.isEmpty())
     }
 
-    fun removeDismissingItem(position: Int) {
-        dismissingItems.removeFirst { it.first == position }
-    }
-
-    fun rollbackDismissingItem(position: Int) {
+    fun restoreDismissedItem(position: Int) {
         val todoItem = dismissingItems.firstOrNull { it.first == position }
         todoItem?.let {
             visitables.add(it.first, it.second)

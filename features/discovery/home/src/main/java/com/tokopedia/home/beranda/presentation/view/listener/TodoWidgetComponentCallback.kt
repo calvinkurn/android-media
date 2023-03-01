@@ -25,8 +25,8 @@ class TodoWidgetComponentCallback(
     override fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
     }
 
-    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
-        homeRevampViewModel.dismissTodoWidget(element.dataSource, element.feParam.parseCloseParam())
+    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int, isLastItem: Boolean) {
+        homeRevampViewModel.dismissTodoWidget(horizontalPosition, element.dataSource, element.feParam.parseCloseParam(), isLastItem)
     }
 
     override fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {

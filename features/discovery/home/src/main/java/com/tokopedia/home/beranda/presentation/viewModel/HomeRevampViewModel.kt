@@ -748,17 +748,41 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun dismissTodoWidget(position: Int, dataSource: String, param: String) {
+    fun dismissTodoWidget(horizontalPosition: Int, dataSource: String, param: String, deleteWidget: Boolean) {
+        var todoWidget : TodoWidgetListDataModel? = null
+        var todoWidgetPosition : Int = -1
+
         launch {
             homeDismissTodoWidgetUseCase.get().getTodoWidgetDismissData(
-                position,
+                horizontalPosition,
                 dataSource,
                 param,
                 onSuccess = {
+                    findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
+                        val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
+                            removeAt(horizontalPosition)
+                        }
+                        val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
+                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
+                    }
                 },
                 onError = {
+                    todoWidget?.let {
+                        if(todoWidgetPosition != -1) {
+                            addWidget(it, todoWidgetPosition)
+                        }
+                    }
                 }
             )
         }
+
+        if(deleteWidget) {
+            findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
+                todoWidget = item
+                todoWidgetPosition = verticalPosition
+                deleteWidget(item, verticalPosition)
+            }
+        }
     }
+
 }
