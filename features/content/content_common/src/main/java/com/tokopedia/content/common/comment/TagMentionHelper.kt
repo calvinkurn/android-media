@@ -84,7 +84,7 @@ object TagMentionBuilder {
                 id = find.elementAt(0).value.replace(MENTION_CHAR, "")
                 type = find.elementAt(1).value.replace(MENTION_CHAR, "")
                 name = find.elementAt(2).value.removeSuffix(MENTION_CHAR)
-                val length = find.sumOf { it.value.length } + 10 //total escape character [{}|@]
+                val length = find.sumOf { it.value.length } + 5 //total escape character [{}|||]
 
                 val mentionSpanned = MentionedSpanned(
                     color = mentionColor,
@@ -112,7 +112,7 @@ object TagMentionBuilder {
                     append(content)
                 }
             } else throw Exception()
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             buildSpannedString {
                 append(
                     item.username,
