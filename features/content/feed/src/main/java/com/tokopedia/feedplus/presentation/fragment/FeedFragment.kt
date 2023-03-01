@@ -80,7 +80,9 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
         return binding?.root
@@ -88,6 +90,8 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        feedPostViewModel.fetchFeedPosts()
 
         initView()
         observeClearViewData()
@@ -244,10 +248,15 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         items.add(
             FeedMenuItem(
                 drawable = getIconUnifyDrawable(
-                    requireContext(), IconUnify.WARNING, MethodChecker.getColor(
-                        context, R.color.Unify_RN500
+                    requireContext(),
+                    IconUnify.WARNING,
+                    MethodChecker.getColor(
+                        context,
+                        R.color.Unify_RN500
                     )
-                ), name = getString(feedR.string.feed_report), type = FeedMenuIdentifier.LAPORKAN
+                ),
+                name = getString(feedR.string.feed_report),
+                type = FeedMenuIdentifier.LAPORKAN
             )
         )
         return items
