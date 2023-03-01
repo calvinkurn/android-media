@@ -568,7 +568,7 @@ class UserProfileFragment @Inject constructor(
         if (prev == curr || curr == ProfileUiModel.Empty) return
 
         mainBinding.headerProfile.title = curr.name
-        mainBinding.headerProfile.subtitle = curr.username
+        mainBinding.headerProfile.subtitle = "@${curr.username}"
         mainBinding.headerProfile.visible()
 
         binding.viewFlipper.displayedChild = PAGE_CONTENT
