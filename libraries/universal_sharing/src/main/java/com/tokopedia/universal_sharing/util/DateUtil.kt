@@ -8,7 +8,7 @@ object DateUtil {
 
     private const val ONE_THOUSAND = 1000
     private const val HOUR_FORMAT = "HH:mm"
-    private const val DATE_UPCOMING_FORMAT = "dd MM yyyy, jam HH:mm WIB"
+    private const val DATE_FORMAT = "dd MMMM"
     fun timeIsUnder1Day(date: Long): Boolean {
         return try {
             val endDateMillis = date * ONE_THOUSAND
@@ -71,9 +71,13 @@ object DateUtil {
         return formatter.format(dateTime)
     }
 
-    fun getDateUpcoming(date: Long): String {
+    fun getDateCampaign(date: Long): String {
+        val locale = Locale("id", "ID")
         val dateTime = Date(date * ONE_THOUSAND)
-        val formatter = SimpleDateFormat(DATE_UPCOMING_FORMAT, Locale.getDefault())
-        return formatter.format(dateTime)
+        val formatterDate = SimpleDateFormat(DATE_FORMAT, locale)
+        val formatterHour = SimpleDateFormat(HOUR_FORMAT, locale)
+        val date = formatterDate.format(dateTime)
+        val hour = formatterHour.format(dateTime)
+        return return String.format("%s, jam %s WIB", date, hour)
     }
 }

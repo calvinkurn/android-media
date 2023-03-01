@@ -247,6 +247,7 @@ import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.Pro
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
+import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -2701,7 +2702,7 @@ open class DynamicProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false
+                        ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2713,7 +2714,7 @@ open class DynamicProductDetailFragment :
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtons?.firstOrNull()
-                ?.isCartTypeDisabledOrRemindMe() == false &&
+                    ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -3180,7 +3181,7 @@ open class DynamicProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                        viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
+                            viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -3696,8 +3697,10 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: "",
-                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: "",
+                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId)
+                        ?: "",
+                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
+                        ?: "",
                     categoryId = it.basic.category.id
                 )
             )
@@ -3957,14 +3960,15 @@ open class DynamicProductDetailFragment :
                 ?.map { it.urlOriginal } ?: emptyList()
             val personalizedCampaignModel = PersonalizedCampaignModel(
                 imageGeneratorData.campaignName,
-                viewModel.getDynamicProductInfoP1?.data?.campaign?.discountedPriceFmt ?: "",
-                    viewModel.getDynamicProductInfoP1?.data?.campaign?.percentageAmount ?: 0F,
-                    viewModel.p2Data.value?.upcomingCampaigns?.getOrDefault(
+                viewModel.getDynamicProductInfoP1?.data?.price?.priceFmt ?: "",
+                viewModel.getDynamicProductInfoP1?.data?.campaign?.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
+                viewModel.getDynamicProductInfoP1?.data?.campaign?.percentageAmount ?: 0F,
+                viewModel.p2Data.value?.upcomingCampaigns?.getOrDefault(
                     viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
                     null
                 )?.startDate.toLongOrZero(),
                 (viewModel.getDynamicProductInfoP1?.data?.campaign?.endDateUnix
-                    ?: "").toLongOrZero()
+                    ?: "").toLongOrZero(),
             )
 
             shareProductInstance?.showUniversalShareBottomSheet(
@@ -4450,7 +4454,7 @@ open class DynamicProductDetailFragment :
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         val secondAppLink = ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context,secondAppLink,productId)
+            RouteManager.route(context, secondAppLink, productId)
         } else {
             if (secondAppLink.isEmpty()) {
                 goToPdpSellerApp()
@@ -4960,7 +4964,7 @@ open class DynamicProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-            ?.restrictionShopFollowersType() == false
+                ?.restrictionShopFollowersType() == false
         ) {
             return
         }

@@ -340,7 +340,14 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                         branchTime = (branchEnd - branchStart)
                         postBuildImage.invoke()
                         try {
-                            val shareString = String.format(shareModel.personalizedMessageFormat, linkerShareResult.url)
+                            val shareString = if (shareModel.personalizedMessageFormat.isEmpty()) {
+                                productData.getTextDescription(
+                                    activity.applicationContext,
+                                    linkerShareResult.url
+                                )
+                            } else {
+                                String.format(shareModel.personalizedMessageFormat, linkerShareResult.url)
+                            }
                             shareModel.subjectName = productData.productName ?: ""
                             SharingUtil.executeShareIntent(
                                 shareModel,
@@ -454,7 +461,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
                 setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
-                setPersonalizedCampaign(personalizedCampaignModel)
+                if (!personalizedCampaignModel.isThematicCampaign && !(personalizedCampaignModel.startTime == 0L && personalizedCampaignModel.endTime == 0L)) {
+                    setPersonalizedCampaign(personalizedCampaignModel)
+                }
                 setImageGeneratorParam(paramImageGenerator)
                 init(object : ShareBottomsheetListener {
                     override fun onShareOptionClicked(shareModel: ShareModel) {

@@ -1113,28 +1113,53 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
         when (model.getCampaignStatus()) {
             CampaignStatus.UPCOMING -> {
-                personalizedMessage = context.getString(
-                    R.string.personalized_campaign_message_upcoming,
-                    model.getDiscountString(),
-                    model.discountPrice,
-                    model.getUpcomingString()
-                )
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_upcoming_discount,
+                        model.getStartDateCampaign(),
+                        model.getDiscountString(),
+                        model.price
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_upcoming_without_discount,
+                        model.getStartDateCampaign(),
+                    )
+                }
+
             }
             CampaignStatus.ON_GOING -> {
-                personalizedMessage = context.getString(
-                    R.string.personalized_campaign_message_ongoing,
-                    model.getDiscountString(),
-                    model.discountPrice,
-                    model.getEndHourString()
-                )
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_discount,
+                        model.getDiscountString(),
+                        model.price,
+                        model.getEndDateCampaign()
+                    )
+                } else {
+                    personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
+                        model.price,
+                        model.getEndDateCampaign()
+                    )
+                }
+
             }
             CampaignStatus.END_SOON -> {
-                personalizedMessage = context.getString(
-                    R.string.personalized_campaign_message_endsoon,
-                    model.getDiscountString(),
-                    model.discountPrice,
-                    model.getMinuteLeft().toString()
-                )
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_endsoon_discount,
+                        model.getMinuteLeft().toString(),
+                        model.getDiscountString(),
+                        model.price
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_endsoon_without_disc,
+                        model.getMinuteLeft().toString(),
+                        model.getDiscountString()
+                    )
+                }
+
             }
             CampaignStatus.NO_CAMPAIGN -> {
                 /* no-op */
@@ -1195,7 +1220,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
-        shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
+        if (personalizedMessage.isNotEmpty()) {
+            shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
+        }
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
@@ -1206,7 +1233,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
-        shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
+        if (personalizedMessage.isNotEmpty()) {
+            shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
+        }
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 

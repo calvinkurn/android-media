@@ -8,10 +8,12 @@ import com.tokopedia.universal_sharing.util.DateUtil
  */
 data class PersonalizedCampaignModel (
     val campaignName: String = "",
-    val discountPrice: String = "",
+    val price: String = "",
+    val isThematicCampaign: Boolean = false,
     val discountPercentage: Float = 0F,
     val startTime: Long = 0L,
-    val endTime: Long = 0L
+    val endTime: Long = 0L,
+    val isNonDiscCampaign: Boolean = false
 ) {
 
     /**
@@ -38,7 +40,9 @@ data class PersonalizedCampaignModel (
 
     fun getEndHourString(): String = DateUtil.getHour(endTime)
 
-    fun getUpcomingString(): String = DateUtil.getDateUpcoming(startTime)
+    fun getEndDateCampaign(): String = DateUtil.getDateCampaign(endTime)
+
+    fun getStartDateCampaign(): String = DateUtil.getDateCampaign(startTime)
 
     fun getDiscountString(): String = discountPercentage.toInt().toString() + "%%"
 
@@ -46,7 +50,7 @@ data class PersonalizedCampaignModel (
         private const val ZERO_UNIX = 0L
 
         // threshold for endsoon campaign in minute
-        private const val THRESHOLD_ENDSOON = 15L
+        private const val THRESHOLD_ENDSOON = 10L
     }
 }
 
