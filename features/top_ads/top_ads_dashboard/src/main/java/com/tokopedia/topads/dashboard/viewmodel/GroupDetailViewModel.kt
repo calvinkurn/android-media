@@ -169,16 +169,18 @@ class GroupDetailViewModel @Inject constructor(
         suggestBidPerClick: Float = 0f,
         bidPencarian: Float = 0f,
         bidRecomendasi: Float = 0f,
-        dailyBudget: String,
+        dailyBudgetSpent: String,
+        priceSpent: Float,
         onSuccess: () -> Unit
     ) {
         val dataGrp = hashMapOf<String, Any?>(
             ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
             ParamObject.GROUPID to groupId
         )
-        if (dailyBudget != TopAdsDashboardConstant.TIDAK_DIBATASI && !isAutomatic) {
+        if (dailyBudgetSpent != TopAdsDashboardConstant.TIDAK_DIBATASI && !isAutomatic) {
             val suggestedDailyBudget = TopAdsEditUtils.calculateDailyBudget(bidPencarian.toInt(), bidRecomendasi.toInt())
-            if (dailyBudget.toFloat() < suggestedDailyBudget) {
+
+            if (priceSpent < suggestedDailyBudget) {
                 dataGrp[ParamObject.DAILY_BUDGET] = suggestedDailyBudget
             }
         }

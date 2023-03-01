@@ -390,7 +390,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             suggestedBid.toFloatOrZero(),
             bidPencarian.toFloatOrZero(),
             bidRecomendasi.toFloatOrZero(),
-            dailyBudgetSpent?.text.toString()
+            dailyBudgetSpent?.text.toString(),
+            priceDaily
         ) {
             loadData()
         }

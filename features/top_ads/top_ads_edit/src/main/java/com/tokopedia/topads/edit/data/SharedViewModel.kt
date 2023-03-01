@@ -2,7 +2,6 @@ package com.tokopedia.topads.edit.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant.RECOMMENDATION_BUDGET_MULTIPLIER
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.data.util.TopAdsEditUtils
@@ -39,22 +38,30 @@ class SharedViewModel : ViewModel() {
         negKeyword.value = data
     }
 
-    fun setDailyBudget(budget:Int){
+    fun setDailyBudget(budget: Int) {
         dailyBudget.value = budget
         setMaxBudgetValue()
-
     }
 
     private fun setMaxBudgetValue() {
-        maxBudget.value = TopAdsEditUtils.calculateDailyBudget(dailyBudget.value, rekomendedBudget.value)
+        var budget = TopAdsEditUtils.calculateDailyBudget(dailyBudget.value, rekomendedBudget.value)
+        if (maxBudget.value != null && maxBudget.value!! < budget) {
+            maxBudget.value = budget
+        } else if (maxBudget.value == null) {
+            maxBudget.value = budget
+        }
     }
 
-    fun setRekomendedBudget(budget:Int){
+    fun setFirstFetchMaxBudgetValue(dailyBudget: Int) {
+        maxBudget.value = dailyBudget
+    }
+
+    fun setRekomendedBudget(budget: Int) {
         rekomendedBudget.value = budget
         setMaxBudgetValue()
     }
 
-    fun getMaxBudget() :MutableLiveData<Int>{
+    fun getMaxBudget(): MutableLiveData<Int> {
         return maxBudget
     }
 
@@ -74,16 +81,15 @@ class SharedViewModel : ViewModel() {
         return bidForGroup
     }
 
-    fun getDailyBudget(): MutableLiveData<Int>{
+    fun getDailyBudget(): MutableLiveData<Int> {
         return dailyBudget
     }
 
-
-    fun getRekomendedBudget() : MutableLiveData<Int> {
+    fun getRekomendedBudget(): MutableLiveData<Int> {
         return rekomendedBudget
     }
 
-    fun getAutoBidStatus() : MutableLiveData<String> {
+    fun getAutoBidStatus(): MutableLiveData<String> {
         return autoBidStatus
     }
 
@@ -95,8 +101,7 @@ class SharedViewModel : ViewModel() {
         this.bidSettings.value = bidSettingsModel
     }
 
-    fun getBidSettings() : MutableLiveData<List<TopAdsBidSettingsModel>> {
+    fun getBidSettings(): MutableLiveData<List<TopAdsBidSettingsModel>> {
         return bidSettings
     }
-
 }

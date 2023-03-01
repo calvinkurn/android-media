@@ -97,10 +97,14 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            context?.resources?.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false
+            context?.resources?.getLayout(R.layout.topads_edit_activity_edit_form_ad),
+            container,
+            false
         )
         progressbar = view.findViewById(R.id.progressbar)
         txtGroupName = view.findViewById(R.id.group_name)
@@ -121,6 +125,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
         sharedViewModel.setBidSettings(bidSettingsList)
         priceDaily = data.daiyBudget
+        sharedViewModel.setFirstFetchMaxBudgetValue(priceDaily.toInt())
         if (priceDaily != 0.0F) {
             dailyBudget?.visible()
             setCurrentDailyBudget((priceDaily).toInt().toString())
@@ -161,10 +166,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             validation1 = false
             actionEnable()
             txtGroupName?.setMessage(error)
-            if (error == context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error_wrong))
+            if (error == context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error_wrong)) {
                 txtGroupName?.setMessage(context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error) ?: "")
-            else
+            } else {
                 txtGroupName?.setMessage(error)
+            }
         }
     }
 
@@ -189,7 +195,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         setDailyBudgetWatcher()
     }
 
-    private fun setToggleCheckedListener () {
+    private fun setToggleCheckedListener() {
         toggle?.setOnCheckedChangeListener { _, _ ->
             if (toggle?.isChecked == true) {
                 dailyBudget?.visibility = View.VISIBLE
@@ -203,7 +209,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun updateValidation3IfDailyBudgetTFVisible(state: Boolean) = dailyBudget?.let {
-        if(!it.isVisible) return@let
+        if (!it.isVisible) return@let
         validation3 = false
     }
 
@@ -218,7 +224,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun checkErrorsDailyBudgetTF(number : Double) = when {
+    private fun checkErrorsDailyBudgetTF(number: Double) = when {
         number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
             dailyBudget?.setError(true)
             dailyBudget?.setMessage(
@@ -261,7 +267,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun setGroupNameWatcher() {
-
         txtGroupName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -280,12 +285,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                                 this@EditGroupAdFragment::onSuccessGroupName
                             )
                         }
-
                     }
                 }
             }
         })
-
     }
 
     private fun setObservers() {
