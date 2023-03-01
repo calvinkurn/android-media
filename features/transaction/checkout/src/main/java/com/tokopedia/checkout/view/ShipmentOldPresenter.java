@@ -259,7 +259,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
     private Map<String, ShipmentScheduleDeliveryMapData> scheduleDeliveryMapData = null;
 
     public boolean isUsingDdp = false;
-    public DynamicDataPassingParamRequest dynamicDataParam;
+    public DynamicDataPassingParamRequest dynamicDataParam = new DynamicDataPassingParamRequest();
     public String dynamicData = "";
 
     @Inject
@@ -342,7 +342,6 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
         logisticDonePublisher = null;
         ratesPromoPublisher = null;
         logisticPromoDonePublisher = null;
-        dynamicDataParam = null;
     }
 
     @Override
