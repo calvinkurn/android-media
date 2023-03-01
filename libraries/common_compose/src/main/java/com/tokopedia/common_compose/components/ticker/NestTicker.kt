@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,7 +33,7 @@ fun NestTicker(
     val closeIconColor = NestTheme.colors.NN._900
 
     Surface(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(6.dp),
         color = backgroundColor,
         border = BorderStroke(1.dp, strokeColor)
@@ -41,12 +42,13 @@ fun NestTicker(
             Icon(imageVector = Icons.Outlined.Info, contentDescription = "Information Icon", tint = iconColor)
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             NestTypography(
-                text = text.toString(),
+                text = text,
                 modifier = Modifier.width(250.dp),
                 textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
             )
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             if (closeButtonVisibility) {
+                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
                 Icon(
                     imageVector = Icons.Outlined.Close,
                     modifier = Modifier.clickable { onDismissed() },

@@ -22,6 +22,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -31,14 +32,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestBottomSheetShape
+import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.components.NestTextField
 import com.tokopedia.common_compose.components.NestTips
 import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestTicker
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.common_compose.utils.toAnnotatedString
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
@@ -48,6 +50,7 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.RescheduleResultD
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -288,7 +291,10 @@ private fun InputSectionSubtitle(
 private fun ReschedulePickupGuide(guide: String) {
     NestTips(
         title = stringResource(id = R.string.title_tips_reschedule_pick_up),
-        description = guide,
+        description = HtmlLinkHelper(
+            LocalContext.current,
+            guide
+        ).spannedString?.toAnnotatedString() ?: "",
         modifier = Modifier.padding(16.dp)
     )
 }
@@ -393,7 +399,10 @@ private fun InputCustomReason(
 @Composable
 private fun ReschedulePickupSummary(summary: String) {
     NestTicker(
-        text = summary,
+        text = HtmlLinkHelper(
+            LocalContext.current,
+            summary
+        ).spannedString?.toAnnotatedString() ?: "",
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 6.dp),
         closeButtonVisibility = false
