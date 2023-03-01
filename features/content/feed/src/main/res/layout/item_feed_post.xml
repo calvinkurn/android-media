@@ -16,6 +16,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_2" />
 
+    <include
+        android:id="@+id/product_tag_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/feed_product_tag_view"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/img_feed_owner_profile"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_feed_owner_profile"
         android:layout_width="24dp"
@@ -46,7 +57,6 @@
         android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Owner Shop Name"
         android:textColor="@color/Unify_NN0"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
@@ -98,7 +108,6 @@
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="Post Caption"
         android:textColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/like_button"
@@ -121,7 +130,8 @@
         app:icon_name="THUMB"
         app:layout_constraintBottom_toTopOf="@id/comment_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:unify_image_type="circle" />
+        app:unify_image_type="circle"
+        tools:visibility="visible"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/comment_button"
@@ -134,24 +144,10 @@
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
         app:icon_name="CHAT"
-        app:layout_constraintBottom_toTopOf="@id/menu_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unify_image_type="circle" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/menu_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        app:icon_color_light_enable="@color/Unify_N0"
-        app:icon_color_night_enable="@color/Unify_N0"
-        app:icon_name="MENU_KEBAB_HORIZONTAL"
         app:layout_constraintBottom_toTopOf="@id/share_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:unify_image_type="circle" />
+        app:unify_image_type="circle"
+        tools:visibility="visible"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_button"
@@ -164,12 +160,13 @@
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
         app:icon_name="SHARE"
-        app:layout_constraintBottom_toTopOf="@id/product_tag_button"
+        app:layout_constraintBottom_toTopOf="@id/menu_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:unify_image_type="circle" />
+        app:unify_image_type="circle"
+        tools:visibility="visible"/>
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/product_tag_button"
+        android:id="@+id/menu_button"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
@@ -178,10 +175,24 @@
         android:layout_marginBottom="24dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
-        app:icon_name="PRODUCT"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:icon_name="MENU_KEBAB_HORIZONTAL"
+        app:layout_constraintBottom_toTopOf="@id/product_tag_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:unify_image_type="circle" />
+        app:unify_image_type="circle"
+        tools:visibility="visible"/>
+
+    <include
+        android:id="@+id/product_tag_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="12dp"
+        layout="@layout/view_product_see_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_disable_clear_mode"
+        tools:visibility="visible"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_disable_clear_mode"
@@ -200,6 +211,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
