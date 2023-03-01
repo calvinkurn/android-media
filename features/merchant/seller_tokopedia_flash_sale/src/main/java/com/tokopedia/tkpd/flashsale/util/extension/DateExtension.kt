@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flashsale.util.extension
 
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 fun Date.removeTimeZone(): Date {

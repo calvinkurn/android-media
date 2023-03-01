@@ -20,7 +20,7 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemOngoingFlas
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import java.util.Date
+import java.util.*
 
 class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit) : DelegateAdapter<OngoingFlashSaleItem, OngoingFlashSaleDelegateAdapter.OngoingFlashSaleViewHolder>(
     OngoingFlashSaleItem::class.java) {

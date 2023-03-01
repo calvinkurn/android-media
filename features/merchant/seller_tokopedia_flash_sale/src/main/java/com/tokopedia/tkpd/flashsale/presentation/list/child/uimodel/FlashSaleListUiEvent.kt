@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel
 
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
-import java.util.Date
+import java.util.*
 
 sealed class FlashSaleListUiEvent {
     data class GetFlashSaleCategory(val tabName: String) : FlashSaleListUiEvent()
