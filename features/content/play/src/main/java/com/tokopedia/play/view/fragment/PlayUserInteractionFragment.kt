@@ -896,7 +896,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner, state.channel)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.channel)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderAddressWidget(state.address)
 
@@ -1698,14 +1698,13 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        partner: PlayPartnerInfo, //move to component
         channel: PlayChannelDetailUiModel
     ) {
         val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
             it.productList.size
         }
 
-        if (!bottomInsets.isAnyShown && (!address.shouldShow || productListSize.isMoreThanZero()) && !channel.channelInfo.channelType.isLive) {
+        if (!bottomInsets.isAnyShown && !address.shouldShow && productListSize.isMoreThanZero() && !channel.channelInfo.channelType.isLive) {
             productSeeMoreView?.show()
         } else {
             productSeeMoreView?.hide()
