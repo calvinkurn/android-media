@@ -61,9 +61,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     fun tapcashErrorLogging(param: RechargeEmoneyInquiryLogRequest) {
         launchCatchError(block = {
             val result = rechargeEmoneyInquiryLogUseCase.execute(param)
-            tapcashLogErrorMutable.value = Success(result)
+            tapcashLogErrorMutable.postValue(Success(result))
         }) {
-            tapcashLogErrorMutable.value = Fail(it)
+            tapcashLogErrorMutable.postValue(Fail(it))
         }
     }
 
