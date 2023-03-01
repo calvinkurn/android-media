@@ -9,6 +9,7 @@ import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetItemBindi
 import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 import com.tokopedia.home_component.util.TodoWidgetUtil
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify2
@@ -42,6 +43,10 @@ class TodoWidgetItemViewHolder(
 
             icCloseTodoWidget.setOnClickListener {
                 element.todoWidgetDismissListener.dismiss(element, absoluteAdapterPosition)
+            }
+
+            cardContainerTodoWidget.addOnImpressionListener(element) {
+                element.todoWidgetComponentListener.onTodoImpressed(element, absoluteAdapterPosition)
             }
 
             setLayoutWidth(element)

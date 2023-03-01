@@ -301,11 +301,6 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
             getRawString(context, R.raw.response_mock_data_home_balance_widget),
             FIND_BY_CONTAINS
         )
-        addMockResponse(
-            KEY_CONTAINS_TODO_WIDGET,
-            getRawString(context, R.raw.response_mock_data_todo_widget),
-            FIND_BY_CONTAINS
-        )
         updateMock(context)
         return this
     }

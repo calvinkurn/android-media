@@ -272,14 +272,14 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             }
                         },
                         handleOnFailed = { visitableFound ->
-                            visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
+                            visitableFound.copy(status = TodoWidgetListDataModel.STATUS_ERROR)
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
                             val resultList =
                                 ExternalDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
                             visitableFound.copy(
                                 todoWidgetList = resultList,
-                                status = MissionWidgetListDataModel.STATUS_SUCCESS
+                                status = TodoWidgetListDataModel.STATUS_SUCCESS
                             )
                         }
                     )

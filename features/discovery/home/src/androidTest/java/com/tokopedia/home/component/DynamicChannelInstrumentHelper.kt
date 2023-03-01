@@ -32,6 +32,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
@@ -298,8 +299,8 @@ fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
 }
 
-fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickAndCloseOnEachTodoWidget(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_todo_widget_rv, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
@@ -332,6 +333,67 @@ fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, 
                 ViewActions.click()
             )
         )
+}
+
+fun clickAndCloseOnEachTodoWidget(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    val tempStoreDesc = childRecyclerView.contentDescription
+    childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
+
+    var childItemCount = childRecyclerView.adapter!!.itemCount
+    if (fixedItemPositionLimit > 0) {
+        childItemCount = fixedItemPositionLimit
+    }
+    for (i in 0 until childItemCount) {
+        try {
+            Espresso.onView(
+                allOf(
+                    ViewMatchers.withId(recyclerViewId),
+                    ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)
+                )
+            ).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickOnViewChild(com.tokopedia.home_component.R.id.cta_todo_widget)
+                )
+            ).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickOnViewChild(com.tokopedia.home_component.R.id.ic_close_todo_widget)
+                )
+            )
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+
+    childRecyclerView.contentDescription = tempStoreDesc
+}
+
+fun clickCloseTodoWidget(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    val tempStoreDesc = childRecyclerView.contentDescription
+    childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
+
+    try {
+        Espresso.onView(
+            allOf(
+                ViewMatchers.withId(recyclerViewId),
+                ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)
+            )
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                clickOnViewChild(com.tokopedia.home_component.R.id.ic_close_todo_widget)
+            )
+        )
+    } catch (e: PerformException) {
+        e.printStackTrace()
+    }
+
+    childRecyclerView.contentDescription = tempStoreDesc
 }
 
 fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {

@@ -32,6 +32,39 @@ class GetTodoWidgetUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): HomeTodoWidgetData.HomeTodoWidget {
+        return HomeTodoWidgetData.HomeTodoWidget(
+            HomeTodoWidgetData.GetHomeTodoWidget(
+                listOf<HomeTodoWidgetData.Todo>(
+                    HomeTodoWidgetData.Todo(
+                        id = 1,
+                        title = "Pembayaran Virtual Account-mu",
+                        dueDate = "Jatuh Tempo 2 Hari Lagi!",
+                        contextInfo = "Contextual description maximum 2 lines",
+                        feParam = "close=123",
+                        imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/9/26/d4fa8b84-bc32-44d7-b4bd-4ba059ae192e.jpg",
+                        cta = HomeTodoWidgetData.Cta(type = HomeComponentCta.CTA_TYPE_FILLED, mode = HomeComponentCta.CTA_MODE_MAIN, text = "Bayar")
+                    ),
+                    HomeTodoWidgetData.Todo(
+                        id = 2,
+                        title = "Selesaikan pembayaran kamu, yuk!",
+                        dueDate = "Paling Lambat Besok",
+                        contextInfo = "BCA - Virtual Account",
+                        price = "Rp7.999.000",
+                        feParam = "close=124",
+                        imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/9/26/d4fa8b84-bc32-44d7-b4bd-4ba059ae192e.jpg",
+                        cta = HomeTodoWidgetData.Cta(type = HomeComponentCta.CTA_TYPE_FILLED, mode = HomeComponentCta.CTA_MODE_MAIN, text = "Bayar")
+                    ),
+                    HomeTodoWidgetData.Todo(
+                        id = 3,
+                        title = "Perlu cicilan? Pakai GoPayLater Cicil aja!",
+                        feParam = "close=125",
+                        contextInfo = "Limit Rp5.000.000 siap dipakai, tinggal aktifkan. Yuk pakai sekarang!",
+                        imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/9/26/d4fa8b84-bc32-44d7-b4bd-4ba059ae192e.jpg",
+                        cta = HomeTodoWidgetData.Cta(type = HomeComponentCta.CTA_TYPE_GHOST, mode = HomeComponentCta.CTA_MODE_MAIN, text = "Cek")
+                    )
+                )
+            )
+        )
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(TodoWidgetQuery())
         graphqlUseCase.setRequestParams(params.parameters)

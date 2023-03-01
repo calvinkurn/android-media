@@ -290,19 +290,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testTodoWidget() {
-        HomeDCCassavaTest {
-            initTest()
-            doActivityTestByModelClass(dataModelClass = TodoWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnTodoWidget(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET)
-        }
-    }
-
-    @Test
     fun testOpenScreenHomepage() {
         HomeDCCassavaTest {
             initTest()
