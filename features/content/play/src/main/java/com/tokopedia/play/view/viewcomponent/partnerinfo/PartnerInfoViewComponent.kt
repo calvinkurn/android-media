@@ -1,13 +1,15 @@
 package com.tokopedia.play.view.viewcomponent.partnerinfo
 
-import android.util.Log
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -27,8 +29,6 @@ class PartnerInfoViewComponent(
         btnFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
         }
-        val rootWidth = rootView.measuredWidth
-        Log.d("sukses width", "${rootView.measuredWidth} -- ${rootView.width }")
     }
 
     fun setInfo(info: PlayPartnerInfo) {
@@ -61,6 +61,13 @@ class PartnerInfoViewComponent(
     private fun setupListener(applink: String) {
         rootView.setOnClickListener {
             listener.onPartnerInfoClicked(this, applink)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        btnFollow.updateLayoutParams {
+            width = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
 
