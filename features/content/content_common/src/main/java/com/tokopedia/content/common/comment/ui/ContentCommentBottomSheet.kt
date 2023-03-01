@@ -1,7 +1,9 @@
 package com.tokopedia.content.common.comment.ui
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -23,7 +25,9 @@ import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,6 +39,7 @@ import javax.inject.Inject
  */
 class ContentCommentBottomSheet @Inject constructor(
     factory: ContentCommentFactory.Creator,
+    private val router: Router,
 ) : BottomSheetUnify(), CommentViewHolder.Item.Listener, CommentViewHolder.Expandable.Listener {
 
     private var _binding: FragmentContentCommentBottomSheetBinding? = null
@@ -114,6 +119,12 @@ class ContentCommentBottomSheet @Inject constructor(
                         )
                         binding.commentGlobalError.setActionClickListener {
                             viewModel.submitAction(CommentAction.RefreshComment)
+                        }
+                        binding.commentGlobalError.errorSecondaryAction.show()
+                        binding.commentGlobalError.errorSecondaryAction.text = getString(R.string.content_comment_error_secondary)
+                        binding.commentGlobalError.setSecondaryActionClickListener {
+                            val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                            router.route(requireActivity(), intent)
                         }
                         showError(true)
                     }

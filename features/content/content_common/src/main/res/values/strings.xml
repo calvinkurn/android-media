@@ -145,4 +145,5 @@
     <string name="content_comment_empty_desc">Mulai percakapan dengan berikan komentar</string>
     <string name="content_comment_expand_hide">Sembunyikan</string>
     <string name="content_comment_expand_visible">Lihat %s Balasan</string>
+    <string name="content_comment_error_secondary">Ke Pengaturan</string>
 </resources>
