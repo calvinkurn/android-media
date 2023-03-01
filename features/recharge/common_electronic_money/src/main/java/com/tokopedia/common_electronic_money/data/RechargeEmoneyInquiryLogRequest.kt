@@ -4,6 +4,11 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
 
 data class RechargeEmoneyInquiryLogRequest(
+    @SerializedName("log")
+    val log: EmoneyInquiryLogRequest = EmoneyInquiryLogRequest()
+): GqlParam
+
+data class EmoneyInquiryLogRequest(
     @SerializedName("issuer_id")
     val issueId: Long = 0,
     @SerializedName("inquiry_id")
@@ -14,4 +19,4 @@ data class RechargeEmoneyInquiryLogRequest(
     val rc: String = "",
     @SerializedName("last_balance")
     val lastBalance: Double = 0.0,
-): GqlParam
+)
