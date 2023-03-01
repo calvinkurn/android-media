@@ -140,7 +140,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         cacheManager.put(
             CreatePostViewModel.TAG,
             viewModel,
-            TimeUnit.DAYS.toMillis(7)
+            TimeUnit.DAYS.toMillis(PROGRESS_DURATION)
         )
         cacheManager.id?.let { draftId -> SubmitPostService.startService(this.context, draftId) }
         retryText?.gone()
@@ -271,5 +271,6 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     companion object {
         private const val MAX_PROGRESS_VALUE = 100
+        private const val PROGRESS_DURATION = 7L
     }
 }
