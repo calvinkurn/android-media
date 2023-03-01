@@ -18,7 +18,7 @@ import org.junit.Test
  * Created by Resa on 15/12/20.
  */
 
-class HomeViewModelRechargeBUWidgetUnitTest{
+class HomeViewModelRechargeBUWidgetUnitTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
@@ -32,50 +32,58 @@ class HomeViewModelRechargeBUWidgetUnitTest{
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `When homeRechargeBuUseCase return success on getRechargeBUWidget then homeDataModel should be updated`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                RechargeBUWidgetDataModel(channel = mockInitialChannel)
-        )))
+    fun `When homeRechargeBuUseCase return success on getRechargeBUWidget then homeDataModel should be updated`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    RechargeBUWidgetDataModel(channel = mockInitialChannel)
+                )
+            )
+        )
         getHomeRechargeBuUseCase.givenOnGetRechargeBuWidgetFromHolderReturn(
-                RechargeBUWidgetDataModel(channel = mockChannel)
+            RechargeBUWidgetDataModel(channel = mockChannel)
         )
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeRechargeBuWidgetUseCase = getHomeRechargeBuUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeRechargeBuWidgetUseCase = getHomeRechargeBuUseCase
         )
+        homeViewModel.initFlow()
         homeViewModel.getRechargeBUWidget(WidgetSource.FINANCE)
         homeViewModel.homeDataModel.findWidget<RechargeBUWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(
-                            model.channel == mockChannel
-                    )
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(false)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(
+                    model.channel == mockChannel
+                )
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(false)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `When homeRechargeBuUseCase throws error on getRechargeBUWidget then homeDataModel should not contains rechargeBuModel`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                RechargeBUWidgetDataModel(channel = mockInitialChannel)
-        )))
+    fun `When homeRechargeBuUseCase throws error on getRechargeBUWidget then homeDataModel should not contains rechargeBuModel`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    RechargeBUWidgetDataModel(channel = mockInitialChannel)
+                )
+            )
+        )
         getHomeRechargeBuUseCase.givenOnGetRechargeBuWidgetFromHolderError()
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeRechargeBuWidgetUseCase = getHomeRechargeBuUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeRechargeBuWidgetUseCase = getHomeRechargeBuUseCase
         )
         homeViewModel.getRechargeBUWidget(WidgetSource.FINANCE)
         homeViewModel.homeDataModel.findWidget<RechargeBUWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(false)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(true)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(false)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(true)
+            }
         )
     }
 }
-

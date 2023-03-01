@@ -39,19 +39,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggest
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomePlayUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomePopularKeywordUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeBuWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
@@ -113,7 +101,8 @@ fun createHomeViewModel(
     deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
     deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
     getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
-    homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true)
+    homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true),
+    homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
@@ -135,7 +124,8 @@ fun createHomeViewModel(
         deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase },
         deletePayLaterWidgetUseCase = Lazy { deletePayLaterWidgetUseCase },
         getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
-        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase }
+        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase },
+        homeBalanceWidgetAtf2UseCase = Lazy { homeBalanceWidgetAtf2UseCase }
     )
 }
 
@@ -168,7 +158,8 @@ fun createHomeDynamicChannelUseCase(
     homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
     homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
     homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true),
-    homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true)
+    homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true),
+    homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase = mockk(relaxed = true)
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
@@ -198,7 +189,8 @@ fun createHomeDynamicChannelUseCase(
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
         homeChooseAddressRepository = homeChooseAddressRepository,
         userSessionInterface = homeUserSessionInterface,
-        homeMissionWidgetRepository = homeMissionWidgetRepository
+        homeMissionWidgetRepository = homeMissionWidgetRepository,
+        homeBalanceWidgetAtf2UseCase = homeBalanceWidgetAtf2UseCase
     )
 }
 

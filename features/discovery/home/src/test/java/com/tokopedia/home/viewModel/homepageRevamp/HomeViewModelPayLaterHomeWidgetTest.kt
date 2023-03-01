@@ -25,7 +25,6 @@ class HomeViewModelPayLaterHomeWidgetTest {
     private val getGetPayLaterWidgetUseCase = mockk<GetPayLaterWidgetUseCase>(relaxed = true)
     private val getGetPayLaterWidgetCloseUsecase = mockk<ClosePayLaterWidgetUseCase>(relaxed = true)
 
-
     private val errorMessage = "Failed"
     private val errorMockThrowable = Throwable(message = errorMessage)
 
@@ -37,10 +36,12 @@ class HomeViewModelPayLaterHomeWidgetTest {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    HomePayLaterWidgetDataModel( null, mockChannel)
-                ))
+                    HomePayLaterWidgetDataModel(null, mockChannel)
+                )
+            )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.initFlow()
 
         // PayLaterWidget must be visible
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is HomePayLaterWidgetDataModel } != null)
@@ -50,7 +51,8 @@ class HomeViewModelPayLaterHomeWidgetTest {
     fun `PayLaterWidget must not be visible if there is no dynamic channel with home_todo layout`() {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
-                list = listOf())
+                list = listOf()
+            )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         // PayLaterWidget must not be visible
@@ -63,12 +65,13 @@ class HomeViewModelPayLaterHomeWidgetTest {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    HomePayLaterWidgetDataModel( null, mockChannel)
-                ))
+                    HomePayLaterWidgetDataModel(null, mockChannel)
+                )
+            )
         )
 
         val result = mockk<PayLaterWidgetData>(relaxed = true)
-        coEvery { getGetPayLaterWidgetUseCase.getPayLaterWidgetData( any(), any()) }
+        coEvery { getGetPayLaterWidgetUseCase.getPayLaterWidgetData(any(), any()) }
             .coAnswers {
                 firstArg<(PayLaterWidgetData) -> Unit>().invoke(result)
             }
@@ -78,7 +81,7 @@ class HomeViewModelPayLaterHomeWidgetTest {
             getPayLaterWidgetUseCase = getGetPayLaterWidgetUseCase
         )
 
-        //initial PayLaterWidgetData should be null -> Widget is showing without data
+        // initial PayLaterWidgetData should be null -> Widget is showing without data
         homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is HomePayLaterWidgetDataModel }?.let {
             assert((it as HomePayLaterWidgetDataModel).payLaterWidgetData == null)
         }
@@ -97,8 +100,9 @@ class HomeViewModelPayLaterHomeWidgetTest {
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    HomePayLaterWidgetDataModel( null, mockChannel)
-                ))
+                    HomePayLaterWidgetDataModel(null, mockChannel)
+                )
+            )
         )
 
         coEvery { getGetPayLaterWidgetUseCase.getPayLaterWidgetData(any(), any()) }
@@ -123,13 +127,14 @@ class HomeViewModelPayLaterHomeWidgetTest {
     }
 
     @Test
-    fun `PayLaterWidget must be deleted when getCMHomeWidgetData throw exception`(){
+    fun `PayLaterWidget must be deleted when getCMHomeWidgetData throw exception`() {
         val mockChannel = DynamicHomeChannel.Channels()
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
-                    HomePayLaterWidgetDataModel( null, mockChannel)
-                ))
+                    HomePayLaterWidgetDataModel(null, mockChannel)
+                )
+            )
         )
         homeViewModel = createHomeViewModel(
             getHomeUseCase = getHomeUseCase,
@@ -152,7 +157,8 @@ class HomeViewModelPayLaterHomeWidgetTest {
             HomeDynamicChannelModel(
                 list = listOf(
                     homePayLaterWidgetDataModel
-                ))
+                )
+            )
         )
 
         val result = mockk<PayLaterCloseSuccessResponse>(relaxed = true)
@@ -168,7 +174,6 @@ class HomeViewModelPayLaterHomeWidgetTest {
 
         homeViewModel.deletePayLaterWidget()
 
-
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is HomePayLaterWidgetDataModel } == null)
     }
 
@@ -179,7 +184,8 @@ class HomeViewModelPayLaterHomeWidgetTest {
             HomeDynamicChannelModel(
                 list = listOf(
                     homePayLaterWidgetDataModel
-                ))
+                )
+            )
         )
 
         coEvery { getGetPayLaterWidgetCloseUsecase.getPayLaterWidgetCloseData(any(), any()) }
@@ -196,17 +202,17 @@ class HomeViewModelPayLaterHomeWidgetTest {
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is HomePayLaterWidgetDataModel } == null)
     }
 
-
     @ExperimentalCoroutinesApi
     @Test
-    fun `PayLaterWidget must be deleted when deletePayLaterWidget throw exception`(){
+    fun `PayLaterWidget must be deleted when deletePayLaterWidget throw exception`() {
         val homePayLaterWidgetDataModel = mockk<HomePayLaterWidgetDataModel>(relaxed = true)
 
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 list = listOf(
                     homePayLaterWidgetDataModel
-                ))
+                )
+            )
         )
 
         homeViewModel = createHomeViewModel(
@@ -220,5 +226,4 @@ class HomeViewModelPayLaterHomeWidgetTest {
 
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is HomePayLaterWidgetDataModel } == null)
     }
-
 }
