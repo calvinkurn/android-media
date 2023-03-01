@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.FeedCardModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -17,9 +17,9 @@ import com.tokopedia.kotlin.extensions.view.show
 class FeedPostViewHolder(
     private val binding: ItemFeedPostBinding,
     private val listener: FeedListener
-) : AbstractViewHolder<FeedModel>(binding.root) {
+) : AbstractViewHolder<FeedCardModel>(binding.root) {
 
-    override fun bind(element: FeedModel?) {
+    override fun bind(element: FeedCardModel?) {
         element?.let {
             binding.apply {
                 tvFeed.text = it.text

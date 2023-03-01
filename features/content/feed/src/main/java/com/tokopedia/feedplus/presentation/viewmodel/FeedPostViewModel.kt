@@ -1,9 +1,16 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.feedplus.domain.mapper.MapperFeedHome
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,6 +25,10 @@ class FeedPostViewModel @Inject constructor(
     var source: String = ""
     var cursor = ""
 
+    private val _feedHome = MutableLiveData<Result<FeedModel>>()
+    val feedHome: LiveData<Result<FeedModel>>
+        get() = _feedHome
+
     fun fetchFeedPosts() {
         launchCatchError(dispatchers.main, block = {
             val response = withContext(dispatchers.io) {
@@ -25,9 +36,13 @@ class FeedPostViewModel @Inject constructor(
                     source,
                     cursor
                 )
-                feedXHomeUseCase.executeOnBackground()
+                val result = feedXHomeUseCase.executeOnBackground()
+                MapperFeedHome.transform(result.feedXHome)
             }
+            cursor = response.pagination.cursor
+            _feedHome.value = Success(response)
         }) {
+            _feedHome.value = Fail(it)
         }
     }
 }

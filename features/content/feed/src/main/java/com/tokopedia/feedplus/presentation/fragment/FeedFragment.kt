@@ -24,10 +24,10 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.model.FeedCardModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
 import com.tokopedia.feedplus.presentation.model.FeedMenuItem
-import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -80,9 +80,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
         return binding?.root
@@ -90,8 +88,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        feedPostViewModel.fetchFeedPosts()
 
         initView()
         observeClearViewData()
@@ -150,10 +146,10 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         }
     }
 
-    override fun onMenuClicked(model: FeedModel) {
+    override fun onMenuClicked(model: FeedCardModel) {
         activity?.let {
-            feedMenuSheet = FeedThreeDotsMenuBottomSheet
-                .getFragment(it.supportFragmentManager, it.classLoader)
+            feedMenuSheet =
+                FeedThreeDotsMenuBottomSheet.getFragment(it.supportFragmentManager, it.classLoader)
             feedMenuSheet.setListener(this)
             feedMenuSheet.setData(getMenuItemData(), model.id)
             feedMenuSheet.show(it.supportFragmentManager)
@@ -196,16 +192,17 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
             LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.layoutManager = layoutManager
             it.rvFeedPost.adapter = adapter
-
-            adapter?.addElement(
-                listOf(
-                    FeedModel(text = "Post 1"),
-                    FeedModel(text = "Post 2"),
-                    FeedModel(text = "Post 3"),
-                    FeedModel(text = "Post 4"),
-                    FeedModel(text = "Post 5")
-                )
-            )
+            it.rvFeedPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    layoutManager?.let { lm ->
+                        adapter?.let { mAdapter ->
+                            if (newState == RecyclerView.SCROLL_STATE_IDLE && lm.findLastVisibleItemPosition() >= (mAdapter.itemCount - MINIMUM_ENDLESS_CALL)) {
+                                feedPostViewModel.fetchFeedPosts()
+                            }
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -213,6 +210,17 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         feedMainViewModel.isInClearView.observe(viewLifecycleOwner) {
             isInClearViewMode = it
             adapter?.onToggleClearView()
+        }
+    }
+
+    private fun observePostData() {
+        feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    adapter?.addElement(it.data.items)
+                }
+                is Fail -> {}
+            }
         }
     }
 
@@ -236,15 +244,10 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         items.add(
             FeedMenuItem(
                 drawable = getIconUnifyDrawable(
-                    requireContext(),
-                    IconUnify.WARNING,
-                    MethodChecker.getColor(
-                        context,
-                        R.color.Unify_RN500
+                    requireContext(), IconUnify.WARNING, MethodChecker.getColor(
+                        context, R.color.Unify_RN500
                     )
-                ),
-                name = getString(feedR.string.feed_report),
-                type = FeedMenuIdentifier.LAPORKAN
+                ), name = getString(feedR.string.feed_report), type = FeedMenuIdentifier.LAPORKAN
             )
         )
         return items
@@ -254,11 +257,12 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         const val REQUEST_REPORT_POST_LOGIN = 1201
 
-        fun createFeedFragment(data: FeedDataModel): FeedFragment =
-            FeedFragment().also {
-                it.arguments = Bundle().apply {
-                    putParcelable(ARGUMENT_DATA, data)
-                }
+        private const val MINIMUM_ENDLESS_CALL = 1
+
+        fun createFeedFragment(data: FeedDataModel): FeedFragment = FeedFragment().also {
+            it.arguments = Bundle().apply {
+                putParcelable(ARGUMENT_DATA, data)
             }
+        }
     }
 }
