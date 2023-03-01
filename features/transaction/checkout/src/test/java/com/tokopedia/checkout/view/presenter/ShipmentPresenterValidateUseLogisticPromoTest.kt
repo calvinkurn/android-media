@@ -169,7 +169,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
                     messageUiModel = MessageUiModel(state = "green")
-            )
+                )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
@@ -265,7 +265,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                     uniqueId = cartString,
                     code = promoCode,
                     messageUiModel = MessageUiModel(state = "red", text = errorMessage)
-            )
+                )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
@@ -319,7 +319,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                     type = "global",
                     uniqueId = cartString,
                     messageUiModel = MessageUiModel(state = "red", text = errorMessage)
-            )
+                )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(

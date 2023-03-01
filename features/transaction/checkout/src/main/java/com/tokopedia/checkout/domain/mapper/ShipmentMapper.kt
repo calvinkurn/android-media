@@ -234,7 +234,7 @@ class ShipmentMapper @Inject constructor() {
                     autoCourierSelection = it.autoCourierSelection
                     boMetadata = it.boMetadata
                     courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
-                scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
+                    scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
                 }
             )
@@ -769,8 +769,8 @@ class ShipmentMapper @Inject constructor() {
                     code = voucherOrdersItem.code
                     uniqueId = voucherOrdersItem.uniqueId
                     message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
-                type = voucherOrdersItem.type
-                    }
+                    type = voucherOrdersItem.type
+                }
             )
         }
 

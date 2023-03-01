@@ -182,7 +182,7 @@ class ShipmentPresenterValidateUseFinalTest {
                 PromoCheckoutVoucherOrdersItemUiModel(
                     type = "logistic",
                     messageUiModel = MessageUiModel(state = "green")
-            )
+                )
             )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(

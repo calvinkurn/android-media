@@ -64,7 +64,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -274,8 +273,6 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     private boolean isShipmentTraceStopped;
     private String cornerId;
     private PromoNotEligibleBottomSheet promoNotEligibleBottomsheet;
-    private Gson gson;
-
     @Inject
     ShipmentAdapter shipmentAdapter;
     @Inject
@@ -2033,10 +2030,10 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
+                    sendAnalyticsEpharmacyClickPembayaran();
                     if (shipmentPresenter.isUsingDynamicDataPassing()) {
                         shipmentPresenter.validateDynamicData();
                     } else {
-                        sendAnalyticsEpharmacyClickPembayaran();
                         doCheckout();
                     }
                 }
