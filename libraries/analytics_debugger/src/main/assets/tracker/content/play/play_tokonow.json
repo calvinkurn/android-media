@@ -70,6 +70,7 @@
         }
       ],
       "item_list": "/groupchat - featured product",
+      "item_list_name": "/groupchat - featured product",
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
