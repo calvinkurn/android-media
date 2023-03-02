@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.R
@@ -32,7 +31,6 @@ sealed class ViewToViewItemViewHolder(
             with(binding.card) {
                 imageItem.loadImage(element.imageUrl)
                 tgPrice.text = element.price
-                tgName.maxLines = Int.ONE
                 tgName.text = element.name
             }
             setUpListener(element)
@@ -70,7 +68,6 @@ sealed class ViewToViewItemViewHolder(
             with(binding.card) {
                 imageItem.loadImage(element.imageUrl)
                 tgPrice.text = element.price
-                tgName.maxLines = Int.ONE
                 tgName.text = element.name
             }
             setUpListener(element)
