@@ -436,7 +436,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             dataMap["groupName"] = groupName
             dataMap[GROUPID] = groupId
             dataMap[NAME_EDIT] = true
-            if (priceDaily != 0.0F) {
+            if (priceDaily != 0.0F && priceDaily < dailyBudget) {
                 dataMap[DAILY_BUDGET] = dailyBudget.toString()
             }
             if (this.bidType == BID_TYPE_BROWSE) {
