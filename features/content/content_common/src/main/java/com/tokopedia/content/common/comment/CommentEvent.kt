@@ -3,18 +3,18 @@ package com.tokopedia.content.common.comment
 /**
  * @author by astidhiyaa on 20/02/23
  */
-sealed class CommentEvent {
+sealed interface CommentEvent {
     data class ShowSuccessToaster(
         val message: String? = null
-    ) : CommentEvent()
+    ) : CommentEvent
 
     data class ShowErrorToaster(
         val message: Throwable,
         val onClick: () -> Unit
-    ) : CommentEvent()
+    ) : CommentEvent
 
-    data class OpenAppLink(val appLink: String) : CommentEvent()
-    object OpenReportEvent : CommentEvent()
+    data class OpenAppLink(val appLink: String) : CommentEvent
+    object OpenReportEvent : CommentEvent
 
-    object ReportSuccess : CommentEvent()
+    object ReportSuccess : CommentEvent
 }

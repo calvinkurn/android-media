@@ -153,13 +153,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.DeleteComment -> deleteComment(action.isFromToaster)
             is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
-            CommentAction.RequestReportAction -> {
-                requireLogin {
-                    viewModelScope.launch {
-                        _event.emit(CommentEvent.OpenReportEvent)
-                    }
-                }
-            }
+            CommentAction.RequestReportAction ->  handleOpenReport()
             is CommentAction.SelectComment -> _selectedComment.update {
                 val item = action.comment
                 it.copy(first = item, second = _comments.value.list.indexOf(item))
@@ -260,6 +254,14 @@ class ContentCommentViewModel @AssistedInject constructor(
             val newList = it.list.toMutableList()
             newList.add(_selectedComment.value.second, _selectedComment.value.first)
             it.copy(list = newList)
+        }
+    }
+
+    private fun handleOpenReport() {
+        requireLogin {
+            viewModelScope.launch {
+                _event.emit(CommentEvent.OpenReportEvent)
+            }
         }
     }
 
