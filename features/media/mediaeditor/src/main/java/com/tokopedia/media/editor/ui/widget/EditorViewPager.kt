@@ -4,20 +4,26 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
 import com.tokopedia.media.editor.ui.adapter.viewPagerTag
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.LOAD_IMAGE_FAILED
+import com.tokopedia.media.editor.utils.newRelicLog
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaException
+import com.tokopedia.unifycomponents.Toaster
 
-class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet) {
+class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet),
+    EditorViewPagerAdapter.Listener {
     private var editorAdapter: EditorViewPagerAdapter? = null
     private var previousVideoIndex = INITIAL_VIEW_PAGER_INDEX
     private var callback: (position: Int, isVideo: Boolean) -> Unit = { _, _ -> }
 
     fun setAdapter(listData: List<EditorUiModel>) {
-        editorAdapter = EditorViewPagerAdapter(context, listData)
+        editorAdapter = EditorViewPagerAdapter(context, listData, this)
         adapter = editorAdapter
 
         addOnPageChangeListener(object : OnPageChangeListener {
@@ -72,6 +78,9 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                     view.post {
                         onImageUpdated()
                     }
+                },
+                onError = {
+                    errorHandler(it)
                 }
             )
         }
@@ -87,6 +96,28 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
 
     fun setOnPageChanged(callback: (position: Int, isVideo: Boolean) -> Unit) {
         this.callback = callback
+    }
+
+    override fun onErrorImageLoad(exception: MediaException?) {
+        errorHandler(exception)
+    }
+
+    private fun errorHandler(exception: MediaException?) {
+        newRelicLog(
+            mapOf(
+                LOAD_IMAGE_FAILED to "${exception?.message}"
+            )
+        )
+        errorLoadToaster()
+    }
+
+    private fun errorLoadToaster() {
+        Toaster.build(
+            this,
+            context.resources.getString(R.string.editor_activity_failed_load_image),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR
+        ).show()
     }
 
     companion object {

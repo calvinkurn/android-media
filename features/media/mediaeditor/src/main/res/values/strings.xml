@@ -28,6 +28,8 @@
     <string name="editor_add_logo_toast_text">Yah, koneksi internetmu terputus saat gunakan fitur ini. Coba lagi, ya.</string>
     <string name="editor_add_logo_toast_cta">Oke</string>
     <string name="editor_add_logo_toast_final">Tidak ada koneksi internet</string>
+    <string name="editor_activity_memory_limit">Yah, memori HP-mu penuh. Tutup dulu aplikasi lain yang lagi kamu buka buat lanjut edit fotonya.</string>
+    <string name="editor_activity_failed_load_image">Kendala pada load Image, silahkan coba lagi</string>
 
     <!-- Dialog confirmation text -->
     <string name="editor_detail_activity_dialog_title">Batal simpan edit media?</string>
@@ -64,6 +66,4 @@
     <string name="add_logo_tips_upload_text">Upload Logo</string>
     <string name="add_logo_tips_understand_text">Oke Mengerti</string>
 
-    <!-- Dialog memory limit -->
-    <string name="editor_activity_memory_dialog_desc">Yah, memori HP-mu penuh. Tutup dulu aplikasi lain yang lagi kamu buka buat lanjut edit fotonya.</string>
 </resources>

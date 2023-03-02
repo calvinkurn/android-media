@@ -24,6 +24,7 @@ import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import com.tokopedia.picker.common.cache.EditorCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import java.io.FileNotFoundException
+import java.io.IOException
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -175,7 +176,7 @@ class EditorActivity : BaseEditorActivity() {
                             )
                         )
                     }
-                    is ErrnoException -> {
+                    is ErrnoException, is IOException -> {
                         Toast.makeText(this, "Storage not enough", Toast.LENGTH_LONG).show()
                         newRelicLog(
                             mapOf(

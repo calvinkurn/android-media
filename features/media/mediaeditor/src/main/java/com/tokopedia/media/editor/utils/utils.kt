@@ -12,11 +12,7 @@ import android.os.Handler
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.activity.main.EditorActivity
-import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.utils.file.FileUtil
@@ -153,7 +149,7 @@ fun Fragment.getRunnable(action: () -> Unit): Runnable {
 
 fun Fragment.delay(action: () -> Unit, delayTime: Long) {
     Handler().postDelayed(getRunnable {
-         action()
+        action()
     }, delayTime)
 }
 
@@ -163,7 +159,7 @@ fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
 }
 
 // get image size without load the image
-fun getImageSize(path: String): Pair<Int, Int>{
+fun getImageSize(path: String): Pair<Int, Int> {
     return try {
         val option = BitmapFactory.Options()
         option.inJustDecodeBounds = true
@@ -212,24 +208,21 @@ fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
 }
 
 fun Activity.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null) {
-    ServerLogger.log(
-        Priority.P2,
-        "MEDIA_EDITOR_MEMORY_LIMIT",
+    // format = image width || image height || avail memory
+    newRelicLog(
         mapOf(
-            "image" to "${imageSize.first} || ${imageSize.second}",
-            "memory" to "${getFreeMemory()}",
-            "err" to (msg ?: "")
+            "Error" to (msg ?: ""),
+            MEMORY_LIMIT_FIELD to "width: ${imageSize.first} || height: ${imageSize.second} || " +
+                "avail memory: ${getFreeMemory()}"
         )
     )
 
-    val toastDelayTime = 1500L
-    Handler().postDelayed({
-        if (!this.isDestroyed) {
-            Toast.makeText(this,
-                R.string.editor_activity_memory_dialog_desc,
-                Toast.LENGTH_LONG
-            ).show()
-            finish()
-        }
-    }, toastDelayTime)
+    if (!this.isDestroyed) {
+        Toast.makeText(
+            this,
+            R.string.editor_activity_memory_limit,
+            Toast.LENGTH_LONG
+        ).show()
+        finish()
+    }
 }

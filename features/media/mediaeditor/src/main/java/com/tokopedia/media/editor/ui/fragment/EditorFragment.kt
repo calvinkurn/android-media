@@ -145,6 +145,7 @@ class EditorFragment @Inject constructor(
                         listener(
                             onError = {
                                 it?.let { exception ->
+                                    loader?.dismiss()
                                     activity?.showMemoryLimitToast(imageSize, exception.message)
                                 }
                             }
