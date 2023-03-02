@@ -174,5 +174,6 @@
 
     <string name="contact_us_ok">OK</string>
     <string name="contact_us_failed">Terimakasih telah berusaha memberitahu kami, silahkan mencoba kembali</string>
+    <string name="tool_tip_tanya_default_value">Ada pertanyaan seputar transaksi? Chat dengan Tanya yuk!</string>
 
 </resources>

@@ -995,7 +995,10 @@ class ChatbotFragment :
 
     private fun handlingForMessageIdValidity(messageId : String){
         try{
-            messageId.toLong()
+            val id = messageId.toLong()
+            if(id == 0L){
+                throw NumberFormatException()
+            }
         } catch (e: NumberFormatException) {
             setErrorLayoutForServer()
             ChatbotNewRelicLogger.logNewRelic(
