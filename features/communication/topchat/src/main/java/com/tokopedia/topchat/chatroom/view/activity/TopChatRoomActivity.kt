@@ -617,9 +617,6 @@ open class TopChatRoomActivity :
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (::chatRoomFragment.isInitialized) {
-            chatRoomFragment.setupAttachmentsPreview(intent?.extras)
-        }
     }
 
     companion object {
