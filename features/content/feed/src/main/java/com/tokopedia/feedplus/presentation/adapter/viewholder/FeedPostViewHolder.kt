@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
@@ -43,6 +44,11 @@ class FeedPostViewHolder(
 
             rvFeedPostImageContent.layoutManager = layoutManager
             LinearSnapHelper().attachToRecyclerView(rvFeedPostImageContent)
+            rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    indicatorFeedContent.setCurrentIndicator(layoutManager.findFirstVisibleItemPosition())
+                }
+            })
         }
     }
 
