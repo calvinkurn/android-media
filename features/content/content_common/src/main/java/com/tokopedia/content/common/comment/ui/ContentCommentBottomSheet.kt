@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.comment.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.core.text.toSpanned
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -17,10 +19,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
@@ -99,6 +101,13 @@ class ContentCommentBottomSheet @Inject constructor(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
+                binding.ivCommentSend.background.setTint(
+                    if (!p0.isNullOrBlank()) MethodChecker.getColor(
+                        requireContext(),
+                        unifyR.color.Unify_GN500
+                    ) else MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
+                )
+
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
@@ -235,10 +244,11 @@ class ContentCommentBottomSheet @Inject constructor(
                     }
                     CommentEvent.ShowKeyboard -> {
                         binding.newComment.requestFocus()
-                        KeyboardHandler.showSoftKeyboard(requireActivity())
+                        showKeyboard(true)
                     }
                     CommentEvent.HideKeyboard -> {
-                        KeyboardHandler.hideSoftKeyboard(requireActivity())
+                        binding.newComment.setText("")
+                        showKeyboard(false)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
                     CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
@@ -345,6 +355,13 @@ class ContentCommentBottomSheet @Inject constructor(
         viewModel.submitAction(CommentAction.RefreshComment)
     }
 
+    private fun showKeyboard(needToShow: Boolean) {
+        val imm =
+            binding.newComment.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (needToShow) imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
+        else imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         setEntrySource(null)
@@ -416,8 +433,13 @@ class ContentCommentBottomSheet @Inject constructor(
             )
         } else {
             val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
-            viewModel.submitAction(CommentAction.ReplyComment(convert, TagMentionBuilder.isChildOrParent(
-                binding.newComment.text?.toSpanned(), binding.newComment.tag.toString())))
+            viewModel.submitAction(
+                CommentAction.ReplyComment(
+                    convert, TagMentionBuilder.isChildOrParent(
+                        binding.newComment.text?.toSpanned(), binding.newComment.tag.toString()
+                    )
+                )
+            )
         }
     }
 

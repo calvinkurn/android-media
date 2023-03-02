@@ -62,7 +62,9 @@ class MentionedSpanned(
     }
 }
 
-class BaseSpan(val fullText: String, val content: String) : ForegroundColorSpan(Color.BLACK) {}
+class BaseSpan(val fullText: String, val content: String) : ForegroundColorSpan(Color.BLACK) {
+    val sentText: String get() = fullText + content
+}
 
 
 object TagMentionBuilder {
@@ -77,7 +79,7 @@ object TagMentionBuilder {
 
     fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
         if (text == null) return CommentType.Parent
-        val find = regex.findAll(text)
+        val find = text.getSpans<BaseSpan>(0, text.length)
         return if (find.count() == MENTION_VALUE) {
             CommentType.Child(commentId)
         } else {
@@ -98,8 +100,9 @@ object TagMentionBuilder {
             )
             val restructured =
                 "{${find.elementAt(0).value}|${find.elementAt(1).value}|${find.elementAt(2).value}}"
+            val span = BaseSpan(fullText = restructured, content = comment)
             buildSpannedString {
-                append(name, BaseSpan(restructured, comment), Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+                append(name, span, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                 append(comment)
             }
         } else buildSpannedString { append(text) }
@@ -108,7 +111,7 @@ object TagMentionBuilder {
     fun getRawText(text: Spanned?): String {
         if (text.isNullOrBlank()) return ""
         val convert = text.getSpans<BaseSpan>(0, text.length)
-        return convert.joinToString { it.fullText + it.content }.ifBlank {
+        return convert.joinToString { it.sentText }.ifBlank {
             text.toString()
         }
     }
@@ -153,7 +156,7 @@ object TagMentionBuilder {
                         Spanned.SPAN_COMPOSING
                     )
                     append(
-                        name,
+                        " $name",
                         mentionSpanned,
                         Spanned.SPAN_COMPOSING
                     )
