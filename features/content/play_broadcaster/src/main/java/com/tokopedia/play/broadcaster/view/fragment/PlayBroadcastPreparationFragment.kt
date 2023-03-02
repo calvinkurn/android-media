@@ -60,6 +60,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
@@ -448,10 +449,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         eventBus.emit(Event.ClickSetSchedule)
                     }
                     DynamicPreparationMenu.Menu.FaceFilter -> {
-                        PlayBroFaceFilterSetupBottomSheet.getFragment(
-                            childFragmentManager,
-                            requireContext().classLoader,
-                        ).show(childFragmentManager)
+                        childFragmentManager.commit {
+                            add(FaceFilterSetupFragment::class.java, null, null)
+                        }
                     }
                 }
             }
