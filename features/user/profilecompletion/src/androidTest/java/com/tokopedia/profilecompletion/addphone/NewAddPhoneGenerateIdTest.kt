@@ -21,7 +21,9 @@ class NewAddPhoneGenerateIdTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        NewAddPhoneActivity::class.java, false, false
+        NewAddPhoneActivity::class.java,
+        false,
+        false
     )
 
     private val applicationContext: Context
