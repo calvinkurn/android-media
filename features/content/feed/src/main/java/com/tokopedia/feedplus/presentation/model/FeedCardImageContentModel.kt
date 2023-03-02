@@ -37,8 +37,6 @@ data class FeedCardImageContentModel(
     val deletable: Boolean,
     val detailScore: List<FeedScoreModel>,
     val publishedAt: String,
-    val promos: List<String>,
-    val items: List<FeedCardItemModel>,
     val maxDiscountPercentage: Int,
     val maxDiscountPercentageFmt: String
 ) : Visitable<FeedAdapterTypeFactory> {

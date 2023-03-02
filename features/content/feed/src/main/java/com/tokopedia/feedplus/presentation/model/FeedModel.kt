@@ -7,6 +7,6 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
  * Created By : Shruti Agarwal on 10/02/23
  */
 data class FeedModel(
-    val items: List<Visitable<FeedAdapterTypeFactory>>,
-    val pagination: FeedPaginationModel
+    var items: MutableList<Visitable<FeedAdapterTypeFactory>>,
+    var pagination: FeedPaginationModel
 )
