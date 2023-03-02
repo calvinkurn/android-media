@@ -697,9 +697,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
                         showMainComponent(false)
+                        showOverlayBackground(false)
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
                         showMainComponent(true)
+                        showOverlayBackground(true)
                     }
                     else -> {}
                 }
@@ -939,6 +941,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             binding.preparationMenu.dismissCoachMark()
         }
         binding.groupPreparationMain.showWithCondition(isShow)
+    }
+
+    private fun showOverlayBackground(isShow: Boolean) {
+        if(isShow) {
+            binding.root.setBackgroundResource(R.color.play_bro_dms_preparation_overlay)
+        }
+        else {
+            binding.root.setBackgroundResource(0)
+        }
     }
 
     private fun getProperErrorMessage(err: Throwable): String {

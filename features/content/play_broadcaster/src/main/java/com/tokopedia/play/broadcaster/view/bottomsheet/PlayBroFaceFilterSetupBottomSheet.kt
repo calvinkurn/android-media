@@ -102,6 +102,8 @@ class PlayBroFaceFilterSetupBottomSheet @Inject constructor(
             /** TODO: handle this */
         }
 
+        dialog?.window?.setDimAmount(0f)
+
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.adapter = pagerAdapter
 
