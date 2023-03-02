@@ -171,10 +171,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _fragmentUiModel.value =
                     TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(businessData.customResponse.shop)
                 val existingCheckoutData = getExistingCheckoutData()
-                val isPreviousPopupPromo = existingCheckoutData?.getTokofoodBusinessData()?.isPromoPopupType() == true
+                val existingBusinessData = existingCheckoutData?.getTokofoodBusinessData()
+                val isPreviousPopupPromo = existingBusinessData?.isPromoPopupType() == true
                 checkoutTokoFoodResponse.value = it
                 shopId.value = it.data.getTokofoodBusinessData().customResponse.shop.shopId
-                isConsentAgreed.value = existingCheckoutData?.getTokofoodBusinessData()?.customResponse?.bottomSheet?.isShowBottomSheet != true
+                isConsentAgreed.value = it.data.getTokofoodBusinessData().customResponse.bottomSheet.isShowBottomSheet != true
                 val isEnabled = it.isEnabled()
                 _visitables.value =
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
@@ -193,7 +194,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     if (cacheAddressId.isEmpty()) {
                         // Check pinpoint remotely if cache address id is empty
                         val remoteAddressId = businessData.customResponse.userAddress.addressId.toString()
-                        val secondAddress = keroGetAddressUseCase.get().execute(remoteAddressId)?.secondAddress
+                        val addressResult = keroGetAddressUseCase.get().execute(remoteAddressId)
+                        val secondAddress = addressResult?.secondAddress
                         secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
                             if (hasPinpointRemotely == true) {
                                 _uiEvent.value = PurchaseUiEvent(
@@ -238,7 +240,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     return@launchCatchError
                 }
                 val existingCheckoutData = getExistingCheckoutData()
-                val isPreviousPopupPromo = existingCheckoutData?.getTokofoodBusinessData()?.isPromoPopupType() == true
+                val existingBusinessData = existingCheckoutData?.getTokofoodBusinessData()
+                val isPreviousPopupPromo = existingBusinessData?.isPromoPopupType() == true
                 _uiEvent.value = PurchaseUiEvent(
                     state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
                     data = it to isPreviousPopupPromo
@@ -248,7 +251,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 checkoutTokoFoodResponse.value = it
                 shopId.value = it.data.getTokofoodBusinessData().customResponse.shop.shopId
                 isConsentAgreed.value =
-                    existingCheckoutData?.getTokofoodBusinessData()?.customResponse?.bottomSheet?.isShowBottomSheet != true
+                    it.data.getTokofoodBusinessData().customResponse.bottomSheet.isShowBottomSheet != true
                 val isEnabled = it.isEnabled()
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
                     it,
@@ -295,30 +298,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun deleteProduct(productId: String, previousCartId: String) {
-        refreshPartialCartInformation()
-        val dataList = getVisitablesValue()
-        val toBeDeletedProduct = dataList.getProductById(productId, previousCartId)
-        if (toBeDeletedProduct != null) {
-            val toBeDeleteItems = mutableListOf<Visitable<*>>()
-            toBeDeleteItems.add(toBeDeletedProduct.second)
-
-            if (dataList.isLastAvailableProduct()) {
-                var from = toBeDeletedProduct.first - INDEX_BEFORE_FROM_HEADER
-                val tickerShopErrorData = getVisitablesValue().getTickerErrorShopLevelUiModel()
-                if (tickerShopErrorData != null) {
-                    from = toBeDeletedProduct.first - INDEX_BEFORE_FROM_TICKER
-                }
-                val to = toBeDeletedProduct.first
-                val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
-                toBeDeleteItems.addAll(availableHeaderAndDivider)
-            }
-
-            deleteProducts(toBeDeleteItems, Int.ONE)
-        }
-    }
-
-    fun deleteProductNew(cartId: String) {
+    fun deleteProduct(cartId: String) {
         refreshPartialCartInformation()
         val dataList = getVisitablesValue()
         val toBeDeletedProduct = dataList.getProductByCartId(cartId)
@@ -524,7 +504,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
         } else {
             val checkoutData = getExistingCheckoutData()
-            val consentBottomSheet = checkoutData?.getTokofoodBusinessData()?.customResponse?.bottomSheet
+            val businessData = checkoutData?.getTokofoodBusinessData()
+            val customResponse = businessData?.customResponse
+            val consentBottomSheet = customResponse?.bottomSheet
             consentBottomSheet?.let { userConsent ->
                 if (userConsent.isShowBottomSheet) {
                     _uiEvent.value = PurchaseUiEvent(
@@ -588,7 +570,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun updateProductVariant(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         launch(coroutineContext) {
             val checkoutData = getExistingCheckoutData()
-            val availableProducts = checkoutData?.getTokofoodBusinessData()?.getAvailableSectionProducts()
+            val businessData = checkoutData?.getTokofoodBusinessData()
+            val availableProducts = businessData?.getAvailableSectionProducts()
             availableProducts?.let { products ->
                 val customOrderDetails =
                     CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails(products)

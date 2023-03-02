@@ -118,7 +118,7 @@ object TokoFoodPurchaseUiModelMapper {
                     add(mapProductUnavailableReasonUiModel(isEnabled, message))
                     addAll(carts.map { mapProductUiModel(it, isEnabled, false) })
                 }
-                if (unavailableMap.values.size > Int.ONE) {
+                if (unavailableMap.values.sumOf { it.size } > Int.ONE) {
                     add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                     add(mapAccordionUiModel(isEnabled))
                 }
@@ -656,14 +656,14 @@ object TokoFoodPurchaseUiModelMapper {
                 sectionHeader = unavailableCartGroup.message
                 unavailableSectionMap = unavailableCartGroup.additionalGroupChildIds.associateWith { groupId ->
                     val groupChildIds = businessData.additionalGrouping.details.find { it.additionalGroupId == groupId }
-                    val carts = businessData.cartGroups.firstOrNull()?.carts?.filter { cart ->
+                    val carts = businessData.cartGroups?.firstOrNull()?.carts?.filter { cart ->
                         groupChildIds?.cartIds?.contains(cart.cartId) == true
                     }
                     carts.orEmpty()
                 }
             } else {
                 unavailableCartGroup.message.let { message ->
-                    val unavailableCarts = businessData.cartGroups.firstOrNull()?.carts?.filter {
+                    val unavailableCarts = businessData.cartGroups?.firstOrNull()?.carts?.filter {
                         unavailableCartGroup.cartIds.contains(it.cartId)
                     }.orEmpty()
                     unavailableSectionMap = hashMapOf(message to unavailableCarts)

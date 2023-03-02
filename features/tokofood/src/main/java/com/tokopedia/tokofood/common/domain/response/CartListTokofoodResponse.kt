@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.common.domain.response
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -48,7 +49,7 @@ data class CartGeneralCartListData(
     fun isEnabled(): Boolean = isSuccess() && isErrorTickerEmpty()
 
     fun isEmptyProducts(): Boolean {
-        return data.getTokofoodBusinessData().cartGroups.all { it.carts.isEmpty() }
+        return data.getTokofoodBusinessData().cartGroups?.all { it.carts.isEmpty() }.orTrue()
     }
 
     fun getMiniCartUiModel(): MiniCartUiModel {
@@ -100,7 +101,7 @@ data class CartGeneralCartListData(
     }
 
     fun getProductListFromCart(): List<CartListCartGroupCart> {
-        return data.getTokofoodBusinessData().cartGroups.firstOrNull()?.carts.orEmpty()
+        return data.getTokofoodBusinessData().cartGroups?.firstOrNull()?.carts.orEmpty()
     }
 
     fun getShouldShowMiniCart(): Boolean {
@@ -209,7 +210,7 @@ data class CartListBusinessData(
     @SerializedName("custom_response")
     val customResponse: CartListBusinessDataCustomResponse = CartListBusinessDataCustomResponse(),
     @SerializedName("cart_groups")
-    val cartGroups: List<CartListBusinessDataCartGroup> = listOf()
+    val cartGroups: List<CartListBusinessDataCartGroup>? = listOf()
 ) {
 
     companion object {
@@ -221,13 +222,13 @@ data class CartListBusinessData(
     fun getAvailableSectionProducts(): List<CartListCartGroupCart> {
         val availableCartIds =
             additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.AVAILABLE_SECTION }?.cartIds.orEmpty()
-        return cartGroups.firstOrNull()?.carts?.filter { availableCartIds.contains(it.cartId) }
+        return cartGroups?.firstOrNull()?.carts?.filter { availableCartIds.contains(it.cartId) }
             .orEmpty()
     }
 
     fun getUnavailableSectionProducts(): List<CartListCartGroupCart> {
         val unavailableSectionProductCartIds = getUnavailableSectionProductCartIds()
-        return cartGroups.firstOrNull()?.carts?.filter {
+        return cartGroups?.firstOrNull()?.carts?.filter {
             unavailableSectionProductCartIds.contains(
                 it.cartId
             )

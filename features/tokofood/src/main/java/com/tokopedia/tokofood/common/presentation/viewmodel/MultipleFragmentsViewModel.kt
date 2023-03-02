@@ -63,9 +63,11 @@ class MultipleFragmentsViewModel @Inject constructor(
 
     val shopId: String
         get() {
-            val cardDataValue = cartDataState.value
-            val tokofoodBusinessData = cardDataValue?.data?.getTokofoodBusinessData()
-            val shopData = tokofoodBusinessData?.customResponse?.shop
+            val cartDataValue = cartDataState.value
+            val cartListData = cartDataValue?.data
+            val tokofoodBusinessData = cartListData?.getTokofoodBusinessData()
+            val customResponse = tokofoodBusinessData?.customResponse
+            val shopData = customResponse?.shop
             val shopId = shopData?.shopId
             return shopId.orEmpty()
         }

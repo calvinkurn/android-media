@@ -40,10 +40,26 @@
             "additional_grouping": {
               "details": [
                 {
-                  "additional_group_id": "unavailable_section",
+                  "additional_group_id": "unavailable_section_unavailable",
                   "message": "Stok Habis",
                   "cart_ids": [
-                    "4830e1a0-5a65-42d5-88a5-a80484ae74e7"
+                    "4830e1a0-5a65-42d5-88a5-a80484ae74e7",
+                    "4830e1a0-5a65-42d5-88a5-a80484ae74e8",
+                    "4830e1a0-5a65-42d5-88a5-a80484ae74e9"
+                  ]
+                },
+                {
+                  "additional_group_id": "unavailable_section",
+                  "message": "Semua produk tidak dapat diproses (3)",
+                  "cart_ids": [],
+                  "additional_group_child_ids": [
+                    "unavailable_section_unavailable"
+                  ]
+                },
+                {
+                  "additional_group_id": "available_section",
+                  "cart_ids": [
+                    "4830e1a0-5a65-42d5-88a5-a80484ae74e0"
                   ]
                 }
               ]
@@ -69,6 +85,78 @@
                 "carts": [
                   {
                     "cart_id": "4830e1a0-5a65-42d5-88a5-a80484ae74e7",
+                    "success": 1,
+                    "product_id": "739cf152-d1a4-479f-a0e5-c4cc45e1c9fb",
+                    "shop_id": "828c5671-30cd-46f8-b7f6-f5ab6b197737",
+                    "metadata": {
+                      "notes": "",
+                      "variants": []
+                    },
+                    "custom_response": {
+                      "notes": "",
+                      "variants": [],
+                      "description": "",
+                      "discount_percentage": "",
+                      "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ee13de4d-eaa5-4ca4-8c6a-a9cb0f2ba56e_Go-Biz_20220512_181716.jpeg",
+                      "category_id": "8f276091-5b3d-4528-b26b-cb0cabb1635e",
+                      "original_price_fmt": "",
+                      "original_price": 0,
+                      "name": "Ikan Bakar Bumbu Kecap"
+                    },
+                    "price": 30000,
+                    "price_fmt": "Rp30.000",
+                    "quantity": 1
+                  },
+                  {
+                    "cart_id": "4830e1a0-5a65-42d5-88a5-a80484ae74e8",
+                    "success": 1,
+                    "product_id": "739cf152-d1a4-479f-a0e5-c4cc45e1c9fb",
+                    "shop_id": "828c5671-30cd-46f8-b7f6-f5ab6b197737",
+                    "metadata": {
+                      "notes": "",
+                      "variants": []
+                    },
+                    "custom_response": {
+                      "notes": "",
+                      "variants": [],
+                      "description": "",
+                      "discount_percentage": "",
+                      "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ee13de4d-eaa5-4ca4-8c6a-a9cb0f2ba56e_Go-Biz_20220512_181716.jpeg",
+                      "category_id": "8f276091-5b3d-4528-b26b-cb0cabb1635e",
+                      "original_price_fmt": "",
+                      "original_price": 0,
+                      "name": "Ikan Bakar Bumbu Kecap"
+                    },
+                    "price": 30000,
+                    "price_fmt": "Rp30.000",
+                    "quantity": 1
+                  },
+                  {
+                    "cart_id": "4830e1a0-5a65-42d5-88a5-a80484ae74e9",
+                    "success": 1,
+                    "product_id": "739cf152-d1a4-479f-a0e5-c4cc45e1c9fb",
+                    "shop_id": "828c5671-30cd-46f8-b7f6-f5ab6b197737",
+                    "metadata": {
+                      "notes": "",
+                      "variants": []
+                    },
+                    "custom_response": {
+                      "notes": "",
+                      "variants": [],
+                      "description": "",
+                      "discount_percentage": "",
+                      "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ee13de4d-eaa5-4ca4-8c6a-a9cb0f2ba56e_Go-Biz_20220512_181716.jpeg",
+                      "category_id": "8f276091-5b3d-4528-b26b-cb0cabb1635e",
+                      "original_price_fmt": "",
+                      "original_price": 0,
+                      "name": "Ikan Bakar Bumbu Kecap"
+                    },
+                    "price": 30000,
+                    "price_fmt": "Rp30.000",
+                    "quantity": 1
+                  },
+                  {
+                    "cart_id": "4830e1a0-5a65-42d5-88a5-a80484ae74e0",
                     "success": 1,
                     "product_id": "739cf152-d1a4-479f-a0e5-c4cc45e1c9fb",
                     "shop_id": "828c5671-30cd-46f8-b7f6-f5ab6b197737",

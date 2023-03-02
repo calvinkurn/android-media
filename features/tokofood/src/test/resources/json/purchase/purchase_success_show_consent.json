@@ -1,208 +1,230 @@
 {
-  "cart_list_tokofood": {
-    "message": "",
-    "status": "OK",
+  "cart_general_cart_list": {
+    "header": {
+      "process_time": 0,
+      "messages": [],
+      "reason": "",
+      "error_code": ""
+    },
     "data": {
-      "popup_message": "Yay, ada promo yang otomatis terpakai!",
-      "popup_error_message": "",
-      "popup_message_type": "promo",
-      "shop": {
-        "shop_id": "0d3a8735-6751-48fc-8168-cf3b425f1983",
-        "name": "TokoFood4",
-        "distance": "Jarak Pengiriman 1.6 km"
-      },
-      "tickers": {
-        "top": {
-          "id": 0,
-          "message": "",
-          "page": ""
+      "success": 1,
+      "message": "",
+      "data": {
+        "shopping_summary": {
+          "business_breakdown": [
+            {
+              "business_id": "8811b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
+              "custom_response": {
+                "hide_summary": false
+              },
+              "total_bill": 141278,
+              "total_bill_fmt": "Rp141.278",
+              "product": {
+                "title": "Total Harga (11 item)",
+                "total_price": 120000,
+                "total_price_fmt": "Rp120.000",
+                "total_quantity": 11,
+                "total_cart": 2,
+                "custom_response": {"info":{"image_url":"","bottomsheet":{"title":"","description":""}}}
+              },
+              "add_ons": [
+                {
+                  "title": "Total Diskon Item",
+                  "price": -12222,
+                  "price_fmt": "-Rp12.222",
+                  "custom_response": {"info":{"image_url":"","bottomsheet":{"title":"","description":""}}}
+                },
+                {
+                  "title": "Total Ongkos Kirim",
+                  "price": 23500,
+                  "price_fmt": "Rp23.500",
+                  "custom_response": {"info":{"image_url":"","bottomsheet":{"title":"","description":""}}}
+                },
+                {
+                  "title": "Biaya Layanan GoFood",
+                  "price": 5000,
+                  "price_fmt": "Rp5.000",
+                  "custom_response": {"info":{"image_url":"","bottomsheet":{"title":"","description":""}}}
+                },
+                {
+                  "title": "Biaya Parkir",
+                  "price": 5000,
+                  "price_fmt": "Rp5.000",
+                  "custom_response": {"info":{"image_url":"","bottomsheet":{"title":"","description":""}}}
+                }
+              ]
+            }
+          ]
         },
-        "bottom": {
-          "id": 0,
-          "message": "",
-          "page": ""
-        }
-      },
-      "error_tickers": {
-        "top": {
-          "id": 0,
-          "message": "",
-          "page": ""
-        },
-        "bottom": {
-          "id": 0,
-          "message": "",
-          "page": ""
-        }
-      },
-      "error_unblocking": "",
-      "user_address": {
-        "address_id": 4678593,
-        "address_name": "Rumah",
-        "address": "tokopedia tower lt 52 jl dr satrio",
-        "phone": "628159965151",
-        "receiver_name": "irvanno",
-        "status": 2
-      },
-      "available_section": {
-        "products": [
+        "business_data": [
           {
-            "cart_id": 1169,
-            "product_id": "6fe2a4f1-0ec1-4900-ab30-3c780886197d",
-            "name": "Air",
-            "description": "",
-            "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2f345a93-1588-4cad-9ee0-0a9c2c4c2e57_Go-Biz_20220520_165524.jpeg",
-            "price": 2000,
-            "price_fmt": "Rp2.000",
-            "original_price": 0,
-            "original_price_fmt": "",
-            "discount_percentage": "",
-            "notes": "",
-            "quantity": 1,
-            "variants": []
-          },
-          {
-            "cart_id": 1170,
-            "product_id": "6fe2a4f1-0ec1-4900-ab30-3c780886197e",
-            "name": "Air",
-            "description": "",
-            "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2f345a93-1588-4cad-9ee0-0a9c2c4c2e57_Go-Biz_20220520_165524.jpeg",
-            "price": 2000,
-            "price_fmt": "Rp2.000",
-            "original_price": 0,
-            "original_price_fmt": "",
-            "discount_percentage": "",
-            "notes": "",
-            "quantity": 1,
-            "variants": []
-          }
-        ]
-      },
-      "unavailable_section_header": "",
-      "unavailable_sections": [{
-        "title": "",
-        "products": [
-          {
-            "cart_id": 1170,
-            "product_id": "6fe2a4f1-0ec1-4900-ab30-3c780886197e",
-            "name": "Air",
-            "description": "",
-            "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2f345a93-1588-4cad-9ee0-0a9c2c4c2e57_Go-Biz_20220520_165524.jpeg",
-            "price": 2000,
-            "price_fmt": "Rp2.000",
-            "original_price": 0,
-            "original_price_fmt": "",
-            "discount_percentage": "",
-            "notes": "",
-            "quantity": 1,
-            "variants": []
-          }]
-      }],
-      "shipping": {
-        "name": "Gojek Instan",
-        "logo_url": "https://images.tokopedia.net/img/tokofood/cart/gojek.png",
-        "eta": "Tiba Dalam 0 km",
-        "price": 12000,
-        "price_fmt": "Rp12.000"
-      },
-      "promo": {
-        "is_promo_applied": false,
-        "hide_promo": false,
-        "title": "Makin hemat pakai promo",
-        "subtitle": ""
-      },
-      "checkout_consent_bottomsheet": {
-        "is_show_bottomsheet": true,
-        "image_url": "",
-        "title": "",
-        "description": "",
-        "terms_and_condition": ""
-      },
-      "shopping_summary": {
-        "total": {
-          "cost": 42000,
-          "savings": 0
-        },
-        "cost_breakdown": {
-          "total_cart_price": {
-            "original_amount": 0,
-            "amount": 22000
-          },
-          "outlet_fee": {
-            "original_amount": 0,
-            "amount": 0
-          },
-          "platform_fee": {
-            "original_amount": 3000,
-            "amount": 3000
-          },
-          "delivery_fee": {
-            "original_amount": 12000,
-            "amount": 12000,
-            "surge": {
-              "is_surge_price": false,
-              "factor": 0
-            }
-          },
-          "reimbursement_fee": {
-            "original_amount": 5000,
-            "amount": 5000
-          }
-        },
-        "discount_breakdown": []
-      },
-      "checkout_additional_data": {
-        "data_type": "TOKOFOOD",
-        "checkout_business_id": 42
-      },
-      "summary_detail": {
-        "hide_summary": false,
-        "total_items": 1,
-        "total_price": "Rp2.000",
-        "details": [
-          {
-            "title": "Total Harga (1 item)",
-            "price_fmt": "Rp42.000",
-            "info": {
-              "image_url": "",
+            "business_id": "8811b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
+            "success": 1,
+            "message": "",
+            "ticker": {"top":{"id":0,"message":"","page":""},"bottom":{"id":0,"message":"","page":""},"error_tickers":{"top":{"id":0,"message":"","page":""},"bottom":{"id":0,"message":"","page":""}}},
+            "additional_grouping": {
+              "detail": [
+                {
+                  "additional_group_id": "available_section",
+                  "cart_ids": [
+                    "1111b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
+                    "222840f8-870c-409a-a6c4-6a579def5276"
+                  ],
+                  "message": "",
+                  "custom_response": {}
+                }
+              ]
+            },
+            "custom_response": {
+              "error_unblocking": "",
+              "user_address": {
+                "address_id": 4746414,
+                "address_name": "tokped tower",
+                "address": "Karet Semanggi, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta",
+                "phone": "6281234567890",
+                "receiver_name": "josh",
+                "status": 1
+              },
+              "promo": {
+                "is_promo_applied": true,
+                "hide_promo": false,
+                "title": "Kamu Bisa Hemat Rp12.222",
+                "subtitle": "1 promo dipakai"
+              },
+              "popup_message": "Yay, ada promo yang otomatis terpakai!",
+              "popup_error_message": "",
+              "popup_message_type": "promo",
               "bottomsheet": {
-                "title": "",
-                "description": ""
+                "is_show_bottomsheet": true,
+                "image_url": "https://images.tokopedia.net/img/tokofood/cart/consent.png",
+                "title": "Pesananmu dilayani restoran GoFood",
+                "description": "Gojek perlu beberapa datamu biar pesananmu sampai tujuan.",
+                "terms_and_condition": "Saya setuju data pribadi saya diproses sesuai <a href=\"https://www.tokopedia.com/help/article/tnc-penggunaan-gofood-di-tokopedia\">Syarat & Ketentuan</a> GoFood di Tokopedia.",
+                "buttons": []
+              },
+              "shop": {
+                "shop_id": "2a0293ca-42d7-4cef-817e-35b6666c9069",
+                "name": "Soto Seger Pak Joglo",
+                "distance": "Jarak Pengiriman 6.4 km"
+              },
+              "shipping": {
+                "name": "Gojek Instan",
+                "logo_url": "https://images.tokopedia.net/img/tokofood/cart/gojek.png",
+                "eta": "Tiba Dalam 40 menit",
+                "price": 23500,
+                "price_fmt": "Rp23.500"
+              },
+              "checkout_additional_data": {
+                "data_type": "TOKOFOOD_CART_GENERAL",
+                "flow_type": "BASIC",
+                "checkout_business_id": 42
+              },
+              "shopping_summary": {
+                "total": {
+                  "cost": 141278,
+                  "savings": 112222
+                },
+                "cost_breakdown": {
+                  "total_cart_price": {
+                    "original_amount": 220000,
+                    "amount": 120000
+                  },
+                  "outlet_fee": {
+                    "original_amount": 0,
+                    "amount": 0
+                  },
+                  "platform_fee": {
+                    "original_amount": 5000,
+                    "amount": 5000
+                  },
+                  "delivery_fee": {
+                    "original_amount": 23500,
+                    "amount": 23500,
+                    "surge": {
+                      "is_surge_price": false,
+                      "factor": 0
+                    }
+                  },
+                  "reimbursement_fee": {
+                    "original_amount": 5000,
+                    "amount": 5000
+                  }
+                },
+                "discount_breakdown": [
+                  {
+                    "discount_id": "",
+                    "title": "Promo",
+                    "amount": 100000,
+                    "scope": "CART",
+                    "type": "SKU_PROMOTIONS"
+                  },
+                  {
+                    "discount_id": "5e493b38-7eb1-4cb7-8ea0-fb6cf3a422cd",
+                    "title": "",
+                    "amount": 12222,
+                    "scope": "CART_DELIVERY",
+                    "type": "MARKDOWN"
+                  }
+                ]
               }
-            }
-          },
-          {
-            "title": "Total Ongkos Kirim",
-            "price_fmt": "Rp12.000",
-            "info": {
-              "image_url": "",
-              "bottomsheet": {
-                "title": "",
-                "description": ""
+            },
+            "cart_groups": [
+              {
+                "cart_group_id": "2a0293ca-42d7-4cef-817e-35b6666c9069-4746414",
+                "success": 1,
+                "carts": [
+                  {
+                    "cart_id": "1111b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
+                    "success": 1,
+                    "product_id": "a381802f-1a67-4865-bfdc-b0e8ed531d05",
+                    "shop_id": "2a0293ca-42d7-4cef-817e-35b6666c9069",
+                    "quantity": 10,
+                    "metadata": {
+                      "notes": "noteupdate",
+                      "variants": []
+                    },
+                    "custom_response": {
+                      "notes": "noteupdate",
+                      "variants": [],
+                      "category_id": "830eb7ef-c701-4064-86fc-d79642bde4d2",
+                      "name": "Soto Ayam",
+                      "description": "Nasi Dengan Kuah Soto Dan Topping Ayam Sayur Dan Telur",
+                      "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/6fe45b2d-67a5-4d0b-aba6-9520c0275da9_Go-Biz_20220301_142218.jpeg",
+                      "original_price": 20000,
+                      "original_price_fmt": "Rp20.000",
+                      "discount_percentage": "50%"
+                    },
+                    "price": 10000,
+                    "price_fmt": "Rp10.000"
+                  },
+                  {
+                    "cart_id": "222840f8-870c-409a-a6c4-6a579def5276",
+                    "success": 1,
+                    "product_id": "4a4840f8-870c-409a-a6c4-6a579def5276",
+                    "shop_id": "2a0293ca-42d7-4cef-817e-35b6666c9069",
+                    "quantity": 1,
+                    "metadata": {
+                      "notes": "",
+                      "variants": []
+                    },
+                    "custom_response": {
+                      "notes": "",
+                      "variants": [],
+                      "category_id": "830eb7ef-c701-4064-86fc-d79642bde4d2",
+                      "name": "Soto Daging",
+                      "description": "The Best Food In The World",
+                      "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/58cdb071-9cb0-4f3b-a196-cc14ca7a8d6e_Go-Biz_20220301_142918.jpeg",
+                      "original_price": 0,
+                      "original_price_fmt": "",
+                      "discount_percentage": ""
+                    },
+                    "price": 20000,
+                    "price_fmt": "Rp20.000"
+                  }
+                ],
+                "custom_response": {}
               }
-            }
-          },
-          {
-            "title": "Biaya Jasa Aplikasi",
-            "price_fmt": "Rp3.000",
-            "info": {
-              "image_url": "",
-              "bottomsheet": {
-                "title": "",
-                "description": ""
-              }
-            }
-          },
-          {
-            "title": "Biaya Parkir",
-            "price_fmt": "Rp5.000",
-            "info": {
-              "image_url": "",
-              "bottomsheet": {
-                "title": "",
-                "description": ""
-              }
-            }
+            ]
           }
         ]
       }

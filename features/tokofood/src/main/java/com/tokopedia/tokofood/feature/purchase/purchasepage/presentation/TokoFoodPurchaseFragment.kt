@@ -496,7 +496,7 @@ class TokoFoodPurchaseFragment :
                         if (it.source == SOURCE) {
                             (it.data as? String)?.let { cartId ->
                                 viewBinding?.recyclerViewPurchase?.post {
-                                    viewModel.deleteProductNew(cartId)
+                                    viewModel.deleteProduct(cartId)
                                 }
                             }
                         }

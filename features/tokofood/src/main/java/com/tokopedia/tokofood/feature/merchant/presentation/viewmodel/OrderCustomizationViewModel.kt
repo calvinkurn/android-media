@@ -59,7 +59,7 @@ class OrderCustomizationViewModel @Inject constructor(
             if (customListItem.addOnUiModel != null) {
                 val optionUiModels = customListItem.addOnUiModel.options
                 customListItem.addOnUiModel.isError =
-                    optionUiModels.count { it.isSelected } < customListItem.addOnUiModel.minQty
+                    optionUiModels.filter { it.isSelected }.count() < customListItem.addOnUiModel.minQty
             }
         }
         val isError = isCustomOrderContainError(

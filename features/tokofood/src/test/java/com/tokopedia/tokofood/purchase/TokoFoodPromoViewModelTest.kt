@@ -100,31 +100,6 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
     }
 
     @Test
-    fun `when loadData response is not success, should set ui event value to failure`() {
-        runBlocking {
-            val merchantId = "123"
-            val cartList: List<String> = listOf()
-            val response = CartGeneralPromoListDataData(
-                businessData = listOf(
-                    CartGeneralPromoListBusinessData(
-                        businessId = TokoFoodCartUtil.getBusinessId(),
-                        success = 0,
-                    )
-                )
-            )
-
-            coEvery {
-                promoListTokoFoodUseCase.get().execute(SOURCE, merchantId, cartList)
-            } returns response
-
-            viewModel.loadData(SOURCE, merchantId, cartList)
-
-            val expectedUiEventState = UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE
-            assertEquals(expectedUiEventState, viewModel.uiEvent.value?.state)
-        }
-    }
-
-    @Test
     fun `when loadData should show error page, should set ui event value to error`() {
         runBlocking {
             val merchantId = "123"

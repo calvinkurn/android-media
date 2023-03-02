@@ -15,7 +15,7 @@
             {
               "business_id": "8811b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
               "custom_response": {
-                "hide_summary": false
+                "hide_summary": true
               },
               "total_bill": 72000,
               "total_bill_fmt": "Rp72.000",
@@ -82,7 +82,7 @@
                 "address": "Sinduadi, Mlati, Kab. Sleman, D.I. Yogyakarta [Tokopedia Note: rumah]"
               },
               "promo": {
-                "title": "",
+                "title": "Makin hemat pakai promo",
                 "subtitle": "",
                 "hide_promo": true
               },

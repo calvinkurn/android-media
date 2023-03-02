@@ -49,6 +49,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     @Test
     fun `when view model is created expect initial properties to be false or empty`() {
         assertEquals(hashMapOf<String, Pair<Int, Int>>(), viewModel.productMap)
+        assertEquals(hashMapOf<String, Pair<Int, Int>>(), viewModel.productCartMap)
         assertEquals(mutableListOf<ProductListItem>(), viewModel.productListItems)
         assertEquals(listOf<CartListCartGroupCart>(), viewModel.selectedProducts)
         assertFalse(viewModel.isAddressManuallyUpdated)

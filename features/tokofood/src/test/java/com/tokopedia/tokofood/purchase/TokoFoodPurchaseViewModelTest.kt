@@ -2,13 +2,18 @@ package com.tokopedia.tokofood.purchase
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataAdditionalGrouping
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataAdditionalGroupingDetail
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataCartGroup
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartListCartMetadata
+import com.tokopedia.tokofood.common.domain.response.CartListTokofoodResponse
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
@@ -57,10 +62,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when getNextItems, should return next item`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -68,7 +83,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             val expectedIndex = 5
             val expectedCount = 2
-            val expectedNextItems = viewModel.visitables.value?.subList(expectedIndex + 1, expectedIndex + expectedCount + 1)
+            val expectedNextItems = viewModel.visitables.value?.subList(
+                expectedIndex + 1,
+                expectedIndex + expectedCount + 1
+            )
 
             val actualNextItems = viewModel.getNextItems(expectedIndex, expectedCount)
 
@@ -79,10 +97,21 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when getNextItems but count is too big, should return empty list`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
+
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -112,10 +141,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadData success should emit tracker load checkout data`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
             val isHasPinpoint = true
 
@@ -134,10 +173,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadData success and pinpoint has been set, should show success state`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
             val isHasPinpoint = true
 
@@ -160,10 +209,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadData success but pinpoint hasn't been set and cacheAddressId has no pinpoint, should show no pinpoint state`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
             val isHasPinpoint = false
 
@@ -179,10 +238,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     fun `when loadData success but pinpoint hasn't been set and cacheAddressId is empty, should check pinpoint remotely`() {
         runBlocking {
             val addressId = "123"
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             val updatedSuccessResponse =
                 successResponse.copy(
                     data = successResponse.data.copy(
@@ -190,7 +259,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                             successResponse.data.getTokofoodBusinessData().copy(
                                 customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
-                                        addressId = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.addressId
+                                        addressId = addressId.toLongOrZero()
                                     )
                                 )
                             )
@@ -200,7 +269,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
             val isHasPinpoint = false
-            onGetAddressUseCase_thenReturn(addressId, KeroAddressParamData(secondAddress = "123,123"))
+            onGetAddressUseCase_thenReturn(
+                addressId,
+                KeroAddressParamData(secondAddress = "123,123")
+            )
 
             viewModel.setIsHasPinpoint("", isHasPinpoint)
             viewModel.loadData()
@@ -214,10 +286,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     fun `when loadData success but pinpoint hasn't been set and remote second address is empty, should show no pinpoint state`() {
         runBlocking {
             val addressId = "123"
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             val updatedSuccessResponse =
                 successResponse.copy(
                     data = successResponse.data.copy(
@@ -225,7 +307,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                             successResponse.data.getTokofoodBusinessData().copy(
                                 customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
-                                        addressId = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.addressId
+                                        addressId = addressId.toLongOrZero()
                                     )
                                 )
                             )
@@ -249,10 +331,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     fun `when loadData success but pinpoint hasn't been set and get address response is null, should show no pinpoint state`() {
         runBlocking {
             val addressId = "456"
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             val updatedSuccessResponse =
                 successResponse.copy(
                     data = successResponse.data.copy(
@@ -260,7 +352,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                             successResponse.data.getTokofoodBusinessData().copy(
                                 customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
-                                        addressId = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.addressId
+                                        addressId = addressId.toLongOrZero()
                                     )
                                 )
                             )
@@ -282,10 +374,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadData twice and first checkout toaster is promo type, should set isPreviousPopupPromo to true`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("", true)
@@ -293,7 +395,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.loadData()
 
             val expectedFlag = true
-            assertEquals(expectedFlag, (viewModel.purchaseUiEvent.value?.data as? Pair<*,*>)?.second)
+            assertEquals(
+                expectedFlag,
+                (viewModel.purchaseUiEvent.value?.data as? Pair<*, *>)?.second
+            )
 
         }
     }
@@ -301,20 +406,31 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadData twice and first checkout toaster is not a promo type, should set isPreviousPopupPromo to false`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             val updatedSuccessResponse =
                 successResponse.copy(
                     data = successResponse.data.copy(
-                        businessData = listOf(
-                            successResponse.data.getTokofoodBusinessData().copy(
+                        businessData = successResponse.data.businessData.map {
+                            it.copy(
+                                businessId = TokoFoodCartUtil.getBusinessId(),
                                 customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
-                                    popupErrorMessage = "not promo type"
+                                    popupMessageType = "not promo type"
                                 )
                             )
-                        )
+                        }
                     )
                 )
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
@@ -324,7 +440,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.loadData()
 
             val expectedFlag = false
-            assertEquals(expectedFlag, (viewModel.purchaseUiEvent.value?.data as? Pair<*,*>)?.second)
+            assertEquals(
+                expectedFlag,
+                (viewModel.purchaseUiEvent.value?.data as? Pair<*, *>)?.second
+            )
         }
     }
 
@@ -332,10 +451,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     fun `when loadData twice and first checkout toaster is not a promo type and no pinpoint in second time, should set isPreviousPopupPromo to false`() {
         runBlocking {
             val addressId = "999"
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             val updatedSuccessResponse =
                 successResponse.copy(
                     data = successResponse.data.copy(
@@ -344,7 +473,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                                 customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     popupMessageType = "not promo type",
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
-                                        addressId = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.addressId
+                                        addressId = addressId.toLongOrZero()
                                     )
                                 )
                             )
@@ -352,7 +481,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     )
                 )
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
-            onGetAddressUseCase_thenReturn(addressId, KeroAddressParamData(secondAddress = "123,456"))
+            onGetAddressUseCase_thenReturn(
+                addressId,
+                KeroAddressParamData(secondAddress = "123,456")
+            )
 
             viewModel.setIsHasPinpoint("", true)
             viewModel.loadData()
@@ -360,7 +492,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.loadData()
 
             val expectedFlag = false
-            assertEquals(expectedFlag, (viewModel.purchaseUiEvent.value?.data as? Pair<*,*>)?.second)
+            assertEquals(
+                expectedFlag,
+                (viewModel.purchaseUiEvent.value?.data as? Pair<*, *>)?.second
+            )
         }
     }
 
@@ -368,10 +503,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     fun `when loadData twice and first checkout toaster is a promo type and no pinpoint in second time, should set isPreviousPopupPromo to false`() {
         runBlocking {
             val addressId = "999"
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             val updatedSuccessResponse =
                 successResponse.copy(
                     data = successResponse.data.copy(
@@ -380,7 +525,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                                 customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     popupMessageType = "promo",
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
-                                        addressId = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.addressId
+                                        addressId = addressId.toLongOrZero()
                                     )
                                 )
                             )
@@ -388,7 +533,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     )
                 )
             onGetCheckoutTokoFood_thenReturn(updatedSuccessResponse)
-            onGetAddressUseCase_thenReturn(addressId, KeroAddressParamData(secondAddress = "123,456"))
+            onGetAddressUseCase_thenReturn(
+                addressId,
+                KeroAddressParamData(secondAddress = "123,456")
+            )
 
             viewModel.setIsHasPinpoint("", true)
             viewModel.loadData()
@@ -396,26 +544,39 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.loadData()
 
             val expectedFlag = true
-            assertEquals(expectedFlag, (viewModel.purchaseUiEvent.value?.data as? Pair<*,*>)?.second)
+            assertEquals(
+                expectedFlag,
+                (viewModel.purchaseUiEvent.value?.data as? Pair<*, *>)?.second
+            )
         }
     }
 
     @Test
     fun `when loadData success but data is not enabled, should set visitables to be disabled`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_DISABLED_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("", true)
             viewModel.loadData()
 
-            assert(
+            assertEquals(
                 viewModel.visitables.value?.any {
                     it is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel || it is TokoFoodPurchasePromoTokoFoodPurchaseUiModel
-                } == false
+                }, false
             )
         }
     }
@@ -464,10 +625,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadDataPartial success and pinpoint has been set, should show success state`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -485,10 +656,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadDataPartial success but pinpoint hasn't been set, should show success state`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", false)
@@ -509,10 +690,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadDataPartial success but empty product, should send empty product event`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_EMPTY_PRODUCT_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -526,10 +717,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadDataPartial after first loadData and first checkout toaster is promo type, should set isPreviousPopupPromo to true`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("", true)
@@ -537,17 +738,30 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.loadDataPartial()
 
             val expectedFlag = true
-            assertEquals(expectedFlag, (viewModel.purchaseUiEvent.value?.data as? Pair<*,*>)?.second)
+            assertEquals(
+                expectedFlag,
+                (viewModel.purchaseUiEvent.value?.data as? Pair<*, *>)?.second
+            )
         }
     }
 
     @Test
     fun `when loadDataPartial after first loadData and first checkout toaster is not promo type, should set isPreviousPopupPromo to false`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
 
             val updatedSuccessResponse =
                 successResponse.copy(
@@ -568,17 +782,37 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.loadDataPartial()
 
             val expectedFlag = false
-            assertEquals(expectedFlag, (viewModel.purchaseUiEvent.value?.data as? Pair<*,*>)?.second)
+            assertEquals(
+                expectedFlag,
+                (viewModel.purchaseUiEvent.value?.data as? Pair<*, *>)?.second
+            )
         }
     }
 
     @Test
     fun `when loadDataPartial success but data is not enabled, should set visitables to be disabled`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_DISABLED_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        shoppingSummary = rawSuccessResponse.data.data.shoppingSummary.copy(
+                            businessBreakdowns = rawSuccessResponse.data.data.shoppingSummary.businessBreakdowns.map {
+                                it.copy(
+                                    businessId = TokoFoodCartUtil.getBusinessId()
+                                )
+                            }
+                        ),
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("", true)
@@ -610,10 +844,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when loadDataPartial fails and visitables aren't null, should show partial failed state`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -647,21 +891,32 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when deleteProduct, should delete the particular product from visitables`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
             val deletedProductId: String
             val deletedCartId: String
-            successResponse.data.getTokofoodBusinessData().getAvailableSectionProducts().getOrNull(0).let { deletedProduct ->
+            successResponse.data.getTokofoodBusinessData().getAvailableSectionProducts()
+                .getOrNull(0).let { deletedProduct ->
                 deletedProductId = deletedProduct?.productId.orEmpty()
                 deletedCartId = deletedProduct?.cartId.orEmpty()
             }
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedProductId, deletedCartId)
+            viewModel.deleteProduct(deletedCartId)
 
             assert(
                 viewModel.visitables.value?.any {
@@ -676,14 +931,25 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when deleteProduct and no remaining products, should set ui event into empty`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_SINGLE_PRODUCT_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
             val deletedProductId: String
             val deletedCartId: String
-            successResponse.data.getTokofoodBusinessData().getAvailableSectionProducts().getOrNull(0)
+            successResponse.data.getTokofoodBusinessData().getAvailableSectionProducts()
+                .getOrNull(0)
                 .let { deletedProduct ->
                     deletedProductId = deletedProduct?.productId.orEmpty()
                     deletedCartId = deletedProduct?.cartId.orEmpty()
@@ -691,7 +957,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedProductId, deletedCartId)
+            viewModel.deleteProduct(deletedCartId)
 
             val expectedState = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS
 
@@ -702,14 +968,25 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when deleteProduct, have single product and errorsUnblocking, should remove the ticker`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
             val deletedProductId: String
             val deletedCartId: String
-            successResponse.data.getTokofoodBusinessData().getAvailableSectionProducts().getOrNull(0)
+            successResponse.data.getTokofoodBusinessData().getAvailableSectionProducts()
+                .getOrNull(0)
                 .let { deletedProduct ->
                     deletedProductId = deletedProduct?.productId.orEmpty()
                     deletedCartId = deletedProduct?.cartId.orEmpty()
@@ -717,7 +994,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedProductId, deletedCartId)
+            viewModel.deleteProduct(deletedCartId)
 
             assert(viewModel.visitables.value?.any {
                 it is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
@@ -728,20 +1005,30 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when deleteProduct but no product associated, should not do anything`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
             val deletedProductId = "ga ada id-nya"
             val deletedCartId = "ga ada id-nya"
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedProductId, deletedCartId)
+            viewModel.deleteProduct(deletedCartId)
 
             val expectedTotalProducts =
-                successResponse.data.getTokofoodBusinessData().cartGroups.getOrNull(0)?.carts?.size.orZero()
+                successResponse.data.getTokofoodBusinessData().cartGroups?.getOrNull(0)?.carts?.size.orZero()
             assertEquals(
                 expectedTotalProducts,
                 viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel }
@@ -753,18 +1040,28 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when deleteProduct but product is empty, should not do anything`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_EMPTY_PRODUCT_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(anyString(), anyString())
+            viewModel.deleteProduct(anyString())
 
             val expectedTotalProducts =
-                successResponse.data.getTokofoodBusinessData().cartGroups.getOrNull(0)?.carts?.size.orZero()
+                successResponse.data.getTokofoodBusinessData().cartGroups?.getOrNull(0)?.carts?.size.orZero()
 
             assertEquals(
                 expectedTotalProducts,
@@ -776,10 +1073,21 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when validateBulkDelete should show not collapsed unavailable product count`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -787,17 +1095,29 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
         viewModel.validateBulkDelete()
 
         val expectedUiEventState = PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG
-        val expectedUnavailableProductCount = successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts()
+        val expectedUnavailableProductCount =
+            successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
         assertEquals(expectedUiEventState, viewModel.purchaseUiEvent.value?.state)
         assertEquals(expectedUnavailableProductCount, viewModel.purchaseUiEvent.value?.data as? Int)
     }
 
     @Test
     fun `when bulkDeleteUnavailableProducts should remove all unavailable product section`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -817,17 +1137,29 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when bulkDeleteUnavailableProducts but no unavailable products, should not do anything`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_SINGLE_PRODUCT_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
         viewModel.loadData()
         viewModel.bulkDeleteUnavailableProducts()
 
-        val expectedUnavailableProductCount = successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
+        val expectedUnavailableProductCount =
+            successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
         assertEquals(
             expectedUnavailableProductCount,
             viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })
@@ -835,10 +1167,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when toggleUnavailableProductsAccordion on expanded products, should collapse`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -855,10 +1197,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when toggleUnavailableProductsAccordion on collapsed products, should expand`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -876,10 +1228,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when toggleUnavailableProductsAccordion but no unavailable products, should do nothing`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_SINGLE_PRODUCT_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -887,7 +1249,8 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
         viewModel.toggleUnavailableProductsAccordion()
 
-        val expectedUnavailableProductCount = successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
+        val expectedUnavailableProductCount =
+            successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
         assertEquals(
             expectedUnavailableProductCount,
             viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })
@@ -896,10 +1259,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when toggleUnavailableProductsAccordion but no unavailable reason data on expanded products, should only remove product items`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -907,7 +1280,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.toggleUnavailableProductsAccordion()
 
-            val expectedUnavailableProductCount = successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().size
+            val expectedUnavailableProductCount = 1
             assertEquals(
                 expectedUnavailableProductCount,
                 viewModel.visitables.value?.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !it.isAvailable })
@@ -916,10 +1289,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when scrollToUnavailableItem, should set ui event to scroll`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_UNAVAILABLE_PRODUCTS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -932,10 +1315,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when scrollToUnavailableItem but no unavailable products, should not do anything`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_SINGLE_PRODUCT_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -948,21 +1341,33 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when updateNotes should update the product notes`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_JSON
-            )
-        onGetCheckoutTokoFood_thenReturn(successResponse)
-        val expectedNotes = "notes"
-        val updatedProduct = successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().first().let {
-            CartListCartGroupCart(
-                productId = it.productId,
-                cartId = it.cartId,
-                metadata = CartListCartMetadata(
-                    notes = expectedNotes
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
                 )
             )
-        }
+        ).data
+        onGetCheckoutTokoFood_thenReturn(successResponse)
+        val expectedNotes = "notes"
+        val updatedProduct =
+            successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().first()
+                .let {
+                    CartListCartGroupCart(
+                        productId = it.productId,
+                        cartId = it.cartId,
+                        metadata = CartListCartMetadata(
+                            notes = expectedNotes
+                        )
+                    )
+                }
 
         viewModel.setIsHasPinpoint("123", true)
         viewModel.loadData()
@@ -970,17 +1375,29 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
         assertEquals(
             expectedNotes,
-            viewModel.visitables.value?.getProductById(updatedProduct.productId, updatedProduct.cartId)?.second?.notes
+            viewModel.visitables.value?.getProductById(
+                updatedProduct.productId,
+                updatedProduct.cartId
+            )?.second?.notes
         )
     }
 
     @Test
     fun `when updateNotes but productData is not found, should not update value`() {
-
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
         val expectedNotes = "notes"
         val updatedProduct =
@@ -998,25 +1415,40 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
         assertNotEquals(
             expectedNotes,
-            viewModel.visitables.value?.getProductById(updatedProduct.productId, updatedProduct.cartId)?.second?.notes
+            viewModel.visitables.value?.getProductById(
+                updatedProduct.productId,
+                updatedProduct.cartId
+            )?.second?.notes
         )
     }
 
     @Test
     fun `when updateNotes but metadata is empty should not update the product notes`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
         val expectedNotes = "notes"
-        val updatedProduct = successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().first().let {
-            CartListCartGroupCart(
-                productId = it.productId,
-                cartId = it.cartId,
-                metadata = CartListCartMetadata()
-            )
-        }
+        val updatedProduct =
+            successResponse.data.getTokofoodBusinessData().getUnavailableSectionProducts().first()
+                .let {
+                    CartListCartGroupCart(
+                        productId = it.productId,
+                        cartId = it.cartId,
+                        metadata = CartListCartMetadata()
+                    )
+                }
 
         viewModel.setIsHasPinpoint("123", true)
         viewModel.loadData()
@@ -1024,16 +1456,29 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
         assertNotEquals(
             expectedNotes,
-            viewModel.visitables.value?.getProductById(updatedProduct.productId, updatedProduct.cartId)?.second?.notes
+            viewModel.visitables.value?.getProductById(
+                updatedProduct.productId,
+                updatedProduct.cartId
+            )?.second?.notes
         )
     }
 
     @Test
     fun `when updateCartId, should update product cartId`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -1047,6 +1492,15 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
         )
         val changedCartId = updateParam.productList.first().cartId
         val cartData = CartListBusinessData(
+            businessId = TokoFoodCartUtil.getBusinessId(),
+            additionalGrouping = CartListBusinessDataAdditionalGrouping(
+                details = listOf(
+                    CartListBusinessDataAdditionalGroupingDetail(
+                        additionalGroupId = "available_section",
+                        cartIds = listOf(expectedCartId)
+                    )
+                )
+            ),
             cartGroups = listOf(
                 CartListBusinessDataCartGroup(
                     carts = updateParam.productList.map {
@@ -1067,10 +1521,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when updateCartId but no cart data is not matched, should not update product cartId`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
@@ -1083,6 +1547,15 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             successResponse.data.getTokofoodBusinessData().customResponse.shop.shopId
         )
         val cartData = CartListBusinessData(
+            businessId = TokoFoodCartUtil.getBusinessId(),
+            additionalGrouping = CartListBusinessDataAdditionalGrouping(
+                details = listOf(
+                    CartListBusinessDataAdditionalGroupingDetail(
+                        additionalGroupId = "available_section",
+                        cartIds = listOf(expectedCartId)
+                    )
+                )
+            ),
             cartGroups = listOf(
                 CartListBusinessDataCartGroup(
                     carts = updateParam.productList.map {
@@ -1103,20 +1576,41 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
     @Test
     fun `when updateCartId but no product found, should not update product cartId`() {
-        val successResponse =
-            JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+        val rawSuccessResponse =
+            JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                 PURCHASE_SUCCESS_EMPTY_PRODUCT_JSON
+            ).cartGeneralCartList
+
+        val successResponse = rawSuccessResponse.copy(
+            data = rawSuccessResponse.data.copy(
+                data = rawSuccessResponse.data.data.copy(
+                    businessData = rawSuccessResponse.data.data.businessData.map {
+                        it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                    }
+                )
             )
+        ).data
         onGetCheckoutTokoFood_thenReturn(successResponse)
 
         viewModel.setIsHasPinpoint("123", true)
         viewModel.loadData()
 
         val expectedCartId = "1234"
-        val updateParam = UpdateParam(productList = listOf(
-            UpdateProductParam("", "", "", 0, listOf())
-        ))
+        val updateParam = UpdateParam(
+            productList = listOf(
+                UpdateProductParam("", "", "", 0, listOf())
+            )
+        )
         val cartData = CartListBusinessData(
+            businessId = TokoFoodCartUtil.getBusinessId(),
+            additionalGrouping = CartListBusinessDataAdditionalGrouping(
+                details = listOf(
+                    CartListBusinessDataAdditionalGroupingDetail(
+                        additionalGroupId = "available_section",
+                        cartIds = listOf(expectedCartId)
+                    )
+                )
+            ),
             cartGroups = listOf(
                 CartListBusinessDataCartGroup(
                     carts = updateParam.productList.map {
@@ -1298,10 +1792,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when checkUserConsent but user consent is still false, should check from checkout data`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1317,10 +1821,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when checkUserConsent and checkout data should show bottomsheet, will update ui event state to success get consent`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_SHOW_CONSENT_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1329,7 +1843,8 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.checkUserConsent()
 
             val expectedUiEventState = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT
-            val expectedConsentData = successResponse.data.getTokofoodBusinessData().customResponse.bottomSheet
+            val expectedConsentData =
+                successResponse.data.getTokofoodBusinessData().customResponse.bottomSheet
             assertEquals(expectedUiEventState, viewModel.purchaseUiEvent.value?.state)
             assertEquals(expectedConsentData, viewModel.purchaseUiEvent.value?.data)
         }
@@ -1338,10 +1853,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when checkUserConsent and partial checkout data should show bottomsheet, will update ui event state to success get consent`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_SHOW_CONSENT_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1350,7 +1875,8 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.checkUserConsent()
 
             val expectedUiEventState = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT
-            val expectedConsentData = successResponse.data.getTokofoodBusinessData().customResponse.bottomSheet
+            val expectedConsentData =
+                successResponse.data.getTokofoodBusinessData().customResponse.bottomSheet
             assertEquals(expectedUiEventState, viewModel.purchaseUiEvent.value?.state)
             assertEquals(expectedConsentData, viewModel.purchaseUiEvent.value?.data)
         }
@@ -1359,10 +1885,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when checkUserConsent and checkout data should not show bottomsheet, will update ui event state to success validate consent`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1391,10 +1927,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when checkoutGeneral and checkout data is exist, should success hit checkout general`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             val successCheckoutGeneralResponse =
                 JsonResourcesUtil.createSuccessResponse<CheckoutGeneralTokoFoodResponse>(
                     PURCHASE_SUCCESS_CHECKOUT_GENERAL_JSON
@@ -1420,10 +1966,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when checkoutGeneral and checkout data is exist but checkout general response is failed, should set failed event`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1444,10 +2000,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when checkoutGeneral and checkout data is exist but checkout general failed, should send failed event`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1474,10 +2040,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when setPaymentButtonLoading true, should set total amount button to loading`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1486,9 +2062,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setPaymentButtonLoading(true)
 
             assert(
-                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }?.let { totalAmount ->
-                    (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
-                } == true
+                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }
+                    ?.let { totalAmount ->
+                        (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
+                    } == true
             )
         }
     }
@@ -1496,10 +2073,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when setPaymentButtonLoading false, should set total amount button to not loading`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1508,9 +2095,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setPaymentButtonLoading(false)
 
             assert(
-                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }?.let { totalAmount ->
-                    (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
-                } == false
+                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }
+                    ?.let { totalAmount ->
+                        (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
+                    } == false
             )
         }
     }
@@ -1518,10 +2106,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when setPaymentButtonLoading true but the model is disabled, should set total amount button to not loading`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_DISABLED_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1530,9 +2128,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setPaymentButtonLoading(true)
 
             assert(
-                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }?.let { totalAmount ->
-                    (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
-                } == false
+                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }
+                    ?.let { totalAmount ->
+                        (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
+                    } == false
             )
         }
     }
@@ -1540,10 +2139,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when setPaymentButtonLoading false but the model is disabled, should set total amount button to not loading`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_DISABLED_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
@@ -1552,9 +2161,10 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
             viewModel.setPaymentButtonLoading(false)
 
             assert(
-                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }?.let { totalAmount ->
-                    (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
-                } == false
+                viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }
+                    ?.let { totalAmount ->
+                        (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
+                    } == false
             )
         }
     }
@@ -1564,19 +2174,30 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
         viewModel.setPaymentButtonLoading(true)
 
         assert(
-            viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }?.let { totalAmount ->
-                (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
-            } != true
+            viewModel.visitables.value?.find { it is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel }
+                ?.let { totalAmount ->
+                    (totalAmount as TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel).isButtonLoading
+                } != true
         )
     }
 
     @Test
     fun `when updateProductVariant and available products existed, should send order customization event`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)
