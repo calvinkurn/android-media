@@ -2,6 +2,7 @@ package com.tokopedia.home.component
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -77,6 +78,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_i
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
+private const val TAG = "HomeDCCassavaTest"
 
 /**
  * Created by yfsx on 2/9/21.
@@ -364,33 +366,8 @@ fun clickAndCloseOnEachTodoWidget(view: View, recyclerViewId: Int, fixedItemPosi
                 )
             )
         } catch (e: PerformException) {
-            e.printStackTrace()
+            Log.e(TAG, "clickAndCloseOnEachTodoWidget: ", e)
         }
-    }
-
-    childRecyclerView.contentDescription = tempStoreDesc
-}
-
-fun clickCloseTodoWidget(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
-    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
-
-    val tempStoreDesc = childRecyclerView.contentDescription
-    childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
-
-    try {
-        Espresso.onView(
-            allOf(
-                ViewMatchers.withId(recyclerViewId),
-                ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)
-            )
-        ).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                0,
-                clickOnViewChild(com.tokopedia.home_component.R.id.ic_close_todo_widget)
-            )
-        )
-    } catch (e: PerformException) {
-        e.printStackTrace()
     }
 
     childRecyclerView.contentDescription = tempStoreDesc
