@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
+import com.tokopedia.login_helper.domain.uiModel.HeaderUiModel
+import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.login_helper.presentation.adapter.LoginHelperRecyclerAdapter
 import com.tokopedia.login_helper.presentation.adapter.viewholder.LoginHelperClickListener
@@ -75,14 +77,6 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         observeUiState()
         observeUiAction()
         setEnvValue()
-        binding?.apply {
-//            loginBtn.setOnClickListener {
-//                viewModel.processEvent(LoginHelperEvent.LoginUser(
-//                    "sourav.saikia+03@tokopedia.com",
-//                    "password"
-//                ))
-//            }
-        }
     }
 
     private fun observeUiState() {
@@ -179,7 +173,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         if (state.searchText.isEmpty()) {
             when (val loginDataList = state.loginDataList) {
                 is Success -> {
-                    handleLoginUserDataListSuccess(loginDataList.data.users)
+                    handleLoginUserDataListSuccess(loginDataList.data)
                 }
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
@@ -188,7 +182,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         } else {
             when (val loginDataList = state.filteredUserList) {
                 is Success -> {
-                    handleLoginUserDataListSuccess(loginDataList.data.users)
+                    handleLoginUserDataListSuccess(loginDataList.data)
                 }
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
@@ -197,7 +191,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         }
     }
 
-    private fun handleLoginUserDataListSuccess(users: List<UserDataUiModel>?) {
+    private fun handleLoginUserDataListSuccess(loginDataList: LoginDataUiModel) {
         loginHelperAdapter = LoginHelperRecyclerAdapter(this@LoginHelperFragment)
 
         val layoutManager = LinearLayoutManager(
@@ -207,7 +201,8 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         )
         binding?.userList?.layoutManager = layoutManager
         loginHelperAdapter?.clearAllElements()
-        loginHelperAdapter?.addElement(users)
+        loginHelperAdapter?.addElement(loginDataList.count)
+        loginHelperAdapter?.addElement(loginDataList.users)
 
         binding?.userList?.apply {
             adapter = loginHelperAdapter
@@ -235,7 +230,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoginTokenSuccess() {
-        viewModel.getUserInfo()
+        viewModel.processEvent(LoginHelperEvent.GetUserInfo)
     }
 
     private fun handleProfileResponse(profilePojo: Result<ProfilePojo>?) {

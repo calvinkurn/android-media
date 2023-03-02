@@ -4,10 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.databinding.ItemLoginHeaderBinding
 import com.tokopedia.login_helper.domain.uiModel.HeaderUiModel
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.viewBinding
 
 class LoginHeaderViewHolder(itemView: View?): AbstractViewHolder<HeaderUiModel>(itemView) {
@@ -18,7 +16,7 @@ class LoginHeaderViewHolder(itemView: View?): AbstractViewHolder<HeaderUiModel>(
         binding?.apply {
             val dataText =
                 itemView.context?.resources?.getString(com.tokopedia.login_helper.R.string.login_helper_total_users)
-                    .toBlankOrString() + element?.title?.toBlankOrString()
+                    .toBlankOrString() + "(" + element?.userCount?.toString() + ")"
             headerText.text = dataText
         }
     }

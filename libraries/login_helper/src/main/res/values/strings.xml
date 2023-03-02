@@ -2,7 +2,7 @@
     <string name="login_helper_header_title">Login Helper</string>
     <string name="login_helper_env_staging">Staging</string>
     <string name="login_helper_env_prod">Production</string>
-    <string name="login_helper_total_users">Total Users</string>
-    <string name="login_helper_warning_chip_click">You can not change the environment type. It is set via developer options.</string>
+    <string name="login_helper_total_users">Total Users </string>
+    <string name="login_helper_warning_chip_click">You can not change the environment type. It is set via developer options. [Feature coming soon]</string>
     <string name="login_helper_enter_email">Enter Email</string>
 </resources>

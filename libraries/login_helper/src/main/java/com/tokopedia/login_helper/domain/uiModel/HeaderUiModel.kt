@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.login_helper.presentation.adapter.factory.LoginHelperAdapterFactory
 
 data class HeaderUiModel(
-    val title: String
+    val userCount: Int
 ): Visitable<LoginHelperAdapterFactory> {
 
     override fun type(typeFactory: LoginHelperAdapterFactory): Int {

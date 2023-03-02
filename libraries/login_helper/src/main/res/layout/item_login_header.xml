@@ -14,6 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="@string/login_helper_total_users"
         android:padding="8dp"
+        android:layout_marginLeft="16dp"
         app:typographyType="display_1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

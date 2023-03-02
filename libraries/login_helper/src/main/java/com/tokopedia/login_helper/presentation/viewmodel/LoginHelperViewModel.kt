@@ -1,6 +1,7 @@
 package com.tokopedia.login_helper.presentation.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
@@ -9,6 +10,7 @@ import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.login_helper.data.response.LoginDataResponse
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
+import com.tokopedia.login_helper.domain.uiModel.HeaderUiModel
 import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.login_helper.domain.usecase.GetUserDetailsRestUseCase
@@ -75,6 +77,12 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.QueryEmail -> {
                 queryForGivenEmail(event.email)
             }
+            is LoginHelperEvent.GetUserInfo -> {
+                getUserInfo()
+            }
+            is LoginHelperEvent.GoToLoginPage -> {
+                goToLoginPage()
+            }
         }
     }
 
@@ -83,7 +91,7 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                //       val response =  getUserDetailsRestUseCase.executeOnBackground()
+                       val response =  getUserDetailsRestUseCase.executeOnBackground()
                 //      Log.d("FATAL", "callTheAPi: ${response}")
                 //         updateUserDataList(convertToUserListUiModel(response))
                 updateUserDataList(Success(listOfUsers()))
@@ -97,7 +105,7 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun listOfUsers(): LoginDataUiModel {
         return LoginDataUiModel(
-            count = 5,
+            count = HeaderUiModel(6),
             users = listOf<UserDataUiModel>(
                 UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped1234", "Cex"),
                 UserDataUiModel("pbs-abc.yui@tokopedia.com", "asd", "iuasdjhas"),
@@ -113,11 +121,14 @@ class LoginHelperViewModel @Inject constructor(
         return typeRestResponseMap[LoginDataResponse::class.java]?.getData() as LoginDataResponse
     }
 
-    private fun loginUser(email: String, password: String) {
+    private fun loginUser(email: String, password: String, useHash: Boolean = true) {
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
             if (keyData.key.isNotEmpty()) {
-                var finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
+                var finalPassword = password
+                if (useHash) {
+                    finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
+                }
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
                 LoginV2Mapper(userSession).map(
@@ -146,7 +157,7 @@ class LoginHelperViewModel @Inject constructor(
         })
     }
 
-    fun getUserInfo() {
+    private fun getUserInfo() {
         getProfileUseCase.execute(
             GetProfileSubscriber(
                 userSession,
@@ -227,7 +238,7 @@ class LoginHelperViewModel @Inject constructor(
                         userDataUiModel.email?.contains(searchEmail) == true
                     }
 
-                    filteredUserList = Success(LoginDataUiModel(list?.size, list))
+                    filteredUserList = Success(LoginDataUiModel(HeaderUiModel(list?.size ?: 0), list))
                 }
                 is Fail -> {
                     Fail(Exception("Failed to get data"))
@@ -240,5 +251,17 @@ class LoginHelperViewModel @Inject constructor(
                 filteredUserList = filteredUserList
             )
         }
+    }
+
+    private fun goToLoginPage() {
+        _uiAction.tryEmit(LoginHelperAction.GoToLoginPage)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        getProfileUseCase.unsubscribe()
+        loginTokenV2UseCase.cancelJobs()
+        generatePublicKeyUseCase.cancelJobs()
+        getUserDetailsRestUseCase.cancelJobs()
     }
 }

@@ -8,4 +8,6 @@ sealed class LoginHelperEvent {
     object GetLoginData: LoginHelperEvent()
     data class LoginUser(val email: String, val password: String): LoginHelperEvent()
     data class QueryEmail(val email: String): LoginHelperEvent()
+    object GetUserInfo: LoginHelperEvent()
+    object GoToLoginPage: LoginHelperEvent()
 }
