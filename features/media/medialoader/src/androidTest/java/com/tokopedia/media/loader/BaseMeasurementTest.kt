@@ -3,8 +3,6 @@ package com.tokopedia.media.loader
 import android.graphics.Bitmap
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.media.loader.data.Properties
-import com.tokopedia.media.loader.test.WithCacheMeasurementLoaderTest
-import com.tokopedia.media.loader.test.WithoutCacheMeasurementLoaderTest
 import com.tokopedia.media.loader.util.CsvUtil
 import com.tokopedia.media.loader.util.legacyLoadImage
 import com.tokopedia.media.loader.util.v2LoadImage
@@ -13,7 +11,6 @@ import com.tokopedia.test.application.id_generator.FileWriter
 abstract class BaseMeasurementTest : BaseTest() {
 
     abstract fun fileName(): String
-    abstract fun maxIteration(): Int
 
     private val fileWriter = FileWriter()
 
@@ -26,48 +23,51 @@ abstract class BaseMeasurementTest : BaseTest() {
     }
 
     fun loadImageV1Test(
+        imageUrl: String = publicImageUrl,
         skipCache: Boolean = false,
-        result: (Int, Properties, Bitmap?) -> Unit
+        result: (Properties, Bitmap?) -> Unit
     ) {
-        for (index in 1 .. maxIteration()) {
-            onImageView {
-                it.legacyLoadImage(publicImageUrl) {
-                    if (skipCache) {
-                        setSignatureKey(ObjectKey(System.currentTimeMillis() + index))
-                    }
-
-                    listener(onSuccess = { bitmap, _ ->
-                        result(index, this, bitmap)
-                    })
+        onImageView {
+            it.legacyLoadImage(imageUrl) {
+                if (skipCache) {
+                    setSignatureKey(ObjectKey(System.currentTimeMillis()))
                 }
-            }
 
-            Thread.sleep(LOAD_DELAY)
+                listener(onSuccess = { bitmap, _ ->
+                    result(this, bitmap)
+                })
+            }
         }
+
+        Thread.sleep(LOAD_DELAY)
     }
 
     fun loadImageV2Test(
+        imageUrl: String = publicImageUrl,
         skipCache: Boolean = false,
-        results: List<CsvUtil.CsvLoader>
+        result: (Properties, Bitmap?) -> Unit
     ) {
-        results.forEachIndexed { index, _ ->
-            onImageView {
-                it.v2LoadImage(publicImageUrl) {
-                    if (skipCache) {
-                        setSignatureKey(ObjectKey(System.currentTimeMillis() + index))
-                    }
-
-                    listener(onSuccess = { _, _ ->
-                        results[index].improvedLoadTime = loadTime
-                    })
+        onImageView {
+            it.v2LoadImage(imageUrl) {
+                if (skipCache) {
+                    setSignatureKey(ObjectKey(System.currentTimeMillis()))
                 }
-            }
 
-            Thread.sleep(LOAD_DELAY)
+                listener(onSuccess = { bitmap, _ ->
+                    result(this, bitmap)
+                })
+            }
         }
+
+        Thread.sleep(LOAD_DELAY)
     }
 
-    fun clearImage() {
+    fun idle() {
+        clearImage()
+        Thread.sleep(IDLE_DELAY)
+    }
+
+    private fun clearImage() {
         onImageView {
             it.clearImage()
         }
@@ -75,5 +75,6 @@ abstract class BaseMeasurementTest : BaseTest() {
 
     companion object {
         private const val LOAD_DELAY = 500L
+        private const val IDLE_DELAY = 3000L
     }
 }

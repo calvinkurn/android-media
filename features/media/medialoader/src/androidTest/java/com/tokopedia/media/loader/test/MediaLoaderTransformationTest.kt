@@ -14,7 +14,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @UiTest
-class MediaLoaderTest : BaseTest() {
+class MediaLoaderTransformationTest : BaseTest() {
 
     override fun setUp() {
         super.setUp()

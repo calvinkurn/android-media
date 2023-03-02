@@ -7,43 +7,38 @@ import org.junit.Test
 class WithCacheMeasurementLoaderTest : BaseMeasurementTest() {
 
     private val results = mutableListOf<CsvUtil.CsvLoader>()
+    private val maxIteration = 100
 
     override fun fileName(): String {
         return "media_loader_load_time_with_cache.csv"
     }
 
-    override fun maxIteration(): Int {
-        return 100
-    }
-
     @Test
-    fun loadTime_measurement_generator() {
+    fun load_time_measurement_with_cache() {
         // v1
-        loadImageV1Test { i, prop, bitmap ->
-            results.add(
-                CsvUtil.CsvLoader(
-                    iterationIndex = i,
-                    properties = prop,
-                    bitmap = bitmap
+        for (index in 1..maxIteration) {
+            loadImageV1Test { prop, bitmap ->
+                results.add(
+                    CsvUtil.CsvLoader(
+                        iterationIndex = index,
+                        properties = prop,
+                        bitmap = bitmap
+                    )
                 )
-            )
+            }
         }
 
         // idle
-        clearImage()
-        Thread.sleep(IDLE_DELAY)
+        idle()
 
         // v2
-        loadImageV2Test(
-            results = results
-        )
+        results.forEach {
+            loadImageV2Test { prop, _ ->
+                it.improvedLoadTime = prop.loadTime
+            }
+        }
 
         // save as csv
         saveResult(results)
-    }
-
-
-    companion object {
-        private const val IDLE_DELAY = 3000L
     }
 }

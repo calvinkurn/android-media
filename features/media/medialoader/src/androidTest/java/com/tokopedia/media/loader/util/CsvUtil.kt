@@ -50,7 +50,7 @@ object CsvUtil {
     data class CsvLoader(
         val iterationIndex: Int,
         val properties: Properties,
-        var improvedLoadTime: String = "",
+        var improvedLoadTime: String = "0",
         val bitmap: Bitmap?
     )
 }
