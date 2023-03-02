@@ -73,7 +73,6 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -83,8 +82,29 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
+import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
@@ -500,37 +520,37 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun observeUploadPrescription() {
-            viewModel.uploadPrescriptionUiModel.observe(viewLifecycleOwner) {
-                if (it.isError && it.frontEndValidation) {
-                    binding.rvOrderSummaryPage.smoothScrollToPosition(adapter.uploadPrescriptionIndex)
-                    view?.let { v ->
-                        Toaster.build(
-                            v,
-                            getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found),
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
-                        ).show()
-                    }
-                }
-                if ((it.uploadedImageCount ?: 0) > 0) {
-                    it.uploadImageText = requireActivity().getString(
-                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_attached_title_text
-                    )
-                    it.descriptionText = requireActivity().getString(
-                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_count_text,
-                        it.uploadedImageCount
-                    )
-                    it.isError = false
-                }
-                adapter.uploadPrescription = it
-                if (binding.rvOrderSummaryPage.isComputingLayout) {
-                    binding.rvOrderSummaryPage.post {
-                        adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
-                    }
-                } else {
-                    adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+        viewModel.uploadPrescriptionUiModel.observe(viewLifecycleOwner) {
+            if (it.isError && it.frontEndValidation) {
+                binding.rvOrderSummaryPage.smoothScrollToPosition(adapter.uploadPrescriptionIndex)
+                view?.let { v ->
+                    Toaster.build(
+                        v,
+                        getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
+            if ((it.uploadedImageCount ?: 0) > 0) {
+                it.uploadImageText = requireActivity().getString(
+                    com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_attached_title_text
+                )
+                it.descriptionText = requireActivity().getString(
+                    com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_count_text,
+                    it.uploadedImageCount
+                )
+                it.isError = false
+            }
+            adapter.uploadPrescription = it
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+                }
+            } else {
+                adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+            }
+        }
     }
 
     private fun observeOrderProducts() {
@@ -650,7 +670,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 isOcc = true,
                 pslCode = data.pslCode,
                 shippingDurationBottomsheetListener = getShippingDurationListener(),
-                cartData = data.cartData
+                cartData = data.cartData,
+                warehouseId = data.warehouseId
             )
         }
     }
@@ -720,9 +741,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     if (progressDialog == null) {
                         context?.let { ctx ->
                             progressDialog = AlertDialog.Builder(ctx)
-                                    .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
-                                    .setCancelable(false)
-                                    .create()
+                                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
+                                .setCancelable(false)
+                                .create()
                         }
                     }
                     if (progressDialog?.isShowing == false) {
@@ -793,28 +814,30 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.PromoClashing -> {
                     progressDialog?.dismiss()
                     if (activity != null) {
-                        val promoNotEligibleBottomSheet = PromoNotEligibleBottomSheet(it.notEligiblePromoHolderDataList,
-                                object : PromoNotEligibleActionListener {
-                                    override fun onShow() {
-                                        //no op
-                                    }
+                        val promoNotEligibleBottomSheet = PromoNotEligibleBottomSheet(
+                            it.notEligiblePromoHolderDataList,
+                            object : PromoNotEligibleActionListener {
+                                override fun onShow() {
+                                    // no op
+                                }
 
-                                    override fun onButtonContinueClicked() {
-                                        viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
-                                        orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
-                                    }
+                                override fun onButtonContinueClicked() {
+                                    viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
+                                    orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
+                                }
 
-                                    override fun onButtonChooseOtherPromo() {
-                                        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                                        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
-                                        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
-                                        intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
-                                        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
+                                override fun onButtonChooseOtherPromo() {
+                                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
+                                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
+                                    intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
+                                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
 
-                                        orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
-                                        startActivityForResult(intent, REQUEST_CODE_PROMO)
-                                    }
-                                })
+                                    orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
+                                    startActivityForResult(intent, REQUEST_CODE_PROMO)
+                                }
+                            }
+                        )
                         promoNotEligibleBottomSheet.dismissListener = {
                             if (view != null) {
                                 refresh()
@@ -1020,7 +1043,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 try {
                     val scrollview = binding.rvOrderSummaryPage
                     val childViewHolder = scrollview.findViewHolderForAdapterPosition(adapter.preferenceIndex) as? OrderPreferenceCard
-                            ?: return@post
+                        ?: return@post
                     val coachMarkItems = ArrayList<CoachMark2Item>()
                     for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
                         val newView: View = generateNewCoachMarkAnchorForNewBuyerRemoveProfile(childViewHolder, detailIndexed.index)
@@ -1094,8 +1117,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     if (throwable !is AkamaiErrorException) {
                         message = ErrorHandler.getErrorMessage(it.context, throwable)
                     }
-                    Toaster.build(it, message
-                            ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        it,
+                        message
+                            ?: getString(R.string.default_osp_error_message),
+                        type = Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         }
@@ -1140,8 +1167,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
             if (atcError.throwable is AkamaiErrorException) {
                 view?.let {
-                    Toaster.build(it, atcError.throwable.message
-                            ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        it,
+                        atcError.throwable.message
+                            ?: DEFAULT_LOCAL_ERROR_MESSAGE,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         } else {
@@ -1434,15 +1465,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun getLastPurchaseProtectionCheckState(productId: String): Int {
             return lastPurchaseProtectionCheckStates[productId]
-                    ?: PurchaseProtectionPlanData.STATE_EMPTY
+                ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
 
         override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
             // No need to open add on bottom sheet if action = 0
             if (addOn.addOnsButtonModel.action != 0) {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
-                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
-                        AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
+                intent.putExtra(
+                    AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
+                    AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
                 )
                 intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
                 startActivityForResult(intent, REQUEST_CODE_ADD_ON)
@@ -1542,12 +1574,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val orderCost = viewModel.orderTotal.value.orderCost
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, orderCost.totalPriceWithoutPaymentFees)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
-                putExtra(PaymentListingActivity.EXTRA_ORDER_METADATA, GoCicilInstallmentRequest(
-                        merchantType = viewModel.orderCart.shop.merchantType,
-                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                        address = profile.address,
-                        products = viewModel.orderCart.products
-                ).orderMetadata)
+                val goCicilInstallmentRequest = viewModel.generateGoCicilInstallmentRequest(orderCost)
+                putExtra(
+                    PaymentListingActivity.EXTRA_ORDER_METADATA,
+                    goCicilInstallmentRequest.orderMetadata
+                )
+                putExtra(
+                    PaymentListingActivity.EXTRA_PROMO_PARAM,
+                    goCicilInstallmentRequest.promoParam
+                )
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1555,19 +1590,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
-                CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment, creditCard,
-                        viewModel.orderCart, orderTotal.orderCost, userSession.get().userId,
-                        object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                            override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
-                                viewModel.chooseInstallment(selectedInstallment, installmentList)
-                            }
+                CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(
+                    this@OrderSummaryPageFragment,
+                    creditCard,
+                    viewModel.orderCart,
+                    orderTotal.orderCost,
+                    userSession.get().userId,
+                    object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
+                            viewModel.chooseInstallment(selectedInstallment, installmentList)
+                        }
 
-                            override fun onFailedLoadInstallment() {
-                                view?.let { v ->
-                                    Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-                                }
+                        override fun onFailedLoadInstallment() {
+                            view?.let { v ->
+                                Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                             }
-                        })
+                        }
+                    }
+                )
                 orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
             }
         }
@@ -1575,19 +1615,37 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onGopayInstallmentDetailClicked() {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
-                GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
-                        viewModel.orderCart, viewModel.orderPayment.value, viewModel.orderProfile.value, orderTotal.orderCost, userSession.get().userId,
-                        object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                            override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
-                                viewModel.chooseInstallment(selectedInstallment, installmentList, isSilent)
-                            }
+                GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(
+                    this@OrderSummaryPageFragment,
+                    viewModel.generateGoCicilInstallmentRequest(orderTotal.orderCost),
+                    viewModel.orderPayment.value,
+                    object :
+                        GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        override fun onSelectInstallment(
+                            selectedInstallment: OrderPaymentGoCicilTerms,
+                            installmentList: List<OrderPaymentGoCicilTerms>,
+                            tickerMessage: String,
+                            isSilent: Boolean
+                        ) {
+                            viewModel.chooseInstallment(
+                                selectedInstallment,
+                                installmentList,
+                                tickerMessage,
+                                isSilent
+                            )
+                        }
 
-                            override fun onFailedLoadInstallment() {
-                                view?.let { v ->
-                                    Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-                                }
+                        override fun onFailedLoadInstallment() {
+                            view?.let { v ->
+                                Toaster.build(
+                                    v,
+                                    getString(R.string.default_afpb_error),
+                                    type = Toaster.TYPE_ERROR
+                                ).show()
                             }
-                        })
+                        }
+                    }
+                )
                 orderSummaryAnalytics.eventClickTenureOptionsBottomSheet()
             }
         }
@@ -1599,24 +1657,28 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onOvoActivateClicked(callbackUrl: String) {
-            PaymentActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
-                    getString(R.string.lbl_activate_ovo_now), true,
-                    object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
-                        override fun onActivationResult(isSuccess: Boolean) {
-                            view?.let {
-                                it.post {
-                                    if (isSuccess) {
-                                        Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                                    } else {
-                                        Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                                    }
-                                    source = SOURCE_OTHERS
-                                    shouldShowToaster = false
-                                    refresh()
+            PaymentActivationWebViewBottomSheet(
+                ovoActivationUrl.get(),
+                callbackUrl,
+                getString(R.string.lbl_activate_ovo_now),
+                true,
+                object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
+                    override fun onActivationResult(isSuccess: Boolean) {
+                        view?.let {
+                            it.post {
+                                if (isSuccess) {
+                                    Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                                } else {
+                                    Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                                 }
+                                source = SOURCE_OTHERS
+                                shouldShowToaster = false
+                                refresh()
                             }
                         }
-                    }).show(this@OrderSummaryPageFragment, userSession.get())
+                    }
+                }
+            ).show(this@OrderSummaryPageFragment, userSession.get())
         }
 
         override fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String) {
@@ -1633,18 +1695,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         startActivityForResult(intent, REQUEST_CODE_WALLET_ACTIVATION)
                     }
                 } else {
-                    PaymentActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle, false,
-                            object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
-                                override fun onActivationResult(isSuccess: Boolean) {
-                                    view?.let {
-                                        it.post {
-                                            source = SOURCE_OTHERS
-                                            shouldShowToaster = true
-                                            refresh()
-                                        }
+                    PaymentActivationWebViewBottomSheet(
+                        activationUrl,
+                        callbackUrl,
+                        headerTitle,
+                        false,
+                        object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
+                            override fun onActivationResult(isSuccess: Boolean) {
+                                view?.let {
+                                    it.post {
+                                        source = SOURCE_OTHERS
+                                        shouldShowToaster = true
+                                        refresh()
                                     }
                                 }
-                            }).show(this@OrderSummaryPageFragment, userSession.get())
+                            }
+                        }
+                    ).show(this@OrderSummaryPageFragment, userSession.get())
                 }
             }
         }
@@ -1888,8 +1955,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
 
         @JvmStatic
-        fun newInstance(productId: String?, gatewayCode: String?,
-                        tenureType: String?, source: String?): OrderSummaryPageFragment {
+        fun newInstance(
+            productId: String?,
+            gatewayCode: String?,
+            tenureType: String?,
+            source: String?
+        ): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(QUERY_PRODUCT_ID, productId)

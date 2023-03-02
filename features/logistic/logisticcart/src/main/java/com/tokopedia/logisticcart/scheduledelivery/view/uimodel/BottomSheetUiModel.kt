@@ -4,5 +4,5 @@ data class BottomSheetUiModel(
     val date: ChooseDateUiModel,
     val availableTitle: TitleSectionUiModel,
     val unavailableTitle: TitleSectionUiModel,
-    val infoUiModel: BottomSheetInfoUiModel,
+    val infoUiModel: BottomSheetInfoUiModel
 )

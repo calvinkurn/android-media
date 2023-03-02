@@ -540,6 +540,7 @@
       {
         "title": "Coba produk dengan kategori ini :",
         "type": "category",
+        "layout": "category",
         "position": 4,
         "options": [
           {
@@ -561,6 +562,7 @@
       {
         "title": "Coba filter dengan Cara Penutupan:",
         "type": "annotation",
+        "layout": "annotation",
         "position": 8,
         "options": [
           {
@@ -582,6 +584,7 @@
       {
         "title": "Coba tambahin kata kunci di pencarianmu:",
         "type": "guided",
+        "layout": "guided",
         "position": 14,
         "options": [
           {

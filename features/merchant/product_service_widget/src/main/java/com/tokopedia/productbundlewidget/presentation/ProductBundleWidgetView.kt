@@ -1,16 +1,21 @@
 package com.tokopedia.productbundlewidget.presentation
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
+import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_REQUEST_CODE
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -39,6 +44,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     private var productId: String = ""
     private val bundleAdapter = ProductBundleWidgetAdapter()
     private var listener: ProductBundleWidgetListener? = null
+    private var startActivityResult: ((intent: Intent, requestCode: Int) -> Unit)? = null
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -82,8 +88,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel
     ) {
-        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
-            selectedBundle.bundleId, pageSource)
+        if (startActivityResult != null) {
+            val intent = RouteManager.getIntent(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
+                selectedBundle.bundleId, pageSource)
+            startActivityResult?.invoke(intent, PRODUCT_BUNDLE_REQUEST_CODE)
+        } else {
+            RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
+                selectedBundle.bundleId, pageSource)
+        }
         listener?.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts)
     }
 
@@ -111,12 +123,29 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         listener?.impressionMultipleBundle(selectedMultipleBundle, bundlePosition)
     }
 
+    override fun impressionProductBundleMultiple(
+        bundle: BundleUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundlePosition: Int
+    ) {
+        listener?.impressionMultipleBundle(bundle, selectedMultipleBundle, bundlePosition)
+    }
+
     override fun impressionProductItemBundleMultiple(
         selectedProduct: BundleProductUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int
     ) {
         listener?.impressionMultipleBundleProduct(selectedProduct, selectedMultipleBundle)
+    }
+
+    override fun impressionProductItemBundleMultiple(
+        bundle: BundleUiModel,
+        selectedProduct: BundleProductUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        productItemPosition: Int
+    ) {
+        listener?.impressionMultipleBundleProduct(bundle, selectedProduct, selectedMultipleBundle)
     }
 
     override fun onAttachedToWindow() {
@@ -130,10 +159,16 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
                 listener?.onError(it)
             }
             viewModel.isBundleEmpty.observe(this) {
-                tfTitle?.isVisible = !it
+                tfTitle?.isVisible = !it && tfTitle?.text?.isNotEmpty().orTrue()
                 if (it) listener?.onBundleEmpty()
             }
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        listener = null
+        startActivityResult = null
     }
 
     private fun setup(context: Context, attrs: AttributeSet?) {
@@ -185,8 +220,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         productDetails: List<BundleProductUiModel>
     ) {
         val fixedProductId = if (productId.isNotEmpty()) productId else PRODUCT_ID_DEFAULT_VALUE
-        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, fixedProductId,
-            selectedMultipleBundle.bundleId, pageSource)
+        if (startActivityResult != null) {
+            val intent = RouteManager.getIntent(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, fixedProductId,
+                selectedMultipleBundle.bundleId, pageSource)
+            startActivityResult?.invoke(intent, PRODUCT_BUNDLE_REQUEST_CODE)
+        } else {
+            RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, fixedProductId,
+                selectedMultipleBundle.bundleId, pageSource)
+        }
         listener?.onMultipleBundleActionButtonClicked(selectedMultipleBundle, productDetails)
     }
 
@@ -194,8 +235,16 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         tfTitle?.setTextAndCheckShow(text)
     }
 
+    fun setTitleTextColor(@ColorRes color: Int) {
+        tfTitle?.setTextColor(MethodChecker.getColor(context, color))
+    }
+
     fun setListener(listener: ProductBundleWidgetListener) {
         this.listener = listener
+    }
+
+    fun startActivityResult(startActivityResult: (intent: Intent, requestCode: Int) -> Unit) {
+        this.startActivityResult = startActivityResult
     }
 
     fun getBundleData(param: GetBundleParam) {

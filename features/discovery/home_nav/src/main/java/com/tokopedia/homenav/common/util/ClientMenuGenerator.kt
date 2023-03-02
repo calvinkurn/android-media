@@ -15,7 +15,6 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
     companion object {
         const val ID_WISHLIST_MENU = 901
         const val ID_FAVORITE_SHOP = 902
-        const val ID_RECENT_VIEW = 903
         const val ID_SUBSCRIPTION = 904
         const val ID_COMPLAIN = 905
         const val ID_TOKOPEDIA_CARE = 906
@@ -47,7 +46,6 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         when (menuId) {
             ID_WISHLIST_MENU -> return getWishlistUserMenu(notifCount, sectionId)
             ID_FAVORITE_SHOP -> return getFavoriteShopMenu(notifCount, sectionId)
-            ID_RECENT_VIEW -> return getRecentViewMenu(notifCount, sectionId)
             ID_SUBSCRIPTION -> return getSubscriptionMenu(notifCount, sectionId)
             ID_COMPLAIN -> return getComplainMenu(notifCount, sectionId)
             ID_TOKOPEDIA_CARE -> return getTokopediaCareMenu(notifCount, sectionId)
@@ -117,18 +115,6 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             srcIconId = IconUnify.SHOP_FAVORITE,
             itemTitle = context.getString(R.string.menu_user_menu_favorite_shop),
             applink = ApplinkConst.FAVORITE.needLoginValidation(),
-            notifCount = notifCount,
-            sectionId = sectionId
-        )
-    }
-
-    private fun getRecentViewMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
-        return HomeNavMenuDataModel(
-            trackerName = context.getString(R.string.menu_user_menu_recent_view_tracker_name),
-            id = ID_RECENT_VIEW,
-            srcIconId = IconUnify.CLOCK,
-            itemTitle = context.getString(R.string.menu_user_menu_recent_view),
-            applink = ApplinkConst.RECENT_VIEW.needLoginValidation(),
             notifCount = notifCount,
             sectionId = sectionId
         )

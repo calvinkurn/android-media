@@ -8,7 +8,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -30,10 +29,10 @@ class OtherMenuAdapter(
 
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
-        private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
         private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
         private const val TOKOPEDIA_PLAY_END_DATE = 1652806800000 // Wed May 18 2022 00:00:00
         private const val SLASH_PRICE_END_DATE = 1657990800000 // Sun Jul 17 2022 00:00:00
+        const val PERSONA_EXPIRED_DATE = 1681142400000 ////10-04-2023
     }
 
     private var isShowCentralizedPromoTag: Boolean = false
@@ -147,7 +146,7 @@ class OtherMenuAdapter(
     }
 
     private fun getSettingsTag(): String {
-        val expiredDateMillis = FEEDBACK_EXPIRED_DATE
+        val expiredDateMillis = PERSONA_EXPIRED_DATE
         val todayMillis = Date().time
         return if (todayMillis < expiredDateMillis) {
             context?.getString(R.string.setting_new_tag).orEmpty()

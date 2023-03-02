@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
@@ -34,6 +35,7 @@ import kotlinx.coroutines.launch
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
     private val repo: UserProfileRepository,
+    private val followRepo: UserFollowRepository,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(Dispatchers.Main) {
 
@@ -255,13 +257,10 @@ class UserProfileViewModel @AssistedInject constructor(
                     return@launchCatchError
                 }
 
-                val result = if (followInfo.status) {
-                    repo.unFollowProfile(followInfo.encryptedUserID)
-                } else {
-                    repo.followProfile(followInfo.encryptedUserID)
-                }
-
-                when (result) {
+                when (val result = followRepo.followUser(
+                    encryptedUserId = followInfo.encryptedUserID,
+                    follow = !followInfo.status
+                )) {
                     is MutationUiModel.Success -> {
                         _followInfo.update { it.copy(status = !followInfo.status) }
                         _profileInfo.update { repo.getProfile(followInfo.userID) }
@@ -344,17 +343,16 @@ class UserProfileViewModel @AssistedInject constructor(
 
                 val result = when (currentItem.type) {
                     FOLLOW_TYPE_SHOP -> {
-                        repo.shopFollowUnfollow(
+                        followRepo.followShop(
                             currentItem.id.toString(),
                             if (currentState == FOLLOW) UnFollow else Follow
                         )
                     }
                     FOLLOW_TYPE_BUYER -> {
-                        if (currentState == FOLLOW) {
-                            repo.unFollowProfile(currentItem.encryptedID)
-                        } else {
-                            repo.followProfile(currentItem.encryptedID)
-                        }
+                        followRepo.followUser(
+                            encryptedUserId = currentItem.encryptedID,
+                            follow = currentState == UNFOLLOW
+                        )
                     }
                     else -> return@launchCatchError
                 }

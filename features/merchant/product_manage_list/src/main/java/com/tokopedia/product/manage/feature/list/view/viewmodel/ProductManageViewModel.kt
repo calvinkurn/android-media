@@ -400,12 +400,16 @@ class ProductManageViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 getTickerUseCase.execute()
             }
-            _tickerData.value = tickerStaticDataProvider.createTicker(
+            _tickerData.value = tickerStaticDataProvider.getTickers(
                 isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty(),
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-            _tickerData.value = tickerStaticDataProvider.createTicker(isMultiLocationShop)
+            _tickerData.value = tickerStaticDataProvider.getTickers(
+                isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty()
+            )
         })
     }
 
