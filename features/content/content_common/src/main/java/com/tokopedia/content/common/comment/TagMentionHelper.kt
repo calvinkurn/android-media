@@ -62,7 +62,7 @@ class MentionedSpanned(
     }
 }
 
-class BaseSpan(val fullText: String) : ForegroundColorSpan(Color.BLACK){}
+class BaseSpan(val fullText: String, val content: String) : ForegroundColorSpan(Color.BLACK) {}
 
 
 object TagMentionBuilder {
@@ -75,7 +75,8 @@ object TagMentionBuilder {
         return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR$userType$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR}"
     }
 
-    fun isChildOrParent(text: String, commentId: String): CommentType {
+    fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
+        if (text == null) return CommentType.Parent
         val find = regex.findAll(text)
         return if (find.count() == MENTION_VALUE) {
             CommentType.Child(commentId)
@@ -84,8 +85,9 @@ object TagMentionBuilder {
         }
     }
 
-    fun spanText(text: String, textLength: Int): Spanned {
+    fun spanText(text: Spanned, textLength: Int): Spanned {
         if (text.isBlank()) return buildSpannedString { append(text) }
+
         val find = regex.findAll(text)
         val length = find.sumOf { it.value.length } + 4 // for escape char
         return if (find.count() >= MENTION_VALUE) {
@@ -94,16 +96,21 @@ object TagMentionBuilder {
                 length,
                 textLength
             )
+            val restructured =
+                "{${find.elementAt(0).value}|${find.elementAt(1).value}|${find.elementAt(2).value}}"
             buildSpannedString {
-                append(name, BaseSpan(name), Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+                append(name, BaseSpan(restructured, comment), Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                 append(comment)
             }
-        } else buildSpannedString {append(text) }
+        } else buildSpannedString { append(text) }
     }
 
-    fun getRawText(text: Spanned?) {
-        if(text.isNullOrBlank()) return
+    fun getRawText(text: Spanned?): String {
+        if (text.isNullOrBlank()) return ""
         val convert = text.getSpans<BaseSpan>(0, text.length)
+        return convert.joinToString { it.fullText + it.content }.ifBlank {
+            text.toString()
+        }
     }
 
     fun getMentionTag(

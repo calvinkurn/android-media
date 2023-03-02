@@ -9,6 +9,7 @@ import com.tokopedia.content.common.comment.uimodel.*
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -161,7 +162,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 val item = action.comment
                 it.copy(first = item, second = _comments.value.list.indexOf(item))
             }
-            CommentAction.EditTextCLicked -> handleEditTextClicked()
+            is CommentAction.EditTextClicked -> handleEditTextClicked(action.item)
             is CommentAction.ReplyComment -> sendReply(action.comment, action.commentType)
             is CommentAction.OpenAppLinkAction -> {
                 viewModelScope.launch {
@@ -267,18 +268,20 @@ class ContentCommentViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleEditTextClicked() {
+    private fun handleEditTextClicked(item: CommentUiModel.Item) {
         requireLogin {
             viewModelScope.launch {
-                _event.emit(CommentEvent.ShowKeyboard)
+                _event.emit(CommentEvent.AutoType(item))
             }
         }
     }
 
     private fun sendReply(comment: String, commentType: CommentType) {
         requireLogin {
+            val regex = """((www|http)(\W+\S+[^).,:;?\]\} \r\n${'$'}]+))""".toRegex()
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
+                if(regex.findAll(comment).count() > 0) throw MessageErrorException("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya.")
                 val result = repo.replyComment(source, commentType, comment)
                 _comments.getAndUpdate {
                     val newList = it.list.toMutableList().apply {

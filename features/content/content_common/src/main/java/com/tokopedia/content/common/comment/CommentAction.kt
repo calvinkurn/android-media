@@ -22,7 +22,7 @@ sealed interface CommentAction {
         val param: FeedReportRequestParamModel
     ) : CommentAction
 
-    object EditTextCLicked: CommentAction
+    data class EditTextClicked(val item: CommentUiModel.Item): CommentAction
     object RequestReportAction : CommentAction
 
     data class SelectComment(val comment: CommentUiModel.Item) : CommentAction

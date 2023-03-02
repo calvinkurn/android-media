@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import androidx.core.text.toSpanned
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -101,8 +102,19 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
-                val newText = TagMentionBuilder.spanText(p0.toString(), textLength = p0.length.orZero())
+                if (p0.length >= MAX_CHAR) {
+                    Toaster.showError(
+                        requireView().rootView,
+                        getString(R.string.content_comment_error_max),
+                        Toaster.LENGTH_SHORT
+                    )
+                }
+
+                val newText =
+                    TagMentionBuilder.spanText(p0.toSpanned(), textLength = p0.length.orZero())
                 binding.newComment.setText(newText)
+
+                binding.newComment.setSelection(binding.newComment.length())
                 binding.newComment.addTextChangedListener(this)
             }
         }
@@ -152,12 +164,8 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.rvComment.addOnScrollListener(scrollListener)
 
         binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
-        binding.newComment.setOnClickListener {
-            viewModel.submitAction(CommentAction.EditTextCLicked)
-        }
         binding.ivCommentSend.setOnClickListener {
-            val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
-            viewModel.submitAction(CommentAction.ReplyComment(binding.newComment.text.toString(), TagMentionBuilder.isChildOrParent(binding.newComment.text.toString(), binding.newComment.tag.toString())))
+            handleSendComment()
         }
         Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.unify_space_48)
         binding.newComment.addTextChangedListener(textWatcher)
@@ -238,6 +246,14 @@ class ContentCommentBottomSheet @Inject constructor(
                         binding.newComment.text = null
                         binding.rvComment.scrollToPosition(0)
                     }
+                    is CommentEvent.AutoType -> {
+                        binding.newComment.setText("")
+                        val mention = TagMentionBuilder.createNewMentionTag(
+                            event.parentItem
+                        )
+                        binding.newComment.tag = event.parentItem.id
+                        binding.newComment.setText(mention)
+                    }
                 }
             }
         }
@@ -278,11 +294,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
-        //cek login
-        binding.newComment.setText("")
-        val mention = TagMentionBuilder.createNewMentionTag(item)
-        binding.newComment.tag = item.id
-        binding.newComment.setText(mention)
+        viewModel.submitAction(CommentAction.EditTextClicked(item))
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {
@@ -324,6 +336,10 @@ class ContentCommentBottomSheet @Inject constructor(
 
         val window = dialog?.window
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        setStyle(
+            DialogFragment.STYLE_NORMAL,
+            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetOverlapStyle
+        )
 
         binding.root.layoutParams.height = newHeight
         viewModel.submitAction(CommentAction.RefreshComment)
@@ -391,6 +407,20 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+    private fun handleSendComment() {
+        if (binding.newComment.length() >= MAX_CHAR) {
+            Toaster.showError(
+                requireView().rootView,
+                getString(R.string.content_comment_error_max),
+                Toaster.LENGTH_SHORT
+            )
+        } else {
+            val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
+            viewModel.submitAction(CommentAction.ReplyComment(convert, TagMentionBuilder.isChildOrParent(
+                binding.newComment.text?.toSpanned(), binding.newComment.tag.toString())))
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == LOGIN_RESULT) {
             binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
@@ -409,6 +439,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val SHIMMER_VALUE = 10
 
         private const val LOGIN_RESULT = 99
+        private const val MAX_CHAR = 140
 
         fun getOrCreate(
             fragmentManager: FragmentManager,

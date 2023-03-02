@@ -150,6 +150,7 @@
     <string name="comment_delete_undo">Kembalikan</string>
     <string name="comment_delete_kembali">Komentar dihapus.</string>
     <string name="content_comment_error_secondary">Ke Pengaturan</string>
+    <string name="content_comment_error_max">Oops, tidak bisa memberi komentar.</string>
 
     <!--Report Bottom Sheet -->
     <string name="feed_common_reason_type_fraud" translatable="false">fraud</string>
