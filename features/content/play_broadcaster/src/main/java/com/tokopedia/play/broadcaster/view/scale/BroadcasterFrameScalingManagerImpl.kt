@@ -11,9 +11,10 @@ import javax.inject.Inject
 class BroadcasterFrameScalingManagerImpl @Inject constructor(): BroadcasterFrameScalingManager {
 
     override fun scaleDown(view: View, bottomSheetHeight: Int, fullPageHeight: Int) {
-        val animator = AnimatorSet()
-
         val scaleFactor = ((fullPageHeight - bottomSheetHeight) / fullPageHeight.toFloat())
+        if(view.scaleX == scaleFactor && view.scaleY == scaleFactor) return
+
+        val animator = AnimatorSet()
 
         val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
         val animatorY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
@@ -25,6 +26,8 @@ class BroadcasterFrameScalingManagerImpl @Inject constructor(): BroadcasterFrame
     }
 
     override fun scaleUp(view: View) {
+        if(view.scaleX == BASE_SCALE && view.scaleY == BASE_SCALE) return
+
         val animator = AnimatorSet()
 
         val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, BASE_SCALE)
