@@ -320,6 +320,7 @@ class PlayUserInteractionFragment @Inject constructor(
             shopId = playViewModel.partnerId,
             channelType = playViewModel.channelType
         )
+        // for testing
         bottomSheet.dismiss()
     }
 
