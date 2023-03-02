@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
@@ -33,7 +34,7 @@ class ShopReviewListItemViewHolder(
     private fun ShopReviewListItemBinding.renderUI(uiModel: ProductShopReviewUiModel.Review) {
         shopReviewListImage.loadImage(uiModel.userImage)
         shopReviewListUserSubTitle.text = uiModel.userSubtitle
-        shopReviewListReviewText.text = uiModel.reviewText
+        shopReviewListReviewText.text = uiModel.reviewText.parseAsHtmlLink(root.context)
         setUserName(uiModel = uiModel)
         setUserTitle(uiModel = uiModel)
     }
