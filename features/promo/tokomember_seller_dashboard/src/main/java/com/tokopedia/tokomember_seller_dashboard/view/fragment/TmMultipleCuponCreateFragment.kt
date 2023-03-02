@@ -969,7 +969,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val ss = SpannableString(COUPON_TERMS_CONDITION)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TM_TNC))
+                RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, TM_TNC))
                 // bottomSheetUnify.show(childFragmentManager, "")
             }
 

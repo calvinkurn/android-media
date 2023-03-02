@@ -48,6 +48,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHo
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tm_dash_home_fragment.*
+import java.util.*
 import javax.inject.Inject
 
 class TokomemberDashHomeFragment : BaseDaggerFragment(), EditCardCallback {
@@ -208,7 +209,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment(), EditCardCallback {
             tvTickerCta.setOnClickListener {
                 try {
                     if (data.cta?.appLink.isNullOrEmpty() && data.cta?.urlMobile?.isNotEmpty() == true) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, data.cta.urlMobile))
+                        RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, data.cta.urlMobile))
                     } else if (data.cta?.urlMobile.isNullOrEmpty() && data.cta?.appLink?.isNotEmpty() == true) {
                         RouteManager.route(context, data.cta.appLink)
                     }

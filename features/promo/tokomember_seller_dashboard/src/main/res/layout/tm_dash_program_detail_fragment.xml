@@ -258,7 +258,7 @@
                                         <com.tokopedia.unifycomponents.ImageUnify
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:src="@drawable/tm_ic_tokomember_premium"/>
+                                            app:srcCompat="@drawable/tm_ic_tokomember_premium"/>
 
                                         <com.tokopedia.unifyprinciples.Typography
                                             android:layout_width="wrap_content"
@@ -272,11 +272,12 @@
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="2"
                                         android:layout_marginStart="@dimen/unify_space_16"
                                         android:layout_marginBottom="@dimen/tm_dash_dp_10"
-                                        android:orientation="horizontal">
+                                        android:orientation="horizontal"
+                                        android:baselineAligned="false">
 
                                         <LinearLayout
                                             android:layout_width="wrap_content"
@@ -355,7 +356,7 @@
                                         <com.tokopedia.unifycomponents.ImageUnify
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:src="@drawable/tm_ic_tokomember_vip"/>
+                                            app:srcCompat="@drawable/tm_ic_tokomember_vip"/>
 
                                         <com.tokopedia.unifyprinciples.Typography
                                             android:layout_width="wrap_content"
@@ -369,11 +370,12 @@
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="2"
                                         android:layout_marginStart="@dimen/unify_space_16"
                                         android:layout_marginBottom="@dimen/tm_dash_dp_10"
-                                        android:orientation="horizontal">
+                                        android:orientation="horizontal"
+                                        android:baselineAligned="false">
 
                                         <LinearLayout
                                             android:layout_width="wrap_content"
