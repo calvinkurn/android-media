@@ -303,8 +303,19 @@ class PlayBroadcastActivity : BaseActivity(),
 
                         val animatorX = ObjectAnimator.ofFloat(aspectFrameLayout ,View.SCALE_X, aspectFrameLayout.scaleX, scaleFactor)
                         val animatorY = ObjectAnimator.ofFloat(aspectFrameLayout, View.SCALE_Y, aspectFrameLayout.scaleY, scaleFactor)
-                        animatorY.duration = 500
-                        animatorX.duration = 500
+                        animatorY.duration = 200
+                        animatorX.duration = 200
+
+                        animator.playTogether(animatorX, animatorY)
+                        animator.start()
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                        val animator = AnimatorSet()
+
+                        val animatorX = ObjectAnimator.ofFloat(aspectFrameLayout ,View.SCALE_X, aspectFrameLayout.scaleX, 1.0f)
+                        val animatorY = ObjectAnimator.ofFloat(aspectFrameLayout, View.SCALE_Y, aspectFrameLayout.scaleY, 1.0f)
+                        animatorY.duration = 200
+                        animatorX.duration = 200
 
                         animator.playTogether(animatorX, animatorY)
                         animator.start()

@@ -541,6 +541,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             /** Beautification */
             is PlayBroadcastAction.FaceFilterBottomSheetShown -> handleFaceFilterBottomSheetShown(event.bottomSheetHeight)
+            is PlayBroadcastAction.FaceFilterBottomSheetDismissed -> handleFaceFilterBottomSheetDismissed()
         }
     }
 
@@ -1659,6 +1660,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleFaceFilterBottomSheetShown(bottomSheetHeight: Int) {
         viewModelScope.launch {
             _uiEvent.emit(PlayBroadcastEvent.FaceFilterBottomSheetShown(bottomSheetHeight))
+        }
+    }
+
+    private fun handleFaceFilterBottomSheetDismissed() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastEvent.FaceFilterBottomSheetDismissed)
         }
     }
 

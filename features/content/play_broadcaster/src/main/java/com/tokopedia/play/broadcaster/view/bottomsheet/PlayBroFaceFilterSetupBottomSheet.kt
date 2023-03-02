@@ -90,6 +90,10 @@ class PlayBroFaceFilterSetupBottomSheet @Inject constructor(
         showCloseIcon = false
         showKnob = true
         isHideable = true
+
+        setOnDismissListener {
+            viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+        }
     }
 
     private fun setupView() {

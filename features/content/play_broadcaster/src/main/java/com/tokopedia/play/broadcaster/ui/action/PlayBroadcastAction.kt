@@ -72,4 +72,5 @@ sealed interface PlayBroadcastAction {
 
     /** Beautification */
     data class FaceFilterBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
+    object FaceFilterBottomSheetDismissed : PlayBroadcastAction
 }
