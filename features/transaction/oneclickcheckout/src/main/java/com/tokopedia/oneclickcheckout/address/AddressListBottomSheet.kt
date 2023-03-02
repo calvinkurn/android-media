@@ -150,7 +150,7 @@ class AddressListBottomSheet(
                     onClickApplink = { listener.onClickAddressTickerApplink(it) },
                     onClickUrl = { listener.onClickAddressTickerUrl(it) }
                 )
-            } catch (e: java.lang.Exception) {
+            } catch (e: Throwable) {
                 binding?.tickerOccAddressList?.gone()
             }
         }
