@@ -47,7 +47,6 @@ class NewAddPhoneCassavaTest {
             .setComponent(fakeBaseComponent)
     }
 
-
     @After
     fun after() {
         activityTestRule.finishActivity()
