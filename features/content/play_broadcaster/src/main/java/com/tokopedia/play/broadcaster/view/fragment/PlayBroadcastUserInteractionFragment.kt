@@ -54,6 +54,7 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFor
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
+import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
@@ -68,6 +69,7 @@ import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.commit
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -334,7 +336,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icFaceFilter.setOnClickListener {
-            /** TODO: handle this */
+            childFragmentManager.commit {
+                add(FaceFilterSetupFragment::class.java, null, null)
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -831,6 +835,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
                     is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
+                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                        view?.hide()
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                        view?.show()
+                    }
                     else -> {}
                 }
             }
