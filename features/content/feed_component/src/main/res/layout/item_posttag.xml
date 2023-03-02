@@ -51,5 +51,6 @@
         tools:listitem="@layout/item_producttag_list_new"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/merchant_voucher_widget_post_tag"/>
+        app:layout_constraintTop_toBottomOf="@id/merchant_voucher_widget_post_tag"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

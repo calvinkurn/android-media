@@ -47,7 +47,7 @@ class FeedTaggedProductBottomSheetCardView(
             binding.tvProductDiscount.text =
                 context.getString(R.string.feed_product_discount_percent, product.discount)
             binding.tvOriginalPrice.text = product.priceOriginalFmt
-            binding.tvCurrentPrice.text = product.priceFmt
+            binding.tvCurrentPrice.text = product.priceDiscountFmt
         } else {
             binding.tvProductDiscount.hide()
             binding.tvOriginalPrice.hide()
@@ -56,15 +56,15 @@ class FeedTaggedProductBottomSheetCardView(
 
 
         binding.btnProductFirst.setOnClickListener {
-            mListener?.onButtonTransactionProduct(this, item.product)
+            mListener?.onButtonMoveToCartProduct(this, item)
         }
 
         binding.btnProductSecond.setOnClickListener {
-            mListener?.onButtonTransactionProduct(this, item.product)
+            mListener?.onButtonAddToCartProduct(this, item)
         }
 
         setOnClickListener {
-            if (product.appLink.isNotEmpty()) mListener?.onClicked(this, item.product)
+            if (product.appLink.isNotEmpty()) mListener?.onClicked(this, item)
         }
 
         binding.btnProductFirst.showWithCondition(true)
@@ -75,12 +75,16 @@ class FeedTaggedProductBottomSheetCardView(
     interface Listener {
         fun onClicked(
             view: FeedTaggedProductBottomSheetCardView,
-            product: FeedXProduct
+            product: ProductPostTagModelNew
         )
 
-        fun onButtonTransactionProduct(
+        fun onButtonAddToCartProduct(
             view: FeedTaggedProductBottomSheetCardView,
-            product: FeedXProduct
+            product: ProductPostTagModelNew
+        )
+        fun onButtonMoveToCartProduct(
+            view: FeedTaggedProductBottomSheetCardView,
+            product: ProductPostTagModelNew
         )
     }
 }

@@ -3,8 +3,6 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.databinding.ItemFeedTaggedProductBinding
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 
@@ -13,30 +11,35 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
  */
 class FeedTaggedProductViewHolder(
     private val binding: ItemFeedTaggedProductBinding,
-    private val listener: ProductItemInfoBottomSheet.Listener,
+    private val listener: Listener?,
 ) : BaseViewHolder(binding.root) {
 
     init {
         binding.root.setListener(object : FeedTaggedProductBottomSheetCardView.Listener {
             override fun onClicked(
                 view: FeedTaggedProductBottomSheetCardView,
-                product: FeedXProduct
+                product: ProductPostTagModelNew
             ) {
-//                listener.onProductClicked(
-//                    this@FeedTaggedProductViewHolder,
-//                    product
-//                )
+                listener?.onProductClicked(
+                    view,
+                    product
+                )
             }
 
-            override fun onButtonTransactionProduct(
+            override fun onButtonAddToCartProduct(
                 view: FeedTaggedProductBottomSheetCardView,
-                product: FeedXProduct,
+                product: ProductPostTagModelNew
             ) {
-//                listener.onButtonTransactionProduct(
-//                    this@FeedTaggedProductViewHolder,
-//                    product
-//                )
+                listener?.onButtonAddToCartProduct(view, product)
             }
+
+            override fun onButtonMoveToCartProduct(
+                view: FeedTaggedProductBottomSheetCardView,
+                product: ProductPostTagModelNew
+            ) {
+                listener?.onButtonMoveToCartProduct(view, product)
+            }
+
         })
     }
 
@@ -48,7 +51,7 @@ class FeedTaggedProductViewHolder(
 
         fun create(
             parent: ViewGroup,
-            listener: ProductItemInfoBottomSheet.Listener,
+            listener: Listener?,
         ) = FeedTaggedProductViewHolder(
             ItemFeedTaggedProductBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -61,12 +64,16 @@ class FeedTaggedProductViewHolder(
 
     interface Listener {
         fun onProductClicked(
-            viewHolder: FeedTaggedProductViewHolder,
-            product: FeedXProduct,
+            viewHolder: FeedTaggedProductBottomSheetCardView,
+            product: ProductPostTagModelNew,
         )
-        fun onButtonTransactionProduct(
-            viewHolder: FeedTaggedProductViewHolder,
-            product: FeedXProduct
+        fun onButtonMoveToCartProduct(
+            viewHolder: FeedTaggedProductBottomSheetCardView,
+            product: ProductPostTagModelNew
+        )
+        fun onButtonAddToCartProduct(
+            viewHolder: FeedTaggedProductBottomSheetCardView,
+            product: ProductPostTagModelNew
         )
     }
 }

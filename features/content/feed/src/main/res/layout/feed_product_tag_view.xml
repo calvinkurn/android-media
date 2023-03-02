@@ -33,13 +33,15 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN0"
             android:layout_marginStart="4dp"
-            android:text="Xiaomi Redmi 32 GB Black"
             app:typographyType="display_3"
-            tools:visibility="visible"
+            android:ellipsize="end"
+            android:maxWidth="240dp"
+            android:maxLines="1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/product_tag_icon"
             tools:text="Xiaomi Redmi 32 GB Black"
+            tools:visibility="visible"
             />
 
 

@@ -40,7 +40,10 @@ class FeedPostViewHolder(
                     hideClearView()
                 }
                 productTagButton.root.setOnClickListener {
-                    listener.onProductTagClicked(element)
+                    listener.onProductTagItemClicked(element)
+                }
+                productTagView.root.setOnClickListener {
+                    listener.onProductTagViewClicked(element)
                 }
                 setUpProductTagButtonText(feedCardModel = element)
 
@@ -51,14 +54,20 @@ class FeedPostViewHolder(
     }
 
     private fun setUpProductTagButtonText(feedCardModel: FeedCardModel){
-        val productData = feedCardModel.tags
+        val productData =
+            if (feedCardModel.isTypeProductHighlight) feedCardModel.products else feedCardModel.tags
+
         when (val numberOfTaggedProducts = feedCardModel.totalProducts) {
             0 -> {
                 binding.productTagView.root.hide()
                 binding.productTagButton.root.hide()
             }
             1 -> {
-                binding.productTagView.tvTagProduct.text = productData.firstOrNull()?.name
+                binding.productTagView.tvTagProduct.text =
+                    itemView.context.getString(
+                        R.string.feeds_tag_product_name_text,
+                        productData.firstOrNull()?.name
+                    )
                 binding.productTagButton.tvPlayProductCount.text = "1"
             }
             else -> {
@@ -86,6 +95,7 @@ class FeedPostViewHolder(
             menuButton.hide()
             shareButton.hide()
             productTagButton.root.hide()
+            productTagView.root.hide()
             btnDisableClearMode.show()
         }
     }
@@ -103,7 +113,7 @@ class FeedPostViewHolder(
             menuButton.show()
             shareButton.show()
             productTagButton.root.show()
-
+            productTagView.root.show()
             btnDisableClearMode.hide()
         }
     }

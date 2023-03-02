@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -17,6 +19,8 @@ import com.tokopedia.feedcomponent.presentation.utils.EndlessScrollRecycleListen
 import com.tokopedia.feedcomponent.presentation.utils.FeedXProductResult
 import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductBottomSheetCardView
+import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -27,10 +31,11 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class ProductItemInfoBottomSheet : BottomSheetUnify() {
+class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHolder.Listener {
 
     private var binding: ItemPosttagBinding? = null
 
@@ -43,7 +48,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var postId: String = "0"
     private val adapter by lazy {
         listener?.let {
-            ProductInfoBottomSheetAdapter(it)
+            ProductInfoBottomSheetAdapter(it, this)
         }
     }
     private var positionInFeed: Int = 0
@@ -61,9 +66,6 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     var disMissed: (() -> Unit)? = null
     var dismissedByClosing = false
 
-    init {
-        customPeekHeight = (getDeviceHeight() / 2).toInt()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,8 +74,18 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = ItemPosttagBinding.inflate(inflater, container, false)
         setTitle(getString(R.string.content_product_bs_title))
-        setChild(binding?.root)
+        setChild(generateDynamicView())
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun generateDynamicView(): View?{
+        val height = (getDeviceHeight() * 0.8).toInt().toPx()
+
+        val customHeightView = binding?.root
+        customHeightView?.layoutParams =
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
+
+        return customHeightView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,7 +114,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
         viewModel?.fetchMerchantVoucherSummary(shopId)
         viewModel?.fetchFeedXProductsData(postId)
-        observe()
+        observeMVC()
+        observeFeedXActivityProducts()
 
         setCloseClickListener {
             dismissedByClosing = true
@@ -121,7 +134,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
     }
 
-    private fun observe() {
+    private fun observeMVC() {
         viewModel?.run {
             merchantVoucherSummary.observe(viewLifecycleOwner) {
                 when (it) {
@@ -145,6 +158,10 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                     }
                 }
             }
+        }
+    }
+    private fun observeFeedXActivityProducts() {
+        viewModel?.run {
             feedProductsResponse.observe(viewLifecycleOwner) {
                 when (it) {
                     is FeedXProductResult.Success -> {
@@ -160,6 +177,10 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+    }
+
+    private fun moveToAddToCartPage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
     private fun getRecyclerViewListener(): EndlessScrollRecycleListener {
@@ -291,6 +312,29 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         }
     }
 
+    fun showToastWithAction(
+        message: String,
+        type: Int,
+        actionText: String,
+        action: () -> Unit
+    ) {
+        view?.rootView?.let {
+            context?.resources?.let { resource ->
+                Toaster.toasterCustomBottomHeight =
+                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+            }
+            Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionText
+            ) {
+                action()
+            }.show()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         listener = null
@@ -330,4 +374,34 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         private const val WISHLIST_ITEM_CLICKED = "wishlist_button_clicked"
         private const val PRODUCT_TYPE = "product"
     }
+
+    override fun onProductClicked(
+        viewHolder: FeedTaggedProductBottomSheetCardView,
+        product: ProductPostTagModelNew
+    ) {
+        listener?.onTaggedProductCardClicked(
+            product.positionInFeed,
+            product.applink,
+            product.product,
+            0,
+            product.mediaType
+        )
+    }
+
+    override fun onButtonMoveToCartProduct(
+        viewHolder: FeedTaggedProductBottomSheetCardView,
+        product: ProductPostTagModelNew
+    ) {
+        moveToAddToCartPage()
+    }
+
+    override fun onButtonAddToCartProduct(
+        viewHolder: FeedTaggedProductBottomSheetCardView,
+        product: ProductPostTagModelNew
+    ) {
+        listener?.onAddToCartButtonClicked(
+           product
+        )
+    }
+
 }
