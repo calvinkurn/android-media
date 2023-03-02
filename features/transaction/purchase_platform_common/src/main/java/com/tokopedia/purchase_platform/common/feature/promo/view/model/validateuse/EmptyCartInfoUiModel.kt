@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class EmptyCartInfoUiModel(
-        var imgUrl: String = "",
-        var message: String = "",
-        var detail: String = ""
+    var imgUrl: String = "",
+    var message: String = "",
+    var detail: String = ""
 ) : Parcelable

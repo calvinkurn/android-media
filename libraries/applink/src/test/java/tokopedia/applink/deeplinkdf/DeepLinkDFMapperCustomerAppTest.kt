@@ -239,12 +239,6 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check home recent view appLink then should return DF_MERCHANT_LOGIN in customerapp`() {
-        val appLink = "${ApplinkConsInternalHome.INTERNAL_HOME}/recentlyviewed"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_LOGIN)
-    }
-
-    @Test
     fun `check ovo pay with qr entry appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/ovo-pay-with-qr"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
@@ -289,12 +283,6 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `check drop off picker appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/dropoff/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check shipping confirmation appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/shipping-confirmation/{mode}"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 

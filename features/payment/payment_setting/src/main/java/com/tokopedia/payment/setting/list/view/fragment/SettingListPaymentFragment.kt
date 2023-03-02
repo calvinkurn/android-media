@@ -14,19 +14,20 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.list.analytics.PaymentSettingListAnalytics
 import com.tokopedia.payment.setting.list.model.PaymentSignature
+import com.tokopedia.payment.setting.list.model.SettingBannerModel
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
+import com.tokopedia.payment.setting.list.model.SettingListCardCounterModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
+import com.tokopedia.payment.setting.list.view.adapter.SettingListActionListener
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
 import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,12 +38,15 @@ import javax.inject.Inject
 
 
 class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
-        SettingListEmptyViewHolder.ListenerEmptyViewHolder {
+        SettingListActionListener {
 
     private var paymentSignature: PaymentSignature? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var analytics: PaymentSettingListAnalytics
 
     private val settingsListViewModel: SettingsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -73,21 +77,11 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                 settingsListViewModel.checkVerificationPhone()
             }
         }
-        updateViewCounter(adapter.dataSize)
         observeViewModel()
     }
 
 
     private fun observeViewModel() {
-        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onPaymentSignature(it.data.paymentSignature)
-                    renderList(ArrayList(it.data.creditCard.cards ?: arrayListOf()))
-                }
-                is Fail -> showGetListError(it.throwable)
-            }
-        })
         settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer {
             if (it) {
                 hideLoadingDialog()
@@ -97,19 +91,80 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                 onNeedVerifPhone()
             }
         })
-    }
 
-    private fun updateViewCounter(size: Int) {
-        view?.counterCreditCard?.text = getString(R.string.payment_label_saved_card, size)
+        settingsListViewModel.bannerAndCardListResultLiveData.observe(viewLifecycleOwner) {
+            val cardListResult = it.first
+            val bannerResult = it.second
+
+            if (cardListResult != null && bannerResult != null) {
+                val list = mutableListOf<SettingListPaymentModel>()
+
+                when (cardListResult) {
+                    is Success -> {
+                        onPaymentSignature(cardListResult.data.paymentSignature)
+                        val cards = cardListResult.data.creditCard.cards
+                        list.add(SettingListCardCounterModel(cards?.size ?: 0))
+                        list.addAll(cards ?: arrayListOf())
+                    }
+                    is Fail -> showGetListError(cardListResult.throwable)
+                }
+
+                if (bannerResult is Success && bannerResult.data.assets.isNotEmpty()) {
+                    list.add(0, bannerResult.data)
+                }
+
+                renderList(list)
+            }
+        }
     }
 
     override fun getAdapterTypeFactory(): SettingListPaymentAdapterTypeFactory {
         return SettingListPaymentAdapterTypeFactory(this)
     }
 
-    override fun onItemClicked(t: SettingListPaymentModel?) {
-        activity?.run {
-            this@SettingListPaymentFragment.startActivityForResult(DetailCreditCardActivity.createIntent(this, t), REQUEST_CODE_DETAIL_CREDIT_CARD)
+    override fun onItemClicked(data: SettingListPaymentModel?) {
+        when (data) {
+            is SettingBannerModel -> {
+                RouteManager.route(this.context, data.buttonRedirectUrl)
+                sendEventClickBanner(data)
+            }
+            is SettingListCardCounterModel -> {}
+            else -> {
+                activity?.run {
+                    this@SettingListPaymentFragment.startActivityForResult(DetailCreditCardActivity.createIntent(this, data), REQUEST_CODE_DETAIL_CREDIT_CARD)
+                }
+            }
+        }
+    }
+
+    private fun sendEventClickBanner(data: SettingBannerModel) {
+        when (data.code) {
+            SettingBannerModel.CODE_REGISTER_COBRAND -> {
+                analytics.sendEventClickBannerUserNotYetHaveCobrand()
+            }
+            SettingBannerModel.CODE_ON_PROGRESS -> {
+                analytics.sendEventClickBannerUserCobrandOnProgress()
+            }
+            SettingBannerModel.CODE_ACTIVATION -> {
+                analytics.sendEventClickBannerUserCobrandActivate()
+            }
+        }
+    }
+
+    private fun sendEventViewBanner(data: SettingBannerModel) {
+        when (data.code) {
+            SettingBannerModel.CODE_REGISTER_COBRAND -> {
+                analytics.sendEventViewBannerUserNotYetHaveCobrand()
+            }
+            SettingBannerModel.CODE_ON_PROGRESS -> {
+                analytics.sendEventViewBannerUserCobrandOnProgress()
+            }
+            SettingBannerModel.CODE_ACTIVATION -> {
+                analytics.sendEventViewBannerUserCobrandActivate()
+            }
+            SettingBannerModel.CODE_SAVE_CARD -> {
+                analytics.sendEventViewBannerUserCobrandAdd()
+            }
         }
     }
 
@@ -120,6 +175,10 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                         .startActivityForResult(AddCreditCardActivity.createIntent(this, paymentSignature), REQUEST_CODE_ADD_CREDIT_CARD)
             }
         }
+    }
+
+    override fun onViewBanner(element: SettingBannerModel) {
+        sendEventViewBanner(element)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -142,7 +201,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
-        updateViewCounter(list.size)
+        adapter.clearAllElements()
         if (list.size in CARD_LIST_RANGE_FOR_ADD_MORE_CARD) {
             list.add(SettingListAddCardModel())
         }
@@ -191,22 +250,31 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun loadData(page: Int) {
         settingsListViewModel.getCreditCardList()
+        settingsListViewModel.getSettingBanner()
         hideAuthPaymentView()
     }
 
     private fun hideAuthPaymentView() {
-        counterCreditCard?.visibility = View.GONE
         dividerListPayment?.visibility = View.GONE
         authenticateCreditCard?.visibility = View.GONE
     }
 
     private fun showAuthPaymentView() {
-        counterCreditCard?.visibility = View.VISIBLE
         dividerListPayment?.visibility = View.VISIBLE
         authenticateCreditCard?.visibility = View.VISIBLE
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeObservers()
+    }
+
+    private fun removeObservers() {
+        settingsListViewModel.phoneVerificationStatusLiveData.removeObservers(this)
+        settingsListViewModel.bannerAndCardListResultLiveData.removeObservers(this)
+    }
 
     companion object {
         val CARD_LIST_RANGE_FOR_ADD_MORE_CARD = 1..3

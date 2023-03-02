@@ -176,7 +176,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.userStatus, NOT_BRANDER_CHIPS,
                     fintechRedirectionWidgetDataClass.installmentAmout,
                     "${fintechRedirectionWidgetDataClass.tenure}",
-                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink,
+                    fintechRedirectionWidgetDataClass.promoName,
                 )
             )
         else
@@ -187,7 +188,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.userStatus, BRANDER_CHIPS,
                     fintechRedirectionWidgetDataClass.installmentAmout,
                     "${fintechRedirectionWidgetDataClass.tenure}",
-                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink,
+                    fintechRedirectionWidgetDataClass.promoName,
                 )
             )
     }
@@ -217,17 +219,18 @@ class PdpFintechWidget @JvmOverloads constructor(
     fun updateProductId(
         productID: String,
         fintechWidgetViewHolder: ProductUpdateListner,
-        loggedIn: Boolean
+        loggedIn: Boolean,
+        shopID: String,
     ) {
         try {
             if (this.productID == productID && this.logInStatus == loggedIn && priceToChip.isNotEmpty()) {
                 if (idToPriceMap[productID] != null)
                     getChipDataAndUpdate(idToPriceMap[productID]?.price)
                 else
-                    getDetailFromApi(productID, fintechWidgetViewHolder)
+                    getDetailFromApi(productID, fintechWidgetViewHolder, shopID)
             } else {
 
-                getDetailFromApi(productID, fintechWidgetViewHolder)
+                getDetailFromApi(productID, fintechWidgetViewHolder, shopID)
             }
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
@@ -238,14 +241,16 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun getDetailFromApi(
         productID: String,
-        fintechWidgetViewHolder: ProductUpdateListner
+        fintechWidgetViewHolder: ProductUpdateListner,
+        shopID: String,
     ) {
         this.productID = productID
         this.instanceProductUpdateListner = fintechWidgetViewHolder
         categoryId?.let {
             fintechWidgetViewModel.getWidgetData(
                 it,
-                idToPriceMap
+                idToPriceMap,
+                shopID,
             )
         }
     }
@@ -276,7 +281,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].linkingStatus ?: "",
                         chipList[i].userStatus ?: "",
                         NOT_BRANDER_CHIPS,
-                        chipList[i].productCode ?: ""
+                        chipList[i].productCode ?: "",
+                        chipList[i].promoName
                     )
                 )
             else
@@ -286,7 +292,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].linkingStatus ?: "",
                         chipList[i].userStatus ?: "",
                         BRANDER_CHIPS,
-                        chipList[i].productCode ?: ""
+                        chipList[i].productCode ?: "",
+                        chipList[i].promoName
                     )
                 )
 

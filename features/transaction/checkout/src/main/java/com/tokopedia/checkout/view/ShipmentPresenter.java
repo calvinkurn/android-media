@@ -1365,6 +1365,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             getView().showToastError(e.getMessage());
                                             getView().resetCourier(cartPosition);
                                         }
+                                        getView().logOnErrorApplyBo(e, cartPosition, promoCode);
                                         if (logisticDonePublisher != null) {
                                             logisticDonePublisher.onCompleted();
                                         }
@@ -1442,6 +1443,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                         if (getView() != null) {
                             getView().resetCourier(shipmentCartItemModel);
+                            getView().logOnErrorApplyBo(new MessageErrorException(voucherOrdersItemUiModel.getMessageUiModel().getText()), shipmentCartItemModel, voucherOrdersItemUiModel.getCode());
                         }
                     }
                 }
@@ -1460,6 +1462,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                         if (getView() != null) {
                             getView().resetCourier(shipmentCartItemModel);
+                            getView().logOnErrorApplyBo(new MessageErrorException(voucherOrdersItemUiModel.getMessageUiModel().getText()), shipmentCartItemModel, voucherOrdersItemUiModel.getCode());
                         }
                     }
                 }
@@ -1473,6 +1476,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (shipmentCartItemModel.getCartString().equals(cartString)) {
                     if (getView() != null) {
                         getView().resetCourier(shipmentCartItemModel);
+                        getView().logOnErrorApplyBo(new MessageErrorException("voucher order not found"), shipmentCartItemModel, promoCode);
                         break;
                     }
                 }
@@ -2284,6 +2288,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
+        String warehouseId = String.valueOf(shipmentCartItemModel.getFulfillmentId());
 
         String mvc = generateRatesMvcParam(cartString);
 
@@ -2293,6 +2298,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .cartData(cartData)
+                .warehouseId(warehouseId)
                 .mvc("");
 
         if (!skipMvc) {
@@ -2321,6 +2327,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 ratesPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPublisher
+                                .onBackpressureBuffer()
                                 .concatMap(shipmentGetCourierHolderData -> {
                                     logisticDonePublisher = PublishSubject.create();
                                     if (shipmentCartItemModel.getRatesValidationFlow()) {
@@ -3101,6 +3108,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         String pslCode = voucherOrdersItemUiModel.getCode();
         boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
+        String warehouseId = String.valueOf(shipmentCartItemModel.getFulfillmentId());
 
         String mvc = generateRatesMvcParam(cartString);
 
@@ -3111,6 +3119,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .cartData(cartData)
+                .warehouseId(warehouseId)
                 .mvc(mvc);
 
         RatesParam param = ratesParamBuilder.build();
@@ -3138,6 +3147,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 ratesPromoPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPromoPublisher
+                                .onBackpressureBuffer()
                                 .concatMap(shipmentGetCourierHolderData -> {
                                     logisticPromoDonePublisher = PublishSubject.create();
                                     ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
@@ -3257,7 +3267,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public PublishSubject<Boolean> getLogisticDonePublisher() {
         return logisticDonePublisher;
     }
-    
+
     public void setLogisticDonePublisher(PublishSubject<Boolean> logisticDonePublisher) {
         this.logisticDonePublisher = logisticDonePublisher;
     }
