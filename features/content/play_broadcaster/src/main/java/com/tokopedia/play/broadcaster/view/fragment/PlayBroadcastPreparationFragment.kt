@@ -74,6 +74,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
@@ -545,6 +546,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun observeCover() {
         parentViewModel.observableCover.observe(viewLifecycleOwner) {
+            Timber.d("called ${it.croppedCover}")
             when (val croppedCover = it.croppedCover) {
                 is CoverSetupState.Cropped.Uploaded -> {
                     if (croppedCover.coverImage.toString().isNotEmpty() &&
