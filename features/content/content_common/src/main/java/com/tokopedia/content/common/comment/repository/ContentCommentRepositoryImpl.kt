@@ -65,7 +65,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
             }.executeOnBackground()
             lastRequestTime = System.currentTimeMillis()
             mapper.mapNewComment(
-                response.parent.data,
+                response.parent.data, userSession.isShopOwner
             )
         }
     }

@@ -13,6 +13,7 @@ import androidx.core.text.getSpans
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.feedcomponent.util.buildSpannedString
 
 /**
@@ -21,7 +22,7 @@ import com.tokopedia.feedcomponent.util.buildSpannedString
 
 class MentionedSpanned(
     @ColorInt val color: Int,
-    private val userType: String = "",
+    private val userType: UserType = UserType.Unknown,
     private val appLink: String = "",
     val userName: String,
     val id: String,
@@ -32,11 +33,11 @@ class MentionedSpanned(
         get() {
             return appLink.ifBlank {
                 when (userType) {
-                    USER_TYPE_KOL -> ApplinkConst.PROFILE.replace(
+                    UserType.People -> ApplinkConst.PROFILE.replace(
                         ApplinkConst.Profile.PARAM_USER_ID,
                         id
                     )
-                    USER_TYPE_SELLER -> ApplinkConst.SHOP.replace("{shop_id}", id)
+                    UserType.Shop -> ApplinkConst.SHOP.replace("{shop_id}", id)
                     else -> ""
                 }
             }
@@ -56,11 +57,6 @@ class MentionedSpanned(
     interface Listener {
         fun onClicked(appLink: String)
     }
-
-    companion object {
-        private const val USER_TYPE_KOL = "user"
-        private const val USER_TYPE_SELLER = "shop"
-    }
 }
 
 class BaseSpan(val fullText: String, val content: String, val shortName: String) : ForegroundColorSpan(Color.BLACK) {
@@ -73,8 +69,7 @@ object TagMentionBuilder {
     private const val MENTION_VALUE = 3
 
     fun createNewMentionTag(item: CommentUiModel.Item): String {
-        val userType = if (item.isOwner) "shop" else "user"
-        return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR$userType$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR}"
+        return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR${item.userType.value}$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR}"
     }
 
     fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
@@ -149,7 +144,7 @@ object TagMentionBuilder {
                     color = mentionColor,
                     id = id,
                     userName = name,
-                    userType = type,
+                    userType = UserType.getByValue(type),
                     listener = mentionListener
                 )
 

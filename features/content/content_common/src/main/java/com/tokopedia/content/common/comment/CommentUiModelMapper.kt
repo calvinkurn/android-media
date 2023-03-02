@@ -5,6 +5,7 @@ import com.tokopedia.content.common.comment.model.PostComment
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
+import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.types.ResultState
 import java.time.*
 import javax.inject.Inject
@@ -52,23 +53,25 @@ class CommentUiModelMapper @Inject constructor() {
             isOwner = comment.isCommentOwner,
             isReportAllowed = comment.allowReport,
             userId = comment.userId,
+            userType = if (comment.isShop) UserType.Shop else UserType.People
         )
     }
 
-    fun mapNewComment(comment: PostComment.Parent.NewComment): CommentUiModel {
+    fun mapNewComment(comment: PostComment.Parent.NewComment, isShop: Boolean): CommentUiModel {
         val username = comment.userInfo.username.ifBlank { comment.userInfo.firstName }
         return CommentUiModel.Item(
             id = comment.id,
             username = username,
             photo = comment.userInfo.photo,
             appLink = comment.userInfo.linkDetail.appLink,
-            content = comment.comment.replace("^[\n\r]".toRegex(), ""), //remove\n,
+            content = comment.comment.replace("^[\n\r]".toRegex(), ""),
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",
             isOwner = false,
             isReportAllowed = false,
             userId = comment.userInfo.userId,
+            userType = if (isShop) UserType.Shop else UserType.People
         )
     }
 
