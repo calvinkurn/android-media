@@ -156,13 +156,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.DeleteComment -> deleteComment(isFromToaster = action.isFromToaster)
             is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
-            CommentAction.RequestReportAction -> {
-                requireLogin {
-                    viewModelScope.launch {
-                        _event.emit(CommentEvent.OpenReportEvent)
-                    }
-                }
-            }
+            CommentAction.RequestReportAction ->  handleOpenReport()
             is CommentAction.SelectComment -> _selectedComment.update {
                 val item = action.comment
                 it.copy(first = item, second = _comments.value.list.indexOf(item))
@@ -281,7 +275,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         }
     }
 
-    private fun sendReply(comment: String, commentType: CommentType){
+    private fun sendReply(comment: String, commentType: CommentType) {
         requireLogin {
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
@@ -294,12 +288,20 @@ class ContentCommentViewModel @AssistedInject constructor(
                 }
                 _event.emit(CommentEvent.ReplySuccess)
 
-            }){
+            }) {
                 _event.emit(
                     CommentEvent.ShowErrorToaster(
                         message = it,
                         onClick = { sendReply(comment, commentType) })
                 )
+            }
+        }
+    }
+
+    private fun handleOpenReport() {
+        requireLogin {
+            viewModelScope.launch {
+                _event.emit(CommentEvent.OpenReportEvent)
             }
         }
     }
