@@ -26,9 +26,10 @@ import java.util.*
 class OtherMenuAdapter(
     private val context: Context?,
     private val listener: Listener,
+    private val userSession: UserSessionInterface,
+    private val sharedPref: SellerHomeSharedPref,
     typeFactory: OtherMenuAdapterTypeFactory
-) :
-    BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
+) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
@@ -152,10 +153,8 @@ class OtherMenuAdapter(
         context?.let {
             val expiredDateMillis = PERSONA_EXPIRED_DATE
             val todayMillis = Date().time
-            val sellerHomeSharedPref = SellerHomeSharedPref(it)
-            val userSession: UserSessionInterface = UserSession(it)
             val isNotExpired = todayMillis < expiredDateMillis
-            return if (sellerHomeSharedPref.shouldShowPersonaEntryPoint(userSession.userId) && isNotExpired) {
+            return if (sharedPref.shouldShowPersonaEntryPoint(userSession.userId) && isNotExpired) {
                 it.getString(R.string.setting_new_tag)
             } else {
                 SellerHomeConst.EMPTY_STRING
