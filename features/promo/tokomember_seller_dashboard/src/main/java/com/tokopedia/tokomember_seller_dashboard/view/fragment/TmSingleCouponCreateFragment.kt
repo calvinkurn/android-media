@@ -1357,12 +1357,15 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         )
                         maxProgramEndDate.add(Calendar.YEAR, 1)
                         val endDate = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
-                        val dateFormat = if (fromEdit) {
+                        val dateFormat = if (fromEdit || fromDuplicate) {
                             ISO_8601_UTC_DATE_FORMAT
                         } else {
                             SIMPLE_DATE_FORMAT
                         }
-                        val sdf = SimpleDateFormat(dateFormat, com.tokopedia.tokomember_seller_dashboard.util.locale)
+                        val sdf = SimpleDateFormat(
+                            dateFormat,
+                            com.tokopedia.tokomember_seller_dashboard.util.locale
+                        )
                         endDate.time = sdf.parse(programData?.timeWindow?.endTime + "00") ?: Date()
                         if (endDate > maxProgramEndDate) {
                             tmCouponEndTimeUnix = GregorianCalendar(com.tokopedia.tokomember_seller_dashboard.util.locale)
