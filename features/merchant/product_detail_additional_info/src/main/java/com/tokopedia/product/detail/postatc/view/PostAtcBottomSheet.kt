@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcTracking
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.component.error.ErrorUiModel
+import com.tokopedia.product.detail.postatc.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.component.loading.LoadingUiModel
 import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
@@ -155,8 +156,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         result.doSuccessOrFail(success = {
             adapter.replaceComponents(it.data)
         }, fail = {
-                showError(it)
-            })
+            showError(it)
+        })
         commonTracker?.let {
             PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
         }
@@ -171,20 +172,17 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                     widget = data
                 }
             }, fail = {
-                    adapter.removeComponent(uiModelId)
-                })
+                adapter.removeComponent(uiModelId)
+            })
         }
 
     private fun showError(it: Throwable) {
-        val errorType = if (it is SocketTimeoutException ||
-            it is UnknownHostException || it is ConnectException
-        ) {
-            GlobalError.NO_CONNECTION
+        if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
+            adapter.replaceComponents(listOf(ErrorUiModel(errorType = GlobalError.NO_CONNECTION)))
         } else {
-            GlobalError.SERVER_ERROR
+            adapter.replaceComponents(listOf(FallbackUiModel(cartId = cartId.orEmpty())))
         }
 
-        adapter.replaceComponents(listOf(ErrorUiModel(errorType = errorType)))
     }
 
     override fun onDismiss(dialog: DialogInterface) {

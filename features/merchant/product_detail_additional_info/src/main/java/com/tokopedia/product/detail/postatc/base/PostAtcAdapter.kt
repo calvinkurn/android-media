@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.adapterdelegate.AdapterDelegatesManager
 import com.tokopedia.product.detail.postatc.component.error.ErrorDelegate
+import com.tokopedia.product.detail.postatc.component.fallback.FallbackDelegate
 import com.tokopedia.product.detail.postatc.component.loading.LoadingDelegate
 import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoDelegate
 import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationDelegate
@@ -25,6 +26,7 @@ class PostAtcAdapter(
             .addDelegate(RecommendationDelegate(listener))
             .addDelegate(ErrorDelegate(listener))
             .addDelegate(LoadingDelegate())
+            .addDelegate(FallbackDelegate(listener))
     }
 
     private val mapUiModels = mutableMapOf<Int, PostAtcUiModel>()
