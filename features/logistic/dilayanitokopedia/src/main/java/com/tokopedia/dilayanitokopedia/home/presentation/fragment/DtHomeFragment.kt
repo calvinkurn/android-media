@@ -123,21 +123,17 @@ class DtHomeFragment :
     private var rvHome: NestedRecyclerView? = null
     private var ivHeaderBackground: ImageView? = null
 
-    private var root: View? = null
     private var refreshLayout: ToggleableSwipeRefreshLayout? = null
 
     private var rvLayoutManager: CustomLinearLayoutManager? = null
 
     private var localCacheModel: LocalCacheModel? = null
-
     private var chooseAddressWidget: ChooseAddressWidget? = null
 
     private var statusBarState = AnchorTabStatus.MAXIMIZE
 
     private var shareHome = DtShareUniversalModel()
-
     private var screenshotDetector: ScreenshotDetector? = null
-
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var linearLayoutManager: CustomLinearLayoutManager? = null
@@ -146,6 +142,10 @@ class DtHomeFragment :
     private var mLastClickTime = System.currentTimeMillis()
 
     private var coachMark: CoachMark2? = null
+
+    private var anchorTabAdapter: DtAnchorTabAdapter? = null
+
+    private var binding by autoClearedNullable<FragmentDtHomeBinding>()
 
     private val adapter by lazy {
         DtHomeAdapter(
@@ -161,10 +161,6 @@ class DtHomeFragment :
         )
     }
 
-    private var anchorTabAdapter: DtAnchorTabAdapter? = null
-
-    private var binding by autoClearedNullable<FragmentDtHomeBinding>()
-
     override fun onAttach(context: Context) {
         initInjector()
         super.onAttach(context)
@@ -177,11 +173,7 @@ class DtHomeFragment :
             .inject(this)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDtHomeBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -292,7 +284,6 @@ class DtHomeFragment :
             rvHome = binding?.rvHome
 
             refreshLayout = binding?.homeSwipeRefreshLayout
-            root = binding?.root
         }
     }
 
@@ -313,7 +304,7 @@ class DtHomeFragment :
                     onClick = ::onClickShareButton,
                     disableDefaultGtmTracker = true
                 )
-                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
+                .addIcon(IconList.ID_CART) {}
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
@@ -357,10 +348,6 @@ class DtHomeFragment :
                 searchbarImpressionCallback = {}
             )
         }
-    }
-
-    private fun onClickCartButton() {
-        // no-op
     }
 
     private fun onClickShareButton() {
@@ -442,11 +429,7 @@ class DtHomeFragment :
     }
 
     private fun showEmptyState() {
-        NetworkErrorHelper.showEmptyState(
-            activity,
-            binding?.root,
-            this::loadLayout
-        )
+        NetworkErrorHelper.showEmptyState(activity, binding?.dtConstraintParent, this::loadLayout)
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -589,11 +572,11 @@ class DtHomeFragment :
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { lca ->
+            context?.let { context ->
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                    this,
-                    it
+                    context,
+                    lca
                 )
             }
         }
@@ -885,7 +868,7 @@ class DtHomeFragment :
         return object : DtHomeCategoryListener {
             override val windowHeight: Int
                 get() = if (activity != null) {
-                    root?.height ?: 0
+                    binding?.root?.height ?: 0
                 } else {
                     0
                 }
