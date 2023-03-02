@@ -34,7 +34,6 @@ object PofUtils {
             )
             "#$colorToHexString"
         } catch (e: Exception) {
-            e.printStackTrace()
             ""
         }
     }
