@@ -2,16 +2,26 @@ package com.tokopedia.play.broadcaster.view.scale
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.view.View
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on March 02, 2023
  */
-class BroadcasterFrameScalingManagerImpl @Inject constructor(): BroadcasterFrameScalingManager {
+class BroadcasterFrameScalingManagerImpl @Inject constructor(
+    private val context: Context
+): BroadcasterFrameScalingManager {
+
+    private val offset16 by lazy { context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
     override fun scaleDown(view: View, bottomSheetHeight: Int, fullPageHeight: Int) {
-        val scaleFactor = ((fullPageHeight - bottomSheetHeight) / fullPageHeight.toFloat())
+        val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(context)
+        val occupiedArea = bottomSheetHeight + statusBarHeight + offset16
+
+        val scaleFactor = ((fullPageHeight - occupiedArea) / fullPageHeight.toFloat())
+
         if(view.scaleX == scaleFactor && view.scaleY == scaleFactor) return
 
         val animator = AnimatorSet()
