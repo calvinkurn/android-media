@@ -2026,6 +2026,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         setEntrySource(object : ContentCommentBottomSheet.EntrySource {
                             override fun getPageSource(): PageSource = PageSource.Play(channelId)
                         })
+                        setShowListener { bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
                     }.show(childFragmentManager)
             }
         }

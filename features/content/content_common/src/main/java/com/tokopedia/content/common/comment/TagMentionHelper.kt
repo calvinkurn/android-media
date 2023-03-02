@@ -69,7 +69,7 @@ class BaseSpan(val fullText: String, val content: String, val shortName: String)
 
 object TagMentionBuilder {
     private const val MENTION_CHAR = "@"
-    private val regex = """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
+    private val regex = """((?<=\{)(@\d+)\@|(@user|@shop)\@|(@.*)\@(?=\}))""".toRegex()
     private const val MENTION_VALUE = 3
 
     fun createNewMentionTag(item: CommentUiModel.Item): String {
@@ -113,7 +113,11 @@ object TagMentionBuilder {
     fun getRawText(text: Spanned?): String {
         if (text.isNullOrBlank()) return ""
         val convert = text.getSpans<BaseSpan>(0, text.length)
-        return convert.joinToString { txt -> txt.sentText + text.toString().substring(txt.shortName.length, text.length) }.ifBlank {
+        return try {
+            convert.joinToString { txt -> txt.sentText + text.toString().substring(txt.shortName.length, text.length) }.ifBlank {
+                text.toString()
+            }
+        } catch (e: Exception){
             text.toString()
         }
     }

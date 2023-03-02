@@ -13,7 +13,6 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.text.toSpanned
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -346,10 +345,6 @@ class ContentCommentBottomSheet @Inject constructor(
 
         val window = dialog?.window
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        setStyle(
-            DialogFragment.STYLE_NORMAL,
-            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetOverlapStyle
-        )
 
         binding.root.layoutParams.height = newHeight
         viewModel.submitAction(CommentAction.RefreshComment)
