@@ -816,12 +816,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check recently viewed appLink then should return tokopedia internal recently viewed in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/recentlyviewed"
-        assertEqualsDeepLinkMapper(ApplinkConst.RECENT_VIEW, expectedDeepLink)
-    }
-
-    @Test
     fun `check login appLink then should return tokopedia internal login in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/login"
         assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, expectedDeepLink)
@@ -2558,6 +2552,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check topchat settings bubble activation applink`() {
         val deepLink = ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION
         val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check product review gallery applink`() {
+        val deepLink = ApplinkConst.PRODUCT_REVIEW_GALLERY
+        val expectedDeepLink = ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 }
