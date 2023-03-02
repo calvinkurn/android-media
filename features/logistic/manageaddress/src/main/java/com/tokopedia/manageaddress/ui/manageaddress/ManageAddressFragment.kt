@@ -137,7 +137,7 @@ class ManageAddressFragment :
                 onClickUrl = { url ->
                     RouteManager.route(
                         context,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                        "${ApplinkConst.WEBVIEW}?url=$url"
                     )
                 },
                 onClickApplink = { applink ->

@@ -1520,7 +1520,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         override fun onClickAddressTickerUrl(url: String) {
                             RouteManager.route(
                                 context,
-                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                                "${ApplinkConst.WEBVIEW}?url=$url"
                             )
                         }
                     }
