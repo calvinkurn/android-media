@@ -557,7 +557,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         binding.viewPreparationMenu.isSetCoverChecked(false)
                     }
                 }
-                is CoverSetupState.GeneratedCover.ImageCover -> {
+                is CoverSetupState.GeneratedCover -> {
                     binding.viewPreparationMenu.isSetCoverChecked(croppedCover.coverImage.isNotEmpty())
                 }
                 else -> {}

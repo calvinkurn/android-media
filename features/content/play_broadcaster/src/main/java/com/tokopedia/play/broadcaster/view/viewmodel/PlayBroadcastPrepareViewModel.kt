@@ -146,7 +146,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
             is CoverSetupState.Cropped.Uploaded -> {
                 cover.localImage != null || cover.coverImage.toString().isNotEmpty()
             }
-            is CoverSetupState.GeneratedCover.ImageCover -> {
+            is CoverSetupState.GeneratedCover -> {
                 cover.coverImage.isNotEmpty()
             }
             else -> false

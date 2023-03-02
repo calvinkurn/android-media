@@ -226,7 +226,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     else croppedCover.coverImage.toString()
                     binding.clCoverPreview.setCoverWithPlaceholder(newCover)
                 }
-                is CoverSetupState.GeneratedCover.ImageCover -> {
+                is CoverSetupState.GeneratedCover -> {
                     binding.clCoverPreview.setCoverWithPlaceholder(croppedCover.coverImage)
                 }
                 else -> {}
