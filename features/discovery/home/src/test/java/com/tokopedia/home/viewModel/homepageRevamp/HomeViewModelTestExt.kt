@@ -72,6 +72,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
+import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -467,6 +468,13 @@ fun HomeMissionWidgetUseCase.givenOnMissionWidgetReturn(
     resultMissionWidgetListDataModel: MissionWidgetListDataModel
 ) {
     coEvery { onMissionWidgetRefresh(currentMissionWidgetListDataModel) } returns resultMissionWidgetListDataModel
+}
+
+fun HomeTodoWidgetUseCase.givenOnTodoWidgetReturn(
+    currentTodoWidgetListDataModel: TodoWidgetListDataModel,
+    resultTodoWidgetListDataModel: TodoWidgetListDataModel
+) {
+    coEvery { onTodoWidgetRefresh(currentTodoWidgetListDataModel) } returns resultTodoWidgetListDataModel
 }
 
 fun areEqualKeyValues(first: Map<String, Any>, second: Map<String, Any>): Boolean {
