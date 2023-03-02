@@ -63,7 +63,8 @@ const val LOADED: Int = 1
 const val REFRESH: Int = 0
 
 const val EXTEND = "extend"
-//TODO get all triple dots type from product team
+
+// TODO get all triple dots type from product team
 const val CANCEL = "cancel"
 const val EDIT = "edit"
 const val DELETE = "delete"
@@ -73,14 +74,14 @@ const val DUPLICATE = "duplicate"
 const val ADD_QUOTA = "addQuota"
 
 const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
-        "Tunggu ya, program lagi disiapkan!"
+    "Tunggu ya, program lagi disiapkan!"
 const val TM_SUMMARY_DIALOG_TITLE_START_TEXT = "Tunggu Sebentar, ya\n"
-const val TM_SUMMARY_DIALOG_TITLE = "Tunggu Sebentar, ya\n"  +
-"Kami sedang membuat kuponmu"
+const val TM_SUMMARY_DIALOG_TITLE = "Tunggu Sebentar, ya\n" +
+    "Kami sedang membuat kuponmu"
 
 const val ERROR_CREATING_TITLE = "Ada gangguan di rumah Toped"
-const val ERROR_CREATING_TITLE_NO_INTERNET= "Koneksi internetmu terganggu!"
-const val ERROR_CREATING_TITLE_RETRY= "Yaah, pengaturan TokoMember  gagal disimpan"
+const val ERROR_CREATING_TITLE_NO_INTERNET = "Koneksi internetmu terganggu!"
+const val ERROR_CREATING_TITLE_RETRY = "Yaah, pengaturan TokoMember  gagal disimpan"
 const val ERROR_CREATING_DESC = "Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."
 const val ERROR_CREATING_DESC_NO_INTERNET = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu"
 const val ERROR_CREATING_CTA = "Ubah Tanggal"
@@ -90,23 +91,23 @@ const val COUPON_CASHBACK = "cashback"
 const val COUPON_CASHBACK_PREVIEW = "Cashback"
 const val COUPON_SHIPPING = "shipping"
 const val COUPON_SHIPPING_PREVIEW = "Gratis Ongkir"
+const val COUPON_DISCOUNT = "discount"
 const val COUPON_DISCOUNT_PREVIEW = "Discount"
-
 
 const val CASHBACK_IDR = "idr"
 const val CASHBACK_PERCENTAGE = "percent"
 
 const val PROGRAM_AUTO_DATE = ""
 
-const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui\n"+
-        "syarat & ketentuan TokoMember."
+const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui\n" +
+    "syarat & ketentuan TokoMember."
 const val TERMS = "syarat"
 const val TERNS_AND_CONDITION = "syarat & ketentuan"
 
-const val DATE_TITLE  = "Pilih tanggal mulai"
-const val DATE_TITLE_END  = "Pilih tanggal selesai"
+const val DATE_TITLE = "Pilih tanggal mulai"
+const val DATE_TITLE_END = "Pilih tanggal selesai"
 const val DATE_DESC = "Tentukan tanggal mulai untuk kupon TokoMember yang sudah kamu buat."
-const val DATE_DESC_END= "Tentukan tanggal selesai untuk kupon TokoMember yang sudah kamu buat."
+const val DATE_DESC_END = "Tentukan tanggal selesai untuk kupon TokoMember yang sudah kamu buat."
 const val TIME_TITLE = "Pilih jam mulai"
 const val TIME_TITLE_END = "Pilih jam selesai"
 const val TIME_DESC = "Tentukan jam mulai untuk kupon TokoMember yang sudah kamu buat."
@@ -122,7 +123,7 @@ const val PROGRAM_TYPE_MANUAL = "Atur Manual"
 const val ACCORDION_TITLE_VIP = "Untuk member VIP"
 const val ACCORDION_SUBTITLE_VIP = "Cashback Rp10.000"
 const val ACCORDION_TITLE_PREMIUM = "Untuk member Premium"
-const val ACCORDION_SUBTITLE_PREMIUM= "Cashback Rp10.000"
+const val ACCORDION_SUBTITLE_PREMIUM = "Cashback Rp10.000"
 
 const val IDR = "idr"
 const val ANDROID = "android"
@@ -144,7 +145,7 @@ const val CREATE = "create"
 const val UPDATE = "update"
 
 const val TM_NOT_ELIGIBLE_TITLE = "Tokomu belum memenuhi syarat"
-const val TM_NOT_ELIGIBLE_DESC= "Pastikan toko berstatus Official Store. Yuk, baca cara untuk jadi Official Store!"
+const val TM_NOT_ELIGIBLE_DESC = "Pastikan toko berstatus Official Store. Yuk, baca cara untuk jadi Official Store!"
 const val TM_NOT_ELIGIBLE_CTA = "Pelajari Official Store"
 
 const val TM_DIALOG_CANCEL_TITLE_PROGRAM = "Yakin batalkan program?"
@@ -193,7 +194,7 @@ const val TM_PREVIEW_BS_DESC = "Sambil menunggu member gabung, cek perkembangan 
 const val TM_PREVIEW_BS_CTA_PRIMARY = "Balik ke Home"
 
 const val SUNDAY = "Min"
-const val MONDAY ="Sen"
+const val MONDAY = "Sen"
 const val TUESDAY = "Sel"
 const val WEDNESDAY = "Rab"
 const val THURSDAY = "Kam"
@@ -227,4 +228,3 @@ const val PATH_TOKOMEMBER_PROGRAM_CREATION = "program-creation"
 const val PATH_TOKOMEMBER_COUPON_CREATION = "coupon-creation"
 const val PATH_TOKOMEMBER_PROGRAM_EXTENSION = "program-extension"
 const val PATH_TOKOMEMBER_COUPON_DETAIL = "coupon-detail"
-

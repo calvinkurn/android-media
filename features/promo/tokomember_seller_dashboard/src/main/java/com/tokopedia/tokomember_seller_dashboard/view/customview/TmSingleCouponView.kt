@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.CashbackType
@@ -32,7 +33,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.MIN_TRANSACTION_LABEL
 import com.tokopedia.tokomember_seller_dashboard.util.MIN_TRANSACTION_OVERFLOW
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.view.*
 
 const val QUOTA_DEFAULT = "100"
@@ -113,7 +113,7 @@ class TmSingleCouponView @JvmOverloads constructor(
 
         textFieldQuota.editText.setText(QUOTA_DEFAULT)
         textFieldPercentCashback.editText.setText(PERCENTAGE_DEFAULT)
-        tmSingleCouponData.cashBackPercentage = PERCENTAGE_DEFAULT.toInt()
+        tmSingleCouponData.cashBackPercentage = PERCENTAGE_DEFAULT.toIntOrZero()
         chipGroupCashbackType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionCashback = position
