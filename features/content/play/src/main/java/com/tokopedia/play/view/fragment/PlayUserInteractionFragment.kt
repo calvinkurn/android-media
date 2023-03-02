@@ -2015,6 +2015,5 @@ class PlayUserInteractionFragment @Inject constructor(
 
         object OnScrubStarted : Event
         object OnScrubEnded : Event
-        object OnProductUpdate : Event
     }
 }
