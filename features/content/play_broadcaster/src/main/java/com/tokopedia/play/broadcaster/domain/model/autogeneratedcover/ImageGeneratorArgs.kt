@@ -5,30 +5,29 @@ data class ImageGeneratorArgs(private val imagePreviewUrl: String) {
     // SAMPLE
     //
     // imagePreviewUrl with 2 product (currently max product is 2):
-    // https://imagenerator.tokopedia.com/v2/preview/
-    //       LScDrk?
+    // -> https://imagenerator.tokopedia.com/v2/preview/LScDrk?
     //       background_color=blue&
-    //       shop_logo=https://images.tokopedia.net/img/cache/215-square/shops-1/2017/3/10/17235511/17235511_e014d5ce-fbf7-46b1-8542-8b9371d1b3d3.png&
+    //       shop_logo=https://images.tokopedia.net/imglogo.png&
     //       product_amount=2&
-    //       product_image_1=https://images.tokopedia.net/img/cache/300/product-1/2017/10/6/17235511/17235511_e5bebe4b-35c6-4517-b31c-0c5344b395d8_1024_642.jpg&
-    //       product_image_2=https://images.tokopedia.net/img/cache/300/product-1/2017/4/17/17235511/17235511_0841bf27-168b-4243-982a-6d70b18f2db4_300_600.jpg
+    //       product_image_1=https://images.tokopedia.net/img1.jpg&
+    //       product_image_2=https://images.tokopedia.net/img2.jpg
     //
     // imagePreviewUrl with 1 product:
-    // https://imagenerator.tokopedia.com/v2/preview/
-    //       LScDrk?
+    // -> https://imagenerator.tokopedia.com/v2/preview/LScDrk?
     //       background_color=blue&
-    //       shop_logo=https://images.tokopedia.net/img/cache/215-square/shops-1/2017/3/10/17235511/17235511_e014d5ce-fbf7-46b1-8542-8b9371d1b3d3.png&
+    //       shop_logo=https://images.tokopedia.net/imglogo.png&
     //       product_amount=1&
-    //       product_image_1=https://images.tokopedia.net/img/cache/300/product-1/2017/10/6/17235511/17235511_e5bebe4b-35c6-4517-b31c-0c5344b395d8_1024_642.jpg
+    //       product_image_1=https://images.tokopedia.net/img1.jpg
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun getArgs(): List<Map<String, String>> {
-        val args = mutableListOf<Map<String, String>>()
-        args.add(mapOf(KEY to KEY_BACKGROUND_COLOR, VALUE to getBackgroundColor()))
-        args.add(mapOf(KEY to KEY_SHOP_LOGO, VALUE to getLogo()))
-        args.add(mapOf(KEY to KEY_PRODUCT_AMOUNT, VALUE to getProductAmount()))
-        args.add(mapOf(KEY to KEY_PRODUCT_IMAGE_1, VALUE to getProductImage1()))
-        if (getProductAmount() == MAX_SHOWING_PRODUCT) args.add(mapOf(KEY to KEY_PRODUCT_IMAGE_2, VALUE to getProductImage2()))
-        return args
+        return buildList {
+            add(mapOf(KEY to KEY_BACKGROUND_COLOR, VALUE to getBackgroundColor()))
+            add(mapOf(KEY to KEY_SHOP_LOGO, VALUE to getLogo()))
+            add(mapOf(KEY to KEY_PRODUCT_AMOUNT, VALUE to getProductAmount()))
+            add(mapOf(KEY to KEY_PRODUCT_IMAGE_1, VALUE to getProductImage1()))
+            if (getProductAmount() == MAX_SHOWING_PRODUCT) add(mapOf(KEY to KEY_PRODUCT_IMAGE_2, VALUE to getProductImage2()))
+        }
     }
 
     private fun getBackgroundColor(): String {
