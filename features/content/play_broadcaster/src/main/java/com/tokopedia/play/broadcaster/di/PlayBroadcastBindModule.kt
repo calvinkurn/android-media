@@ -34,6 +34,8 @@ import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.logger.PlayLoggerImpl
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
+import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManagerImpl
 import dagger.Binds
 import dagger.Module
 
@@ -120,4 +122,11 @@ abstract class PlayBroadcastBindModule {
     @ActivityRetainedScope
     @Binds
     abstract fun bindPlayCountUp(playCountUpImpl: PlayCountUpImpl): PlayCountUp
+
+    /**
+     * Scale
+     */
+    @ActivityRetainedScope
+    @Binds
+    abstract fun bindBroadcasterFrameScalingManager(broadcasterFrameScalingManager: BroadcasterFrameScalingManagerImpl): BroadcasterFrameScalingManager
 }

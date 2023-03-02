@@ -65,6 +65,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
+import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -110,6 +111,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var broadcasterFrameScalingManager: BroadcasterFrameScalingManager
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -291,34 +295,13 @@ class PlayBroadcastActivity : BaseActivity(),
                         createBroadcaster()
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
-                        val fullHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
+                        val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
                         val bottomSheetHeight = event.bottomSheetHeight
 
-                        Log.d("<LOG>", "fullHeight : $fullHeight")
-                        Log.d("<LOG>", "bottomSheetHeight : $bottomSheetHeight")
-
-                        val animator = AnimatorSet()
-
-                        val scaleFactor = ((fullHeight - bottomSheetHeight).toFloat() / fullHeight)
-
-                        val animatorX = ObjectAnimator.ofFloat(aspectFrameLayout ,View.SCALE_X, aspectFrameLayout.scaleX, scaleFactor)
-                        val animatorY = ObjectAnimator.ofFloat(aspectFrameLayout, View.SCALE_Y, aspectFrameLayout.scaleY, scaleFactor)
-                        animatorY.duration = 200
-                        animatorX.duration = 200
-
-                        animator.playTogether(animatorX, animatorY)
-                        animator.start()
+                        broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
-                        val animator = AnimatorSet()
-
-                        val animatorX = ObjectAnimator.ofFloat(aspectFrameLayout ,View.SCALE_X, aspectFrameLayout.scaleX, 1.0f)
-                        val animatorY = ObjectAnimator.ofFloat(aspectFrameLayout, View.SCALE_Y, aspectFrameLayout.scaleY, 1.0f)
-                        animatorY.duration = 200
-                        animatorX.duration = 200
-
-                        animator.playTogether(animatorX, animatorY)
-                        animator.start()
+                        broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
                     }
                     else -> {}
                 }
