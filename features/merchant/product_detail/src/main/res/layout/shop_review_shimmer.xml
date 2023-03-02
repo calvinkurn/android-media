@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="16dp">
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shopReviewListTitleLoader"
@@ -31,7 +31,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shopReviewListItem1"
         android:layout_width="292dp"
-        android:layout_height="104dp"
+        android:layout_height="112dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:visibility="visible"
@@ -43,7 +43,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shopReviewListItem2"
         android:layout_width="292dp"
-        android:layout_height="104dp"
+        android:layout_height="112dp"
         android:layout_marginStart="8dp"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/shopReviewListItem1"
