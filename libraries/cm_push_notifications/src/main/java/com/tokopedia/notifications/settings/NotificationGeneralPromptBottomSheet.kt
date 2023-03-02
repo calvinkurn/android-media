@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
@@ -16,7 +17,10 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
+class NotificationGeneralPromptBottomSheet(
+    private val isReminderPrompt: Boolean,
+    private val pageName: String
+    ) : BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
 
@@ -40,20 +44,22 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
             setChild(it.root)
         }
 
-        initView()
+        initView(activity)
 
         sendEventImpression()
 
         setCloseClickListener(::onCloseClick)
     }
 
-    private fun initView() {
+    private fun initView(activity: FragmentActivity?) {
         val config = getResourcesConfig()
 
         binding?.cmGeneralPromptImage?.setImageResource(config.first)
         binding?.cmGeneralPromptTitle?.text = getString(config.second)
         binding?.cmGeneralPromptDescription?.text = getString(config.third)
-        binding?.cmGeneralPromptTurnOnNotification?.setOnClickListener(::onTurnOnNotificationClick)
+        binding?.cmGeneralPromptTurnOnNotification?.setOnClickListener {
+            onTurnOnNotificationClick(activity)
+        }
     }
 
     private fun getResourcesConfig(): Triple<Int, Int, Int> =
@@ -64,11 +70,47 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
                 R.string.cm_notifications_general_prompt_sellerapp_description
             )
         } else {
-            Triple(
-                R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
-                R.string.cm_notifications_general_prompt_mainapp_title,
-                R.string.cm_notifications_general_prompt_mainapp_description
-            )
+            if (isReminderPrompt) {
+                getResourcesConfigForReminderPrompt()
+            } else {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
+                    R.string.cm_notifications_general_prompt_mainapp_title,
+                    R.string.cm_notifications_general_prompt_mainapp_description
+                )
+            }
+        }
+
+    private fun getResourcesConfigForReminderPrompt(): Triple<Int, Int, Int> =
+        when(pageName) {
+            KEJAR_DISKON -> {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
+                    R.string.cm_notifications_general_prompt_kejar_diskon_title,
+                    R.string.cm_notifications_general_prompt_kejar_diskon_description
+                )
+            }
+            TAP_TAP_KOTAK -> {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
+                    R.string.cm_notifications_general_prompt_tap_tap_kotak_title,
+                    R.string.cm_notifications_general_prompt_tap_tap_kotak_description
+                )
+            }
+            LIVE_SHOPPING -> {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
+                    R.string.cm_notifications_general_prompt_live_shopping_title,
+                    R.string.cm_notifications_general_prompt_live_shopping_description
+                )
+            }
+            else -> {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
+                    R.string.cm_notifications_general_prompt_mainapp_title,
+                    R.string.cm_notifications_general_prompt_mainapp_description
+                )
+            }
         }
 
     private fun sendEventImpression() {
@@ -95,24 +137,29 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun onTurnOnNotificationClick(ignored: View) {
+    private fun onTurnOnNotificationClick(activity: FragmentActivity?) {
         val currentTime = SystemClock.elapsedRealtime()
         if (currentTime - lastTimeClicked <= defaultInterval) {
             return
         }
         lastTimeClicked = SystemClock.elapsedRealtime()
-        sendEventClickCta()
+        if (isReminderPrompt && activity != null) {
+            OpenAppNotificationSettingPage().goToAppNotificationSettingsPage(activity)
+            dismiss()
+        } else {
+            sendEventClickCta()
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
 
-        context?.let {
-            NotificationSettingsUtils(it.applicationContext).sendNotificationPromptEvent()
+            context?.let {
+                NotificationSettingsUtils(it.applicationContext).sendNotificationPromptEvent()
+            }
+
+            requestPermissions(
+                arrayOf(POST_NOTIFICATIONS),
+                POST_NOTIFICATIONS_REQUEST_CODE
+            )
         }
-
-        requestPermissions(
-            arrayOf(POST_NOTIFICATIONS),
-            POST_NOTIFICATIONS_REQUEST_CODE
-        )
     }
 
     private fun sendEventClickCta() {
@@ -169,5 +216,9 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
     companion object {
         const val TAG = "CM_GENERAL_PROMPT_TAG"
         private const val POST_NOTIFICATIONS_REQUEST_CODE = 12341
+        const val KEJAR_DISKON = "kejarDiskon"
+        const val TAP_TAP_KOTAK = "tapTapKotak"
+        const val LIVE_SHOPPING = "liveShopping"
+
     }
 }

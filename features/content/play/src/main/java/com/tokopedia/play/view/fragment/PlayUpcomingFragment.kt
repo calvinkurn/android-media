@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -306,6 +308,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onClickActionButton() {
         handleUpcomingClickAnalytic()
+        showNotificationReminderPrompt()
         playUpcomingViewModel.submitAction(ClickUpcomingButton)
     }
 
@@ -319,6 +322,21 @@ class PlayUpcomingFragment @Inject constructor(
             }
             PlayUpcomingState.WatchNow -> {
                 analytic.clickWatchNow(channelId)
+            }
+            else -> {}
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        when (val status = playUpcomingViewModel.remindState) {
+            is PlayUpcomingState.ReminderStatus -> {
+                if (!status.isReminded) {
+                    activity?.let {
+                        val view = NotificationGeneralPromptLifecycleCallbacks()
+                            .notificationGeneralPromptView(it, LIVE_SHOPPING)
+                        NotificationReminderPrompt(view).showReminderPrompt(it)
+                    }
+                }
             }
             else -> {}
         }
@@ -429,5 +447,6 @@ class PlayUpcomingFragment @Inject constructor(
     companion object {
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val LIVE_SHOPPING = "liveShopping"
     }
 }
