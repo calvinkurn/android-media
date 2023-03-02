@@ -48,7 +48,8 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/new_comment"
             android:layout_width="0dp"
-            android:layout_height="@dimen/layout_lvl4"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/content_common_space_8"
             android:layout_weight="1"

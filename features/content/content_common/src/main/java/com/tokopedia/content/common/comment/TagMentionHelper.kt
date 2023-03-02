@@ -1,12 +1,15 @@
 package com.tokopedia.content.common.comment
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.core.text.getSpans
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
@@ -59,9 +62,13 @@ class MentionedSpanned(
     }
 }
 
+class BaseSpan(val fullText: String) : ForegroundColorSpan(Color.BLACK){}
+
+
 object TagMentionBuilder {
     private const val MENTION_CHAR = "@"
     private val regex = """((?<=\{)(@\d+)\@|(@user|@seller)\@|(@.*)\@(?=\}))""".toRegex()
+    private const val MENTION_VALUE = 3
 
     fun createNewMentionTag(item: CommentUiModel.Item): String {
         val userType = if (item.isOwner) "seller" else "user"
@@ -70,20 +77,33 @@ object TagMentionBuilder {
 
     fun isChildOrParent(text: String, commentId: String): CommentType {
         val find = regex.findAll(text)
-        return if (find.count() == 3) {
+        return if (find.count() == MENTION_VALUE) {
             CommentType.Child(commentId)
         } else {
             CommentType.Parent
         }
     }
 
-    fun spanText(text: String): String {
+    fun spanText(text: String, textLength: Int): Spanned {
+        if (text.isBlank()) return buildSpannedString { append(text) }
         val find = regex.findAll(text)
-        val length = find.sumOf { it.value.length } + 5 // for escape char
-        return find.elementAtOrNull(2)?.value?.removeSuffix(MENTION_CHAR) + text.substring(
-            length,
-            text.length
-        )
+        val length = find.sumOf { it.value.length } + 4 // for escape char
+        return if (find.count() >= MENTION_VALUE) {
+            val name = find.elementAt(2).value.removeSuffix(MENTION_CHAR)
+            val comment = text.substring(
+                length,
+                textLength
+            )
+            buildSpannedString {
+                append(name, BaseSpan(name), Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+                append(comment)
+            }
+        } else buildSpannedString {append(text) }
+    }
+
+    fun getRawText(text: Spanned?) {
+        if(text.isNullOrBlank()) return
+        val convert = text.getSpans<BaseSpan>(0, text.length)
     }
 
     fun getMentionTag(
@@ -107,7 +127,7 @@ object TagMentionBuilder {
                 id = find.elementAt(0).value.replace(MENTION_CHAR, "")
                 type = find.elementAt(1).value.replace(MENTION_CHAR, "")
                 name = find.elementAt(2).value.removeSuffix(MENTION_CHAR)
-                val length = find.sumOf { it.value.length } + 5 //total escape character [{}|||]
+                val length = find.sumOf { it.value.length } + 4 //total escape character [{}|||]
 
                 val mentionSpanned = MentionedSpanned(
                     color = mentionColor,
@@ -125,7 +145,6 @@ object TagMentionBuilder {
                         parentSpanned,
                         Spanned.SPAN_COMPOSING
                     )
-                    append(' ')
                     append(
                         name,
                         mentionSpanned,

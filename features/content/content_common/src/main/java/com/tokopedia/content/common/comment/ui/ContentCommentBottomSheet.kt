@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.comment.ui
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import androidx.core.text.toSpanned
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
@@ -33,11 +36,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -94,16 +93,17 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private val textWatcher by lazyThreadSafetyNone {
         object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-               binding.viewCommentSend.isEnabled = p0?.isNotBlank().orFalse()
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                binding.viewCommentSend.isEnabled = p0?.isNotBlank().orFalse()
+                if (p0 == null) return
+                binding.newComment.removeTextChangedListener(this)
 
-//
+                val newText = TagMentionBuilder.spanText(p0.toString(), textLength = p0.length.orZero())
+                binding.newComment.setText(newText)
+                binding.newComment.addTextChangedListener(this)
             }
         }
     }
@@ -156,6 +156,7 @@ class ContentCommentBottomSheet @Inject constructor(
             viewModel.submitAction(CommentAction.EditTextCLicked)
         }
         binding.ivCommentSend.setOnClickListener {
+            val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
             viewModel.submitAction(CommentAction.ReplyComment(binding.newComment.text.toString(), TagMentionBuilder.isChildOrParent(binding.newComment.text.toString(), binding.newComment.tag.toString())))
         }
         Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.unify_space_48)
@@ -201,7 +202,8 @@ class ContentCommentBottomSheet @Inject constructor(
                         toaster.show()
                     }
                     is CommentEvent.ShowErrorToaster -> {
-                        val view = if(sheetMenu.isVisible) sheetMenu.requireView().rootView else requireView().rootView
+                        val view =
+                            if (sheetMenu.isVisible) sheetMenu.requireView().rootView else requireView().rootView
                         Toaster.build(
                             view,
                             text = event.message.message.orEmpty(),
@@ -213,7 +215,15 @@ class ContentCommentBottomSheet @Inject constructor(
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {
-                        router.route(context = requireContext(), appLinkPattern = event.appLink)
+                        if (event.appLink == ApplinkConst.LOGIN) router.route(
+                            requireActivity(),
+                            router.getIntent(requireContext(), event.appLink),
+                            LOGIN_RESULT
+                        )
+                        else router.route(
+                            context = requireContext(),
+                            appLinkPattern = event.appLink
+                        )
                     }
                     CommentEvent.ShowKeyboard -> {
                         binding.newComment.requestFocus()
@@ -242,7 +252,8 @@ class ContentCommentBottomSheet @Inject constructor(
         if (throwable is UnknownHostException) {
             binding.commentGlobalError.setType(GlobalError.NO_CONNECTION)
             binding.commentGlobalError.errorSecondaryAction.show()
-            binding.commentGlobalError.errorSecondaryAction.text = getString(R.string.content_comment_error_secondary)
+            binding.commentGlobalError.errorSecondaryAction.text =
+                getString(R.string.content_comment_error_secondary)
             binding.commentGlobalError.setSecondaryActionClickListener {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 router.route(requireActivity(), intent)
@@ -267,6 +278,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
+        //cek login
         binding.newComment.setText("")
         val mention = TagMentionBuilder.createNewMentionTag(item)
         binding.newComment.tag = item.id
@@ -379,6 +391,13 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && requestCode == LOGIN_RESULT) {
+            binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     interface EntrySource {
         fun getPageSource(): PageSource
     }
@@ -388,6 +407,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
         private const val HEIGHT_PERCENT = 0.8
         private const val SHIMMER_VALUE = 10
+
+        private const val LOGIN_RESULT = 99
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
