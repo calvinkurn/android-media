@@ -27,6 +27,9 @@ class FeedPostViewHolder(
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(it)
                 }
+                shareButton.setOnClickListener {
+                    listener.onSharePostClicked(element)
+                }
 
                 btnDisableClearMode.setOnClickListener {
                     if (listener.inClearViewMode()) {

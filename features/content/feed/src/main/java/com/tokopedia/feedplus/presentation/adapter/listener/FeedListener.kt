@@ -8,4 +8,6 @@ interface FeedListener {
     fun onProductTagViewClicked(model: FeedCardModel)
     fun disableClearView()
     fun inClearViewMode(): Boolean
+    fun onSharePostClicked(model: FeedCardModel)
+
 }

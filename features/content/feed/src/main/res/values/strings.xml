@@ -88,4 +88,8 @@ dari Feed.</string>
     <string name="feeds_tag_product_name_text">%s</string>
     <string name="feeds_add_to_cart_success_text">1 barang berhasil ditambahkan ke keranjang</string>
     <string name="feeds_add_to_cart_toaster_action_text">Lihat</string>
+    <string name="feed_share_title">%s post</string>
+    <string name="feed_share_desc_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+
+
 </resources>

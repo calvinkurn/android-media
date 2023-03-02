@@ -27,6 +27,7 @@ import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
+import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -39,8 +40,18 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,13 +61,20 @@ import com.tokopedia.feedplus.R as feedR
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
-class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBottomSheet.Listener, ProductItemInfoBottomSheet.Listener {
+class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBottomSheet.Listener,
+    ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener {
 
     private var binding: FragmentFeedImmersiveBinding? = null
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var dissmisByGreyArea = true
+    private var shareData: LinkerData? = null
+
+
+
     private var isInClearViewMode: Boolean = false
     private var productBottomSheet: ProductItemInfoBottomSheet? = null
 
@@ -66,7 +84,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
-
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
@@ -164,7 +181,10 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
 
     override fun onDestroyView() {
         binding = null
+        productBottomSheet?.dismiss()
         productBottomSheet?.onDestroy()
+        universalShareBottomSheet?.dismiss()
+        universalShareBottomSheet?.onDestroy()
         super.onDestroyView()
         if (::feedMenuSheet.isInitialized) {
             feedMenuSheet.dismiss()
@@ -284,6 +304,63 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
+    override fun onSharePostClicked(model: FeedCardModel) {
+        activity?.let {
+            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(model.id)
+                .setName(
+                    String.format(
+                        getString(feedR.string.feed_share_title),
+                        model.author.name
+                    )
+                )
+                .setDescription(
+                    String.format(
+                        getString(feedR.string.feed_share_desc_text),
+                        model.author.name
+                    )
+                )
+                .setDesktopUrl(model.weblink)
+                .setType(LinkerData.FEED_TYPE)
+                .setImgUri(model.media.firstOrNull()?.mediaUrl ?: "")
+                .setDeepLink(model.applink)
+                .setUri(model.weblink)
+
+            shareData = shareDataBuilder.build()
+            showUniversalShareBottomSheet(model)
+        }
+    }
+
+    private fun showUniversalShareBottomSheet(card: FeedCardModel) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@FeedFragment)
+            setUtmCampaignData(
+                pageName = "Feed Page",
+                userSession.userId,
+                card.id,
+                "share"
+            )
+
+            setMetaData(
+                tnTitle = "Feed Page",
+                tnImage = ""
+            )
+        }
+        universalShareBottomSheet?.setOnDismissListener {
+            if (dissmisByGreyArea) {
+                //TODO to be used for analytics
+            } else {
+                dissmisByGreyArea = true
+            }
+        }
+        universalShareBottomSheet?.let {
+            if (!it.isAdded) {
+                it.show(fragmentManager, this, null)
+            }
+        }
+    }
+
+
     private fun getMenuItemData() : List<FeedMenuItem> {
         val items = arrayListOf<FeedMenuItem>()
 
@@ -400,12 +477,12 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         RouteManager.route(requireContext(), redirectUrl)
     }
 
-    override fun onAddToCartButtonClicked(product: ProductPostTagModelNew) {
+    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
         feedPostViewModel.addToCart(
-            productId = product.product.id,
-            productName = product.product.name,
-            price = product.price,
-            shopId = product.shopId
+            productId = item.product.id,
+            productName = item.product.name,
+            price = item.price,
+            shopId = item.shopId
         )
     }
 
@@ -414,5 +491,56 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
 
     private fun moveToAddToCartPage() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        dissmisByGreyArea = false
+        universalShareBottomSheet?.dismiss()
+
+        val linkerShareData = DataMapper().getLinkerShareData(shareData)
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0,
+                linkerShareData,
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        context?.let {
+                            var shareString =
+                                if (shareData?.description?.contains("%s") == true) {
+                                    shareData?.description?.let { it1 ->
+                                        String.format(
+                                            it1,
+                                            linkerShareData?.shareUri ?: ""
+                                        )
+                                    }
+                                } else {
+                                    shareData?.description + "\n" + linkerShareData?.shareUri
+                                }
+
+                            if (shareString != null) {
+                                SharingUtil.executeShareIntent(
+                                    shareModel,
+                                    linkerShareData,
+                                    activity,
+                                    view,
+                                    shareString
+                                )
+                            }
+
+                            universalShareBottomSheet?.dismiss()
+                        }
+                    }
+
+                    override fun onError(linkerError: LinkerError?) {
+                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+                    }
+                }
+            )
+        )
+
+    }
+
+    override fun onCloseOptionClicked() {
+        dissmisByGreyArea = false
     }
 }
