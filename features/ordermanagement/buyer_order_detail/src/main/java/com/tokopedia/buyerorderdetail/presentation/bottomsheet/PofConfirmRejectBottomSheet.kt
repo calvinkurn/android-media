@@ -20,6 +20,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class PofConfirmRejectBottomSheet : BottomSheetUnify() {
@@ -134,15 +135,27 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
             context?.getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_error_request)
 
         if (message?.isNotBlank() == true) {
-            view?.run {
-                Toaster.build(
-                    view = this,
-                    text = message,
+            getRootView()?.run {
+                val toaster = Toaster
+                try {
+                    toaster.toasterCustomBottomHeight =
+                        resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.layout_lvl6)
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+
+                toaster.build(
+                    this,
                     type = Toaster.TYPE_ERROR,
+                    text = message,
                     duration = Toaster.LENGTH_SHORT
                 ).show()
             }
         }
+    }
+
+    private fun getRootView(): View? {
+        return binding?.root?.rootView
     }
 
     companion object {
