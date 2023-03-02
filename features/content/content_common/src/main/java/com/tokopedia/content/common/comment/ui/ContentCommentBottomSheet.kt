@@ -1,6 +1,5 @@
 package com.tokopedia.content.common.comment.ui
 
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -19,9 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.R
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
@@ -48,6 +45,7 @@ import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 09/02/23
@@ -171,7 +169,6 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
 
-        binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
         binding.ivCommentSend.setOnClickListener {
             handleSendComment()
         }
@@ -231,12 +228,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {
-                        if (event.appLink == ApplinkConst.LOGIN) router.route(
-                            requireActivity(),
-                            router.getIntent(requireContext(), event.appLink),
-                            LOGIN_RESULT
-                        )
-                        else router.route(
+                        router.route(
                             context = requireContext(),
                             appLinkPattern = event.appLink
                         )
@@ -347,6 +339,7 @@ class ContentCommentBottomSheet @Inject constructor(
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.root.layoutParams.height = newHeight
+        binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
         viewModel.submitAction(CommentAction.RefreshComment)
     }
 
@@ -438,13 +431,6 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == LOGIN_RESULT) {
-            binding.ivUserPhoto.loadImage(viewModel.userInfo.profilePicture)
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     interface EntrySource {
         fun getPageSource(): PageSource
     }
@@ -455,7 +441,6 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val HEIGHT_PERCENT = 0.8
         private const val SHIMMER_VALUE = 10
 
-        private const val LOGIN_RESULT = 99
         private const val MAX_CHAR = 140
 
         fun getOrCreate(
