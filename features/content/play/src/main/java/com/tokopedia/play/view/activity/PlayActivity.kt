@@ -16,8 +16,8 @@ import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.cast.PlayCastNotificationAction
-import com.tokopedia.play.databinding.ViewVerticalSwipeCoachmarkBinding
 import com.tokopedia.play.databinding.ActivityPlayBinding
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
@@ -45,7 +45,6 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.delay
 import javax.inject.Inject
-import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
@@ -83,6 +82,9 @@ class PlayActivity :
 
     @Inject
     lateinit var router: Router
+
+    @Inject
+    lateinit var analytic: PlayAnalytic
 
     private lateinit var binding: ActivityPlayBinding
 
@@ -270,8 +272,13 @@ class PlayActivity :
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
 
-                    if (!state.isFirstPage) return@run
+                    if (!state.isFirstPage || it.currentValue.isEmpty()) return@run
+                    val firstChannel = it.currentValue.first()
 
+                    analytic.openScreen(
+                        firstChannel.id,
+                        firstChannel.channelDetail.channelInfo.channelType
+                    )
                     lifecycleScope.launchWhenResumed {
                         delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
                         swipeCoachMarkView.showAnimated()
@@ -290,7 +297,7 @@ class PlayActivity :
 
             if (it.state is PageResultState.Success) {
                 fragmentUpcomingView.safeRelease()
-                swipeContainerView.setChannelIds(it.currentValue)
+                swipeContainerView.setChannelIds(it.currentValue.map { channel -> channel.id })
             }
         }
     }

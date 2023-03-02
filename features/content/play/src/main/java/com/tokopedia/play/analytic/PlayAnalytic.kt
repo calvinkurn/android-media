@@ -816,14 +816,14 @@ class PlayAnalytic(
             .send()
     }
 
-    fun screenWithSwipeCoachMark(isShown: Boolean) {
+    fun openScreen(channelId: String, channelType: PlayChannelType) {
         Tracker.Builder()
             .setEvent("openScreen")
             .setCustomProperty(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "13881")
             .setBusinessUnit(VAL_BUSINESS_UNIT)
             .setCurrentSite(VAL_CURRENT_SITE)
             .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn)
-            .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${mChannelType.value}/is coachmark $isShown")
+            .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${channelType.value}/is coachmark true")
             .setUserId(userId)
             .build()
             .send()

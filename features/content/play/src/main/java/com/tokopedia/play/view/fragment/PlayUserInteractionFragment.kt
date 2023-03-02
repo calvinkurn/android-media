@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -1369,7 +1370,8 @@ class PlayUserInteractionFragment @Inject constructor(
         status && !playViewModel.bottomInsets.isAnyShown &&
             playNavigation.canNavigateNextPage() &&
             !playViewModel.isAnyBottomSheetsShown &&
-            playViewModel.uiState.value.status.channelStatus.statusSource == PlayStatusSource.Socket
+            playViewModel.uiState.value.status.channelStatus.statusSource == PlayStatusSource.Socket &&
+            lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {

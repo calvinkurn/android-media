@@ -596,10 +596,6 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun doAutoSwipe() {
-        if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
-    }
-
     @Throws(IndexOutOfBoundsException::class)
     private fun sendSwipeRoomAnalytic() {
         try {
