@@ -47,4 +47,7 @@ sealed interface PlayBroadcastEvent {
         val error: Throwable,
     ) : PlayBroadcastEvent
     object BroadcastRecovered : PlayBroadcastEvent
+
+    /** Beautification */
+    data class FaceFilterBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastEvent
 }

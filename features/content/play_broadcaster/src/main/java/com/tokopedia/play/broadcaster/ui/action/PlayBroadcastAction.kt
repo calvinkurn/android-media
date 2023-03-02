@@ -69,4 +69,7 @@ sealed interface PlayBroadcastAction {
     data class ClickPinProduct(val product: ProductUiModel) : PlayBroadcastAction
 
     data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction
+
+    /** Beautification */
+    data class FaceFilterBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
 }

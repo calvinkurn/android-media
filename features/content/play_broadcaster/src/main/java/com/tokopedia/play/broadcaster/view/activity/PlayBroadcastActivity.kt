@@ -1,16 +1,16 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import android.view.View
-import android.view.WindowManager
+import android.util.Log
+import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
@@ -289,6 +289,25 @@ class PlayBroadcastActivity : BaseActivity(),
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
                         initBroadcaster(event.data)
                         createBroadcaster()
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                        val fullHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
+                        val bottomSheetHeight = event.bottomSheetHeight
+
+                        Log.d("<LOG>", "fullHeight : $fullHeight")
+                        Log.d("<LOG>", "bottomSheetHeight : $bottomSheetHeight")
+
+                        val animator = AnimatorSet()
+
+                        val scaleFactor = ((fullHeight - bottomSheetHeight).toFloat() / fullHeight)
+
+                        val animatorX = ObjectAnimator.ofFloat(aspectFrameLayout ,View.SCALE_X, aspectFrameLayout.scaleX, scaleFactor)
+                        val animatorY = ObjectAnimator.ofFloat(aspectFrameLayout, View.SCALE_Y, aspectFrameLayout.scaleY, scaleFactor)
+                        animatorY.duration = 500
+                        animatorX.duration = 500
+
+                        animator.playTogether(animatorX, animatorY)
+                        animator.start()
                     }
                     else -> {}
                 }

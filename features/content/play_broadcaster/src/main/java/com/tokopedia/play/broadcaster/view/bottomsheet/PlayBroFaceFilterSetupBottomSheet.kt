@@ -3,23 +3,38 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroFaceFilterSetupBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.view.adapter.FaceFilterPagerAdapter
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on February 27, 2023
  */
-class PlayBroFaceFilterSetupBottomSheet : BottomSheetUnify() {
+class PlayBroFaceFilterSetupBottomSheet @Inject constructor(
+    private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+) : BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroFaceFilterSetupBinding? = null
     private val binding: BottomSheetPlayBroFaceFilterSetupBinding
         get() = _binding!!
+
+    private val viewModel: PlayBroadcastViewModel by activityViewModels {
+        viewModelFactoryCreator.create(
+            requireActivity()
+        )
+    }
 
     private val pagerAdapter by lazyThreadSafetyNone {
         FaceFilterPagerAdapter(
@@ -32,6 +47,29 @@ class PlayBroFaceFilterSetupBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setShowListener {
+            bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when(newState) {
+                        BottomSheetBehavior.STATE_EXPANDED -> {
+                            val bottomSheetHeight = bottomSheet.height
+                            viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetShown(bottomSheetHeight))
+                        }
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

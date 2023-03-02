@@ -538,6 +538,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
             is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
             is PlayBroadcastAction.BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
+
+            /** Beautification */
+            is PlayBroadcastAction.FaceFilterBottomSheetShown -> handleFaceFilterBottomSheetShown(event.bottomSheetHeight)
         }
     }
 
@@ -1650,6 +1653,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         mIsBroadcastStopped = true
+    }
+
+    /** Beautification */
+    private fun handleFaceFilterBottomSheetShown(bottomSheetHeight: Int) {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastEvent.FaceFilterBottomSheetShown(bottomSheetHeight))
+        }
     }
 
     private fun getSelectedAccount(
