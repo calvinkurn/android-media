@@ -71,9 +71,9 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldSummaryShown = !businessBreakdown.customResponse.hideSummary
 
         return mutableListOf<Visitable<*>>().apply {
-            val topTickerErrorMessage = businessData.ticker.errorTickers.top.message.takeIf { it.isNotEmpty() }
+            val topTickerErrorMessage = businessData.ticker?.errorTickers?.top?.message?.takeIf { it.isNotEmpty() }
             if (topTickerErrorMessage == null) {
-                businessData.ticker.top.message.let { topTickerMessage ->
+                businessData.ticker?.top?.message?.let { topTickerMessage ->
                     if (topTickerMessage.isNotEmpty()) {
                         add(mapGeneralTickerUiModel(topTickerMessage, false))
                     }
@@ -135,9 +135,9 @@ object TokoFoodPurchaseUiModelMapper {
                 }
             }
 
-            val bottomTickerErrorMessage = businessData.ticker.errorTickers.bottom.message.takeIf { it.isNotEmpty() }
+            val bottomTickerErrorMessage = businessData.ticker?.errorTickers?.bottom?.message?.takeIf { it.isNotEmpty() }
             if (bottomTickerErrorMessage == null) {
-                businessData.ticker.bottom.message.let { topTickerMessage ->
+                businessData.ticker?.bottom?.message?.let { topTickerMessage ->
                     if (topTickerMessage.isNotEmpty()) {
                         add(mapGeneralTickerUiModel(topTickerMessage, false))
                     }
@@ -167,20 +167,20 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldTickerShopLevelShown =
             customResponse.errorUnblocking.isNotEmpty() && availableProducts.isNotEmpty()
 
-        val isTopTickerError = businessData.ticker.top.message.isNotEmpty()
+        val isTopTickerError = !businessData.ticker?.top?.message.isNullOrEmpty()
         val topTickerMessage =
             if (isTopTickerError) {
-                businessData.ticker.errorTickers.top.message
+                businessData.ticker?.errorTickers?.top?.message.orEmpty()
             } else {
-                businessData.ticker.top.message
+                businessData.ticker?.top?.message.orEmpty()
             }
 
-        val isBottomTickerError = businessData.ticker.errorTickers.bottom.message.isNotEmpty()
+        val isBottomTickerError = !businessData.ticker?.errorTickers?.bottom?.message.isNullOrEmpty()
         val bottomTickerMessage =
             if (isBottomTickerError) {
-                businessData.ticker.errorTickers.bottom.message
+                businessData.ticker?.errorTickers?.bottom?.message.orEmpty()
             } else {
-                businessData.ticker.bottom.message
+                businessData.ticker?.bottom?.message.orEmpty()
             }
         return PartialTokoFoodUiModel(
             topTickerUiModel = topTickerMessage.takeIf { it.isNotBlank() }?.let { topMessage ->

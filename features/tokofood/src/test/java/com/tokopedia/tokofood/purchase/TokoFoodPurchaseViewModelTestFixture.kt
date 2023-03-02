@@ -2,8 +2,7 @@ package com.tokopedia.tokofood.purchase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.domain.response.KeroGetAddressResponse
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
@@ -19,11 +18,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.flow
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyString
 
 @FlowPreview
@@ -67,7 +64,7 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
         unmockkAll()
     }
 
-    protected fun onGetCheckoutTokoFood_thenReturn(response: CheckoutTokoFood) {
+    protected fun onGetCheckoutTokoFood_thenReturn(response: CartGeneralCartListData) {
         coEvery {
             checkoutTokoFoodUseCase.get().execute(CHECKOUT_PAGE_SOURCE)
         } returns response
@@ -79,17 +76,17 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
         } throws throwable
     }
 
-    protected fun onCheckoutGeneral_thenReturn(checkoutTokoFood: CheckoutTokoFood,
+    protected fun onCheckoutGeneral_thenReturn(cartListData: CartGeneralCartListData,
                                                response: CheckoutGeneralTokoFoodResponse) {
         coEvery {
-            checkoutGeneralTokoFoodUseCase.get().execute(checkoutTokoFood)
+            checkoutGeneralTokoFoodUseCase.get().execute(cartListData)
         } returns response
     }
 
-    protected fun onCheckoutGeneral_thenThrow(checkoutTokoFood: CheckoutTokoFood,
+    protected fun onCheckoutGeneral_thenThrow(cartListData: CartGeneralCartListData,
                                               throwable: Throwable) {
         coEvery {
-            checkoutGeneralTokoFoodUseCase.get().execute(checkoutTokoFood)
+            checkoutGeneralTokoFoodUseCase.get().execute(cartListData)
         } throws throwable
     }
 

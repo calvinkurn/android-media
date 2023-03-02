@@ -3,13 +3,15 @@ package com.tokopedia.tokofood.common
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
-import com.tokopedia.tokofood.common.domain.response.MiniCartTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartList
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataCustomResponse
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataShop
+import com.tokopedia.tokofood.common.domain.response.CartListData
+import com.tokopedia.tokofood.common.domain.response.CartListTokofoodResponse
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -31,13 +33,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when onSavedInstanceState, the data can be restored using onRestoreSavednstanceState`() {
         runBlocking {
-            val cartListData = CheckoutTokoFood()
+            val cartListData = CartGeneralCartListData()
             onLoadCartList_shouldReturn(cartListData)
 
             viewModel.loadInitial(SOURCE)
 
             val expectedMiniCartUiModel =
-                cartListData.data.getMiniCartUiModel()
+                cartListData.getMiniCartUiModel()
 
             viewModel.onSavedInstanceState()
             viewModel.onRestoreSavedInstanceState()
@@ -102,15 +104,15 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when loadInitial and no cart data yet, should load cart list`() {
         runBlocking {
-            val cartListData = CheckoutTokoFood()
+            val cartListData = CartGeneralCartListData()
             onLoadCartList_shouldReturn(cartListData)
 
             viewModel.loadInitial(SOURCE)
 
             val expectedMiniCartUiModel =
-                cartListData.data.getMiniCartUiModel()
+                cartListData.getMiniCartUiModel()
 
-            assertEquals(cartListData.data, viewModel.cartDataFlow.value)
+            assertEquals(cartListData, viewModel.cartDataFlow.value)
             assertEquals(
                 expectedMiniCartUiModel,
                 (viewModel.miniCartFlow.value as? Result.Success)?.data
@@ -137,14 +139,14 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when loadInitial but cart data is already exist, should set mini cart value straight`() {
         runBlocking {
-            val cartListData = CheckoutTokoFood()
+            val cartListData = CartGeneralCartListData()
             onLoadCartList_shouldReturn(cartListData)
 
             viewModel.loadInitial(SOURCE)
             viewModel.loadInitial(SOURCE)
 
             val expectedMiniCartUiModel =
-                cartListData.data.getMiniCartUiModel()
+                cartListData.getMiniCartUiModel()
 
             assertEquals(
                 expectedMiniCartUiModel,
@@ -156,16 +158,24 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when loadCartList should set cart data`() {
         val shopId = "123"
-        val cartListData = CheckoutTokoFood(
-            data = CheckoutTokoFoodData(
-                shop = CheckoutTokoFoodShop(
-                    shopId = shopId
+        val cartListData = CartGeneralCartListData(
+            success = 1,
+            data = CartListData(
+                businessData = listOf(
+                    CartListBusinessData(
+                        businessId = TokoFoodCartUtil.getBusinessId(),
+                        customResponse = CartListBusinessDataCustomResponse(
+                            shop = CartListBusinessDataShop(
+                                shopId = shopId
+                            )
+                        )
+                    )
                 )
             )
         )
         viewModel.loadCartList(cartListData)
 
-        assertEquals(cartListData.data, viewModel.cartDataFlow.value)
+        assertEquals(cartListData, viewModel.cartDataFlow.value)
         assertEquals(shopId, viewModel.shopId)
         assert(viewModel.hasCartUpdatedIntoLatestState.value == true)
     }
@@ -183,21 +193,14 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when deleteProduct and should refresh cart, should load cart`() {
         runBlocking {
-            val response = CartTokoFoodResponse(
-                status = TokoFoodCartUtil.SUCCESS_STATUS,
-                data = CartTokoFoodData(
-                    success = TokoFoodCartUtil.SUCCESS_STATUS_INT
-                )
-            )
-            val productId = "123"
+            val response = getSuccessRemoveCartResponse()
             val cartId = "123"
-            val shopId = ""
-            val param = RemoveCartTokoFoodParam.getProductParamById(productId, cartId, shopId)
+            val param = RemoveCartTokofoodParam.getProductParamById(cartId)
             onRemoveCart_shouldReturn(param, response)
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(productId, cartId, SOURCE, shopId, true)
+                    viewModel.deleteProduct(cartId, SOURCE, true)
                 },
                 then = {
                     coVerify(exactly = 1) {
@@ -211,21 +214,14 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when deleteProduct and should not refresh cart, should not call load cart`() {
         runBlocking {
-            val response = CartTokoFoodResponse(
-                status = TokoFoodCartUtil.SUCCESS_STATUS,
-                data = CartTokoFoodData(
-                    success = TokoFoodCartUtil.SUCCESS_STATUS_INT
-                )
-            )
-            val productId = "123"
+            val response = getSuccessRemoveCartResponse()
             val cartId = "123"
-            val shopId = ""
-            val param = RemoveCartTokoFoodParam.getProductParamById(productId, cartId, shopId)
+            val param = RemoveCartTokofoodParam.getProductParamById(cartId)
             onRemoveCart_shouldReturn(param, response)
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(productId, cartId, SOURCE, shouldRefreshCart = false)
+                    viewModel.deleteProduct(cartId, SOURCE, false)
                 },
                 then = {
                     coVerify(exactly = 0) {
@@ -241,15 +237,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when deleteProduct and failed, should set ui event state to failed delete`() {
         runBlocking {
-            val productId = "123"
             val cartId = "123"
-            val shopId = "123"
-            val param = RemoveCartTokoFoodParam.getProductParamById(productId, cartId, shopId)
+            val param = RemoveCartTokofoodParam.getProductParamById(cartId)
             onRemoveCart_shouldThrow(param, MessageErrorException(""))
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(productId, cartId, SOURCE, shopId)
+                    viewModel.deleteProduct(cartId, SOURCE)
                 },
                 then = {
                     val expectedUiModelState = UiEvent.EVENT_FAILED_DELETE_PRODUCT
@@ -263,17 +257,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     fun `when deleteAllAtcAndAddProduct, should run add to cart afterwards`() {
         runBlocking {
             val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            onLoadCartList_shouldReturn(successResponse.cartGeneralCartList.data)
 
-            val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.miniCartTokofood.data.getProductListFromCart().map {
-                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
-                }
-            )
-            val response = CartTokoFoodResponse()
+            val removeCartParam = successResponse.cartGeneralCartList.data.getRemoveAllCartParam()
+            val response = getSuccessRemoveCartResponse()
             val updateParam = UpdateParam()
             onRemoveCart_shouldReturn(removeCartParam, response)
 
@@ -301,17 +291,22 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when deleteAllAtcAndAddProduct and delete is error, should set ui event to failed delete`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
-
-            val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.miniCartTokofood.data.getProductListFromCart().map {
-                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
-                }
             )
+            onLoadCartList_shouldReturn(successResponse.data)
+
+            val removeCartParam = successResponse.data.getRemoveAllCartParam()
             val updateParam = UpdateParam()
             onRemoveCart_shouldThrow(removeCartParam, MessageErrorException(""))
 
@@ -335,18 +330,23 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when deleteUnavailableProducts success, should set ui event to success delete`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
-                    PURCHASE_SUCCESS_MINI_CART_JSON
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
+                    PURCHASE_UNAVAILABLE_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
-
-            val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.miniCartTokofood.data.unavailableSections.firstOrNull()?.products?.map {
-                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
-                }.orEmpty()
             )
-            onRemoveCart_shouldReturn(removeCartParam, getSuccessUpdateCartResponse())
+            onLoadCartList_shouldReturn(successResponse.data)
+
+            val removeCartParam = successResponse.data.getRemoveUnavailableCartParam()
+            onRemoveCart_shouldReturn(removeCartParam, getSuccessRemoveCartResponse())
 
             viewModel.loadInitial(SOURCE)
 
@@ -376,17 +376,22 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when deleteUnavailableProducts failed, should set ui event to failed delete`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
-                    PURCHASE_SUCCESS_MINI_CART_JSON
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
+                    PURCHASE_UNAVAILABLE_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
-
-            val removeCartParam = RemoveCartTokoFoodParam(
-                carts = successResponse.miniCartTokofood.data.unavailableSections.firstOrNull()?.products?.map {
-                    it.mapToRemoveItemParam(successResponse.miniCartTokofood.data.shop.shopId)
-                }.orEmpty()
             )
+            onLoadCartList_shouldReturn(successResponse.data)
+
+            val removeCartParam = successResponse.data.getRemoveUnavailableCartParam()
             onRemoveCart_shouldThrow(removeCartParam, MessageErrorException(""))
 
             viewModel.loadInitial(SOURCE)
@@ -406,14 +411,23 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when updateNotes success, should load cart`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            )
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
-            onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
+            onUpdateCart_shouldReturn(updateParam, SOURCE, getSuccessUpdateCartResponse())
 
             viewModel.loadInitial(SOURCE)
 
@@ -433,13 +447,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     fun `when updateNotes and should not refresh cart, should not call load cart`() {
         runBlocking {
             val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                JsonResourcesUtil.createSuccessResponse<CartGeneralCartList>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
-            onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
+            onUpdateCart_shouldReturn(updateParam, SOURCE, getSuccessUpdateCartResponse())
 
             viewModel.loadInitial(SOURCE)
 
@@ -462,13 +476,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     fun `when updateNotes failed, should set ui event state to failed update notes`() {
         runBlocking {
             val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                JsonResourcesUtil.createSuccessResponse<CartGeneralCartList>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
-            onUpdateCart_shouldThrow(updateParam, MessageErrorException(""))
+            onUpdateCart_shouldThrow(updateParam, SOURCE, MessageErrorException(""))
 
             viewModel.loadInitial(SOURCE)
 
@@ -487,14 +501,23 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when updateQuantity success, should loadCart`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            )
+            onLoadCartList_shouldReturn(successResponse.data)
 
-            val updateParam = UpdateParam()
-            onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
+            val updateParam = UpdateQuantityTokofoodParam()
+            onUpdateQuantity_shouldReturn(updateParam, getSuccessUpdateQuantityResponse())
 
             viewModel.loadInitial(SOURCE)
 
@@ -514,13 +537,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     fun `when updateQuantity but should not refresh cart, should not load cart list`() {
         runBlocking {
             val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                JsonResourcesUtil.createSuccessResponse<CartGeneralCartList>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            onLoadCartList_shouldReturn(successResponse.data)
 
-            val updateParam = UpdateParam()
-            onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
+            val updateParam = UpdateQuantityTokofoodParam()
+            onUpdateQuantity_shouldReturn(updateParam, getSuccessUpdateQuantityResponse())
 
             viewModel.loadInitial(SOURCE)
 
@@ -543,13 +566,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     fun `when updateQuantity failed, should set ui event state to failed update quantity`() {
         runBlocking {
             val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                JsonResourcesUtil.createSuccessResponse<CartGeneralCartList>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            onLoadCartList_shouldReturn(successResponse.data)
 
-            val updateParam = UpdateParam()
-            onUpdateCart_shouldThrow(updateParam, MessageErrorException(""))
+            val updateParam = UpdateQuantityTokofoodParam()
+            onUpdateQuantity_shouldThrow(updateParam, MessageErrorException(""))
 
             viewModel.loadInitial(SOURCE)
 
@@ -568,14 +591,23 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when updateCart success, should load cart`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            )
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
-            onUpdateCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
+            onUpdateCart_shouldReturn(updateParam, SOURCE, getSuccessUpdateCartResponse())
 
             viewModel.loadInitial(SOURCE)
 
@@ -594,14 +626,23 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when updateCart failed, should set ui event state to failed update cart`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            )
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
-            onUpdateCart_shouldThrow(updateParam, MessageErrorException(""))
+            onUpdateCart_shouldThrow(updateParam, SOURCE, MessageErrorException(""))
 
             viewModel.loadInitial(SOURCE)
 
@@ -620,11 +661,20 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when addToCart success, should load mini cart`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            )
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
             onAddToCart_shouldReturn(updateParam, getSuccessUpdateCartResponse())
@@ -639,11 +689,20 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when addToCart success but should show bottomsheet, should send phone verification event`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            )
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
             onAddToCart_shouldReturn(updateParam, getPhoneVerificationAddToCartResponse())
@@ -658,11 +717,20 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     @Test
     fun `when addToCart failed, should set ui event state to failed add to cart`() {
         runBlocking {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_MINI_CART_JSON
+                ).cartGeneralCartList
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
-            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+            )
+            onLoadCartList_shouldReturn(successResponse.data)
 
             val updateParam = UpdateParam()
             onAddToCart_shouldThrow(updateParam, MessageErrorException(""))

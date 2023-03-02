@@ -6,11 +6,34 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
-import com.tokopedia.tokofood.common.domain.response.*
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartCustomResponse
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartOption
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartRules
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartVariant
+import com.tokopedia.tokofood.common.domain.response.CartListCartMetadata
+import com.tokopedia.tokofood.common.domain.response.CartListCartMetadataVariant
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddress
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddressData
+import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodFmtWarningContent
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodGetMerchantData
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 fun generateTestMerchantData(): GetMerchantDataResponse {
     return GetMerchantDataResponse(
@@ -202,40 +225,48 @@ fun generateTestTokoFoodCatalogVariantOptionDetails(): List<TokoFoodCatalogVaria
     return listOf(original, hot)
 }
 
-fun generateTestCheckoutTokoFoodProduct(): List<CheckoutTokoFoodProduct> {
-    val garlicKnots = CheckoutTokoFoodProduct(
-            cartId = "cartId-garlicKnots",
-            productId = "bf3eba99-534d-4344-9cf8-6a46326feae0",
-            categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
-            productName = "Home-plate Garlic Knots",
-            description = "What\u0027s better than garlic bread? 5 pcs of Garlic tangled in knots!",
-            imageUrl = "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e561a5c-55ef-47f6-8b6a-967ca35d229e_master-menu-item-image_1612931947827.jpg",
-            price = 38000.0,
-            priceFmt = "Rp38.000",
-            originalPrice = 38000.0,
-            originalPriceFmt = "Rp38.000",
-            discountPercentage = "",
-            notes = "",
-            quantity = 1,
-            variants = listOf()
-    )
-    val umamiEdamame = CheckoutTokoFoodProduct(
-        cartId = "cartId-umamiEdamame",
-        productId = "bf3eba99-534d-4344-9cf8-6a46326feae1",
-        categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
-        productName = "Home-plate Garlic Knots",
-        description = "What\u0027s better than garlic bread? 5 pcs of Garlic tangled in knots!",
-        imageUrl = "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e561a5c-55ef-47f6-8b6a-967ca35d229e_master-menu-item-image_1612931947827.jpg",
+fun generateTestCheckoutTokoFoodProduct(): List<CartListCartGroupCart> {
+    val garlicKnots = CartListCartGroupCart(
+        cartId = "cartId-garlicKnots",
+        productId = "bf3eba99-534d-4344-9cf8-6a46326feae0",
         price = 38000.0,
         priceFmt = "Rp38.000",
-        originalPrice = 38000.0,
-        originalPriceFmt = "Rp38.000",
-        discountPercentage = "",
-        notes = "",
         quantity = 1,
-        variants = listOf()
+        metadata = CartListCartMetadata(
+            notes = "",
+            variants = listOf()
+        ),
+        customResponse = CartListCartGroupCartCustomResponse(
+            categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
+            name = "Home-plate Garlic Knots",
+            description = "What\u0027s better than garlic bread? 5 pcs of Garlic tangled in knots!",
+            imageUrl = "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e561a5c-55ef-47f6-8b6a-967ca35d229e_master-menu-item-image_1612931947827.jpg",
+            originalPrice = 38000.0,
+            originalPriceFmt = "Rp38.000",
+            discountPercentage = ""
+        )
     )
-    val originalVariantOption = CheckoutTokoFoodProductVariantOption(
+    val umamiEdamame = CartListCartGroupCart(
+        cartId = "cartId-umamiEdamame",
+        productId = "bf3eba99-534d-4344-9cf8-6a46326feae1",
+        price = 38000.0,
+        priceFmt = "Rp38.000",
+        quantity = 1,
+        metadata = CartListCartMetadata(
+            notes = "",
+            variants = listOf()
+        ),
+        customResponse = CartListCartGroupCartCustomResponse(
+            categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
+            name = "Home-plate Garlic Knots",
+            description = "What\u0027s better than garlic bread? 5 pcs of Garlic tangled in knots!",
+            imageUrl = "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e561a5c-55ef-47f6-8b6a-967ca35d229e_master-menu-item-image_1612931947827.jpg",
+            originalPrice = 38000.0,
+            originalPriceFmt = "Rp38.000",
+            discountPercentage = ""
+        )
+    )
+    val originalVariantOption = CartListCartGroupCartOption(
             isSelected = true,
             optionId = "379913bf-e89e-4a26-a2e6-a650ebe77aef",
             name = "Original",
@@ -243,44 +274,45 @@ fun generateTestCheckoutTokoFoodProduct(): List<CheckoutTokoFoodProduct> {
             priceFmt = "Gratis",
             status = 1
     )
-    val originalVariant = CheckoutTokoFoodProductVariant(
+    val originalVariant = CartListCartGroupCartVariant(
             variantId = "d105b801-75de-4306-93a6-cc7124193042",
             name = "Spicy",
-            rules = CheckoutTokoFoodProductVariantRules(),
+            rules = CartListCartGroupCartRules(),
             options = listOf(originalVariantOption)
     )
-    val battingUpChickenOriginal = CheckoutTokoFoodProduct(
-            cartId = "cartId-battingUpChicken",
-            productId = "8829ce4a-6f00-4406-8112-721f569f0d4b",
+    val battingUpChickenOriginal = CartListCartGroupCart(
+        cartId = "cartId-battingUpChicken",
+        productId = "8829ce4a-6f00-4406-8112-721f569f0d4b",
+        price = 55000.0,
+        priceFmt = "Rp55.000",
+        quantity = 1,
+        customResponse = CartListCartGroupCartCustomResponse(
             categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
-            productName = "Batting up chicken",
+            name = "Batting up chicken",
             description = "4 pcs of deep-fried breaded chicken tenders served with sauce on the side",
-            imageUrl = "https =//i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/27cb56de-1c92-4ca6-b797-f98777351524_master-menu-item-image_1612932163220.jpg",
-            price = 55000.0,
-            priceFmt = "Rp55.000",
+            imageUrl = "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e561a5c-55ef-47f6-8b6a-967ca35d229e_master-menu-item-image_1612931947827.jpg",
             originalPrice = 55000.0,
             originalPriceFmt = "Rp55.000",
             discountPercentage = "",
-            notes = "",
-            quantity = 1,
             variants = listOf(originalVariant)
+        )
     )
-
-    val crispyFrenchFries = CheckoutTokoFoodProduct(
+    val crispyFrenchFries = CartListCartGroupCart(
         cartId = "cartId-crispyFrenchFries",
         productId = "8829ce4a-6f00-4406-8112-721f569f0d4c",
-        categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
-        productName = "Crispy French Fries",
-        description = "4 pcs of deep-fried breaded chicken tenders served with sauce on the side",
-        imageUrl = "https =//i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/27cb56de-1c92-4ca6-b797-f98777351524_master-menu-item-image_1612932163220.jpg",
         price = 55000.0,
         priceFmt = "Rp55.000",
-        originalPrice = 55000.0,
-        originalPriceFmt = "Rp55.000",
-        discountPercentage = "",
-        notes = "",
         quantity = 1,
-        variants = listOf(originalVariant)
+        customResponse = CartListCartGroupCartCustomResponse(
+            categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
+            name = "Crispy French Fries",
+            description = "4 pcs of deep-fried breaded chicken tenders served with sauce on the side",
+            imageUrl = "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e561a5c-55ef-47f6-8b6a-967ca35d229e_master-menu-item-image_1612931947827.jpg",
+            originalPrice = 55000.0,
+            originalPriceFmt = "Rp55.000",
+            discountPercentage = "",
+            variants = listOf(originalVariant)
+        )
     )
     return listOf(garlicKnots, umamiEdamame, battingUpChickenOriginal, crispyFrenchFries)
 }
@@ -345,12 +377,20 @@ fun generateTestCustomOrderDetail(): CustomOrderDetail {
     )
 }
 
-fun generateTestCartTokoFood(): CartTokoFood {
-    return CartTokoFood(
-            cartId = "cartId-garlicKnots",
-            productId = "bf3eba99-534d-4344-9cf8-6a46326feae0",
-            quantity = 1,
-            metadata = "{\"variants\":[{\"variant_id\":\"d105b801-75de-4306-93a6-cc7124193042\",\"option_id\":\"379913bf-e89e-4a26-a2e6-a650ebe77aef\"}],\"notes\":\"ini notes\"}"
+fun generateTestCartTokoFood(): CartListCartGroupCart {
+    return CartListCartGroupCart(
+        cartId = "cartId-garlicKnots",
+        productId = "bf3eba99-534d-4344-9cf8-6a46326feae0",
+        quantity = 1,
+        metadata = CartListCartMetadata(
+            notes = "ini notes",
+            variants = listOf(
+                CartListCartMetadataVariant(
+                    variantId = "d105b801-75de-4306-93a6-cc7124193042",
+                    optionId = "379913bf-e89e-4a26-a2e6-a650ebe77aef"
+                )
+            )
+        )
     )
 }
 

@@ -68,21 +68,7 @@ data class CartGeneralCartListData(
     }
 
     fun getRemoveUnavailableCartParam(): RemoveCartTokofoodParam {
-        val unavailableCartGroup =
-            data.getTokofoodBusinessData().additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.UNAVAILABLE_SECTION }
-        val isMultipleCartGroup = unavailableCartGroup?.additionalGroupChildIds?.isNotEmpty() == true
-        val cartIds =
-            if (isMultipleCartGroup) {
-                val multipleUnavailableCartIds = mutableListOf<String>()
-                unavailableCartGroup?.additionalGroupChildIds?.forEach { groupChildId ->
-                    data.getTokofoodBusinessData().additionalGrouping.details.find { it.additionalGroupId == groupChildId }?.let {
-                        multipleUnavailableCartIds.addAll(it.cartIds)
-                    }
-                }
-                multipleUnavailableCartIds
-            } else {
-                unavailableCartGroup?.cartIds.orEmpty()
-            }
+        val cartIds = data.getTokofoodBusinessData().getUnavailableSectionProductCartIds()
 
         return RemoveCartTokofoodParam(
             businessData = listOf(
@@ -122,7 +108,7 @@ data class CartGeneralCartListData(
     }
 
     private fun isErrorTickerEmpty(): Boolean =
-        data.getTokofoodBusinessData().ticker.errorTickers.top.message.isEmpty()
+        data.getTokofoodBusinessData().ticker?.errorTickers?.top?.message.isNullOrEmpty()
 
 }
 
@@ -217,7 +203,7 @@ data class CartListBusinessData(
     @SerializedName("message")
     val message: String = String.EMPTY,
     @SerializedName("ticker")
-    val ticker: CartListBusinessDataTicker = CartListBusinessDataTicker(),
+    val ticker: CartListBusinessDataTicker? = CartListBusinessDataTicker(),
     @SerializedName("additional_grouping")
     val additionalGrouping: CartListBusinessDataAdditionalGrouping = CartListBusinessDataAdditionalGrouping(),
     @SerializedName("custom_response")
@@ -237,6 +223,34 @@ data class CartListBusinessData(
             additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.AVAILABLE_SECTION }?.cartIds.orEmpty()
         return cartGroups.firstOrNull()?.carts?.filter { availableCartIds.contains(it.cartId) }
             .orEmpty()
+    }
+
+    fun getUnavailableSectionProducts(): List<CartListCartGroupCart> {
+        val unavailableSectionProductCartIds = getUnavailableSectionProductCartIds()
+        return cartGroups.firstOrNull()?.carts?.filter {
+            unavailableSectionProductCartIds.contains(
+                it.cartId
+            )
+        }.orEmpty()
+    }
+
+    fun getUnavailableSectionProductCartIds(): List<String> {
+        val unavailableCartGroup =
+            additionalGrouping.details.find { it.additionalGroupId == TokoFoodCartUtil.UNAVAILABLE_SECTION }
+        val isMultipleCartGroup = unavailableCartGroup?.additionalGroupChildIds?.isNotEmpty() == true
+        val cartIds =
+            if (isMultipleCartGroup) {
+                val multipleUnavailableCartIds = mutableListOf<String>()
+                unavailableCartGroup?.additionalGroupChildIds?.forEach { groupChildId ->
+                    additionalGrouping.details.find { it.additionalGroupId == groupChildId }?.let {
+                        multipleUnavailableCartIds.addAll(it.cartIds)
+                    }
+                }
+                multipleUnavailableCartIds
+            } else {
+                unavailableCartGroup?.cartIds.orEmpty()
+            }
+        return cartIds
     }
 
 }

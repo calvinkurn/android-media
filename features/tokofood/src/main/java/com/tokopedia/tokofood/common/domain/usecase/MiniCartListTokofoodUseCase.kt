@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.common.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
@@ -83,7 +84,11 @@ class MiniCartListTokofoodUseCase @Inject constructor(
         setGraphqlQuery(MiniCartGeneralCartList())
     }
 
-    suspend fun execute(source: String): CartGeneralCartListData {
+    suspend fun execute(source: String): CartGeneralCartListData? {
+        val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
+        if (chosenAddress.addressId.isZero() || chosenAddress.geolocation.isBlank()) {
+            return null
+        }
         val additionalAttributes = CartAdditionalAttributesTokoFood(
             chosenAddressRequestHelper.getChosenAddress()
         )

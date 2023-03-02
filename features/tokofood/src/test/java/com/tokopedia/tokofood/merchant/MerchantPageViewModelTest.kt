@@ -1,23 +1,47 @@
 package com.tokopedia.tokofood.merchant
 
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
-import com.tokopedia.tokofood.data.*
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
+import com.tokopedia.tokofood.data.createChooseAddress
+import com.tokopedia.tokofood.data.generateTestCartTokoFood
+import com.tokopedia.tokofood.data.generateTestCheckoutTokoFoodProduct
+import com.tokopedia.tokofood.data.generateTestCustomOrderDetail
+import com.tokopedia.tokofood.data.generateTestFoodCategories
+import com.tokopedia.tokofood.data.generateTestMerchantData
+import com.tokopedia.tokofood.data.generateTestMerchantOpsHour
+import com.tokopedia.tokofood.data.generateTestProductUiModel
+import com.tokopedia.tokofood.data.generateTestProductUiModelWithVariant
+import com.tokopedia.tokofood.data.generateTestTokoFoodMerchantProfile
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodGetMerchantData
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.utils.collectFromSharedFlow
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
@@ -26,7 +50,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     fun `when view model is created expect initial properties to be false or empty`() {
         assertEquals(hashMapOf<String, Pair<Int, Int>>(), viewModel.productMap)
         assertEquals(mutableListOf<ProductListItem>(), viewModel.productListItems)
-        assertEquals(listOf<CheckoutTokoFoodProduct>(), viewModel.selectedProducts)
+        assertEquals(listOf<CartListCartGroupCart>(), viewModel.selectedProducts)
         assertFalse(viewModel.isAddressManuallyUpdated)
         assertFalse(viewModel.isProductDetailBottomSheetVisible)
         assertEquals(listOf<TokoFoodCategoryFilter>(), viewModel.filterList)
@@ -38,7 +62,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     @Test
     fun `when variables values are being set, the value should reflect to the changes`() {
         val expectedProductListItems: MutableList<ProductListItem> = mutableListOf()
-        val expectedSelectedProducts: List<CheckoutTokoFoodProduct> = listOf()
+        val expectedSelectedProducts: List<CartListCartGroupCart> = listOf()
         val expectedIsAddressManuallyUpdated = false
         val expectedIsProductDetailBottomSheetVisible = false
         val expectedFilterList = listOf<TokoFoodCategoryFilter>()
@@ -476,11 +500,11 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     }
 
     @Test
-    fun `when updateQuantity with productUiModel should emit notice to hit update API after debounce time`() {
+    fun `when updateQuantity should emit notice to hit update API after debounce time`() {
         coroutineTestRule.runBlockingTest {
             viewModel.updateQuantityParam.collectFromSharedFlow(
                 whenAction = {
-                    viewModel.updateQuantity("123", ProductUiModel())
+                    viewModel.updateQuantity("123", 1)
                     advanceTimeBy(500L)
                 },
                 then = {
@@ -491,116 +515,33 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     }
 
     @Test
-    fun `when updateQuantity to replace with productUiModel should emit notice to hit update API after debounce time`() {
+    fun `when updateQuantity to replace should emit notice to hit update API after debounce time`() {
         coroutineTestRule.runBlockingTest {
-            val expectedOrderQty = 5
+            val expectedOrderQty = 2
             viewModel.updateQuantityParam.collectFromSharedFlow(
                 whenAction = {
-                    viewModel.updateQuantity("123", ProductUiModel())
+                    viewModel.updateQuantity("123", 1)
                     advanceTimeBy(100L)
-                    viewModel.updateQuantity("123", ProductUiModel(orderQty = expectedOrderQty))
+                    viewModel.updateQuantity("123", 2)
                     advanceTimeBy(500L)
                 },
                 then = {
-                    assertEquals(expectedOrderQty, it?.productList?.firstOrNull()?.quantity)
+                    assertEquals(expectedOrderQty, it?.businessData?.carts?.firstOrNull()?.quantity)
                 }
             )
         }
     }
 
     @Test
-    fun `when updateQuantity with productUiModel should not emit notice to hit update API before debounce time`() {
+    fun `when updateQuantity should not emit notice to hit update API before debounce time`() {
         coroutineTestRule.runBlockingTest {
             viewModel.updateQuantityParam.collectFromSharedFlow(
                 whenAction = {
-                    viewModel.updateQuantity("123", ProductUiModel())
+                    viewModel.updateQuantity("123", 1)
                     advanceTimeBy(100L)
                 },
                 then = {
                     assert(it == null)
-                }
-            )
-        }
-    }
-
-    @Test
-    fun `when updateQuantity with customOrderDetail should emit notice to hit update API after debounce time`() {
-        coroutineTestRule.runBlockingTest {
-            viewModel.updateQuantityParam.collectFromSharedFlow(
-                whenAction = {
-                    viewModel.updateQuantity("123", "123", CustomOrderDetail())
-                    advanceTimeBy(500L)
-                },
-                then = {
-                    assert(it != null)
-                }
-            )
-        }
-    }
-
-    @Test
-    fun `when updateQuantity with customOrderDetail should not emit notice to hit update API before debounce time`() {
-        coroutineTestRule.runBlockingTest {
-            viewModel.updateQuantityParam.collectFromSharedFlow(
-                whenAction = {
-                    viewModel.updateQuantity("123", "123", CustomOrderDetail())
-                    advanceTimeBy(100L)
-                },
-                then = {
-                    assert(it == null)
-                }
-            )
-        }
-    }
-
-    @Test
-    fun `when updateQuantity to replace with customOrderDetail should emit notice to hit update API after debounce time`() {
-        coroutineTestRule.runBlockingTest {
-            val cartId = "123"
-            val expectedQty = 10
-            viewModel.updateQuantityParam.collectFromSharedFlow(
-                whenAction = {
-                    viewModel.updateQuantity("123", "123", CustomOrderDetail(cartId = cartId, qty = 0))
-                    advanceTimeBy(100L)
-                    viewModel.updateQuantity("123", "123", CustomOrderDetail(cartId = cartId, qty = expectedQty))
-                    advanceTimeBy(500L)
-                },
-                then = {
-                    assertEquals(expectedQty, it?.productList?.firstOrNull()?.quantity)
-                }
-            )
-        }
-    }
-
-    @Test
-    fun `when updateQuantity same productId with different cartId should emit different product params`() {
-        coroutineTestRule.runBlockingTest {
-            viewModel.updateQuantityParam.collectFromSharedFlow(
-                whenAction = {
-                    viewModel.updateQuantity("123", ProductUiModel(cartId = "123", id = "123"))
-                    advanceTimeBy(100L)
-                    viewModel.updateQuantity("123", ProductUiModel(cartId = "1234", id = "123"))
-                    advanceTimeBy(500L)
-                },
-                then = {
-                    assertEquals(2, it?.productList?.size)
-                }
-            )
-        }
-    }
-
-    @Test
-    fun `when updateQuantity same cartId with different productId should emit different product params`() {
-        coroutineTestRule.runBlockingTest {
-            viewModel.updateQuantityParam.collectFromSharedFlow(
-                whenAction = {
-                    viewModel.updateQuantity("123", ProductUiModel(cartId = "123", id = "123"))
-                    advanceTimeBy(100L)
-                    viewModel.updateQuantity("123", ProductUiModel(cartId = "123", id = "1234"))
-                    advanceTimeBy(500L)
-                },
-                then = {
-                    assertEquals(2, it?.productList?.size)
                 }
             )
         }

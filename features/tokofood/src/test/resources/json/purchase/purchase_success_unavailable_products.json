@@ -1,223 +1,100 @@
 {
-  "cart_list_tokofood": {
-    "message": "",
-    "status": "OK",
+  "cart_general_cart_list": {
+    "header": {
+      "process_time": 0,
+      "messages": [],
+      "reason": "",
+      "error_code": ""
+    },
     "data": {
-      "popup_message": "Yay, ada promo yang otomatis terpakai!",
-      "popup_error_message": "",
-      "popup_message_type": "promo",
-      "shop": {
-        "shop_id": "0d3a8735-6751-48fc-8168-cf3b425f1983",
-        "name": "TokoFood4",
-        "distance": "Jarak Pengiriman 1.6 km"
-      },
-      "tickers": {
-        "top": {
-          "id": 0,
-          "message": "",
-          "page": ""
-        },
-        "bottom": {
-          "id": 0,
-          "message": "",
-          "page": ""
-        }
-      },
-      "error_tickers": {
-        "top": {
-          "id": 0,
-          "message": "",
-          "page": ""
-        },
-        "bottom": {
-          "id": 0,
-          "message": "",
-          "page": ""
-        }
-      },
-      "error_unblocking": "Yaah, ada 1 item tidak bisa diproses. Kamu bisa lanjut pesan yang lainnya, ya. Lihat",
-      "user_address": {
-        "address_id": 4678593,
-        "address_name": "Rumah",
-        "address": "tokopedia tower lt 52 jl dr satrio",
-        "phone": "628159965151",
-        "receiver_name": "irvanno",
-        "status": 2
-      },
-      "available_section": {
-        "products": [
-          {
-            "cart_id": 1169,
-            "product_id": "6fe2a4f1-0ec1-4900-ab30-3c780886197d",
-            "name": "Air",
-            "description": "",
-            "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2f345a93-1588-4cad-9ee0-0a9c2c4c2e57_Go-Biz_20220520_165524.jpeg",
-            "price": 2000,
-            "price_fmt": "Rp2.000",
-            "original_price": 0,
-            "original_price_fmt": "",
-            "discount_percentage": "",
-            "notes": "",
-            "quantity": 1,
-            "variants": []
-          }
-        ]
-      },
-      "unavailable_section_header": "Produk tidak tersedia",
-      "unavailable_sections": [{
-        "title": "Stok habis",
-        "products": [
-          {
-            "cart_id": 1171,
-            "product_id": "6fe2a4f1-0ec1-4900-ab30-3c780886197r",
-            "name": "Air",
-            "description": "",
-            "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2f345a93-1588-4cad-9ee0-0a9c2c4c2e57_Go-Biz_20220520_165524.jpeg",
-            "price": 2000,
-            "price_fmt": "Rp2.000",
-            "original_price": 0,
-            "original_price_fmt": "",
-            "discount_percentage": "",
-            "notes": "",
-            "quantity": 1,
-            "variants": []
-          },
-          {
-            "cart_id": 1172,
-            "product_id": "6fe2a4f1-0ec1-4900-ab30-3c780886197SDS",
-            "name": "Air",
-            "description": "",
-            "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2f345a93-1588-4cad-9ee0-0a9c2c4c2e57_Go-Biz_20220520_165524.jpeg",
-            "price": 2000,
-            "price_fmt": "Rp2.000",
-            "original_price": 0,
-            "original_price_fmt": "",
-            "discount_percentage": "",
-            "notes": "",
-            "quantity": 1,
-            "variants": []
-          },
-          {
-            "cart_id": 1173,
-            "product_id": "6fe2a4f1-0ec1-4900-ab30-3c780886197gjk",
-            "name": "Air",
-            "description": "",
-            "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2f345a93-1588-4cad-9ee0-0a9c2c4c2e57_Go-Biz_20220520_165524.jpeg",
-            "price": 2000,
-            "price_fmt": "Rp2.000",
-            "original_price": 0,
-            "original_price_fmt": "",
-            "discount_percentage": "",
-            "notes": "",
-            "quantity": 1,
-            "variants": []
-          }]
-      }],
-      "shipping": {
-        "name": "Gojek Instan",
-        "logo_url": "https://images.tokopedia.net/img/tokofood/cart/gojek.png",
-        "eta": "Tiba Dalam 0 km",
-        "price": 12000,
-        "price_fmt": "Rp12.000"
-      },
-      "promo": {
-        "is_promo_applied": false,
-        "hide_promo": false,
-        "title": "Makin hemat pakai promo",
-        "subtitle": ""
-      },
-      "checkout_consent_bottomsheet": {
-        "is_show_bottomsheet": false,
-        "image_url": "",
-        "title": "",
-        "description": "",
-        "terms_and_condition": ""
-      },
-      "shopping_summary": {
-        "total": {
-          "cost": 42000,
-          "savings": 0
-        },
-        "cost_breakdown": {
-          "total_cart_price": {
-            "original_amount": 0,
-            "amount": 22000
-          },
-          "outlet_fee": {
-            "original_amount": 0,
-            "amount": 0
-          },
-          "platform_fee": {
-            "original_amount": 3000,
-            "amount": 3000
-          },
-          "delivery_fee": {
-            "original_amount": 12000,
-            "amount": 12000,
-            "surge": {
-              "is_surge_price": false,
-              "factor": 0
-            }
-          },
-          "reimbursement_fee": {
-            "original_amount": 5000,
-            "amount": 5000
-          }
-        },
-        "discount_breakdown": []
-      },
-      "checkout_additional_data": {
-        "data_type": "TOKOFOOD",
-        "checkout_business_id": 42
-      },
-      "summary_detail": {
-        "hide_summary": false,
-        "total_items": 1,
-        "total_price": "Rp2.000",
-        "details": [
-          {
-            "title": "Total Harga (1 item)",
-            "price_fmt": "Rp42.000",
-            "info": {
-              "image_url": "",
-              "bottomsheet": {
+      "success": 1,
+      "message": "",
+      "data": {
+        "shopping_summary": {
+          "business_breakdown": [
+            {
+              "business_id": "8811b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
+              "custom_response": {
+                "hide_summary": false
+              },
+              "total_bill": 0,
+              "total_bill_fmt": "Rp0",
+              "product": {
                 "title": "",
-                "description": ""
-              }
+                "total_price": 0,
+                "total_price_fmt": "Rp0",
+                "total_quantity": 0,
+                "total_cart": 0,
+                "custom_response": {"info":{"image_url":"","bottomsheet":{"title":"","description":""}}}
+              },
+              "add_ons": []
             }
-          },
+          ]
+        },
+        "business_data": [
           {
-            "title": "Total Ongkos Kirim",
-            "price_fmt": "Rp12.000",
-            "info": {
-              "image_url": "",
-              "bottomsheet": {
-                "title": "",
-                "description": ""
+            "business_id": "8811b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
+            "success": 1,
+            "message": "",
+            "ticker": null,
+            "additional_grouping": {
+              "details": [
+                {
+                  "additional_group_id": "unavailable_section",
+                  "message": "Stok Habis",
+                  "cart_ids": [
+                    "4830e1a0-5a65-42d5-88a5-a80484ae74e7"
+                  ]
+                }
+              ]
+            },
+            "custom_response": {
+              "shipping": {
+                "name": "",
+                "logo_url": "",
+                "eta": "",
+                "price": 0,
+                "price_fmt": ""
+              },
+              "shop": {
+                "shop_id": "828c5671-30cd-46f8-b7f6-f5ab6b197737",
+                "name": "TokoFood Outlet Test 5 TokoFood Outlet Test 5 TokoFood Outlet Test 5",
+                "distance": "Jarak Pengiriman 0.0 km"
               }
-            }
-          },
-          {
-            "title": "Biaya Jasa Aplikasi",
-            "price_fmt": "Rp3.000",
-            "info": {
-              "image_url": "",
-              "bottomsheet": {
-                "title": "",
-                "description": ""
+            },
+            "cart_groups": [
+              {
+                "cart_group_id": "828c5671-30cd-46f8-b7f6-f5ab6b197737-4746414",
+                "success": 1,
+                "carts": [
+                  {
+                    "cart_id": "4830e1a0-5a65-42d5-88a5-a80484ae74e7",
+                    "success": 1,
+                    "product_id": "739cf152-d1a4-479f-a0e5-c4cc45e1c9fb",
+                    "shop_id": "828c5671-30cd-46f8-b7f6-f5ab6b197737",
+                    "metadata": {
+                      "notes": "",
+                      "variants": []
+                    },
+                    "custom_response": {
+                      "notes": "",
+                      "variants": [],
+                      "description": "",
+                      "discount_percentage": "",
+                      "image_url": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/ee13de4d-eaa5-4ca4-8c6a-a9cb0f2ba56e_Go-Biz_20220512_181716.jpeg",
+                      "category_id": "8f276091-5b3d-4528-b26b-cb0cabb1635e",
+                      "original_price_fmt": "",
+                      "original_price": 0,
+                      "name": "Ikan Bakar Bumbu Kecap"
+                    },
+                    "price": 30000,
+                    "price_fmt": "Rp30.000",
+                    "quantity": 1
+                  }
+                ],
+                "custom_response": {}
               }
-            }
-          },
-          {
-            "title": "Biaya Parkir",
-            "price_fmt": "Rp5.000",
-            "info": {
-              "image_url": "",
-              "bottomsheet": {
-                "title": "",
-                "description": ""
-              }
-            }
+            ]
           }
         ]
       }
