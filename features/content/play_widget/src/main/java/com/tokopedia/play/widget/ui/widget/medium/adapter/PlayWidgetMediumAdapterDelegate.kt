@@ -9,6 +9,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
+import timber.log.Timber
 import com.tokopedia.play_common.R as commonR
 
 /**
@@ -81,6 +82,7 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
             return try {
                 PlayWidgetMediumViewHolder.Channel.create(parent, cardChannelListener)
             } catch (e: Throwable) {
+                Timber.e(e)
                 object : ViewHolder(basicView) {}
             }
         }
