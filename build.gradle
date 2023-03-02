@@ -1,3 +1,6 @@
+import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply from: 'buildconfig/dependencies/dependencies.gradle'
 apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
@@ -64,19 +67,8 @@ if (hasProperty('buildScan')) {
     }
 }
 
-apply plugin: "org.jetbrains.dokka"
-
 apply from: 'buildproj.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
-
-def whitelist = [
-        "medialoader",
-        "mediauploader"
-]
-
-configure(subprojects.findAll {whitelist.contains(it.name)  }) {
-    apply from: rootProject.file('dokka.gradle')
-}
 
 //Installing Git Hooks
 task installGitHooks {
@@ -87,3 +79,63 @@ task installGitHooks {
 }
 clean.dependsOn installGitHooks
 
+// Dokka
+
+apply plugin: "org.jetbrains.dokka"
+
+tasks.withType(DokkaMultiModuleTask).configureEach {
+    def footer = new File("docs/internal/footer.txt")
+            .readLines()
+            .join(" ")
+            .trim()
+            .toString()
+
+    outputDirectory.set(rootProject.file('docs'))
+    failOnWarning.set(true)
+
+    String baseConfiguration = """
+                {
+                    "customStyleSheets": ["${file("docs/internal/css/logo-styles.css")}"],
+                    "templatesDir": "${file("docs/internal/templates")}",
+                    "separateInheritedMembers": true,
+                    "footerMessage": "$footer"
+                }
+            """
+    pluginsMapConfiguration.set(["org.jetbrains.dokka.base.DokkaBase": baseConfiguration])
+
+
+}
+
+tasks.withType(DokkaTaskPartial.class) {
+    dokkaSourceSets.configureEach {
+        documentedVisibilities.set([
+                DokkaConfiguration.Visibility.PUBLIC,
+                DokkaConfiguration.Visibility.PROTECTED
+        ])
+
+        perPackageOption {
+            matchingRegex.set(".*internal.*")
+            suppress.set(true)
+        }
+
+        includes.from("readme.md")
+
+        reportUndocumented.set(true)
+        skipEmptyPackages.set(true)
+        skipDeprecated.set(true)
+        jdkVersion.set(8)
+
+        // Add Android SDK packages
+        noAndroidSdkLink.set(false)
+
+        // AndroidX + Kotlin docs
+        externalDocumentationLink {
+            url.set(new URL("https://developer.android.com/reference/"))
+            packageListUrl.set(new URL("https://developer.android.com/reference/androidx/package-list"))
+        }
+        externalDocumentationLink {
+            url.set(new URL("https://developer.android.com/reference/kotlin/"))
+            packageListUrl.set(new URL("https://developer.android.com/reference/kotlin/androidx/package-list"))
+        }
+    }
+}
