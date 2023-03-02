@@ -57,12 +57,12 @@ class CartBundlingTest {
 
             assertMainContent()
 
-            assertCartShopViewHolderOnPosition(2) {
+            assertCartShopBottomViewHolderOnPosition(4) {
                 // given checked shop, normal product with no bundleIds, & enable cart bundling
                 // then should not show ticker
                 assertNotShowCartShopGroupTicker()
             }
-            assertCartShopViewHolderOnPosition(3) {
+            assertCartShopBottomViewHolderOnPosition(7) {
                 // given checked shop, normal product with bundleIds, & enable cart bundling
                 // then should show ticker
                 assertShowCartShopGroupTicker()
