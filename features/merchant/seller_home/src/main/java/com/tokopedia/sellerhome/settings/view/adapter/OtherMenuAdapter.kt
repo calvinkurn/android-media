@@ -19,7 +19,6 @@ import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.settings.view.activity.SellerEduWebviewActivity
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
