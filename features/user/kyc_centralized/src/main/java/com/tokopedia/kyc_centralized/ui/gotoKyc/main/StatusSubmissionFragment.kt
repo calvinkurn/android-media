@@ -75,7 +75,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                 onPending24Hours()
             }
             KycStatus.VERIFIED.code.toString() -> {
-                if (dataSource == KYCConstant.GotoDataSource.GOTO_PROGRESSIVE) {
+                if (dataSource == KYCConstant.GotoKycFlow.PROGRESSIVE) {
                     onVerifiedProgressive()
                 } else {
                     onVerifiedNonProgressive()

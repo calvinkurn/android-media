@@ -54,9 +54,10 @@ object KYCConstant {
     const val consentCollectionIdProduction = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
     const val consentCollectionIdStaging = "8db1d162-15ea-45c1-9b69-20b256e39e44"
 
-    object GotoDataSource {
-        const val TOKO_KYC = "0"
-        const val GOTO_NON_PROGRESSIVE = "1"
-        const val GOTO_PROGRESSIVE = "2"
+    object GotoKycFlow {
+        const val NON_PROGRESSIVE = "NON_PROGRESSIVE_ELIGIBLE"
+        const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
     }
+
+    const val GotoKycSourceAccountPage = "account"
 }

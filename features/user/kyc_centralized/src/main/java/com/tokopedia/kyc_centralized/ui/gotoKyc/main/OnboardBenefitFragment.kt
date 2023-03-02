@@ -53,16 +53,17 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
     }
 
     private fun showBottomSheet() {
-        if (args.parameter.gotoKycType == KYCConstant.GotoDataSource.GOTO_PROGRESSIVE) {
-            showProgressiveBottomSheet(args.parameter.source)
+        if (args.parameter.gotoKycType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
+            showProgressiveBottomSheet(args.parameter.sourcePage, args.parameter.encryptedName)
         } else {
-            showNonProgressiveBottomSheet(args.parameter.source, args.parameter.isAccountLinked, args.parameter.isKtpTaken)
+            showNonProgressiveBottomSheet(args.parameter.sourcePage, args.parameter.isAccountLinked, args.parameter.isKtpTaken)
         }
     }
 
-    private fun showProgressiveBottomSheet(source: String) {
+    private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet(
-            source = source
+            source = source,
+            encryptedName = encryptedName
         )
 
         onBoardProgressiveBottomSheet.show(

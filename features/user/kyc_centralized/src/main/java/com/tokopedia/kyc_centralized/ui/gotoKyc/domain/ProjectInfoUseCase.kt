@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.ProjectInfoResponse
 import javax.inject.Inject
 
@@ -31,6 +30,7 @@ class ProjectInfoUseCase @Inject constructor(
                 IsSelfie
                 DataSource
                 IsGotoKyc
+                AccountLinkingStatus
               }
             }
         """.trimIndent()
@@ -44,8 +44,7 @@ class ProjectInfoUseCase @Inject constructor(
             } else {
                 if (status == NOT_VERIFIED) {
                     ProjectInfoResult.NotVerified(
-                        isAccountLinked = accountLinkingStatus == ACCOUNT_LINKED,
-                        //TODO("please change this value if BE already provide")
+                        isAccountLinked = accountLinkingStatus == ACCOUNT_LINKED
                     )
                 } else {
                     ProjectInfoResult.StatusSubmission(
@@ -60,7 +59,6 @@ class ProjectInfoUseCase @Inject constructor(
 
     companion object {
         const val NOT_VERIFIED = "3"
-        const val ACCOUNT_NOT_LINKED = -1
         const val ACCOUNT_LINKED = 1
         private const val PROJECT_ID = "projectID"
     }

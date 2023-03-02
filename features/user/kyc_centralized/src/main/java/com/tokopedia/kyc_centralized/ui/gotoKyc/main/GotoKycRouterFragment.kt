@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -40,12 +42,23 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         when (sourcePage) {
             PAGE_STATUS_SUBMISSION -> {
                 val parameter = StatusSubmissionParam(
-                    dataSource = data?.dataSource.orEmpty(),
+                    isCameFromAccountPage = data?.sourcePage == KYCConstant.GotoKycSourceAccountPage,
+                    dataSource = data?.gotoKycType.orEmpty(),
                     status = data?.status.orEmpty(),
                     sourcePage = data?.sourcePage.orEmpty(),
                     listReason = data?.listReason.orEmpty()
                 )
                 gotoStatusSubmission(parameter)
+            }
+            PAGE_ONBOARD_BENEFIT -> {
+                val parameter = OnboardBenefitParam(
+                    gotoKycType = data?.gotoKycType.orEmpty(),
+                    encryptedName = data?.encryptedName.orEmpty(),
+                    isAccountLinked = data?.isAccountLinked.orFalse(),
+                    isKtpTaken = data?.isKtpTaken.orFalse(),
+                    sourcePage = data?.sourcePage.orEmpty()
+                )
+                gotoOnboardBenefitGotoKyc(parameter)
             }
         }
     }
@@ -73,6 +86,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
 
     companion object {
         const val PARAM_REQUEST_PAGE = "request_page"
+        const val PAGE_ONBOARD_BENEFIT = "page_onboard_benefit"
         const val PAGE_STATUS_SUBMISSION = "page_status_submission"
         const val PARAM_DATA = "parameter"
         private val SCREEN_NAME = GotoKycRouterFragment::class.java.simpleName

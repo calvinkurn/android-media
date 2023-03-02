@@ -6,7 +6,7 @@ sealed class ProjectInfoResult(
     val status: String = "",
     val dataSource: String = "",
     val listReason: List<String> = emptyList(),
-    val isAccountLinked: Boolean? = null,
+    val isAccountLinked: Boolean = false,
     val throwable: Throwable? = null
 ) {
     class TokoKyc() : ProjectInfoResult()
