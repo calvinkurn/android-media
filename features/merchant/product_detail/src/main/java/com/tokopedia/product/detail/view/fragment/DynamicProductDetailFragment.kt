@@ -3640,7 +3640,7 @@ open class DynamicProductDetailFragment :
         val postATCLayoutId = basicInfo.postAtcLayout.layoutId
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (postATCLayoutId.isNotEmpty() && remoteNewATC) {
+        if (postATCLayoutId.isNotBlank() && remoteNewATC) {
             showGlobalPostATC(cartId, basicInfo)
         } else {
             showOldPostATC(cartId)

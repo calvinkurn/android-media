@@ -77,8 +77,8 @@ class PostAtcViewModel @Inject constructor(
 
             _recommendations.value = uniqueId to widget.asSuccess()
         }, onError = {
-                _recommendations.value = uniqueId to it.asFail()
-            })
+            _recommendations.value = uniqueId to it.asFail()
+        })
     }
 
     private fun updateInfo(

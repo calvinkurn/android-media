@@ -195,6 +195,11 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         trackingQueue.sendAll()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter.stop()
+    }
+
     private fun goToCart(cartId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         intent.putExtra("cart_id", cartId)

@@ -11,11 +11,15 @@ import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoDel
 import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationDelegate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class PostAtcAdapter(
     listener: PostAtcListener,
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
+    override val coroutineContext: CoroutineContext = Dispatchers.Main
 ) : ListAdapter<PostAtcUiModel, PostAtcViewHolder<*>>(PostAtcDiffItemCallback), CoroutineScope {
 
     private val delegatesManager = AdapterDelegatesManager<PostAtcUiModel>()
@@ -30,6 +34,19 @@ class PostAtcAdapter(
     }
 
     private val mapUiModels = mutableMapOf<Int, PostAtcUiModel>()
+
+    private val updateUiFlow = MutableSharedFlow<Unit>()
+
+    private val updateUiJob = launch {
+        updateUiFlow.debounce(100).collect {
+            val list: List<PostAtcUiModel> = mapUiModels.values.toList()
+            submitList(list)
+        }
+    }
+
+    fun stop() {
+        updateUiJob.cancel()
+    }
 
     fun replaceComponents(items: List<PostAtcUiModel>) {
         mapUiModels.clear()
@@ -58,8 +75,7 @@ class PostAtcAdapter(
     }
 
     private fun updateUi() {
-        val list: List<PostAtcUiModel> = mapUiModels.values.toList()
-        submitList(list)
+        launch { updateUiFlow.emit(Unit) }
     }
 
     /**
