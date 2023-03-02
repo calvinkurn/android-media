@@ -34,7 +34,7 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
@@ -216,6 +216,16 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
             }
             else -> {
             }
+        }
+    }
+
+    override fun onMenuClicked(model: FeedCardImageContentModel) {
+        activity?.let {
+            feedMenuSheet =
+                ContentThreeDotsMenuBottomSheet.getFragment(it.supportFragmentManager, it.classLoader)
+            feedMenuSheet.setListener(this)
+            feedMenuSheet.setData(getMenuItemData(), model.id)
+            feedMenuSheet.show(it.supportFragmentManager)
         }
     }
 

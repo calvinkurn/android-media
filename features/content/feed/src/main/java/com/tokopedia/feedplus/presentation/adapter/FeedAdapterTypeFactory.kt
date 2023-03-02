@@ -10,7 +10,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostViewHolder
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
-import com.tokopedia.feedplus.presentation.model.FeedCardModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -24,7 +24,9 @@ class FeedAdapterTypeFactory(private val context: FeedFragment) : BaseAdapterTyp
     }
 
 
-    fun type(model: FeedCardModel) = FeedPostViewHolder.LAYOUT
+//    fun type(model: FeedCardModel) = FeedPostViewHolder.LAYOUT
+
+    fun type(model: FeedCardImageContentModel) = FeedPostViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>>? =
         when (type) {

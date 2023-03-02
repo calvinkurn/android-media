@@ -1,15 +1,22 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
+import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedMediaModel
+import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -17,12 +24,42 @@ import com.tokopedia.kotlin.extensions.view.show
 class FeedPostViewHolder(
     private val binding: ItemFeedPostBinding,
     private val listener: FeedListener
-) : AbstractViewHolder<FeedCardModel>(binding.root) {
+) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
-    override fun bind(element: FeedCardModel?) {
+    private val authorView: FeedAuthorInfoView = FeedAuthorInfoView(binding.layoutAuthorInfo)
+
+    private val layoutManager =
+        LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+
+    init {
+        with(binding) {
+            indicatorFeedContent.activeColor = ContextCompat.getColor(
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+            indicatorFeedContent.inactiveColor = ContextCompat.getColor(
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+            )
+
+            rvFeedPostImageContent.layoutManager = layoutManager
+            LinearSnapHelper().attachToRecyclerView(rvFeedPostImageContent)
+            rvFeedPostImageContent.addOnScrollListener(object : OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    indicatorFeedContent.setCurrentIndicator(layoutManager.findFirstVisibleItemPosition())
+                }
+            })
+        }
+    }
+
+    override fun bind(element: FeedCardImageContentModel?) {
         element?.let {
             binding.apply {
-                tvFeed.text = it.text
+                authorView.bindData(element.author, false, !element.followers.isFollowed)
+                bindImagesContent(element.media)
+                bindIndicators(element.media.size)
+
+                tvFeedCaption.text = element.text
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(it)
@@ -85,13 +122,27 @@ class FeedPostViewHolder(
 
     }
 
+    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+    }
+
+    private fun bindIndicators(imageSize: Int) {
+        with(binding) {
+            indicatorFeedContent.setIndicator(imageSize)
+            indicatorFeedContent.showWithCondition(imageSize > 1)
+        }
+    }
+
+    private fun bindImagesContent(media: List<FeedMediaModel>) {
+        with(binding) {
+            val adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
+            rvFeedPostImageContent.adapter = adapter
+        }
+    }
+
     private fun showClearView() {
-        binding.apply {
-            imgFeedOwnerProfile.hide()
-            imgFeedOwnerBadge.hide()
-            tvFeedOwnerName.hide()
-            labelFeedLive.hide()
-            btnFeedFollow.hide()
+        with(binding) {
+            authorView.showClearView()
             tvFeedCaption.hide()
             likeButton.hide()
             commentButton.hide()
@@ -104,12 +155,8 @@ class FeedPostViewHolder(
     }
 
     private fun hideClearView() {
-        binding.apply {
-            imgFeedOwnerProfile.show()
-            imgFeedOwnerBadge.show()
-            tvFeedOwnerName.show()
-            labelFeedLive.show()
-            btnFeedFollow.show()
+        with(binding) {
+            authorView.hideClearView()
             tvFeedCaption.show()
             likeButton.show()
             commentButton.show()
@@ -124,19 +171,5 @@ class FeedPostViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
-
-        fun create(
-            parent: ViewGroup,
-            listener: FeedListener
-        ): FeedPostViewHolder {
-            return FeedPostViewHolder(
-                ItemFeedPostBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                ),
-                listener
-            )
-        }
     }
 }

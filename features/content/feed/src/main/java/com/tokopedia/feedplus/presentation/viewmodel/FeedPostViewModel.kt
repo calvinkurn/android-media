@@ -30,7 +30,6 @@ class FeedPostViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     var source: String = ""
-    var cursor = ""
 
     private val _feedHome = MutableLiveData<Result<FeedModel>>()
     val feedHome: LiveData<Result<FeedModel>>
@@ -43,6 +42,14 @@ class FeedPostViewModel @Inject constructor(
     fun fetchFeedPosts() {
         launchCatchError(dispatchers.main, block = {
             val response = withContext(dispatchers.io) {
+                val cursor = feedHome.value?.let {
+                    if (it is Success) {
+                        it.data.pagination.cursor
+                    } else {
+                        ""
+                    }
+                } ?: ""
+
                 feedXHomeUseCase.createParams(
                     source,
                     cursor
@@ -50,7 +57,6 @@ class FeedPostViewModel @Inject constructor(
                 val result = feedXHomeUseCase.executeOnBackground()
                 MapperFeedHome.transform(result.feedXHome)
             }
-            cursor = response.pagination.cursor
             _feedHome.value = Success(response)
         }) {
             _feedHome.value = Fail(it)
