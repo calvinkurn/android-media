@@ -92,10 +92,6 @@ class HomeVisitableFactoryImpl(
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS) ?: false
 
-        val atfStyle = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.HOME_COMPONENT_ATF,
-            ""
-        )
         if (HomeRollenceController.isUsingAtf2Variant()) {
             val homeHeaderAtf2 = HomeHeaderAtf2DataModel(needToShowUserWallet = needToShowUserWallet)
             val headerViewModel = HeaderDataModel()

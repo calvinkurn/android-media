@@ -38,8 +38,6 @@ class BannerRevampViewHolder(
     private var isCache = true
     private var layoutManager = LinearLayoutManager(itemView.context)
 
-    private var scrollTransitionDuration: Long = 5000L
-
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.Main

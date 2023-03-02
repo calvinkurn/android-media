@@ -38,7 +38,7 @@ class DynamicIconMacroItemViewHolder(
     private val pathOutputClick = UnifyMotion.EASE_IN_OUT
     private val durationInputClick = UnifyMotion.T2
     private val durationOutputClick = UnifyMotion.T1
-    private val scaleMinImage = if (isRevamp) 0.9375f else 0.8f
+    private val scaleMinImage = if (isRevamp) SCALE_MIN_REVAMP else SCALE_MIN_DEFAULT
     private var onLongPress = Runnable {
         itemView.performLongClick()
     }
@@ -50,6 +50,8 @@ class DynamicIconMacroItemViewHolder(
         val LAYOUT_REVAMP = R.layout.home_component_dynamic_icon_revamp_item_interaction
         private const val SCALE_MAX_IMAGE = 1f
         private const val MAX_ALPHA_RIPPLE = 0.6f
+        private const val SCALE_MIN_REVAMP = 0.9375f
+        private const val SCALE_MIN_DEFAULT = 0.8f
     }
 
     private fun animateScaling(

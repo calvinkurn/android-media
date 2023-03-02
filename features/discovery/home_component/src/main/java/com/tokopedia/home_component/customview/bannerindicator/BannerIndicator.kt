@@ -3,16 +3,17 @@ package com.tokopedia.home_component.customview.bannerindicator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.toPx
 
 /**
@@ -61,9 +62,10 @@ class BannerIndicator : LinearLayout {
     }
 
     private fun addProgressBar() {
-        val progressBarTheme =
-            ContextThemeWrapper(context, com.tokopedia.home_component.R.style.IndicatorBanner)
-        val progress = ProgressBar(progressBarTheme, null, Int.ZERO)
+    val progress = ProgressBarUnify(context)
+        progress.progressDrawable.color = ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        progress.trackDrawable.color = ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.home_component.R.color.dms_banner_indicator_background))
+        progress.progressBarHeight = WIDTH_MINIMUM_PROGRESS
         this.addView(progress)
         val layoutParams = progress.layoutParams as LayoutParams
         layoutParams.marginStart = marginHorizontalProgress
@@ -96,7 +98,7 @@ class BannerIndicator : LinearLayout {
         }
     }
 
-    private fun maximizeAnimator(progressIndicator: ProgressBar, position: Int) {
+    private fun maximizeAnimator(progressIndicator: ProgressBarUnify, position: Int) {
         val maximizeAnimator = ValueAnimator
             .ofInt(WIDTH_MINIMUM_PROGRESS, WIDTH_MAXIMUM_PROGRESS)
             .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
@@ -115,7 +117,7 @@ class BannerIndicator : LinearLayout {
         maxAnimatorSet.start()
     }
 
-    private fun initialAnimate(progressIndicator: ProgressBar, position: Int) {
+    private fun initialAnimate(progressIndicator: ProgressBarUnify, position: Int) {
         val layoutParams = progressIndicator.layoutParams
         layoutParams.width = WIDTH_MAXIMUM_PROGRESS.toPx()
         progressIndicator.layoutParams = layoutParams
@@ -123,11 +125,11 @@ class BannerIndicator : LinearLayout {
         animateIndicatorBanner(progressIndicator, position)
     }
 
-    private fun animateIndicatorBanner(progressIndicator: ProgressBar, position: Int) {
+    private fun animateIndicatorBanner(progressIndicator: ProgressBarUnify, position: Int) {
         currentPosition = position
         bannerAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
-            progressIndicator.progress = value
+            progressIndicator.setValue(value, false)
             if (value >= MAXIMUM_PROGRESS) {
                 val nextTransition = if (position != Int.MAX_VALUE - Int.ONE) {
                     position + Int.ONE
@@ -153,7 +155,7 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.start()
     }
 
-    private fun minimizeIndicatorBanner(progressIndicator: ProgressBar) {
+    private fun minimizeIndicatorBanner(progressIndicator: ProgressBarUnify) {
         val minimizeAnimator = ValueAnimator
             .ofInt(WIDTH_MAXIMUM_PROGRESS, WIDTH_MINIMUM_PROGRESS)
             .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
@@ -165,7 +167,7 @@ class BannerIndicator : LinearLayout {
             progressIndicator.layoutParams?.width = value.toPx()
             progressIndicator.requestLayout()
             if (value == WIDTH_MINIMUM_PROGRESS) {
-                progressIndicator.progress = MINIMUM_PROGRESS_ALPHA
+                progressIndicator.setValue(MINIMUM_PROGRESS_ALPHA, false)
                 progressIndicator.alpha = MAXIMUM_PROGRESS_ALPHA
             }
         }
@@ -198,9 +200,9 @@ class BannerIndicator : LinearLayout {
         }
     }
 
-    private fun getChildProgressBar(position: Int): ProgressBar? {
+    private fun getChildProgressBar(position: Int): ProgressBarUnify? {
         return try {
-            this.getChildAt(position) as ProgressBar
+            this.getChildAt(position) as ProgressBarUnify
         } catch (_: Exception) {
             null
         }
