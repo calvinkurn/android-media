@@ -64,7 +64,8 @@ class HomeLeftCarouselAtcCallback(
         position: Int,
         product: HomeLeftCarouselAtcProductCardUiModel
     ) {
-        openAppLink(product.appLink)
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+        openAppLink(appLink)
 
         analytics.trackClickProductLeftCarousel(
             position = position,

@@ -161,6 +161,8 @@ open class BaseTokoNowViewModel(
 
     fun getShopId(): Long = addressData.getShopId()
 
+    fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
+
     fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
         launchCatchError(block = {
             affiliateService.initAffiliateCookie(

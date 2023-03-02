@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
@@ -151,7 +152,9 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     private fun goToProductDetailPage(item: SimilarProductUiModel) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+        val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+        val appLink = viewModel.createAffiliateLink(uri)
+        RouteManager.route(context, appLink)
     }
 
     private fun setupBottomSheet() {

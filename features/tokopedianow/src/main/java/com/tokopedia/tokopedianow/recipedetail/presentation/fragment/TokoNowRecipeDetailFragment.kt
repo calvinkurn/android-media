@@ -185,6 +185,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         viewModel.deleteCartItem(productId, cartId)
     }
 
+    override fun createAffiliateLink(url: String): String {
+        return viewModel.createAffiliateLink(url)
+    }
+
     override fun showChooseAddressBottomSheet() {
         val bottomSheet = ChooseAddressBottomSheet().apply {
             val recyclerView = binding?.rvRecipeDetail

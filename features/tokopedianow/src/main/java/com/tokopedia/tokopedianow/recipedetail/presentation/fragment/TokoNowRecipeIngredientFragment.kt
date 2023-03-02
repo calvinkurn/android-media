@@ -80,6 +80,10 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
         recipeDetailView?.addItemToCart(productId, shopId, quantity, stock, isVariant)
     }
 
+    override fun createAffiliateLink(url: String): String {
+        return recipeDetailView?.createAffiliateLink(url).orEmpty()
+    }
+
     override fun onClickChangeAddress() {
         recipeDetailView?.showChooseAddressBottomSheet()
         analytics?.trackClickChangeAddress()

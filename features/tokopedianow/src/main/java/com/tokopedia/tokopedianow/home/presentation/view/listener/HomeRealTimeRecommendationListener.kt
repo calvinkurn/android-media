@@ -25,7 +25,8 @@ class HomeRealTimeRecommendationListener(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
-        RouteManager.route(context, product.appLink)
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+        RouteManager.route(context, appLink)
     }
 
     override fun onAddToCartProductNonVariant(

@@ -70,4 +70,9 @@ class NowAffiliateService @Inject constructor(
             AffiliatePageDetail(productId, source)
         )
     }
+
+    fun createAffiliateLink(url: String): String {
+        val trackerId = affiliateData.affiliateTrackerId
+        return affiliateCookieHelper.createAffiliateLink(url, trackerId)
+    }
 }

@@ -472,6 +472,10 @@ class TokoNowHomeFragment : Fragment(),
         }
     }
 
+    override fun createAffiliateLink(url: String): String {
+        return viewModelTokoNow.createAffiliateLink(url)
+    }
+
     override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),

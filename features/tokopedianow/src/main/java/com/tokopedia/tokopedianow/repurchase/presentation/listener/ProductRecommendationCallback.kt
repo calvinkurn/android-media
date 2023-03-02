@@ -54,7 +54,9 @@ class ProductRecommendationCallback(
         isLogin: Boolean,
         userId: String
     ) {
-        RouteManager.route(activity, product.appLink)
+        val appLink = tokoNowRepurchaseViewModel
+            .createAffiliateLink(product.appLink)
+        RouteManager.route(activity, appLink)
     }
 
     override fun seeMoreClicked(

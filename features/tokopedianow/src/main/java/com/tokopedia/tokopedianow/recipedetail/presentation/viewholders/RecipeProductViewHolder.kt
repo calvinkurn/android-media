@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -201,7 +202,9 @@ class RecipeProductViewHolder(
     }
 
     private fun goToProductDetailPage(item: RecipeProductUiModel) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+        val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+        val appLink = listener?.createAffiliateLink(uri)
+        RouteManager.route(context, appLink)
     }
 
     private fun openSimilarProductBottomSheet(product: RecipeProductUiModel) {
@@ -251,5 +254,6 @@ class RecipeProductViewHolder(
             stock: Int,
             isVariant: Boolean
         )
+        fun createAffiliateLink(url: String): String
     }
 }

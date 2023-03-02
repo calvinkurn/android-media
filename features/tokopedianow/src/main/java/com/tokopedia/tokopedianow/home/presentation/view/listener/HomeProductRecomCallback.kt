@@ -27,6 +27,8 @@ class HomeProductRecomCallback(
         headerName: String,
         position: Int
     ) {
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+
         analytics.onClickProductRecom(
             channelId = channelId,
             headerName = headerName,
@@ -34,7 +36,7 @@ class HomeProductRecomCallback(
             position = position
         )
 
-        openAppLink(product.appLink)
+        openAppLink(appLink)
     }
 
     override fun onProductRecomImpressed(

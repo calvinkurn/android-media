@@ -84,6 +84,8 @@ data class ProductRecommendationCallback(
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
+        val appLink = baseSearchCategoryViewModel.createAffiliateLink(product.appLink)
+
         SearchResultTracker.trackClickProduct(
             position,
             eventLabel,
@@ -94,7 +96,7 @@ data class ProductRecommendationCallback(
             recommendationItem
         )
 
-        RouteManager.route(activity, product.appLink)
+        RouteManager.route(activity, appLink)
     }
 
     override fun productCardImpressed(

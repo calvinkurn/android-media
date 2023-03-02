@@ -25,4 +25,5 @@ interface RecipeDetailView {
     fun getFragmentActivity(): FragmentActivity?
     fun getProductTracker(): RecipeProductAnalytics
     fun getTracker(): RecipeDetailAnalytics
+    fun createAffiliateLink(url: String): String
 }

@@ -1413,6 +1413,10 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
+    fun createAffiliateLink(url: String): String {
+        return affiliateService.createAffiliateLink(url)
+    }
+
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
             val repurchaseWidget: RepurchaseData = RepurchaseData()

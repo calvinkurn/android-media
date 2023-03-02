@@ -125,6 +125,10 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         }
     }
 
+    override fun createAffiliateLink(url: String): String {
+        return viewModel.createAffiliateLink(url)
+    }
+
     override fun onResume() {
         super.onResume()
         getMiniCart()
