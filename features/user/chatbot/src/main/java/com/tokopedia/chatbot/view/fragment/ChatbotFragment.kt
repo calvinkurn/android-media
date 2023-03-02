@@ -279,7 +279,6 @@ class ChatbotFragment :
     private var rvLayoutManager: LinearLayoutManager? = null
     private var messageCreateTime: String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
-    private var isEligibleForVideoUplaod: Boolean = false
     private var guideline: Guideline? = null
     private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
     private var replyBoxBottomSheetPlaceHolder: String = ""
@@ -653,7 +652,6 @@ class ChatbotFragment :
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         presenter.checkForSession(messageId)
-        presenter.checkUploadVideoEligibility(messageId)
         remoteConfigForCsatExperiment()
         showTicker()
 
@@ -1324,7 +1322,6 @@ class ChatbotFragment :
 
     override fun handleImageUploadButtonViewState(toShow: Boolean) {
         showUploadImageButton = toShow
-        createAttachmentMenus()
     }
 
     override fun handleVideoUploadButtonViewState(toShow: Boolean) {
@@ -1656,7 +1653,7 @@ class ChatbotFragment :
         if (showUploadImageButton) {
             attachmentMenuRecyclerView?.addChatbotImageAttachmentMenu()
         }
-        if (isConnectedToAgent && isEligibleForVideoUplaod && showUploadVideoButton) {
+        if (showUploadVideoButton) {
             attachmentMenuRecyclerView?.addVideoAttachmentMenu()
         }
         return list
@@ -1670,7 +1667,7 @@ class ChatbotFragment :
     override fun onClickAttachVideo(menu: AttachmentMenu) {
         super.onClickAttachVideo(menu)
         pickVideoFromDevice()
-        chatbotAnalytics?.get()?.eventOnVideoPick()
+        chatbotAnalytics.get()?.eventOnVideoPick()
     }
 
     override fun showErrorToast(it: Throwable) {
@@ -2406,12 +2403,7 @@ class ChatbotFragment :
         replyBubbleEnabled = state
         if (state) {
             checkCoachMarkStatus()
-            createAttachmentMenus()
         }
-    }
-
-    override fun videoUploadEligibilityHandler(state: Boolean) {
-        isEligibleForVideoUplaod = state
     }
 
     override fun disableSendButton() {

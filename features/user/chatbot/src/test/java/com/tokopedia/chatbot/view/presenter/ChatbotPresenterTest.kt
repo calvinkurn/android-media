@@ -24,7 +24,6 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
-import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
@@ -41,7 +40,6 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatRespon
 import com.tokopedia.chatbot.domain.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
-import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -114,7 +112,6 @@ class ChatbotPresenterTest {
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
     private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
-    private lateinit var chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase
     private lateinit var chatbotWebSocket: ChatbotWebSocket
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
@@ -151,7 +148,6 @@ class ChatbotPresenterTest {
         chatbotWebSocketStateHandler = mockk(relaxed = true)
         dispatcher = testRule.dispatchers
         uploaderUseCase = mockk(relaxed = true)
-        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
         chatResponse = mockk(relaxed = true)
 
         presenter = spyk(
@@ -173,7 +169,6 @@ class ChatbotPresenterTest {
                 chatBotSecureImageUploadUseCase,
                 getExistingChatMapper,
                 uploaderUseCase,
-                chatbotVideoUploadVideoEligibilityUseCase,
                 chatbotWebSocket,
                 chatbotWebSocketStateHandler,
                 dispatcher
@@ -2474,27 +2469,6 @@ class ChatbotPresenterTest {
             amount = hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] ?: "",
             color = hashMap[ChatbotConstant.ChatbotUnification.STATUS_COLOR] ?: ""
         )
-    }
-
-    @Test
-    fun `checkUploadVideoEligibility success`() {
-        val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
-
-        coEvery {
-            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-                captureLambda(),
-                any(),
-                any()
-            )
-        } coAnswers {
-            firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
-        }
-
-        presenter.checkUploadVideoEligibility("1234")
-
-        verify {
-            view.videoUploadEligibilityHandler(any())
-        }
     }
 
     private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {

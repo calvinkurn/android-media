@@ -75,7 +75,6 @@ import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
@@ -99,7 +98,6 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatRespon
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
-import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -181,7 +179,6 @@ class ChatbotPresenter @Inject constructor(
     private val chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase,
     private val getExistingChatMapper: ChatbotGetExistingChatMapper,
     private val uploaderUseCase: UploaderUseCase,
-    private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
     private val chatbotWebSocket: ChatbotWebSocket,
     private val chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler,
     private val dispatcher: CoroutineDispatchers
@@ -533,6 +530,8 @@ class ChatbotPresenter @Inject constructor(
             )
         } else {
             view.handleAddAttachmentButtonViewState(false)
+            view.handleImageUploadButtonViewState(false)
+            view.handleVideoUploadButtonViewState(false)
         }
     }
 
@@ -1016,7 +1015,6 @@ class ChatbotPresenter @Inject constructor(
     override fun detachView() {
         destroyWebSocket()
         job.cancel()
-        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         super.detachView()
     }
 
@@ -1227,25 +1225,6 @@ class ChatbotPresenter @Inject constructor(
                 onErrorVideoUpload(it)
             }
         )
-    }
-
-    override fun checkUploadVideoEligibility(msgId: String) {
-        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
-        chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-            ::onSuccessVideoUploadEligibility,
-            ::onFailureVideoUploadEligibility,
-            msgId
-        )
-    }
-
-    private fun onSuccessVideoUploadEligibility(response: ChatbotUploadVideoEligibilityResponse) {
-        view.videoUploadEligibilityHandler(
-            response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible
-        )
-    }
-
-    private fun onFailureVideoUploadEligibility(throwable: Throwable) {
-        // Add new Relic Here
     }
 
     override fun clearGetChatUseCase() {
