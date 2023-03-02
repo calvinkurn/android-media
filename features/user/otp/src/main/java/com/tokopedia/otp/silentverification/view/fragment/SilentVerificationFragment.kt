@@ -137,7 +137,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                             otpType = otpType.toString(),
                             mode = modeListData?.modeText ?: "",
                             msisdn = msisdn,
-                            signature = AuthenticityUtils.generateAuthenticity(msisdn = msisdn, timeUnix = timeUnix, requireContext()),
+                            signature = AuthenticityUtils.generateAuthenticity(msisdn = msisdn, timeUnix = timeUnix),
                             timeUnix = timeUnix
                     )
                 }
@@ -442,7 +442,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                     userId = otpData?.userId.toIntOrZero(),
                     tokenId = tokenId,
                     timeUnix = timeUnix,
-                    signature = AuthenticityUtils.generateAuthenticity(msisdn = msisdn, timeUnix = timeUnix, context = requireContext())
+                    signature = AuthenticityUtils.generateAuthenticity(msisdn = msisdn, timeUnix = timeUnix)
                 )
             }
         }
