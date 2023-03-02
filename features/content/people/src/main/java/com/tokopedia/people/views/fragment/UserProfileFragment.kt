@@ -186,13 +186,9 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
-                if (abs(verticalOffset) > mainBinding.appBarUserProfile.totalScrollRange / 1.5) {
-                    mainBinding.headerProfile.headerView?.showWithCondition(mainBinding.headerProfile.title.isNotEmpty())
-                    mainBinding.headerProfile.subheaderView?.showWithCondition(mainBinding.headerProfile.subtitle.isNotEmpty())
-                } else {
-                    mainBinding.headerProfile.headerView?.gone()
-                    mainBinding.headerProfile.subheaderView?.gone()
-                }
+                val condition = abs(verticalOffset) > mainBinding.appBarUserProfile.totalScrollRange / HEADER_HEIGHT_OFFSET
+                mainBinding.headerProfile.headerView?.showWithCondition(condition && mainBinding.headerProfile.title.isNotEmpty())
+                mainBinding.headerProfile.subheaderView?.showWithCondition(condition && mainBinding.headerProfile.subtitle.isNotEmpty())
             }
         )
 
@@ -1326,6 +1322,7 @@ class UserProfileFragment @Inject constructor(
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
 
+        private const val HEADER_HEIGHT_OFFSET = 1.5
         private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
         private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
         private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
