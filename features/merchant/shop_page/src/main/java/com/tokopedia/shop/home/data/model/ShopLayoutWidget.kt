@@ -262,7 +262,9 @@ data class ShopLayoutWidget(
                 @SerializedName("parentID")
                 val parentId: String = "",
                 @SerializedName("showStockbar")
-                val showStockBar: Boolean = false
+                val showStockBar: Boolean = false,
+                @SerializedName("rating")
+                val rating: String = "",
             ) {
                 data class StockWording(
                     @SerializedName("title")

@@ -1,5 +1,6 @@
 package com.tokopedia.applink.merchant
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -9,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -462,5 +465,31 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
+    }
+
+    fun getRegisteredNavigationForOldMvcSellerCreate(context: Context): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
+            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
+            true
+        )
+        return if (isEnableNewSellerMvcRouting) {
+            ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+        } else {
+            ApplinkConstInternalSellerapp.CREATE_VOUCHER
+        }
+    }
+
+    fun getRegisteredNavigationForOldMvcSellerList(context: Context): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
+            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
+            true
+        )
+        return if (isEnableNewSellerMvcRouting) {
+            ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+        } else {
+            ApplinkConstInternalSellerapp.VOUCHER_LIST
+        }
     }
 }

@@ -7,14 +7,8 @@ import android.graphics.Color
 import android.net.Uri
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.analytics.*
-import com.tokopedia.media.editor.data.repository.WatermarkType
-import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.ImageRatioType
-import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
@@ -145,4 +139,9 @@ fun Fragment.getRunnable(action: () -> Unit): Runnable {
             action()
         }
     }
+}
+
+fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
+    val imagePxDrawThreshold = 25_000_000 // 25 million pixel
+    return (width * height) >= imagePxDrawThreshold
 }
