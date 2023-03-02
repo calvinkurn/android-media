@@ -4,35 +4,35 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 
 class SocialProofAdapter(
     private val factory: SocialProofAdapterFactory
-) : ListAdapter<SocialProofData, SocialProofTypeViewHolder>(DIFF_ITEM) {
+) : ListAdapter<SocialProofUiModel, SocialProofTypeViewHolder>(DIFF_ITEM) {
 
     companion object {
-        private val DIFF_ITEM = object : DiffUtil.ItemCallback<SocialProofData>() {
+        private val DIFF_ITEM = object : DiffUtil.ItemCallback<SocialProofUiModel>() {
             override fun areItemsTheSame(
-                oldItem: SocialProofData,
-                newItem: SocialProofData
+                oldItem: SocialProofUiModel,
+                newItem: SocialProofUiModel
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
-                oldItem: SocialProofData,
-                newItem: SocialProofData
-            ): Boolean = oldItem.socialProofType == newItem.socialProofType &&
+                oldItem: SocialProofUiModel,
+                newItem: SocialProofUiModel
+            ): Boolean = oldItem.type == newItem.type &&
                 oldItem.title == newItem.title &&
                 oldItem.subtitle == newItem.subtitle &&
                 oldItem.icon == newItem.icon &&
                 oldItem.appLink == newItem.appLink &&
-                oldItem.socialProofId == newItem.socialProofId
+                oldItem.identifier == newItem.identifier
         }
     }
 
     private var trackData: ComponentTrackDataModel? = null
 
-    fun submitList(items: List<SocialProofData>, trackDataModel: ComponentTrackDataModel) {
+    fun submitList(items: List<SocialProofUiModel>, trackDataModel: ComponentTrackDataModel) {
         trackData = trackDataModel
         submitList(items)
     }
@@ -42,7 +42,7 @@ class SocialProofAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val type = currentList.getOrNull(position)?.socialProofType.orEmpty()
+        val type = currentList.getOrNull(position)?.type ?: SocialProofUiModel.Type.Text
         return factory.getItemViewType(type)
     }
 

@@ -555,7 +555,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
         } else {
             miniSocialProofMap?.shouldRender = true
-            miniSocialProofMap?.items = p2Data.socialProof
+            val previousData = miniSocialProofMap?.items.orEmpty()
+            miniSocialProofMap?.items = p2Data.socialProof.map { uiModel ->
+                uiModel.copy( // retain impress-holder
+                    impressHolder = previousData.find {
+                        it.identifier == uiModel.identifier
+                    }?.impressHolder ?: ImpressHolder()
+                )
+            }
         }
     }
 

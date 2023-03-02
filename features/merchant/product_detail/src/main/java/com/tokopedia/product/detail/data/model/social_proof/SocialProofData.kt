@@ -47,3 +47,14 @@ data class SocialProofData(
         const val NEW_PRODUCT_ID = "new_product"
     }
 }
+
+fun SocialProofData.asUiModel() = SocialProofUiModel(
+    type = SocialProofUiModel.getType(socialProofType),
+    identifier = SocialProofUiModel.getID(socialProofId),
+    title = title,
+    subtitle = subtitle,
+    icon = icon,
+    appLink = appLink.appLink
+)
+
+fun List<SocialProofData>.asUiModel() = map { it.asUiModel() }

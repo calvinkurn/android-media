@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.databinding.SocialProofTextItemBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
@@ -19,9 +19,9 @@ class SocialProofTextViewHolder(
     private val listener: DynamicProductDetailListener
 ) : SocialProofTypeViewHolder(binding.root) {
 
-    override fun bind(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) = with(binding) {
-        renderTitle(title = socialProof.title)
-        eventClick(socialProof = socialProof, trackData = trackData)
+    override fun bind(uiModel: SocialProofUiModel, trackData: ComponentTrackDataModel?) = with(binding) {
+        renderTitle(title = uiModel.title)
+        eventClick(uiModel = uiModel, trackData = trackData)
     }
 
     private fun SocialProofTextItemBinding.renderTitle(title: String) {
@@ -30,14 +30,14 @@ class SocialProofTextViewHolder(
         }
     }
 
-    private fun eventClick(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) {
-        val appLink = socialProof.appLink.appLink
-        val id = socialProof.socialProofId
+    private fun eventClick(uiModel: SocialProofUiModel, trackData: ComponentTrackDataModel?) {
+        val appLink = uiModel.appLink
+        val id = uiModel.identifier
 
         if (appLink.isNotBlank()) {
             binding.root.setOnClickDebounceListener {
                 listener.goToApplink(appLink)
-                listener.onSocialProofItemClickTracking(socialProofId = id, trackData = trackData)
+                listener.onSocialProofItemClickTracking(identifier = id, trackData = trackData)
             }
         }
     }

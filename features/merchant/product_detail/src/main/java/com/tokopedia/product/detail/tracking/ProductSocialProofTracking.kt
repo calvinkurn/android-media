@@ -1,9 +1,12 @@
 package com.tokopedia.product.detail.tracking
 
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.TrackingUtil
+import com.tokopedia.track.constant.TrackerConstant
 
 /**
  * Created by yovi.putra on 25/01/23"
@@ -76,6 +79,53 @@ object ProductSocialProofTracking {
             trackDataModel = trackDataModel,
             action = action,
             trackerId = trackerId
+        )
+    }
+
+    fun onImpression(
+        uiModel: SocialProofUiModel,
+        productInfo: DynamicProductInfoP1?
+    ) {
+        when (uiModel.identifier) {
+            SocialProofUiModel.Identifier.NewProduct -> onNewProductImpression(productInfo)
+            SocialProofUiModel.Identifier.ShopRating -> oShopRatingImpression(productInfo)
+            else -> {
+                // no-ops
+            }
+        }
+    }
+
+    private fun onNewProductImpression(
+        productInfo: DynamicProductInfoP1?
+    ) {
+        val action = "view - product terbaru - social proof"
+        val trackerId = "41544"
+
+        TrackingUtil.addClickEvent(
+            productInfo = productInfo,
+            trackDataModel = null,
+            action = action,
+            trackerId = trackerId,
+            modify = {
+                it[TrackerConstant.EVENT] = ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS
+            }
+        )
+    }
+
+    private fun oShopRatingImpression(
+        productInfo: DynamicProductInfoP1?
+    ) {
+        val action = "view - rating toko"
+        val trackerId = "41547"
+
+        TrackingUtil.addClickEvent(
+            productInfo = productInfo,
+            trackDataModel = null,
+            action = action,
+            trackerId = trackerId,
+            modify = {
+                it[TrackerConstant.EVENT] = ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS
+            }
         )
     }
 }

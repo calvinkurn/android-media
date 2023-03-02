@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.databinding.ItemDynamicSocialProofBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
@@ -54,7 +54,7 @@ class ProductMiniSocialProofViewHolder(
     }
 
     private fun showLoading() {
-        adapter.submitList(listOf(SocialProofData()))
+        adapter.submitList(listOf(SocialProofUiModel.createLoader()))
     }
 
     private fun renderUI(element: ProductMiniSocialProofDataModel) {

@@ -2,11 +2,12 @@ package com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_h
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.databinding.SocialProofOrangeChipItemBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
@@ -20,15 +21,16 @@ class SocialProofOrangeChipViewHolder(
     private val listener: DynamicProductDetailListener
 ) : SocialProofTypeViewHolder(binding.root) {
 
-    override fun bind(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) = with(binding) {
-        renderUI(socialProof = socialProof)
-        eventClick(socialProof = socialProof, trackData = trackData)
+    override fun bind(uiModel: SocialProofUiModel, trackData: ComponentTrackDataModel?) = with(binding) {
+        renderUI(uiModel = uiModel)
+        eventClick(uiModel = uiModel, trackData = trackData)
+        setImpression(uiModel = uiModel)
     }
 
-    private fun SocialProofOrangeChipItemBinding.renderUI(socialProof: SocialProofData) {
-        renderIcon(iconLink = socialProof.icon)
-        renderTitle(title = socialProof.title)
-        renderSubTitle(subTitle = socialProof.subtitle)
+    private fun SocialProofOrangeChipItemBinding.renderUI(uiModel: SocialProofUiModel) {
+        renderIcon(iconLink = uiModel.icon)
+        renderTitle(title = uiModel.title)
+        renderSubTitle(subTitle = uiModel.subtitle)
     }
 
     private fun SocialProofOrangeChipItemBinding.renderIcon(iconLink: String) {
@@ -49,14 +51,20 @@ class SocialProofOrangeChipViewHolder(
         }
     }
 
-    private fun eventClick(socialProof: SocialProofData, trackData: ComponentTrackDataModel?) {
-        val appLink = socialProof.appLink.appLink
-        val id = socialProof.socialProofId
+    private fun SocialProofOrangeChipItemBinding.setImpression(uiModel: SocialProofUiModel) {
+        root.addOnImpressionListener(uiModel.impressHolder) {
+            listener.onSocialProofItemImpression(socialProof = uiModel)
+        }
+    }
+
+    private fun eventClick(uiModel: SocialProofUiModel, trackData: ComponentTrackDataModel?) {
+        val appLink = uiModel.appLink
+        val id = uiModel.identifier
 
         if (appLink.isNotBlank()) {
             binding.root.setOnClickDebounceListener {
                 listener.goToApplink(appLink)
-                listener.onSocialProofItemClickTracking(socialProofId = id, trackData = trackData)
+                listener.onSocialProofItemClickTracking(identifier = id, trackData = trackData)
             }
         }
     }

@@ -168,7 +168,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
@@ -5916,16 +5916,24 @@ open class DynamicProductDetailFragment :
         )
     }
 
+    override fun onSocialProofItemImpression(socialProof: SocialProofUiModel) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        ProductSocialProofTracking.onImpression(uiModel = socialProof, productInfo = productInfo)
+    }
+
     override fun onSocialProofItemClickTracking(
-        socialProofId: String,
+        identifier: SocialProofUiModel.Identifier,
         trackData: ComponentTrackDataModel?
     ) {
-        when (socialProofId) {
-            SocialProofData.TALK_ID -> socialProofTalkTracking(trackData = trackData)
-            SocialProofData.MEDIA_ID -> socialProofMediaTracking(trackData = trackData)
-            SocialProofData.NEW_PRODUCT_ID -> socialProofNewProductTracking(trackData = trackData)
-            SocialProofData.RATING_ID -> socialProofRatingTracking()
-            SocialProofData.SHOP_RATING_ID -> socialProofShopRatingTracking(trackData = trackData)
+        when (identifier) {
+            SocialProofUiModel.Identifier.Talk -> socialProofTalkTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.Media -> socialProofMediaTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.NewProduct -> socialProofNewProductTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.Rating -> socialProofRatingTracking()
+            SocialProofUiModel.Identifier.ShopRating -> socialProofShopRatingTracking(trackData = trackData)
+            else -> {
+                // no-ops
+            }
         }
     }
 

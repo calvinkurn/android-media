@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_h
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.databinding.SocialProofLoadingItemBinding
 
 /**
@@ -11,12 +11,11 @@ import com.tokopedia.product.detail.databinding.SocialProofLoadingItemBinding
  * Project name: android-tokopedia-core
  **/
 
-
 class SocialProofLoadingViewHolder(
     private val binding: SocialProofLoadingItemBinding
 ) : SocialProofTypeViewHolder(binding.root) {
 
-    override fun bind(socialProof: SocialProofData, trackData: ComponentTrackDataModel?){
+    override fun bind(uiModel: SocialProofUiModel, trackData: ComponentTrackDataModel?) {
     }
 
     companion object {
