@@ -11,6 +11,7 @@ import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutFintechProduct
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
 import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -55,7 +56,9 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
             cartId = requestCheckoutParams.cartId,
             createSubscription = requestCheckoutParams.isSubscriptionChecked,
             fintechProducts = requestCheckoutParams.crossSellProducts.map {
-                var checkoutMetadata = gson.toJson(it.value.product)
+                var checkoutMetadata = gson.toJson(
+                    DigitalCheckoutMapper.mapFintechProductToCheckoutFintechProduct(it.value.product)
+                )
                 val checkoutType = object : TypeToken<HashMap<String, Any>>() {}.type
                 val checkoutMetadataJson = gson.fromJson<HashMap<String, Any>>(checkoutMetadata, checkoutType)
 

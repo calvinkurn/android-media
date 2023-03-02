@@ -120,11 +120,13 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                 isCheckoutButtonEnabled = false
             }
             setOnDetailConsentListener { _, consentType ->
-                isCheckoutButtonEnabled = when (consentType) {
-                    is ConsentType.SingleInfo -> true
-                    is ConsentType.SingleChecklist -> false
-                    is ConsentType.MultipleChecklist -> false
-                    else -> false
+                if (isCrossSellConsentVisible()) {
+                    isCheckoutButtonEnabled = when (consentType) {
+                        is ConsentType.SingleInfo -> true
+                        is ConsentType.SingleChecklist -> false
+                        is ConsentType.MultipleChecklist -> false
+                        else -> false
+                    }
                 }
             }
             isConsentAvailable = consentCollectionParam.collectionId.isNotEmpty()
@@ -190,10 +192,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
 
     fun hideCrossSellConsentIfAvailable() {
         if (isConsentAvailable) binding.viewUserConsentWidget.hide()
-    }
-
-    fun isNeedConsent(): Boolean {
-        return binding.viewUserConsentWidget.isNeedConsent()
     }
 
     fun isCrossSellConsentVisible(): Boolean {

@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.annotation.DimenRes
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -88,6 +89,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.resources.common.R as CommonRes
 
@@ -131,6 +134,8 @@ class DigitalCartFragment :
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
     private var isATCFailed: Boolean = false
+
+    private var renderConsentJob: Job? = null
 
     override fun getScreenName(): String = ""
 
@@ -702,6 +707,7 @@ class DigitalCartFragment :
                 renderConsentWidget(fintechProduct)
                 checkoutBottomViewWidget.showCrossSellConsentIfAvailable()
             } else {
+                renderConsentJob?.cancel()
                 checkoutBottomViewWidget.isCheckoutButtonEnabled = true
                 checkoutBottomViewWidget.hideCrossSellConsentIfAvailable()
             }
@@ -732,15 +738,18 @@ class DigitalCartFragment :
     private fun setCrossSellConsent(collectionPointData: CollectionPointMetadata) {
         binding?.run {
             if (collectionPointData.collectionPointId.isNotEmpty()) {
-                val consentParam = ConsentCollectionParam(
-                    collectionPointData.collectionPointId,
-                    collectionPointData.collectionPointVersion
-                )
-                checkoutBottomViewWidget.setUserConsentWidget(
-                    viewLifecycleOwner,
-                    this@DigitalCartFragment,
-                    consentParam
-                )
+                renderConsentJob?.cancel()
+                renderConsentJob = lifecycleScope.launch {
+                    val consentParam = ConsentCollectionParam(
+                        collectionPointData.collectionPointId,
+                        collectionPointData.collectionPointVersion
+                    )
+                    checkoutBottomViewWidget.setUserConsentWidget(
+                        viewLifecycleOwner,
+                        this@DigitalCartFragment,
+                        consentParam
+                    )
+                }
             }
         }
     }
