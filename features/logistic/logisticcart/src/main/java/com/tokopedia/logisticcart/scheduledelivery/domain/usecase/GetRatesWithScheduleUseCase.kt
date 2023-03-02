@@ -12,7 +12,7 @@ class GetRatesWithScheduleUseCase @Inject constructor(
     private val getRatesUseCase: GetRatesUseCase,
     private val getScheduleDeliveryUseCase: GetScheduleDeliveryUseCase,
     private val scheduler: SchedulerProvider,
-    private val mapper: ScheduleDeliveryMapper,
+    private val mapper: ScheduleDeliveryMapper
 ) {
 
     fun execute(ratesParam: RatesParam, warehouseId: String): Observable<ShippingRecommendationData> {

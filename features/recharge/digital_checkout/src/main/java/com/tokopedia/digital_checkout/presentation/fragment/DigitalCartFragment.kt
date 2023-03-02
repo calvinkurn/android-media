@@ -409,7 +409,15 @@ class DigitalCartFragment :
 
             // render fintechProduct & subscription
             if (param.isSubscriptionChecked) myBillsAdapter.setActiveSubscriptions()
-            if (param.fintechProducts.isNotEmpty()) myBillsAdapter.setActiveFintechProducts(param.fintechProducts)
+            if (param.crossSellProducts.isNotEmpty()) {
+                val fintechProducts = hashMapOf<String, FintechProduct>()
+                param.crossSellProducts.forEach {
+                    if (!it.value.isSubscription) {
+                        fintechProducts[it.key] = it.value.product
+                    }
+                }
+                myBillsAdapter.setActiveFintechProducts(fintechProducts)
+            }
         }
     }
 
@@ -605,10 +613,12 @@ class DigitalCartFragment :
                 }
                 PaymentConstant.PAYMENT_FAILED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled_or_failed))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 PaymentConstant.PAYMENT_CANCELLED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 else -> getCartAfterCheckout()
@@ -665,7 +675,7 @@ class DigitalCartFragment :
             getOperatorName(),
             userSession.userId
         )
-        viewModel.onSubscriptionChecked(isChecked)
+        viewModel.onSubscriptionChecked(fintechProduct, isChecked)
     }
 
     override fun onSubscriptionImpression(fintechProduct: FintechProduct) {
@@ -926,6 +936,11 @@ class DigitalCartFragment :
                 getOperatorName()
             )
         }
+    }
+
+    private fun resetCrossSellData() {
+        viewModel.requestCheckoutParam.isSubscriptionChecked = false
+        viewModel.requestCheckoutParam.crossSellProducts = hashMapOf()
     }
 
     private fun getPromoDigitalModel(): PromoDigitalModel =

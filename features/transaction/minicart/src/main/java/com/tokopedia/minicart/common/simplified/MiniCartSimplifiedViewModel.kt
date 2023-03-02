@@ -18,9 +18,11 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import timber.log.Timber
 import javax.inject.Inject
 
-class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-                                                      private val validateUseMvcUseCase: ValidateUseMvcUseCase)
-    : ViewModel() {
+class MiniCartSimplifiedViewModel @Inject constructor(
+    private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+    private val validateUseMvcUseCase: ValidateUseMvcUseCase
+) :
+    ViewModel() {
 
     // Global Data
     internal var currentShopIds: List<String> = emptyList()
@@ -71,7 +73,8 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
                     _miniCartSimplifiedData.value = MiniCartSimplifiedData()
                 }
                 _miniCartSimplifiedState.value = MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_MINICART, throwable = it)
-            })
+            }
+        )
     }
 
     private fun generateValidateUseMvcParam(miniCartItems: Map<MiniCartItemKey, MiniCartItem>, isMoveToCart: Boolean): ValidateUseMvcParam {
@@ -85,17 +88,19 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
             promoType = PROMO_TYPE_MVC,
             state = CartConstant.PARAM_CART,
             cartType = CartConstant.PARAM_DEFAULT,
-            orders = listOf(ValidateUseMvcOrderParam(
-                uniqueId = cartString,
-                shopId = shopId,
-                productDetails = miniCartItems.values.mapNotNull {
-                    if (it is MiniCartItem.MiniCartItemProduct && !it.isError) {
-                        ValidateUseMvcProductParam(it.productId, it.quantity)
-                    } else {
-                        null
+            orders = listOf(
+                ValidateUseMvcOrderParam(
+                    uniqueId = cartString,
+                    shopId = shopId,
+                    productDetails = miniCartItems.values.mapNotNull {
+                        if (it is MiniCartItem.MiniCartItemProduct && !it.isError) {
+                            ValidateUseMvcProductParam(it.productId, it.quantity)
+                        } else {
+                            null
+                        }
                     }
-                }
-            ))
+                )
+            )
         )
     }
 
@@ -107,7 +112,8 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
         val miniCartSimplifiedData = _miniCartSimplifiedData.value
         if (miniCartSimplifiedData == null ||
             miniCartSimplifiedData.miniCartItems.isEmpty() ||
-            miniCartSimplifiedData.miniCartWidgetData.totalProductCount <= 0) {
+            miniCartSimplifiedData.miniCartWidgetData.totalProductCount <= 0
+        ) {
             _miniCartSimplifiedState.value = MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE)
             return
         }

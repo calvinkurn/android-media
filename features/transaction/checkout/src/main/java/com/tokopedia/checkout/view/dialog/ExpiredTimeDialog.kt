@@ -15,7 +15,7 @@ class ExpiredTimeDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val timerModel: CampaignTimerUi = arguments?.getParcelable(ARGUMENT_CAMPAIGN_TIMER)
-                ?: CampaignTimerUi()
+            ?: CampaignTimerUi()
         analytics?.eventViewCampaignDialog(timerModel.gtmProductId, timerModel.gtmUserId)
         return activity?.let {
             val dialogUnify = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -44,15 +44,14 @@ class ExpiredTimeDialog : DialogFragment() {
         private const val ARGUMENT_CAMPAIGN_TIMER = "ARGUMENT_CAMPAIGN_TIMER"
 
         @JvmStatic
-        fun newInstance(model: CampaignTimerUi, gtm: CheckoutAnalyticsCourierSelection, expireTimeDialogListener: ExpireTimeDialogListener)
-                : ExpiredTimeDialog = ExpiredTimeDialog().apply {
-            arguments = Bundle().apply {
-                putParcelable(ARGUMENT_CAMPAIGN_TIMER, model)
+        fun newInstance(model: CampaignTimerUi, gtm: CheckoutAnalyticsCourierSelection, expireTimeDialogListener: ExpireTimeDialogListener): ExpiredTimeDialog =
+            ExpiredTimeDialog().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARGUMENT_CAMPAIGN_TIMER, model)
+                }
+                isCancelable = false
+                analytics = gtm
+                listener = expireTimeDialogListener
             }
-            isCancelable = false
-            analytics = gtm
-            listener = expireTimeDialogListener
-        }
     }
-
 }
