@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 data class GetImageGeneratorPolicyResponse(
     @SerializedName("imagenerator_policy")
-    val imageGeneratorPolicy: ImaGeneratorPolicy = ImaGeneratorPolicy()
+    val imageGeneratorPolicy: ImageGeneratorPolicy = ImageGeneratorPolicy()
 ) {
 
-    data class ImaGeneratorPolicy(
+    data class ImageGeneratorPolicy(
         @SerializedName("args")
         val args: List<Arg> = emptyList()
     )
