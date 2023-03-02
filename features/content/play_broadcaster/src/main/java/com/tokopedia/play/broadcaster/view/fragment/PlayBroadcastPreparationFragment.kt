@@ -32,6 +32,8 @@ import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemote
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -692,6 +694,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowBroadcastError -> {
                         showLoading(false)
                         handleBroadcastError(event.error)
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                        showMainComponent(false)
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                        showMainComponent(true)
                     }
                     else -> {}
                 }
