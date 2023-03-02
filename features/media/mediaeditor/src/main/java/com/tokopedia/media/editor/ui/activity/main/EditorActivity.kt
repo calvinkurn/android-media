@@ -17,8 +17,8 @@ import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.editor.utils.isGranted
-import com.tokopedia.media.editor.utils.relicLogFileNotFound
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import com.tokopedia.picker.common.cache.EditorCacheManager
@@ -169,20 +169,29 @@ class EditorActivity : BaseEditorActivity() {
                 when (it) {
                     is FileNotFoundException -> {
                         Toast.makeText(this, "Saved file not found", Toast.LENGTH_LONG).show()
+                        newRelicLog(
+                            mapOf(
+                                FILE_NOT_FOUND_FIELD to "${it.message}"
+                            )
+                        )
                     }
                     is ErrnoException -> {
                         Toast.makeText(this, "Storage not enough", Toast.LENGTH_LONG).show()
+                        newRelicLog(
+                            mapOf(
+                                STORAGE_FULL_FIELD to "${it.message}"
+                            )
+                        )
                     }
                     else -> {
                         Toast.makeText(this, "Terjadi kesalahan", Toast.LENGTH_LONG).show()
+                        newRelicLog(
+                            mapOf(
+                                OTHER_FAILED_SAVE_FIELD to "${it.message}"
+                            )
+                        )
                     }
                 }
-
-                relicLogFileNotFound(
-                    mapOf(
-                        "err" to "${it.message}"
-                    )
-                )
             }
 
             finish()
