@@ -12,10 +12,12 @@ import com.tokopedia.login_helper.presentation.viewmodel.LoginHelperViewModel
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.login_helper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.network.refreshtoken.EncoderDecoder
+import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -32,6 +34,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.verify
@@ -78,6 +81,8 @@ class LoginHelperViewModelTest {
     @Throws(Exception::class)
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkObject(RsaUtils)
+        mockkObject(EncoderDecoder())
         getUserDetailsRestCase = mockk(relaxed = true)
         loginTokenV2UseCase = mockk(relaxed = true)
         generatePublicKeyUseCase = mockk(relaxed = true)
@@ -104,7 +109,6 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `processEvent with Change Env Type = STAGING`() {
-
         viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.STAGING))
         val result = viewModel.uiState.value.envType
         assertEquals(result, LoginHelperEnvType.STAGING)
@@ -112,7 +116,6 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `processEvent with Change Env Type = PRODUCTION`() {
-
         viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
         val result = viewModel.uiState.value.envType
         assertEquals(result, LoginHelperEnvType.PRODUCTION)
@@ -151,13 +154,18 @@ class LoginHelperViewModelTest {
     @Test
     fun `processEvent with QueryEmail`() {
         runBlockingTest {
-
-            val dummyUserList = Success(LoginDataUiModel(HeaderUiModel(1),listOf<UserDataUiModel>(
-                UserDataUiModel(
-                "abc@tokopedia.com","abc","abc"
+            val dummyUserList = Success(
+                LoginDataUiModel(
+                    HeaderUiModel(1),
+                    listOf<UserDataUiModel>(
+                        UserDataUiModel(
+                            "abc@tokopedia.com",
+                            "abc",
+                            "abc"
+                        )
+                    )
+                )
             )
-            )))
-
 
             viewModel.processEvent(LoginHelperEvent.QueryEmail("abc"))
             val result = viewModel.uiState.value.searchText
@@ -194,7 +202,6 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Show Location Admin Popup`() {
-
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
         }
@@ -207,7 +214,6 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Admin Redirection`() {
-
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
         }
@@ -220,7 +226,6 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Show Location Admin Popup Error`() {
-
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
         }
@@ -231,6 +236,181 @@ class LoginHelperViewModelTest {
         assertTrue(result is Fail)
     }
 
+    @Test
+    fun `on LoginEvent Success`() {
+        val loginToken = LoginToken(accessToken = "abc123")
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+
+        assert(
+            viewModel.uiState.value.loginToken is Success
+        )
+    }
+
+    @Test
+    fun `on LoginEvent Success with useHash=false`() {
+        val loginToken = LoginToken(accessToken = "abc123")
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, false))
+
+        assert(
+            viewModel.uiState.value.loginToken is Success
+        )
+    }
+
+    @Test
+    fun `on Login Email V2 Success - has errors`() {
+        val loginToken = LoginToken(accessToken = "abc123", errors = arrayListOf(Error("msg", "error")))
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+
+        assert(
+            viewModel.uiState.value.loginToken is Fail
+        )
+    }
+
+    @Test
+    fun `on Login Email V2 Success - popup error`() {
+        val popupError = PopupError("header", body = "body", action = "action")
+        val loginToken = LoginToken(accessToken = "", popupError = popupError)
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+
+        assert(
+            viewModel.uiState.value.loginToken is Fail
+        )
+    }
+
+    @Test
+    fun `on Login Email V2 Success - activation error`() {
+        val loginToken = LoginToken(accessToken = "", errors = arrayListOf(Error(message = "belum diaktivasi")))
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+
+        assert(
+            viewModel.uiState.value.loginToken is Fail
+        )
+    }
+
+    @Test
+    fun `on Login Email V2 Success - go to security question`() {
+        val loginToken = LoginToken(accessToken = "abc123", sqCheck = true)
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+
+        assert(
+            viewModel.uiState.value.loginToken is Fail
+        )
+    }
+
+    @Test
+    fun `on Login Email V2 Empty key`() {
+        val keyData = KeyData(key = "", hash = "")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+
+        assert(
+            viewModel.uiState.value.loginToken is Fail
+        )
+    }
+
+    @Test
+    fun `on Login Email V2 Error`() {
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
+
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+
+        assert(
+            viewModel.uiState.value.loginToken is Fail
+        )
+    }
 
     @Test
     fun `onCleared success`() {
@@ -255,6 +435,5 @@ class LoginHelperViewModelTest {
         verify { loginTokenV2UseCase.cancelJobs() }
         verify { generatePublicKeyUseCase.cancelJobs() }
         verify { getUserDetailsRestCase.cancelJobs() }
-
     }
 }

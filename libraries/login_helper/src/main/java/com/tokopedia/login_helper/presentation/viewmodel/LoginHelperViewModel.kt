@@ -1,7 +1,6 @@
 package com.tokopedia.login_helper.presentation.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
@@ -72,7 +71,7 @@ class LoginHelperViewModel @Inject constructor(
                 getLoginData()
             }
             is LoginHelperEvent.LoginUser -> {
-                loginUser(event.email, event.password)
+                loginUser(event.email, event.password, event.useHash)
             }
             is LoginHelperEvent.QueryEmail -> {
                 queryForGivenEmail(event.email)
@@ -91,7 +90,7 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                       val response =  getUserDetailsRestUseCase.executeOnBackground()
+                val response = getUserDetailsRestUseCase.executeOnBackground()
                 //      Log.d("FATAL", "callTheAPi: ${response}")
                 //         updateUserDataList(convertToUserListUiModel(response))
                 updateUserDataList(Success(listOfUsers()))
