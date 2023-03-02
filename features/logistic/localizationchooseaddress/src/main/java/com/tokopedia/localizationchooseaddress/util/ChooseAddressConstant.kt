@@ -14,38 +14,38 @@ class ChooseAddressConstant {
         const val ERROR_CODE_EMPTY_DISTRICT_DATA = 6
         const val ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS = 9
         const val DEFAULT_LCA_VERSION = "1"
-        const val LCA_VERSION = "1.2"
+        const val LCA_VERSION = "1.3"
 
         val defaultAddress = LocalCacheModel(
-                address_id = "",
-                city_id = "176",
-                district_id = "2274",
-                lat = "",
-                long = "",
-                postal_code = "",
-                label = "Jakarta Pusat",
-                shop_id = "",
-                warehouse_id = "",
-                warehouses = listOf(),
-                service_type = "",
-                version = LCA_VERSION,
-                tokonow_last_update = ""
+            address_id = "",
+            city_id = "176",
+            district_id = "2274",
+            lat = "",
+            long = "",
+            postal_code = "",
+            label = "Jakarta Pusat",
+            shop_id = "",
+            warehouse_id = "",
+            warehouses = listOf(),
+            service_type = "",
+            version = LCA_VERSION,
+            tokonow_last_update = ""
         )
 
         val emptyAddress = LocalCacheModel(
-                address_id = "",
-                city_id = "",
-                district_id = "",
-                lat = "",
-                long = "",
-                postal_code = "",
-                label = "Pilih Alamat Pengirimanmu",
-                shop_id = "",
-                warehouse_id = "",
-                service_type = "",
-                warehouses = listOf(),
-                version = LCA_VERSION,
-                tokonow_last_update = ""
+            address_id = "",
+            city_id = "",
+            district_id = "",
+            lat = "",
+            long = "",
+            postal_code = "",
+            label = "Pilih Alamat Pengirimanmu",
+            shop_id = "",
+            warehouse_id = "",
+            service_type = "",
+            warehouses = listOf(),
+            version = LCA_VERSION,
+            tokonow_last_update = ""
         )
     }
 }
