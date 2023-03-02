@@ -122,7 +122,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
-import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_EXISTING
 import com.tokopedia.unifyorderhistory.util.UohConsts.EVENT_LABEL_CART_REDIRECTION
 import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
 import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
@@ -903,13 +902,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                     arrayListProducts,
                                     _atcVerticalCategory,
                                     result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
-                                )
-                                UohAnalytics.sendClickBeliLagiButtonEvent(
-                                    EVENT_LABEL_CART_EXISTING,
-                                    arrayListProducts,
-                                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString(),
-                                    userSession.userId,
-                                    _atcVerticalCategory
                                 )
                             } else if (_buttonAction == GQL_MP_ATC_REDIRECTION) {
                                 UohAnalytics.sendClickBeliLagiButtonEvent(
@@ -2130,49 +2122,53 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int) {
         try {
             val detailUrl = order.metadata.detailURL
-            var intent = Intent()
-            if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-                intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
-            } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-                intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
-            }
-
-            currIndexNeedUpdate = index
-            orderIdNeedUpdated = order.orderUUID
-
-            // analytics
-            var jsonArray = JsonArray()
-            if (order.metadata.listProducts.isNotEmpty()) {
-                jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
-            }
-            val arrayListProducts = arrayListOf<ECommerceClick.Products>()
-            var i = 0
-            order.metadata.products.forEach {
-                var eeProductId = ""
-                var eeProductPrice = ""
-                if (order.metadata.listProducts.isNotEmpty()) {
-                    val objProduct = jsonArray.get(i).asJsonObject
-                    eeProductId = objProduct.get(EE_PRODUCT_ID).asString
-                    eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+            if (detailUrl.appURL.isEmpty()) {
+                return
+            } else {
+                var intent = Intent()
+                if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
+                    intent = RouteManager.getIntent(context, String.format(Locale.US, "%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+                } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
+                    intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
                 }
-                arrayListProducts.add(
-                    ECommerceClick.Products(
-                        name = it.title,
-                        id = eeProductId,
-                        price = eeProductPrice,
-                        list = "/order list - ${order.verticalCategory}",
-                        position = index.toString()
+
+                currIndexNeedUpdate = index
+                orderIdNeedUpdated = order.orderUUID
+
+                // analytics
+                var jsonArray = JsonArray()
+                if (order.metadata.listProducts.isNotEmpty()) {
+                    jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
+                }
+                val arrayListProducts = arrayListOf<ECommerceClick.Products>()
+                var i = 0
+                order.metadata.products.forEach {
+                    var eeProductId = ""
+                    var eeProductPrice = ""
+                    if (order.metadata.listProducts.isNotEmpty()) {
+                        val objProduct = jsonArray.get(i).asJsonObject
+                        eeProductId = objProduct.get(EE_PRODUCT_ID).asString
+                        eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+                    }
+                    arrayListProducts.add(
+                        ECommerceClick.Products(
+                            name = it.title,
+                            id = eeProductId,
+                            price = eeProductPrice,
+                            list = "/order list - ${order.verticalCategory}",
+                            position = index.toString()
+                        )
                     )
-                )
-                i++
+                    i++
+                }
+
+                userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+                // requested as old flow (from old order list)
+                UohAnalytics.orderDetailOpenScreenEvent()
+
+                startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
             }
-
-            userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
-
-            // requested as old flow (from old order list)
-            UohAnalytics.orderDetailOpenScreenEvent()
-
-            startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
         } catch (e: Exception) {
             e.printStackTrace()
         }
