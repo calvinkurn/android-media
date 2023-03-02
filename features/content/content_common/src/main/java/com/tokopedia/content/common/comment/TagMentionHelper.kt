@@ -25,7 +25,7 @@ class MentionedSpanned(
     private val appLink: String = "",
     val userName: String,
     val id: String,
-    val listener: Listener,
+    val listener: Listener
 ) : ClickableSpan() {
 
     private val newAppLink: String
@@ -33,7 +33,8 @@ class MentionedSpanned(
             return appLink.ifBlank {
                 when (userType) {
                     USER_TYPE_KOL -> ApplinkConst.PROFILE.replace(
-                        ApplinkConst.Profile.PARAM_USER_ID, id
+                        ApplinkConst.Profile.PARAM_USER_ID,
+                        id
                     )
                     USER_TYPE_SELLER -> ApplinkConst.SHOP.replace("{shop_id}", id)
                     else -> ""
@@ -58,14 +59,13 @@ class MentionedSpanned(
 
     companion object {
         private const val USER_TYPE_KOL = "user"
-        private const val USER_TYPE_SELLER = "seller"
+        private const val USER_TYPE_SELLER = "shop"
     }
 }
 
-class BaseSpan(val fullText: String, val content: String) : ForegroundColorSpan(Color.BLACK) {
+class BaseSpan(val fullText: String, val content: String, val shortName: String) : ForegroundColorSpan(Color.BLACK) {
     val sentText: String get() = fullText + content
 }
-
 
 object TagMentionBuilder {
     private const val MENTION_CHAR = "@"
@@ -73,14 +73,14 @@ object TagMentionBuilder {
     private const val MENTION_VALUE = 3
 
     fun createNewMentionTag(item: CommentUiModel.Item): String {
-        val userType = if (item.isOwner) "seller" else "user"
+        val userType = if (item.isOwner) "shop" else "user"
         return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR$userType$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR}"
     }
 
     fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
         if (text == null) return CommentType.Parent
         val find = text.getSpans<BaseSpan>(0, text.length)
-        return if (find.count() == MENTION_VALUE) {
+        return if (find.isNotEmpty()) {
             CommentType.Child(commentId)
         } else {
             CommentType.Parent
@@ -100,18 +100,20 @@ object TagMentionBuilder {
             )
             val restructured =
                 "{${find.elementAt(0).value}|${find.elementAt(1).value}|${find.elementAt(2).value}}"
-            val span = BaseSpan(fullText = restructured, content = comment)
+            val span = BaseSpan(fullText = restructured, content = comment, shortName = name)
             buildSpannedString {
                 append(name, span, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                 append(comment)
             }
-        } else buildSpannedString { append(text) }
+        } else {
+            buildSpannedString { append(text) }
+        }
     }
 
     fun getRawText(text: Spanned?): String {
         if (text.isNullOrBlank()) return ""
         val convert = text.getSpans<BaseSpan>(0, text.length)
-        return convert.joinToString { it.sentText }.ifBlank {
+        return convert.joinToString { txt -> txt.sentText + text.toString().substring(txt.shortName.length, text.length) }.ifBlank {
             text.toString()
         }
     }
@@ -137,7 +139,7 @@ object TagMentionBuilder {
                 id = find.elementAt(0).value.replace(MENTION_CHAR, "")
                 type = find.elementAt(1).value.replace(MENTION_CHAR, "")
                 name = find.elementAt(2).value.removeSuffix(MENTION_CHAR)
-                val length = find.sumOf { it.value.length } + 4 //total escape character [{}|||]
+                val length = find.sumOf { it.value.length } + 4 // total escape character [{}|||]
 
                 val mentionSpanned = MentionedSpanned(
                     color = mentionColor,
@@ -163,7 +165,9 @@ object TagMentionBuilder {
                     append(' ')
                     append(content)
                 }
-            } else throw Exception()
+            } else {
+                throw Exception()
+            }
         } catch (e: Exception) {
             buildSpannedString {
                 append(

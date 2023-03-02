@@ -212,7 +212,7 @@ class ContentCommentBottomSheet @Inject constructor(
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = true))
-                                binding.rvComment.scrollToPosition(0)
+                                binding.rvComment.layoutManager?.scrollToPosition(0)
                             }
                         )
                         toaster.addCallback(toasterCallback)

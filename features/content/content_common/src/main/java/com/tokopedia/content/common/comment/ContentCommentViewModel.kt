@@ -283,6 +283,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 _event.emit(CommentEvent.HideKeyboard)
                 if(regex.findAll(comment).count() > 0) throw MessageErrorException("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya.")
                 val result = repo.replyComment(source, commentType, comment)
+                if(commentType is CommentType.Child) return@launchCatchError
                 _comments.getAndUpdate {
                     val newList = it.list.toMutableList().apply {
                         add(0, result)
