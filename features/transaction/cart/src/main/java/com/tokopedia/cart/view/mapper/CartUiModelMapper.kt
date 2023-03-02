@@ -25,8 +25,8 @@ import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
-import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
@@ -89,12 +89,18 @@ object CartUiModelMapper {
         var imgUrl = CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
         val btnText = context?.getString(R.string.cart_empty_with_promo_btn) ?: ""
 
-        if (lastApplyPromoData.additionalInfo.emptyCartInfo.message.isNotEmpty()) title =
-            lastApplyPromoData.additionalInfo.emptyCartInfo.message
-        if (lastApplyPromoData.additionalInfo.emptyCartInfo.detail.isNotEmpty()) desc =
-            lastApplyPromoData.additionalInfo.emptyCartInfo.detail
-        if (lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl.isNotEmpty()) imgUrl =
-            lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl
+        if (lastApplyPromoData.additionalInfo.emptyCartInfo.message.isNotEmpty()) {
+            title =
+                lastApplyPromoData.additionalInfo.emptyCartInfo.message
+        }
+        if (lastApplyPromoData.additionalInfo.emptyCartInfo.detail.isNotEmpty()) {
+            desc =
+                lastApplyPromoData.additionalInfo.emptyCartInfo.detail
+        }
+        if (lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl.isNotEmpty()) {
+            imgUrl =
+                lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl
+        }
 
         return CartEmptyHolderData(
             title = title,
@@ -665,7 +671,7 @@ object CartUiModelMapper {
             messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
             errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
             emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
-            usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries),
+            usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries)
         )
     }
 
