@@ -1,8 +1,5 @@
 package com.tokopedia.feedplus.presentation.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
-
 /**
  * Created By : Muhammad Furqan on 28/02/23
  */
@@ -48,15 +45,11 @@ data class FeedCardModel(
     val items: List<FeedCardItemModel> = emptyList(),
     val maximumDiscountPercentage: Int = 0,
     val maximumDiscountPercentageFmt: String = ""
-) : Visitable<FeedAdapterTypeFactory> {
+) {
+//) : Visitable<FeedAdapterTypeFactory> {
 
-    override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
+//    override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
-    val isTypeCardPlaceholder: Boolean
-        get() = typename == TYPE_FEED_X_CARD_PLACEHOLDER
-
-    val isTypeProductHighlight: Boolean
-        get() = typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 
     val isTypeVOD: Boolean
         get() = typename == TYPE_FEED_X_CARD_PLAY
@@ -67,12 +60,6 @@ data class FeedCardModel(
     val isTypeSgcVideo: Boolean
         get() = media.isNotEmpty() && media.first().type == TYPE_VIDEO
 
-    val isTypeSGC: Boolean
-        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() &&
-            media.first().type != TYPE_LONG_VIDEO && author.type == AUTHOR_SGC
-
-    val isTypeUGC: Boolean
-        get() = typename == TYPE_FEED_X_CARD_POST && author.type == AUTHOR_UGC
 
     val isASGCDiscountToko: Boolean
         get() = type == ASGC_DISCOUNT_TOKO
@@ -83,17 +70,10 @@ data class FeedCardModel(
         }
 
     companion object {
-        private const val TYPE_FEED_X_CARD_BANNERS = "FeedXCardBanners"
-        private const val TYPE_FEED_X_CARD_POST = "FeedXCardPost"
-        private const val TYPE_FEED_X_CARD_PLACEHOLDER = "FeedXCardPlaceholder"
-        private const val TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT = "FeedXCardProductsHighlight"
         private const val TYPE_FEED_X_CARD_PLAY = "FeedXCardPlay"
 
         private const val TYPE_LONG_VIDEO: String = "long-video"
         private const val TYPE_VIDEO: String = "video"
-
-        private const val AUTHOR_SGC = 2
-        private const val AUTHOR_UGC = 3
 
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
     }

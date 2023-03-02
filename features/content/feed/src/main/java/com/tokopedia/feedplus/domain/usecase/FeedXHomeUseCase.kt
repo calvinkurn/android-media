@@ -143,10 +143,6 @@ class FeedXHomeUseCase @Inject constructor(
                   posY
                 }
               }
-              mediaRatio {
-                width
-                height
-              }
               tags {
                 ...FeedXProduct
               }
@@ -218,10 +214,6 @@ class FeedXHomeUseCase @Inject constructor(
                   posX
                   posY
                 }
-              }
-              mediaRatio {
-                width
-                height
               }
               tags {
                 ...FeedXProduct
@@ -368,6 +360,7 @@ class FeedXHomeUseCase @Inject constructor(
               webLink
               appLink
               encryptedUserID
+              isLive
             }
             
             fragment FeedXProduct on FeedXProduct {

@@ -1,13 +1,12 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -17,12 +16,15 @@ import com.tokopedia.kotlin.extensions.view.show
 class FeedPostViewHolder(
     private val binding: ItemFeedPostBinding,
     private val listener: FeedListener
-) : AbstractViewHolder<FeedCardModel>(binding.root) {
+) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
-    override fun bind(element: FeedCardModel?) {
+    val authorView: FeedAuthorInfoView = FeedAuthorInfoView(binding.layoutAuthorInfo)
+
+    override fun bind(element: FeedCardImageContentModel?) {
         element?.let {
             binding.apply {
                 tvFeed.text = it.text
+                authorView.bindData(element.author, false, !element.followers.isFollowed)
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(it)
@@ -46,13 +48,13 @@ class FeedPostViewHolder(
         }
     }
 
+    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+    }
+
     private fun showClearView() {
         binding.apply {
-            imgFeedOwnerProfile.hide()
-            imgFeedOwnerBadge.hide()
-            tvFeedOwnerName.hide()
-            labelFeedLive.hide()
-            btnFeedFollow.hide()
+            authorView.showClearView()
             tvFeedCaption.hide()
             likeButton.hide()
             commentButton.hide()
@@ -66,11 +68,7 @@ class FeedPostViewHolder(
 
     private fun hideClearView() {
         binding.apply {
-            imgFeedOwnerProfile.show()
-            imgFeedOwnerBadge.show()
-            tvFeedOwnerName.show()
-            labelFeedLive.show()
-            btnFeedFollow.show()
+            authorView.hideClearView()
             tvFeedCaption.show()
             likeButton.show()
             commentButton.show()
@@ -85,19 +83,5 @@ class FeedPostViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
-
-        fun create(
-            parent: ViewGroup,
-            listener: FeedListener
-        ): FeedPostViewHolder {
-            return FeedPostViewHolder(
-                ItemFeedPostBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                ),
-                listener
-            )
-        }
     }
 }

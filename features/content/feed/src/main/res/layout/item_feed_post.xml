@@ -16,79 +16,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_2" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/img_feed_owner_profile"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+    <include
+        android:id="@+id/layout_author_info"
+        layout="@layout/layout_feed_author_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_user_profile_default"
-        app:unify_image_type="circle" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/img_feed_owner_badge"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="4dp"
-        android:visibility="gone"
-        app:icon_name="BADGE_OS_FILLED"
-        app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
-        app:layout_constraintStart_toEndOf="@id/img_feed_owner_profile"
-        app:layout_constraintTop_toTopOf="@id/img_feed_owner_profile"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_feed_owner_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="Owner Shop Name"
-        android:textColor="@color/Unify_NN0"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
-        app:layout_constraintEnd_toStartOf="@id/btn_feed_follow"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/img_feed_owner_badge"
-        app:layout_constraintTop_toTopOf="@id/img_feed_owner_profile"
-        app:layout_constraintVertical_bias="0.6"
-        app:typographyType="display_2"
-        app:typographyWeight="bold"
-        tools:text="Owner Shop Name" />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_feed_live"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        app:labelTitle="@string/feed_live_label"
-        app:labelType="highlight_dark_red"
-        app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
         app:layout_constraintEnd_toStartOf="@id/like_button"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/tv_feed_owner_name"
-        app:layout_constraintTop_toTopOf="@id/img_feed_owner_profile" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_feed_follow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/feed_component_follow"
-        app:layout_constraintBottom_toBottomOf="@id/img_feed_owner_profile"
-        app:layout_constraintEnd_toStartOf="@id/like_button"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/label_feed_live"
-        app:layout_constraintTop_toTopOf="@id/img_feed_owner_profile"
-        app:layout_goneMarginStart="4dp"
-        app:unifyButtonSize="micro"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="text" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_feed_caption"
@@ -98,13 +34,12 @@
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="Post Caption"
         android:textColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/like_button"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/img_feed_owner_profile"
+        app:layout_constraintStart_toStartOf="@id/layout_author_info"
         app:typographyType="paragraph_2"
         tools:text="Post Caption" />
 

@@ -24,7 +24,7 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
 import com.tokopedia.feedplus.presentation.model.FeedMenuItem
@@ -151,7 +151,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         }
     }
 
-    override fun onMenuClicked(model: FeedCardModel) {
+    override fun onMenuClicked(model: FeedCardImageContentModel) {
         activity?.let {
             feedMenuSheet =
                 FeedThreeDotsMenuBottomSheet.getFragment(it.supportFragmentManager, it.classLoader)
