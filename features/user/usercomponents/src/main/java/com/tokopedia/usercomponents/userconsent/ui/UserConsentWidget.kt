@@ -188,8 +188,10 @@ class UserConsentWidget : FrameLayout,
                             collection = data.collectionPoints.first()
                             needConsent = collection?.needConsent
                             val consentType = getConsentType()
-                            if (needConsent == false || consentType == null) {
+                            if (needConsent == false) {
                                 this.hide()
+                            } else if (consentType == null) {
+                                showError()
                             } else {
                                 onSuccessGetConsentCollection(consentType)
                             }
@@ -369,7 +371,7 @@ class UserConsentWidget : FrameLayout,
         }
     }
 
-    private fun showError(throwable: Throwable) {
+    private fun showError(throwable: Throwable? = null) {
         if (defaultTemplate == NONE) {
             viewBinding?.consentError?.apply {
                 title?.text = resources.getString(R.string.usercomponents_failed_load_data)
@@ -380,7 +382,9 @@ class UserConsentWidget : FrameLayout,
                 }
             }?.show()
 
-            onFailedGetCollectionListener.invoke(throwable)
+            throwable?.let {
+                onFailedGetCollectionListener.invoke(throwable)
+            }
         } else {
             renderDefaultTemplate(defaultTemplate)
         }
