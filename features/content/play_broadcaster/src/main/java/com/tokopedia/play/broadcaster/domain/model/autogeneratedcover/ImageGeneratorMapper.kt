@@ -57,25 +57,25 @@ class ImageGeneratorMapper(
         private const val SOURCE_ID = "LScDrk"
         private const val HOST_PROD = "https://imagenerator.tokopedia.com/v2/preview/$SOURCE_ID"
         private const val HOST_STAGING = "https://imagenerator-staging.tokopedia.com/v2/preview/$SOURCE_ID"
+    }
 
-        enum class CoverColor(val colorValue: String) {
+    enum class CoverColor(val colorValue: String) {
 
-            // expected to be hardcoded with this order
-            // "blue", "red", "turquoise", "purple", "orange", "green"
+        // expected to be hardcoded with this order
+        // "blue", "red", "turquoise", "purple", "orange", "green"
 
-            Blue("blue"),
-            Red("red"),
-            Turquoise("turquoise"),
-            Purple("purple"),
-            Orange("orange"),
-            Green("green");
+        Blue("blue"),
+        Red("red"),
+        Turquoise("turquoise"),
+        Purple("purple"),
+        Orange("orange"),
+        Green("green");
 
-            companion object {
-                val values = values()
+        companion object {
+            val values = values()
 
-                fun getByPosition(position: Int): CoverColor {
-                    return values[position]
-                }
+            fun getByPosition(position: Int): CoverColor {
+                return values[position]
             }
         }
     }
