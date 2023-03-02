@@ -170,51 +170,51 @@ class AddEditProductPreviewFragment :
     private var binding by autoClearedNullable<FragmentAddEditProductPreviewBinding>()
 
     // photo
-    private val addEditProductPhotoButton by lazy { binding?.addProductPhotoStepLayout?.tvStartAddEditProductPhoto }
-    private val productPhotosView: RecyclerView? by lazy { binding?.addProductPhotoStepLayout?.rvProductPhotos }
-    private val addProductPhotoTipsLayout by lazy { binding?.addProductPhotoStepLayout?.addProductPhotoTipsLayout }
+    private val addEditProductPhotoButton get() = binding?.addProductPhotoStepLayout?.tvStartAddEditProductPhoto
+    private val productPhotosView get() = binding?.addProductPhotoStepLayout?.rvProductPhotos
+    private val addProductPhotoTipsLayout get() = binding?.addProductPhotoStepLayout?.addProductPhotoTipsLayout
     private var productPhotoAdapter: ProductPhotoAdapter? = null
     private var photoItemTouchHelper: ItemTouchHelper? = null
 
     // detail
-    private val addEditProductDetailTitle by lazy { binding?.addProductDetailStepLayout?.tvProductDetail }
-    private val addEditProductDetailButton by lazy { binding?.addProductDetailStepLayout?.tvStartAddEditProductDetail }
-    private val productDetailPreviewLayout by lazy { binding?.addProductDetailStepLayout?.productDetailPreviewLayout }
-    private val productNameView by lazy { binding?.addProductDetailStepLayout?.tvProductName }
-    private val productPriceView by lazy { binding?.addProductDetailStepLayout?.tvProductPrice }
-    private val productStockView by lazy { binding?.addProductDetailStepLayout?.tvProductStock }
-    private val iconOutOfStock by lazy { binding?.addProductDetailStepLayout?.iconOutOfStock }
-    private val dividerDetail by lazy { binding?.addProductDetailStepLayout?.dividerDetail }
+    private val addEditProductDetailTitle get() = binding?.addProductDetailStepLayout?.tvProductDetail
+    private val addEditProductDetailButton get() = binding?.addProductDetailStepLayout?.tvStartAddEditProductDetail
+    private val productDetailPreviewLayout get() = binding?.addProductDetailStepLayout?.productDetailPreviewLayout
+    private val productNameView get() = binding?.addProductDetailStepLayout?.tvProductName
+    private val productPriceView get() = binding?.addProductDetailStepLayout?.tvProductPrice
+    private val productStockView get() = binding?.addProductDetailStepLayout?.tvProductStock
+    private val iconOutOfStock get() = binding?.addProductDetailStepLayout?.iconOutOfStock
+    private val dividerDetail get() = binding?.addProductDetailStepLayout?.dividerDetail
     private var outOfStockCoachMark: CoachMark2? = null
 
     // description
-    private val addEditProductDescriptionTitle by lazy { binding?.addProductDescriptionStepLayout?.tvProductDescription }
-    private val addEditProductDescriptionButton by lazy { binding?.addProductDescriptionStepLayout?.tvStartAddEditProductDescription }
+    private val addEditProductDescriptionTitle get() = binding?.addProductDescriptionStepLayout?.tvProductDescription
+    private val addEditProductDescriptionButton get() = binding?.addProductDescriptionStepLayout?.tvStartAddEditProductDescription
 
     // variant
-    private val addEditProductVariantLayout by lazy { binding?.addProductVariantStepLayout }
-    private val addEditProductVariantButton by lazy { binding?.addProductVariantStepLayout?.tvStartAddEditProductVariant }
-    private val addProductVariantTipsLayout by lazy { binding?.addProductVariantStepLayout?.addProductVariantTipsLayout }
-    private val sellerFeatureCarousel by lazy { binding?.aepProductNoVariantLayout?.sellerFeatureCarousel }
+    private val addEditProductVariantLayout get() = binding?.addProductVariantStepLayout
+    private val addEditProductVariantButton get() = binding?.addProductVariantStepLayout?.tvStartAddEditProductVariant
+    private val addProductVariantTipsLayout get() = binding?.addProductVariantStepLayout?.addProductVariantTipsLayout
+    private val sellerFeatureCarousel get() = binding?.aepProductNoVariantLayout?.sellerFeatureCarousel
 
     // shipment
-    private val addEditProductShipmentTitle by lazy { binding?.addProductShipmentStepLayout?.tvProductShipment }
-    private val addEditProductShipmentButton by lazy { binding?.addProductShipmentStepLayout?.tvStartAddEditProductShipment }
+    private val addEditProductShipmentTitle get() = binding?.addProductShipmentStepLayout?.tvProductShipment
+    private val addEditProductShipmentButton get() = binding?.addProductShipmentStepLayout?.tvStartAddEditProductShipment
 
     // product status
-    private val editProductStatusLayout by lazy { binding?.editProductStatusLayout }
-    private val productStatusSwitch by lazy { binding?.editProductStatusLayout?.suProductStatus }
+    private val editProductStatusLayout get() = binding?.editProductStatusLayout
+    private val productStatusSwitch get() = binding?.editProductStatusLayout?.suProductStatus
 
     // loading
-    private val loadingLayout by lazy { binding?.loadingLayout }
+    private val loadingLayout get() = binding?.loadingLayout
 
     // admin revamp
-    private val multiLocationTicker by lazy { binding?.tickerAddEditMultiLocation }
-    private val adminRevampErrorLayout by lazy { binding?.addEditErrorLayout }
-    private val adminRevampGlobalError by lazy { binding?.addEditAdminGlobalError }
+    private val multiLocationTicker get() = binding?.tickerAddEditMultiLocation
+    private val adminRevampErrorLayout get() = binding?.addEditErrorLayout
+    private val adminRevampGlobalError get() = binding?.addEditAdminGlobalError
 
     // product limitation
-    private val productLimitationTicker by lazy { binding?.tickerAddEditProductLimitation }
+    private val productLimitationTicker get() = binding?.tickerAddEditProductLimitation
     private var productLimitationBottomSheet: ProductLimitationBottomSheet? = null
 
     private lateinit var userSession: UserSessionInterface
