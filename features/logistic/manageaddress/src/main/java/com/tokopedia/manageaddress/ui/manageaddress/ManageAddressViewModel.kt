@@ -381,7 +381,10 @@ class ManageAddressViewModel @Inject constructor(
 
     fun setupTicker() {
         viewModelScope.launchCatchError(block = {
-            val param = GetTargetedTickerParam(page = GetTargetedTickerParam.ADDRESS_LIST_NON_OCC, target = listOf())
+            val param = GetTargetedTickerParam(
+                page = GetTargetedTickerParam.ADDRESS_LIST_NON_OCC,
+                target = listOf()
+            )
             val response = getTargetedTicker(param)
             _tickerState.value = Success(response.getTargetedTickerData.toUiModel())
         }, onError = {
