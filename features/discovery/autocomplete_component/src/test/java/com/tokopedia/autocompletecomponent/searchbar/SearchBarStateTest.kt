@@ -1,11 +1,7 @@
 package com.tokopedia.autocompletecomponent.searchbar
 
-import com.tokopedia.autocompletecomponent.shouldBe
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 internal class SearchBarStateTest : SearchBarViewModelTestFixtures() {
     @Test
     fun `disable mps success`() {
@@ -22,9 +18,11 @@ internal class SearchBarStateTest : SearchBarViewModelTestFixtures() {
         viewModel.enableMps()
 
         `Then verify coach mark local cache is called`()
-        `Then verify mps state`(SearchBarState(
-            isMpsEnabled = true,
-            isAddButtonEnabled = true,
-        ))
+        `Then verify mps state`(
+            SearchBarState(
+                isMpsEnabled = true,
+                isAddButtonEnabled = true,
+            )
+        )
     }
 }

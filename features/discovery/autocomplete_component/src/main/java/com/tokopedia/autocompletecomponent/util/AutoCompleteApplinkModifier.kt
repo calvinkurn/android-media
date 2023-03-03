@@ -35,9 +35,6 @@ internal fun getModifiedApplink(
         getModifiedSearchResultApplink(applink, searchParameter, activeKeyword)
     else applink
 }
-private fun Map<String, String>.isMps(): Boolean {
-    return get(SearchApiConst.ACTIVE_TAB) == SearchApiConst.ACTIVE_TAB_MPS
-}
 
 private fun getModifiedSearchResultApplink(
     applink: String?,

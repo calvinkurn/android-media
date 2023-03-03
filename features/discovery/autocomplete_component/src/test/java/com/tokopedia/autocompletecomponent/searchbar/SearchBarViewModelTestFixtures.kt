@@ -9,19 +9,15 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import org.junit.Assert.*
-
 import org.junit.Before
 import org.junit.Rule
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
 internal open class SearchBarViewModelTestFixtures {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected val coachMarkLocalCache : CoachMarkLocalCache = mockk()
+    protected val coachMarkLocalCache: CoachMarkLocalCache = mockk()
     protected lateinit var viewModel: SearchBarViewModel
 
     @Before
@@ -29,7 +25,7 @@ internal open class SearchBarViewModelTestFixtures {
         viewModel = createSearchBarViewModel()
     }
 
-    protected open fun createSearchBarViewModel() : SearchBarViewModel {
+    protected open fun createSearchBarViewModel(): SearchBarViewModel {
         return SearchBarViewModel(
             coachMarkLocalCache,
             CoroutineTestDispatchersProvider,

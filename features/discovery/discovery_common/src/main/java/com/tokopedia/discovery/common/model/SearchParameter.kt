@@ -21,12 +21,25 @@ class SearchParameter(
         cleanUpNullValuesInMap()
     }
 
+    constructor(
+        searchParameter: SearchParameter,
+        searchParameterMap: Map<String, String>,
+    ) : this(searchParameter.deepLinkUri) {
+        setSearchParameterMap(searchParameterMap)
+
+        cleanUpNullValuesInMap()
+    }
+
     fun cleanUpNullValuesInMap() {
         searchParameterHashMap.values.remove(null)
     }
 
     private fun setSearchParameterHashMap(searchParameterHashMap: HashMap<String, String>) {
         this.searchParameterHashMap = searchParameterHashMap
+    }
+
+    private fun setSearchParameterMap(searchParameterMap: Map<String, String>) {
+        this.searchParameterHashMap = HashMap(searchParameterMap)
     }
 
     fun getSearchParameterHashMap(): HashMap<String, String> {

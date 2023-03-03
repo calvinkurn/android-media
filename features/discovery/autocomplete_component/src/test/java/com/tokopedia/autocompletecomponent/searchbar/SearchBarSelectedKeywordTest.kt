@@ -2,10 +2,7 @@ package com.tokopedia.autocompletecomponent.searchbar
 
 import com.tokopedia.autocompletecomponent.shouldBe
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
     @Test
     fun `select keyword success`() {
@@ -25,12 +22,14 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify active keyword`(expectedKeyword)
         `Then verify latest keyword`(expectedKeyword)
         `Then verify SearchBarKeyword list`(listOf(expectedKeyword))
-        `Then verify mps state`(SearchBarState(
-            isMpsEnabled = true,
-            isAddButtonEnabled = false,
-            isKeyboardDismissEnabled = false,
-            shouldDisplayMpsPlaceHolder = true,
-        ))
+        `Then verify mps state`(
+            SearchBarState(
+                isMpsEnabled = true,
+                isAddButtonEnabled = false,
+                isKeyboardDismissEnabled = false,
+                shouldDisplayMpsPlaceHolder = true,
+            )
+        )
     }
 
     @Test
@@ -51,12 +50,14 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify latest keyword`(expectedActiveKeyword)
         val expectedKeyword = keyword.copy(isSelected = false)
         `Then verify SearchBarKeyword list`(listOf(expectedKeyword))
-        `Then verify mps state`(SearchBarState(
-            isMpsEnabled = true,
-            isAddButtonEnabled = true,
-            isKeyboardDismissEnabled = false,
-            shouldDisplayMpsPlaceHolder = true,
-        ))
+        `Then verify mps state`(
+            SearchBarState(
+                isMpsEnabled = true,
+                isAddButtonEnabled = true,
+                isKeyboardDismissEnabled = false,
+                shouldDisplayMpsPlaceHolder = true,
+            )
+        )
     }
 
     private fun `Then verify active keyword`(searchBarKeyword: SearchBarKeyword) {

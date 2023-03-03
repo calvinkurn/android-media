@@ -11,6 +11,7 @@ class AutoCompleteActivitySample: BaseAutoCompleteActivity() {
         DaggerInitialStateTestComponent
             .builder()
             .baseAppComponent(getBaseAppComponent())
+            .autoCompleteComponent(autoCompleteComponent)
             .initialStateViewListenerModule(getInitialStateViewListenerModule())
             .build()
 
@@ -18,6 +19,7 @@ class AutoCompleteActivitySample: BaseAutoCompleteActivity() {
         DaggerSuggestionTestComponent
             .builder()
             .baseAppComponent(getBaseAppComponent())
+            .autoCompleteComponent(autoCompleteComponent)
             .suggestionViewListenerModule(getSuggestionViewListenerModule())
             .build()
 

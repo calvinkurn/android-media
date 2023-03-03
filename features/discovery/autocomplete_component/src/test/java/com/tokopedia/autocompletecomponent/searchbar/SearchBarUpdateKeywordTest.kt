@@ -2,10 +2,7 @@ package com.tokopedia.autocompletecomponent.searchbar
 
 import com.tokopedia.autocompletecomponent.shouldBe
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 internal class SearchBarUpdateKeywordTest : SearchBarViewModelTestFixtures() {
     @Test
     fun `update keyword success`() {
