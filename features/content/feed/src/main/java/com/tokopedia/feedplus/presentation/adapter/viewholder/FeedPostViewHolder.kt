@@ -98,11 +98,11 @@ class FeedPostViewHolder(
             if (feedCardModel.isTypeProductHighlight) feedCardModel.products else feedCardModel.tags
 
         when (val numberOfTaggedProducts = feedCardModel.totalProducts) {
-            0 -> {
+            PRODUCT_COUNT_ZERO -> {
                 binding.productTagView.root.hide()
                 binding.productTagButton.root.hide()
             }
-            1 -> {
+            PRODUCT_COUNT_ONE -> {
                 binding.productTagView.tvTagProduct.text =
                     itemView.context.getString(
                         R.string.feeds_tag_product_name_text,
@@ -168,6 +168,9 @@ class FeedPostViewHolder(
     }
 
     companion object {
+        const val PRODUCT_COUNT_ZERO = 0
+        const val PRODUCT_COUNT_ONE = 1
+
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
     }

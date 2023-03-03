@@ -93,11 +93,6 @@ class FeedFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        activity?.run {
-//            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-//            feedMainViewModel = viewModelProvider[FeedMainViewModel::class.java]
-//        }
-
         arguments?.let {
             data = it.getParcelable(ARGUMENT_DATA)
         } ?: savedInstanceState?.let {
@@ -136,8 +131,6 @@ class FeedFragment :
             viewLifecycleOwner
         ) {
             when (it) {
-                is FeedResult.Loading -> {
-                }
                 is FeedResult.Success -> {
                     productBottomSheet?.showToastWithAction(
                         getString(feedR.string.feeds_add_to_cart_success_text),
@@ -422,10 +415,6 @@ class FeedFragment :
 
     private fun openProductTagBottomSheet(feedXCard: FeedCardImageContentModel) {
         productBottomSheet = ProductItemInfoBottomSheet()
-        productBottomSheet?.disMissed = {
-            productBottomSheet?.onDestroy()
-            productBottomSheet = null
-        }
         productBottomSheet?.show(
             childFragmentManager,
             this,
@@ -462,7 +451,7 @@ class FeedFragment :
         hasVoucher: Boolean,
         authorType: String
     ) {
-        TODO("Not yet implemented")
+        // To be used for analytics
     }
 
     override fun onTaggedProductCardClicked(
@@ -503,7 +492,7 @@ class FeedFragment :
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.let {
-                            var shareString =
+                            val shareString =
                                 if (shareData?.description?.contains("%s") == true) {
                                     shareData?.description?.let { it1 ->
                                         String.format(
