@@ -25,8 +25,6 @@ import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,9 +38,9 @@ import javax.inject.Inject
 class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
 
     private var binding: FragmentFeedBaseBinding? = null
+
     @Inject
     internal lateinit var userSession: UserSessionInterface
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -117,6 +115,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
                 )
                 startActivity(intent)
+                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
@@ -147,7 +146,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         ) {
             when (it) {
                 is Success -> {
-                    creationItemList = it.data
                 }
                 is Fail -> Toast.makeText(
                     requireContext(),
@@ -163,12 +161,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         if (userSession.isLoggedIn) {
             binding?.let {
                 it.btnFeedCreatePost.show()
-                it.feedUserProfileImage.show
+                it.feedUserProfileImage.show()
             }
         } else {
             binding?.let {
-                it.btnFeedCreatePost.hide
-                it.feedUserProfileImage.hide
+                it.btnFeedCreatePost.hide()
+                it.feedUserProfileImage.hide()
             }
         }
     }
@@ -179,15 +177,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    onChangeTab(position)
-                }
-            })
+                    OnPageChangeCallback() {
+                    override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                    ) {
+                        onChangeTab(position)
+                    }
+                })
 
             var firstTabData: FeedDataModel? = null
             var secondTabData: FeedDataModel? = null
@@ -278,7 +276,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             val creationBottomSheet = FeedContentCreationTypeBottomSheet
                 .getFragment(childFragmentManager, it.classLoader)
 
-            val feedCreateBottomSheetDataResult = feedMainViewModel.feedCreateContentBottomSheetData.value
+            val feedCreateBottomSheetDataResult =
+                feedMainViewModel.feedCreateContentBottomSheetData.value
             if (feedCreateBottomSheetDataResult is Success) {
                 val list = feedCreateBottomSheetDataResult.data
                 if (list.isNotEmpty()) {
@@ -295,44 +294,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun onNavigateToProfile() {
         Toast.makeText(context, "Navigate to Profile", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
-        when (creationTypeItem.type) {
-            CreateContentType.CREATE_LIVE -> {
-                RouteManager.route(
-                    requireContext(),
-                    ApplinkConst.PLAY_BROADCASTER
-                )
-            }
-            CreateContentType.CREATE_POST -> {
-                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                intent.putExtra(
-                    BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
-                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                )
-                intent.putExtra(
-                    BundleData.MAX_MULTI_SELECT_ALLOWED,
-                    BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
-                )
-                intent.putExtra(
-                    BundleData.TITLE,
-                    getString(R.string.feed_post_sebagai)
-                )
-                intent.putExtra(
-                    BundleData.APPLINK_FOR_GALLERY_PROCEED,
-                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                )
-                startActivity(intent)
-                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-
-            }
-
-            CreateContentType.CREATE_SHORT_VIDEO -> {
-                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
-            }
-            else -> {}
-        }
     }
 
     companion object {

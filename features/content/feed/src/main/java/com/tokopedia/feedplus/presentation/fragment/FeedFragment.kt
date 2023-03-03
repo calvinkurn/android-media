@@ -28,9 +28,6 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedModel
-import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
-import com.tokopedia.feedplus.presentation.model.FeedMenuItem
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -157,14 +154,17 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
     override fun onMenuClicked(model: FeedCardImageContentModel) {
         activity?.let {
             feedMenuSheet =
-                FeedThreeDotsMenuBottomSheet.getFragment(it.supportFragmentManager, it.classLoader)
+                ContentThreeDotsMenuBottomSheet.getFragment(
+                    it.supportFragmentManager,
+                    it.classLoader
+                )
             feedMenuSheet.setListener(this)
             feedMenuSheet.setData(getMenuItemData(), model.id)
             feedMenuSheet.show(it.supportFragmentManager)
         }
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem) {
+    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
             FeedMenuIdentifier.LAPORKAN -> {
                 if (!userSession.isLoggedIn) {
@@ -236,16 +236,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             requireActivity().startActivityForResult(intent, REQUEST_REPORT_POST_LOGIN)
-        }
-    }
-
-    override fun onMenuClicked(model: FeedModel) {
-        activity?.let {
-            feedMenuSheet = ContentThreeDotsMenuBottomSheet
-                .getFragment(it.supportFragmentManager, it.classLoader)
-            feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(), model.id)
-            feedMenuSheet.show(it.supportFragmentManager)
         }
     }
 
