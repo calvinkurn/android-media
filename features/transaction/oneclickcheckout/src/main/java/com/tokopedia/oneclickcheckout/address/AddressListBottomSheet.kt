@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.address
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.toUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.model.TickerModel
 import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
@@ -144,16 +146,24 @@ class AddressListBottomSheet(
                 val param = GetTargetedTickerParam(page = GetTargetedTickerParam.ADDRESS_LIST_OCC, target = listOf())
                 val response = getTargetedTicker(param)
                 val model = response.getTargetedTickerData.toUiModel()
-                binding?.tickerOccAddressList?.renderTargetedTickerView(
-                    context,
-                    model,
-                    onClickApplink = { listener.onClickAddressTickerApplink(it) },
-                    onClickUrl = { listener.onClickAddressTickerUrl(it) }
-                )
-            } catch (e: Throwable) {
-                binding?.tickerOccAddressList?.gone()
+                renderTicker(context, model)
+            } catch (@SuppressLint("SwallowedException") e: Throwable) {
+                hideTicker()
             }
         }
+    }
+
+    private fun renderTicker(context: Context, model: TickerModel) {
+        binding?.tickerOccAddressList?.renderTargetedTickerView(
+            context,
+            model,
+            onClickApplink = { listener.onClickAddressTickerApplink(it) },
+            onClickUrl = { listener.onClickAddressTickerUrl(it) }
+        )
+    }
+
+    private fun hideTicker() {
+        binding?.tickerOccAddressList?.gone()
     }
 
     private fun getAddressAdapterListener(): AddressListItemAdapter.OnSelectedListener {
