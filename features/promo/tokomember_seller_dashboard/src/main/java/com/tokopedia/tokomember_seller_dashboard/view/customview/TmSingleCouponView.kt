@@ -325,6 +325,7 @@ class TmSingleCouponView @JvmOverloads constructor(
     }
 
     fun setCashbackType(selectedChipPositionCashback: Int) {
+        this.selectedChipPositionCashback = selectedChipPositionCashback
         chipGroupCashbackType.setDefaultSelection(selectedChipPositionCashback)
         isShowCashPercentage = selectedChipPositionCashback == 1
     }
