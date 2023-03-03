@@ -48,6 +48,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var adapter: FeedPagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            when (fragment) {
+                is FeedContentCreationTypeBottomSheet -> {
+                    fragment.setListener(this)
+                }
+            }
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -196,12 +203,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private fun onCreatePostClicked() {
         activity?.let {
             val creationBottomSheet = FeedContentCreationTypeBottomSheet
-                .getFragment(it.supportFragmentManager, it.classLoader)
-            creationBottomSheet.setListener(this)
+                .getFragment(childFragmentManager, it.classLoader)
+
             val feedCreateBottomSheetDataResult = feedMainViewModel.feedCreateContentBottomSheetData.value
             if (feedCreateBottomSheetDataResult is Success) {
-                creationBottomSheet.setData(feedCreateBottomSheetDataResult.data)
-                creationBottomSheet.show(it.supportFragmentManager)
+                val list = feedCreateBottomSheetDataResult.data
+                if (list.isNotEmpty()) {
+                    creationBottomSheet.setData(feedCreateBottomSheetDataResult.data)
+                    creationBottomSheet.show(childFragmentManager)
+                }
             }
         }
     }

@@ -28,7 +28,7 @@ class FeedCreationTypeAdapter(
     fun updateData(itemList: List<ContentCreationTypeItem>) {
         data.clear()
         data.addAll(itemList)
-        notifyDataSetChanged()
+        submitList(data)
     }
 
 }
