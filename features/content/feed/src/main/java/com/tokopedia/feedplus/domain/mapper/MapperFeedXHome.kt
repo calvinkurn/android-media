@@ -20,7 +20,6 @@ import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel.Companion.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
-import com.tokopedia.feedplus.presentation.model.FeedCardItemModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentItemModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentModel
@@ -54,9 +53,10 @@ object MapperFeedHome {
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
                         FeedCardCtaGradientModel(
-                            color = color.color, position = color.position
+                            color = color.color,
+                            position = color.position
                         )
-                    }.toList(),
+                    }.toList()
                 )
             },
             ribbonImageUrl = card.ribbonImageUrl,
@@ -75,9 +75,10 @@ object MapperFeedHome {
                     endTime = campaign.endTime,
                     restrictions = campaign.restrictions.map { restriction ->
                         FeedCardCampaignRestrictionModel(
-                            isActive = restriction.isActive, label = restriction.label
+                            isActive = restriction.isActive,
+                            label = restriction.label
                         )
-                    }.toList(),
+                    }.toList()
                 )
             },
             hasVoucher = card.hasVoucher,
@@ -95,18 +96,8 @@ object MapperFeedHome {
             deletable = card.deletable,
             detailScore = card.detailScore.map { score -> transformDetailScore(score) }.toList(),
             publishedAt = card.publishedAt,
-            promos = card.promos,
-            items = card.items.map { item ->
-                FeedCardItemModel(
-                    id = item.id,
-                    applink = item.applink,
-                    weblink = item.weblink,
-                    coverUrl = item.coverUrl,
-                    product = transformProduct(item.product),
-                )
-            }.toList(),
             maxDiscountPercentage = card.maximumDiscountPercentage,
-            maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
+            maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt
         )
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel =
@@ -119,7 +110,7 @@ object MapperFeedHome {
             logoUrl = author.logoUrl,
             applink = author.applink,
             encryptedUserId = author.encryptedUserId,
-            isLive = author.isLive,
+            isLive = author.isLive
         )
 
     private fun transformProduct(product: FeedXProduct): FeedCardProductModel =
@@ -151,7 +142,7 @@ object MapperFeedHome {
             stockSoldPercentage = product.stockSoldPercentage,
             cartable = product.cartable,
             isCashback = product.isCashback,
-            cashbackFmt = product.cashbackFmt,
+            cashbackFmt = product.cashbackFmt
         )
 
     private fun transformMedia(media: FeedXMedia): FeedMediaModel =
@@ -164,9 +155,11 @@ object MapperFeedHome {
             weblink = media.weblink,
             tagging = media.tagging.map { tag ->
                 FeedMediaTagging(
-                    tagIndex = tag.tagIndex, posX = tag.posX, posY = tag.posY
+                    tagIndex = tag.tagIndex,
+                    posX = tag.posX,
+                    posY = tag.posY
                 )
-            }.toList(),
+            }.toList()
         )
 
     private fun transformView(view: FeedXView): FeedViewModel = FeedViewModel(
@@ -200,27 +193,29 @@ object MapperFeedHome {
                         logoUrl = author.logoUrl,
                         applink = author.applink,
                         encryptedUserId = author.encryptedUserId,
-                        isLive = author.isLive,
+                        isLive = author.isLive
                     )
                 },
-                text = item.text,
+                text = item.text
             )
-        }.toList(),
+        }.toList()
     )
 
     private fun transformShare(share: FeedXShare): FeedShareModel = FeedShareModel(
-        label = share.label, operation = share.operation
+        label = share.label,
+        operation = share.operation
     )
 
     private fun transformFollow(follow: FeedXFollow): FeedFollowModel = FeedFollowModel(
         label = follow.label,
         count = follow.count,
         countFmt = follow.countFmt,
-        isFollowed = follow.isFollowed,
+        isFollowed = follow.isFollowed
     )
 
     private fun transformDetailScore(score: FeedXScore): FeedScoreModel = FeedScoreModel(
-        label = score.label, value = score.value
+        label = score.label,
+        value = score.value
     )
 
     fun transform(data: FeedXHomeEntity): FeedModel = FeedModel(
@@ -241,11 +236,11 @@ object MapperFeedHome {
     )
 
     fun isImagesPost(card: FeedXCard) =
-        ((card.typename == TYPE_FEED_X_CARD_POST) ||
-            (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT)) &&
+        (
+            (card.typename == TYPE_FEED_X_CARD_POST) ||
+                (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT)
+            ) &&
             card.media.none { it.type == TYPE_LONG_VIDEO }
 
     fun shouldShow(card: FeedXCard) = isImagesPost(card)
-
-
 }
