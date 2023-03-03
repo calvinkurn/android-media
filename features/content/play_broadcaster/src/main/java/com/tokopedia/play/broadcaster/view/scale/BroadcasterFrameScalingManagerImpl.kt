@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.scale
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
@@ -15,6 +16,7 @@ class BroadcasterFrameScalingManagerImpl @Inject constructor(
 ): BroadcasterFrameScalingManager {
 
     private val offset16 by lazy { context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
+    private var mListener: BroadcasterFrameScalingManager.Listener? = null
 
     override fun scaleDown(view: View, bottomSheetHeight: Int, fullPageHeight: Int) {
         val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(context)
@@ -36,6 +38,19 @@ class BroadcasterFrameScalingManagerImpl @Inject constructor(
 
         view.pivotY = statusBarHeight.toFloat()
 
+        animator.removeAllListeners()
+        animator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {
+                mListener?.onStartScaleDown()
+            }
+
+            override fun onAnimationEnd(p0: Animator) {}
+
+            override fun onAnimationCancel(p0: Animator) {}
+
+            override fun onAnimationRepeat(p0: Animator) {}
+        })
+
         animator.playTogether(animatorX, animatorY, animatorPositionY)
         animator.start()
     }
@@ -51,8 +66,25 @@ class BroadcasterFrameScalingManagerImpl @Inject constructor(
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
 
+        animator.removeAllListeners()
+        animator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {
+                mListener?.onStartScaleUp()
+            }
+
+            override fun onAnimationEnd(p0: Animator) {}
+
+            override fun onAnimationCancel(p0: Animator) {}
+
+            override fun onAnimationRepeat(p0: Animator) {}
+        })
+
         animator.playTogether(animatorX, animatorY, animatorTranslateY)
         animator.start()
+    }
+
+    override fun setListener(listener: BroadcasterFrameScalingManager.Listener) {
+        mListener = listener
     }
 
     companion object {

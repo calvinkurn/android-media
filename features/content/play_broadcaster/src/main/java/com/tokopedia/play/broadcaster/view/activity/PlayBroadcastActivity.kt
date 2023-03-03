@@ -1,18 +1,16 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +31,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PAGE
@@ -121,12 +120,17 @@ class PlayBroadcastActivity : BaseActivity(),
     private lateinit var globalErrorView: GlobalError
     private lateinit var aspectFrameLayout: AspectFrameLayout
     private lateinit var surfaceView: SurfaceView
+    private lateinit var surfaceCardView: CardView
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
     private var channelType = ChannelStatus.Unknown
 
     private var toasterBottomMargin = 0
+
+    private val offset8 by lazyThreadSafetyNone {
+        resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    }
 
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
@@ -160,6 +164,7 @@ class PlayBroadcastActivity : BaseActivity(),
         isRecreated = (savedInstanceState != null)
 
         initView()
+        initListener()
 
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
@@ -325,7 +330,21 @@ class PlayBroadcastActivity : BaseActivity(),
         globalErrorView = findViewById(R.id.global_error)
         aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
         surfaceView = findViewById(R.id.surface_view)
+        surfaceCardView = findViewById(R.id.surface_card_view)
+
         surfaceView.holder.addCallback(this)
+    }
+
+    private fun initListener() {
+        broadcasterFrameScalingManager.setListener(object : BroadcasterFrameScalingManager.Listener {
+            override fun onStartScaleDown() {
+                surfaceCardView.radius = offset8.toFloat()
+            }
+
+            override fun onStartScaleUp() {
+                surfaceCardView.radius = 0f
+            }
+        })
     }
 
     private fun getConfiguration() {
