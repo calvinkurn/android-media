@@ -10,20 +10,20 @@ data class CheckEligibilityResponse(
 data class DataEligibility(
 
 	@SerializedName("name")
-	val name: String,
+	val name: String = "",
 
 	@SerializedName("flow")
-	val flow: String
+	val flow: String = ""
 )
 
 data class CheckOneKYCEligibility(
 
-	@SerializedName("errorMessages")
-	val errorMessages: List<String>,
+    @SerializedName("errorMessages")
+	val errorMessages: List<String> = listOf(),
 
-	@SerializedName("data")
-	val data: DataEligibility,
+    @SerializedName("data")
+	val data: DataEligibility = DataEligibility(),
 
-	@SerializedName("isSuccess")
-	val isSuccess: Boolean
+    @SerializedName("isSuccess")
+	val isSuccess: Boolean = false
 )
