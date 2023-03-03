@@ -373,6 +373,12 @@ class PlayBroadcastActivity : BaseActivity(),
                 surfaceCardView.radius = 0f
             }
         })
+
+        sliderFaceFilter.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener {
+            override fun onSliderMove(p0: Pair<Int, Int>) {
+                viewModel.submitAction(PlayBroadcastAction.ChangeFaceFilterValue(p0.first))
+            }
+        }
     }
 
     private fun getConfiguration() {
@@ -745,7 +751,10 @@ class PlayBroadcastActivity : BaseActivity(),
     ) {
         if(prev == curr || sliderFaceFilter.visibility != View.VISIBLE) return
 
+        val prevSelectedFaceFilter = prev?.firstOrNull { it.isSelected }
         val selectedFaceFilter = curr.firstOrNull { it.isSelected } ?: return
+
+        if(prevSelectedFaceFilter == selectedFaceFilter) return
 
         sliderFaceFilter.updateValue((selectedFaceFilter.value * 100).toInt(), null)
     }

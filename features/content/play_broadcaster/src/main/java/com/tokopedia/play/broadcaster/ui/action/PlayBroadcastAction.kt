@@ -75,4 +75,5 @@ sealed interface PlayBroadcastAction {
     data class FaceFilterBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
     object FaceFilterBottomSheetDismissed : PlayBroadcastAction
     data class SelectFaceFilterOption(val faceFilter: FaceFilterUiModel) : PlayBroadcastAction
+    data class ChangeFaceFilterValue(val newValue: Int) : PlayBroadcastAction
 }

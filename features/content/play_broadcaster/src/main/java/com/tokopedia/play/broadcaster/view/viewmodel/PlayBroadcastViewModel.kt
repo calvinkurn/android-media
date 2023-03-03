@@ -543,6 +543,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.FaceFilterBottomSheetShown -> handleFaceFilterBottomSheetShown(event.bottomSheetHeight)
             is PlayBroadcastAction.FaceFilterBottomSheetDismissed -> handleFaceFilterBottomSheetDismissed()
             is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
+            is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
         }
     }
 
@@ -1675,6 +1676,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _faceFilter.update { faceFilters ->
                 faceFilters.map {
                     it.copy(isSelected = it.name == faceFilter.name)
+                }
+            }
+        }
+    }
+
+    private fun handleChangeFaceFilterValue(newValue: Int) {
+        viewModelScope.launch {
+            _faceFilter.update { faceFilters ->
+                faceFilters.map {
+                    if(it.isSelected) it.copy(value = (newValue / 100.toDouble()))
+                    else it
                 }
             }
         }
