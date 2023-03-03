@@ -29,9 +29,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private val mFeedContentCreationList = mutableListOf<ContentCreationTypeItem>()
     private var mListener: Listener? = null
-    private var mAnalytic: FeedAccountTypeAnalytic? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +59,6 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
 
     private fun setupView() {
         binding.rvFeedContentCreation.adapter = adapter
-        adapter.updateData(mFeedContentCreationList)
     }
 
     fun setListener(listener: Listener?) {
@@ -73,20 +70,12 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
     }
 
     fun setData(contentAccountList: List<ContentCreationTypeItem>): FeedContentCreationTypeBottomSheet {
-        mFeedContentCreationList.clear()
-        mFeedContentCreationList.addAll(contentAccountList)
-
-        if(isAdded) adapter.updateData(mFeedContentCreationList)
-
+        adapter.updateData(contentAccountList)
         return this
     }
 
-    fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
-        mAnalytic = analytic
-    }
-
     companion object {
-        private const val TAG = "FeedAccountTypeBottomSheet"
+        private const val TAG = "FeedContentCreationTypeBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,

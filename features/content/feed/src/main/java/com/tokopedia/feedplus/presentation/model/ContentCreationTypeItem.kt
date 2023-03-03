@@ -3,12 +3,12 @@ package com.tokopedia.feedplus.presentation.model
 data class ContentCreationTypeItem(
     val id: Int = 0,
     val name: String,
-    var drawableIconId: Int? = null,
+    var drawableIconId: Int = 0,
     var isActive: Boolean?,
     val type: CreateContentType,
-    val applink: String? = null,
-    val weblink: String? = null,
-    val imageSrc: String? = null
+    val applink: String = "",
+    val weblink: String = "",
+    val imageSrc: String = ""
 )
 
 enum class CreateContentType(val value: String) {

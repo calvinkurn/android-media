@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -23,10 +24,14 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -35,13 +40,26 @@ import javax.inject.Inject
 class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
 
     private var binding: FragmentFeedBaseBinding? = null
+    @Inject
+    internal lateinit var userSession: UserSessionInterface
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
 
     private var adapter: FeedPagerAdapter? = null
-    private var creationItemList: List<ContentCreationTypeItem> = emptyList()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            when (fragment) {
+                is FeedContentCreationTypeBottomSheet -> {
+                    fragment.setListener(this)
+                }
+            }
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -136,6 +154,21 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     it.throwable.localizedMessage,
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (userSession.isLoggedIn) {
+            binding?.let {
+                it.btnFeedCreatePost.show()
+                it.feedUserProfileImage.show
+            }
+        } else {
+            binding?.let {
+                it.btnFeedCreatePost.hide
+                it.feedUserProfileImage.hide
             }
         }
     }
@@ -243,10 +276,16 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private fun onCreatePostClicked() {
         activity?.let {
             val creationBottomSheet = FeedContentCreationTypeBottomSheet
-                .getFragment(it.supportFragmentManager, it.classLoader)
-            creationBottomSheet.setListener(this)
-            creationBottomSheet.setData(creationItemList)
-            creationBottomSheet.show(it.supportFragmentManager)
+                .getFragment(childFragmentManager, it.classLoader)
+
+            val feedCreateBottomSheetDataResult = feedMainViewModel.feedCreateContentBottomSheetData.value
+            if (feedCreateBottomSheetDataResult is Success) {
+                val list = feedCreateBottomSheetDataResult.data
+                if (list.isNotEmpty()) {
+                    creationBottomSheet.setData(feedCreateBottomSheetDataResult.data)
+                    creationBottomSheet.show(childFragmentManager)
+                }
+            }
         }
     }
 
@@ -256,6 +295,44 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun onNavigateToProfile() {
         Toast.makeText(context, "Navigate to Profile", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
+        when (creationTypeItem.type) {
+            CreateContentType.CREATE_LIVE -> {
+                RouteManager.route(
+                    requireContext(),
+                    ApplinkConst.PLAY_BROADCASTER
+                )
+            }
+            CreateContentType.CREATE_POST -> {
+                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                intent.putExtra(
+                    BundleData.APPLINK_AFTER_CAMERA_CAPTURE,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
+                intent.putExtra(
+                    BundleData.MAX_MULTI_SELECT_ALLOWED,
+                    BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
+                )
+                intent.putExtra(
+                    BundleData.TITLE,
+                    getString(R.string.feed_post_sebagai)
+                )
+                intent.putExtra(
+                    BundleData.APPLINK_FOR_GALLERY_PROCEED,
+                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
+                )
+                startActivity(intent)
+                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+
+            }
+
+            CreateContentType.CREATE_SHORT_VIDEO -> {
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
+            }
+            else -> {}
+        }
     }
 
     companion object {

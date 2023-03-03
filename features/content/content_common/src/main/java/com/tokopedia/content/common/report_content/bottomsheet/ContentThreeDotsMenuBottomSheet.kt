@@ -7,13 +7,13 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.databinding.BottomSheetFeedThreeDotsMenuBinding
 import com.tokopedia.content.common.databinding.BottomsheetFeedPostReportBinding
 import com.tokopedia.content.common.report_content.adapter.FeedMenuAdapter
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
-import com.tokopedia.feedplus.presentation.model.FeedMenuItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,7 +23,7 @@ import com.tokopedia.content.common.R as contentCommonR
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
  */
-class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
+class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
 
     private var _binding: BottomSheetFeedThreeDotsMenuBinding? = null
     private val binding: BottomSheetFeedThreeDotsMenuBinding
@@ -41,7 +41,7 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
                     dismiss()
                 }
 
-                mListener?.onMenuItemClick(item)
+                mListener?.onMenuItemClick(item, "")
             }
         })
     }
@@ -207,7 +207,7 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setData(feedMenuItemList: List<FeedMenuItem>, contentId: String): FeedThreeDotsMenuBottomSheet {
+    fun setData(feedMenuItemList: List<FeedMenuItem>, contentId: String): ContentThreeDotsMenuBottomSheet {
         this.contentId = contentId
         mFeedMenuItemList.clear()
         mFeedMenuItemList.addAll(feedMenuItemList)
@@ -257,17 +257,17 @@ class FeedThreeDotsMenuBottomSheet : BottomSheetUnify() {
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): FeedThreeDotsMenuBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedThreeDotsMenuBottomSheet
+        ): ContentThreeDotsMenuBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FeedThreeDotsMenuBottomSheet::class.java.name
-            ) as FeedThreeDotsMenuBottomSheet
+                ContentThreeDotsMenuBottomSheet::class.java.name
+            ) as ContentThreeDotsMenuBottomSheet
         }
     }
 
     interface Listener {
-        fun onMenuItemClick(feedMenuItem: FeedMenuItem)
+        fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String)
         fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel)
     }
 }

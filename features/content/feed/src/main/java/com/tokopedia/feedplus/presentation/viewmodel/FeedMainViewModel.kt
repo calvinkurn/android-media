@@ -47,6 +47,7 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
+
     fun fetchFeedTabs() {
         launchCatchError(dispatchers.main, block = {
             val response = withContext(dispatchers.io) {
@@ -93,14 +94,12 @@ class FeedMainViewModel @Inject constructor(
     }
 
     private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
-        val authorUserdata = creationDataList.find { it.type == CreatorType.USER }
         val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
-        val authorShopdata = creationDataList.find { it.type == CreatorType.SHOP }
-        val authorShopdataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
+        val authorShopDataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
 
         val creatorList =
             (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
-                (authorShopdataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
+                (authorShopDataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
         _feedCreateContentBottomSheetData.value = Success(creatorList)
     }
 }

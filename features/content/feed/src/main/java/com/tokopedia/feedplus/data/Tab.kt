@@ -3,21 +3,18 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class Tab(
-
     @SerializedName("isActive")
-    var isActive: Boolean? = null,
+    val isActive: Boolean = false,
     @SerializedName("items")
-    var items: ArrayList<Items> = arrayListOf(),
+    val items: List<Items> = emptyList(),
     @SerializedName("meta")
-    var meta: MetaData? = MetaData(),
+    val meta: MetaData? = MetaData(),
     @SerializedName("__typename")
-    var _typename: String? = null
-
+    val typeName: String = ""
 )
 data class MetaData(
     @SerializedName("selectedIndex")
-    var selectedIndex: Int? = null,
+    val selectedIndex: Int = 0,
     @SerializedName("__typename")
-    var _typename: String? = null
-
+    val typeName: String = ""
 )

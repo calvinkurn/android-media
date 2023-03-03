@@ -17,7 +17,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.content.common.report_content.bottomsheet.FeedThreeDotsMenuBottomSheet
+import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -26,6 +28,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedMenuIdentifier
 import com.tokopedia.feedplus.presentation.model.FeedMenuItem
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
@@ -43,7 +46,7 @@ import com.tokopedia.feedplus.R as feedR
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
-class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottomSheet.Listener {
+class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBottomSheet.Listener {
 
     private var binding: FragmentFeedImmersiveBinding? = null
 
@@ -61,7 +64,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
-    private lateinit var feedMenuSheet: FeedThreeDotsMenuBottomSheet
+    private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -233,6 +236,16 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, FeedThreeDotsMenuBottom
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             requireActivity().startActivityForResult(intent, REQUEST_REPORT_POST_LOGIN)
+        }
+    }
+
+    override fun onMenuClicked(model: FeedModel) {
+        activity?.let {
+            feedMenuSheet = ContentThreeDotsMenuBottomSheet
+                .getFragment(it.supportFragmentManager, it.classLoader)
+            feedMenuSheet.setListener(this)
+            feedMenuSheet.setData(getMenuItemData(), model.id)
+            feedMenuSheet.show(it.supportFragmentManager)
         }
     }
 

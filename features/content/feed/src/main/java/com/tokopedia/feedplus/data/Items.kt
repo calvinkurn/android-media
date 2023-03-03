@@ -3,18 +3,16 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class Items(
-
     @SerializedName("isActive")
-    var isActive: Boolean? = null,
+    val isActive: Boolean = false,
     @SerializedName("position")
-    var position: Int? = null,
+    val position: Int = 0,
     @SerializedName("type")
-    var type: String? = null,
+    val type: String = "",
     @SerializedName("title")
-    var title: String? = null,
+    val title: String = "",
     @SerializedName("key")
-    var key: String? = null,
+    val key: String = "",
     @SerializedName("__typename")
-    var _typename: String? = null
-
+    val typeName: String = ""
 )
