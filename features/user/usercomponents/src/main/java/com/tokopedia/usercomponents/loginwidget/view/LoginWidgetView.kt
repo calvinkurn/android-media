@@ -69,7 +69,7 @@ class LoginWidgetView : ConstraintLayout {
     }
 
     private fun loadDefaultLogin() {
-        viewBinding.textGreetings.text = context.getString(com.tokopedia.usercomponents.R.string.login_widget_title)
+        viewBinding.textGreetings.text = context.getString(com.tokopedia.usercomponents.R.string.login_widget_title).format(context.getString(com.tokopedia.usercomponents.R.string.login_widget_topper))
         viewBinding.textSubtitle.text = context.getString(com.tokopedia.usercomponents.R.string.login_widget_subtitle)
         viewBinding.imageLoginWidget.type = ImageUnify.TYPE_CIRCLE
         viewBinding.imageLoginWidget.setImageUrl(DEFAULT_PROFILE_PICTURE)
@@ -87,12 +87,12 @@ class LoginWidgetView : ConstraintLayout {
             val name = EncoderDecoder.Decrypt(encryptedName ?: "", UserSession.KEY_IV)
             val profilePicture = EncoderDecoder.Decrypt(encryptedProfilePicture ?: "", UserSession.KEY_IV)
 
-            viewBinding.textGreetings.text = "Hi, $name"
+            viewBinding.textGreetings.text = context.getString(com.tokopedia.usercomponents.R.string.login_widget_title).format(name)
 
             viewBinding.imageLoginWidget.type = ImageUnify.TYPE_CIRCLE
             viewBinding.imageLoginWidget.setImageUrl(profilePicture)
             show()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             hide()
         }
     }
