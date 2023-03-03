@@ -5,37 +5,44 @@ import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.PagerAdapter
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
-import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
+import com.tokopedia.search.result.mps.DaggerMPSComponent
+import com.tokopedia.search.result.mps.MPSFragment
+import com.tokopedia.search.result.mps.qbottomsheet.MPSBottomSheetFragment
 
-internal class SearchSectionPagerAdapter(
+class MPSPagerAdapter(
     fragmentManager: FragmentManager,
     private val titleList: List<String>,
     private val searchParameter: SearchParameter,
-) : FragmentStatePagerAdapter(fragmentManager), SearchViewPagerAdapter {
+    private val baseAppComponent: BaseAppComponent,
+): FragmentStatePagerAdapter(fragmentManager), SearchViewPagerAdapter {
 
-    private var productListFragment: ProductListFragment? = null
-    private var shopListFragment: ShopListFragment? = null
+    private var mpsBottomSheetFragment: MPSBottomSheetFragment? = null
+    private var mpsFragment: MPSFragment? = null
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
-    override fun asViewPagerAdapter(): PagerAdapter = this
+    override fun asViewPagerAdapter() = this
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            TAB_FIRST_POSITION -> createProductFragment()
-            else -> createShopFragment()
+            TAB_FIRST_POSITION -> createMPSBottomSheetFragment()
+            else -> createMPSFragment()
         }
     }
 
-    private fun createProductFragment(): ProductListFragment {
-        return ProductListFragment.newInstance(searchParameter)
+    private fun createMPSBottomSheetFragment(): MPSBottomSheetFragment {
+        return MPSBottomSheetFragment()
     }
 
-    private fun createShopFragment(): ShopListFragment {
-        return ShopListFragment.newInstance()
+    private fun createMPSFragment(): MPSFragment {
+        return MPSFragment.newInstance().apply {
+            DaggerMPSComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -49,8 +56,8 @@ internal class SearchSectionPagerAdapter(
 
     private fun castFragmentsInstance(fragment: Any) {
         when (fragment) {
-            is ProductListFragment -> productListFragment = fragment
-            is ShopListFragment -> shopListFragment = fragment
+            is MPSBottomSheetFragment -> mpsBottomSheetFragment = fragment
+            is MPSFragment -> mpsFragment = fragment
         }
     }
 
@@ -65,10 +72,6 @@ internal class SearchSectionPagerAdapter(
         super.destroyItem(container, position, `object`)
     }
 
-    override fun getCount(): Int {
-        return titleList.size
-    }
-
     override fun getPageTitle(position: Int): CharSequence {
         return if (titleList.size > position) titleList[position] else ""
     }
@@ -77,11 +80,14 @@ internal class SearchSectionPagerAdapter(
         return POSITION_NONE
     }
 
-    override fun getFirstPageFragment(): Fragment? = productListFragment
-
-    override fun getSecondPageFragment(): Fragment? = shopListFragment
-
-    override fun getRegisteredFragmentAtPosition(position: Int): Fragment? {
-        return registeredFragments.get(position)
+    override fun getCount(): Int {
+        return titleList.size
     }
+
+    override fun getFirstPageFragment(): Fragment? = mpsBottomSheetFragment
+
+    override fun getSecondPageFragment(): Fragment? = mpsFragment
+
+    override fun getRegisteredFragmentAtPosition(position: Int): Fragment? =
+        registeredFragments.get(position)
 }

@@ -42,6 +42,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
+import com.tokopedia.search.utils.BackToTop
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.removeQuickFilterElevation
@@ -58,7 +59,8 @@ internal class ShopListFragment:
     BannerAdsListener,
     QuickFilterElevation,
     ChooseAddressListener,
-    SortFilterBottomSheet.Callback {
+    SortFilterBottomSheet.Callback,
+    BackToTop {
 
     companion object {
         private const val SHOP = "shop"
@@ -617,7 +619,7 @@ internal class ShopListFragment:
             )
     }
 
-    fun backToTop() {
+    override fun backToTop() {
         binding?.recyclerViewSearchShop?.smoothScrollToPosition(0)
     }
 

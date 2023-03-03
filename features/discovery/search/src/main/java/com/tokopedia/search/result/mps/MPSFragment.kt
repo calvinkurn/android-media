@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.utils.BackToTop
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.search.utils.mvvm.fragmentViewModel
@@ -32,7 +33,8 @@ class MPSFragment:
     TkpdBaseV4Fragment(),
     SearchView,
     ChooseAddressListener,
-    FragmentProvider {
+    FragmentProvider,
+    BackToTop {
 
     var viewModelFactory: ViewModelProvider.Factory? = null
         @Inject set
@@ -68,6 +70,7 @@ class MPSFragment:
         initViews()
 
         viewModel?.observeState()
+        viewModel?.onViewCreated()
     }
 
     private fun initViews() {
@@ -83,7 +86,13 @@ class MPSFragment:
         mpsListAdapter.submitList(it.result.data)
     }
 
-    fun backToTop() {
+    override fun onResume() {
+        super.onResume()
+
+        viewModel?.onViewResumed()
+    }
+
+    override fun backToTop() {
         binding?.mpsRecyclerView?.smoothScrollToPosition(0)
     }
 

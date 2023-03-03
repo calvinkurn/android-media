@@ -28,7 +28,9 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.result.presentation.view.adapter.MPSPagerAdapter
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter
+import com.tokopedia.search.result.presentation.view.adapter.SearchViewPagerAdapter
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
@@ -37,6 +39,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_T
 import com.tokopedia.search.result.product.performancemonitoring.searchProductPerformanceMonitoring
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule
+import com.tokopedia.search.utils.BackToTop
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.searchbar.data.HintData
@@ -65,7 +68,7 @@ class SearchActivity : BaseActivity(),
     private var viewPager: ViewPager? = null
     private var tabShadow: View? = null
     private var quickFilterTopPadding: View? = null
-    private var searchSectionPagerAdapter: SearchSectionPagerAdapter? = null
+    private var viewPagerAdapter: SearchViewPagerAdapter? = null
 
     private var productTabTitle = ""
     private var shopTabTitle = ""
@@ -271,7 +274,7 @@ class SearchActivity : BaseActivity(),
 
     private fun onContainerTransitionCompleted(id: Int) {
         val viewPager = viewPager ?: return
-        val fragmentItem = searchSectionPagerAdapter?.getRegisteredFragmentAtPosition(viewPager.currentItem)
+        val fragmentItem = viewPagerAdapter?.getRegisteredFragmentAtPosition(viewPager.currentItem)
 
         if (fragmentItem !is QuickFilterElevation) return
 
@@ -355,24 +358,26 @@ class SearchActivity : BaseActivity(),
         addFragmentTitlesToList(searchFragmentTitles)
         initTabLayout()
 
-        searchSectionPagerAdapter = SearchSectionPagerAdapter(
-            supportFragmentManager,
-            searchParameter,
-            component,
-        )
-        searchSectionPagerAdapter?.updateData(searchFragmentTitles)
-        viewPager?.adapter = searchSectionPagerAdapter
+        viewPagerAdapter = createPagerAdapter(searchFragmentTitles).also {
+            viewPager?.adapter = it.asViewPagerAdapter()
+        }
+
         tabLayout?.setupWithViewPager(viewPager)
 
         setActiveTab()
     }
+
+    private fun createPagerAdapter(searchFragmentTitles: List<String>): SearchViewPagerAdapter =
+        if (searchParameter.isMps())
+            MPSPagerAdapter(supportFragmentManager, searchFragmentTitles, searchParameter, component)
+        else
+            SearchSectionPagerAdapter(supportFragmentManager, searchFragmentTitles, searchParameter)
 
     private fun addFragmentTitlesToList(searchSectionItemList: MutableList<String>) {
         searchSectionItemList.add(productTabTitle)
 
         if (!isLandingPage()) searchSectionItemList.add(shopTabTitle)
     }
-
 
     private fun initTabLayout() {
         tabLayout?.clearOnTabSelectedListeners()
@@ -385,20 +390,21 @@ class SearchActivity : BaseActivity(),
 
     private fun onTabReselected(tabPosition: Int) {
         when (tabPosition) {
-            SearchTabPosition.TAB_FIRST_POSITION -> productListFragmentExecuteBackToTop()
-            SearchTabPosition.TAB_SECOND_POSITION -> shopListFragmentExecuteBackToTop()
+            SearchTabPosition.TAB_FIRST_POSITION -> firstPositionFragmentReselected()
+            SearchTabPosition.TAB_SECOND_POSITION -> secondPositionFragmentReselected()
         }
     }
 
-    private fun productListFragmentExecuteBackToTop() {
-        searchSectionPagerAdapter?.getProductListFragment()?.backToTop()
+    private fun firstPositionFragmentReselected() {
+        val firstPageFragment = viewPagerAdapter?.getFirstPageFragment()
+        if (firstPageFragment is BackToTop)
+            firstPageFragment.backToTop()
     }
 
-    private fun shopListFragmentExecuteBackToTop() {
-        if (searchParameter.isMps())
-            searchSectionPagerAdapter?.getMPSFragment()?.backToTop()
-        else
-            searchSectionPagerAdapter?.getShopListFragment()?.backToTop()
+    private fun secondPositionFragmentReselected() {
+        val secondPageFragment = viewPagerAdapter?.getSecondPageFragment()
+        if (secondPageFragment is BackToTop)
+            secondPageFragment.backToTop()
     }
 
     private fun setActiveTab() {
