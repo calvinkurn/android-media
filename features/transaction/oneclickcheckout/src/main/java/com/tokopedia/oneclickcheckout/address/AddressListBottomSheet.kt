@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.address
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -147,7 +146,7 @@ class AddressListBottomSheet(
                 val response = getTargetedTicker(param)
                 val model = response.getTargetedTickerData.toUiModel()
                 renderTicker(context, model)
-            } catch (@SuppressLint("SwallowedException") e: Throwable) {
+            } catch (@Suppress("SwallowedException") e: Throwable) {
                 hideTicker()
             }
         }
