@@ -72,7 +72,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val BOTTOM_MARGIN = 8f
         private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 12f
-        private const val RV_CONTAINER_FESTIVITY_MARGIN_TOP = 6f
+        private const val RV_CONTAINER_FESTIVITY_MARGIN_TOP = 9f
         private const val RV_CONTAINER_DEFAULT_MARGIN_TOP = 12f
     }
 
