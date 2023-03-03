@@ -13,8 +13,6 @@ object TokoChatAnalyticsConstants {
     const val ROLE = "role"
     const val SOURCE = "source"
 
-    const val IMPRESS_IMAGE_ATTACHMENT = "ImpressionOnImageAttachment"
-
     const val BUYER = "buyer"
     const val TRACKER_ID = "trackerId"
 

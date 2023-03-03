@@ -8,7 +8,7 @@ import javax.inject.Inject
 class TokoChatAnalytics @Inject constructor() {
 
     private val tracking: ContextAnalytics by lazy(LazyThreadSafetyMode.NONE) { TrackApp.getInstance().gtm }
-    private val pendingImpression: ArrayList<Pair<String, MutableMap<String, String>>> = arrayListOf()
+    private val pendingTracker: ArrayList<MutableMap<String, String>> = arrayListOf()
 
     fun clickCallButtonFromChatRoom(
         orderStatus: String,
@@ -202,15 +202,16 @@ class TokoChatAnalytics @Inject constructor() {
         mutableMap[TokoChatAnalyticsConstants.ORDER_ID] = orderId
         mutableMap[TokoChatAnalyticsConstants.ROLE] = role
         mutableMap[TokoChatAnalyticsConstants.SOURCE] = source
-        pendingImpression.add(
-            Pair(TokoChatAnalyticsConstants.IMPRESS_IMAGE_ATTACHMENT, mutableMap)
-        )
+        pendingTracker.add(mutableMap)
     }
 
     fun sendPendingImpressionOnImageAttachment(orderStatus: String) {
-        pendingImpression.forEach {
-            if (it.first == TokoChatAnalyticsConstants.IMPRESS_IMAGE_ATTACHMENT) {
-                val mapData = it.second
+        val iterator = pendingTracker.iterator()
+        while (iterator.hasNext()) {
+            val mapData = iterator.next()
+            if (mapData[TrackAppUtils.EVENT_ACTION] ==
+                TokoChatAnalyticsConstants.IMPRESSION_ON_IMAGE_ATTACHMENT
+            ) {
                 val attachmentId = mapData[TokoChatAnalyticsConstants.ATTACHMENT_ID]
                 mapData.remove(TokoChatAnalyticsConstants.ATTACHMENT_ID)
                 val orderId = mapData[TokoChatAnalyticsConstants.ORDER_ID]
@@ -223,6 +224,7 @@ class TokoChatAnalytics @Inject constructor() {
                 mapData[TrackAppUtils.EVENT_LABEL] =
                     "$attachmentId - $orderStatus - $orderId - $source - $role"
                 tracking.sendGeneralEvent(mapData.toMap())
+                iterator.remove()
             }
         }
     }

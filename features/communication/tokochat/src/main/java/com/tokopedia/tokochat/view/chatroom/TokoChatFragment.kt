@@ -989,9 +989,9 @@ open class TokoChatFragment :
         element: TokoChatImageBubbleUiModel,
         imageView: ImageView
     ) {
-        val state = getOrderState()
-        if (state.isNotEmpty()) {
-            imageView.addOnImpressionListener(element.impressHolder) {
+        imageView.addOnImpressionListener(element.impressHolder) {
+            val state = getOrderState()
+            if (state.isNotEmpty()) {
                 tokoChatAnalytics.impressOnImageAttachment(
                     attachmentId = element.imageId,
                     orderStatus = state,
@@ -999,15 +999,15 @@ open class TokoChatFragment :
                     role = TokoChatAnalyticsConstants.BUYER,
                     source = viewModel.source
                 )
+            } else {
+                tokoChatAnalytics.saveImpressionOnImageAttachment(
+                    attachmentId = element.imageId,
+                    orderStatus = state,
+                    orderId = viewModel.tkpdOrderId,
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
             }
-        } else {
-            tokoChatAnalytics.saveImpressionOnImageAttachment(
-                attachmentId = element.imageId,
-                orderStatus = state,
-                orderId = viewModel.tkpdOrderId,
-                role = TokoChatAnalyticsConstants.BUYER,
-                source = viewModel.source
-            )
         }
     }
 
