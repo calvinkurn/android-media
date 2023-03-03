@@ -3123,13 +3123,13 @@ class CartFragment :
             val unavailableSectionList = unavailableDataMapResult.first
             val accordionUiModel = unavailableDataMapResult.second
             cartAdapter.addItems(unavailableSectionList)
-//            if (accordionUiModel != null) {
-//                collapseOrExpandDisabledItem(accordionUiModel)
-//                if (!unavailableItemAccordionCollapseState) {
-//                    accordionUiModel.isCollapsed = false
-//                    collapseOrExpandDisabledItem(accordionUiModel)
-//                }
-//            }
+            if (accordionUiModel != null) {
+                collapseOrExpandDisabledItem(accordionUiModel)
+                if (!unavailableItemAccordionCollapseState) {
+                    accordionUiModel.isCollapsed = false
+                    collapseOrExpandDisabledItem(accordionUiModel)
+                }
+            }
         }
     }
 
@@ -4517,11 +4517,11 @@ class CartFragment :
 
     private fun collapseOrExpandDisabledItem(data: DisabledAccordionHolderData) {
         cartAdapter.collapseOrExpandDisabledItemAccordion(data)
-//        if (data.isCollapsed) {
-//            cartAdapter.collapseDisabledItems()
-//        } else {
-//            cartAdapter.expandDisabledItems()
-//        }
+        if (data.isCollapsed) {
+            cartAdapter.collapseDisabledItems()
+        } else {
+            cartAdapter.expandDisabledItems()
+        }
     }
 
     override fun onCashbackUpdated(amount: Int) {
