@@ -108,7 +108,7 @@ class FeedPostViewHolder(
                         R.string.feeds_tag_product_name_text,
                         productData.firstOrNull()?.name
                     )
-                binding.productTagButton.tvPlayProductCount.text = "1"
+                binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
             }
             else -> {
                 binding.productTagView.tvTagProduct.text =
