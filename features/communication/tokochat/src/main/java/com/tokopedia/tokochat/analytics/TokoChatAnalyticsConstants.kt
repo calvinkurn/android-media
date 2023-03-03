@@ -7,6 +7,14 @@ object TokoChatAnalyticsConstants {
     const val COMMUNICATION = "communication"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
 
+    const val ATTACHMENT_ID = "attachmentId"
+    const val ORDER_ID = "orderId"
+    const val ORDER_STATUS = "orderStatus"
+    const val ROLE = "role"
+    const val SOURCE = "source"
+
+    const val IMPRESS_IMAGE_ATTACHMENT = "ImpressionOnImageAttachment"
+
     const val BUYER = "buyer"
     const val TRACKER_ID = "trackerId"
 
