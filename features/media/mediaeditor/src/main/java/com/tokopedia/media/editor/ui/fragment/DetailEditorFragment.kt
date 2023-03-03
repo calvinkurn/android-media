@@ -43,6 +43,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.E
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.data.Properties
@@ -83,7 +84,9 @@ class DetailEditorFragment @Inject constructor(
     RotateToolUiComponent.Listener,
     CropToolUiComponent.Listener,
     EditorDetailPreviewWidget.Listener,
-    AddLogoToolUiComponent.Listener {
+    AddLogoToolUiComponent.Listener,
+    AddTextToolUiComponent.Listener
+{
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
@@ -95,7 +98,7 @@ class DetailEditorFragment @Inject constructor(
     private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
     private val cropComponent by uiComponent { CropToolUiComponent(it, this) }
     private val addLogoComponent by uiComponent { AddLogoToolUiComponent(it, this) }
-    private val addTextComponent by uiComponent { AddTextToolUiComponent(it, null) }
+    private val addTextComponent by uiComponent { AddTextToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
     private var detailState = EditorUiModel()
@@ -231,18 +234,21 @@ class DetailEditorFragment @Inject constructor(
         initButtonListener()
     }
 
+    // === Listener brightness
     override fun onBrightnessValueChanged(value: Float) {
         viewModel.setBrightness(value)
         data.brightnessValue = value
         isEdited = true
     }
 
+    // === Listener contrast
     override fun onContrastValueChanged(value: Float) {
         viewModel.setContrast(value, implementedBaseBitmap)
         data.contrastValue = value
         isEdited = true
     }
 
+    // === Listener remove background
     override fun onRemoveBackgroundClicked(removeBgType: Int) {
         getImageView()?.let { imageView ->
             data.resultUrl?.let { it ->
@@ -280,6 +286,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // === Listener watermark
     override fun onWatermarkChanged(type: WatermarkType) {
         implementedBaseBitmap?.let {
             viewModel.setWatermark(
@@ -292,6 +299,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // === Listener rotate
     override fun onRotateValueChanged(rotateValue: Float) {
         viewModel.setRotate(viewBinding?.imgUcropPreview, rotateValue, false)
         isEdited = true
@@ -318,6 +326,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // === Listener crop
     override fun onCropRatioClicked(ratio: ImageRatioType) {
         viewBinding?.imgUcropPreview?.let {
             val overlayView = it.overlayView
@@ -360,6 +369,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // === Listener add logo
     override fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean) {
         viewModel.generateAddLogoOverlay(bitmap, newSize, isCircular)?.let { overlayBitmap ->
             viewBinding?.imgPreviewOverlay?.apply {
@@ -387,6 +397,23 @@ class DetailEditorFragment @Inject constructor(
         val text = requireContext().getString(editorR.string.editor_add_logo_toast_final)
         Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         activity?.finish()
+    }
+
+    // === Listener add text
+    override fun onAddFreeText() {
+        isEdited = true
+    }
+
+    override fun onAddSingleBackgroundText() {
+        isEdited = true
+    }
+
+    override fun onChangePosition() {
+        isEdited = true
+    }
+
+    override fun onTemplateSave() {
+        isEdited = true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

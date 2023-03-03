@@ -12,6 +12,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.R
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -20,6 +21,7 @@ class ToolSelectionItem: ConstraintLayout {
     private var mTextRef: Typography? = null
     private var mImgRef: AppCompatImageView? = null
     private var mIconRef: IconUnify? = null
+    private var mCardRef: CardUnify2? = null
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
     constructor(context: Context) : super(context)
@@ -29,6 +31,7 @@ class ToolSelectionItem: ConstraintLayout {
         mTextRef = findViewById(R.id.tool_selection_item_text)
         mImgRef = findViewById(R.id.tool_selection_item_image)
         mIconRef = findViewById(R.id.tool_selection_item_icon)
+        mCardRef = findViewById(R.id.tool_selection_item_border)
     }
 
     fun setTextTitle(textRef: Int) {
@@ -52,6 +55,16 @@ class ToolSelectionItem: ConstraintLayout {
                 layoutParams = lp
             }
             setImageResource(imageRef)
+        }
+    }
+
+    fun setListener(listener: () -> Unit) {
+        mCardRef?.setOnClickListener {
+            listener()
+        }
+
+        mTextRef?.setOnClickListener {
+            listener()
         }
     }
 }

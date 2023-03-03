@@ -7,11 +7,14 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.media.editor.ui.component.AddTextToolUiComponent
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.widget.ToolSelectionItem
 import com.tokopedia.unifycomponents.toPx
 
-class AddTextToolAdapter: RecyclerView.Adapter<AddTextViewHolder>() {
+class AddTextToolAdapter(
+    private val asd: AddTextToolUiComponent.Listener
+): RecyclerView.Adapter<AddTextViewHolder>() {
     // icon ref will be replace by unify icon later
     private val mAddTextMenu = listOf(
         AddTextAction(editorR.string.add_text_change_position, iconRef = editorR.drawable.editor_icon_expand),
@@ -29,7 +32,14 @@ class AddTextToolAdapter: RecyclerView.Adapter<AddTextViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: AddTextViewHolder, position: Int) {
-        holder.bind(mAddTextMenu[position])
+        holder.bind(mAddTextMenu[position]){
+            when (position) {
+                CHANGE_POSITION_INDEX -> asd.onChangePosition()
+                SAVE_TEMPLATE_INDEX -> asd.onTemplateSave()
+                FREE_TEXT_INDEX -> asd.onAddFreeText()
+                BACKGROUND_TEXT_INDEX -> asd.onAddSingleBackgroundText()
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddTextViewHolder {
@@ -51,11 +61,16 @@ class AddTextToolAdapter: RecyclerView.Adapter<AddTextViewHolder>() {
     companion object {
         private const val TYPE_ITEM = 0
         private const val TYPE_DIVIDER = 1
+
+        private const val CHANGE_POSITION_INDEX = 0
+        private const val SAVE_TEMPLATE_INDEX = 1
+        private const val FREE_TEXT_INDEX = 3
+        private const val BACKGROUND_TEXT_INDEX = 4
     }
 }
 
 class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
-    fun bind(addTextData: AddTextAction) {
+    fun bind(addTextData: AddTextAction, listener: () -> Unit) {
         try {
             (view as ToolSelectionItem).apply {
                 setTextTitle(addTextData.textRef)
@@ -67,6 +82,7 @@ class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
                         isFull = addTextData.isIconFull
                     )
                 }
+                setListener(listener)
             }
         } catch (e: Exception) {}
     }

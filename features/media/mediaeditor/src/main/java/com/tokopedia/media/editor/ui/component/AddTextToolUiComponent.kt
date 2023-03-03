@@ -10,7 +10,7 @@ import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class AddTextToolUiComponent constructor(
     viewGroup: ViewGroup,
-    private val listener: Listener?
+    private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_tool_add_text) {
 
     private val mRv = findViewById<RecyclerView>(R.id.add_text_rv)
@@ -23,7 +23,7 @@ class AddTextToolUiComponent constructor(
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        mRv.adapter = AddTextToolAdapter()
+        mRv.adapter = AddTextToolAdapter(listener)
     }
 
     interface Listener {
