@@ -336,9 +336,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icFaceFilter.setOnClickListener {
-            childFragmentManager.commit {
-                add(FaceFilterSetupFragment::class.java, null, null)
-            }
+            broadcastCoordinator.navigateToFragment(FaceFilterSetupFragment::class.java, isAddToBackStack = true)
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {

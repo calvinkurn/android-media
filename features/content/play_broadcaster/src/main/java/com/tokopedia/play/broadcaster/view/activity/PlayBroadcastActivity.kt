@@ -132,7 +132,6 @@ class PlayBroadcastActivity : BaseActivity(),
     private lateinit var aspectFrameLayout: AspectFrameLayout
     private lateinit var surfaceView: SurfaceView
     private lateinit var surfaceCardView: CardView
-    private lateinit var sliderFaceFilter: RangeSliderUnify
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
@@ -245,15 +244,29 @@ class PlayBroadcastActivity : BaseActivity(),
         isResultAfterAskPermission = false
     }
 
-    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
+    override fun <T : Fragment> navigateToFragment(
+        fragmentClass: Class<out T>,
+        extras: Bundle,
+        sharedElements: List<View>,
+        onFragment: (T) -> Unit,
+        isAddToBackStack: Boolean,
+    ) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_container)
         if (currentFragment == null || currentFragment::class.java != fragmentClass) {
             destFragment.arguments = extras
             fragmentTransaction
-                    .replace(R.id.fl_container, destFragment, fragmentClass.name)
-                    .commit()
+                .apply {
+                    if(isAddToBackStack) {
+                        add(R.id.fl_container, destFragment, fragmentClass.name)
+                        addToBackStack(null)
+                    }
+                    else {
+                        replace(R.id.fl_container, destFragment, fragmentClass.name)
+                    }
+                }
+                .commit()
         }
     }
 
@@ -308,12 +321,6 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun observeUiState() {
         lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collectLatest {
-                renderSlider(it.prevValue?.faceFilter, it.value.faceFilter)
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
@@ -325,11 +332,10 @@ class PlayBroadcastActivity : BaseActivity(),
                         val bottomSheetHeight = event.bottomSheetHeight
 
                         broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
-                        showSliderFaceFilter(bottomSheetHeight, fullPageHeight)
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
                         broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
-                        hideSliderFaceFilter()
+                        supportFragmentManager.popBackStackImmediate()
                     }
                     else -> {}
                 }
@@ -354,11 +360,6 @@ class PlayBroadcastActivity : BaseActivity(),
         aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
         surfaceView = findViewById(R.id.surface_view)
         surfaceCardView = findViewById(R.id.surface_card_view)
-        sliderFaceFilter = findViewById(R.id.slider_face_filter)
-
-        sliderFaceFilter.rangeSliderValueFrom = 0
-        sliderFaceFilter.rangeSliderValueTo = 100
-        sliderFaceFilter.rangeSliderStepSize = 10
 
         surfaceView.holder.addCallback(this)
     }
@@ -373,12 +374,6 @@ class PlayBroadcastActivity : BaseActivity(),
                 surfaceCardView.radius = 0f
             }
         })
-
-        sliderFaceFilter.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener {
-            override fun onSliderMove(p0: Pair<Int, Int>) {
-                viewModel.submitAction(PlayBroadcastAction.ChangeFaceFilterValue(p0.first))
-            }
-        }
     }
 
     private fun getConfiguration() {
@@ -740,37 +735,6 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun stopBroadcast() {
         broadcaster.stop()
         viewModel.stopTimer()
-    }
-
-    /**
-     * Face Filter
-     */
-    private fun renderSlider(
-        prev: List<FaceFilterUiModel>?,
-        curr: List<FaceFilterUiModel>,
-    ) {
-        if(prev == curr || sliderFaceFilter.visibility != View.VISIBLE) return
-
-        val prevSelectedFaceFilter = prev?.firstOrNull { it.isSelected }
-        val selectedFaceFilter = curr.firstOrNull { it.isSelected } ?: return
-
-        if(prevSelectedFaceFilter == selectedFaceFilter) return
-
-        sliderFaceFilter.updateValue((selectedFaceFilter.value * 100).toInt(), null)
-    }
-
-    private fun showSliderFaceFilter(bottomSheetHeight: Int, fullPageHeight: Int) {
-        sliderFaceFilter.doOnApplyWindowInsets { v, insets, _, margin ->
-            val systemWindowInsetBottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
-            val targetY = fullPageHeight - v.height - bottomSheetHeight.toFloat() - systemWindowInsetBottom - offset16
-
-            sliderFaceFilter.y = targetY
-            sliderFaceFilter.show()
-        }
-    }
-
-    private fun hideSliderFaceFilter() {
-        sliderFaceFilter.visibility = View.INVISIBLE
     }
 
     companion object {

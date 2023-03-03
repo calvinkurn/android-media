@@ -451,9 +451,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         eventBus.emit(Event.ClickSetSchedule)
                     }
                     DynamicPreparationMenu.Menu.FaceFilter -> {
-                        childFragmentManager.commit {
-                            add(FaceFilterSetupFragment::class.java, null, null)
-                        }
+                        broadcastCoordinator.navigateToFragment(FaceFilterSetupFragment::class.java, isAddToBackStack = true)
                     }
                 }
             }
