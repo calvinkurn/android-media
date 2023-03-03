@@ -24,6 +24,7 @@ import com.tokopedia.autocompletecomponent.util.HeadlineAdsIdList
 import com.tokopedia.autocompletecomponent.util.SuggestionItemIdList
 import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
+import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
@@ -134,10 +135,6 @@ class SuggestionPresenter @Inject constructor(
             Throwable::printStackTrace,
             createGetSuggestionParams()
         )
-    }
-
-    private fun Map<String, String>.isMps(): Boolean {
-        return get(SearchApiConst.ACTIVE_TAB) == SearchApiConst.ACTIVE_TAB_MPS
     }
 
     private fun Map<String, String>.generateMpsSearchParam(keyword: String): Map<String, String> {
