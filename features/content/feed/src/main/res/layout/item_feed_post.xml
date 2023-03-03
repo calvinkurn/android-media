@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="display_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/like_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="THUMB"
+        app:unify_image_type="circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/comment_button"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/comment_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="CHAT"
+        app:unify_image_type="circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/menu_button"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/menu_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="MENU_KEBAB_HORIZONTAL"
+        app:unify_image_type="circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/share_button"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/share_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="SHARE"
+        app:unify_image_type="circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/product_tag_button"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/product_tag_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="PRODUCT"
+        app:unify_image_type="circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
