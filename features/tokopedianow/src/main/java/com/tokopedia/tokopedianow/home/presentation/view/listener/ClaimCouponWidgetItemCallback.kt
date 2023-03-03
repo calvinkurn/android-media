@@ -9,8 +9,8 @@ class ClaimCouponWidgetItemCallback(
     private val viewModel: TokoNowHomeViewModel,
     private val context: Context?
 ): HomeClaimCouponWidgetItemListener {
-    override fun onClaimButtonClicked(catalogId: String) {
-        viewModel.claimCoupon(catalogId)
+    override fun onClaimButtonClicked(widgetId: String, catalogId: String) {
+        viewModel.claimCoupon(widgetId, catalogId)
     }
 
     override fun onCouponWidgetClicked(appLink: String) {

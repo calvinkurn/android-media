@@ -113,6 +113,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -387,13 +388,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun getCatalogCouponList(slugs: List<String>) {
+    fun getCatalogCouponList(
+        widgetId: String,
+        slugs: List<String>
+    ) {
         launchCatchError(block = {
             val response = getCatalogCouponListUseCase.execute(
                 catalogSlugs = slugs
             )
             homeLayoutItemList.mapHomeCatalogCouponList(
                 response = response,
+                widgetId = widgetId,
                 slugs = slugs,
                 state = TokoNowLayoutState.SHOW,
             )
@@ -404,6 +409,7 @@ class TokoNowHomeViewModel @Inject constructor(
             _homeLayoutList.postValue(Success(data))
         }) {
             homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = widgetId,
                 slugs = slugs,
                 state = TokoNowLayoutState.HIDE
             )
@@ -415,7 +421,10 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun claimCoupon(catalogId: String) {
+    fun claimCoupon(
+        widgetId: String,
+        catalogId: String
+    ) {
         launchCatchError(block = {
             if (userSession.isLoggedIn) {
                 val response = redeemCouponUseCase.execute(catalogId)
@@ -423,8 +432,9 @@ class TokoNowHomeViewModel @Inject constructor(
                 _couponClaimed.postValue(Success(coupon))
 
                 homeLayoutItemList.mapHomeClaimCouponList(
-                    id = catalogId,
-                    ctaText = coupon.code
+                    widgetId = widgetId,
+                    catalogId = catalogId,
+                    ctaText = COUPON_STATUS_CLAIMED
                 )
                 val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
@@ -754,11 +764,13 @@ class TokoNowHomeViewModel @Inject constructor(
                 catalogSlugs = item.slugs
             )
             homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = item.id,
                 response = response,
                 state = TokoNowLayoutState.SHOW
             )
         }) {
             homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = item.id,
                 state = TokoNowLayoutState.HIDE
             )
         }

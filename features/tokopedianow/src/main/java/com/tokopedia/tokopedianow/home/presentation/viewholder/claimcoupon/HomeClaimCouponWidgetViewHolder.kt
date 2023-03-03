@@ -3,9 +3,10 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -36,6 +37,8 @@ class HomeClaimCouponWidgetViewHolder(
 
     private var binding: ItemTokopedianowClaimCouponWidgetBinding? by viewBinding()
 
+    private var widgets: MutableList<Visitable<*>> = mutableListOf()
+
     private val adapter by lazy {
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
@@ -64,64 +67,83 @@ class HomeClaimCouponWidgetViewHolder(
                 TokoNowLayoutState.LOADING -> showLoadingState(item)
                 else -> showErrorState(item)
             }
+            adapter.submitList(widgets)
         }
     }
 
     private fun ItemTokopedianowClaimCouponWidgetBinding.showSuccessState(item: HomeClaimCouponWidgetUiModel) {
-        localLoad.hide()
-        dynamicHeaderCustomView.show()
-        dynamicHeaderCustomView.setModel(TokoNowDynamicHeaderUiModel(title = item.title))
-
-        rvClaimWidgets.show()
-        item.claimCouponList?.let { claimCouponList ->
-            adapter.submitList(claimCouponList)
-        }
+        initHeader(title = item.title)
+        initList(couponList = item.claimCouponList)
+        initLocalLoad(isError = false)
     }
 
     private fun ItemTokopedianowClaimCouponWidgetBinding.showErrorState(item: HomeClaimCouponWidgetUiModel) {
-        dynamicHeaderCustomView.hide()
-        rvClaimWidgets.hide()
+        initHeader(title = String.EMPTY)
+        initList(couponList = null)
+        initLocalLoad(
+            id = item.id,
+            slugs = item.slugs,
+            isError = true
+        )
+    }
 
-        localLoad.apply {
-            show()
+    private fun ItemTokopedianowClaimCouponWidgetBinding.showLoadingState(item: HomeClaimCouponWidgetUiModel) {
+        val shimmeringUiModel = HomeClaimCouponWidgetItemShimmeringUiModel(
+            id = SHIMMERING_ID,
+            isDouble = item.isDouble
+        )
+        initHeader(title = String.EMPTY)
+        initList(
+            couponList = if (item.isDouble) {
+                listOf(
+                    shimmeringUiModel,
+                    shimmeringUiModel
+                )
+            } else {
+                listOf(
+                    shimmeringUiModel
+                )
+            }
+        )
+        initLocalLoad(isError = false)
+    }
+
+    private fun ItemTokopedianowClaimCouponWidgetBinding.initHeader(
+        title: String
+    ) {
+        dynamicHeaderCustomView.showIfWithBlock(title.isNotBlank()) {
+            dynamicHeaderCustomView.setModel(TokoNowDynamicHeaderUiModel(title = title))
+        }
+    }
+
+    private fun ItemTokopedianowClaimCouponWidgetBinding.initList(
+        couponList: List<Visitable<*>>?
+    ) {
+        rvClaimWidgets.showIfWithBlock(!couponList.isNullOrEmpty()) {
+            couponList?.let { couponList ->
+                widgets.clear()
+                widgets.addAll(couponList)
+            }
+        }
+    }
+
+    private fun ItemTokopedianowClaimCouponWidgetBinding.initLocalLoad(
+        id: String = "",
+        slugs: List<String> = listOf(),
+        isError: Boolean
+    ) {
+        localLoad.showIfWithBlock(isError) {
             progressState = false
             title?.text = context.getString(R.string.tokopedianow_claim_coupon_widget_local_load_title)
             description?.text = context.getString(R.string.tokopedianow_claim_coupon_widget_local_load_description)
             refreshBtn?.setOnClickListener {
                 progressState = true
-                claimCouponWidgetListener?.onClickRefreshButton(item.slugs)
+                claimCouponWidgetListener?.onClickRefreshButton(id, slugs)
             }
         }
     }
 
-    private fun ItemTokopedianowClaimCouponWidgetBinding.showLoadingState(item: HomeClaimCouponWidgetUiModel) {
-        dynamicHeaderCustomView.hide()
-        localLoad.hide()
-
-        val shimmeringUiModel = mutableListOf(
-            HomeClaimCouponWidgetItemShimmeringUiModel(
-                id = SHIMMERING_ID,
-                isDouble = item.isDouble
-            ),
-            HomeClaimCouponWidgetItemShimmeringUiModel(
-                id = SHIMMERING_ID,
-                isDouble = item.isDouble
-            )
-        )
-
-        if (item.isDouble) {
-            adapter.submitList(
-                shimmeringUiModel
-            )
-        } else {
-            shimmeringUiModel.removeLast()
-            adapter.submitList(
-                shimmeringUiModel
-            )
-        }
-    }
-
     interface HomeClaimCouponWidgetListener {
-        fun onClickRefreshButton(slugs: List<String>)
+        fun onClickRefreshButton(widgetId: String, slugs: List<String>)
     }
 }

@@ -32,6 +32,7 @@ internal object CatalogCouponListMapper {
         return this?.catalogWithCouponList?.map { coupon ->
             HomeClaimCouponWidgetItemUiModel(
                 id = coupon.id,
+                widgetId = item.id,
                 smallImageUrlMobile = coupon.smallImageUrlMobile,
                 imageUrlMobile = coupon.imageUrlMobile,
                 ctaText = coupon.buttonStr,

@@ -241,11 +241,12 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.mapHomeCatalogCouponList(
+        widgetId: String,
         response: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList? = null,
         slugs: List<String>? = null,
         @TokoNowLayoutState state: Int
     ) {
-        firstOrNull { it?.layout is HomeClaimCouponWidgetUiModel }?.let {
+        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
             val item = it.layout as HomeClaimCouponWidgetUiModel
             val couponList = response.mapToClaimCouponWidgetUiModelList(item)
 
@@ -266,16 +267,17 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.mapHomeClaimCouponList(
-        id: String,
+        widgetId: String,
+        catalogId: String,
         ctaText: String
     ) {
-        firstOrNull { it?.layout is HomeClaimCouponWidgetUiModel }?.let {
+        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
             val item = it.layout as HomeClaimCouponWidgetUiModel
 
             val layout = it.layout.copy(
                 id = item.id,
                 claimCouponList = item.claimCouponList?.map { claimCoupon ->
-                    if (claimCoupon.id == id) {
+                    if (claimCoupon.id == catalogId) {
                         claimCoupon.copy(ctaText = ctaText)
                     } else {
                         claimCoupon

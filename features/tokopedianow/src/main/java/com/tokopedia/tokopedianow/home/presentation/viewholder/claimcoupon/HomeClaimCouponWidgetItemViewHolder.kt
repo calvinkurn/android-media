@@ -20,6 +20,7 @@ class HomeClaimCouponWidgetItemViewHolder(
     companion object {
         const val COUPON_STATUS_COMPLETED = "Habis"
         const val COUPON_STATUS_CLAIM = "Klaim"
+        const val COUPON_STATUS_CLAIMED = "Diklaim"
         const val COUPON_STATUS_LOGIN = "Login"
 
         @LayoutRes
@@ -54,25 +55,30 @@ class HomeClaimCouponWidgetItemViewHolder(
         item: HomeClaimCouponWidgetItemUiModel
     ) {
         val ctaText = item.ctaText
-        btnClaim.buttonSize = if (item.isDouble) UnifyButton.Size.MICRO else UnifyButton.Size.SMALL
-        btnClaim.text = if (ctaText == COUPON_STATUS_COMPLETED || ctaText.isBlank()) COUPON_STATUS_COMPLETED else ctaText
-        btnClaim.isEnabled = ctaText == COUPON_STATUS_CLAIM
-        if (btnClaim.isEnabled) {
-            btnClaim.isInverse = true
-            btnClaim.buttonVariant = UnifyButton.Variant.GHOST
-            btnClaim.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
-        else {
-            btnClaim.isInverse = false
-            btnClaim.buttonVariant = UnifyButton.Variant.FILLED
-        }
-        btnClaim.setOnClickListener {
-            listener?.onClaimButtonClicked(item.id)
+        btnClaim.apply {
+            buttonSize = if (item.isDouble) UnifyButton.Size.MICRO else UnifyButton.Size.SMALL
+            text = if (ctaText == COUPON_STATUS_COMPLETED || ctaText.isBlank()) COUPON_STATUS_COMPLETED else ctaText
+            isEnabled = ctaText == COUPON_STATUS_CLAIM
+            if (isEnabled) {
+                isInverse = true
+                buttonVariant = UnifyButton.Variant.GHOST
+                setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
+            else {
+                isInverse = false
+                buttonVariant = UnifyButton.Variant.FILLED
+            }
+            setOnClickListener {
+                listener?.onClaimButtonClicked(
+                    widgetId = item.widgetId,
+                    catalogId = item.id
+                )
+            }
         }
     }
 
     interface HomeClaimCouponWidgetItemListener {
-        fun onClaimButtonClicked(catalogId: String)
+        fun onClaimButtonClicked(widgetId: String, catalogId: String)
         fun onCouponWidgetClicked(appLink: String)
     }
 

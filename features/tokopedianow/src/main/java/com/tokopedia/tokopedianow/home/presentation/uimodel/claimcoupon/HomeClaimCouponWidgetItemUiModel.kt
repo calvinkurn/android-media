@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 
 data class HomeClaimCouponWidgetItemUiModel(
     val id: String,
+    val widgetId: String,
     val smallImageUrlMobile: String,
     val imageUrlMobile: String,
     val ctaText: String,

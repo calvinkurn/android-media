@@ -6,7 +6,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewMod
 class ClaimCouponWidgetCallback(
     private val viewModel: TokoNowHomeViewModel
 ): HomeClaimCouponWidgetViewHolder.HomeClaimCouponWidgetListener {
-    override fun onClickRefreshButton(slugs: List<String>) {
-        viewModel.getCatalogCouponList(slugs)
+    override fun onClickRefreshButton(widgetId: String, slugs: List<String>) {
+        viewModel.getCatalogCouponList(widgetId, slugs)
     }
 }
