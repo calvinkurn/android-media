@@ -130,6 +130,7 @@ class ShopHomeCarousellProductViewHolder(
     }
 
     private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
+        val shopHomeProductViewModelList = shopHomeProductViewModelList.take(2)
         recyclerView?.isNestedScrollingEnabled = false
         recyclerViewForSingleOrDoubleProductCard?.isNestedScrollingEnabled = false
         initProductCardListener(shopHomeProductViewModelList)

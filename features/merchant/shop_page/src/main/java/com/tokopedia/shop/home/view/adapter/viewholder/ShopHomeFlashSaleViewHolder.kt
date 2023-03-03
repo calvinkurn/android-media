@@ -153,7 +153,7 @@ class ShopHomeFlashSaleViewHolder(
         val containerLayoutParams = flashSaleContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
         containerLayoutParams?.setMargins(
             containerLayoutParams.leftMargin,
-            RV_CONTAINER_FESTIVITY_MARGIN_TOP.dpToPx().toInt(),
+            containerLayoutParams.topMargin,
             containerLayoutParams.rightMargin,
             CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM.dpToPx().toInt()
         )
@@ -164,7 +164,7 @@ class ShopHomeFlashSaleViewHolder(
         val rvContainerLayoutParams = rvContainer?.layoutParams as? ConstraintLayout.LayoutParams
         rvContainerLayoutParams?.setMargins(
             rvContainerLayoutParams.leftMargin,
-            rvContainerLayoutParams.topMargin,
+            RV_CONTAINER_FESTIVITY_MARGIN_TOP.dpToPx().toInt(),
             rvContainerLayoutParams.rightMargin,
             rvContainerLayoutParams.bottomMargin
         )
