@@ -23,9 +23,8 @@ object DynamicDataPassingMapper {
         addOnResult: AddOnResult,
         isOcs: Boolean
     ): DynamicDataPassingParamRequest.AddOn {
-        val listAddOnData = arrayListOf<DynamicDataPassingParamRequest.AddOn.AddOnDataParam>()
-        addOnResult.addOnData.map { data ->
-            val addOnData = DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
+        val listAddOnData: List<DynamicDataPassingParamRequest.AddOn.AddOnDataParam> = addOnResult.addOnData.map { data ->
+            DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
                 addOnId = data.addOnId.toLongOrZero(),
                 addOnQty = data.addOnQty,
                 addOnMetadata = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam(
@@ -37,7 +36,6 @@ object DynamicDataPassingMapper {
                     )
                 )
             )
-            listAddOnData.add(addOnData)
         }
 
         return DynamicDataPassingParamRequest.AddOn(
@@ -50,9 +48,8 @@ object DynamicDataPassingMapper {
         addOnResult: AddOnsDataModel,
         isOcs: Boolean
     ): DynamicDataPassingParamRequest.AddOn {
-        val listAddOnData = arrayListOf<DynamicDataPassingParamRequest.AddOn.AddOnDataParam>()
-        addOnResult.addOnsDataItemModelList.map { dataItem ->
-            val addOnData = DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
+        val listAddOnData: List<DynamicDataPassingParamRequest.AddOn.AddOnDataParam> = addOnResult.addOnsDataItemModelList.map { dataItem ->
+            DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
                 addOnId = dataItem.addOnId.toLongOrZero(),
                 addOnQty = dataItem.addOnQty.toInt(),
                 addOnMetadata = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam(
@@ -64,7 +61,6 @@ object DynamicDataPassingMapper {
                     )
                 )
             )
-            listAddOnData.add(addOnData)
         }
 
         return DynamicDataPassingParamRequest.AddOn(
