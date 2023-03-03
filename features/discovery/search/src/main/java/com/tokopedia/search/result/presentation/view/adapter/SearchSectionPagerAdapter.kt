@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
 import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 
@@ -15,6 +16,7 @@ internal class SearchSectionPagerAdapter(
     fragmentManager: FragmentManager,
     private val titleList: List<String>,
     private val searchParameter: SearchParameter,
+    private val searchComponent: SearchComponent?,
 ) : FragmentStatePagerAdapter(fragmentManager), SearchViewPagerAdapter {
 
     private var productListFragment: ProductListFragment? = null
@@ -35,7 +37,7 @@ internal class SearchSectionPagerAdapter(
     }
 
     private fun createShopFragment(): ShopListFragment {
-        return ShopListFragment.newInstance()
+        return ShopListFragment.newInstance(searchComponent)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

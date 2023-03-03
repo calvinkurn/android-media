@@ -5,21 +5,18 @@ import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION
-import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.search.result.mps.DaggerMPSComponent
 import com.tokopedia.search.result.mps.MPSFragment
-import com.tokopedia.search.result.mps.qbottomsheet.MPSBottomSheetFragment
+import com.tokopedia.search.result.mps.bottomsheet.MPSShimmeringFragment
+import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 
-class MPSPagerAdapter(
+internal class MPSPagerAdapter(
     fragmentManager: FragmentManager,
     private val titleList: List<String>,
-    private val searchParameter: SearchParameter,
-    private val baseAppComponent: BaseAppComponent,
+    private val searchComponent: SearchComponent?,
 ): FragmentStatePagerAdapter(fragmentManager), SearchViewPagerAdapter {
 
-    private var mpsBottomSheetFragment: MPSBottomSheetFragment? = null
+    private var mpsShimmeringFragment: MPSShimmeringFragment? = null
     private var mpsFragment: MPSFragment? = null
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
@@ -32,17 +29,12 @@ class MPSPagerAdapter(
         }
     }
 
-    private fun createMPSBottomSheetFragment(): MPSBottomSheetFragment {
-        return MPSBottomSheetFragment()
+    private fun createMPSBottomSheetFragment(): MPSShimmeringFragment {
+        return MPSShimmeringFragment.newInstance(searchComponent)
     }
 
     private fun createMPSFragment(): MPSFragment {
-        return MPSFragment.newInstance().apply {
-            DaggerMPSComponent.builder()
-                .baseAppComponent(baseAppComponent)
-                .build()
-                .inject(this)
-        }
+        return MPSFragment.newInstance(searchComponent)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -56,7 +48,7 @@ class MPSPagerAdapter(
 
     private fun castFragmentsInstance(fragment: Any) {
         when (fragment) {
-            is MPSBottomSheetFragment -> mpsBottomSheetFragment = fragment
+            is MPSShimmeringFragment -> mpsShimmeringFragment = fragment
             is MPSFragment -> mpsFragment = fragment
         }
     }
@@ -84,7 +76,7 @@ class MPSPagerAdapter(
         return titleList.size
     }
 
-    override fun getFirstPageFragment(): Fragment? = mpsBottomSheetFragment
+    override fun getFirstPageFragment(): Fragment? = mpsShimmeringFragment
 
     override fun getSecondPageFragment(): Fragment? = mpsFragment
 

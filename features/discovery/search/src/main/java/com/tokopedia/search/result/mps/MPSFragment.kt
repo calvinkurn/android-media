@@ -1,31 +1,24 @@
 package com.tokopedia.search.result.mps
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.discovery.common.State
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
-import com.tokopedia.search.utils.BackToTop
+import com.tokopedia.search.result.presentation.view.activity.SearchComponent
+import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.SearchView
-import com.tokopedia.search.utils.mvvm.fragmentViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -34,17 +27,13 @@ class MPSFragment:
     SearchView,
     ChooseAddressListener,
     FragmentProvider,
-    BackToTop {
+    BackToTopView {
 
-    var viewModelFactory: ViewModelProvider.Factory? = null
-        @Inject set
+    @Inject
+    @Suppress("LateinitUsage")
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: MPSViewModel? by lazy(NONE) {
-        viewModelFactory?.let {
-            ViewModelProvider(this, it).get()
-        }
-    }
-
+    private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
     private var binding by autoClearedNullable<SearchMpsFragmentLayoutBinding>()
 
     private val mpsTypeFactory = MPSTypeFactoryImpl(
@@ -103,6 +92,9 @@ class MPSFragment:
     }
 
     companion object {
-        fun newInstance() = MPSFragment()
+
+        internal fun newInstance(searchComponent: SearchComponent?) = MPSFragment().apply {
+            searchComponent?.inject(this)
+        }
     }
 }

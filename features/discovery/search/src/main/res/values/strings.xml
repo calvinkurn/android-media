@@ -128,4 +128,8 @@
     <string name="search_mps_loading_subtitle_4">Main ke pasar, pulangnya beli kencur. Yuk santai sebentar, hasilnya siap meluncur.</string>
     <string name="search_mps_loading_subtitle_5">Jalan-jalan ke Surabaya, tak lupa main di pantai. Siap-siap belanja ya, hasilnya segera sampai.</string>
     <string name="search_mps_loading_subtitle_6">Beli batako di Palangkaraya. Toped bakal pilihin toko yang punya semuanya.</string>
+
+    <string name="search_mps_query_bottomsheet_title">Mau cari produk yang mana, nih?</string>
+    <string name="search_mps_query_bottomsheet_choose_query">Pilih satu produk yang ingin kamu cari di halaman pencarian.</string>
+    <string name="search_mps_query_bottomsheet_find_product">Cari Produk</string>
 </resources>

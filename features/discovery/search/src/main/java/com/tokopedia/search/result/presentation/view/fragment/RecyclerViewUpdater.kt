@@ -114,7 +114,6 @@ class RecyclerViewUpdater @Inject constructor(
     }
 
     override fun removeLoading() {
-        searchNavigationListener?.removeSearchPageLoading()
         productListAdapter?.removeLoading()
     }
 

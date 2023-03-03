@@ -1,6 +1,6 @@
 package com.tokopedia.search.utils
 
-interface BackToTop {
+interface BackToTopView {
 
     fun backToTop()
 }

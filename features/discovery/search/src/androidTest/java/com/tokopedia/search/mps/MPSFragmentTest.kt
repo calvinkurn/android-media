@@ -10,13 +10,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.R
-import com.tokopedia.search.result.mps.DaggerMPSComponent
 import com.tokopedia.search.result.mps.MPSFragment
 import com.tokopedia.search.result.mps.MPSState
-import com.tokopedia.search.result.mps.MPSStateModule
 import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.utils.createFakeBaseAppComponent
 import com.tokopedia.search.utils.rawToObject
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.tokopedia.search.test.R as RTest
@@ -34,38 +34,42 @@ class MPSFragmentTest {
         instantiate = instantiate
     )
 
+    private fun searchComponent(mpsState: MPSState): SearchComponent =
+        DaggerMPSFragmentTestComponent.builder()
+            .baseAppComponent(createFakeBaseAppComponent(context))
+            .fakeMPSViewModelModule(FakeMPSViewModelModule(mpsState))
+            .build()
+
     @Test
     fun mps_loading() {
         launchFragmentInContainer {
-            MPSFragment.newInstance().apply {
-                injectDependencies(this, MPSState())
-            }
+            MPSFragment.newInstance(searchComponent(MPSState()))
         }
 
         onView(withId(R.id.mpsLoadingView)).check(matches(isDisplayed()))
+        onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun mps_success() {
         val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
+        val mpsStateSuccess = MPSState().success(mpsModel)
 
         launchFragmentInContainer {
-            MPSFragment.newInstance().apply {
-                injectDependencies(this, MPSState().success(mpsModel))
-            }
+            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
         }
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(isDisplayed()))
+        onView(withId(R.id.mpsLoadingView)).check(matches(not(isDisplayed())))
     }
 
-    private fun injectDependencies(
-        fragment: MPSFragment,
-        mpsState: MPSState,
-    ) {
-        DaggerMPSComponent.builder()
-            .baseAppComponent(createFakeBaseAppComponent(context))
-            .mPSStateModule(MPSStateModule(mpsState))
-            .build()
-            .inject(fragment)
+    @Test
+    fun mps_failed() {
+
+    }
+
+    @Test
+    fun mps_empty_state() {
+
     }
 }

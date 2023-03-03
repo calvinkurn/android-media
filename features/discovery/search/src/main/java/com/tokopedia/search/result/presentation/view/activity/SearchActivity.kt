@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
@@ -28,33 +27,40 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.result.SearchParameterModule
+import com.tokopedia.search.result.SearchState
+import com.tokopedia.search.result.SearchViewModel
 import com.tokopedia.search.result.presentation.view.adapter.MPSPagerAdapter
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter
 import com.tokopedia.search.result.presentation.view.adapter.SearchViewPagerAdapter
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_TRACE
 import com.tokopedia.search.result.product.performancemonitoring.searchProductPerformanceMonitoring
-import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
-import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule
-import com.tokopedia.search.utils.BackToTop
+import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.telemetry.ITelemetryActivity
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.listOf
+import kotlin.collections.mutableListOf
+import kotlin.collections.set
 
 class SearchActivity : BaseActivity(),
+    SearchView,
     RedirectionListener,
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
@@ -63,7 +69,6 @@ class SearchActivity : BaseActivity(),
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
-    private var loadingView: LoaderUnify? = null
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
     private var tabShadow: View? = null
@@ -82,15 +87,11 @@ class SearchActivity : BaseActivity(),
     lateinit var localCacheHandler: LocalCacheHandler
 
     @Inject
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
-    lateinit var searchShopViewModelFactory: ViewModelProvider.Factory
+    @Suppress("LateinitUsage")
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    @Named(SearchConstant.SEARCH_VIEW_MODEL_FACTORY)
-    lateinit var searchViewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var searchViewModel: SearchViewModel // initialized in initViewModel
-    private lateinit var searchShopViewModel: SearchShopViewModel // initialized in initViewModel
+    private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
+    private var searchComponent: SearchComponent? = null
     private lateinit var searchParameter: SearchParameter // initialized in getExtrasFromIntent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,12 +145,13 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun initInjector() {
-        DaggerSearchViewComponent
+        searchComponent = DaggerSearchComponent
             .builder()
             .baseAppComponent(component)
-            .searchShopViewModelFactoryModule(SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
+            .searchParameterModule(SearchParameterModule(searchParameter))
             .build()
-            .inject(this)
+
+        searchComponent?.inject(this)
     }
 
     private fun proceed() {
@@ -160,7 +162,6 @@ class SearchActivity : BaseActivity(),
     private fun findViews() {
         searchNavigationToolbar = findViewById(R.id.searchNavigationToolbar)
         container = findViewById(R.id.container)
-        loadingView = findViewById(R.id.progressBar)
         tabLayout = findViewById(R.id.tabs)
         viewPager = findViewById(R.id.pager)
         tabShadow = findViewById(R.id.search_top_bar_shadow)
@@ -188,9 +189,9 @@ class SearchActivity : BaseActivity(),
             it.bringToFront()
             it.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE)
             it.setIcon(
-                    IconBuilder()
-                            .addIcon(IconList.ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
-                            .addIcon(IconList.ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+                IconBuilder()
+                    .addIcon(IconList.ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+                    .addIcon(IconList.ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
             )
         }
     }
@@ -234,6 +235,7 @@ class SearchActivity : BaseActivity(),
         viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
+                searchViewModel?.setActiveTab(position)
                 this@SearchActivity.onPageSelected(position)
             }
 
@@ -286,8 +288,9 @@ class SearchActivity : BaseActivity(),
 
     private fun handleIntent() {
         initResources()
-        initViewModel()
+
         observeViewModel()
+
         performProductSearch()
         setToolbarTitle()
     }
@@ -297,31 +300,22 @@ class SearchActivity : BaseActivity(),
         shopTabTitle = getString(R.string.shop_tab_title)
     }
 
-    private fun initViewModel() {
-        searchViewModel = ViewModelProvider(this, searchViewModelFactory).get(SearchViewModel::class.java)
-        searchShopViewModel = ViewModelProvider(this, searchShopViewModelFactory).get(SearchShopViewModel::class.java)
-    }
-
     private fun observeViewModel() {
-        observeAutoCompleteEvent()
-        observeHideLoadingEvent()
+        searchViewModel?.apply{
+            observeState()
+
+            onEach(SearchState::activeTabPosition, ::setViewPagerCurrentItem)
+        }
     }
 
-    private fun observeAutoCompleteEvent() {
-        searchViewModel.getShowAutoCompleteViewEventLiveData().observe(this, EventObserver {
-            showSearchInputView()
-        })
-    }
-
-    private fun observeHideLoadingEvent() {
-        searchViewModel.getHideLoadingEventLiveData().observe(this, EventObserver {
-            removeSearchPageLoading()
-        })
+    private fun setViewPagerCurrentItem(position: Int) {
+        viewPager?.post {
+            viewPager?.currentItem = position
+        }
     }
 
     private fun performProductSearch() {
         setSearchParameterDefaultActiveTab()
-        onSearchingStart()
         loadSection()
     }
 
@@ -340,19 +334,6 @@ class SearchActivity : BaseActivity(),
         )
     }
 
-    private fun onSearchingStart() {
-        showLoadingView(true)
-        showContainer(false)
-    }
-
-    private fun showLoadingView(visible: Boolean) {
-//        loadingView?.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    private fun showContainer(visible: Boolean) {
-//        container?.visibility = if (visible) View.VISIBLE else View.INVISIBLE
-    }
-
     private fun loadSection() {
         val searchFragmentTitles = mutableListOf<String>()
         addFragmentTitlesToList(searchFragmentTitles)
@@ -363,15 +344,22 @@ class SearchActivity : BaseActivity(),
         }
 
         tabLayout?.setupWithViewPager(viewPager)
-
-        setActiveTab()
     }
 
     private fun createPagerAdapter(searchFragmentTitles: List<String>): SearchViewPagerAdapter =
         if (searchParameter.isMps())
-            MPSPagerAdapter(supportFragmentManager, searchFragmentTitles, searchParameter, component)
+            MPSPagerAdapter(
+                supportFragmentManager,
+                searchFragmentTitles,
+                searchComponent,
+            )
         else
-            SearchSectionPagerAdapter(supportFragmentManager, searchFragmentTitles, searchParameter)
+            SearchSectionPagerAdapter(
+                supportFragmentManager,
+                searchFragmentTitles,
+                searchParameter,
+                searchComponent,
+            )
 
     private fun addFragmentTitlesToList(searchSectionItemList: MutableList<String>) {
         searchSectionItemList.add(productTabTitle)
@@ -397,31 +385,15 @@ class SearchActivity : BaseActivity(),
 
     private fun firstPositionFragmentReselected() {
         val firstPageFragment = viewPagerAdapter?.getFirstPageFragment()
-        if (firstPageFragment is BackToTop)
+        if (firstPageFragment is BackToTopView)
             firstPageFragment.backToTop()
     }
 
     private fun secondPositionFragmentReselected() {
         val secondPageFragment = viewPagerAdapter?.getSecondPageFragment()
-        if (secondPageFragment is BackToTop)
+        if (secondPageFragment is BackToTopView)
             secondPageFragment.backToTop()
     }
-
-    private fun setActiveTab() {
-        viewPager?.viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewPager?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                viewPager?.currentItem = getViewPagerCurrentItem()
-            }
-        })
-    }
-
-    private fun getViewPagerCurrentItem() =
-            when (searchParameter.get(SearchApiConst.ACTIVE_TAB)) {
-                SearchConstant.ActiveTab.SHOP, SearchConstant.ActiveTab.MPS ->
-                    SearchTabPosition.TAB_SECOND_POSITION
-                else -> SearchTabPosition.TAB_FIRST_POSITION
-            }
 
     private fun setToolbarTitle() {
         configureSearchNavigationSearchBar()
@@ -470,11 +442,6 @@ class SearchActivity : BaseActivity(),
         outState.putParcelable(SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL, searchParameter)
     }
 
-    override fun removeSearchPageLoading() {
-        showLoadingView(false)
-        showContainer(true)
-    }
-
     override fun showSearchInputView() {
         moveToAutoCompleteActivity()
     }
@@ -508,4 +475,11 @@ class SearchActivity : BaseActivity(),
     }
 
     override fun getTelemetrySectionName() = "search"
+
+    override fun refresh() = withState(searchViewModel) {
+        if (it.isOpeningAutoComplete) {
+            showSearchInputView()
+            searchViewModel?.showAutoCompleteHandled()
+        }
+    }
 }

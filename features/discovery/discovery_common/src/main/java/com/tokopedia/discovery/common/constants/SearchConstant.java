@@ -9,13 +9,7 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_PAGE = "search result page";
-
-    String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
-
     String AB_TEST_REMOTE_CONFIG = "ab_test_remote_config";
-
-    int LANDSCAPE_COLUMN_MAIN = 3;
-    int PORTRAIT_COLUMN_MAIN = 2;
     int CPM_TEMPLATE_ID = 4;
     int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
@@ -93,7 +87,6 @@ public interface SearchConstant {
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
         String ADS_SOURCE = "search";
-        String SEARCH_SHOP_VIEW_MODEL_FACTORY = "search_shop_view_model_factory";
         int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
         int HEADLINE_PRODUCT_COUNT = 3;
     }
