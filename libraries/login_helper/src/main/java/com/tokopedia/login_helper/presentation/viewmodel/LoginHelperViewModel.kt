@@ -90,7 +90,7 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val response = getUserDetailsRestUseCase.executeOnBackground()
+      //          val response = getUserDetailsRestUseCase.executeOnBackground()
                 //      Log.d("FATAL", "callTheAPi: ${response}")
                 //         updateUserDataList(convertToUserListUiModel(response))
                 updateUserDataList(Success(listOfUsers()))

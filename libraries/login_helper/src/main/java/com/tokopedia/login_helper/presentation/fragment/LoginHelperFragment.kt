@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.login_helper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.login_helper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.login_helper.domain.LoginHelperEnvType
-import com.tokopedia.login_helper.domain.uiModel.HeaderUiModel
 import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.login_helper.domain.uiModel.UserDataUiModel
 import com.tokopedia.login_helper.presentation.adapter.LoginHelperRecyclerAdapter
@@ -200,9 +198,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             false
         )
         binding?.userList?.layoutManager = layoutManager
-        loginHelperAdapter?.clearAllElements()
-        loginHelperAdapter?.addElement(loginDataList.count)
-        loginHelperAdapter?.addElement(loginDataList.users)
+        loginHelperAdapter?.addData(loginDataList)
 
         binding?.userList?.apply {
             adapter = loginHelperAdapter
@@ -210,12 +206,14 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoginUserDataListFailure(throwable: Throwable) {
+        handleLoader(shouldShow = false)
         binding?.globalError?.run {
             setActionClickListener {
                 viewModel.processEvent(LoginHelperEvent.GetLoginData)
             }
             show()
         }
+        binding?.footer?.showToasterError(throwable.message.toBlankOrString())
     }
 
     private fun handleLoginToken(loginToken: Result<LoginToken>?) {
@@ -245,11 +243,13 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleProfileResponseSuccess(profilePojo: Success<ProfilePojo>) {
+        handleLoader(shouldShow = false)
         binding?.footer?.showToaster(profilePojo.data.profileInfo.email)
         backToPreviousScreen()
     }
 
     private fun handleFailure(throwable: Throwable) {
+        handleLoader(shouldShow = false)
         binding?.footer?.showToasterError(throwable.message.toString(), "Go to Login") {
             RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGIN)
         }
@@ -287,7 +287,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     override fun onClickUserData(data: UserDataUiModel?) {
-        Toast.makeText(context, "Logging in with ${data?.email}", Toast.LENGTH_SHORT).show()
+        handleLoader(shouldShow = true)
         viewModel.processEvent(
             LoginHelperEvent.LoginUser(
                 data?.email.toBlankOrString(),
