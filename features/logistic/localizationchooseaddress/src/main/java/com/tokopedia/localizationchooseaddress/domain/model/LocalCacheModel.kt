@@ -94,9 +94,9 @@ data class LocalCacheModel(
         return if (service_type == SERVICE_TYPE_15M) SERVICE_TYPE_20M else service_type
     }
 
-    val warehouse_ids: List<Long>
+    val warehouse_ids: List<String>
         get() = warehouses.filter { warehouse -> warehouse.warehouse_id != 0L }
-            .map { it.warehouse_id }
+            .map { it.warehouse_id.toString() }
 }
 
 @Parcelize

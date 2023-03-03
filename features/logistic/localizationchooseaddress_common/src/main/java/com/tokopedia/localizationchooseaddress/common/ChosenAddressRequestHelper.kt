@@ -56,7 +56,7 @@ data class ChosenAddressTokonow(
     val serviceType: String = "",
     @Expose
     @SerializedName("warehouse_ids")
-    val warehouseIds: List<Long> = emptyList()
+    val warehouseIds: List<String> = emptyList()
 ) : Parcelable
 
 class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private val context: Context) {
