@@ -458,15 +458,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         /** TODO: for mocking purpose, will delete this later */
         _faceFilter.update {
             listOf(
-                FaceFilterUiModel(name = "Tidak ada", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Halus", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tirus", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Cerah", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 2", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 3", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 4", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 5", minValue = 0.0, maxValue = 1.0, defaultValue = 7.0, value = 7.0, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tidak ada", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Halus", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tirus", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Cerah", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 2", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 3", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 4", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 5", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
             )
         }
     }
@@ -542,6 +542,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** Beautification */
             is PlayBroadcastAction.FaceFilterBottomSheetShown -> handleFaceFilterBottomSheetShown(event.bottomSheetHeight)
             is PlayBroadcastAction.FaceFilterBottomSheetDismissed -> handleFaceFilterBottomSheetDismissed()
+            is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
         }
     }
 
@@ -1666,6 +1667,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleFaceFilterBottomSheetDismissed() {
         viewModelScope.launch {
             _uiEvent.emit(PlayBroadcastEvent.FaceFilterBottomSheetDismissed)
+        }
+    }
+
+    private fun handleSelectFaceFilterOption(faceFilter: FaceFilterUiModel) {
+        viewModelScope.launch {
+            _faceFilter.update { faceFilters ->
+                faceFilters.map {
+                    it.copy(isSelected = it.name == faceFilter.name)
+                }
+            }
         }
     }
 

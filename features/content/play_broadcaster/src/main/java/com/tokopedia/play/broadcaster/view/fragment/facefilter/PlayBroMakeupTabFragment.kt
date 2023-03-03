@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroMakeupTabBinding
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.FaceFilterOptionItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.FaceFilterOptionViewHolder
@@ -41,7 +42,7 @@ class PlayBroMakeupTabFragment @Inject constructor(
     private val adapter by lazyThreadSafetyNone {
         FaceFilterOptionAdapter(object : FaceFilterOptionViewHolder.Listener {
             override fun onClick(item: FaceFilterUiModel) {
-
+                viewModel.submitAction(PlayBroadcastAction.SelectFaceFilterOption(item))
             }
         })
     }

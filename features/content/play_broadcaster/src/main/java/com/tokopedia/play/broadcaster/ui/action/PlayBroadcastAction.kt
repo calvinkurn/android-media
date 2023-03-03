@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -73,4 +74,5 @@ sealed interface PlayBroadcastAction {
     /** Beautification */
     data class FaceFilterBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
     object FaceFilterBottomSheetDismissed : PlayBroadcastAction
+    data class SelectFaceFilterOption(val faceFilter: FaceFilterUiModel) : PlayBroadcastAction
 }

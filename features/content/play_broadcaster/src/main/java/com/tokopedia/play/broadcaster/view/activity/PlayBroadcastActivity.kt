@@ -52,6 +52,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
@@ -74,6 +75,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -81,6 +83,7 @@ import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -305,6 +308,12 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun observeUiState() {
         lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderSlider(it.prevValue?.faceFilter, it.value.faceFilter)
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
@@ -346,6 +355,10 @@ class PlayBroadcastActivity : BaseActivity(),
         surfaceView = findViewById(R.id.surface_view)
         surfaceCardView = findViewById(R.id.surface_card_view)
         sliderFaceFilter = findViewById(R.id.slider_face_filter)
+
+        sliderFaceFilter.rangeSliderValueFrom = 0
+        sliderFaceFilter.rangeSliderValueTo = 100
+        sliderFaceFilter.rangeSliderStepSize = 10
 
         surfaceView.holder.addCallback(this)
     }
@@ -726,6 +739,17 @@ class PlayBroadcastActivity : BaseActivity(),
     /**
      * Face Filter
      */
+    private fun renderSlider(
+        prev: List<FaceFilterUiModel>?,
+        curr: List<FaceFilterUiModel>,
+    ) {
+        if(prev == curr || sliderFaceFilter.visibility != View.VISIBLE) return
+
+        val selectedFaceFilter = curr.firstOrNull { it.isSelected } ?: return
+
+        sliderFaceFilter.updateValue((selectedFaceFilter.value * 100).toInt(), null)
+    }
+
     private fun showSliderFaceFilter(bottomSheetHeight: Int, fullPageHeight: Int) {
         sliderFaceFilter.doOnApplyWindowInsets { v, insets, _, margin ->
             val systemWindowInsetBottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
