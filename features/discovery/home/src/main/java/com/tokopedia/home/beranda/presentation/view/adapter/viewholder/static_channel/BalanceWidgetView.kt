@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceWidgetAdapter
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 
 /**
  * Created by yfsx on 3/1/21.
@@ -44,8 +45,10 @@ class BalanceWidgetView : FrameLayout {
     }
 
     init {
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
+        val layout = if(HomeRollenceController.isUsingAtf2Variant())
+            R.layout.layout_item_widget_balance_widget_atf2
+        else R.layout.layout_item_widget_balance_widget
+        val view = LayoutInflater.from(context).inflate(layout, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         this.itemView = view
         this.itemContext = view.context

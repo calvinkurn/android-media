@@ -1,8 +1,7 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -11,9 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
-import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
-import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,19 +18,15 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
- * Created by dhaba
+ * Created by frenzel
  */
-class BalanceViewHolder(v: View, private val totalItems: Int) : BaseBalanceViewHolder(v) {
+class BalanceAtf2ViewHolder(v: View) : BaseBalanceViewHolder(v) {
     companion object {
-        val LAYOUT = R.layout.item_balance_widget_new
+        val LAYOUT = R.layout.item_balance_widget_atf2
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
-        private const val BALANCE_WIDGET_2_ITEMS = 2
-        private const val POSITION_2 = 1
-        private val paddingLeftPosition2Size2 = 12f.toDpInt()
-        private val paddingBalanceWidget = 8f.toDpInt()
     }
 
-    private val binding: ItemBalanceWidgetNewBinding? by viewBinding()
+    private val binding: ItemBalanceWidgetAtf2Binding? by viewBinding()
     private var listener: HomeCategoryListener? = null
 
     override fun bind(
@@ -72,7 +65,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : BaseBalanceViewH
         binding?.shimmerItemBalanceWidget?.root?.gone()
         binding?.homeContainerBalance?.homeContainerBalance?.show()
         showFailedImage()
-        binding?.homeContainerBalance?.homeHeaderTitleBalance?.text = element.headerTitle
         binding?.homeContainerBalance?.homeTvBalance?.text =
             itemView.context.getString(com.tokopedia.home.R.string.balance_widget_failed_to_load)
         binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
@@ -111,13 +103,11 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : BaseBalanceViewH
     }
 
     private fun renderItemSuccess(element: BalanceDrawerItemModel) {
-        setPaddingCard()
         showImageSuccess(element)
 
         // Load Text
         val balanceText = element.balanceTitleTextAttribute?.text ?: ""
         binding?.homeContainerBalance?.homeTvBalance?.text = balanceText
-        binding?.homeContainerBalance?.homeHeaderTitleBalance?.text = element.headerTitle
 
         // load reserve balance
         val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
@@ -157,24 +147,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : BaseBalanceViewH
             binding?.homeContainerBalance?.homeIvLogoBalance?.setImageUrl(element.iconImageUrl)
         } else {
             showFailedImage()
-        }
-    }
-
-    private fun setPaddingCard() {
-        if (totalItems == BALANCE_WIDGET_2_ITEMS && adapterPosition == POSITION_2) {
-            binding?.homeContainerBalance?.homeContainerBalance?.setPadding(
-                paddingLeftPosition2Size2,
-                paddingBalanceWidget,
-                paddingBalanceWidget,
-                paddingBalanceWidget
-            )
-        } else {
-            binding?.homeContainerBalance?.homeContainerBalance?.setPadding(
-                paddingBalanceWidget,
-                paddingBalanceWidget,
-                paddingBalanceWidget,
-                paddingBalanceWidget
-            )
         }
     }
 
