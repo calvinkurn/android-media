@@ -5,4 +5,8 @@ interface CoachMarkLocalCache {
     fun markShowPlusIconCoachMark()
     fun shouldShowAddedKeywordCoachMark() : Boolean
     fun markShowAddedKeywordCoachMark()
+
+    fun shouldShowSuggestionCoachMark() : Boolean
+
+    fun markShowSuggestionCoachMark()
 }

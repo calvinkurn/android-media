@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.jsonToObject
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.autocompletecomponent.shouldBeInstanceOf
 import com.tokopedia.autocompletecomponent.shouldNotContain
@@ -78,8 +79,11 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         searchParameter: Map<String, String> = mapOf(
             SearchApiConst.Q to keyword,
         ),
+        activeKeyword: SearchBarKeyword = SearchBarKeyword(
+            keyword = keyword
+        ),
     ) {
-        suggestionPresenter.getSuggestion(searchParameter)
+        suggestionPresenter.getSuggestion(searchParameter, activeKeyword)
     }
 
     private fun `then verify suggestion API is called`() {

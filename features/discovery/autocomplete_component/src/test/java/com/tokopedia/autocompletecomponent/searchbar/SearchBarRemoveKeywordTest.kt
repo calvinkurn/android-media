@@ -1,10 +1,7 @@
 package com.tokopedia.autocompletecomponent.searchbar
 
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 internal class SearchBarRemoveKeywordTest : SearchBarViewModelTestFixtures() {
 
     @Test

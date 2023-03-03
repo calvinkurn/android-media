@@ -21,12 +21,25 @@ class SearchParameter(
         cleanUpNullValuesInMap()
     }
 
+    constructor(
+        searchParameter: SearchParameter,
+        searchParameterMap: Map<String, String>,
+    ) : this(searchParameter.deepLinkUri) {
+        setSearchParameterMap(searchParameterMap)
+
+        cleanUpNullValuesInMap()
+    }
+
     fun cleanUpNullValuesInMap() {
         searchParameterHashMap.values.remove(null)
     }
 
     private fun setSearchParameterHashMap(searchParameterHashMap: HashMap<String, String>) {
         this.searchParameterHashMap = searchParameterHashMap
+    }
+
+    private fun setSearchParameterMap(searchParameterMap: Map<String, String>) {
+        this.searchParameterHashMap = HashMap(searchParameterMap)
     }
 
     fun getSearchParameterHashMap(): HashMap<String, String> {
@@ -83,6 +96,9 @@ class SearchParameter(
     fun setSearchQueries(queries: List<String>) {
         remove(SearchApiConst.Q)
         set(SearchApiConst.ACTIVE_TAB, SearchApiConst.ACTIVE_TAB_MPS)
+        remove(SearchApiConst.Q1)
+        remove(SearchApiConst.Q2)
+        remove(SearchApiConst.Q3)
         queries.forEachIndexed { index, query ->
             val key = when (index) {
                 1 -> SearchApiConst.Q2

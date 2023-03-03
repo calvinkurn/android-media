@@ -17,8 +17,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class MpsChipsAdapter(
     listener: MpsChipCallback,
-    itemCallback: DiffUtil.ItemCallback<AutocompleteChipDataView> = DEFAULT_ITEM_CALLBACK
-) : ListAdapter<AutocompleteChipDataView, MpsChipViewHolder>(itemCallback),
+    itemCallback: DiffUtil.ItemCallback<MpsChipDataView> = DEFAULT_ITEM_CALLBACK
+) : ListAdapter<MpsChipDataView, MpsChipViewHolder>(itemCallback),
     MpsChipCallback by listener {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,17 +35,17 @@ class MpsChipsAdapter(
 
     companion object {
         private val DEFAULT_ITEM_CALLBACK =
-            object : DiffUtil.ItemCallback<AutocompleteChipDataView>() {
+            object : DiffUtil.ItemCallback<MpsChipDataView>() {
                 override fun areItemsTheSame(
-                    oldItem: AutocompleteChipDataView,
-                    newItem: AutocompleteChipDataView
+                    oldItem: MpsChipDataView,
+                    newItem: MpsChipDataView
                 ): Boolean {
                     return oldItem.applink == newItem.applink
                 }
 
                 override fun areContentsTheSame(
-                    oldItem: AutocompleteChipDataView,
-                    newItem: AutocompleteChipDataView
+                    oldItem: MpsChipDataView,
+                    newItem: MpsChipDataView
                 ): Boolean {
                     return oldItem.title == newItem.title
                 }
@@ -73,13 +73,13 @@ class MpsChipsAdapter(
             }
         }
 
-        fun bind(element: AutocompleteChipDataView) {
-            val itemBinding = itemBinding ?: return
+        fun bind(element: MpsChipDataView) {
             bindText(element, itemBinding)
+            itemBinding.icAdd.isEnabled = !element.disableAddButton
         }
 
         private fun bindText(
-            item: AutocompleteChipDataView,
+            item: MpsChipDataView,
             binding: LayoutAutocompleteMpsChipItemBinding
         ) {
             binding.tgTitle.text = item.title
