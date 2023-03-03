@@ -89,7 +89,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_4"
         android:layout_marginTop="@dimen/unify_space_4"
-        app:labelType="general_dark_grey"
         app:layout_constraintStart_toStartOf="@+id/iv_product_image"
         app:layout_constraintTop_toTopOf="@+id/iv_product_image"
         tools:labelTitle="1" />

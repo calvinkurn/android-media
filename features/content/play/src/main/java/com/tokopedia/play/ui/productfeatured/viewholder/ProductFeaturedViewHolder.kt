@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayProductFeaturedBinding
@@ -13,8 +14,6 @@ import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.view.loadImage
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by jegul on 23/02/21
@@ -57,7 +56,9 @@ class ProductFeaturedViewHolder(
             if (item.applink.isNullOrEmpty()) return@setOnClickListener
             listener.onClickProductCard(item, adapterPosition)
         }
-
+        val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
+        binding.lblProductNumber.unlockFeature = true
+        binding.lblProductNumber.setLabelType(labelColor)
         binding.lblProductNumber.setLabel(item.number)
     }
 
