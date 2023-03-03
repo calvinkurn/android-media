@@ -227,7 +227,7 @@ object MapperFeedHome {
                 } else {
                     transformToFeedCardImage(card)
                 }
-            }.toList(),
+            }.toMutableList(),
         pagination = FeedPaginationModel(
             cursor = data.pagination.cursor,
             hasNext = data.pagination.hasNext,
