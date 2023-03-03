@@ -215,7 +215,7 @@ class FeedFragment :
     override fun onMenuClicked(model: FeedCardImageContentModel) {
         activity?.let {
             feedMenuSheet =
-                ContentThreeDotsMenuBottomSheet.getFragment(it.supportFragmentManager, it.classLoader)
+                ContentThreeDotsMenuBottomSheet.getFragment(childFragmentManager, it.classLoader)
             feedMenuSheet.setListener(this)
             feedMenuSheet.setData(getMenuItemData(), model.id)
             feedMenuSheet.show(it.supportFragmentManager)

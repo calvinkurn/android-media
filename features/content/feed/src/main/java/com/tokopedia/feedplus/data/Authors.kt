@@ -3,36 +3,35 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class Authors(
-
     @SerializedName("id")
-    var id: Int? = null,
+    val id: String = "",
     @SerializedName("name")
-    var name: String? = null,
+    val name: String = "",
     @SerializedName("type")
-    var type: String? = null,
+    val type: String = "",
     @SerializedName("image")
-    var image: String? = null,
+    val image: String = "",
     @SerializedName("hasUsername")
-    var hasUsername: Boolean? = null,
+    val hasUsername: Boolean = false,
     @SerializedName("hasAcceptTnC")
-    var hasAcceptTnC: Boolean? = null,
+    val hasAcceptTnC: Boolean = false,
     @SerializedName("items")
-    var items: ArrayList<AuthorItem> = arrayListOf()
+    val items: List<AuthorItem> = emptyList()
 
 )
 data class AuthorItem(
 
     @SerializedName("isActive")
-    var isActive: Boolean? = null,
+    val isActive: Boolean = false,
     @SerializedName("type")
-    var type: String? = null,
+    val type: String = "",
     @SerializedName("title")
-    var title: String? = null,
+    val title: String = "",
     @SerializedName("image")
-    var image: String? = null,
+    val image: String = "",
     @SerializedName("applink")
-    var applink: String? = null,
+    val applink: String = "",
     @SerializedName("weblink")
-    var weblink: String? = null
+    val weblink: String = ""
 
 )

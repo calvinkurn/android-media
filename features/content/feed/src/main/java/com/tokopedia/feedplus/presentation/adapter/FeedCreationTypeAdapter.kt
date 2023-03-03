@@ -1,7 +1,8 @@
 package com.tokopedia.feedplus.presentation.adapter
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
+import com.tokopedia.feedplus.presentation.adapter.util.FeedCreationDiffUtil
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedCreationTypeViewHolder
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 
@@ -10,7 +11,7 @@ import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
  */
 class FeedCreationTypeAdapter(
     private val listener: FeedCreationTypeViewHolder.Listener,
-) : RecyclerView.Adapter<FeedCreationTypeViewHolder>() {
+) : ListAdapter<ContentCreationTypeItem, FeedCreationTypeViewHolder>(FeedCreationDiffUtil()) {
 
     private val data = mutableListOf<ContentCreationTypeItem>()
 
@@ -27,6 +28,7 @@ class FeedCreationTypeAdapter(
     fun updateData(itemList: List<ContentCreationTypeItem>) {
         data.clear()
         data.addAll(itemList)
-        notifyDataSetChanged()
+        submitList(data)
     }
+
 }

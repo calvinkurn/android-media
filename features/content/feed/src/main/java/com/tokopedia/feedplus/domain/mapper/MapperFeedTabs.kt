@@ -18,54 +18,54 @@ object MapperFeedTabs {
         FeedTabsModel(
             meta = MetaModel(
                 selectedIndex = 0,
-                profileApplink = header.data?.userProfile?.applink ?: "",
-                profileWeblink = header.data?.userProfile?.weblink ?: "",
-                profilePhotoUrl = header.data?.userProfile?.image ?: "",
-                showMyProfile = header.data?.userProfile?.isShown ?: false
+                profileApplink = header.data.userProfile.applink,
+                profileWeblink = header.data.userProfile.weblink,
+                profilePhotoUrl = header.data.userProfile.image,
+                showMyProfile = header.data.userProfile.isShown
             ),
             data = header.data?.tab?.items?.sortedBy { it.position }
                 ?.filter { it.isActive ?: false }?.map {
-                    FeedDataModel(
-                        title = it.title ?: "",
-                        key = it.key ?: "",
-                        type = it.type ?: "",
-                        position = it.position ?: 0,
-                        isActive = it.isActive ?: false
-                    )
-                }?.toList() ?: emptyList()
+                FeedDataModel(
+                    title = it.title,
+                    key = it.key,
+                    type = it.type,
+                    position = it.position,
+                    isActive = it.isActive
+                )
+            }
         )
 
     fun getCreationBottomSheetData(header: FeedXHeader): List<ContentCreationItem> =
-        header.data?.creation?.authors?.map { author ->
+        header.data.creation.authors.map { author ->
             ContentCreationItem(
-                id = author.id ?: 0,
-                name = author.name ?: "",
-                image = author.image ?: "",
+                id = author.id,
+                name = author.name,
+                image = author.image,
                 type = CreatorType.values().find { it.value == author.type } ?: CreatorType.NONE,
-                hasUsername = author.hasUsername ?: false,
-                hasAcceptTnC = author.hasAcceptTnC ?: false,
+                hasUsername = author.hasUsername,
+                hasAcceptTnC = author.hasAcceptTnC,
                 items = author.items.map {
                     val currentCreationType = CreateContentType.values().find { createContentType ->
                         createContentType.value == it.type
                     } ?: CreateContentType.NONE
                     ContentCreationTypeItem(
-                        name = it.title ?: "",
-                        isActive = it.isActive ?: false,
-                        imageSrc = it.image ?: "",
+                        name = it.title,
+                        isActive = it.isActive,
+                        imageSrc = it.image,
                         drawableIconId = getDefaultDrawableForCreationOption(type = currentCreationType),
                         type = currentCreationType,
-                        weblink = it.weblink ?: "",
-                        applink = it.applink ?: ""
+                        weblink = it.weblink,
+                        applink = it.applink
                     )
                 }.toList()
             )
-        } ?: emptyList()
+        }
 
-    private fun getDefaultDrawableForCreationOption(type: CreateContentType): Int? =
+    private fun getDefaultDrawableForCreationOption(type: CreateContentType): Int =
         when (type) {
             CreateContentType.CREATE_LIVE -> IconUnify.VIDEO
             CreateContentType.CREATE_POST -> IconUnify.IMAGE
             CreateContentType.CREATE_SHORT_VIDEO -> IconUnify.SHORT_VIDEO
-            CreateContentType.NONE -> null
+            CreateContentType.NONE -> -1
         }
 }

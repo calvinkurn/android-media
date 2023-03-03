@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.domain.usecase
 
+import com.tokopedia.feedplus.data.FeedXHeaderRequestFields
 import com.tokopedia.feedplus.data.FeedXHeaderResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -21,7 +22,6 @@ class FeedXHeaderUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_FIELDS = "fields"
-
         const val QUERY_NAME = "FeedXHeaderQuery"
         const val QUERY = """
         query FeedXHeader(${'$'}$PARAM_FIELDS: [String!]!) {
@@ -113,7 +113,7 @@ class FeedXHeaderUseCase @Inject constructor(
         """
 
         fun createParam(
-            fields: List<String> = listOf("creation", "tab", "live", "user-profile")
+            fields: List<String> = FeedXHeaderRequestFields.values().map { it.value }
         ): Map<String, Any> {
             return mapOf(
                 PARAM_FIELDS to fields

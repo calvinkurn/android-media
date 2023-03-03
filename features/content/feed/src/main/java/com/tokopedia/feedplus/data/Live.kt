@@ -3,18 +3,16 @@ package com.tokopedia.feedplus.data
 import com.google.gson.annotations.SerializedName
 
 data class Live(
-
     @SerializedName("isActive")
-    var isActive: Boolean? = null,
+    val isActive: Boolean = false,
     @SerializedName("title")
-    var title: String? = null,
+    val title: String = "",
     @SerializedName("image")
-    var image: String? = null,
+    val image: String = "",
     @SerializedName("weblink")
-    var weblink: String? = null,
+    val weblink: String = "",
     @SerializedName("applink")
-    var applink: String? = null,
+    val applink: String = "",
     @SerializedName("__typename")
-    var _typename: String? = null
-
+    val typeName: String = ""
 )

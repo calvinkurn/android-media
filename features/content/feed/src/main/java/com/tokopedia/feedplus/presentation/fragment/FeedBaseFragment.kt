@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
@@ -23,10 +24,12 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -37,11 +40,24 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var binding: FragmentFeedBaseBinding? = null
 
     @Inject
+    internal lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
 
     private var adapter: FeedPagerAdapter? = null
-    private var creationItemList: List<ContentCreationTypeItem> = emptyList()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            when (fragment) {
+                is FeedContentCreationTypeBottomSheet -> {
+                    fragment.setListener(this)
+                }
+            }
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,6 +115,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
                 )
                 startActivity(intent)
+                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
@@ -129,7 +146,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         ) {
             when (it) {
                 is Success -> {
-                    creationItemList = it.data
                 }
                 is Fail -> Toast.makeText(
                     requireContext(),
@@ -140,21 +156,36 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (userSession.isLoggedIn) {
+            binding?.let {
+                it.btnFeedCreatePost.show()
+                it.feedUserProfileImage.show()
+            }
+        } else {
+            binding?.let {
+                it.btnFeedCreatePost.hide()
+                it.feedUserProfileImage.hide()
+            }
+        }
+    }
+
     private fun initView(data: FeedTabsModel) {
         binding?.let {
             adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    onChangeTab(position)
-                }
-            })
+                    OnPageChangeCallback() {
+                    override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                    ) {
+                        onChangeTab(position)
+                    }
+                })
 
             var firstTabData: FeedDataModel? = null
             var secondTabData: FeedDataModel? = null
@@ -243,10 +274,17 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private fun onCreatePostClicked() {
         activity?.let {
             val creationBottomSheet = FeedContentCreationTypeBottomSheet
-                .getFragment(it.supportFragmentManager, it.classLoader)
-            creationBottomSheet.setListener(this)
-            creationBottomSheet.setData(creationItemList)
-            creationBottomSheet.show(it.supportFragmentManager)
+                .getFragment(childFragmentManager, it.classLoader)
+
+            val feedCreateBottomSheetDataResult =
+                feedMainViewModel.feedCreateContentBottomSheetData.value
+            if (feedCreateBottomSheetDataResult is Success) {
+                val list = feedCreateBottomSheetDataResult.data
+                if (list.isNotEmpty()) {
+                    creationBottomSheet.setData(feedCreateBottomSheetDataResult.data)
+                    creationBottomSheet.show(childFragmentManager)
+                }
+            }
         }
     }
 
