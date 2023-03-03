@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
@@ -292,10 +293,15 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun setObservers() {
-        sharedViewModel.getMaxBudget().observe(viewLifecycleOwner, {
-            setCurrentDailyBudget(it.toString())
+        sharedViewModel.getMaxBudget().observe(viewLifecycleOwner) {
+            if (it > currentBudget && it > dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toDoubleOrZero()) {
+                setCurrentDailyBudget(it.toString())
+            }
             currentBudget = it
-        })
+            checkErrorsDailyBudgetTF(
+                dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toDoubleOrZero()
+            )
+        }
         sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
             currentAutoBidState = it
             if (currentAutoBidState.isNotEmpty()) {

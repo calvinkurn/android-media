@@ -44,12 +44,7 @@ class SharedViewModel : ViewModel() {
     }
 
     private fun setMaxBudgetValue() {
-        var budget = TopAdsEditUtils.calculateDailyBudget(dailyBudget.value, rekomendedBudget.value)
-        if (maxBudget.value != null && maxBudget.value!! < budget) {
-            maxBudget.value = budget
-        } else if (maxBudget.value == null) {
-            maxBudget.value = budget
-        }
+        maxBudget.value = TopAdsEditUtils.calculateDailyBudget(dailyBudget.value, rekomendedBudget.value)
     }
 
     fun setFirstFetchMaxBudgetValue(dailyBudget: Int) {
