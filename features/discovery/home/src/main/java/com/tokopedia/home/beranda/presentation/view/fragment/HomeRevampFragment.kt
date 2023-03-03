@@ -38,6 +38,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
+import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -421,6 +423,8 @@ open class HomeRevampFragment :
     private var fragmentCurrentScrollPosition: Int = -1
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
+
+    private val performanceTrace = PerformanceTrace("Home")
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -1276,6 +1280,12 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        performanceTrace.init(
+            v = view.rootView,
+            targetId = R.id.home_fragment_recycler_view
+        ) { summary, type ->
+            activity?.takeScreenshot(type)
+        }
         observeSearchHint()
     }
 
