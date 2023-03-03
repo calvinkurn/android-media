@@ -11,7 +11,7 @@ import android.util.Log
 import android.view.View
 import java.io.File
 import java.util.*
-
+import com.tokopedia.analytics.R
 object PerformanceTraceDebugger {
     const val PERF_TRACE_LOG = "PerformanceTraceDebugger"
     var DEBUG = false

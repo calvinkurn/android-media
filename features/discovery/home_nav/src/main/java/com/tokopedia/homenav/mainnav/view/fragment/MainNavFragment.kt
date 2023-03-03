@@ -15,6 +15,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -105,6 +108,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     // for coachmark purpose
     private var isOngoingShowOnboarding = false
 
+    private val performanceTrace = PerformanceTrace("HomeNavigation")
+
     override fun getScreenName(): String {
         return ""
     }
@@ -123,7 +128,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel.setInitialState()
 
         pageSource = args.StringMainNavArgsSourceKey
@@ -145,6 +149,15 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        PerformanceTraceDebugger.DEBUG = true
+        performanceTrace.init(
+            v = view.rootView,
+            targetId = R.id.recycler_view
+        ) { summaryModel, type ->
+            activity?.takeScreenshot(type)
+        }
+
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt()))

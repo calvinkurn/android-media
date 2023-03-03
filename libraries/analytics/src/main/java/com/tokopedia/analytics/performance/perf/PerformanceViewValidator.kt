@@ -5,16 +5,16 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-fun View.setOnViewFillingViewport(onViewFillingViewport: () -> Unit) {
+fun View.setOnViewFillingViewport(onViewFillingViewport: (target: View) -> Unit) {
     when (this) {
         is RecyclerView -> {
             if (isChildFillingViewport()) {
-                onViewFillingViewport.invoke()
+                onViewFillingViewport.invoke(this)
             }
         }
         else -> {
             if (isViewFillingViewport()) {
-                onViewFillingViewport.invoke()
+                onViewFillingViewport.invoke(this)
             }
         }
     }

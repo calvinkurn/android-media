@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicReference
 
 class PerformanceTrace(val traceName: String) {
     companion object {
-        private const val TYPE_TTFL = "TTFL"
-        private const val TYPE_TTIL = "TTIL"
+        const val TYPE_TTFL = "TTFL"
+        const val TYPE_TTIL = "TTIL"
     }
     private var startCurrentTimeMillis = 0L
     var summaryModel: AtomicReference<SummaryModel> = AtomicReference(SummaryModel())
@@ -44,7 +44,8 @@ class PerformanceTrace(val traceName: String) {
                 override fun onGlobalLayout() {
                     if (targetId != null) {
                         viewgroup.findViewById<View>(targetId)?.setOnViewFillingViewport {
-                            finishTTILMonitoring(viewgroup, onLaunchTimeFinished)
+                            setTTILInflateTrace(it, onLaunchTimeFinished)
+                            viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         }
                     } else {
                         setTTILInflateTraceWithoutTarget(viewgroup, onLaunchTimeFinished)
@@ -79,6 +80,25 @@ class PerformanceTrace(val traceName: String) {
         )
     }
 
+    private fun setTTILInflateTrace(
+        view: View,
+        onLaunchTimeFinished: (summaryModel: SummaryModel, type: String) -> Unit
+    ) {
+        PerformanceTraceDebugger.logTrace(
+            "Measuring TTIL with targetId..."
+        )
+        view.viewTreeObserver.addOnGlobalLayoutListener(
+            object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    finishTTILMonitoring(
+                        view, onLaunchTimeFinished
+                    )
+                    PerformanceTraceDebugger.logTrace("setTTILInflateTrace finished")
+                }
+            }
+        )
+    }
+
     private fun setTTILInflateTraceWithoutTarget(
         viewgroup: ViewGroup,
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String) -> Unit
@@ -94,8 +114,7 @@ class PerformanceTrace(val traceName: String) {
                         finishTTILMonitoring(
                             viewgroup, onLaunchTimeFinished
                         )
-                        viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        PerformanceTraceDebugger.logTrace("Remove")
+                        PerformanceTraceDebugger.logTrace("setTTILInflateTraceWithoutTarget finished")
                     }
                 }
             }
@@ -103,18 +122,18 @@ class PerformanceTrace(val traceName: String) {
     }
 
     private fun OnGlobalLayoutListener.finishTTILMonitoring(
-        viewgroup: ViewGroup,
+        view: View,
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String) -> Unit
     ) {
         doOnNextFrame {
-            val perfModel = createViewPerformanceModel(viewgroup)
+            val perfModel = createViewPerformanceModel(view)
             validateTTIL(perfModel)
             PerformanceTraceDebugger.logTrace(
                 "TTIL Captured: ${perfModel.inflateTime} ms"
             )
             onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL)
         }
-        viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        view.viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 
     /**
