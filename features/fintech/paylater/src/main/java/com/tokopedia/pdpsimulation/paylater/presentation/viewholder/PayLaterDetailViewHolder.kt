@@ -2,9 +2,12 @@ package com.tokopedia.pdpsimulation.paylater.presentation.viewholder
 
 import android.content.Context
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -18,6 +21,7 @@ import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.android.synthetic.main.paylater_partner_card_item.view.*
@@ -40,8 +44,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         setPayLaterHeader(element)
         setUpRecommendation(element)
         setPayLaterImage(element)
-        setUpFooter(element)
         setUpTicker(element)
+        setUpFooter(element)
         setUpCta(element)
     }
 
@@ -85,14 +89,18 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     }
 
     private fun setUpFooter(element: Detail) {
-        if (element.paylaterDisableDetail?.status == true) {
+        if (element.paylaterDisableDetail?.status == true || element.ticker.isShown) {
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
-            itemView.disableTitleDetail()
         } else {
             itemView.payLaterActionCta.visible()
-            itemView.enableTitleDetail()
             setPayLaterBenefits(element)
+        }
+
+        if (element.paylaterDisableDetail?.status == true) {
+            itemView.disableTitleDetail()
+        } else {
+            itemView.enableTitleDetail()
         }
     }
 
@@ -106,6 +114,16 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
                 TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
                 else -> Ticker.TYPE_INFORMATION
             }
+            itemView.payLaterStatusTicker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(
+                        itemView.context,
+                        linkUrl.toString()
+                    )
+                }
+
+                override fun onDismiss() {}
+            })
         }
     }
 
