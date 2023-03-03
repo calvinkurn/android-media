@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
@@ -18,7 +17,6 @@ import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -127,6 +125,7 @@ class SellerHomeNavigator(
             pages.remove(fragment)
 
             val page = when (pageType) {
+                FragmentType.HOME -> getHomeFragment(it)
                 FragmentType.PRODUCT -> setupProductManagePage(it)
                 FragmentType.ORDER -> setupSellerOrderPage(it)
                 else -> fragment
@@ -141,6 +140,11 @@ class SellerHomeNavigator(
         homeFragment?.let {
             pages[it] = title
         }
+    }
+
+    private fun getHomeFragment(pageFragment: PageFragment): Fragment? {
+        homeFragment = SellerHomeFragment.newInstance(pageFragment.sellerHomeData)
+        return homeFragment
     }
 
     fun getHomeFragment(): SellerHomeFragment? {

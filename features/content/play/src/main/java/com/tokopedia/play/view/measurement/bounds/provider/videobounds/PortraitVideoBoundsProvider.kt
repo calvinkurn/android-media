@@ -4,11 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -17,16 +17,18 @@ import kotlinx.coroutines.coroutineScope
  * Created by jegul on 04/08/20
  */
 class PortraitVideoBoundsProvider(
-        private val container: ViewGroup
+    private val container: ViewGroup
 ) : VideoBoundsProvider {
 
     private val toolbarView = container.findViewById<View>(R.id.view_toolbar_room)
+    private val toolbarCloseIcon = toolbarView.findViewById<View>(R.id.iv_back)
     private val statsInfoView = container.findViewById<View>(R.id.view_stats_info)
     private val partnerInfoView = container.findViewById<View>(R.id.view_partner_info)
-    private val sendChatView = container.findViewById<View>(R.id.view_send_chat)
-    private val quickReplyView = container.findViewById<View>(R.id.rv_quick_reply)
     private val chatListView = container.findViewById<View>(R.id.view_chat_list)
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private val verticalChatListHeight = container.resources.getDimensionPixelSize(
+        R.dimen.play_chat_vertical_max_height
+    )
 
     override suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int = coroutineScope {
         return@coroutineScope if (videoOrientation.isHorizontal) {
@@ -57,38 +59,31 @@ class PortraitVideoBoundsProvider(
         } else 0
     }
 
-    override suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int = coroutineScope {
-        val sendChatViewTotalHeight = run {
-            val height = sendChatView.height
-            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
+    override suspend fun getVideoBottomBoundsOnKeyboardShown(
+        view: View,
+        estimatedKeyboardHeight: Int,
+        videoOrientation: VideoOrientation,
+    ): Int {
+        view.awaitLayout()
+
+        val viewBottom = view.bottom
+        //View Bottom is still a full device height because it is not changed by the insets
+
+        val destHeight = if (videoOrientation is VideoOrientation.Horizontal) {
+            val dstStart = toolbarCloseIcon.right + offset16
+            val dstEnd = view.right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (videoOrientation.widthRatio / videoOrientation.heightRatio.toFloat()) * dstWidth).toInt()
+        } else {
+            viewBottom -
+                    estimatedKeyboardHeight -
+                    (viewBottom - estimatedKeyboardHeight - chatListView.bottom) -
+                    verticalChatListHeight -
+                    toolbarView.top -
+                    offset16
         }
 
-        val chatListViewTotalHeight = run {
-            val height =
-                container.resources.getDimensionPixelSize(R.dimen.play_chat_vertical_max_height)
-            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val quickReplyViewTotalHeight = run {
-            val height = if (hasQuickReply) {
-                if (quickReplyView.height <= 0) {
-                    quickReplyView.measure(
-                        View.MeasureSpec.UNSPECIFIED,
-                        View.MeasureSpec.UNSPECIFIED
-                    )
-                    quickReplyView.measuredHeight
-                } else quickReplyView.height
-            } else 0
-            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(container.context)
-        val requiredMargin = offset16
-
-        return@coroutineScope getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
+        return destHeight
     }
 
     companion object {

@@ -7,5 +7,4 @@ package com.tokopedia.purchase_platform.common.feature.tickerannouncement
 interface TickerAnnouncementActionListener {
 
     fun onShowCartTicker(tickerId: String)
-
 }

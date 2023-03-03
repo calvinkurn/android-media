@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 217
+        const val SIZE_MAPPER = 216
     }
 
     override fun setup() {
@@ -813,12 +813,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist/collection/{collection_id}/"
         assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST_COLLECTION_DETAIL, expectedDeepLink)
-    }
-
-    @Test
-    fun `check recently viewed appLink then should return tokopedia internal recently viewed in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/recentlyviewed"
-        assertEqualsDeepLinkMapper(ApplinkConst.RECENT_VIEW, expectedDeepLink)
     }
 
     @Test
