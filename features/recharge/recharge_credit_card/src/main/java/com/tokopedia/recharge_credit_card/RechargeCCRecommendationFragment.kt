@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_credit_card.databinding.FragmentRechargeCcRecommendationBinding
 import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -44,11 +46,22 @@ class RechargeCCRecommendationFragment(
     private fun initRecentTransactionWidget() {
         binding?.recentTransactionWidget?.run {
             if (recommendations.isNotEmpty()) {
+                hideEmptyState()
                 setRecentNumbers(recommendations)
                 setListener(listener)
                 setListenerRecentNumber(listener)
                 toggleTitle(isShowTitle)
+            } else {
+                showEmptyState()
             }
         }
+    }
+
+    private fun showEmptyState() {
+        binding?.recentTransactionEmptyStateWidget?.show()
+    }
+
+    private fun hideEmptyState() {
+        binding?.recentTransactionEmptyStateWidget?.hide()
     }
 }

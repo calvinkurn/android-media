@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.recharge_credit_card.widget.RechargeCCRecentTransactionWidget
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recent_transaction_widget"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.recharge_credit_card.widget.RechargeCCRecentTransactionWidget
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/recent_transaction_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.recharge_credit_card.widget.RechargeCCEmptyRecommendationWidget
+        android:id="@+id/recent_transaction_empty_state_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/recent_transaction_widget" />
+</androidx.constraintlayout.widget.ConstraintLayout>

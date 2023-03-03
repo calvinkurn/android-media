@@ -16,43 +16,55 @@
         app:closeButtonVisibility="gone"
         tools:visibility="visible" />
 
-    <com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
-        android:id="@+id/cc_widget_client_number"
-        android:layout_below="@id/cc_ticker_view"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <com.tokopedia.recharge_credit_card.widget.RechargeCCBankListWidget
-        android:id="@+id/cc_widget_bank_list"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/cc_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cc_widget_client_number"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:drawablePadding="@dimen/layout_lvl1" />
+        android:layout_marginBottom="48dp"
+        android:layout_below="@id/cc_ticker_view">
 
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/cc_tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cc_widget_bank_list"
-        android:layout_marginTop="24dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/cc_view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@+id/cc_tab_layout"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal" />
+            <com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
+                android:id="@+id/cc_widget_client_number"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.tokopedia.recharge_credit_card.widget.RechargeCCBankListWidget
+                android:id="@+id/cc_widget_bank_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cc_widget_client_number"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:drawablePadding="@dimen/layout_lvl1" />
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/cc_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cc_widget_bank_list"
+                android:layout_marginTop="24dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/cc_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@+id/cc_tab_layout"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal" />
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/cc_progress_bar"
