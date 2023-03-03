@@ -36,6 +36,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -319,23 +320,45 @@ class FeedFragment :
                 .setUri(model.weblink)
 
             shareData = shareDataBuilder.build()
-            showUniversalShareBottomSheet(model)
+            showUniversalShareBottomSheet(getFeedShareDataModel(model))
         }
     }
 
-    private fun showUniversalShareBottomSheet(card: FeedCardImageContentModel) {
+    private fun getFeedShareDataModel(model: FeedCardImageContentModel): FeedShareDataModel {
+        val mediaUrl =
+            if (model.isTypeProductHighlight) {
+                model.products.firstOrNull()?.coverUrl ?: ""
+            } else {
+                model.media.firstOrNull()?.mediaUrl ?: ""
+            }
+
+        return FeedShareDataModel(
+            id = model.id,
+            name = model.author.name,
+            tnTitle = (
+                String.format(
+                    context?.getString(feedR.string.feed_share_title) ?: "",
+                    model.author.name
+                )
+                ),
+            tnImage = mediaUrl,
+            ogUrl = mediaUrl
+        )
+    }
+
+    private fun showUniversalShareBottomSheet(shareModel: FeedShareDataModel) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@FeedFragment)
             setUtmCampaignData(
-                pageName = "Feed Page",
-                userSession.userId,
-                card.id,
-                "share"
+                pageName = FeedShareDataModel.PAGE,
+                userId = userSession.userId,
+                pageId = shareModel.id,
+                feature = FeedShareDataModel.FEATURE
             )
 
             setMetaData(
-                tnTitle = "Feed Page",
-                tnImage = ""
+                tnTitle = shareModel.tnTitle,
+                tnImage = shareModel.tnImage
             )
         }
         universalShareBottomSheet?.setOnDismissListener {
