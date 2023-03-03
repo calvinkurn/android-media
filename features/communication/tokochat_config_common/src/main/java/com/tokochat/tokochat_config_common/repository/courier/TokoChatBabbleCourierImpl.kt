@@ -52,7 +52,7 @@ class TokoChatBabbleCourierImpl @Inject constructor(
     }
 
     override fun init(chatProfileId: String?) {
-        if (remoteConfig.getBoolean(COURIER_CONVERSATION_INIT)) {
+        if (!remoteConfig.getBoolean(COURIER_CONVERSATION_INIT)) {
             courierConnection.init(SOURCE_APP_INIT)
         }
     }

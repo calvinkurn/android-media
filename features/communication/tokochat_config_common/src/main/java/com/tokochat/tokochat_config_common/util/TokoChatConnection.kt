@@ -140,7 +140,7 @@ object TokoChatConnection {
     private fun shouldInitCourier(): Boolean {
         return tokoChatConfigComponent?.getRemoteConfig()?.getBoolean(
             TokoChatBabbleCourierImpl.COURIER_CONVERSATION_INIT
-        ) == false
+        ) == true
     }
 
     private fun logToServer(throwable: Throwable) {
