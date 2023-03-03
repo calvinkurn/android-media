@@ -123,7 +123,7 @@ class ManageAddressFragment :
                     showTicker(it.data)
                 }
                 is Fail -> {
-                    binding?.tickerManageAddress?.gone()
+                    hideTicker()
                 }
             }
         }
@@ -150,6 +150,10 @@ class ManageAddressFragment :
                 }
             )
         }
+    }
+
+    private fun hideTicker() {
+        binding?.tickerManageAddress?.gone()
     }
 
     private fun observerValidateShareAddress() {
