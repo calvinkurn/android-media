@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -34,6 +35,7 @@ object PofUtils {
             )
             "#$colorToHexString"
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             ""
         }
     }
