@@ -161,8 +161,7 @@ object TagMentionBuilder {
                         mentionSpanned,
                         Spanned.SPAN_COMPOSING
                     )
-                    append(' ')
-                    append(content)
+                    append(" $content")
                 }
             } else {
                 throw Exception()
@@ -174,8 +173,7 @@ object TagMentionBuilder {
                     parentSpanned,
                     Spanned.SPAN_COMPOSING
                 )
-                append(' ')
-                append(item.content)
+                append(" ${item.content}")
             }
         }
     }

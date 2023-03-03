@@ -15,6 +15,7 @@ import androidx.core.text.toSpanned
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -136,6 +137,15 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
+
+    private val adapterObserver by lazyThreadSafetyNone {
+        object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (binding.rvComment.childCount > 0) binding.rvComment.scrollToPosition(0)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -168,6 +178,7 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
+        commentAdapter.registerAdapterDataObserver(adapterObserver)
 
         binding.ivCommentSend.setOnClickListener {
             handleSendComment()
@@ -208,7 +219,6 @@ class ContentCommentBottomSheet @Inject constructor(
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = true))
-                                binding.rvComment.layoutManager?.scrollToPosition(0)
                             }
                         )
                         toaster.addCallback(toasterCallback)
@@ -354,6 +364,7 @@ class ContentCommentBottomSheet @Inject constructor(
         super.onDestroyView()
         setEntrySource(null)
         binding.rvComment.removeOnScrollListener(scrollListener)
+        commentAdapter.unregisterAdapterDataObserver(adapterObserver)
         _binding = null
     }
 

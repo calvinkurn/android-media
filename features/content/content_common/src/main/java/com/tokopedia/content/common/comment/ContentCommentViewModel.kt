@@ -62,7 +62,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         fun handleParent() {
             viewModelScope.launchCatchError(block = {
                 val result = repo.getComments(
-                    PageSource.Play(source.id),
+                    source,
                     commentType = param.commentType,
                     cursor = param.lastParentCursor
                 )
@@ -94,7 +94,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         fun handleChild() {
             viewModelScope.launchCatchError(block = {
                 val result = repo.getComments(
-                    PageSource.Play(source.id),
+                    source,
                     commentType = param.commentType,
                     cursor = param.lastChildCursor
                 )
