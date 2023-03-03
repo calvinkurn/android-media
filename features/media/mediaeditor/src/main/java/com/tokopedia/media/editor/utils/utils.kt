@@ -9,12 +9,14 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Handler
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
@@ -224,5 +226,22 @@ fun Activity.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null
             Toast.LENGTH_LONG
         ).show()
         finish()
+    }
+}
+
+fun showErrorLoadToaster(view: View, msg: String) {
+    newRelicLog(
+        mapOf(
+            LOAD_IMAGE_FAILED to msg
+        )
+    )
+
+    if (view.isAttachedToWindow) {
+        Toaster.build(
+            view,
+            view.context.resources.getString(R.string.editor_activity_failed_load_image),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR
+        ).show()
     }
 }

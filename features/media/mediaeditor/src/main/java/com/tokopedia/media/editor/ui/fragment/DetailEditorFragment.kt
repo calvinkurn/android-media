@@ -51,6 +51,7 @@ import com.tokopedia.media.editor.utils.getRunnable
 import com.tokopedia.media.editor.utils.checkMemoryOverflow
 import com.tokopedia.media.editor.utils.delay
 import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.editor.utils.showMemoryLimitToast
 import com.tokopedia.media.editor.utils.validateImageSize
 import com.tokopedia.media.loader.loadImageRounded
@@ -960,7 +961,9 @@ class DetailEditorFragment @Inject constructor(
                     listener(
                         onError = {
                             it?.let { exception ->
-                                activity?.showMemoryLimitToast(imageSize, exception.message)
+                                viewBinding?.actionBtnContainer?.let { view ->
+                                    showErrorLoadToaster(view, exception.message ?: "")
+                                }
                             }
                         }
                     )

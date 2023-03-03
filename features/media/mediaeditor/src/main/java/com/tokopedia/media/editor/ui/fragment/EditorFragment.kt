@@ -30,6 +30,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.checkMemoryOverflow
 import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.editor.utils.showMemoryLimitToast
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -143,7 +144,10 @@ class EditorFragment @Inject constructor(
                             onError = {
                                 it?.let { exception ->
                                     loader?.dismiss()
-                                    activity?.showMemoryLimitToast(imageSize, exception.message)
+                                    viewBinding?.mainEditorFragmentLayout?.let { view ->
+                                        showErrorLoadToaster(view, exception.message ?: "")
+                                    }
+
                                 }
                             }
                         )

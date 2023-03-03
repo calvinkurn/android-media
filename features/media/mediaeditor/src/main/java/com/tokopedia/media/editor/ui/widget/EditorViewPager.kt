@@ -11,6 +11,7 @@ import com.tokopedia.media.editor.ui.adapter.viewPagerTag
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.LOAD_IMAGE_FAILED
 import com.tokopedia.media.editor.utils.newRelicLog
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.unifycomponents.Toaster
@@ -102,21 +103,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
     }
 
     private fun errorHandler(exception: MediaException?) {
-        newRelicLog(
-            mapOf(
-                LOAD_IMAGE_FAILED to "${exception?.message}"
-            )
-        )
-        errorLoadToaster()
-    }
-
-    private fun errorLoadToaster() {
-        Toaster.build(
-            this,
-            context.resources.getString(R.string.editor_activity_failed_load_image),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_ERROR
-        ).show()
+        showErrorLoadToaster(this, exception?.message ?: "")
     }
 
     companion object {
