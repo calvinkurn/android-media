@@ -6,13 +6,13 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
+import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.comment.usecase.DeleteCommentUseCase
 import com.tokopedia.content.common.comment.usecase.GetCommentsUseCase
 import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,7 +20,6 @@ import javax.inject.Inject
  * @author by astidhiyaa on 08/02/23
  */
 class ContentCommentRepositoryImpl @Inject constructor(
-    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
     private val mapper: CommentUiModelMapper,
     private val deleteCommentUseCase: DeleteCommentUseCase,
@@ -47,25 +46,26 @@ class ContentCommentRepositoryImpl @Inject constructor(
     override suspend fun replyComment(
         source: PageSource,
         commentType: CommentType,
-        comment: String
+        comment: String,
+        commenterType: UserType
     ): CommentUiModel = withContext(dispatchers.io) {
         return@withContext if (!isCommentAllowed) throw MessageErrorException(ERROR_SPAM_MESSAGE)
         else {
-            val commenterType =
-                if (userSession.isShopOwner) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER //isShopOwner from back end
+            val type =
+                if (commenterType == UserType.Shop) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
             val response = postCommentUseCase.apply {
                 setRequestParams(
                     PostCommentUseCase.setParam(
                         source = source,
                         commentType = commentType,
                         comment = comment,
-                        commenterType = commenterType
+                        commenterType = type
                     )
                 )
             }.executeOnBackground()
             lastRequestTime = System.currentTimeMillis()
             mapper.mapNewComment(
-                response.parent.data, userSession.isShopOwner
+                response.parent.data, commenterType
             )
         }
     }

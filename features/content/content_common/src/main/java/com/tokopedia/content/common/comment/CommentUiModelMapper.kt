@@ -36,7 +36,8 @@ class CommentUiModelMapper @Inject constructor() {
             }
         },
         commentType = comments.parent.parentId.convertToCommentType,
-        state = ResultState.Success
+        state = ResultState.Success,
+        commenterType = if(comments.parent.isReplyAsShop) UserType.Shop else UserType.People
     )
 
     fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {
@@ -53,11 +54,11 @@ class CommentUiModelMapper @Inject constructor() {
             isOwner = comment.isCommentOwner,
             isReportAllowed = comment.allowReport,
             userId = comment.userId,
-            userType = if (comment.isShop) UserType.Shop else UserType.People
+            userType = if (comment.isShop) UserType.Shop else UserType.People,
         )
     }
 
-    fun mapNewComment(comment: PostComment.Parent.NewComment, isShop: Boolean): CommentUiModel {
+    fun mapNewComment(comment: PostComment.Parent.NewComment, userType: UserType): CommentUiModel {
         val username = comment.userInfo.username.ifBlank { comment.userInfo.firstName }
         return CommentUiModel.Item(
             id = comment.id,
@@ -71,7 +72,7 @@ class CommentUiModelMapper @Inject constructor() {
             isOwner = false,
             isReportAllowed = false,
             userId = comment.userInfo.userId,
-            userType = if (isShop) UserType.Shop else UserType.People
+            userType = userType,
         )
     }
 

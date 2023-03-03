@@ -11,7 +11,8 @@ data class CommentWidgetUiModel(
     val nextRepliesCount: String,
     val commentType: CommentType,
     val state: ResultState,
-) {
+    val commenterType: UserType,
+    ) {
     companion object {
         val Empty
             get() = CommentWidgetUiModel(
@@ -20,6 +21,7 @@ data class CommentWidgetUiModel(
                 nextRepliesCount = "",
                 commentType = CommentType.Parent,
                 state = ResultState.Loading,
+                commenterType = UserType.Unknown,
             )
     }
 }
