@@ -32,11 +32,6 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll"
                 >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -264,8 +259,7 @@
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="0dp"
-                                        android:layout_weight="2"
+                                        android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/unify_space_16"
                                         android:layout_marginBottom="@dimen/tm_dash_dp_10"
                                         android:orientation="horizontal"
@@ -365,8 +359,7 @@
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="0dp"
-                                        android:layout_weight="2"
+                                        android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/unify_space_16"
                                         android:layout_marginBottom="@dimen/tm_dash_dp_10"
                                         android:orientation="horizontal"
@@ -454,7 +447,6 @@
                             app:layout_constraintBottom_toBottomOf="@+id/kuponTokomemberHeading"
                             />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
     <androidx.core.widget.NestedScrollView
