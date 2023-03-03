@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -11,6 +13,7 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -30,6 +34,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
@@ -69,7 +74,10 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -121,6 +129,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private lateinit var aspectFrameLayout: AspectFrameLayout
     private lateinit var surfaceView: SurfaceView
     private lateinit var surfaceCardView: CardView
+    private lateinit var sliderFaceFilter: RangeSliderUnify
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
@@ -130,6 +139,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private val offset8 by lazyThreadSafetyNone {
         resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    }
+    private val offset16 by lazyThreadSafetyNone {
+        resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
     }
 
     private var systemUiVisibility: Int
@@ -304,9 +316,11 @@ class PlayBroadcastActivity : BaseActivity(),
                         val bottomSheetHeight = event.bottomSheetHeight
 
                         broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
+                        showSliderFaceFilter(bottomSheetHeight, fullPageHeight)
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
                         broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
+                        hideSliderFaceFilter()
                     }
                     else -> {}
                 }
@@ -331,6 +345,7 @@ class PlayBroadcastActivity : BaseActivity(),
         aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
         surfaceView = findViewById(R.id.surface_view)
         surfaceCardView = findViewById(R.id.surface_card_view)
+        sliderFaceFilter = findViewById(R.id.slider_face_filter)
 
         surfaceView.holder.addCallback(this)
     }
@@ -706,6 +721,23 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun stopBroadcast() {
         broadcaster.stop()
         viewModel.stopTimer()
+    }
+
+    /**
+     * Face Filter
+     */
+    private fun showSliderFaceFilter(bottomSheetHeight: Int, fullPageHeight: Int) {
+        sliderFaceFilter.doOnApplyWindowInsets { v, insets, _, margin ->
+            val systemWindowInsetBottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+            val targetY = fullPageHeight - v.height - bottomSheetHeight.toFloat() - systemWindowInsetBottom - offset16
+
+            sliderFaceFilter.y = targetY
+            sliderFaceFilter.show()
+        }
+    }
+
+    private fun hideSliderFaceFilter() {
+        sliderFaceFilter.visibility = View.INVISIBLE
     }
 
     companion object {

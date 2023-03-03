@@ -81,6 +81,15 @@
         tools:visibility="visible"
         />
 
+    <com.tokopedia.unifycomponents.RangeSliderUnify
+        android:id="@+id/slider_face_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
         android:id="@+id/view_play_bro_debug"
         android:layout_width="match_parent"
