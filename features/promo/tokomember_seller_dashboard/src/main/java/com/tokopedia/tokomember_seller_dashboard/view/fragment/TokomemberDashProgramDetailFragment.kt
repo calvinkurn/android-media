@@ -35,6 +35,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_program_detail_fragment.*
+import kotlinx.android.synthetic.main.tm_program_detail_card.*
+import kotlinx.android.synthetic.main.tm_program_detail_tv_card.*
 import javax.inject.Inject
 
 class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
