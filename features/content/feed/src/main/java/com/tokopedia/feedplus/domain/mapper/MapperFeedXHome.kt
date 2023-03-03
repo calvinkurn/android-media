@@ -37,6 +37,23 @@ import com.tokopedia.feedplus.presentation.model.FeedViewModel
  * Created By : Muhammad Furqan on 01/03/23
  */
 object MapperFeedHome {
+    fun transform(data: FeedXHomeEntity): FeedModel = FeedModel(
+        items = data.items
+            .filter { shouldShow(it) }
+            .map { card ->
+                if (isImagesPost(card)) {
+                    transformToFeedCardImage(card)
+                } else {
+                    transformToFeedCardImage(card)
+                }
+            }.toMutableList(),
+        pagination = FeedPaginationModel(
+            cursor = data.pagination.cursor,
+            hasNext = data.pagination.hasNext,
+            totalData = data.pagination.totalData
+        )
+    )
+
     fun transformToFeedCardImage(card: FeedXCard): FeedCardImageContentModel =
         FeedCardImageContentModel(
             id = card.id,
@@ -218,24 +235,7 @@ object MapperFeedHome {
         value = score.value
     )
 
-    fun transform(data: FeedXHomeEntity): FeedModel = FeedModel(
-        items = data.items
-            .filter { shouldShow(it) }
-            .map { card ->
-                if (isImagesPost(card)) {
-                    transformToFeedCardImage(card)
-                } else {
-                    transformToFeedCardImage(card)
-                }
-            }.toMutableList(),
-        pagination = FeedPaginationModel(
-            cursor = data.pagination.cursor,
-            hasNext = data.pagination.hasNext,
-            totalData = data.pagination.totalData
-        )
-    )
-
-    fun isImagesPost(card: FeedXCard) =
+    private fun isImagesPost(card: FeedXCard) =
         (
             (card.typename == TYPE_FEED_X_CARD_POST) ||
                 (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT)
