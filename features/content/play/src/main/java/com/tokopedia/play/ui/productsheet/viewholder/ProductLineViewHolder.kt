@@ -6,6 +6,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.databinding.ItemProductLineBinding
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.custom.ProductBottomSheetCardView
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -49,7 +50,7 @@ class ProductLineViewHolder(
     }
 
     fun bind(item: ProductSheetAdapter.Item.Product) {
-        binding.root.setItem(item.product, item.section)
+        binding.root.setItem(item.product, item.section, listener.getChannelType())
     }
 
     companion object {
@@ -79,5 +80,7 @@ class ProductLineViewHolder(
             section: ProductSectionUiModel.Section,
             action: ProductAction,
         )
+
+        fun getChannelType() : PlayChannelType
     }
 }

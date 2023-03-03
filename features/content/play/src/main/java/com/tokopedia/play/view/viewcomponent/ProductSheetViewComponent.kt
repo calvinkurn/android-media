@@ -28,6 +28,7 @@ import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
 import com.tokopedia.play.view.custom.PlayVoucherView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -97,6 +98,8 @@ class ProductSheetViewComponent(
                 action
             )
         }
+
+        override fun getChannelType(): PlayChannelType = listener.getChannelType()
     }
 
     private val productAdapter = ProductSheetAdapter(
@@ -436,5 +439,6 @@ class ProductSheetViewComponent(
         fun onInformationClicked(view: ProductSheetViewComponent)
         fun onInformationImpressed(view: ProductSheetViewComponent)
         fun onInfoVoucherImpressed(view: ProductSheetViewComponent, voucher: PlayVoucherUiModel.Merchant)
+        fun getChannelType() : PlayChannelType
     }
 }

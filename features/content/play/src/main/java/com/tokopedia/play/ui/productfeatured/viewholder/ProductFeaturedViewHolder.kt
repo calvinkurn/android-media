@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
@@ -56,6 +57,9 @@ class ProductFeaturedViewHolder(
             if (item.applink.isNullOrEmpty()) return@setOnClickListener
             listener.onClickProductCard(item, adapterPosition)
         }
+
+        binding.lblProductNumber.showWithCondition(listener.getChannelType().isLive)
+        if(!listener.getChannelType().isLive) return
         val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
         binding.lblProductNumber.unlockFeature = true
         binding.lblProductNumber.setLabelType(labelColor)

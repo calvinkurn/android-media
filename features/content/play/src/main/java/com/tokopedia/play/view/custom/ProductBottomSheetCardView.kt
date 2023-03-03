@@ -52,7 +52,7 @@ class ProductBottomSheetCardView(
         mListener = listener
     }
 
-    fun setItem(item: PlayProductUiModel.Product, section: ProductSectionUiModel.Section) {
+    fun setItem(item: PlayProductUiModel.Product, section: ProductSectionUiModel.Section, channelType: PlayChannelType) {
         binding.ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         binding.tvProductTitle.text = item.title
 
@@ -123,6 +123,8 @@ class ProductBottomSheetCardView(
         binding.btnProductFirst.generateButton(firstButton.color)
         binding.btnProductSecond.generateButton(lastButton.color)
 
+        binding.lblProductNumber.showWithCondition(channelType.isLive)
+        if(!channelType.isLive) return
         val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
         binding.lblProductNumber.unlockFeature = true
         binding.lblProductNumber.setLabelType(labelColor)

@@ -217,6 +217,8 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.sendUpcomingReminderImpression(section)
     }
 
+    override fun getChannelType(): PlayChannelType = playViewModel.channelType
+
     /**
      * VariantSheet View Component Listener
      */

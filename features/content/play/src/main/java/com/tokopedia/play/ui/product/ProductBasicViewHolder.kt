@@ -2,6 +2,7 @@ package com.tokopedia.play.ui.product
 
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
 /**
@@ -13,5 +14,6 @@ open class ProductBasicViewHolder(
 
     interface Listener {
         fun onClickProductCard(product: PlayProductUiModel.Product, position: Int)
+        fun getChannelType() : PlayChannelType
     }
 }
