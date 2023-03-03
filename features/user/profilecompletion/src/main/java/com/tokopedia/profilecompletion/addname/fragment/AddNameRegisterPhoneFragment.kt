@@ -69,13 +69,13 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         val MIN_NAME = 3
         val MAX_NAME = 35
 
-		private const val SPAN_34 = 34
-		private const val SPAN_54 = 54
-		private const val SPAN_61 = 61
-		private const val SPAN_78 = 78
-		private const val FLAG_0 = 0
+        private const val SPAN_34 = 34
+        private const val SPAN_54 = 54
+        private const val SPAN_61 = 61
+        private const val SPAN_78 = 78
+        private const val FLAG_0 = 0
 
-		fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
+        fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
             val fragment = AddNameRegisterPhoneFragment()
             fragment.arguments = bundle
             return fragment
@@ -216,7 +216,12 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             if (msg.isNotEmpty()) {
                 val termPrivacy =
                     SpannableString(getString(R.string.profile_completion_detail_term_and_privacy))
-                termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), SPAN_34, SPAN_54, FLAG_0)
+                termPrivacy.setSpan(
+                    clickableSpan(PAGE_TERM_AND_CONDITION),
+                    SPAN_34,
+                    SPAN_54,
+                    FLAG_0
+                )
                 termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), SPAN_61, SPAN_78, FLAG_0)
                 termPrivacy.setSpan(
                     ForegroundColorSpan(

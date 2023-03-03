@@ -9,13 +9,13 @@ import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addphone.viewmodel.NewAddPhoneViewModel
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.changebiousername.viewmodel.ChangeBioUsernameViewModel
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
-import com.tokopedia.profilecompletion.changebiousername.viewmodel.ChangeBioUsernameViewModel
-import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
 import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileRoleViewModel
+import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
