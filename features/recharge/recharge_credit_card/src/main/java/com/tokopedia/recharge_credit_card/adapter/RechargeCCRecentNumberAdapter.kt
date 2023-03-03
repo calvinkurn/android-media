@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.common.adapter
+package com.tokopedia.recharge_credit_card.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 
-class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
-    RecyclerView.Adapter<TelcoRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
+class RechargeCCRecentNumberAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
+    RecyclerView.Adapter<RechargeCCRecentNumberAdapter.RecentNumbersItemViewHolder>() {
 
     private lateinit var listener: ActionListener
 
@@ -53,7 +53,7 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
                 ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
             )
             if (topupBillsRecommendation.description.isEmpty()) {
-                textClientNumber.text = topupBillsRecommendation.clientNumber
+                textClientNumber.text = topupBillsRecommendation.label
             } else {
                 textClientNumber.text = topupBillsRecommendation.description
             }
@@ -66,5 +66,4 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
     interface ActionListener {
         fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int)
     }
-
 }

@@ -21,6 +21,7 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
@@ -51,6 +52,7 @@ class RechargeCCViewModel @Inject constructor(
     private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
     private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
     private val _prefillData = MutableLiveData<RechargeNetworkResult<PrefillModel>>()
+    private val _menuDetail = MutableLiveData<RechargeNetworkResult<RechargeCCMenuDetail>>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
     val prefixSelect: LiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>> = _prefixSelect
@@ -58,6 +60,7 @@ class RechargeCCViewModel @Inject constructor(
     val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>> = _favoriteChipsData
     val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>> = _autoCompleteData
     val prefillData: LiveData<RechargeNetworkResult<PrefillModel>> = _prefillData
+    val menuDetail: LiveData<RechargeNetworkResult<RechargeCCMenuDetail>> = _menuDetail
 
     var categoryName: String = ""
     var loyaltyStatus: String = ""
@@ -79,13 +82,9 @@ class RechargeCCViewModel @Inject constructor(
             categoryName = data.menuDetail.menuName
             loyaltyStatus = data.menuDetail.userPerso.loyaltyStatus
 
-            if (data.menuDetail.tickers.isNotEmpty()) {
-                tickers.postValue(data.menuDetail.tickers)
-            } else {
-                tickers.postValue(listOf())
-            }
+            _menuDetail.postValue(RechargeNetworkResult.Success(data.menuDetail))
         }) {
-
+            _menuDetail.postValue(RechargeNetworkResult.Fail(it))
         }
     }
 

@@ -88,6 +88,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         initSortFilterChip()
         initPrimaryButton()
         initTickerView()
+        initCCLogoVerified()
     }
 
     private fun initInputField() {
@@ -107,6 +108,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
                 mCreditCardActionListener?.onClickNextButton(getInputNumber())
             }
         }
+    }
+
+    private fun initCCLogoVerified() {
+        binding.clientNumberWidgetMainLayout.clientNumberCcLogoVerified.loadImage(CC_IMG_VERIFIED)
     }
 
     private fun initSortFilterChip() {
@@ -457,5 +462,6 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
 
     companion object {
         private val TICKER_AUTO_SLIDE_DELAY = 5000
+        private const val CC_IMG_VERIFIED = "https://images.tokopedia.net/img/cc_ic_logo_verified.png"
     }
 }
