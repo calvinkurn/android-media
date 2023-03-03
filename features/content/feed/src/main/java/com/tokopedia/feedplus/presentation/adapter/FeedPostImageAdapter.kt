@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.databinding.ItemFeedPostImageBinding
+import com.tokopedia.play_common.view.loadImage
 
 /**
  * Created By : Muhammad Furqan on 02/03/23
@@ -17,7 +18,7 @@ class FeedPostImageAdapter(val data: List<String>) :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ),
+            )
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -29,7 +30,7 @@ class FeedPostImageAdapter(val data: List<String>) :
     class ViewHolder(private val binding: ItemFeedPostImageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(url: String) {
-            binding.imgFeedPost.setImageUrl(url)
+            binding.imgFeedPost.loadImage(url)
         }
     }
 }
