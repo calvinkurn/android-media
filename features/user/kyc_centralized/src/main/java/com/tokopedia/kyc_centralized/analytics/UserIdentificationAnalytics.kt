@@ -8,7 +8,7 @@ import com.tokopedia.track.TrackAppUtils
  * @author by alvinatin on 26/11/18.
  */
 
-class UserIdentificationAnalytics private constructor(private val projectID: Int, private val kycType: String) {
+class UserIdentificationAnalytics private constructor(private val projectID: Int, private val kycFlowType: String) {
 
     private object Event {
         const val CLICK_ACCOUNT = "clickAccount"
@@ -68,7 +68,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_KYC_ONBOARDING,
-            "success - $projectID - $kycType"
+            "success - $projectID - $kycFlowType"
         ), "35165")
     }
 
@@ -77,7 +77,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelOne} - click - $projectID - $kycType"
+                "${Label.labelOne} - click - $projectID - $kycFlowType"
         ), "2619")
     }
 
@@ -86,8 +86,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
             Event.CLICK_VERIFICATION,
             Category.KYC_PAGE,
             Action.CLICK_ON_TNC_KYC,
-            if(isChecked) "${Label.LABEL_CHECK} - $projectID - $kycType"
-            else "${Label.LABEL_UNCHECK} - $projectID - $kycType"
+            if(isChecked) "${Label.LABEL_CHECK} - $projectID - $kycFlowType"
+            else "${Label.LABEL_UNCHECK} - $projectID - $kycFlowType"
         ), "")
     }
 
@@ -100,12 +100,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_MULAI_ONBOARDING,
-                "click - $projectID - $kycType"
+                "click - $projectID - $kycFlowType"
         ), "2618")
     }
 
     fun eventViewPendingPage() {
-        sendScreenName("${ScreenName.PENDING_VERIFICATION} / $projectID - $kycType")
+        sendScreenName("${ScreenName.PENDING_VERIFICATION} / $projectID - $kycFlowType")
     }
 
     fun eventClickBackPendingPage() {
@@ -113,7 +113,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelTwo} - $projectID - $kycType"
+                "${Label.labelTwo} - $projectID - $kycFlowType"
         ), "2619")
     }
 
@@ -122,12 +122,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_MENGERTI_PENDING_PAGE,
-                "click - $projectID - $kycType"
+                "click - $projectID - $kycFlowType"
         ), "2664")
     }
 
     fun eventViewSuccessSnackbarPendingPage() {
-        sendScreenName("${ScreenName.SUCCESS_VERIFICATION} / $projectID - $kycType")
+        sendScreenName("${ScreenName.SUCCESS_VERIFICATION} / $projectID - $kycFlowType")
     }
 
     fun eventViewRejectedPage() {
@@ -135,7 +135,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_REJECTED_PAGE,
-            "success - $projectID - $kycType"
+            "success - $projectID - $kycFlowType"
         ), "35137")
     }
 
@@ -144,7 +144,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelThree} - $projectID - $kycType"
+                "${Label.labelThree} - $projectID - $kycFlowType"
         ), "2619")
     }
 
@@ -153,7 +153,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_NEXT_REJECTED_PAGE,
-                "click - $projectID - $kycType"
+                "click - $projectID - $kycFlowType"
         ), "2666")
     }
 
@@ -162,7 +162,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_KEMBALI_BLACKLIST_PAGE,
-                "click - $projectID - $kycType"
+                "click - $projectID - $kycFlowType"
         ), "2668")
     }
 
@@ -171,12 +171,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelFour} - $projectID - $kycType"
+                "${Label.labelFour} - $projectID - $kycFlowType"
         ), "2619")
     }
 
     fun eventViewSuccessPage() {
-        sendScreenName("${ScreenName.SUCCESS_VERIFIED} - $projectID - $kycType")
+        sendScreenName("${ScreenName.SUCCESS_VERIFIED} - $projectID - $kycFlowType")
     }
 
     fun eventClickBackSuccessPage() {
@@ -184,7 +184,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_SUCCESS_PAGE,
-            "success - $projectID - $kycType"
+            "success - $projectID - $kycFlowType"
         ), "35130")
     }
 
@@ -193,7 +193,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
-            "click - $projectID - $kycType"
+            "click - $projectID - $kycFlowType"
         ), "35136")
     }
 

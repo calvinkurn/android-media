@@ -69,7 +69,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             kycType = intent?.extras?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
-        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
         stepperModel = if (savedInstanceState != null) {
             savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA)

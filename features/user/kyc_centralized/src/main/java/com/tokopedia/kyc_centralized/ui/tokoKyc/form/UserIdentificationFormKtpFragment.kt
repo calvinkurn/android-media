@@ -48,8 +48,8 @@ class UserIdentificationFormKtpFragment :
 
         projectId = activity?.intent?.getIntExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, -1) ?: -1
 
-        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
-        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycType)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
 
         analytics?.eventViewKtpPage()
     }

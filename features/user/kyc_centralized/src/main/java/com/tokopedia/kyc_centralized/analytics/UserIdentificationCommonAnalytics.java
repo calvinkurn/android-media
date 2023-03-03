@@ -8,7 +8,7 @@ import java.util.Map;
 public class UserIdentificationCommonAnalytics {
 
     private final int projectID;
-    private final String kycType;
+    private final String kycFlowType;
 
     private static final String BUSINESS_UNIT = "businessUnit";
     private static final String USER_PLATFORM = "user platform";
@@ -101,13 +101,13 @@ public class UserIdentificationCommonAnalytics {
         private static final String labelConnectionTimeout = "connection timeout";
     }
 
-    private UserIdentificationCommonAnalytics(int projectID, String kycType) {
+    private UserIdentificationCommonAnalytics(int projectID, String kycFlowType) {
         this.projectID = projectID;
-        this.kycType = kycType;
+        this.kycFlowType = kycFlowType;
     }
 
-    public static UserIdentificationCommonAnalytics createInstance(int projectID, String kycType) {
-        return new UserIdentificationCommonAnalytics(projectID, kycType);
+    public static UserIdentificationCommonAnalytics createInstance(int projectID, String kycFlowType) {
+        return new UserIdentificationCommonAnalytics(projectID, kycFlowType);
     }
 
     public void eventClickBackSelfiePage(Boolean isLiveness) {
@@ -116,14 +116,14 @@ public class UserIdentificationCommonAnalytics {
                     Event.CLICK_ACCOUNT,
                     Category.KYC_LIVENESS_PAGE,
                     Action.CLICK_ON_BUTTON_BACK,
-                    Label.labelOne + " - " + projectID + " - " + kycType
+                    Label.labelOne + " - " + projectID + " - " + kycFlowType
             ), "2629");
         } else  {
             track(TrackAppUtils.gtmData(
                     Event.CLICK_ACCOUNT,
                     Category.KYC_SELFIE_PAGE,
                     Action.CLICK_ON_BUTTON_BACK,
-                    Label.labelOne + " - click - " + projectID + " - " + kycType
+                    Label.labelOne + " - click - " + projectID + " - " + kycFlowType
             ), "2621");
         }
     }
@@ -138,7 +138,7 @@ public class UserIdentificationCommonAnalytics {
                     Event.VIEW_ACCOUNT_IRIS,
                     Category.KYC_PAGE,
                     Action.VIEW_SELFIE_PAGE,
-                    "success - " + projectID + " - " + kycType
+                    "success - " + projectID + " - " + kycFlowType
             ), "35141");
         }
     }
@@ -153,14 +153,14 @@ public class UserIdentificationCommonAnalytics {
                     Event.CLICK_ACCOUNT,
                     Category.KYC_LIVENESS_PAGE,
                     Action.CLICK_ON_BUTTON_VERIFIKASI_WAJAH_PAGE,
-                    "click - " + projectID + " - " + kycType
+                    "click - " + projectID + " - " + kycFlowType
             ), "2628");
         } else  {
             track(TrackAppUtils.gtmData(
                     Event.CLICK_ACCOUNT,
                     Category.KYC_SELFIE_PAGE,
                     Action.CLICK_NEXT_SELFIE_PAGE,
-                    "click - " + projectID + " - " + kycType
+                    "click - " + projectID + " - " + kycFlowType
             ), "");
         }
     }
@@ -170,7 +170,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_OPEN_CAMERA_KTP,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35138");
     }
 
@@ -179,7 +179,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_OPEN_CAMERA_SELFIE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35139");
     }
 
@@ -188,7 +188,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelTwo + " - click - " + projectID + " - " + kycType
+                Label.labelTwo + " - click - " + projectID + " - " + kycFlowType
         ), "2621");
     }
 
@@ -197,7 +197,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_CAMERA_SELFIE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "35240");
     }
 
@@ -210,7 +210,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_KTP,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35131");
     }
 
@@ -223,7 +223,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_CAPTURE_CAMERA,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2622");
     }
 
@@ -236,7 +236,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_SHUTTER_CAMERA_SELFIE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35133");
     }
 
@@ -245,7 +245,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_KTP_PAGE,
                 Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP,
-                "failed  - " + Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP + " - " + projectID + " - " + kycType
+                "failed  - " + Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP + " - " + projectID + " - " + kycFlowType
         ), "2627");
     }
 
@@ -258,7 +258,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_SELFIE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35132");
     }
 
@@ -267,7 +267,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_IMAGE_PREVIEW_KTP,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35215");
     }
 
@@ -276,7 +276,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_IMAGE_PREVIEW_SELFIE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35216");
     }
 
@@ -285,7 +285,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelThree + " - click - " + projectID + " - " + kycType
+                Label.labelThree + " - click - " + projectID + " - " + kycFlowType
         ), "2646");
     }
 
@@ -294,7 +294,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "35241");
     }
 
@@ -307,7 +307,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_BUTTON_RECAPTURE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2625");
     }
 
@@ -320,7 +320,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_RECAPTURE_SELFIE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35134");
     }
 
@@ -333,7 +333,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_LANJUT_PREVIEW,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2626");
     }
 
@@ -346,7 +346,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35135");
     }
 
@@ -359,7 +359,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_FINAL_FORM_PAGE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35142");
     }
 
@@ -372,7 +372,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_RETAKE_KTP_FINAL_FORM_PAGE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2645");
     }
 
@@ -381,7 +381,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelOne + " - click - " + projectID + " - " + kycType
+                Label.labelOne + " - click - " + projectID + " - " + kycFlowType
         ), "2646");
     }
 
@@ -390,7 +390,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelTwo + " - click - " + projectID + " - " + kycType
+                Label.labelTwo + " - click - " + projectID + " - " + kycFlowType
         ), "2646");
     }
 
@@ -403,7 +403,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2647");
     }
 
@@ -412,7 +412,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_RETAKE_KTP_SELFIE_FINAL_FORM_PAGE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2649");
     }
 
@@ -421,7 +421,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelThree + " - click - " + projectID + " - " + kycType
+                Label.labelThree + " - click - " + projectID + " - " + kycFlowType
         ), "2646");
     }
 
@@ -434,7 +434,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "35136");
     }
 
@@ -449,7 +449,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_FINAL_FORM_PAGE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35129");
     }
 
@@ -462,7 +462,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_KTP_PAGE,
-                "success - " + projectID + " - " + kycType
+                "success - " + projectID + " - " + kycFlowType
         ), "35140");
     }
 
@@ -475,7 +475,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_AMBIL_KTP_PAGE,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2620");
     }
 
@@ -484,7 +484,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelOne + " - click - " + projectID + " - " + kycType
+                Label.labelOne + " - click - " + projectID + " - " + kycFlowType
         ), "2621");
     }
 
@@ -493,7 +493,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_EXIT,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2654");
     }
 
@@ -502,7 +502,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_STAY,
-                "click - " + projectID + " - " + kycType
+                "click - " + projectID + " - " + kycFlowType
         ), "2655");
     }
 
@@ -528,7 +528,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_COBA_LAGI,
-                Label.labelConnectionTimeout + " - " + projectID + " - " + kycType
+                Label.labelConnectionTimeout + " - " + projectID + " - " + kycFlowType
         ), "2656");
     }
 
@@ -537,7 +537,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelConnectionTimeout + " - " + projectID + " - " + kycType
+                Label.labelConnectionTimeout + " - " + projectID + " - " + kycFlowType
         ), "2657");
     }
 

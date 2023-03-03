@@ -14,8 +14,6 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
-import com.tokopedia.kyc_centralized.util.KycSharedPreference
-import javax.inject.Inject
 
 /**
  * @author by alvinatin on 02/11/18.

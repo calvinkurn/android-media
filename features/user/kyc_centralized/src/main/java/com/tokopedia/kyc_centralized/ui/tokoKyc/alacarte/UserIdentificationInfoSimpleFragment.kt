@@ -53,8 +53,8 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         kycSharedPreference.saveStringCache(
-            key = KYCConstant.SharedPreference.KEY_KYC_TYPE,
-            value = KYCConstant.SharedPreference.VALUE_KYC_TYPE_ALA_CARTE
+            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE
         )
 
         activity?.intent?.data?.let {
@@ -129,7 +129,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     private fun finishAndRedirectKycResult() {
         activity?.let {
-            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
             it.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_REDIRECT_URL, redirectUrl)
             })
@@ -151,7 +151,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
                     }
                 }
                 else -> {
-                    kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+                    kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
                     activity?.setResult(resultCode)
                     activity?.finish()
                 }

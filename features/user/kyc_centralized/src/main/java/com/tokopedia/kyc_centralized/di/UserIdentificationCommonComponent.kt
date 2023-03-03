@@ -27,7 +27,6 @@ interface UserIdentificationCommonComponent {
     fun inject(fragment: UserIdentificationInfoSimpleFragment?)
     fun inject(fragment: CameraKtpFragment)
     fun inject(fragment: UserIdentificationCameraFragment)
-    fun inject(activity: UserIdentificationInfoActivity)
     fun inject(activity: UserIdentificationFormActivity)
     fun inject(fragment: UserIdentificationFormKtpFragment)
 }

@@ -86,8 +86,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
 
         kycSharedPreference.saveStringCache(
-            key = KYCConstant.SharedPreference.KEY_KYC_TYPE,
-            value = KYCConstant.SharedPreference.VALUE_KYC_TYPE_CKYC
+            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_CKYC
         )
 
         if (arguments != null) {
@@ -99,8 +99,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         if (isSourceSeller) {
             goToFormActivity()
         }
-        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
-        analytics = createInstance(projectId, kycType)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+        analytics = createInstance(projectId, kycFlowType)
     }
 
     override fun getScreenName(): String = ""
@@ -429,7 +429,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
                 KycStatus.BLACKLISTED -> analytics?.eventClickOnButtonBlacklistPage()
                 else -> {}
             }
-            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
             activity?.finish()
         }
     }
@@ -454,7 +454,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
             showStatusPending()
             analytics?.eventViewSuccessSnackbarPendingPage()
         } else if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {
-            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+            kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
             activity?.finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -470,7 +470,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     private fun goToCallBackUrl(callback: String?): View.OnClickListener {
         return View.OnClickListener { v: View? ->
             if (callback != null) {
-                kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+                kycSharedPreference.removeStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
                 RouteManager.route(activity, callback)
                 activity?.finish()
             }

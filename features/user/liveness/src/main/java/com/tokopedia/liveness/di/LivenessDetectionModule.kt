@@ -15,6 +15,11 @@ import dagger.Provides
 @Module
 class LivenessDetectionModule {
 
+    /*
+    * WARNING!!!
+    * the value of this variable (sharedPreferenceName) must be the same as the value
+    * of the [sharedPreferenceName] variable in [com.tokopedia.kyc_centralized.di.UserIdentificationCommonModule]
+    * */
     private val sharedPreferenceName = "kyc_centralized"
 
     @ActivityScope

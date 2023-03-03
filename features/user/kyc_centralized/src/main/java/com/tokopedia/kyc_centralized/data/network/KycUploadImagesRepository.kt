@@ -17,9 +17,8 @@ class KycUploadImagesRepository @Inject constructor(
         ktpImage: MultipartBody.Part,
         faceImage: MultipartBody.Part
     ): KycResponse {
-        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
-        return when (kycType) {
-            KYCConstant.SharedPreference.VALUE_KYC_TYPE_ALA_CARTE -> {
+        return when (kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)) {
+            KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE -> {
                 uploadImagesAlaCarte(requestBodyProjectId, params, ktpImage, faceImage)
             }
             else -> uploadImagesKyc(requestBodyProjectId, params, ktpImage, faceImage)

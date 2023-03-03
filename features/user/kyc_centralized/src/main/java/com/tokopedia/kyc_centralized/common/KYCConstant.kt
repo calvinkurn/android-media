@@ -51,8 +51,14 @@ object KYCConstant {
     const val consentCollectionIdStaging = "8db1d162-15ea-45c1-9b69-20b256e39e44"
 
     object SharedPreference {
-        const val KEY_KYC_TYPE = "kyc_type"
-        const val VALUE_KYC_TYPE_ALA_CARTE = "ala carte"
-        const val VALUE_KYC_TYPE_CKYC = "ckyc"
+        /*
+        * WARNING!!!
+        * the value of this variable [KEY_KYC_FLOW_TYPE] must be the same as the value of the
+        * [KEY_SHARED_PREFERENCE_KYC_FLOW_TYPE] variable in [com.tokopedia.liveness.analytics.LivenessDetectionAnalytics]
+        * */
+        const val KEY_KYC_FLOW_TYPE = "kyc_type"
+
+        const val VALUE_KYC_FLOW_TYPE_ALA_CARTE = "ala carte"
+        const val VALUE_KYC_FLOW_TYPE_CKYC = "ckyc"
     }
 }

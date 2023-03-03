@@ -64,7 +64,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelTwo} $projectID - ${getKycType()}"
+                "${Label.labelTwo} $projectID - ${getKycFlowType()}"
         ), "2629")
     }
 
@@ -82,7 +82,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelThree} $projectID - ${getKycType()}"
+                "${Label.labelThree} $projectID - ${getKycFlowType()}"
         ), "2629")
     }
 
@@ -100,7 +100,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelFour} $projectID - ${getKycType()}"
+                "${Label.labelFour} $projectID - ${getKycFlowType()}"
         ), "2629")
     }
 
@@ -127,7 +127,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelFive} $projectID - ${getKycType()}"
+                "${Label.labelFive} $projectID - ${getKycFlowType()}"
         ), "2629")
     }
 
@@ -154,7 +154,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelSix} $projectID - ${getKycType()}"
+                "${Label.labelSix} $projectID - ${getKycFlowType()}"
         ), "2629")
     }
 
@@ -181,7 +181,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelSeven} $projectID - ${getKycType()}"
+                "${Label.labelSeven} $projectID - ${getKycFlowType()}"
         ), "2629")
     }
 
@@ -190,7 +190,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_COBA_LAGI,
-                "${Label.labelTimeout} - $projectID - ${getKycType()}"
+                "${Label.labelTimeout} - $projectID - ${getKycFlowType()}"
         ), "2656")
     }
 
@@ -199,7 +199,7 @@ class LivenessDetectionAnalytics @Inject constructor(
             Event.CLICK_ACCOUNT,
             Category.KYC_LIVENESS_FAILED_PAGE,
             Action.CLICK_ON_BUTTON_COBA_LAGI,
-            "${Label.labelConnectionTimeout} - $projectID - ${getKycType()}"
+            "${Label.labelConnectionTimeout} - $projectID - ${getKycFlowType()}"
         ), "2656")
     }
 
@@ -208,7 +208,7 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelTimeout} - $projectID - ${getKycType()}"
+                "${Label.labelTimeout} - $projectID - ${getKycFlowType()}"
         ), "2657")
     }
 
@@ -217,20 +217,20 @@ class LivenessDetectionAnalytics @Inject constructor(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelConnectionTimeout} - $projectID - ${getKycType()}"
+                "${Label.labelConnectionTimeout} - $projectID - ${getKycFlowType()}"
         ), "2657")
     }
 
     private fun getLabel(projectID: String, isSuccess: Boolean, message: String = ""): String {
         return if (isSuccess) {
-            "success - $projectID - ${getKycType()}"
+            "success - $projectID - ${getKycFlowType()}"
         } else {
-            "fail - $message - $projectID - ${getKycType()}"
+            "fail - $message - $projectID - ${getKycFlowType()}"
         }
     }
 
-    private fun getKycType(): String {
-        return livenessSharedPreference.getStringCache(KEY_SHARED_PREFERENCE_KYC_TYPE)
+    private fun getKycFlowType(): String {
+        return livenessSharedPreference.getStringCache(KEY_SHARED_PREFERENCE_KYC_FLOW_TYPE)
     }
 
     private fun track(data: MutableMap<String, Any>, trackerId: String) {
@@ -241,7 +241,12 @@ class LivenessDetectionAnalytics @Inject constructor(
     }
 
     companion object {
-        private const val KEY_SHARED_PREFERENCE_KYC_TYPE = "kyc_type"
+        /*
+        * WARNING!!!
+        * the value of this variable [KEY_SHARED_PREFERENCE_KYC_FLOW_TYPE] must be the same as the value of the
+        * [SharedPreference.KEY_KYC_FLOW_TYPE] variable in [com.tokopedia.kyc_centralized.common.KYCConstant]
+        * */
+        private const val KEY_SHARED_PREFERENCE_KYC_FLOW_TYPE = "kyc_type"
 
         const val BUSINESS_UNIT = "businessUnit"
         const val USER_PLATFORM = "user platform"

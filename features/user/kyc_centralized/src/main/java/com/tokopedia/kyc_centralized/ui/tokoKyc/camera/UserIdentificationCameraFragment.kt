@@ -61,11 +61,11 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
         if (arguments != null) {
             viewMode = arguments?.getInt(ARG_VIEW_MODE, 1) ?: 1
         }
-        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
         analytics = UserIdentificationCommonAnalytics
             .createInstance(
                 activity?.intent?.getIntExtra(PARAM_PROJECT_ID, 1) ?: 1,
-                kycType
+                kycFlowType
             )
     }
 

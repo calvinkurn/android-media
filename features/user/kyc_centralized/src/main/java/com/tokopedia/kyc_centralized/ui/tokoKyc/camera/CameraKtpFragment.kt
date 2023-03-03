@@ -83,8 +83,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             projectId = it.getInt(PARAM_PROJECT_ID).orZero()
         }
 
-        val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
-        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycType)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
 
     }
 

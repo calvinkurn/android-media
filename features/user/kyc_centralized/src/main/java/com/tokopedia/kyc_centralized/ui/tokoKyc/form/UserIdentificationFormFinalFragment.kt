@@ -108,8 +108,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
                 UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA,
                 false
             ) ?: false
-            val kycType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_TYPE)
-            analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycType)
+            val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+            analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
