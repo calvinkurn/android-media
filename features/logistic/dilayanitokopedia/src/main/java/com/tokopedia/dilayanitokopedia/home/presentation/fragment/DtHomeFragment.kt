@@ -435,11 +435,20 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun onSuccessGetHomeLayout(data: HomeLayoutListUiModel) {
         when (data.state) {
-            DtLayoutState.SHOW -> onShowHomeLayout(data)
+            DtLayoutState.SHOW -> {
+                getAnchorMenuList()
+                onShowHomeLayout(data)
+            }
             DtLayoutState.LOADING -> onLoadingHomeLayout(data)
             else -> {
                 showHomeLayout(data)
             }
+        }
+    }
+
+    private fun getAnchorMenuList() {
+        localCacheModel?.let { lca ->
+            viewModelDtHome.getAnchorTabMenu(lca)
         }
     }
 
