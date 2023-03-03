@@ -34,4 +34,6 @@ data class Redirection(
     val link: String? = "",
     @SerializedName("applink")
     val applink: String? = "",
+    @SerializedName("cta_text")
+    val ctaText: String? = null,
 )

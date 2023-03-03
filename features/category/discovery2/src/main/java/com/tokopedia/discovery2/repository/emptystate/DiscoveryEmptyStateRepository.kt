@@ -43,7 +43,7 @@ class DiscoveryEmptyStateRepository @Inject constructor() : EmptyStateRepository
                         ),
                     title = redirection.title ?: TITLE,
                     description = redirection.bodyText,
-                    buttonText = "Cek Promo Lainnya",
+                    buttonText = redirection.ctaText ?: "Cek Promo Lainnya",
                     imageURL = redirection.image,
                     buttonApplink = redirection.applink ,
                     isRedirectionState = true
