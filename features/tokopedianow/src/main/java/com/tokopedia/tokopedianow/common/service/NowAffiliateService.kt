@@ -8,12 +8,24 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.NowAffiliateData
+import com.tokopedia.universal_sharing.tracker.PageType
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.Shop
 import java.util.UUID
 import javax.inject.Inject
 
 class NowAffiliateService @Inject constructor(
     private val affiliateCookieHelper: AffiliateCookieHelper
 ) {
+
+    companion object {
+        private const val SHARE_PAGE_TYPE = "shop"
+        private const val SHARE_SITE_ID = "1"
+        private const val SHARE_VERTICAL_ID = "1"
+        private const val SHOP_STATUS_OPEN = 1
+    }
 
     private val shopId = TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
     private var affiliateData = NowAffiliateData()
@@ -74,5 +86,28 @@ class NowAffiliateService @Inject constructor(
     fun createAffiliateLink(url: String): String {
         val trackerId = affiliateData.affiliateTrackerId
         return affiliateCookieHelper.createAffiliateLink(url, trackerId)
+    }
+
+    fun createShareInput(): AffiliatePDPInput {
+        val pageDetail = PageDetail(
+            pageId = shopId,
+            pageType = SHARE_PAGE_TYPE,
+            siteId = SHARE_SITE_ID,
+            verticalId = SHARE_VERTICAL_ID
+        )
+
+        val shop = Shop(
+            shopID = shopId,
+            shopStatus = SHOP_STATUS_OPEN,
+            isOS = true,
+            isPM = false
+        )
+
+        return AffiliatePDPInput(
+            pageDetail = pageDetail,
+            pageType = PageType.SHOP.value,
+            product = Product(),
+            shop = shop
+        )
     }
 }

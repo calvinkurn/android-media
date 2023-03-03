@@ -163,6 +163,8 @@ open class BaseTokoNowViewModel(
 
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
 
+    fun getAffiliateShareInput() = affiliateService.createShareInput()
+
     fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
         launchCatchError(block = {
             affiliateService.initAffiliateCookie(
