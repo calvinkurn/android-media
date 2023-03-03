@@ -78,6 +78,7 @@ object MapperFeedHome {
             },
             ribbonImageUrl = card.ribbonImageUrl,
             applink = card.applink,
+            weblink = card.weblink,
             applinkProductList = card.applinkProductList,
             actionButtonLabel = card.actionButtonLabel,
             products = card.products.map { product -> transformProduct(product) }.toList(),

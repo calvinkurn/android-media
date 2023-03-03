@@ -48,7 +48,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -57,12 +56,17 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
-class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBottomSheet.Listener,
-    ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener {
+class FeedFragment :
+    BaseDaggerFragment(),
+    FeedListener,
+    ContentThreeDotsMenuBottomSheet.Listener,
+    ProductItemInfoBottomSheet.Listener,
+    ShareBottomsheetListener {
 
     private var binding: FragmentFeedImmersiveBinding? = null
 
@@ -73,11 +77,8 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
 
-
-
     private var isInClearViewMode: Boolean = false
     private var productBottomSheet: ProductItemInfoBottomSheet? = null
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -132,11 +133,10 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
 
     private fun observeAddToCart() {
         feedPostViewModel.atcRespData.observe(
-                viewLifecycleOwner
+            viewLifecycleOwner
         ) {
             when (it) {
                 is FeedResult.Loading -> {
-
                 }
                 is FeedResult.Success -> {
                     productBottomSheet?.showToastWithAction(
@@ -159,7 +159,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
                 }
             }
         }
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -304,17 +303,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
-    override fun onMenuClicked(model: FeedCardModel) {
-        activity?.let {
-            feedMenuSheet = ContentThreeDotsMenuBottomSheet
-                .getFragment(it.supportFragmentManager, it.classLoader)
-            feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(), model.id)
-            feedMenuSheet.show(it.supportFragmentManager)
-        }
-    }
-
-    override fun onSharePostClicked(model: FeedCardModel) {
+    override fun onSharePostClicked(model: FeedCardImageContentModel) {
         activity?.let {
             val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
                 .setId(model.id)
@@ -341,7 +330,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
-    private fun showUniversalShareBottomSheet(card: FeedCardModel) {
+    private fun showUniversalShareBottomSheet(card: FeedCardImageContentModel) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@FeedFragment)
             setUtmCampaignData(
@@ -358,7 +347,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
         universalShareBottomSheet?.setOnDismissListener {
             if (dissmisByGreyArea) {
-                //TODO to be used for analytics
+                // TODO to be used for analytics
             } else {
                 dissmisByGreyArea = true
             }
@@ -370,8 +359,7 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
-
-    private fun getMenuItemData() : List<FeedMenuItem> {
+    private fun getMenuItemData(): List<FeedMenuItem> {
         val items = arrayListOf<FeedMenuItem>()
 
         items.add(
@@ -411,27 +399,28 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
         }
     }
 
-    override fun onProductTagItemClicked(model: FeedCardModel) {
+    override fun onProductTagItemClicked(model: FeedCardImageContentModel) {
         openProductTagBottomSheet(model)
     }
 
-    override fun onProductTagViewClicked(model: FeedCardModel) {
+    override fun onProductTagViewClicked(model: FeedCardImageContentModel) {
         val numberOfTaggedProducts = model.totalProducts
         val productData =
             if (model.isTypeProductHighlight) model.products else model.tags
 
         if (numberOfTaggedProducts == 1) {
             val appLink = productData.firstOrNull()?.applink
-            if (appLink?.isNotEmpty() == true)
+            if (appLink?.isNotEmpty() == true) {
                 activity?.let {
                     RouteManager.route(it, appLink)
                 }
+            }
         } else {
             openProductTagBottomSheet(model)
         }
     }
 
-    private fun openProductTagBottomSheet(feedXCard: FeedCardModel) {
+    private fun openProductTagBottomSheet(feedXCard: FeedCardImageContentModel) {
         productBottomSheet = ProductItemInfoBottomSheet()
         productBottomSheet?.disMissed = {
             productBottomSheet?.onDestroy()
@@ -445,7 +434,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
                 shopId = feedXCard.author.id,
                 postType = feedXCard.typename,
                 isFollowed = feedXCard.followers.isFollowed,
-                playChannelId = feedXCard.playChannelId,
                 shopName = feedXCard.author.name,
                 saleStatus = feedXCard.campaign.status,
                 saleType = feedXCard.campaign.name,
@@ -547,7 +535,6 @@ class FeedFragment : BaseDaggerFragment(), FeedListener, ContentThreeDotsMenuBot
                 }
             )
         )
-
     }
 
     override fun onCloseOptionClicked() {

@@ -93,7 +93,7 @@ class FeedPostViewHolder(
         }
     }
 
-    private fun setUpProductTagButtonText(feedCardModel: FeedCardModel){
+    private fun setUpProductTagButtonText(feedCardModel: FeedCardImageContentModel) {
         val productData =
             if (feedCardModel.isTypeProductHighlight) feedCardModel.products else feedCardModel.tags
 
@@ -119,7 +119,6 @@ class FeedPostViewHolder(
                 binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
             }
         }
-
     }
 
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
