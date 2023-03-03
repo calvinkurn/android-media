@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.recommendation
+package com.tokopedia.product.detail.postatc.view.component.recommendation
 
 import android.view.View
 import android.view.ViewGroup

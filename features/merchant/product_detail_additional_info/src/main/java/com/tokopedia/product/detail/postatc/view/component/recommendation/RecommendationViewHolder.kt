@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.recommendation
+package com.tokopedia.product.detail.postatc.view.component.recommendation
 
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.ItemRecommendationBinding
@@ -32,7 +32,6 @@ class RecommendationViewHolder(
                         recommendationData = widget,
                         state = RecommendationCarouselData.STATE_READY
                     ),
-                    adapterPosition = 0,
                     basicListener = this@RecommendationViewHolder,
                     tokonowListener = this@RecommendationViewHolder
                 )

@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.fallback
+package com.tokopedia.product.detail.postatc.view.component.fallback
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel

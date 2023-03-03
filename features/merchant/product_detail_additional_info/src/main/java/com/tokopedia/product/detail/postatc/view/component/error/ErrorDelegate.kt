@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.error
+package com.tokopedia.product.detail.postatc.view.component.error
 
 import android.view.View
 import android.view.ViewGroup

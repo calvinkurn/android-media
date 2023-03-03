@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.adapterdelegate.AdapterDelegatesManager
-import com.tokopedia.product.detail.postatc.component.error.ErrorDelegate
-import com.tokopedia.product.detail.postatc.component.fallback.FallbackDelegate
-import com.tokopedia.product.detail.postatc.component.loading.LoadingDelegate
-import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoDelegate
-import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationDelegate
+import com.tokopedia.product.detail.postatc.view.component.error.ErrorDelegate
+import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackDelegate
+import com.tokopedia.product.detail.postatc.view.component.loading.LoadingDelegate
+import com.tokopedia.product.detail.postatc.view.component.productinfo.ProductInfoDelegate
+import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationDelegate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +21,10 @@ class PostAtcAdapter(
     listener: PostAtcListener,
     override val coroutineContext: CoroutineContext = Dispatchers.Main
 ) : ListAdapter<PostAtcUiModel, PostAtcViewHolder<*>>(PostAtcDiffItemCallback), CoroutineScope {
+
+    companion object {
+        private const val UI_UPDATE_DEBOUNCE = 100L
+    }
 
     private val delegatesManager = AdapterDelegatesManager<PostAtcUiModel>()
 
@@ -38,7 +42,7 @@ class PostAtcAdapter(
     private val updateUiFlow = MutableSharedFlow<Unit>()
 
     private val updateUiJob = launch {
-        updateUiFlow.debounce(100).collect {
+        updateUiFlow.debounce(UI_UPDATE_DEBOUNCE).collect {
             val list: List<PostAtcUiModel> = mapUiModels.values.toList()
             submitList(list)
         }

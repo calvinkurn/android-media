@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.fallback
+package com.tokopedia.product.detail.postatc.view.component.fallback
 
 import android.view.View
 import android.view.ViewGroup

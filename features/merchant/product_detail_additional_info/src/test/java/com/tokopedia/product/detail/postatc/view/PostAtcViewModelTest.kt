@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.postatc.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.detail.postatc.model.PostAtcComponentData
-import com.tokopedia.product.detail.postatc.model.PostAtcLayout
+import com.tokopedia.product.detail.postatc.data.model.PostAtcComponentData
+import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -184,5 +184,4 @@ class PostAtcViewModelTest {
         Assert.assertEquals(uniqueId, result?.first)
         Assert.assertTrue(result?.second is Fail)
     }
-
 }

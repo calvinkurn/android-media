@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.model
+package com.tokopedia.product.detail.postatc.data.model
 
 class PostAtcInfo {
     var productId: String = ""

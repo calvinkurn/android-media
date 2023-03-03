@@ -1,12 +1,12 @@
-package com.tokopedia.product.detail.postatc.util
+package com.tokopedia.product.detail.postatc.mapper
 
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel.Type.PRODUCT_INFO
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel.Type.RECOMMENDATION
-import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoUiModel
-import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationUiModel
-import com.tokopedia.product.detail.postatc.model.PostAtcComponentData
-import com.tokopedia.product.detail.postatc.model.PostAtcLayout
+import com.tokopedia.product.detail.postatc.view.component.productinfo.ProductInfoUiModel
+import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationUiModel
+import com.tokopedia.product.detail.postatc.data.model.PostAtcComponentData
+import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 
 internal fun List<PostAtcLayout.Component>.mapToUiModel(): List<PostAtcUiModel> = mapNotNull {
     when (it.type) {

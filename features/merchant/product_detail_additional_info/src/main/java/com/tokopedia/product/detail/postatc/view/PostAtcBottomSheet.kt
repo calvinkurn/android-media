@@ -20,12 +20,12 @@ import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcTracking
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
-import com.tokopedia.product.detail.postatc.component.error.ErrorUiModel
-import com.tokopedia.product.detail.postatc.component.fallback.FallbackUiModel
-import com.tokopedia.product.detail.postatc.component.loading.LoadingUiModel
-import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
+import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
+import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
+import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -80,7 +80,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(PostAtcViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
     }
 
     private val adapter = PostAtcAdapter(this)
@@ -156,8 +156,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         result.doSuccessOrFail(success = {
             adapter.replaceComponents(it.data)
         }, fail = {
-            showError(it)
-        })
+                showError(it)
+            })
         commonTracker?.let {
             PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
         }
@@ -172,8 +172,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                     widget = data
                 }
             }, fail = {
-                adapter.removeComponent(uiModelId)
-            })
+                    adapter.removeComponent(uiModelId)
+                })
         }
 
     private fun showError(it: Throwable) {
@@ -182,7 +182,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         } else {
             adapter.replaceComponents(listOf(FallbackUiModel(cartId = cartId.orEmpty())))
         }
-
     }
 
     override fun onDismiss(dialog: DialogInterface) {
