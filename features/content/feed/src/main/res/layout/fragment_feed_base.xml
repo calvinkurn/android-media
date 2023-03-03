@@ -18,7 +18,7 @@
     <View
         android:layout_width="0dp"
         android:id="@+id/bg_overlay"
-        android:layout_height="0dp"
+        android:layout_height="80dp"
         android:background="@color/bottomsheetunify_overlay"
         app:layout_constraintBottom_toBottomOf="@id/view_feed_tab_indicator"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,23 +30,24 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="28dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="ADD_CIRCLE"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/ty_feed_for_you_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="28dp"
         android:text="@string/feed_for_you_label"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
         app:layout_constraintStart_toEndOf="@id/btn_feed_create_post"
-        app:layout_constraintTop_toTopOf="@id/btn_feed_create_post"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
 
@@ -55,11 +56,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="28dp"
         android:text="@string/feed_following_label"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
         app:layout_constraintStart_toEndOf="@id/ty_feed_for_you_tab"
-        app:layout_constraintTop_toTopOf="@id/btn_feed_create_post"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
 
@@ -78,18 +79,19 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginEnd="12dp"
+        android:layout_marginTop="28dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="VIDEO"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
         app:layout_constraintEnd_toStartOf="@id/feed_user_profile_image"
-        app:layout_constraintTop_toTopOf="@id/btn_feed_create_post" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_feed_live"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/label_live_feed"
+        android:layout_marginTop="28dp"
         android:text="@string/feed_live_label"
         android:textAlignment="center"
         android:textColor="@color/Unify_NN0"
@@ -104,11 +106,12 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
+        android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btn_feed_create_post"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_user_profile_default"
-        app:unify_image_type="circle" />
+        app:unify_image_type="circle"
+        tools:visibility="visible"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
