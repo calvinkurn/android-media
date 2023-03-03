@@ -39,6 +39,7 @@ import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
 import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
 import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -1280,6 +1281,7 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        PerformanceTraceDebugger.DEBUG = true
         performanceTrace.init(
             v = view.rootView,
             targetId = R.id.home_fragment_recycler_view
