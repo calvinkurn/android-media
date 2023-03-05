@@ -54,6 +54,9 @@ class PostAtcViewModel @Inject constructor(
                 result
             )
 
+            val components = result.components
+            if (components.isEmpty()) throw Throwable()
+
             val uiModels = result.components.mapToUiModel()
             _layouts.value = uiModels.asSuccess()
         }, onError = { _layouts.value = it.asFail() })
