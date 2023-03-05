@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackDele
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingDelegate
 import com.tokopedia.product.detail.postatc.view.component.productinfo.ProductInfoDelegate
 import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationDelegate
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,11 +20,12 @@ import kotlin.coroutines.CoroutineContext
 
 class PostAtcAdapter(
     listener: PostAtcListener,
-    override val coroutineContext: CoroutineContext = Dispatchers.Main
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    override val coroutineContext: CoroutineContext = coroutineDispatcher
 ) : ListAdapter<PostAtcUiModel, PostAtcViewHolder<*>>(PostAtcDiffItemCallback), CoroutineScope {
 
     companion object {
-        private const val UI_UPDATE_DEBOUNCE = 100L
+        private const val UI_UPDATE_DEBOUNCE = 200L
     }
 
     private val delegatesManager = AdapterDelegatesManager<PostAtcUiModel>()

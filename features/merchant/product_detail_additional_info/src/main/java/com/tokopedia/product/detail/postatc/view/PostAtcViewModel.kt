@@ -55,8 +55,8 @@ class PostAtcViewModel @Inject constructor(
             )
 
             val uiModels = result.components.mapToUiModel()
-            _layouts.postValue(uiModels.asSuccess())
-        }, onError = { _layouts.postValue(it.asFail()) })
+            _layouts.value = uiModels.asSuccess()
+        }, onError = { _layouts.value = it.asFail() })
     }
 
     fun fetchRecommendation(
@@ -77,8 +77,8 @@ class PostAtcViewModel @Inject constructor(
 
             _recommendations.value = uniqueId to widget.asSuccess()
         }, onError = {
-                _recommendations.value = uniqueId to it.asFail()
-            })
+            _recommendations.value = uniqueId to it.asFail()
+        })
     }
 
     private fun updateInfo(

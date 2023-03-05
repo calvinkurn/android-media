@@ -156,8 +156,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         result.doSuccessOrFail(success = {
             adapter.replaceComponents(it.data)
         }, fail = {
-                showError(it)
-            })
+            showError(it)
+        })
         commonTracker?.let {
             PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
         }
@@ -172,8 +172,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                     widget = data
                 }
             }, fail = {
-                    adapter.removeComponent(uiModelId)
-                })
+                adapter.removeComponent(uiModelId)
+            })
         }
 
     private fun showError(it: Throwable) {
