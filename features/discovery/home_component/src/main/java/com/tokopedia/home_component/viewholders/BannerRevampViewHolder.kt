@@ -38,8 +38,6 @@ class BannerRevampViewHolder(
     private var isCache = true
     private var layoutManager = LinearLayoutManager(itemView.context)
 
-    private var scrollTransitionDuration: Long = 5000L
-
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.Main
@@ -80,12 +78,12 @@ class BannerRevampViewHolder(
                         }
                     })
                     initBanner(banners)
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
+                } catch (_: NumberFormatException) {
+
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
+
         }
     }
 

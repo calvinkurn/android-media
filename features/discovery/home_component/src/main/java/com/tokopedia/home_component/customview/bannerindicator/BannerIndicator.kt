@@ -2,6 +2,7 @@ package com.tokopedia.home_component.customview.bannerindicator
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
 import android.util.AttributeSet
@@ -60,6 +61,7 @@ class BannerIndicator : LinearLayout {
         this.listener = listener
     }
 
+    @SuppressLint("UnifyComponentUsage")
     private fun addProgressBar() {
         val progressBarTheme =
             ContextThemeWrapper(context, com.tokopedia.home_component.R.style.IndicatorBanner)

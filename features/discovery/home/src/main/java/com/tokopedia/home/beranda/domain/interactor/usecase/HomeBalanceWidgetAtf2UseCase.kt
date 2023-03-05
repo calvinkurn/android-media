@@ -207,7 +207,7 @@ class HomeBalanceWidgetAtf2UseCase @Inject constructor(
                 headerTitle = headerTitle,
                 position = position
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             homeBalanceModel.mapErrorTokopoints(headerTitle, position)
         }
         return homeBalanceModel
@@ -255,7 +255,7 @@ class HomeBalanceWidgetAtf2UseCase @Inject constructor(
                     throw IllegalStateException(error_unable_to_parse_wallet)
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             homeBalanceModel.mapErrorWallet(headerTitle, position)
         }
         return homeBalanceModel

@@ -12,7 +12,7 @@ object HomeRollenceController {
     fun fetchAtfRollenceValue() {
         rollenceAtfValue = try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             ""
         }
     }

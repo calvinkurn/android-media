@@ -28,6 +28,7 @@
 
     <!--  LOGIN WIDGET  -->
     <string name="login_widget_login">Login</string>
-    <string name="login_widget_title">Hi, Topper</string>
+    <string name="login_widget_title">Hi, %s</string>
+    <string name="login_widget_topper">Topper</string>
     <string name="login_widget_subtitle">Masuk untuk menikmati semua fitur</string>
 </resources>
