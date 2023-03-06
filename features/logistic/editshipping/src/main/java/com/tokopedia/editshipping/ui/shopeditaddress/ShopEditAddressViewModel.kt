@@ -21,9 +21,11 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ShopEditAddressViewModel @Inject constructor(private val repo: KeroRepository,
-                                                   private val shopRepo: ShopLocationRepository,
-                                                   private val mapper: AutoCompleteMapper) : ViewModel() {
+class ShopEditAddressViewModel @Inject constructor(
+    private val repo: KeroRepository,
+    private val shopRepo: ShopLocationRepository,
+    private val mapper: AutoCompleteMapper
+) : ViewModel() {
 
     private val _autoCompleteList = MutableLiveData<Result<Place>>()
     val autoCompleteList: LiveData<Result<Place>>
@@ -78,22 +80,36 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
         }
     }
 
-    fun saveEditShopLocation(shopId: Long, warehouseId: Long, warehouseName: String,
-                             districtId: Long, latLon: String, email: String,
-                             addressDetail: String, postalCode: String, phone: String) {
+    fun saveEditShopLocation(
+        shopId: Long, warehouseId: Long, warehouseName: String,
+        districtId: Long, latLon: String, email: String,
+        addressDetail: String, postalCode: String, phone: String
+    ) {
         _saveEditShop.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorSaveEditShopLocation) {
-            val saveEditLocation  = shopRepo.saveEditShopLocation(shopId, warehouseId, warehouseName, districtId, latLon, email, addressDetail, postalCode, phone)
-            _saveEditShop.value = ShopEditAddressState.Success(saveEditLocation.shopLocUpdateWarehouse)
+            val saveEditLocation = shopRepo.saveEditShopLocation(
+                shopId,
+                warehouseId,
+                warehouseName,
+                districtId,
+                latLon,
+                email,
+                addressDetail,
+                postalCode,
+                phone
+            )
+            _saveEditShop.value =
+                ShopEditAddressState.Success(saveEditLocation.shopLocUpdateWarehouse)
         }
     }
 
 
     fun checkCouriersAvailability(shopId: Long, districtId: Long) {
         _checkCouriers.value = ShopEditAddressState.Loading
-        viewModelScope.launch(onErrorCheckCouriersAvailability){
+        viewModelScope.launch(onErrorCheckCouriersAvailability) {
             val getCheckCouriersData = shopRepo.shopCheckCouriersNewLoc(shopId, districtId)
-            _checkCouriers.value = ShopEditAddressState.Success(getCheckCouriersData.shopLocCheckCouriers)
+            _checkCouriers.value =
+                ShopEditAddressState.Success(getCheckCouriersData.shopLocCheckCouriers)
         }
     }
 
@@ -109,7 +125,7 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
         _zipCodeList.value = Fail(e)
     }
 
-    private val onErrorGetDistrictGeocode = CoroutineExceptionHandler{ _, e ->
+    private val onErrorGetDistrictGeocode = CoroutineExceptionHandler { _, e ->
         _districtGeocode.value = Fail(e)
     }
 

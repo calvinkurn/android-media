@@ -26,11 +26,11 @@ import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by Kris on 5/12/2016.
- TOKOPEDIA
+ * TOKOPEDIA
  */
 public class EditShippingWebViewDialog extends DialogFragment {
 
-    private class AdditionalOptionsWebViewClient extends WebViewClient{
+    private class AdditionalOptionsWebViewClient extends WebViewClient {
         @Override
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
@@ -39,12 +39,12 @@ public class EditShippingWebViewDialog extends DialogFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if(editButtonClicked){
+            if (editButtonClicked) {
                 Intent intent = new Intent();
                 String resultShippingResultKey;
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                     resultShippingResultKey = replaceTagHtml(url);
-                }else{
+                } else {
                     resultShippingResultKey = url.replaceAll(".*</html>", "");
                 }
                 intent.putExtra(EditShippingViewListener.EDIT_SHIPPING_RESULT_KEY, resultShippingResultKey);
@@ -55,7 +55,7 @@ public class EditShippingWebViewDialog extends DialogFragment {
             }
         }
 
-        private String replaceTagHtml(String url){
+        private String replaceTagHtml(String url) {
             String htmlTag = "</html>";
             int indexTagHtml = url.indexOf(htmlTag);
             return url.substring(indexTagHtml + htmlTag.length());
@@ -70,7 +70,6 @@ public class EditShippingWebViewDialog extends DialogFragment {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return false;
         }
-
 
 
         @Override
