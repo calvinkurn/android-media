@@ -52,8 +52,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     val tapcashInquiry: LiveData<EmoneyInquiry>
         get() = tapcashInquiryMutable
 
-    private var tapcashLogErrorMutable = MutableLiveData<Result<RechargeEmoneyInquiryLogResponse>>()
-    val tapcashLogError: LiveData<Result<RechargeEmoneyInquiryLogResponse>>
+    private var tapcashLogErrorMutable = MutableLiveData<Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>>()
+    val tapcashLogError: LiveData<Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>>
         get() = tapcashLogErrorMutable
 
     lateinit var isoDep: IsoDep
@@ -61,9 +61,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     fun tapcashErrorLogging(param: RechargeEmoneyInquiryLogRequest) {
         launchCatchError(block = {
             val result = rechargeEmoneyInquiryLogUseCase.execute(param)
-            tapcashLogErrorMutable.postValue(Success(result))
+            tapcashLogErrorMutable.postValue(Pair(Success(result), param))
         }) {
-            tapcashLogErrorMutable.postValue(Fail(it))
+            tapcashLogErrorMutable.postValue(Pair(Fail(it), param))
         }
     }
 

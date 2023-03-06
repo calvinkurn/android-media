@@ -29,9 +29,10 @@ import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -251,14 +252,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         tapcashBalanceViewModel.tapcashLogError.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when(it.first) {
                 is Success -> {
-                    view?.let {
-                        Toaster.build(it, "Success Log", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-                    }
+                    // do nothing
                 }
                 is Fail -> {
-                    // do nothing
+                    sendLogDebugTapcash(it.second)
                 }
             }
         })
@@ -374,9 +373,21 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
+    private fun sendLogDebugTapcash(param: RechargeEmoneyInquiryLogRequest) {
+        val map = HashMap<String, String>()
+        map.put(ISSUER_KEY, param.log.issueId.toString())
+        map.put(CARD_NUMBER_KEY, param.log.cardNumber)
+        map.put(RC_KEY, param.log.rc)
+        ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
+    }
+
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
         const val CLASS_NAME = "EmoneyCheckBalanceFragment"
+        private const val TAPCASH_TAG = "RECHARGE_TAPCASH"
+        private const val ISSUER_KEY = "issuer_id"
+        private const val CARD_NUMBER_KEY = "card_number"
+        private const val RC_KEY = "rc"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()
