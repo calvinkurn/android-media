@@ -154,9 +154,7 @@ class ShipmentViewHolder(
         }
         val boBadge = rates.boBadge
         val freeOngkirImageUrl = boBadge.imageUrl
-        pdpShipmentIcon.showIfWithBlock(
-            !rates.hasUsedBenefit && freeOngkirImageUrl.isNotEmpty()
-        ) {
+        pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
             setImageUrl(freeOngkirImageUrl)
 
             if (boBadge.isUsingPadding) {
@@ -166,7 +164,7 @@ class ShipmentViewHolder(
             val imageHeight = boBadge.imageHeight
             if (imageHeight > 0) {
                 updateLayoutParams {
-                    height = imageHeight.toPx()
+                    height = 20.toPx()
                 }
             }
         }
