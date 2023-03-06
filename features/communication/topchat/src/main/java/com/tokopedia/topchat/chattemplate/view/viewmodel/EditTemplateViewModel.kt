@@ -5,18 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper.mapToEditTemplateUiModel
 import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase
-import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase
+import com.tokopedia.topchat.chattemplate.domain.usecase.UpdateTemplateUseCase
 import com.tokopedia.topchat.chattemplate.view.uimodel.CreateEditTemplateResultModel
-import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateResultModel
 import javax.inject.Inject
 
 class EditTemplateViewModel @Inject constructor(
-    private val editTemplateUseCase: EditTemplateUseCase,
     private val createTemplateUseCase: CreateTemplateUseCase,
+    private val updateTemplateUseCase: UpdateTemplateUseCase,
     private val deleteTemplateUseCase: DeleteTemplateUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -25,8 +25,8 @@ class EditTemplateViewModel @Inject constructor(
     val createEditTemplate: LiveData<CreateEditTemplateResultModel>
         get() = _createEditTemplate
 
-    private val _deleteTemplate = MutableLiveData<Pair<EditTemplateResultModel, Int>>()
-    val deleteTemplate: LiveData<Pair<EditTemplateResultModel, Int>>
+    private val _deleteTemplate = MutableLiveData<Int>()
+    val deleteTemplate: LiveData<Int>
         get() = _deleteTemplate
 
     private val _errorAction = MutableLiveData<Throwable>()
@@ -35,56 +35,66 @@ class EditTemplateViewModel @Inject constructor(
 
     fun submitText(text: String, existingText: String, list: List<String>, isSeller: Boolean) {
         val index = list.indexOf(existingText)
-        if (index < 0) {
+        if (index < Int.ZERO) {
             createTemplate(index, text, isSeller)
         } else {
-            editTemplate(index, text, isSeller)
+            updateTemplate(index, text, isSeller)
         }
     }
 
     private fun createTemplate(index: Int, value: String, isSeller: Boolean) {
         launchCatchError(block = {
-            val response = createTemplateUseCase.createTemplate(value, isSeller)
-            if (response.isSuccess) {
-                _createEditTemplate.value = CreateEditTemplateResultModel(
-                    response.mapToEditTemplateUiModel(),
-                    index, value
+            val response = createTemplateUseCase(
+                CreateTemplateUseCase.Param(
+                    isSeller = isSeller,
+                    value = value
                 )
+            )
+            if (response.chatAddTemplate.success == Int.ONE) {
+                _createEditTemplate.value = CreateEditTemplateResultModel(index, value)
             } else {
                 _errorAction.value = MessageErrorException(ERROR_CREATE_TEMPLATE)
             }
         }, onError = {
-            _errorAction.value = it
-        })
+                _errorAction.value = it
+            })
     }
 
-    private fun editTemplate(index: Int, text: String, isSeller: Boolean) {
+    private fun updateTemplate(index: Int, text: String, isSeller: Boolean) {
         launchCatchError(block = {
-            val response = editTemplateUseCase.editTemplate(index + 1, text, isSeller)
-            if (response.isSuccess) {
-                _createEditTemplate.value = CreateEditTemplateResultModel(
-                    response.mapToEditTemplateUiModel(),
-                    index, text
+            val response = updateTemplateUseCase(
+                UpdateTemplateUseCase.Param(
+                    isSeller = isSeller,
+                    index = index + Int.ONE,
+                    value = text
                 )
+            )
+            if (response.chatUpdateTemplate.success == Int.ONE) {
+                _createEditTemplate.value = CreateEditTemplateResultModel(index, text)
             } else {
                 _errorAction.value = MessageErrorException(ERROR_EDIT_TEMPLATE)
             }
         }, onError = {
-            _errorAction.value = it
-        })
+                _errorAction.value = it
+            })
     }
 
     fun deleteTemplate(index: Int, isSeller: Boolean) {
         launchCatchError(block = {
-            val response = deleteTemplateUseCase.deleteTemplate(index + 1, isSeller)
-            if (response.isSuccess) {
-                _deleteTemplate.value = Pair(response.mapToEditTemplateUiModel(), index)
+            val response = deleteTemplateUseCase(
+                DeleteTemplateUseCase.Param(
+                    isSeller = isSeller,
+                    templateIndex = index + Int.ONE
+                )
+            )
+            if (response.chatDeleteTemplate.success == Int.ONE) {
+                _deleteTemplate.value = index
             } else {
                 _errorAction.value = MessageErrorException(ERROR_DELETE_TEMPLATE)
             }
         }, onError = {
-            _errorAction.value = it
-        })
+                _errorAction.value = it
+            })
     }
 
     companion object {

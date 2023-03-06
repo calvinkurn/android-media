@@ -59,6 +59,7 @@ object SomConsts {
     const val KEY_PRINT_AWB = "print"
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
     const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
+    const val KEY_RETURN_TO_SHIPPER = "confirm_return"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -119,7 +120,7 @@ object SomConsts {
     const val TOPADS_MANUAL_ADS = 3
     const val TOPADS_AUTO_ADS = 4
 
-    //SOM FILTER LABEL
+    // SOM FILTER LABEL
     const val FILTER_SORT = "Urutkan"
     const val FILTER_STATUS_ORDER = "Status Pesanan"
     const val FILTER_TYPE_ORDER = "Tipe Pesanan"

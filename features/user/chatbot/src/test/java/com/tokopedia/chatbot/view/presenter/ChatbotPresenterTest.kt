@@ -63,7 +63,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -100,7 +100,7 @@ class ChatbotPresenterTest {
     private lateinit var getExistingChatUseCase: GetExistingChatUseCase
     private lateinit var userSession: UserSessionInterface
     private lateinit var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper
-    private lateinit var tkpdAuthInterceptor: TkpdAuthInterceptor
+    private lateinit var tkpdAuthInterceptor: TkpdOldAuthInterceptor
     private lateinit var fingerprintInterceptor: FingerprintInterceptor
     private lateinit var sendChatRatingUseCase: SendChatRatingUseCase
     private lateinit var submitCsatRatingUseCase: SubmitCsatRatingUseCase
@@ -119,7 +119,7 @@ class ChatbotPresenterTest {
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
     private var socketJob: Job? = null
-    private lateinit var chatResponse : ChatSocketPojo
+    private lateinit var chatResponse: ChatSocketPojo
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -447,7 +447,6 @@ class ChatbotPresenterTest {
         assertEquals(replyBoxAttribute?.contentCode, 102)
     }
 
-
     @Test
     fun `handleReplyBoxWSToggle if content_code=102 , goes to mapToVisitable`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
@@ -463,7 +462,6 @@ class ChatbotPresenterTest {
 
         assertEquals(dynamicContentCode, 102)
     }
-
 
     @Test
     fun `submitChatCsat success`() {
@@ -771,7 +769,8 @@ class ChatbotPresenterTest {
     fun `showTickerData success with null tickerdata`() {
         val response = TickerDataResponse(
             ChipGetActiveTickerV4(
-                "", null
+                "",
+                null
             )
         )
 
@@ -853,6 +852,7 @@ class ChatbotPresenterTest {
             view.onError(any())
         }
     }
+
     @Test
     fun `connectWebSocket success when Socket is Opened`() {
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
@@ -1008,7 +1008,7 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `handleAttachment When receiving attachment type 13 to open csat`() {
+    fun `handleAttachment When receiving attachment type 13 to open csat with new flow(2 screens)`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
@@ -1078,6 +1078,38 @@ class ChatbotPresenterTest {
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
                 SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_BOT)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 22`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_22)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_22)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 23`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_23)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_23)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -1447,7 +1479,6 @@ class ChatbotPresenterTest {
             expectedChatRatingList = chipGetChatRatingList!!
         }
 
-
         assertEquals(
             expectedChatRatingList,
             ratingListResponse.chipGetChatRatingList
@@ -1643,7 +1674,6 @@ class ChatbotPresenterTest {
             view.onError(any())
         }
     }
-
 
     /******************************* Socket Related Unit Tests************************************/
 
@@ -2183,7 +2213,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `sendUploadedImageToWebsocket success`() {
-
         every {
             chatbotWebSocket.send(any<JsonObject>(), any())
         } returns mockk(relaxed = true)
@@ -2284,15 +2313,20 @@ class ChatbotPresenterTest {
 
         every {
             ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
-                any(), any(), any()
+                any(),
+                any(),
+                any()
             )
         } returns mockk(relaxed = true)
 
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
-                    any(), any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         } just runs
 
@@ -2301,8 +2335,11 @@ class ChatbotPresenterTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
-                    any(), any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         }
     }
@@ -2327,7 +2364,6 @@ class ChatbotPresenterTest {
         )
 
         assertNotNull(result)
-
     }
 
     @Test
@@ -2354,7 +2390,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `startNewUploadMediaJob failure`() {
-
         coEvery {
             uploaderUseCase.invoke(any())
         } answers {
@@ -2392,7 +2427,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `checkUploadVideoEligibility success`() {
-
         val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
 
         coEvery {
@@ -2410,7 +2444,6 @@ class ChatbotPresenterTest {
         verify {
             view.videoUploadEligibilityHandler(any())
         }
-
     }
 
     private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {

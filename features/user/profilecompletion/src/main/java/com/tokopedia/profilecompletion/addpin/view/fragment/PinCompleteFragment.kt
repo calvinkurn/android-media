@@ -62,18 +62,18 @@ class PinCompleteFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
-		context?.run {
-			when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
-				SOURCE_CHANGE_PIN -> {
-					titleComplete.text = getString(R.string.change_pin_success)
-					setToolbarTitle(getString(R.string.title_change_pin))
-				}
-				SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
-					titleComplete.text = getString(R.string.change_pin_success)
-					setToolbarTitle(getString(R.string.change_pin_title_setting))
-				}
-			}
-		}
+        context?.run {
+            when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+                SOURCE_CHANGE_PIN -> {
+                    titleComplete.text = getString(R.string.change_pin_success)
+                    setToolbarTitle(getString(R.string.title_change_pin))
+                }
+                SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
+                    titleComplete.text = getString(R.string.change_pin_success)
+                    setToolbarTitle(getString(R.string.change_pin_title_setting))
+                }
+            }
+        }
     }
 
     private fun setToolbarTitle(title: String) {

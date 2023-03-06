@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.topchat.R
+import com.tokopedia.utils.resources.isDarkMode
 
 object ViewUtil {
 
@@ -188,6 +190,18 @@ object ViewUtil {
 
         return stateDrawable
     }
+
+    fun getShadowColorViewHolder(context: Context): Int {
+            return try {
+                if (context.isDarkMode()) {
+                    R.color.topchat_dms_message_shadow
+                } else {
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                }
+            } catch (ignored: Throwable) {
+                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            }
+        }
 
     fun areSystemAnimationsEnabled(context: Context?): Boolean {
         if (context == null) return false

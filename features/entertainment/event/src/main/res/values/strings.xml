@@ -63,7 +63,7 @@
     <string name="ent_event_checkout_pessanger_desc">E-tiket dan informasi penting lainnya akan dikirimkan ke kontak pemesan.</string>
     <string name="ent_event_checkout_pessanger_set_now">Isi Data Sekarang</string>
     <string name="ent_event_checkout_pessanger_set_now_desc">Datamu akan kami simpankan untuk transaksimu yang berikutnya.</string>
-    <string name="ent_event_checkout_pessanger_ticker">E-tiket juga bisa dicek lewat halaman Daftar Transaksi.</string>
+    <string name="ent_event_checkout_pessanger_ticker">E-tiket akan dikirimkan ke email yang terdaftar di akun Tokopedia atau dapat kamu cek di halaman Daftar Transaksi.</string>
     <string name="ent_event_checkout_summary_title">Ringkasan harga</string>
     <string name="ent_event_checkout_summary_total">Total Pembayaran</string>
     <string name="ent_event_checkout_summary_tnc">Saya menyetujui syarat dan ketentuan pembelian tiket ini</string>
@@ -76,7 +76,7 @@
     <string name="ent_event_checkout_passenger_new_title">Rincian Kontak</string>
 
 
-    <string name="ent_pdp_form_ticker_warn_text">Pastikan data pemesan sudah benar, karena e-tiket akan dikirim ke kontak tercantum.</string>
+    <string name="ent_pdp_form_ticker_warn_text">Pastikan data pemesan sudah benar. E-tiket bisa dicek lewat halaman Daftar Transaksi dan akan dikirimkan ke email yang terdaftar di akun Tokopedia.</string>
     <string name="ent_pdp_form_ticket_submit_text">Simpan</string>
     <string name="ent_pdp_form_toaster_click_msg">Oke</string>
     <string name="ent_pdp_form_date_picker_placeholder">dd/mm/yyyy</string>

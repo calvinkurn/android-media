@@ -27,8 +27,10 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.common.KYCConstant.EXTRA_USE_CROPPING
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.BitmapCroppingAndCompression
 import com.tokopedia.kyc_centralized.util.BitmapProcessingListener
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.File
@@ -37,6 +39,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
 
 /**
  * @author  : @rival [Rivaldy Firmansyah]
@@ -44,6 +47,9 @@ import kotlinx.coroutines.SupervisorJob
  * @since   : 3/01/2022
  * */
 class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
+
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
 
     private var viewBinding by autoClearedNullable<FragmentCameraKtpBinding>()
     private var imagePath: String = ""
@@ -64,7 +70,9 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() { }
+    override fun initInjector() {
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +83,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             projectId = it.getInt(PARAM_PROJECT_ID).orZero()
         }
 
-        analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
 
     }
 

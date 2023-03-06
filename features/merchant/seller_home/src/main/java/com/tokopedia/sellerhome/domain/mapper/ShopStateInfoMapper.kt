@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.domain.mapper
 
 import com.tokopedia.sellerhome.domain.model.GetShopStateInfoResponse
+import com.tokopedia.sellerhome.domain.model.GetShopStateResponse
 import com.tokopedia.sellerhome.domain.model.InfoWidgetButtonModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
@@ -31,9 +32,17 @@ class ShopStateInfoMapper @Inject constructor() {
         )
     }
 
+    fun mapToUiModel(data: GetShopStateResponse): ShopStateInfoUiModel {
+        val info = data.fetchInfoWidgetData.data.firstOrNull() ?: return ShopStateInfoUiModel()
+        return ShopStateInfoUiModel(
+            isNewSellerState = isNewSellerState(info.meta.shopState)
+        )
+    }
+
     private fun isNewSellerState(shopState: Long): Boolean {
         return listOf(
-            ShopStateUiModel.NEW_REGISTERED_SHOP, ShopStateUiModel.ADDED_PRODUCT,
+            ShopStateUiModel.NEW_REGISTERED_SHOP,
+            ShopStateUiModel.ADDED_PRODUCT,
             ShopStateUiModel.VIEWED_PRODUCT
         ).contains(shopState)
     }

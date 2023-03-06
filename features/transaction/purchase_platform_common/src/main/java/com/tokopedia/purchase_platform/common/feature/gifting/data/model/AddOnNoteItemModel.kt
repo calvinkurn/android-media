@@ -13,5 +13,5 @@ data class AddOnNoteItemModel(
     @SerializedName("from")
     var from: String = "",
     @SerializedName("notes")
-    var notes: String = "",
+    var notes: String = ""
 ) : Parcelable
