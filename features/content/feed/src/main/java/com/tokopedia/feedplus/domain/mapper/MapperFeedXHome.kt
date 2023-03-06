@@ -243,5 +243,5 @@ object MapperFeedHome {
             ) &&
             card.media.none { it.type == TYPE_LONG_VIDEO }
 
-    fun shouldShow(card: FeedXCard) = isImagesPost(card)
+    private fun shouldShow(card: FeedXCard) = isImagesPost(card)
 }

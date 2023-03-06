@@ -15,7 +15,7 @@ class FeedXHomeEntity(
 ) {
     class Response(
         @SerializedName("feedXHome")
-        val feedXHome: FeedXHomeEntity
+        val feedXHome: FeedXHomeEntity = FeedXHomeEntity()
     )
 }
 
