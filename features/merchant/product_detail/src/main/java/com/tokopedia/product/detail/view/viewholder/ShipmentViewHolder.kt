@@ -164,7 +164,7 @@ class ShipmentViewHolder(
             val imageHeight = boBadge.imageHeight
             if (imageHeight > 0) {
                 updateLayoutParams {
-                    height = 20.toPx()
+                    height = imageHeight.toPx()
                 }
             }
         }
