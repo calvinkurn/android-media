@@ -129,7 +129,7 @@ object PayLaterHelper {
         modelList?.forEach {
             if (it is Detail) {
                 if (it.gatewayDetail?.name?.isEmpty() == false) {
-                    nameList.add(it.gatewayDetail.name)
+                    nameList.add(it.gatewayDetail.gatewayCode.orEmpty())
                 }
             }
         }
