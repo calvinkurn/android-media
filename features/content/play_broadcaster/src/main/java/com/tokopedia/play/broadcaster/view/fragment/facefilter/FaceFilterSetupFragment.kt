@@ -50,6 +50,19 @@ class FaceFilterSetupFragment @Inject constructor(
     private val bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
         get() = _bottomSheetBehavior!!
 
+    private val bottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            when(newState) {
+                BottomSheetBehavior.STATE_HIDDEN -> {
+                    viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+                }
+                else -> {}
+            }
+        }
+
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+    }
+
     private val viewModel: PlayBroadcastViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             requireActivity()
@@ -91,6 +104,8 @@ class FaceFilterSetupFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        bottomSheetBehavior.removeBottomSheetCallback(bottomSheetBehaviorCallback)
+
         _binding = null
         _bottomSheetBehavior = null
     }
@@ -132,27 +147,7 @@ class FaceFilterSetupFragment @Inject constructor(
             }
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        val bottomSheetHeight = bottomSheet.height
-                        viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetShown(bottomSheetHeight))
-
-                        viewModel.selectedFaceFilter?.let {
-                            setupFaceFilterSlider(it)
-                        }
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
-                    }
-                    else -> {}
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            }
-        })
+        bottomSheetBehavior.addBottomSheetCallback(bottomSheetBehaviorCallback)
     }
 
     private fun setupObserver() {
@@ -215,6 +210,11 @@ class FaceFilterSetupFragment @Inject constructor(
 
     fun showFaceSetupBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetShown(binding.bottomSheet.height))
+        viewModel.selectedFaceFilter?.let {
+            setupFaceFilterSlider(it)
+        }
     }
 
     companion object {
