@@ -30,25 +30,7 @@ private const val QUERY = """
                         message
                       }
                     }
-                    custom_response {
-                      bottomsheet {
-                        is_show_bottomsheet
-                        title
-                        description
-                        image_url
-                        buttons{
-                            text
-                            color
-                            action
-                            link
-                        }
-                      }
-                      shop {
-                        shop_id
-                        name
-                        distance
-                      }
-                    }
+                    custom_response
                     cart_groups {
                       cart_group_id
                       success
@@ -77,7 +59,7 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
 
     init {
         setTypeClass(ATCTokofoodResponse::class.java)
-        setGraphqlQuery(AddToCartTokofood())
+        setGraphqlQuery(UpdateCartTokofood())
     }
 
     suspend fun execute(updateParam: UpdateParam,

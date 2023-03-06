@@ -785,7 +785,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                                         cartListBusinessData.getAvailableSectionProducts().firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
                                                 val cardPositions =
-                                                    viewModel.productMap[requestParam.productId]
+                                                    viewModel.productCartMap[requestParam.cartId]
                                                 cardPositions?.run {
                                                     binding?.rvProductList?.post {
                                                         productListAdapter?.updateProductUiModel(
@@ -848,7 +848,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                                     (pair.second as? CartListBusinessData)?.let { cartListBusinessData ->
                                         cartListBusinessData.getAvailableSectionProducts().firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
-                                                val cardPositions = viewModel.productMap[requestParam.productId]
+                                                val cardPositions = viewModel.productCartMap[requestParam.cartId]
                                                 cardPositions?.run {
                                                     val dataSetPosition = viewModel.getDataSetPosition(this)
                                                     val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
@@ -1073,7 +1073,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             updateParam.productList.firstOrNull()?.let { requestParam ->
                 cartListBusinessData.getAvailableSectionProducts().firstOrNull { product -> product.productId == requestParam.productId }
                     ?.let { cart ->
-                        val cardPositions = viewModel.productMap[requestParam.productId]
+                        val cardPositions = viewModel.productCartMap[requestParam.cartId]
                         cardPositions?.run {
                             val dataSetPosition = viewModel.getDataSetPosition(this)
                             val adapterPosition = viewModel.getAdapterPosition(this)
@@ -1106,7 +1106,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 cartListBusinessData.getAvailableSectionProducts().firstOrNull { data -> data.productId == requestParam.productId }
                     ?.let { cartTokoFood ->
                         val cardPositions =
-                            viewModel.productMap[requestParam.productId]
+                            viewModel.productCartMap[requestParam.cartId]
                         cardPositions?.run {
                             val dataSetPosition =
                                 viewModel.getDataSetPosition(this)
@@ -1166,8 +1166,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         if (viewModel.isProductDetailBottomSheetVisible) return
         val productUiModel = productListItem.productUiModel
-        // update product id - card positions map
-        viewModel.productMap[productUiModel.id] = cardPositions
+        // update cart id - card positions map
         viewModel.productCartMap[productUiModel.cartId] = cardPositions
         // track click product card event
         merchantPageAnalytics.clickProductCard(
@@ -1200,8 +1199,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         val productUiModel = productListItem.productUiModel
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
-            // update product id - card positions map
-            viewModel.productMap[productUiModel.id] = cardPositions
+            // update cart id - card positions map
             viewModel.productCartMap[productUiModel.cartId] = cardPositions
             // customized product exists navigate to custom order detail bottom sheet
             if (productUiModel.isCustomizable && productUiModel.isAtc) {
@@ -1259,22 +1257,20 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onAddNoteButtonClicked(
-        productId: String,
+        cartId: String,
         orderNote: String,
         cardPositions: Pair<Int, Int>
     ) {
-        viewModel.productMap[productId] = cardPositions
-        orderNoteBottomSheet?.setSelectedProductId(productId)
+        viewModel.productCartMap[cartId] = cardPositions
+        orderNoteBottomSheet?.setSelectedCartId(cartId)
         orderNoteBottomSheet?.setOrderNote(orderNote)
         orderNoteBottomSheet?.show(childFragmentManager)
     }
 
     override fun onDeleteButtonClicked(
         cartId: String,
-        productId: String,
         cardPositions: Pair<Int, Int>
     ) {
-        viewModel.productMap[productId] = cardPositions
         viewModel.productCartMap[cartId] = cardPositions
         activityViewModel?.deleteProduct(
             cartId = cartId,
@@ -1298,7 +1294,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onUpdateProductQty(cartId: String, quantity: Int, cardPositions: Pair<Int, Int>) {
-        viewModel.productMap[productId] = cardPositions
+        viewModel.productCartMap[cartId] = cardPositions
         val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
@@ -1362,8 +1358,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         )
     }
 
-    override fun onSaveNoteButtonClicked(productId: String, orderNote: String) {
-        val cardPositions = viewModel.productMap[productId]
+    override fun onSaveNoteButtonClicked(cartId: String, orderNote: String) {
+        val cardPositions = viewModel.productCartMap[cartId]
         cardPositions?.run {
             val dataSetPosition = viewModel.getDataSetPosition(this)
             val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
@@ -1449,7 +1445,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productUiModel = productUiModel
         )
 
-        viewModel.productMap[productUiModel.id] = cardPositions
+        viewModel.productCartMap[productUiModel.cartId] = cardPositions
 
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
 

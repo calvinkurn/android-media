@@ -58,6 +58,7 @@ object UpdateProductMapper {
                     ),
                     productList = updateProductParams.map {
                         ATCTokofoodParamProduct(
+                            cartId = it.cartId,
                             productId = it.productId,
                             quantity = it.quantity,
                             metadata = ATCTokofoodParamMetadata(

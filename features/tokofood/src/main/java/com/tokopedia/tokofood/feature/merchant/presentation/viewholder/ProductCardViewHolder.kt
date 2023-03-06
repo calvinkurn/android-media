@@ -6,7 +6,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
@@ -25,8 +30,8 @@ class ProductCardViewHolder(
     interface OnProductCardItemClickListener {
         fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
         fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
-        fun onAddNoteButtonClicked(productId: String, orderNote: String, cardPositions: Pair<Int, Int>)
-        fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>)
+        fun onAddNoteButtonClicked(cartId: String, orderNote: String, cardPositions: Pair<Int, Int>)
+        fun onDeleteButtonClicked(cartId: String, cardPositions: Pair<Int, Int>)
         fun onUpdateProductQty(cartId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onIncreaseQtyButtonClicked(cartId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onDecreaseQtyButtonClicked(cartId: String, quantity: Int, cardPositions: Pair<Int, Int>)
@@ -61,7 +66,7 @@ class ProductCardViewHolder(
             val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             clickListener.onAddNoteButtonClicked(
-                productId = productUiModel.id,
+                cartId = productUiModel.cartId,
                 orderNote = productUiModel.orderNote,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
@@ -71,7 +76,6 @@ class ProductCardViewHolder(
             val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             clickListener.onDeleteButtonClicked(
                 cartId = productUiModel.cartId,
-                productId = productUiModel.id,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
