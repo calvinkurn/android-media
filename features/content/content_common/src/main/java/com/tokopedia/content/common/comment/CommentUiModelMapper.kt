@@ -38,11 +38,12 @@ class CommentUiModelMapper @Inject constructor() {
         },
         commentType = comments.parent.parentId.convertToCommentType,
         state = ResultState.Success,
-        commenterType = if(comments.parent.isReplyAsShop) UserType.Shop else UserType.People
+        commenterType = if (comments.parent.isReplyAsShop) UserType.Shop else UserType.People
     )
 
     fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {
-        val username = if(comment.isShop) comment.fullName else  comment.username.ifBlank { comment.firstName }
+        val username =
+            if (comment.isShop) comment.fullName else comment.username.ifBlank { comment.firstName }
         return CommentUiModel.Item(
             id = comment.id,
             username = username,
@@ -70,7 +71,7 @@ class CommentUiModelMapper @Inject constructor() {
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",
-            isOwner = false,
+            isOwner = true,
             isReportAllowed = false,
             userId = comment.userInfo.userId,
             userType = userType,
@@ -81,37 +82,30 @@ class CommentUiModelMapper @Inject constructor() {
         return try {
             val now = ZonedDateTime.now()
             val convert = ZonedDateTime.parse(date)
-            val diff =Duration.between(convert, now)
+            val diff = Duration.between(convert, now)
             val minute = diff.toMinutes()
             val hour = diff.toHours()
             val day = diff.toDays()
 
-            return if (minute < 1) {
-                LESS_THAN_1MIN
-            } else if (hour < 1) {
-                LESS_THAN_1HOUR
-            } else if (hour < 24) {
-                LESS_THAN_1DAY
-            } else if (day in 1..5) {
-                LESS_THAN_1DAY_5DAY
-            } else if (day in 6..89) {
-                MORE_THAN_5DAY
-            } else if (day > 90) {
-                MORE_THAN_90DAY
+            return if (day >= 1) {
+                "$day $DAY"
+            } else if (hour in 1..24) {
+                "$hour $HOUR"
+            } else if (minute in 1..60) {
+                "$minute $MINUTE"
             } else {
-                LESS_THAN_1MIN
+                DEFAULT_WORDING
             }
         } catch (e: Exception) {
-            LESS_THAN_1MIN
+            DEFAULT_WORDING
         }
     }
 
     companion object {
-        private const val LESS_THAN_1MIN = "Beberapa detik yang lalu"
-        private const val LESS_THAN_1HOUR = "23 menit"
-        private const val LESS_THAN_1DAY = "2 jam"
-        private const val LESS_THAN_1DAY_5DAY = "2 hari"
-        private const val MORE_THAN_5DAY = "28 Agu"
-        private const val MORE_THAN_90DAY = "Sep 2020"
+        private const val DAY = "hari"
+        private const val HOUR = "jam"
+        private const val MINUTE = "minute"
+        private const val SECOND = "detik"
+        private const val DEFAULT_WORDING = "Beberapa detik yang lalu"
     }
 }

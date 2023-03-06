@@ -129,7 +129,8 @@ object TagMentionBuilder {
             id = item.id,
             userName = item.username,
             appLink = item.appLink,
-            listener = parentListener
+            listener = parentListener,
+            userType = item.userType,
         )
         return try {
             var (id, type, name) = Triple("", "", "")
