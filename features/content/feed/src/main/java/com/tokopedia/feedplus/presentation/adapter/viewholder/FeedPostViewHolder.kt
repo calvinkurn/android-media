@@ -14,6 +14,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
+import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -27,6 +28,7 @@ class FeedPostViewHolder(
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
     private val authorView: FeedAuthorInfoView = FeedAuthorInfoView(binding.layoutAuthorInfo)
+    private val captionView: FeedCaptionView = FeedCaptionView(binding.tvFeedCaption)
 
     private val layoutManager =
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
@@ -56,10 +58,10 @@ class FeedPostViewHolder(
         element?.let {
             binding.apply {
                 authorView.bindData(element.author, false, !element.followers.isFollowed)
+                captionView.bind(element.text)
+
                 bindImagesContent(element.media)
                 bindIndicators(element.media.size)
-
-                tvFeedCaption.text = element.text
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(it)

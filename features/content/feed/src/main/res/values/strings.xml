@@ -86,6 +86,6 @@ dari Feed.</string>
     <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai Dianthi.</string>
     <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_applink_live_room">tokopedia://play/channel_recom?source_type=LIVE</string>
-
+    <string name="feed_selengkapnya_label">Selengkapnya</string>
 
 </resources>
