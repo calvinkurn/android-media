@@ -135,6 +135,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_CHAT
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_EXTEND
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_FINISH
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_OCC
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_POF
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRACK
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRAIN_EMAIL
@@ -339,6 +340,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val RESULT_CODE_SUCCESS = 1
         const val EXTEND_ORDER_REQUEST_CODE = 400
         const val OPEN_ORDER_REQUEST_CODE = 500
+        const val POF_REQUEST_CODE = 600
     }
 
     private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
@@ -464,6 +466,22 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             if (!toasterMessage.isNullOrBlank()) {
                 val toasterType = data.getIntExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, Toaster.TYPE_NORMAL)
                 showToaster(toasterMessage, toasterType)
+            }
+        } else if (requestCode == POF_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+                loadOrderHistoryList(orderIdNeedUpdated)
+            } else {
+                resetFilter()
+                currIndexNeedUpdate = -1
+                orderIdNeedUpdated = ""
+                refreshHandler?.startRefresh()
+                scrollRecommendationListener.resetState()
+            }
+
+            val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
+            if (!toasterMessage.isNullOrBlank()) {
+                showToaster(toasterMessage, Toaster.TYPE_NORMAL)
             }
         } else if (requestCode == OPEN_ORDER_REQUEST_CODE) {
             if (currIndexNeedUpdate > -1 && orderIdNeedUpdated.isNotEmpty()) {
@@ -2054,6 +2072,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
                                 goToOrderExtension(order, index)
                             }
+                            dotMenu.actionType.equals(GQL_MP_POF, true) -> {
+                                goToPartialOrderFulfillment(order, index)
+                            }
                         }
                     }
                     userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
@@ -2213,6 +2234,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                         button.actionType.equals(GQL_MP_EXTEND, true) -> {
                             goToOrderExtension(order, index)
+                        }
+                        button.actionType.equals(GQL_MP_POF, true) -> {
+                            goToPartialOrderFulfillment(order, index)
                         }
                     }
                 }
@@ -2470,6 +2494,18 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
+    }
+
+    private fun goToPartialOrderFulfillment(order: UohListOrder.UohOrders.Order, index: Int) {
+        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
+        val appLink = UriUtil.buildUriAppendParams(
+            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT,
+            params
+        )
+        val intent = RouteManager.getIntentNoFallback(context, appLink) ?: return
+        orderIdNeedUpdated = order.orderUUID
+        currIndexNeedUpdate = index
+        startActivityForResult(intent, POF_REQUEST_CODE)
     }
 
     override fun onPause() {
