@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.model.datamodel.*
+import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
 import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
+import com.tokopedia.catalog_library.usecase.CatalogBrandsPopularUseCase
 import com.tokopedia.catalog_library.usecase.CatalogRelevantUseCase
 import com.tokopedia.catalog_library.usecase.CatalogSpecialUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 class CatalogHomepageViewModel @Inject constructor(
     private val catalogSpecialUseCase: CatalogSpecialUseCase,
-    private val catalogRelevantUseCase: CatalogRelevantUseCase
+    private val catalogRelevantUseCase: CatalogRelevantUseCase,
+    private val catalogBrandsPopularUseCase: CatalogBrandsPopularUseCase
 ) : ViewModel() {
 
     private val _catalogHomeLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
@@ -36,21 +39,6 @@ class CatalogHomepageViewModel @Inject constructor(
             onFailHomeData(IllegalStateException("No Special Response Data"))
         } else {
             _catalogHomeLiveData.postValue(Success(mapSpecialData(specialDataResponse)))
-        }
-    }
-
-    fun getRelevantData() {
-        catalogRelevantUseCase.cancelJobs()
-        catalogRelevantUseCase.getRelevantData(::onAvailableRelevantData, ::onFailHomeData)
-    }
-
-    private fun onAvailableRelevantData(relevantResponse: CatalogRelevantResponse) {
-        if (relevantResponse.catalogGetRelevant.catalogsList.isNullOrEmpty()) {
-            onFailHomeData(IllegalStateException("No Relevant Response Data"))
-        } else {
-            relevantResponse.let {
-                _catalogHomeLiveData.postValue(Success(mapRelevantData(it)))
-            }
         }
     }
 
@@ -87,6 +75,21 @@ class CatalogHomepageViewModel @Inject constructor(
         return visitableList
     }
 
+    fun getRelevantData() {
+        catalogRelevantUseCase.cancelJobs()
+        catalogRelevantUseCase.getRelevantData(::onAvailableRelevantData, ::onFailHomeData)
+    }
+
+    private fun onAvailableRelevantData(relevantResponse: CatalogRelevantResponse) {
+        if (relevantResponse.catalogGetRelevant.catalogsList.isNullOrEmpty()) {
+            onFailHomeData(IllegalStateException("No Relevant Response Data"))
+        } else {
+            relevantResponse.let {
+                _catalogHomeLiveData.postValue(Success(mapRelevantData(it)))
+            }
+        }
+    }
+
     private fun mapRelevantData(data: CatalogRelevantResponse): CatalogLibraryDataModel {
         val relevantDataModel =
             CatalogContainerDataModel(
@@ -103,7 +106,7 @@ class CatalogHomepageViewModel @Inject constructor(
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getRelevantVisitableList(catalogsList: ArrayList<CatalogRelevantResponse.Catalogs>): ArrayList<BaseCatalogLibraryDataModel>? {
+    private fun getRelevantVisitableList(catalogsList: ArrayList<CatalogRelevantResponse.Catalogs>): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         catalogsList.forEach {
             visitableList.add(
@@ -117,6 +120,51 @@ class CatalogHomepageViewModel @Inject constructor(
         return visitableList
     }
 
+    fun getPopularBrands(){
+        catalogBrandsPopularUseCase.cancelJobs()
+        catalogBrandsPopularUseCase.getBrandPopular(::onAvailablePopularBrands, ::onFailHomeData)
+    }
+
+    private fun onAvailablePopularBrands(brandsPopularResponse: CatalogBrandsPopularResponse){
+        if(brandsPopularResponse.catalogGetBrandPopular.brands.isNullOrEmpty()){
+            onFailHomeData(IllegalStateException("No Brands Response Data"))
+        } else{
+            brandsPopularResponse.let {
+                _catalogHomeLiveData.postValue(Success(mapPopularBrands(it)))
+            }
+        }
+    }
+    private fun mapPopularBrands(data: CatalogBrandsPopularResponse): CatalogLibraryDataModel{
+        val popularBrandsDataModel = CatalogContainerDataModel(
+            CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
+            CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
+            CatalogLibraryConstant.CATALOG_HOME_HEADING_POPULAR_BRANDS,
+            getPopularBrandsVisitableList(data.catalogGetBrandPopular.brands),
+            RecyclerView.HORIZONTAL,
+            marginForTitle = Margin(36, 16, 0, 0),
+            marginForRV = Margin(20, 0, 0, 0),
+            hasMoreButtonEnabled = true
+        )
+
+        listOfComponents.add(popularBrandsDataModel)
+
+        return CatalogLibraryDataModel(listOfComponents)
+    }
+
+    private fun getPopularBrandsVisitableList(brands: ArrayList<CatalogBrandsPopularResponse.CatalogGetBrandPopular.Brands>): ArrayList<BaseCatalogLibraryDataModel> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+        brands.forEach {
+            visitableList.add(
+                CatalogPopularBrandsDataModel(
+                    CatalogLibraryConstant.CATALOG_POPULAR_BRANDS,
+                    CatalogLibraryConstant.CATALOG_POPULAR_BRANDS,
+                    it
+                )
+            )
+        }
+        return visitableList
+
+    }
     private fun onFailHomeData(throwable: Throwable) {
         _catalogHomeLiveData.postValue(Fail(throwable))
     }

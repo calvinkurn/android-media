@@ -4,6 +4,7 @@ object CatalogLibraryConstant {
     const val CATALOG_SPECIAL = "catalog_special"
     const val CATALOG_RELEVANT = "catalog_relevant"
     const val CATALOG_PRODUCT = "catalog_product"
+    const val CATALOG_POPULAR_BRANDS = "catalog_popular_brands"
     const val CATALOG_PRODUCT_LOAD = "catalog_product_load_more"
 
     const val CATALOG_LIHAT_SEMUA = "catalog_lihat_semua"
@@ -16,6 +17,7 @@ object CatalogLibraryConstant {
     const val CATALOG_CONTAINER_TYPE_MOST_VIRAL = "catalog_container_most_viral"
     const val CATALOG_CONTAINER_SPECIAL = "catalog_container_special"
     const val CATALOG_CONTAINER_RELEVANT = "catalog_container_relevant"
+    const val CATALOG_CONTAINER_POPULAR_BRANDS= "catalog_container_popular_brands"
     const val CATALOG_CONTAINER_PRODUCT_HEADER = "catalog_container_product_header"
 
     const val CATALOG_SHIMMER_TOP_FIVE = 1
@@ -41,6 +43,7 @@ object CatalogLibraryConstant {
     const val CATALOG_HOME_PRODUCT_TITLE = "Katalog lainnya buat inspirasimu"
     const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori spesial buatmu"
     const val CATALOG_HOME_HEADING_RELEVANT = "Cek katalognya produk incaranmu"
+    const val CATALOG_HOME_HEADING_POPULAR_BRANDS = "Brand terpopuler di katalog"
 
     const val SOURCE_HOMEPAGE = "source homepage"
     const val SOURCE_CATEGORY_LANDING_PAGE = "source category landing page"

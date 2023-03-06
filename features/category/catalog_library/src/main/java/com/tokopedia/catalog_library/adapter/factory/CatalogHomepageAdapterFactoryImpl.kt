@@ -26,6 +26,10 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogProductItemViewHolder.LAYOUT
     }
 
+    override fun type(data: CatalogPopularBrandsDataModel): Int {
+        return CatalogPopularBrandsItemViewHolder.LAYOUT
+    }
+
     override fun type(data: CatalogLihatDataModel): Int {
         return CatalogLihatViewHolder.LAYOUT
     }
@@ -69,6 +73,10 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 catalogLibraryListener
             )
             CatalogRelevantItemViewHolder.LAYOUT -> CatalogRelevantItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
+            CatalogPopularBrandsItemViewHolder.LAYOUT -> CatalogPopularBrandsItemViewHolder(
                 view,
                 catalogLibraryListener
             )

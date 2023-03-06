@@ -8,6 +8,7 @@ interface CatalogHomepageAdapterFactory {
 
     fun type(data: CatalogSpecialDataModel): Int
     fun type(data: CatalogRelevantDataModel): Int
+    fun type(data: CatalogPopularBrandsDataModel): Int
     fun type(data: CatalogProductDataModel): Int
 
     fun type(data: CatalogLihatDataModel): Int

@@ -49,6 +49,13 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         )
         updateModel(
             CatalogShimmerDataModel(
+                CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
+                CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
+                CATALOG_SHIMMER_TOP_FIVE
+            )
+            )
+        updateModel(
+            CatalogShimmerDataModel(
                 CatalogLibraryConstant.CATALOG_PRODUCT,
                 CatalogLibraryConstant.CATALOG_PRODUCT,
                 CATALOG_SHIMMER_PRODUCTS

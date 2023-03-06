@@ -114,6 +114,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     private fun getDataFromViewModel() {
         homepageViewModel?.getSpecialData()
         homepageViewModel?.getRelevantData()
+        homepageViewModel?.getPopularBrands()
     }
 
     override fun getScreenName(): String {
