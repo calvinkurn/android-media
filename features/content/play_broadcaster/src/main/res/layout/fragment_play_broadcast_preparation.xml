@@ -102,6 +102,12 @@
         android:visibility="gone"
         />
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/face_filter_setup_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_preparation_main"
         android:layout_width="wrap_content"

@@ -201,6 +201,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
+        val faceFilterSetupFragment = FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
                 showTitleForm(false)
@@ -208,6 +210,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             binding.formCover.visibility == View.VISIBLE -> {
                 showCoverForm(false)
+                true
+            }
+            faceFilterSetupFragment.isBottomSheetShown -> {
+                parentViewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
                 true
             }
             else -> {
@@ -397,6 +403,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             description = getString(R.string.play_bro_banner_shorts_description)
             bannerIcon = IconUnify.SHORT_VIDEO
         }
+
+        childFragmentManager.commit {
+            replace(
+                binding.faceFilterSetupContainer.id,
+                FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                FaceFilterSetupFragment.TAG,
+            )
+        }
     }
 
     private fun setupInsets() {
@@ -451,7 +465,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         eventBus.emit(Event.ClickSetSchedule)
                     }
                     DynamicPreparationMenu.Menu.FaceFilter -> {
-                        broadcastCoordinator.navigateToFragment(FaceFilterSetupFragment::class.java, isAddToBackStack = true)
+                        FaceFilterSetupFragment.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).showFaceSetupBottomSheet()
                     }
                 }
             }

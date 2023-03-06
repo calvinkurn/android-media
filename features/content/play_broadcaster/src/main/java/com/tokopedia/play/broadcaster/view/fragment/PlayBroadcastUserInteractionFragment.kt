@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -105,6 +106,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
+    private val faceFilterSetupContainer: FragmentContainerView by detachableView(R.id.face_filter_setup_container)
 
     private val actionBarLiveView by viewComponent {
         ActionBarLiveViewComponent(
@@ -336,7 +338,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icFaceFilter.setOnClickListener {
-            broadcastCoordinator.navigateToFragment(FaceFilterSetupFragment::class.java, isAddToBackStack = true)
+            FaceFilterSetupFragment.getFragment(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).showFaceSetupBottomSheet()
+        }
+
+        childFragmentManager.commit {
+            replace(
+                faceFilterSetupContainer.id,
+                FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                FaceFilterSetupFragment.TAG,
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -441,6 +454,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
+        val faceFilterSetupFragment = FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+
         return when {
             isPinnedFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
@@ -448,6 +463,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
             isQuizFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
+                true
+            }
+            faceFilterSetupFragment.isBottomSheetShown -> {
+                parentViewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
                 true
             }
             /** TODO: gonna delete this */
@@ -834,10 +853,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
                     is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
                     is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
-                        view?.hide()
+                        clInteraction.hide()
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
-                        view?.show()
+                        clInteraction.show()
                     }
                     else -> {}
                 }

@@ -68,6 +68,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFrag
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
@@ -374,6 +375,19 @@ class PlayBroadcastActivity : BaseActivity(),
                 surfaceCardView.radius = 0f
             }
         })
+
+        aspectFrameLayout.setOnClickListener {
+            getCurrentFragment()?.let {
+                val isFaceFilterBottomSheetShown = FaceFilterSetupFragment.getFragment(
+                    it.childFragmentManager,
+                    classLoader
+                ).isBottomSheetShown
+
+                if(isFaceFilterBottomSheetShown) {
+                    viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+                }
+            }
+        }
     }
 
     private fun getConfiguration() {
