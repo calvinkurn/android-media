@@ -391,6 +391,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 boBadge {
                   imageURL
                   isUsingPadding
+                  imageHeight
                 }
               }
               boMetadata
