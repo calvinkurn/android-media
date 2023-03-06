@@ -105,3 +105,5 @@ data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAc
 
 object DismissFollowPopUp : PlayViewerNewAction()
 object OpenCart: PlayViewerNewAction()
+
+data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction ()

@@ -202,13 +202,14 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState.Empty)
 
-    private val _isThreeDotsOpened = MutableStateFlow(false)
+    private val _isThreeDotsOpened = MutableStateFlow(false) //move to map?
     private val _isSharingOpened = MutableStateFlow(false)
+    private val _isCommentOpened = MutableStateFlow(false)
     private val _videoProperty = MutableStateFlow(VideoPropertyUiModel.Empty)
 
-    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive, _videoProperty) {
-        bottomInsets, popUp, partner, kebab, sharing, interactive, videoState ->
-            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && (!videoState.state.hasNoData || videoPlayer.isYouTube)
+    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive, _videoProperty, _isCommentOpened) {
+        bottomInsets, popUp, partner, kebab, sharing, interactive, videoState, comment ->
+            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !comment && !interactive.isPlaying && (!videoState.state.hasNoData || videoPlayer.isYouTube)
     }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
@@ -1015,6 +1016,12 @@ class PlayViewModel @AssistedInject constructor(
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
+            is CommentVisibilityAction -> {
+                _isCommentOpened.update { action.isOpen }
+                viewModelScope.launch {
+                    _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
+                }
+            }
         }
     }
 

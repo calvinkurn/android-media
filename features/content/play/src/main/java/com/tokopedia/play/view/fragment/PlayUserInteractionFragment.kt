@@ -263,6 +263,13 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    private val commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+        override fun getPageSource(): PageSource  = PageSource.Play(channelId)
+        override fun onCommentDismissed() {
+            playViewModel.submitAction(CommentVisibilityAction(isOpen = false))
+        }
+    }
+
     override fun getScreenName(): String = "Play User Interaction"
 
     private val components = mutableListOf<UiComponent<PlayViewerNewUiState>>()
@@ -382,6 +389,7 @@ class PlayUserInteractionFragment @Inject constructor(
             is InteractiveDialogFragment -> {
                 childFragment.setDataSource(interactiveDialogDataSource)
             }
+            is ContentCommentBottomSheet -> childFragment.setEntrySource(commentEntrySource)
         }
     }
 
@@ -1033,6 +1041,13 @@ class PlayUserInteractionFragment @Inject constructor(
                                 playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
                             }
                         )
+                    }
+                    is CommentVisibilityEvent -> {
+                        val sheet = ContentCommentBottomSheet.getOrCreate(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        )
+                        if (event.isOpen) sheet.show(childFragmentManager) else sheet.dismiss()
                     }
                 }
             }
@@ -2018,19 +2033,11 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun onCommentIconEvent(event: CommentIconUiComponent.Event) {
         when (event) {
             CommentIconUiComponent.Event.OnCommentClicked -> {
-                ContentCommentBottomSheet.getOrCreate(
-                    childFragmentManager,
-                    requireActivity().classLoader
-                )
-                    .apply {
-                        setEntrySource(object : ContentCommentBottomSheet.EntrySource {
-                            override fun getPageSource(): PageSource = PageSource.Play(channelId)
-                        })
-                        setShowListener { bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-                    }.show(childFragmentManager)
+                playViewModel.submitAction(CommentVisibilityAction(isOpen = true))
             }
         }
     }
+
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 

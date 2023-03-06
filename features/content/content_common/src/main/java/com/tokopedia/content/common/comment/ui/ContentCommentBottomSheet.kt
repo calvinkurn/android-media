@@ -174,6 +174,7 @@ class ContentCommentBottomSheet @Inject constructor(
     private fun setupView() {
         binding.commentHeader.title = getString(R.string.content_comment_header)
         binding.commentHeader.closeListener = View.OnClickListener {
+            mSource?.onCommentDismissed()
             dismiss()
         }
         binding.rvComment.adapter = commentAdapter
@@ -333,11 +334,13 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun dismiss() {
         if (!isAdded) return
+        mSource?.onCommentDismissed()
         viewModel.submitAction(CommentAction.DismissComment)
         super.dismiss()
     }
 
     override fun onCancel(dialog: DialogInterface) {
+        mSource?.onCommentDismissed()
         viewModel.submitAction(CommentAction.DismissComment)
         super.onCancel(dialog)
     }
@@ -444,6 +447,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
     interface EntrySource {
         fun getPageSource(): PageSource
+
+        fun onCommentDismissed()
     }
 
     companion object {
