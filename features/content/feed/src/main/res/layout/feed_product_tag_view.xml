@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/ll_lihat_product"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/feed_tag_product_background"
+    android:elevation="@dimen/unify_space_16"
+    android:paddingEnd="8dp"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp"
+    android:paddingStart="4dp"
+    android:alpha="0.7"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/product_tag_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            android:background="@drawable/feed_tag_product_icon_yellow_background"
+            app:icon_name="SHOPPING_BAG"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_tag_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN0"
+            android:layout_marginStart="4dp"
+            app:typographyType="display_3"
+            android:ellipsize="end"
+            android:maxWidth="240dp"
+            android:maxLines="1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/product_tag_icon"
+            tools:text="Xiaomi Redmi 32 GB Black"
+            tools:visibility="visible"
+            />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

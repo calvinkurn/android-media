@@ -9,16 +9,21 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.databinding.ItemPosttagBinding
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedcomponent.presentation.utils.EndlessScrollRecycleListener
+import com.tokopedia.feedcomponent.presentation.utils.FeedXProductResult
 import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductBottomSheetCardView
+import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.FeedTaggedProductViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
@@ -26,10 +31,11 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class ProductItemInfoBottomSheet : BottomSheetUnify() {
+class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHolder.Listener {
 
     private var binding: ItemPosttagBinding? = null
 
@@ -42,7 +48,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var postId: String = "0"
     private val adapter by lazy {
         listener?.let {
-            ProductInfoBottomSheetAdapter(it)
+            ProductInfoBottomSheetAdapter(it, this)
         }
     }
     private var positionInFeed: Int = 0
@@ -60,6 +66,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     var disMissed: (() -> Unit)? = null
     var dismissedByClosing = false
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,24 +74,33 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = ItemPosttagBinding.inflate(inflater, container, false)
         setTitle(getString(R.string.content_product_bs_title))
-        setChild(binding?.root)
+        setChild(generateDynamicView())
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun generateDynamicView(): View?{
+        val height = (getDeviceHeight() * 0.8).toInt().toPx()
+
+        val customHeightView = binding?.root
+        customHeightView?.layoutParams =
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
+
+        return customHeightView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.cardTitlePostTag?.gone()
-        binding?.rvPosttag?.show()
-        binding?.rvPosttag?.setHasFixedSize(true)
-        val layoutManager: RecyclerView.LayoutManager =
+        val rvLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding?.rvPosttag?.isNestedScrollingEnabled = false
-        binding?.rvPosttag?.layoutManager = layoutManager
-        binding?.rvPosttag?.setPadding(0, 0, 0, 0)
-        if (::listProducts.isInitialized) {
-            setAdapter()
-        } else {
-            dismiss()
+
+        binding?.rvPosttag?.run {
+            show()
+            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
+            layoutManager = rvLayoutManager
+            setPadding(0, 0, 0, 0)
+            addOnScrollListener(getRecyclerViewListener())
+
         }
 
         activity?.let {
@@ -92,12 +108,14 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 viewModel = ViewModelProvider(
                     it,
                     factory
-                ).get(FeedProductItemInfoViewModel::class.java)
+                )[FeedProductItemInfoViewModel::class.java]
             }
         }
 
         viewModel?.fetchMerchantVoucherSummary(shopId)
-        observe()
+        viewModel?.fetchFeedXProductsData(postId)
+        observeMVC()
+        observeFeedXActivityProducts()
 
         setCloseClickListener {
             dismissedByClosing = true
@@ -111,46 +129,82 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun observe() {
-        viewModel?.merchantVoucherSummary?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    if (it.data.animatedInfoList?.isNotEmpty() == true) {
-                        binding?.merchantVoucherWidgetPostTag?.setData(
-                            mvcData = MvcData(
-                                it.data.animatedInfoList
-                            ),
-                            shopId = shopId,
-                            source = MvcSource.FEED_BOTTOM_SHEET,
-                            mvcTrackerImpl = customMvcTracker ?: DefaultMvcTrackerImpl()
-                        )
-                        binding?.merchantVoucherWidgetPostTag?.show()
-                    } else {
+    private fun getDeviceHeight(): Float {
+        val displayMetrics = context?.resources?.displayMetrics
+        return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
+    }
+
+    private fun observeMVC() {
+        viewModel?.run {
+            merchantVoucherSummary.observe(viewLifecycleOwner) {
+                when (it) {
+                    is Success -> {
+                        if (it.data.animatedInfoList?.isNotEmpty() == true) {
+                            binding?.merchantVoucherWidgetPostTag?.setData(
+                                mvcData = MvcData(
+                                    it.data.animatedInfoList
+                                ),
+                                shopId = shopId,
+                                source = MvcSource.FEED_BOTTOM_SHEET,
+                                mvcTrackerImpl = customMvcTracker ?: DefaultMvcTrackerImpl()
+                            )
+                            binding?.merchantVoucherWidgetPostTag?.show()
+                        } else {
+                            binding?.merchantVoucherWidgetPostTag?.hide()
+                        }
+                    }
+                    is Fail -> {
                         binding?.merchantVoucherWidgetPostTag?.hide()
                     }
                 }
-                is Fail -> {
-                    binding?.merchantVoucherWidgetPostTag?.hide()
+            }
+        }
+    }
+    private fun observeFeedXActivityProducts() {
+        viewModel?.run {
+            feedProductsResponse.observe(viewLifecycleOwner) {
+                when (it) {
+                    is FeedXProductResult.Success -> {
+                       setAdapter(it.feedXGetActivityProductsResponse.products)
+                    }
+                    is FeedXProductResult.LoadingState -> {
+                        //TODO add loading state
+                    }
+                    is FeedXProductResult.Error -> {
+                        //TODO add error state
+
+                    }
                 }
             }
         }
     }
 
-    private fun setAdapter() {
-        binding?.rvPosttag?.adapter = adapter
-        if (listProducts.isNotEmpty()) {
-            listener?.onTaggedProductCardImpressed(
-                if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId,
-                listProducts,
-                postType,
-                shopId,
-                isFollowed,
-                mediaType,
-                hasVoucher,
-                authorType
-            )
-            adapter?.setItemsAndAnimateChanges(mapPostTag(listProducts))
+    private fun moveToAddToCartPage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun getRecyclerViewListener(): EndlessScrollRecycleListener {
+        return object : EndlessScrollRecycleListener() {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (viewModel?.cursor?.isNotEmpty() == true) {
+                    val lastPage = viewModel?.getPagingLiveData()?.value
+                    lastPage?.let { viewModel?.fetchFeedXProductsData(postId, page = it) }
+                }
+            }
+
+            override fun onScroll(lastVisiblePosition: Int) {
+            }
+
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+            }
         }
+    }
+
+    private fun setAdapter(products: List<FeedXProduct>) {
+        binding?.rvPosttag?.adapter = adapter
+        adapter?.setItemsAndAnimateChanges(mapPostTag(products))
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagModelNew> {
@@ -258,6 +312,29 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         }
     }
 
+    fun showToastWithAction(
+        message: String,
+        type: Int,
+        actionText: String,
+        action: () -> Unit
+    ) {
+        view?.rootView?.let {
+            context?.resources?.let { resource ->
+                Toaster.toasterCustomBottomHeight =
+                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+            }
+            Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionText
+            ) {
+                action()
+            }.show()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         listener = null
@@ -297,4 +374,34 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         private const val WISHLIST_ITEM_CLICKED = "wishlist_button_clicked"
         private const val PRODUCT_TYPE = "product"
     }
+
+    override fun onProductClicked(
+        viewHolder: FeedTaggedProductBottomSheetCardView,
+        product: ProductPostTagModelNew
+    ) {
+        listener?.onTaggedProductCardClicked(
+            product.positionInFeed,
+            product.applink,
+            product.product,
+            0,
+            product.mediaType
+        )
+    }
+
+    override fun onButtonMoveToCartProduct(
+        viewHolder: FeedTaggedProductBottomSheetCardView,
+        product: ProductPostTagModelNew
+    ) {
+        moveToAddToCartPage()
+    }
+
+    override fun onButtonAddToCartProduct(
+        viewHolder: FeedTaggedProductBottomSheetCardView,
+        product: ProductPostTagModelNew
+    ) {
+        listener?.onAddToCartButtonClicked(
+           product
+        )
+    }
+
 }
