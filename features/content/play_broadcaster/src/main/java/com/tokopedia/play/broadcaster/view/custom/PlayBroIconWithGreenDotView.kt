@@ -34,7 +34,7 @@ class PlayBroIconWithGreenDotView : FrameLayout {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.PlayBroIconWithGreenDotView)
 
             isShowDot = attributeArray.getBoolean(R.styleable.PlayBroIconWithGreenDotView_is_show_dot, false)
-            setIcon(attributeArray.getInt(R.styleable.PlayBroIconWithGreenDotView_icon_id, -1))
+            setIcon(attributeArray.getInt(R.styleable.PlayBroIconWithGreenDotView_icon_id, DEFAULT_ICON_ID))
 
             attributeArray.recycle()
         }
@@ -50,7 +50,7 @@ class PlayBroIconWithGreenDotView : FrameLayout {
         R.dimen.play_product_icon_dot_radius
     ).toFloat()
 
-    private val dotOffset = 1.5f* dotRadius
+    private val dotOffset = DOT_OFFSET_RADIUS * dotRadius
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(
@@ -67,7 +67,7 @@ class PlayBroIconWithGreenDotView : FrameLayout {
             newIconId = when(iconId) {
                 0 -> IconUnify.PRODUCT
                 1 -> IconUnify.SMILE
-                else -> -1
+                else -> DEFAULT_ICON_ID
             }
         )
     }
@@ -83,5 +83,10 @@ class PlayBroIconWithGreenDotView : FrameLayout {
             )
         }
         return returnValue
+    }
+
+    companion object {
+        private const val DEFAULT_ICON_ID = -1
+        private const val DOT_OFFSET_RADIUS = 1.5f
     }
 }
