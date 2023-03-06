@@ -55,10 +55,12 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
+import com.tokopedia.tokochat_common.view.listener.TokoChatMessageCensorListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
@@ -88,6 +90,7 @@ open class TokoChatFragment :
     TokoChatTransactionOrderWidget.Listener,
     TokoChatImageAttachmentListener,
     TokoChatMessageBubbleListener,
+    TokoChatMessageCensorListener,
     MaskingPhoneNumberBottomSheet.AnalyticsListener {
 
     @Inject
@@ -110,9 +113,10 @@ open class TokoChatFragment :
     private val unavailableBottomSheet = TokoChatGeneralUnavailableBottomSheet()
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
-        this,
-        this,
-        this
+        reminderTickerListener = this,
+        imageAttachmentListener = this,
+        bubbleMessageBubbleListener = this,
+        messageCensorListener = this
     )
 
     override fun getScreenName(): String = TAG
@@ -1092,6 +1096,11 @@ open class TokoChatFragment :
         showGlobalErrorLayout(onActionClick = {
             initializeChatRoom(null)
         })
+    }
+
+
+    override fun onClickCheckGuide() {
+        TokoChatGuideChatBottomSheet().show(childFragmentManager)
     }
 
     companion object {

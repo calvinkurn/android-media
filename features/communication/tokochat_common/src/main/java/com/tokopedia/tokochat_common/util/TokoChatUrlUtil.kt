@@ -23,4 +23,9 @@ object TokoChatUrlUtil {
         "https://images.tokopedia.net/img/android/user/typing_motion_lightmode.gif"
     const val TYPING_DARK_MODE =
         "https://images.tokopedia.net/img/android/user/typing_motion_darkmode.gif"
+
+    /**
+     * Censor Chat Urls
+     */
+    const val GUIDE_CHAT = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_guide_chat.png"
 }
