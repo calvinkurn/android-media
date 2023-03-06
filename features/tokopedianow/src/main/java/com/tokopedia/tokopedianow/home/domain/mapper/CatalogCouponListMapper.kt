@@ -11,7 +11,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 
-internal object CatalogCouponListMapper {
+object CatalogCouponListMapper {
     private const val RESPONSE_STYLE_PARAMS_COLUMNS = "columns"
     private const val RESPONSE_TYPE = "double"
     fun mapToClaimCouponWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState, warehouseId: String): HomeLayoutItemUiModel {

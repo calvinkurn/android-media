@@ -107,15 +107,14 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIM
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -4133,6 +4132,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
         val slugText = "ABC;CDE"
+        val buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
             warehouse_id = warehouseId
@@ -4143,7 +4143,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText
         )
         val catalogCouponList = createCatalogCouponList(
-            slugText = slugText
+            slugText = slugText,
+            buttonStr = buttonStr
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -4168,7 +4169,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             widgetId = widgetId,
             widgetTitle = widgetTitle,
             slugText = slugText,
-            isError = false
+            isError = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
         )
         val expectedResult = Success(data)
 
@@ -4187,6 +4190,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
         val slugText = "ABC;CDE"
+        val buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
             warehouse_id = warehouseId
@@ -4219,7 +4223,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             widgetId = widgetId,
             widgetTitle = widgetTitle,
             slugText = slugText,
-            isError = true
+            isError = true,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
         )
         val expectedResult = Success(data)
 
@@ -4238,6 +4244,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
         var slugText = "ABC;CDE"
+        var buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
             warehouse_id = warehouseId
@@ -4248,7 +4255,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText
         )
         var catalogCouponList = createCatalogCouponList(
-            slugText = slugText
+            slugText = slugText,
+            buttonStr = buttonStr
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -4269,10 +4277,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         //reset dummy data
-        slugText = "ABCD;CDEF"
+        buttonStr = COUPON_STATUS_CLAIMED
 
         catalogCouponList = createCatalogCouponList(
-            slugText = slugText
+            slugText = slugText,
+            buttonStr = buttonStr
         )
 
         onGetCatalogCouponList_thenReturn(
@@ -4288,7 +4297,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             widgetId = widgetId,
             widgetTitle = widgetTitle,
             slugText = slugText,
-            isError = false
+            isError = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
         )
         val expectedResult = Success(data)
 
@@ -4307,6 +4318,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
         var slugText = "ABC;CDE"
+        val buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
             warehouse_id = warehouseId
@@ -4317,7 +4329,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText
         )
         val catalogCouponList = createCatalogCouponList(
-            slugText = slugText
+            slugText = slugText,
+            buttonStr = buttonStr
         )
 
         onGetHomeLayoutData_thenReturn(
@@ -4338,8 +4351,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         //reset dummy data
-        slugText = "ABCD;CDEF"
-
         onGetCatalogCouponList_thenReturn(
             errorThrowable = Exception()
         )
@@ -4353,7 +4364,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             widgetId = widgetId,
             widgetTitle = widgetTitle,
             slugText = slugText,
-            isError = true
+            isError = true,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
         )
         val expectedResult = Success(data)
 
