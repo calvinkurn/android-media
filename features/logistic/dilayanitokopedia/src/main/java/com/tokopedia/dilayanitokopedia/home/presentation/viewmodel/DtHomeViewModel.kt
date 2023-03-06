@@ -79,6 +79,7 @@ class DtHomeViewModel @Inject constructor(
             )
 
             _homeLayoutList.postValue(Success(data))
+            getRecommendationForYouNew()
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
